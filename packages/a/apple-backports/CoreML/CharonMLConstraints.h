@@ -120,6 +120,22 @@ static inline MLImageSizeConstraint *charon_ml_image_size_constraint_of(const ch
                                             pixelsHighRange:NSMakeRange(0, 0)
                                        enumeratedImageSizes:sizes];
     }
+    if (feature->image_width > 0 && feature->image_height > 0 && feature->image_width_range == 0 &&
+        feature->image_height_range == 0) {
+        /* A FIXED size. Core ML reports this as the ENUMERATED kind carrying the one size it
+         * allows, with each dimension's range of length one -- measured against this host's own
+         * Core ML over tools/coreml's vision_image container (fixed 32 by 32 on both ends):
+         * `sizeConstraint` 2, `pixelsWideRange` 32+1, `pixelsHighRange` 32+1,
+         * `enumeratedImageSizes` 32x32. There is no Exact case in the enumeration the SDKs on this
+         * machine carry (0 unspecified, 2 enumerated, 3 range), so the enumerated kind with a single
+         * member is how a fixed size is spelled. */
+        MLImageSize *only = [[MLImageSize alloc] charon_initWithPixelsWide:feature->image_width
+                                                              pixelsHigh:feature->image_height];
+        return [[MLImageSizeConstraint alloc] charon_initWithType:MLImageSizeConstraintTypeEnumerated
+                                             pixelsWideRange:NSMakeRange((NSUInteger)feature->image_width, 1)
+                                            pixelsHighRange:NSMakeRange((NSUInteger)feature->image_height, 1)
+                                       enumeratedImageSizes:@[only]];
+    }
     if (feature->image_width_range != 0 || feature->image_height_range != 0 ||
         feature->image_width <= 0 || feature->image_height <= 0) {
         /* A range of either number is a range of both, and an upper bound of -1 is the

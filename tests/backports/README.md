@@ -93,6 +93,7 @@ freshly made UUIDs in its header on every run.
     sh host/callkit/run.sh  writes device/callkit-expectations.h, then holds the port's CallKit classes, under names of their own, to it with mutants
     sh host/insetref/run.sh  writes device/insetref-expectations.h when it passes, then holds the port's flow layout to it with mutants
     sh host/imageflip/run.sh
+    sh host/markdownsourceposition/run.sh  holds NSAttributedStringMarkdownSourcePosition to the host's own, 47 checks: the four numbers, the copy, equality, the archive's keys with their values and the range over the 29 runs the host's own parser marks
     sh host/ios1516/run.sh  writes device/ios1516-expectations.h when it passes
     sh host/cachereader/run.sh <dyld_shared_cache> <image> <class> <selector>
     sh host/orderedcollections/run.sh  writes device/orderedcollections-expectations.h

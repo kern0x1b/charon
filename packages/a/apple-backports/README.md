@@ -863,6 +863,40 @@ extended colour range, and CoreGraphics of iOS 6 has no extended colour space at
 all. No context it builds is of extended range, so the property could only
 store a promise.
 
+### What Markdown says a run of text is
+
+Three classes of iOS 15 and 16 and the attribute keys beside them are carried
+whole: `NSPresentationIntent`, which records what a block-level Markdown element
+is - a paragraph, a header, a list item, a cell of a table - so a view can style
+it; `NSAttributedStringMarkdownParsingOptions`, the five settings a parse is
+asked for; and `NSAttributedStringMarkdownSourcePosition`, where a run came from
+in the source. No release this package is built for has any part of the three, and
+none of the three is a class with behaviour to borrow: they are values, and what
+they hold is the host's own, read out of the host's own classes and held against
+them by `tests/backports/host/presentationintent`,
+`tests/backports/host/attributed15` and
+`tests/backports/host/markdownsourceposition`.
+
+`NSAttributedStringMarkdownParsingOptions` is **not** NSSecureCoding, and that is
+the host's own answer and not work left out: the host has no
+`+supportsSecureCoding` and an archiver asked to write one raises. Carrying a
+coding for it would be a second implementation where Apple has none.
+
+Two things about a source position a header alone does not say, both measured on
+the host's own archive of a run its Markdown parser marked, where the byte offsets
+and the UTF-16 ones are keys side by side. A **column is a UTF-8 byte offset**
+within its line, for a multi-byte character the character's first byte; and the
+range `-rangeInString:` answers is in **UTF-16 units**, because a range into an
+`NSString` is. The port reads the eight cached offsets its archive carries and uses
+none of them - they are offsets into one particular Markdown string, which an
+archive does not carry and no key in one names - and works the range out from the
+four numbers instead. Over twelve documents and the 29 runs the host's parser
+marks, that answer is the host's own on 28; the one that differs is the CRLF
+document, where the host's cached offsets count a document seventeen bytes shorter
+than the one it was asked about. `facts/Foundation/NSPresentationIntent.md`,
+`facts/Foundation/NSAttributedStringMarkdownParsingOptions.md` and
+`facts/Foundation/NSAttributedStringMarkdownSourcePosition.md`.
+
 ### How it is proved
 
 Every implemented entry has a differential test under `tests/backports/host/`

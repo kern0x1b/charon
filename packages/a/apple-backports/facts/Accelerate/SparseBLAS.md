@@ -307,6 +307,27 @@ in the differential, which checks the port against the header's rule for exactly
      first row extraction answers 0 with an end of 0 and the second takes the process, because the host
      has not materialised the product. The port's matrix is empty and readable. The differential compares
      the status, the shape and the count for that case and the elements for the rest.
+   - A matrix that holds nothing cannot be read out of a row past the first column. Measured on a 4x4 with
+     no entries at all, one call per process, 32 calls in all — two rows, four column starts, both
+     precisions, once against an empty matrix and once against the same matrix with two entries in row 0.
+     Against the empty matrix `sparse_extract_sparse_row_float` and `sparse_extract_sparse_row_double`
+     answer 0 with an end of 0 at column start 0 and take the process with it at every start past it: 12
+     of the 16 SIGSEGV, each at address 0x8, through `sparse::internal::sparse_pack_vector<double>` on a
+     NULL row buffer. Against the matrix with two entries in row 0 all 16 answer, an empty row included,
+     so it is the empty matrix and not the empty row. The header's iteration is the one that stays away
+     from it (BLAS.h:1533: a second extract starts from `column_end` only when `nz` came back full), and
+     the port's answer for `column_end` is the header's — the matrix's own column count when there is no
+     next nonzero, where the host answers 0. The differential walks a row the way the header describes and
+     so never asks the host for what it cannot answer; `readf` in
+     `tests/backports/host/sparseblas/differential.m` names this case.
+
+   - A permutation is a sequence of swaps, not a gather. Measured over a 2x3 whose rows are 1.1 2.2 3.3 and
+     4.4 5.5 6.6, every permutation of three columns and of two rows, both precisions, float and double
+     answering alike: the columns `{2,0,1}` answer 2.2 1.1 3.3 / 5.5 4.4 6.6 — swap column 0 with 2, then 1
+     with 0, then 2 with 1 — and `{1,0,2}` answer the matrix unchanged, for the same reason; `{0,0,0}`
+     answers 3.3 1.1 2.2 / 6.6 4.4 5.5. The rows `{1,0}` answer the matrix unchanged and `{0,0}` answer it
+     with the two rows exchanged. `CharonSparsePermuteRows` and `CharonSparsePermuteColumns` do exactly
+     that, and the differential asks both sides the same way.
    - `sparse_get_matrix_property` with a negative name answers uninitialised memory — measured, -1 reads
      -520093697 on a fresh matrix. The port answers 0. The name is one the header does not declare.
    - The mixed sequence of a batch, a column, a row and another column leaves the host's column 0 at its
@@ -910,6 +931,62 @@ them rather than looking for them.
    (measured: the host has not materialised that one), so this is the case where it HAS materialised it
    and the read still does not return. Until that is settled, the outer product's elements are not
    compared at all.
+
+## The double halves, given the cases they claim (2026-10-03)
+
+Both host differentials carry the whole real family and the whole complex one, and four things in them
+were not doing what their names said. All four are fixed and each is proved to be able to fail.
+
+1. **`theSixteen()` was never called.** `main` named nine other functions and stopped, so every row in
+   it — sixteen API names the registry calls `implemented`, `sparse_outer_product_dense_double` and the
+   double twin of every level-3 case among them — was compared by nothing. It is called now, and the
+   differential is `485 checks, 0 failures` where it was `370`.
+2. **Three of its cases compared the port against a matrix nothing was written into.** Each built two
+   pairs, inserted into `a.mine` and `b.theirs`, and then compared `a.mine` with `a.theirs`. With one
+   pair per case the three cases are the double row-and-column insertion and the double column and row
+   permutations, and they reported three failures until the pairs were joined — failures that were the
+   port's permutations compared against an untouched host matrix, not a fault in either.
+3. **`sparse_matrix_product_sparse_double` was called with complex arguments.** The case passed
+   `double complex` matrices and a `double complex` array to the real function, which is sixteen
+   `-Wincompatible-pointer-types` warnings and a comparison of the first four doubles of a buffer the
+   function was never told was one. It is now `theDoubleProduct()`: real matrices, a real `alpha`, a
+   real `C`, both layouts, both transposes, three alphas, and the header's own rule (BLAS.h:1010,
+   `C = alpha * op(A) * B + C`) computed by the compiler in the same program with the indices named and
+   the layout's own place in the output. Three mutants of that rule have to differ from it on this data
+   before the comparison is trusted, and the alpha-dependent two are checked where they can differ.
+   `sparse_matrix_product_sparse_double_complex`, declared in `differential-complex.m` and called by
+   nothing, is now called in the same shape.
+4. **Five destinations were smaller than the strides or the shapes reach.** AddressSanitizer over both
+   binaries, before and after, is what found them: `sparse_extract_block` writes
+   `(K-1)*row_stride + (L-1)*col_stride + 1` elements and the header says "of size K x L", so a 2x3 block
+   at row stride 1 and column stride 3 needs eight and both cases gave six; a 3x2 result at a leading
+   dimension of 3 needs nine row-major and six column-major, and the float and double sparse-dense and
+   sparse-sparse cases gave six; a scaled addition with an increment of 2 reaches seven; a triangular
+   solve over a 3x3 with two elements; and an inner product with a negative increment read the element
+   below the pointer and the element past it. All five are measured against the host's own answers, and
+   the block one is now a comparison of all eight elements, gaps included.
+
+The mutation proofs, each run on the delivered tree and reverted byte-identically afterwards:
+
+```
+SparseProduct10.m's daxpy followed by a store (the "+ C" dropped):
+  485 checks, 12 failures  -  6 "a double sparse product ... both layouts", 6 "..., CblasTrans, ..."
+SparseComplex18.m's complex axpy followed by a store (the "+ C" dropped):
+  176 checks, 8 failures   -  4 "a double sparse-sparse product ..." and the 4 float complex ones
+RESTORED in both cases: 485 checks, 0 failures / 176 checks, 0 failures
+```
+
+The first mutation is caught by exactly the twelve cases this page's first item added and by nothing
+else, and the second by the four complex double cases plus the four float ones that were already there,
+so the double half of the complex family now has cases that see it.
+
+Both binaries are clean under AddressSanitizer with the port's own objects rebuilt with
+`-fsanitize=address` (`exit=0`, zero reports), and `run.sh` prints no warning at all:
+
+```
+485 checks, 0 failures        (differential.m, the real family)
+176 checks, 0 failures        (differential-complex.m, the complex family)
+```
 
 ## What has not been run
 

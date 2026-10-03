@@ -10,7 +10,7 @@
 # unrenamed port is silently not the port.
 #
 # NO DEVICE IS CREATED and none is needed: every class is [[X alloc] init], and
-# MTLCreateSystemDefaultDevice() hangs on a machine with no GPU.
+# a descriptor asks a device nothing (facts/Metal/DeviceOnThisMachine.md measures that).
 #
 # A MUTATION THAT DOES NOT BUILD IS "RUN FAILED", NEVER RED, for the reason it is so in every
 # harness here: a mutation compiled with a wrong -I depth once left the previous binary in place and a

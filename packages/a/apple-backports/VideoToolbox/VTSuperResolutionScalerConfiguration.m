@@ -16,7 +16,17 @@ CHARON_VIDEO_TOOLBOX_VALUE_STORE(VTSuperResolutionScalerConfiguration)
 
 + (BOOL)isSupported
 {
-    return (BOOL)[CharonValueStoreOfClass([self class])[@"supported"] longLongValue];
+    // `supported` is a CLASS property in the protocol (class, nonatomic, readonly, getter=isSupported),
+    // so the accessor belongs to the class and this is a class method rather than an instance one.
+    //
+    // The answer is NO, and it is the answer rather than a default: SDK 26.2 documents this property as
+    // "whether the SYSTEM SUPPORTS this processor", and objc-inventory.lua over the armv7 6.1.3 dyld
+    // cache finds no VTFrameProcessor class and no VTFrameProcessor* symbol there - the seventeen
+    // configuration and parameter classes arrived with iOS 26.0 and the ladder this package builds for
+    // ends at 10.3.4. The effects are motion estimation, interpolation, super resolution and temporal
+    // noise filtering, which need the Neural Engine no armv7 device has. So this is a hardware answer,
+    // and a store nothing writes would be NO by accident rather than by measurement.
+    return NO;
 }
 
 CHARON_VALUE_PROPERTY(NSArray<NSNumber *> *, frameSupportedPixelFormats)
@@ -83,7 +93,32 @@ CHARON_DOUBLE_PROPERTY(float, configurationModelPercentageAvailable)
 
 + (NSArray<NSNumber*> *)supportedScaleFactors
 {
-    return (NSArray<NSNumber*> *)CharonValueStoreOfClass([self class])[@"supportedScaleFactors"];
+    // SDK 26.2: "the set of supported scale factors to use when initializing a super-resolution scaler
+    // configuration". There is no scaler to initialize on this release, so the set is empty - which is
+    // an answer and not a default: -initWithFrameWidth:frameHeight:scaleFactor:inputType:... above takes
+    // the scale factor the caller wants and the same empty set is what says which values are allowed.
+    return @[];
+}
+
+- (void)downloadConfigurationModelWithCompletionHandler:(void (^)(NSError * _Nullable error))completionHandler
+{
+    // SDK 26.2 on this method: "downloads model assets required for the current configuration in the
+    // background ... If the download fails, the completion handler is invoked with an NSError, and the
+    // configurationModelStatus goes back to DownloadRequired."
+    //
+    // No request is made, and that is the whole of the behaviour rather than half of it: the port has
+    // no VideoToolbox to download from (objc-inventory.lua over the armv7 6.1.3 cache finds no
+    // VTFrameProcessor class and no VTFrameProcessor* symbol) and no processor whose model would be
+    // needed. The completion RUNS, once, with VTFrameProcessorAssetDownloadFailed - the code SDK 26.2
+    // defines as "returned if download of a required model asset for the processor failed" - which
+    // leaves -configurationModelStatus at the DownloadRequired the header's own enumeration starts at,
+    // so the two agree, and a caller that waits on the completion is never left waiting.
+    if (completionHandler)
+        completionHandler([NSError errorWithDomain:VTFrameProcessorErrorDomain
+                                             code:VTFrameProcessorAssetDownloadFailed
+                                         userInfo:@{NSLocalizedDescriptionKey:
+                                                        @"This device has no VideoToolbox frame processor, "
+                                                        @"so there are no model assets to download."}]);
 }
 
 

@@ -67,6 +67,7 @@
     NSData *_data;
     NSURL *_sourceURL;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
 
 // FHIRVersion is of 14.0 and this group is of 12.0, so the property is @dynamic: the compiler emits no
 // accessor, the selector is not in the library, and -respondsToSelector: answers NO for it rather than
@@ -164,6 +165,7 @@
     NSString *_displayName;
     HKFHIRResource *_FHIRResource;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
 
 + (BOOL)supportsSecureCoding
 {

@@ -1,0 +1,60 @@
+{
+ "framework": "MetalKit",
+ "entries": [
+  {
+   "api": "-[MTKMesh init]",
+   "kind": "method",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "MetalKit's own header declares it and forbids it: MTKModel.h:188 reads `- (nonnull instancetype)init NS_UNAVAILABLE;` with the words \"Cannot use default init.  Must initialize with mesh and metal device\", so no application compiled against it can call this. Apple's own class does not define it either, which was measured rather than read off the header: class_getInstanceMethod(MTLMesh.class, @selector(init)) answers, and its IMP is NSObject's own, the same one the superclass carries",
+   "effect": "the selector is not in the port's class: an MTKMesh is made by -initWithMesh:device:error:, which answers nil with an NSError in MTKModelErrorDomain saying this port does not carry MDLMesh (facts/MetalKit/TextureLoader.md). A caller that sends init anyway gets NSObject's, exactly as it would from Apple's class",
+   "source": "SDK 26.2, MetalKit, MTKModel.h:188; and Apple's own MetalKit, measured with class_getInstanceMethod and a nonsense-class control on tests/backports/host/metal-census",
+   "facts": "facts/MetalKit/TextureLoader.md"
+  },
+  {
+   "api": "-[MTKSubmesh init]",
+   "kind": "method",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "MTKModel.h:128 declares it NS_UNAVAILABLE with \"Applicatiohs must not explicity allocate or initialize.  Must initialize as part of MTKMesh object\", and Apple's own MTKSubmesh carries NSObject's init rather than one of its own, measured the same way as MTKMesh's",
+   "effect": "the selector is not in the port's class; a submesh is made by its mesh, and a caller that sends init anyway gets NSObject's",
+   "source": "SDK 26.2, MetalKit, MTKModel.h:128; and Apple's own MetalKit, measured",
+   "facts": "facts/MetalKit/TextureLoader.md"
+  },
+  {
+   "api": "-[MTKMeshBuffer init]",
+   "kind": "method",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "MTKModel.h:71 declares it NS_UNAVAILABLE with \"Only an MTKMeshBufferAllocator object can initilize a MTKMeshBuffer object\", and Apple's own MTKMeshBuffer carries NSObject's init rather than one of its own, measured the same way as MTKMesh's",
+   "effect": "the selector is not in the port's class; a mesh buffer is made by its allocator's -newBuffer:type:, and a caller that sends init anyway gets NSObject's",
+   "source": "SDK 26.2, MetalKit, MTKModel.h:71; and Apple's own MetalKit, measured",
+   "facts": "facts/MetalKit/TextureLoader.md"
+  },
+  {
+   "api": "-[MTKMeshBufferAllocator init]",
+   "kind": "method",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "MTKModel.h:42 declares it NS_UNAVAILABLE with \"Must initialize with device\", and Apple's own MTKMeshBufferAllocator carries NSObject's init rather than one of its own, measured the same way as MTKMesh's",
+   "effect": "the selector is not in the port's class; the allocator is made by -initWithDevice:, and a caller that sends init anyway gets NSObject's",
+   "source": "SDK 26.2, MetalKit, MTKModel.h:42; and Apple's own MetalKit, measured",
+   "facts": "facts/MetalKit/TextureLoader.md"
+  },
+  {
+   "api": "-[MTKTextureLoader init]",
+   "kind": "method",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "MTKTextureLoader.h:154 declares it NS_UNAVAILABLE with \"Must initialize with device\", and Apple's own MTKTextureLoader carries NSObject's init rather than one of its own, measured the same way as MTKMesh's",
+   "effect": "the selector is not in the port's class; a loader is made by -initWithDevice:, which keeps the device every loading method needs, and a caller that sends init anyway gets NSObject's and a loader with no device",
+   "source": "SDK 26.2, MetalKit, MTKTextureLoader.h:154; and Apple's own MetalKit, measured",
+   "facts": "facts/MetalKit/TextureLoader.md"
+  }
+ ]
+}

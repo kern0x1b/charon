@@ -31,6 +31,10 @@ python3 "$here/make-box-pdfs.py" "$build/fixtures" > /dev/null
 # CGPDFContext: an annotation's dictionary has to be in the file by the time it is read, and these are
 # measured by both sides through the same /Annots array the port walks.
 python3 "$here/tools/make-annotation-fixtures.py" "$build/fixtures" > /dev/null
+# the DICTIONARY-OBJECT fixtures, for the families that read a nested dictionary rather than one
+# annotation's flat keys: PDFBorder over /Border and /BS, PDFAppearanceCharacteristics over /MK, and
+# the actions and destinations of the families after them.
+python3 "$here/tools/make-object-fixtures.py" "$build/fixtures" > /dev/null
 # the CONFORMING-WRITER text fixtures, built here and not committed: they are a by-product of a tool, and
 # a committed PDF would be a second source of truth for what the tool writes.  They are here for the text
 # rows specifically - the hand-written fixtures are the control, and both kinds are walked, because a
@@ -67,20 +71,50 @@ xcrun clang -fobjc-arc -Wall "$here/host.m" -framework Foundation -framework App
 # -pageAtIndex: both reached a differential that printed "the port has it=1".
 # -Wall and NOT -w: -w switches the warning off, and -Werror does not switch a disabled warning
 # back on, so with -w the completeness check was decorative - it said nothing while a body was missing.
+# PDFKitConstants11.m joins the list because the class files now READ the port's own exported string
+# constants rather than repeating their values, and a constant this process does not define is an
+# Undefined symbol at link time.  That file imports the SDK's PDFKit.h for its values' types and
+# defines them itself, so the port binary carries its own copies and links no host PDFKit.
 xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation -I "$port" "$here/port.m" \
     "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
+    "$port/PDFBorder11.m" "$port/PDFAppearanceCharacteristics11.m" \
+    "$port/PDFKitConstants11.m" \
     -framework Foundation -framework CoreGraphics -o "$build/port-side" 2> "$build/port.log" || {
     echo "BUILD the port side did not compile:"; head -8 "$build/port.log" | sed 's/^/    /'; exit 1; }
+
+# side C: the port's appearance characteristics in a process that HAS a UIColor.  Mac Catalyst carries
+# UIKit in a macOS process, which is the only way both platforms' own colour class can answer the two
+# colour members - see color.m's header for why this is a third binary and not part of port.m.
+catalyst_sdk=$(xcrun --show-sdk-path)
+xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation \
+    -target arm64-apple-ios15.0-macabi -isysroot "$catalyst_sdk" \
+    -iframework "$catalyst_sdk/System/iOSSupport/System/Library/Frameworks" \
+    -I "$port" "$here/color.m" \
+    "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
+    "$port/PDFBorder11.m" "$port/PDFAppearanceCharacteristics11.m" \
+    "$port/PDFKitConstants11.m" \
+    -framework Foundation -framework UIKit -framework CoreGraphics \
+    -o "$build/port-color-side" 2> "$build/color.log" || {
+    echo "BUILD the Catalyst side did not compile:"; head -8 "$build/color.log" | sed 's/^/    /'; exit 1; }
 
 # the rows are truncated FIRST: a stale verdict in this file once made a crash look like a pass
 : > "$build/host.txt"; : > "$build/port.txt"
 set +e
 "$build/host-side" "$build"/fixtures/*.pdf > "$build/host.txt" 2>&1; hoststatus=$?
 "$build/port-side" "$build"/fixtures/*.pdf > "$build/port.txt" 2>&1; portstatus=$?
+: > "$build/color.txt"
+"$build/port-color-side" > "$build/color.txt" 2>&1; colorstatus=$?
 set -e
 # each side's own status, not a pipeline's: a crash is a failure whatever the file says
-if [ "$hoststatus" -ne 0 ] || [ "$portstatus" -ne 0 ]; then
-    echo "a side crashed: host=$hoststatus port=$portstatus - a crash is not a verdict"
+if [ "$hoststatus" -ne 0 ] || [ "$portstatus" -ne 0 ] || [ "$colorstatus" -ne 0 ]; then
+    echo "a side crashed: host=$hoststatus port=$portstatus color=$colorstatus - a crash is not a verdict"
+    exit 1
+fi
+# The Catalyst side must have answered something, or the merge below would silently leave the
+# appearance keys to a port side that cannot compile the type they hold.
+if ! grep -q '^appearance.full.key.BG=' "$build/color.txt"; then
+    echo "the Catalyst side printed no appearance key values; its output:"
+    head -5 "$build/color.txt" | sed 's/^/    /'
     exit 1
 fi
 
@@ -109,10 +143,13 @@ skipped_expected=0
 # second copy of it that could disagree with this one. $1 is the mutation mode: empty for the plain
 # comparison, "auto" to plant a key the two sides currently agree on, or a key's own name.
 compare() {
-python3 - "$build/host.txt" "$build/port.txt" "$compared_expected" "$skipped_expected" "$1" <<'PYEOF'
+python3 - "$build/host.txt" "$build/port.txt" "$build/color.txt" "$compared_expected" "$skipped_expected" "$1" <<'PYEOF'
 import sys
-EXPECTED_COMPARED = int(sys.argv[3])     # the compared facts both sides must produce
-EXPECTED_SKIPPED = int(sys.argv[4])      # the ones the host cannot answer, which must be named
+# argv: 1 host, 2 port, 3 the Catalyst colour side, 4 the compared count, 5 the skipped count, 6 the
+# mutation.  The colour file sits third because it is read by the extraction below, next to the two
+# files it merges into - and the two counts come after it so that nothing reads a count as a path.
+EXPECTED_COMPARED = int(sys.argv[4])     # the compared facts both sides must produce
+EXPECTED_SKIPPED = int(sys.argv[5])      # the ones the host cannot answer, which must be named
 
 def read(path, side):
     keys = {}
@@ -133,6 +170,25 @@ def read(path, side):
 
 host, port = read(sys.argv[1], "host"), read(sys.argv[2], "port")
 
+# The appearance keys come from the CATALYST side, which is the only one of the three that has a
+# UIColor.  Its answers override the macOS port side's for those keys and only those, and the count is
+# printed in the verdict so a reader can see how much of the comparison came from the third binary.
+# Everything the Catalyst side prints is an appearance key: it prints nothing else by construction
+# (color.m has no other printf), which is the check that this override cannot reach anything else.
+catalyst = read(sys.argv[3], "portcolor")
+unwanted = [k for k in catalyst if not k.startswith("appearance.")]
+if unwanted:
+    print(f"MERGE REFUSED: the Catalyst side printed {len(unwanted)} key(s) that are not appearance"
+          f" keys, so overriding the port's answers with them would reach facts it was not built for:"
+          f" {unwanted[:4]}")
+    sys.exit(1)
+if not catalyst:
+    print("MERGE REFUSED: the Catalyst side printed nothing, so every appearance key would be compared"
+          " against a port side that has no UIColor to answer it")
+    sys.exit(1)
+port.update(catalyst)
+catalyst_facts = len(catalyst)
+
 # ---- the red control -------------------------------------------------------------------
 #
 # A comparison that reads "0 mismatches" is only evidence if it WOULD have read one had the port
@@ -146,7 +202,7 @@ host, port = read(sys.argv[1], "host"), read(sys.argv[2], "port")
 # on both sides with the same value, so "it agrees" is the run's own finding and not my assertion.
 # The mutation is written to a scratch file and the port map is re-read from it, so the port's own
 # answers on disk are never touched and the same verdict code below does all the comparing.
-MUTATION = sys.argv[5] if len(sys.argv) > 5 else ""
+MUTATION = sys.argv[6] if len(sys.argv) > 6 else ""
 
 if MUTATION:
     if MUTATION == "plant" or not MUTATION:
@@ -175,11 +231,10 @@ if MUTATION:
             sys.exit(1)
     import os
     import tempfile
-    scratch = os.path.join(tempfile.mkdtemp(prefix="pdfkit-mutation-"), "port.txt")
     parts = host[key].split(",")
     if len(parts) == 4:
-        try:                                  # a rect: move it a whole unit, far outside the 0.001
-            numbers = [float(x) for x in parts]
+        try:                                  # a rect or a colour: move the first component a whole
+            numbers = [float(x) for x in parts]   # unit, far outside the 0.001
         except ValueError:
             numbers = None
         if numbers:
@@ -189,15 +244,27 @@ if MUTATION:
             planted = host[key] + "-PLANTED"
     else:
         planted = host[key] + "-PLANTED"
-    with open(sys.argv[2]) as original, open(scratch, "w") as copy:
+    # WHERE the key is planted is the file that printed it, not a fixed one: the appearance facts come
+    # from the Catalyst side and the rest from the macOS port side, and a mutation written into
+    # port.txt would never be read for a key port.txt does not hold.  The prefix each file writes is
+    # the side name it is read under, so the scratch copy keeps that prefix and is read the same way.
+    in_port = key in read(sys.argv[2], "port")
+    source_index, source_prefix, scratch_prefix = (
+        (2, "port.", "port.") if in_port else (3, "portcolor.", "portcolor."))
+    scratch = os.path.join(tempfile.mkdtemp(prefix="pdfkit-mutation-"), "planted.txt")
+    with open(sys.argv[source_index]) as original, open(scratch, "w") as copy:
         for line in original:
-            if line.startswith("port.") and line.partition("=")[0][len("port."):].strip() == key:
-                copy.write(f"port.{key}={planted}\n")
+            if line.startswith(source_prefix) and line.partition("=")[0][len(source_prefix):].strip() == key:
+                copy.write(f"{scratch_prefix}{key}={planted}\n")
             else:
                 copy.write(line)
-    port = read(scratch, "port")
+    if in_port:
+        port = read(scratch, "port")
+    else:
+        catalyst = read(scratch, "portcolor")
+        port.update(catalyst)
     print(f"MUTATION planted on {key!r}, a key the two sides agreed on"
-          f" (host={host[key]!r} port={read(sys.argv[2], 'port')[key]!r}),"
+          f" (host={host[key]!r} port={read(sys.argv[2], 'port').get(key, read(sys.argv[3], 'portcolor').get(key))!r}),"
           f" now port={port[key]!r} in a scratch copy at {scratch}")
     if port[key] == host[key]:
         print(f"MUTATION failed: {key!r} was planted and still agrees, so the comparison is blind")
@@ -257,7 +324,7 @@ for key in sorted(set(host) | set(port)):
     if hv != pv:
         differences += 1
 print(f"COMPARED {compared} MISMATCHES {differences}  (not compared: {skipped}"
-      f", expected to differ: {divergent})")
+      f", expected to differ: {divergent}, of which {catalyst_facts} compared from the Catalyst side)")
 unaccounted = (len(set(host) | set(port)) - compared - skipped - divergent)
 if unaccounted != 0:
     print(f"  {unaccounted} key(s) both sides printed were neither compared, skipped nor expected to"
@@ -292,3 +359,51 @@ grep -q "^MUTATION planted on " "$control_log" || {
 echo "RED CONTROL ok: the comparison goes red on a mutated port, and names the key:"
 grep "^MUTATION planted on " "$control_log" | sed 's/^/    /'
 grep "^  DIFFER " "$control_log" | sed 's/^/    /' | head -4
+
+# THE FAMILY'S OWN RED CONTROLS, one per rule this series added.  The control above plants on the first
+# key the two sides agree on, which is a document fact and would go red even if the border comparison
+# were blind.  Each key below is a border or appearance fact, and each is required to be a key both
+# sides print with the SAME value (compare() refuses anything else), so planting on it and going red is
+# a statement about that key and not about the harness.
+for key in \
+    border-plain.pdf.page0.annotation0.border.lineWidth \
+    border-bs.pdf.page0.annotation0.border.style \
+    border-bs.pdf.page0.annotation0.border.dash.values \
+    border-none.pdf.page0.annotation0.border.lineWidth \
+    border-link.pdf.page0.annotation0.border \
+    noborder-widget-bc.pdf.page0.annotation0.border.lineWidth \
+    noborder-widget.pdf.page0.annotation0.border \
+    appearance.full.key.BG \
+    appearance.fresh.key.R \
+    appearance.cleared.keys \
+    appearance.controlType2.keys \
+    border.fresh.lineWidth \
+    border.fresh.keys \
+    border.all.lineWidth \
+    border.all.keys \
+    border.pattern.style \
+    border.empty.keys \
+    border.cleared.lineWidth \
+    border.styleonly.keys \
+    border.widthzero.keys \
+    border-plain.pdf.page0.border.identity.same \
+    border-plain.pdf.page0.border.set.same \
+    border-plain.pdf.page0.border.set.mutated \
+    border-plain.pdf.page0.border.set.nil
+do
+    family_log="$build/mutation-$key.log"
+    if compare "$key" > "$family_log" 2>&1; then
+        echo "RED CONTROL FAILED for $key: the comparison was run against a mutated $key and still"
+        echo "  reported no mismatch. Its output:"
+        sed 's/^/    /' "$family_log"
+        exit 1
+    fi
+    grep -q "^MUTATION planted on " "$family_log" || {
+        echo "RED CONTROL FAILED for $key: the mutated run went non-zero without saying which key it"
+        echo "  planted, so the failure is not the control's. Its output:"
+        sed 's/^/    /' "$family_log"
+        exit 1
+    }
+    echo "RED CONTROL ok for $key:"
+    grep "^  DIFFER " "$family_log" | sed 's/^/    /' | head -1
+done

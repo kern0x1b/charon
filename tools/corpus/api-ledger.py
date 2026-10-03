@@ -69,7 +69,7 @@ CHARON_ROOT = os.path.realpath(os.path.join(HERE, "..", ".."))
 TARGET = "armv7-apple-ios6.1.3"
 
 SURFACE_COLUMNS = ["framework", "kind", "lang", "api", "introduced", "deprecated", "obsoleted",
-                   "unavailable", "via", "registry", "owner-registry", "demand-rank",
+                   "unavailable", "via", "getter", "registry", "owner-registry", "demand-rank",
                    "demand-severity", "demand-apps", "demand-telegram", "impl-lead", "impl-file-lead"]
 
 # The run-time kinds resolve against the built libraries and the release cache; the header-only and
@@ -309,25 +309,62 @@ def run_nm_exports(dylib):
 
 def load_built_inventories(gate_dir):
     """Every lib*Backports.dylib in gate_dir merged into one view, keeping which framework's
-    library carried each name (for the reason column, not for the decision)."""
+    library carried each name (for the reason column, not for the decision).
+
+    The per-library entries are MERGED, not replaced, because a class NAME is carried by more than
+    one library as soon as two of them add a category to it, and a Foundation class is extended by
+    half the tree: measured on the 6.1.3 gate of 463407400, NSString is named by three libraries at
+    once - libFoundationBackports with fifteen of its own selectors, libSensorKitBackports with
+    -sr_sensorForDeletionRecordsFromSensor and libUIKitBackports with six - and only the last of
+    the three read here said which selectors the port has, because it came last in the sort. So
+    SensorKit's one category on NSString, which is built and answered, read `missing`. Each entry's
+    selector sets are the union over the libraries, the way apple.objc's own collect() unions the
+    categories of one image (modules/apple/objc.lua:218, :222), and each selector keeps the library
+    that carried it so the reason column names the one that answers rather than the first."""
     classes, protocols, exports = {}, {}, {}
     dylibs = sorted(f for f in os.listdir(gate_dir) if f.endswith(".dylib") and f.startswith("lib"))
     assert dylibs, "%s holds no lib*.dylib -- not a gate output directory" % gate_dir
+
+    def merge(into, found, framework):
+        for name, entry in found.items():
+            held = into.get(name)
+            if held is None:
+                entry["library"] = framework
+                entry["where"] = {}
+                into[name] = entry
+                continue
+            if not held["superclass"] and entry["superclass"]:
+                # A library that only extends the class names no superclass; the one that defines
+                # it does, and a class has one.
+                held["superclass"] = entry["superclass"]
+            for kind in ("instance", "class"):
+                for selector in entry[kind]:
+                    if selector not in held[kind]:
+                        held[kind].add(selector)
+                        held["where"][selector] = framework
+            held["protocols"] |= entry["protocols"]
+            if held.get("image") is None:
+                held["image"] = entry.get("image")
+
     for name in dylibs:
         framework = name[len("lib"):-len(".dylib")]
         if framework.endswith("Backports"):
             framework = framework[:-len("Backports")]
         path_ = os.path.join(gate_dir, name)
         found_classes, found_protocols = run_objc_inventory(path_, "armv7")
-        for cname, entry in found_classes.items():
-            entry["library"] = framework
-            classes[cname] = entry
-        for pname, entry in found_protocols.items():
-            entry["library"] = framework
-            protocols[pname] = entry
+        merge(classes, found_classes, framework)
+        merge(protocols, found_protocols, framework)
         for symbol in run_nm_exports(path_):
             exports[symbol] = framework
     return classes, protocols, exports
+
+
+def built_why(entry, selector=None):
+    """`built: <library>` for a row, naming the library that carries the selector when the row names
+    one. A class two libraries both extend is named by both, and the library that carries the class is
+    not always the one that carries the member the row is about."""
+    where = entry.get("where") or {}
+    return "built: " + where.get(selector, entry["library"])
 
 
 # ---------------------------------------------------------------------------
@@ -357,40 +394,75 @@ def _selector_present(entry, selector):
     return selector in entry["instance"] or selector in entry["class"]
 
 
-def classify_method(api, built_classes, release_classes, built_protocols=None, release_protocols=None):
+def classify_method(api, built_classes, release_classes, built_protocols=None, release_protocols=None,
+                    decided=None):
     """A method row's owner is named without saying whether it is a class or a protocol, and the
     surface has both, so both are searched: a protocol that declares the selector is the release
     carrying that API. Looking only at classes read `-[CLLocationManagerDelegate
-    locationManager:didDetermineState:forRegion:]` missing while the 6.1.3 cache declares it."""
+    locationManager:didDetermineLocation:error:]` missing while the 6.1.3 cache declares it.
+
+    One selector is answered without the owner declaring it: `+new`. It is NSObject's, and every
+    class inherits it -- measured in the release's own 6.1.3 cache, 2 of 11378 classes declare
+    `+new` in their own metaclass list (NSObject and _PFCachedNumber) and 11376 inherit it, so a row
+    whose owner is a class that does not declare it reads "selector new is not" for a selector the
+    release carries. The port's own libraries do not declare it either, and do not need to: they are
+    loaded beside the device's libSystem, whose NSObject has it. `decided` holds the rows a registry
+    has decided, and this never applies to one of them -- `+[VNFaceLandmarkRegion new]` is answered
+    by NSObject's `+new` only to call the class's own NS_UNAVAILABLE `-init`, which is a measurement
+    somebody took, and an inference from the release's metadata does not overrule it. Protocols are
+    not reached this way: a protocol has no metaclass chain to inherit from."""
     m = METHOD_RE.match(api)
     if not m:
         return "undecided", "method api does not parse as +/-[Class sel]: %r" % api
-    _, owner, selector = m.groups()
+    sign, owner, selector = m.groups()
     key = "-" + selector
     built = built_classes.get(owner)
     if built and _selector_present(built, key):
-        return "implemented", "built: " + built["library"]
+        return "implemented", built_why(built, key)
     released = release_classes.get(owner)
     if released and _selector_present(released, key):
         return "implemented", "release-native: 6.1.3 dyld cache"
     for protocols, why in ((built_protocols or {}, "built: "), (release_protocols or {},
-                                                           "release-native: 6.1.3 dyld cache")):
+                                                                   "release-native: 6.1.3 dyld cache")):
         entry = protocols.get(owner)
         if entry and _selector_present(entry, key):
             label = why + (entry.get("library", "") if why == "built: " else "")
             return "implemented", label + " (the protocol %s declares it)" % owner
+    if sign == "+" and selector == "new" and api not in (decided or ()) \
+            and (owner in built_classes or owner in release_classes):
+        # The owner is a class -- a protocol is answered or excluded above, and a name in neither
+        # inventory falls to the line below -- and the release's own NSObject carries `+new`, which
+        # every class inherits. The reason names the measurement rather than the port, because the
+        # port is not what answers it: the device's libSystem NSObject is.
+        return "implemented", ("+new is NSObject's and every class inherits it: the 6.1.3 cache's "
+                               "own NSObject declares it and 2 of its 11378 classes declare one of "
+                               "their own")
     if not built and not released and not (built_protocols or {}).get(owner) \
             and not (release_protocols or {}).get(owner):
         return "missing", "owner %s is neither a class nor a protocol in the built libraries or the 6.1.3 cache" % owner
     return "missing", "%s is there, selector %s is not" % (owner, selector)
 
 
-def classify_property(api, built_classes, release_classes):
+def classify_property(api, built_classes, release_classes, built_protocols=None,
+                      release_protocols=None, getter=None, setter=None):
+    """A property row's owner is named without saying whether it is a class or a protocol, and the
+    surface has both, so both are searched -- the same question classify_method answers, and for the
+    same reason. A property is read through its accessors, so it is the accessors that are looked
+    for, in the instance set and in the class set: a `@property (class, readonly)` is read through a
+    class method, and its getter is a class selector and never an instance one.
+
+    `getter` and `setter` are what the header declared (`@property (readonly, getter=isSupported)`),
+    which the surface records and which is the only way to know the accessor is not the property's own
+    name: `AVAudioSessionCapability.supported` is read through `-isSupported`, and a selector derived
+    from the name alone asks for `-supported`, which no release declares. They arrive as clang prints
+    them (`isSupported`, `setSupported:`) and are turned into selectors here, the same leading dash
+    the inventories carry. Where the header declared nothing the accessor is derived as it was before."""
     m = PROPERTY_RE.match(api)
     if not m:
         return "undecided", "property api does not parse as Class.prop: %r" % api
     owner, prop = m.groups()
-    getter, setter = "-" + prop, "-set" + prop[0].upper() + prop[1:] + ":"
+    getter = "-" + getter if getter else "-" + prop
+    setter = "-" + setter if setter else "-set" + prop[0].upper() + prop[1:] + ":"
     for classes, why in ((built_classes, None), (release_classes, "release-native: 6.1.3 dyld cache")):
         entry = classes.get(owner)
         if not entry:
@@ -400,10 +472,19 @@ def classify_property(api, built_classes, release_classes):
         # has 23 class selectors and no instance selector at all, and every one of its properties was
         # read missing while the built library carries it.
         if any(sel in entry["instance"] or sel in entry["class"] for sel in (getter, setter)):
-            return "implemented", (why or ("built: " + entry["library"])) + (
+            carried = next(sel for sel in (getter, setter)
+                           if sel in entry["instance"] or sel in entry["class"])
+            return "implemented", (why or built_why(entry, carried)) + (
                 " (a class property: read through %s)" % getter
                 if getter in entry["class"] and getter not in entry["instance"] else "")
-    if owner not in built_classes and owner not in release_classes:
+    for protocols, why in ((built_protocols or {}, "built: "), (release_protocols or {},
+                                                              "release-native: 6.1.3 dyld cache")):
+        entry = protocols.get(owner)
+        if entry and any(sel in entry["instance"] or sel in entry["class"] for sel in (getter, setter)):
+            label = why + (entry.get("library", "") if why == "built: " else "")
+            return "implemented", label + " (the protocol %s declares it)" % owner
+    if owner not in built_classes and owner not in release_classes \
+            and not (built_protocols or {}).get(owner) and not (release_protocols or {}).get(owner):
         return "missing", "owner class %s not in the built libraries or the 6.1.3 cache" % owner
     return "missing", "%s is there, neither %s nor %s is an instance or a class selector" % (
         owner, getter, setter)
@@ -433,6 +514,31 @@ def classify_symbol(api, built_exports, release_exports):
 STORAGE_KINDS = ("VarDecl", "FunctionDecl")
 TYPEDEF_KIND = "TypedefDecl"
 QUOTED_RE = re.compile(r"'([^']*)'")
+# What decides internal linkage, and where the answer is read from. clang prints the entity's linkage
+# on EVERY line it prints for it, whether or not that line repeated the source's keyword, and that is
+# the compiler's own answer rather than a keyword this tool happens to spell. Measured 2026-10-03 with
+# clang 23.1.1 (`charon@llvm`, the one the ledger's own clang_command resolves) over link.c, one
+# declaration per storage form:
+#   int extern_fn(void);                          -> "extern external-linkage"
+#   static int static_fn(void);                  -> "static internal-linkage"
+#   static inline int inline_fn(void) {...}       -> "static inline internal-linkage"
+#   inline int plain_inline_fn(void) {...}        -> "inline external-linkage"
+# The CLT's /usr/bin/clang prints NO linkage token at all -- the same four declarations come out as
+# "extern", "static", "static inline", "inline" and nothing more -- so the keyword stays as the
+# fallback and the answer is the same under either compiler.
+#
+# Neither answer alone was enough, because the defect was not the spelling but WHICH LINE was read.
+# A function declared `static inline` through a macro and DEFINED later without repeating it is
+# printed `implicit-inline internal-linkage` on its definition and `static inline internal-linkage`
+# on its declaration: no `static` token anywhere on the definition line, and `implicit-inline` has a
+# hyphen where `" inline"` looks for a space. That is every one of Spatial's 640 C functions -
+# Spatial/Base.h:34 `#define SPATIAL_INLINE static inline`, and the definition at
+# SPAffineTransform3D.h:879 is preceded by SPATIAL_REFINED_FOR_SWIFT and SPATIAL_OVERLOADABLE only.
+# The scan kept the LAST line per name, so all 640 read (extern, static) as (false, false) and the
+# classification's `if is_extern or not is_static` placed every one of them `missing`, "the port has
+# to export it", for an API no Apple binary exports and every caller inlines.
+INTERNAL_LINKAGE = "internal-linkage"
+EXTERNAL_LINKAGE = "external-linkage"
 
 
 def scan_storage(lines, flags, typedefs=None):
@@ -441,7 +547,11 @@ def scan_storage(lines, flags, typedefs=None):
     skipped on a prefix test instead of a regex. An enum case is a depth-1 EnumConstantDecl and so
     is absent here -- which is how the classification tells a case (header-only) from an extern
     variable. The declared type is the first quoted token after the name, and it is what says how
-    wide the constant's value is when const-values.py reads it out of a dyld cache."""
+    wide the constant's value is when const-values.py reads it out of a dyld cache.
+
+    The flags MERGE across every line that names the same entity rather than the last one winning: a
+    declaration and its definition are one function, so a later line that omits what an earlier one
+    carried must not uncarry it."""
     for line in lines:
         if not line.startswith("|-"):
             continue
@@ -467,8 +577,18 @@ def scan_storage(lines, flags, typedefs=None):
         # walk reads, CGFloat's canonical type is a 4-byte float, and a value read out of a 64-bit
         # cache is 8 bytes wide.
         quoted = QUOTED_RE.findall(rest)
-        flags[name] = (" extern" in rest, " static" in rest, " inline" in rest,
-                       quoted[0] if quoted else "", quoted[-1] if quoted else "")
+        found = (EXTERNAL_LINKAGE in rest or " extern" in rest,
+                 INTERNAL_LINKAGE in rest or " static" in rest,
+                 " inline" in rest or " implicit-inline" in rest,
+                 quoted[0] if quoted else "", quoted[-1] if quoted else "")
+        seen = flags.get(name)
+        if seen is None:
+            flags[name] = found
+        else:
+            # the wider answer stands: a name one entity carries keeps what any of its lines said,
+            # and the types are the first line's, which is the declaration rather than the definition
+            flags[name] = (seen[0] or found[0], seen[1] or found[1], seen[2] or found[2],
+                           seen[3] or found[3], seen[4] or found[4])
 
 
 class _HeaderSurface:
@@ -577,7 +697,15 @@ def compile_named_rows(imports, command, rows, workdir, tag):
         for slot, (kind, api) in enumerate(rows):
             f.write(naming_line(kind, api, slot) + "\n")
             number += 1
-            line_of[number] = slot
+            # keyed by the STRING a diagnostic carries, because DIAGNOSTIC_RE hands the line over as
+            # one. This was keyed by the int, so `line not in line_of` was true for every line of
+            # every unit this tool has ever compiled: `verdict` stayed "" for every row, `named_ok`
+            # was `name in compiled and True`, and a header-only row of any framework read
+            # `header-ok` whether or not its line compiled. Measured on Spatial, where 19 names are
+            # SPATIAL_OVERLOADABLE and `&NAME` does not resolve: 19 lines of the generated unit carry
+            # "reference to overloaded function could not be resolved", and this function returned 0
+            # of 647 rows as failing.
+            line_of[str(number)] = slot
     out = subprocess.run(command + ["-fsyntax-only", "-ferror-limit=0", source],
                          capture_output=True, text=True, errors="replace", timeout=900)
     verdict = {api: "" for _, api in rows}
@@ -769,6 +897,7 @@ def load_swift_modules(path):
     with open(path, encoding="utf-8") as f:
         index = json.load(f)
     names = {}
+    counts = {}
     for module, declared in (index.get("modules") or {}).items():
         # Both shapes are read, and a third that is neither is refused with what it is: the cache
         # holds a versioned record and the index a flat map of names to kinds, and a reader that
@@ -784,6 +913,7 @@ def load_swift_modules(path):
                 "either -- it is %s. The index was probably written by a run that died part way "
                 "through; rebuild it with api-ledger-swift.py."
                 % (path, module, type(declared).__name__))
+        counts[module] = len(declared)
         for name, kind in declared.items():
             names.setdefault(name, set()).add((module, kind))
     return {"names": names, "modules": set(index["modules"]), "registries": {},
@@ -791,7 +921,12 @@ def load_swift_modules(path):
             "references": index.get("references", {}), "digester": index.get("digester", ""),
             "target": index.get("target", ""), "sources": index.get("sources", {}),
             "search-dirs": index.get("search-dirs", []),
-            "extra-module-maps": index.get("extra-module-maps", [])}
+            "extra-module-maps": index.get("extra-module-maps", []),
+            # What each module declares, and how many of a framework's rows its own module placed.
+            # Both are read by classify_swift's coverage branch and by nothing else; neither was
+            # filled in, so the branch compared against two empty maps and took its first answer
+            # for every row -- which is the subject of the self-test beside it.
+            "declaration-count": counts, "matched-by-framework": {}}
 
 
 # The operators Swift synthesises from a protocol conformance, and the conformance that makes it.
@@ -826,7 +961,7 @@ def synthesised_operator(api, swift):
             "and the conformance is the whole of the declaration" % (owner, protocol, member))
 
 
-def classify_swift(api, row, swift):
+def classify_swift(api, row, swift, matched=None):
     """(status, reason, introduced, needs) for a Swift row, from the port's own built modules, and
     from a Swift package's own registry where there is no built module to read.
 
@@ -835,6 +970,10 @@ def classify_swift(api, row, swift):
     -- a record of intent with no built module on this machine to check it against. It still counts
     as not missing, and `needs=build` says what is left. Objective-C rows take no registry input at
     all, which is the property the 2026-09-27 review verified and it is kept that way.
+
+    `matched`, when given, is where a row placed `implemented` BY THE FRAMEWORK'S OWN MODULE is
+    counted. Only the pass itself can say that, and the coverage branch below cannot decide without
+    it, so build() classifies the Swift rows once to fill the count and once more to use it.
     """
     found = None
     for form in swift_forms(api):
@@ -870,6 +1009,9 @@ def classify_swift(api, row, swift):
                 reason += " (as %s, where the %s row's %s declares %s)" % (
                     named[0], row["framework"], row["kind"], "the same kind"
                     if named[0] in wanted else "another kind")
+            if matched is not None and row["framework"] in swift["modules"] and \
+                    any(module == row["framework"] for module, _ in agreeing):
+                matched[row["framework"]] = matched.get(row["framework"], 0) + 1
             return "implemented", reason, None, None
         return ("undecided", "a module declares %s as %s and the surface row says %s: two descriptions "
                 "of one name that this tool will not choose between"
@@ -895,10 +1037,40 @@ def classify_swift(api, row, swift):
             return ("undecided",
                     "module read (%d declarations) and 0 of this framework's rows match it: "
                     "coverage, not the matcher" % declared, None, "swift-module")
-        return ("missing", "not declared by the port's built %s module %s"
-                % (swift["target"], row["framework"]), None, "code")
+        return ("missing", "not declared by the port's built %s module %s, which declares %d names "
+                           "and %d of this framework's rows"
+                % (swift["target"], row["framework"],
+                   swift.get("declaration-count", {}).get(row["framework"], 0),
+                   swift.get("matched-by-framework", {}).get(row["framework"], 0)), None, "code")
     return ("undecided", "no module this port builds for %s stands for %s, so nothing here can place "
                          "this row" % (swift["target"], row["framework"]), None, "swift-module")
+
+
+def resolve_swift_coverage(results, swift, matched):
+    """Re-classify the Swift rows that took the coverage branch, now that the count is filled.
+
+    The branch asks whether the framework's own module placed ANY row of that framework, and only
+    the pass itself can answer it -- so the rows are classified once to fill `matched` and once
+    more to use it. Without the second pass the branch took its first answer for every row:
+    `matched-by-framework` was read and never written, so the guard saw an empty map, the `missing`
+    answer under it was unreachable, and 9801 rows read `undecided` with the reason "0 of this
+    framework's rows match it" -- false for every framework whose module had placed thousands,
+    Foundation among them. Only the rows of a framework that placed at least one are re-classified,
+    and only those can reach the `missing` answer; a framework no module placed is still a coverage
+    question, and 0 matched is not evidence of a gap.
+
+    `results` is the list build() fills, and the entries are replaced in place. Returns the count.
+    """
+    swift["matched-by-framework"] = dict(matched)
+    again = 0
+    for index, (row, status, reason, introduced, needs) in enumerate(results):
+        if (status != "undecided" or needs != "swift-module" or row["lang"] != "swift"
+                or row["framework"] not in swift["modules"]
+                or not matched.get(row["framework"])):
+            continue
+        results[index] = (row,) + classify_swift(row["api"], row, swift)
+        again += 1
+    return again
 
 
 def parse_version(text):
@@ -1091,11 +1263,17 @@ def main():
     registries = read_package_registries(args.registries or default_checkout(args.surface))
     note("package registries: %d entries, of which %d record a decision"
          % (len(registries), sum(1 for v in registries.values() if v[0] in DECIDED_STATUSES)))
+    # The rows a registry has decided, handed to classify_method so that an answer it infers from the
+    # release's own metadata -- `+new` is NSObject's and every class inherits it -- cannot overrule a
+    # decision somebody measured. decide() still runs after the classification and still stands; this
+    # only keeps the classification from making the question moot.
+    decided_apis = {api for api, entry in registries.items() if entry[0] in DECIDED_STATUSES}
 
     # Pass 1: everything the built artifacts and the release cache can place on their own.
     results = []
     diagnostics = []
     deferred = []
+    matched = {}
     for row in rows:
         kind, lang, api = row["kind"], row["lang"], row["api"]
         if lang == "swift":
@@ -1104,16 +1282,18 @@ def main():
                                 "swift-only row and no Swift pass was given (--swift-modules)", None,
                                 "swift-pass"))
             else:
-                status, reason, introduced, needs = classify_swift(api, row, swift)
+                status, reason, introduced, needs = classify_swift(api, row, swift, matched)
                 results.append((row, status, reason, introduced, needs))
         elif (kind, lang) in RUNTIME_KINDS:
             if kind == "class":
                 status, reason = classify_class(api, built_classes, built_protocols, release_classes, release_protocols)
             elif kind == "method":
                 status, reason = classify_method(api, built_classes, release_classes,
-                                                 built_protocols, release_protocols)
+                                                 built_protocols, release_protocols,
+                                                 decided=decided_apis)
             else:
-                status, reason = classify_property(api, built_classes, release_classes)
+                status, reason = classify_property(api, built_classes, release_classes, built_protocols,
+                                            release_protocols, getter=row["getter"])
             # The decide pass: a registry that records this row absent/inert/ignored has decided it,
             # with a reason, so it is not a row anybody is going to build.
             decided = decide(row, registries, diagnostics) if status == "missing" else None
@@ -1179,6 +1359,14 @@ def main():
         results.append((row, status, reason, introduced, needs))
 
     elapsed = time.time() - started
+
+    # Pass 1b: the Swift rows the coverage branch held back, now that the pass has counted. What
+    # that branch decides and why it needs two passes is resolve_swift_coverage's own account.
+    if swift:
+        again = resolve_swift_coverage(results, swift, matched)
+        note("coverage branch: %d frameworks placed a row, %d rows re-classified as measured absent"
+             % (len(matched), again))
+
     write_output(results, args, elapsed, indexes, walked, header_seconds, swift)
 
 

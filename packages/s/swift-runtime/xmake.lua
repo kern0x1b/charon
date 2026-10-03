@@ -11,10 +11,24 @@ package("swift-runtime")
 
     add_deps("charon@swift 6.4.0", {alias = "swift", host = true, private = true, system = false})
     add_deps("charon@apple-compat", {alias = "apple-compat"})
-    -- Combine, which RealityFoundation's Scene.Publisher conforms to. It is charon@styx, the package
-    -- that carries a Combine for a release the system has none, and the module search path below
-    -- puts it where the two overlays can import it.
-    add_deps("charon@styx", {alias = "styx"})
+    -- No dependency on charon@styx, and there was never a reason for one. It was added by
+    -- af236df20 (2026-09-28) "for the Combine the scene's publisher conforms to"; nothing conforms
+    -- to it and nothing imports it. Measured over packages/s/swift-runtime/files/ on this tree:
+    -- every Combine identifier in the package -- Combine, Publisher, AnyCancellable -- appears six
+    -- times and all six are inside a doc comment (RealityFoundation/Resource.swift:51,
+    -- RealityFoundation/Simulation.swift:17,19,21, RealityKit/ARView.swift:32). Scene.swift has no
+    -- Publisher at all, so the subject of af236df20's own subject is not in the tree.
+    -- files/RealityFoundation/Simulation.swift:15 says the rule this dependency broke, in the
+    -- package's own words: "The SDK's `subscribe` hands back Combine's `Cancellable`, and the
+    -- runtime cannot depend on Styx -- Styx is built against the runtime, not the other way round.
+    -- This is the same shape (`func cancel()`), so a program that also has Combine bridges the two
+    -- in a line." The `Cancellable` protocol beside that comment is the port's own spelling, and it
+    -- is why no source needs the module.
+    -- The edge was a cycle on iphoneos and not only a wrong one: charon@styx/xmake.lua:36
+    -- add_deps charon@swift-runtime inside on_load("iphoneos"), so requiring either package raised
+    -- "circular dependency(swift-runtime.styx.swift-runtime.styx) detected in package(swift-runtime)"
+    -- and installed neither. Nothing in this package is built on a machine again until that is
+    -- true of main; measured on this one, 2026-10-03.
 
     -- The libraries, in the order they are built: each one's modules are what the next ones compile against. The C library's
     -- Swift overlay comes from swift-6.2-RELEASE, the last release whose sources carry it, because Synchronization and
@@ -713,14 +727,12 @@ package("swift-runtime")
             table.insert(reality_sources, output)
         end
         assert(#reality_sources > 0, "the RealityFoundation sources are missing from the package")
-        -- Combine's module, for the two overlays: styx builds it for iOS, so the path is the one
-        -- slice it has.
-        local styx = package:dep("styx")
-        local combine_overlay = {"-I", path.join(styx:installdir("lib"), "swift", "iphoneos")}
-
+        -- No Combine on the compile line, and none is needed: the dependency it came from is gone
+        -- (see the note by the deps above) and no source of either overlay imports Combine. What
+        -- these two do need is the SceneKit apinote fix, and they keep it.
         build_overlay("RealityFoundation", reality_sources,
                       table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "SceneKit"}),
-                      nil, {backports = {}, extra_flags = table.join(scn_overlay, combine_overlay)})
+                      nil, {backports = {}, extra_flags = scn_overlay})
 
         -- RealityKit: the view a program is shown in, hosting an SCNView over the bridge above
         -- and stepping the simulation once a frame. It sits on the RealityFoundation module
@@ -738,7 +750,7 @@ package("swift-runtime")
         build_overlay("RealityKit", realitykit_sources,
                       table.join(foundation_links, {"-lswiftQuartzCore", "-lswiftRealityFoundation",
                                                     "-framework", "QuartzCore", "-framework", "SceneKit", "-framework", "UIKit"}),
-                      nil, {backports = {}, extra_flags = table.join(scn_overlay, combine_overlay)})
+                      nil, {backports = {}, extra_flags = scn_overlay})
 
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do

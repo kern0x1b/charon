@@ -107,10 +107,18 @@ def show(version):
 
 
 def objc_row(name, api, kind, detail):
-    return {"api": api, "framework": name, "kind": kind, "lang": "objc",
-            "introduced": show(detail["introduced"]), "deprecated": show(detail["deprecated"]),
-            "obsoleted": show(detail["obsoleted"]), "unavailable": "yes" if detail["unavailable"] else "",
-            "via": detail["via"]}
+    row = {"api": api, "framework": name, "kind": kind, "lang": "objc",
+           "introduced": show(detail["introduced"]), "deprecated": show(detail["deprecated"]),
+           "obsoleted": show(detail["obsoleted"]), "unavailable": "yes" if detail["unavailable"] else "",
+           "via": detail["via"]}
+    # The accessors the header declared, when they are not the property's own name. A property is
+    # read through its accessors, so a consumer cannot place `AVAudioSessionCapability.supported`
+    # without them; every other row carries none and the two keys stay absent rather than empty,
+    # which is what says "the header declared nothing different".
+    for role in ("getter", "setter"):
+        if role in detail:
+            row[role] = detail[role]
+    return row
 
 
 def inherit_class_floor(rows):

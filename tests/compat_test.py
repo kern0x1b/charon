@@ -1250,6 +1250,198 @@ int main(int argc, char **argv)
 }
 """
 
+DISPATCH_BARRIERS = r"""
+#include <dispatch/dispatch.h>
+#include <dlfcn.h>
+#include <stdatomic.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+/* A barrier source's event handler, the shim's and Darwin's, in one process. The shims are compiled
+   with CHARON_COMPAT_SYSTEM=0, so they take the path a release below iOS 10 takes, and Darwin's are
+   the system's own calls opened by path. Three configurations, each asked of both:
+     serial      a serial target queue: on one every block is alone, so libdispatch-703 runs the handler
+                 in its place in the queue. The scenario holds the queue with a block, delivers the
+                 event while it is held and then lets it go, so the queue's order is the answer: A
+                 (running), then whatever the handler did, then B.
+     concurrent  a concurrent target queue, handler set before the resume: the handler runs alone,
+                 read as whether the block holding the queue was still running when it entered. The
+                 order of three blocks on a concurrent queue is not fixed and is only printed.
+     late        the same with the handler set after the resume: libdispatch-703 reads the barrier bit
+                 once, in _dispatch_source_finalize_activation, so such a handler runs beside the
+                 queue's blocks.
+   Everything one scenario measures is captured by its own blocks, so a delivery of one source can
+   never be recorded in another's answer. */
+
+/* The shims bind their image's calls by the rename their headers carry, so the test reaches them by
+   the names those headers give - which is what a port that names them in "apple.compat" gets. */
+dispatch_queue_t charon_dispatch_queue_create(const char *, dispatch_queue_attr_t);
+void charon_dispatch_resume(dispatch_object_t);
+void charon_dispatch_source_set_event_handler(dispatch_source_t, dispatch_block_t);
+/* dispatch_block_create arrived in iOS 8, so its shim is the symbol itself and the test reaches it by
+   the name the release does not have. */
+dispatch_block_t dispatch_block_create(dispatch_block_flags_t, dispatch_block_t);
+
+typedef dispatch_queue_t (*create_f)(const char *, dispatch_queue_attr_t);
+typedef dispatch_block_t (*block_create_f)(dispatch_block_flags_t, dispatch_block_t);
+typedef void (*resume_f)(dispatch_object_t);
+typedef void (*set_event_handler_f)(dispatch_source_t, dispatch_block_t);
+
+struct api {
+    create_f create;
+    block_create_f block_create;
+    resume_f resume;
+    set_event_handler_f set_event_handler;
+};
+
+static struct api ours, darwins, control;
+static int fails;
+
+/* One scenario's answer, on the heap and never freed: a level triggered source can deliver once more
+   after the scenario that made it has answered, and a handler of a source that is gone must not write
+   into memory the scenario has taken back. */
+struct seen { char order[16]; int inside; int otherAtEntry; };
+static struct seen *charon_next_seen(void)
+{
+    static struct seen slots[16];
+    static unsigned used;
+    if (used >= sizeof slots / sizeof slots[0])
+        abort();
+    struct seen *s = &slots[used++];
+    memset(s, 0, sizeof *s);
+    s->otherAtEntry = -1;
+    return s;
+}
+
+static void expect(int holds, const char *what)
+{
+    if (!holds) {
+        printf("FAIL  %s\n", what);
+        fails++;
+    }
+}
+
+/* What of an answer the comparison holds equal: on a concurrent queue three blocks run in no fixed
+   order, so only the isolation is an answer there. */
+static const char *alone_of(const char *answer)
+{
+    const char *alone = strstr(answer, "alone=");
+    return alone ? alone : answer;
+}
+
+static void scenario(const struct api *api, int concurrent, int late, char *answer, size_t size)
+{
+    dispatch_queue_t queue = api->create(concurrent ? "barriers.concurrent" : "barriers.serial",
+                                         concurrent ? DISPATCH_QUEUE_CONCURRENT : DISPATCH_QUEUE_SERIAL);
+    if (!queue) {
+        snprintf(answer, size, "no queue");
+        return;
+    }
+    /* A timer, so the event needs no descriptor and no reader: it fires 100 ms after the resume, which is
+       while the queue is held, and once, which is what makes the queue's order this scenario's answer. */
+    dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    dispatch_source_set_timer(source, dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC), DISPATCH_TIME_FOREVER, 0);
+    /* A block cannot capture an array and captures an int by const copy, and the three blocks below
+       have to write into one answer. */
+    struct seen *s = charon_next_seen();
+    dispatch_semaphore_t started = dispatch_semaphore_create(0);
+    dispatch_semaphore_t release = dispatch_semaphore_create(0);
+    dispatch_semaphore_t entered = dispatch_semaphore_create(0);
+    dispatch_semaphore_t handlerDone = dispatch_semaphore_create(0);
+    dispatch_semaphore_t done = dispatch_semaphore_create(0);
+#define RECORD(c) do { size_t length = strlen(s->order); \
+        if (length + 2 < sizeof s->order) { s->order[length] = (c); s->order[length + 1] = 0; } } while (0)
+    dispatch_block_t handler = api->block_create(DISPATCH_BLOCK_BARRIER, ^{
+        s->otherAtEntry = s->inside;
+        RECORD('H');
+        dispatch_semaphore_signal(entered);
+        dispatch_semaphore_signal(handlerDone);
+    });
+    if (!late)
+        api->set_event_handler(source, handler);
+    api->resume(source);
+    if (late)
+        api->set_event_handler(source, handler);
+
+    dispatch_async(queue, ^{
+        s->inside = 1;
+        RECORD('A');
+        dispatch_semaphore_signal(started);
+        dispatch_semaphore_wait(release, DISPATCH_TIME_FOREVER);
+        s->inside = 0;
+    });
+    dispatch_semaphore_wait(started, DISPATCH_TIME_FOREVER);
+    dispatch_async(queue, ^{
+        RECORD('B');
+        dispatch_semaphore_signal(done);
+    });
+    /* The event fires 100 ms after the resume, while the queue is held: the handler is enqueued behind A and B. */
+    usleep(300000);
+
+    long enteredInTime = dispatch_semaphore_wait(entered, dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC));
+    int alone = concurrent ? (enteredInTime != 0 ? s->otherAtEntry == 0 : 1) : 1;
+    dispatch_semaphore_signal(release);
+    dispatch_semaphore_wait(done, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+    dispatch_semaphore_wait(handlerDone, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+    snprintf(answer, size, "%s alone=%s", s->order, alone ? "yes" : "no");
+#undef RECORD
+    dispatch_source_cancel(source);
+    dispatch_semaphore_signal(release);
+    dispatch_release(source);
+    dispatch_release(queue);
+}
+
+int main(void)
+{
+    setvbuf(stdout, NULL, _IONBF, 0);
+    ours = (struct api){charon_dispatch_queue_create, dispatch_block_create, charon_dispatch_resume,
+                        charon_dispatch_source_set_event_handler};
+    void *libdispatch = dlopen("/usr/lib/system/libdispatch.dylib", RTLD_LAZY | RTLD_LOCAL);
+    darwins = (struct api){dlsym(libdispatch, "dispatch_queue_create"), dlsym(libdispatch, "dispatch_block_create"),
+                           dlsym(libdispatch, "dispatch_resume"), dlsym(libdispatch, "dispatch_source_set_event_handler")};
+    expect(libdispatch && darwins.create && darwins.block_create && darwins.resume && darwins.set_event_handler,
+           "the test reaches Darwin's dispatch calls beside the shims");
+    control = ours;
+    static const struct { const char *label; int concurrent; int late; } cases[] = {
+        {"serial", 0, 0}, {"concurrent", 1, 0}, {"late", 1, 1},
+    };
+    for (unsigned index = 0; index < sizeof cases / sizeof cases[0]; index++) {
+        char mine[64], theirs[64], before[64];
+        scenario(&ours, cases[index].concurrent, cases[index].late, mine, sizeof mine);
+        scenario(&darwins, cases[index].concurrent, cases[index].late, theirs, sizeof theirs);
+        scenario(&control, cases[index].concurrent, cases[index].late, before, sizeof before);
+        printf("%s: the shim %s; Darwin %s; the shims as they were %s\n", cases[index].label, mine, theirs, before);
+        char what[300];
+        if (cases[index].concurrent) {
+            snprintf(what, sizeof what, "%s: the shim runs the handler alone as Darwin does (the shim %s, Darwin %s)",
+                     cases[index].label, alone_of(mine), alone_of(theirs));
+            expect(strcmp(alone_of(mine), alone_of(theirs)) == 0, what);
+        } else {
+            snprintf(what, sizeof what, "%s: the shim runs the queue in Darwin's order (the shim %s, Darwin %s)",
+                     cases[index].label, mine, theirs);
+            expect(strcmp(mine, theirs) == 0, what);
+        }
+#ifdef CHARON_COMPAT_NO_STATE
+        /* Without the records the shims are what they were, and the late handler is where that shows:
+           the release answers the handler as a barrier, so it waits for the block holding the queue,
+           where Darwin's runs beside it. This is the control - the difference is what makes the
+           activation record the thing that answers this configuration rather than the handler's shape.
+           The other two configurations do not separate on this host and are only printed: on a serial
+           queue the handler is enqueued behind B either way, so both answers are "ABH", and on a
+           concurrent queue Darwin's own answer here is "alone=no" whatever the shims do. */
+        if (cases[index].late) {
+            snprintf(what, sizeof what, "late: the shims without the records are what they were, which is not Darwin (%s against %s)",
+                     alone_of(before), alone_of(theirs));
+            expect(strcmp(alone_of(before), alone_of(theirs)) != 0, what);
+        }
+#endif
+    }
+    return fails != 0;
+}
+"""
+
 LATER_CALLS = r"""
 #define __STDC_WANT_LIB_EXT1__ 1
 #include <dispatch/dispatch.h>
@@ -1920,6 +2112,36 @@ def failures():
         else:
             found += outcome("dispatch queue", run("./queues", cwd=folder))
 
+        # The barrier source's event handler: the shims beside Darwin's own calls, and the same three
+        # configurations against the shims as they were before the records (CHARON_COMPAT_NO_STATE), which
+        # has to differ from Darwin on the serial target queue or the records are not what answers it.
+        barrier_shims = [SHIMS / "{}.c".format(symbol) for symbol in
+                         ("dispatch_queue_create", "dispatch_resume", "dispatch_source_set_event_handler",
+                          "dispatch_block_create", "dispatch_block_create_with_qos_class")]
+        (folder / "barriers.c").write_text(DISPATCH_BARRIERS)
+        steps = []
+        for control in ("", "1"):
+            flags = ["-DCHARON_COMPAT_SYSTEM=0"] + (["-DCHARON_COMPAT_NO_STATE=" + control] if control else [])
+            name = "barriers" + ("-control" if control else "")
+            steps.append(run("xcrun", "clang", "-O1", "-w", "-fblocks", *flags, *barrier_shims, "barriers.c",
+                             "-framework", "Foundation", "-o", name, cwd=folder))
+        if any(step.returncode for step in steps):
+            found.append("the dispatch queue and barrier source shims must compile: {}"
+                         .format(" ".join(step.stderr[-300:] for step in steps)))
+        else:
+            found += outcome("dispatch barrier source", run(folder / "barriers", cwd=folder))
+            # The control is built without the records and has to FAIL, and on the late handler alone: that difference is
+            # what makes the activation record the thing that answers it. A control that passed, or one that failed anywhere
+            # else, is a check that cannot fail.
+            control_run = run(folder / "barriers-control", cwd=folder)
+            control_fails = [line[6:] for line in control_run.stdout.splitlines() if line.startswith("FAIL")]
+            if not control_run.returncode:
+                found.append("the barrier source shims without their records must differ from Darwin on the late handler, "
+                             "and they do not: {}".format(control_run.stdout))
+            elif len(control_fails) != 1 or not control_fails[0].startswith("late: the shim runs the handler alone"):
+                found.append("the barrier source shims without their records must fail on the late handler alone: {}"
+                             .format(control_fails or control_run.stdout))
+
         (folder / "system-random.c").write_text(SYSTEM_RANDOM)
         built = run("xcrun", "clang", "-O2", "-w", SHIMS / "arc4random_buf.c", "system-random.c", "-o", "system-random", cwd=folder)
         if built.returncode:
@@ -1935,6 +2157,7 @@ def failures():
             found += outcome("objc_allocWithZone", run("./alloc", cwd=folder))
 
         for symbol in ([path.stem for path in locks] + later + [path.stem for path in blocks + asserts + queue_shims] +
+                       [path.stem for path in barrier_shims[:3]] +
                        ["objc_allocWithZone", "objc_opt_self", "os_system_version_get_current_version"]):
             process_wide = symbol in ("os_unfair_lock_lock", "os_unfair_lock_trylock", "os_unfair_lock_unlock",
                                       "os_unfair_recursive_lock_lock_with_options", "os_unfair_recursive_lock_unlock")

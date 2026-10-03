@@ -513,23 +513,79 @@
     },
     {
       "api": "NSAttributedStringMarkdownSourcePosition",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "effect": "a position of four 1-based line and byte-column numbers that keeps them, copies by them, compares by all four, describes itself with all four unsigned and answers -rangeInString: with the source the four numbers name; it conforms to NSCopying and NSSecureCoding as the header declares, and an archive either this class or the host's writes is one the other reads",
+      "facts": "facts/Foundation/NSAttributedStringMarkdownSourcePosition.md",
       "introduced": "16.0",
       "kind": "class",
       "minimum": "6.0",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "reason": "the class arrived in iOS 16 and the release has none of it, so the four numbers, the copy, the equality, the description, the archive and the range are carried whole",
+      "source": "the host's own NSAttributedStringMarkdownSourcePosition on macOS 27.0, held against the port by tests/backports/host/markdownsourceposition (46 checks; its own method list, 17 methods, measured, which is where -init's absence comes from)",
+      "status": "implemented"
+    },
+    {
+      "api": "-[NSAttributedStringMarkdownSourcePosition initWithStartLine:startColumn:endLine:endColumn:]",
+      "facts": "facts/Foundation/NSAttributedStringMarkdownSourcePosition.md",
+      "introduced": "16.0",
+      "kind": "method",
+      "minimum": "6.0",
+      "source": "SDK 16.4 Foundation/NSAttributedString.h for the declaration; the host's own class, through tests/backports/host/markdownsourceposition",
+      "status": "implemented"
+    },
+    {
+      "api": "-[NSAttributedStringMarkdownSourcePosition rangeInString:]",
+      "facts": "facts/Foundation/NSAttributedStringMarkdownSourcePosition.md",
+      "introduced": "16.0",
+      "kind": "method",
+      "minimum": "6.0",
+      "source": "SDK 16.4 Foundation/NSAttributedString.h for the declaration; the host's own archive of the 29 positions its Markdown parser marks in twelve documents, whose byte offsets and UTF-16 offsets are keys side by side, through tests/backports/host/markdownsourceposition",
+      "status": "implemented"
+    },
+    {
+      "api": "NSAttributedStringMarkdownSourcePosition.startLine",
+      "facts": "facts/Foundation/NSAttributedStringMarkdownSourcePosition.md",
+      "introduced": "16.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "SDK 16.4 Foundation/NSAttributedString.h for the declaration; the host's own class, through tests/backports/host/markdownsourceposition",
+      "status": "implemented"
+    },
+    {
+      "api": "NSAttributedStringMarkdownSourcePosition.startColumn",
+      "facts": "facts/Foundation/NSAttributedStringMarkdownSourcePosition.md",
+      "introduced": "16.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "SDK 16.4 Foundation/NSAttributedString.h for the declaration; the host's own class, through tests/backports/host/markdownsourceposition",
+      "status": "implemented"
+    },
+    {
+      "api": "NSAttributedStringMarkdownSourcePosition.endLine",
+      "facts": "facts/Foundation/NSAttributedStringMarkdownSourcePosition.md",
+      "introduced": "16.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "SDK 16.4 Foundation/NSAttributedString.h for the declaration; the host's own class, through tests/backports/host/markdownsourceposition",
+      "status": "implemented"
+    },
+    {
+      "api": "NSAttributedStringMarkdownSourcePosition.endColumn",
+      "facts": "facts/Foundation/NSAttributedStringMarkdownSourcePosition.md",
+      "introduced": "16.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "SDK 16.4 Foundation/NSAttributedString.h for the declaration; the host's own class, through tests/backports/host/markdownsourceposition",
+      "status": "implemented"
     },
     {
       "api": "NSMarkdownSourcePositionAttributeName",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "effect": "the attribute key a run of a Markdown-parsed attributed string carries its place in the source under, with the host's own string, NSMarkdownSourcePosition",
+      "facts": "facts/Foundation/NSAttributedStringMarkdownSourcePosition.md",
       "introduced": "16.0",
       "kind": "constant",
       "minimum": "6.0",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "reason": "the key arrived in iOS 16 with the class it names, and the release has neither",
+      "source": "the host's own NSMarkdownSourcePositionAttributeName on macOS 27.0, read out of the running class through tests/backports/host/markdownsourceposition",
+      "status": "implemented"
     }
   ],
   "framework": "Foundation"

@@ -16,6 +16,7 @@
     NSString *_localIdentifier;
     NSString *_UDIDeviceIdentifier;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
 
 + (BOOL)supportsSecureCoding
 {

@@ -74,8 +74,8 @@ The compiler did not catch these; reading the headers did, and the compiler woul
 
 `tests/backports/host/metal-census/descriptors.m` compares the port **property by property against
 Apple's own objects**, and **creates no device anywhere**. That is possible because a descriptor is
-`[[X alloc] init]` on both sides. `MTLCreateSystemDefaultDevice()` **hangs** on a machine with no
-GPU — it was measured hanging and killed — so nothing in this family calls it, and a round trip of
+`[[X alloc] init]` on both sides, and a descriptor asks a device nothing, so nothing in this family
+calls one and a round trip of
 the port against *itself* would prove only that the port agrees with the port.
 
 Fresh **defaults** are compared as well as written values, because a port that invented a default

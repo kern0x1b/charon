@@ -30,6 +30,9 @@ here="$root/tests/backports/host/uikit2"
 build="$root/.agent-work/runs/uikit2-red-control"
 scratch="$build/sources"
 source_file="UIContentUnavailableProperties.m"
+config_file="UIContentUnavailableConfiguration.m"
+attr_file="UIEventAttribution145.m"
+attr_group="eventattribution"
 logdir="$build/logs"
 
 fail() { echo "RED CONTROL FAILED: $1" >&2; exit 1; }
@@ -60,10 +63,47 @@ plant_value() {
         { print }' "$src" > "$dst"
 }
 
+# The SECOND plant, on the configuration and not on a bag.  It is here because the group grew a whole class
+# since the first plant was written, and a control that only proves the bag half responds says nothing about
+# the configuration half.  The anchor is the measured default of the text-to-secondary-text padding, which
+# the case asks as "the %@ text-to-secondary-text padding" on all three factories - so one planted value
+# has to be reported three times, and the control looks for all of them.
+# The THIRD plant, on the 14.5 attribution. It is here because a control that only proves the empty-state
+# group responds says nothing about a group added later. The anchor is the measured identifier the copy
+# builds from, and the case asks it as "the source identifier reads back".
+plant_attr_value() {
+    src=$1
+    dst=$2
+    awk '
+        /_sourceIdentifier = sourceIdentifier;/ && !done {
+            sub(/_sourceIdentifier = sourceIdentifier;/, "_sourceIdentifier = sourceIdentifier + 1;")
+            print
+            print "            // RED CONTROL: an identifier no caller passed"
+            done = 1
+            next
+        }
+        { print }' "$src" > "$dst"
+}
+
+plant_config_value() {
+    src=$1
+    dst=$2
+    awk '
+        /_textToSecondaryTextPadding = 3;/ && !done {
+            sub(/_textToSecondaryTextPadding = 3;/, "_textToSecondaryTextPadding = 33;")
+            print
+            print "            // RED CONTROL: a padding no measured configuration has"
+            done = 1
+            next
+        }
+        { print }' "$src" > "$dst"
+}
+
 run_group() {
     label=$1
     sources=$2
-    UIKIT2_SOURCES="$sources" UIKIT2_ONLY=contentunavailable \
+    group=${3:-contentunavailable}
+    UIKIT2_SOURCES="$sources" UIKIT2_ONLY="$group" \
         sh "$here/run.sh" > "$logdir/$label.txt" 2>&1 || true
 }
 
@@ -80,18 +120,33 @@ esac
 
 # 2. The plant.  A copy of the whole sources directory is made first, so the group has every file it
 # lists and only ONE of them differs.
-echo "== planting a line count nothing keyed asked for, in a scratch copy"
+echo "== planting a line count nothing keyed asked for and a padding no measured configuration has, in a scratch copy"
 mkdir -p "$scratch"
 for f in "$root/packages/a/apple-backports/UIKit/"*.m "$root/packages/a/apple-backports/UIKit/"*.h; do
     [ -f "$f" ] && cp "$f" "$scratch/"
 done
+# The group's sources reach three headers in the PARENT directory - CharonSayOnce.h through CharonMenus.h,
+# which CharonLists.h imports, plus CharonSRGB.h and charon_alias.h - and CharonMenus.h spells that
+# "../CharonSayOnce.h".  $scratch is a flat directory, so that path resolves to $build/CharonSayOnce.h and
+# nothing else, and every file that transitively includes CharonMenus.h stops compiling.  That is not the
+# plant's failure but the control's: a control that cannot build the group it controls reports "no result
+# line" instead of "the group went red", which is the wrong answer to the wrong question.  So the parent
+# goes beside $scratch, which is what "../" resolves to.
+for f in "$root/packages/a/apple-backports/"*.h; do
+    [ -f "$f" ] && cp "$f" "$build/"
+done
 cp "$root/packages/a/apple-backports/UIKit/$source_file" "$build/source.before.m"
+cp "$root/packages/a/apple-backports/UIKit/$config_file" "$build/config.before.m"
 plant_value "$root/packages/a/apple-backports/UIKit/$source_file" "$scratch/$source_file"
+plant_config_value "$root/packages/a/apple-backports/UIKit/$config_file" "$scratch/$config_file"
 cmp -s "$build/source.before.m" "$scratch/$source_file" && fail "the plant did not change the file, so it is not a plant"
+cmp -s "$build/config.before.m" "$scratch/$config_file" && fail "the second plant did not change its file, so it is not a plant"
 
 # the tree must be untouched, and this asserts it rather than assuming it
 cmp -s "$build/source.before.m" "$root/packages/a/apple-backports/UIKit/$source_file" \
     || fail "the plant edited the repository instead of the scratch copy"
+cmp -s "$build/config.before.m" "$root/packages/a/apple-backports/UIKit/$config_file" \
+    || fail "the second plant edited the repository instead of the scratch copy"
 
 echo "== the planted group, which must be RED and must NAME the key"
 run_group red "$scratch"
@@ -104,6 +159,7 @@ echo "   $red_line"
 # key that was already red.
 echo "   the lines the planted group printed:"
 grep -E "^FAIL a fresh text bag holds the same line count" "$logdir/red.txt" | sed 's/^/     /' || true
+grep -E "^FAIL the (empty|loading|search) text-to-secondary-text padding" "$logdir/red.txt" | sed 's/^/     /' || true
 
 case "$red_line" in
     *"exit=0"*) sed -n '1,40p' "$logdir/red.txt"; fail "the plant left the group GREEN - the comparison does not read this key" ;;
@@ -115,8 +171,55 @@ if ! grep -qiE 'line count|numberOfLines' "$logdir/red.txt"; then
 fi
 echo "   the planted run names the line-count key, so the disagreement is attributable"
 
+# The configuration half.  All three factories report the padding, so all three lines have to be there: a
+# group that went red on one of them and silent about the other two would be a group that stops at the
+# first disagreement, which is a different defect from one that compares everything.
+for kind in empty loading search; do
+    if ! grep -qE "^FAIL the $kind text-to-secondary-text padding" "$logdir/red.txt"; then
+        fail "the planted padding went red without naming the $kind factory, so the comparison stops early"
+    fi
+done
+echo "   the planted run names the padding on all three factories, so the configuration half compares every factory"
+
 # 3. And the real source is still the real source.
 cmp -s "$build/source.before.m" "$root/packages/a/apple-backports/UIKit/$source_file" \
     || fail "the run left the repository's source changed"
+cmp -s "$build/config.before.m" "$root/packages/a/apple-backports/UIKit/$config_file" \
+    || fail "the run left the repository's configuration source changed"
+
+# 4. The attribution group, the same three steps. Kept in the same script because a control is worth
+#    exactly as much as the run that reads it: a group with no plant is a group nobody has shown responds.
+echo "== the unplanted attribution group, which must be green"
+run_group attr-green "$root/packages/a/apple-backports/UIKit" "$attr_group"
+attr_green_line=$(grep -E "^$attr_group: exit=" "$logdir/attr-green.txt" | tail -1 || true)
+[ -n "$attr_green_line" ] || { cat "$logdir/attr-green.txt"; fail "could not find the attribution group's result line"; }
+echo "   $attr_green_line"
+case "$attr_green_line" in
+    *"exit=0"*) : ;;
+    *) sed -n '1,40p' "$logdir/attr-green.txt"; fail "the attribution group is red BEFORE any plant" ;;
+esac
+
+cp "$root/packages/a/apple-backports/UIKit/$attr_file" "$build/attr.before.m"
+plant_attr_value "$root/packages/a/apple-backports/UIKit/$attr_file" "$scratch/$attr_file"
+cmp -s "$build/attr.before.m" "$scratch/$attr_file" && fail "the attribution plant did not change its file, so it is not a plant"
+cmp -s "$build/attr.before.m" "$root/packages/a/apple-backports/UIKit/$attr_file" \
+    || fail "the attribution plant edited the repository instead of the scratch copy"
+
+echo "== planting an identifier no caller passed, in the same scratch copy"
+run_group attr-red "$scratch" "$attr_group"
+attr_red_line=$(grep -E "^$attr_group: exit=" "$logdir/attr-red.txt" | tail -1 || true)
+[ -n "$attr_red_line" ] || { sed -n '1,40p' "$logdir/attr-red.txt"; fail "the planted attribution run produced no result line"; }
+echo "   $attr_red_line"
+case "$attr_red_line" in
+    *"exit=0"*) sed -n '1,40p' "$logdir/attr-red.txt"; fail "the attribution plant left the group GREEN" ;;
+esac
+grep -E "^FAIL the source identifier reads back" "$logdir/attr-red.txt" | sed 's/^/     /' || true
+if ! grep -qE "^FAIL the source identifier reads back" "$logdir/attr-red.txt"; then
+    fail "the attribution group went red without naming the source-identifier key, so it is not attributable"
+fi
+echo "   the planted attribution run names the source-identifier key"
+
+cmp -s "$build/attr.before.m" "$root/packages/a/apple-backports/UIKit/$attr_file" \
+    || fail "the run left the repository's attribution source changed"
 
 echo "RED CONTROL OK: green before, red after, naming the key, tree untouched"

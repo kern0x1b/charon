@@ -75,4 +75,44 @@ CHARON_DECLARE_SENSORKIT_VALUE_CLASS(SRWristTemperatureSession)
         else [CharonValueStore(self) removeObjectForKey:key];                             \
     }
 
+// -init and +new, the pair the 26.2 headers of these classes close: every one of the eighteen
+// declares `- (instancetype)init NS_UNAVAILABLE;` and `+ (instancetype)new NS_UNAVAILABLE;`
+// immediately before its @end - SRSleepSession.h:17 and :18, SRDeviceUsageCategories.h:67 and :68
+// for the two the corpus dates at 16.4, and the same two lines in each of the other sixteen headers.
+//
+// NS_UNAVAILABLE is a promise about source and adds nothing at run time, so what the framework does
+// with the pair is a separate question and it has two answers, not one. Measured on the host's own
+// SensorKit over all eighteen classes, in tests/backports/host/sensorkit-value/host-answers.m:
+//
+//   - fourteen classes implement BOTH, and both raise NSInternalInconsistencyException. The reason
+//     string differs per class and is carried here as it was measured: "Not available" for the four
+//     that have no other door (SRFaceMetrics, SRFaceMetricsExpression, SRFetchResult and
+//     SRSupplementalCategory), "Use initWithSensor:" for SRSensorReader, which has one, and the empty
+//     string for the other nine.
+//   - four classes implement NEITHER - SRAcousticSettings, SRSleepSession, and the two
+//     photoplethysmogram samples that are channels of the sample their parent already guards - so a
+//     caller that reaches the pair reaches NSObject's and gets a new empty value object.
+//
+// The port answers the fourteen and leaves the four to NSObject, and the difference is the point: a
+// definition would put -init and +new in the port's class metadata where Apple's class metadata has
+// neither, which changes what the class IS and answers the caller exactly what NSObject's already
+// answers. Their rows are `absent` with this measurement as the reason, and a corpus row reading
+// `missing` for a selector Apple's own class does not carry is the tool's question about a class's own
+// method list rather than a gap in the port.
+
+// The fourteen that refuse. `reason_text` is the host's own reason string for that class, which is
+// what the exception carries: the name is NSInternalInconsistencyException for all fourteen, and
+// +new is +alloc/-init, so the one raise answers both rows.
+#define CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(reason_text)                           \
+    -(instancetype)init                                                                   \
+    {                                                                                    \
+        [NSException raise:NSInternalInconsistencyException format:reason_text];          \
+        return nil;                                                                      \
+    }                                                                                    \
+                                                                                         \
+    +(instancetype)new                                                                   \
+    {                                                                                    \
+        return [[self alloc] init];                                                      \
+    }
+
 #endif

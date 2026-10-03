@@ -4,6 +4,7 @@
 
 // SensorKit of iOS 17.4, the properties that arrived then.
 @implementation SRElectrocardiogramData
+CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(@"")
 @dynamic flags, value;
 CHARON_SCALAR_PROPERTY(SRElectrocardiogramDataFlags, flags)
 CHARON_VALUE_PROPERTY(NSMeasurement *, value)
@@ -12,6 +13,7 @@ CHARON_VALUE_PROPERTY(NSMeasurement *, value)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRElectrocardiogramSample
+CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(@"")
 @dynamic date, frequency, session, lead, data;
 CHARON_VALUE_PROPERTY(NSDate *, date)
 CHARON_VALUE_PROPERTY(NSMeasurement *, frequency)
@@ -23,6 +25,7 @@ CHARON_VALUE_PROPERTY(NSArray *, data)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRElectrocardiogramSession
+CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(@"")
 @dynamic state, sessionGuidance, identifier;
 CHARON_SCALAR_PROPERTY(SRElectrocardiogramSessionState, state)
 CHARON_SCALAR_PROPERTY(SRElectrocardiogramSessionGuidance, sessionGuidance)
@@ -79,6 +82,7 @@ CHARON_VALUE_PROPERTY(NSArray *, conditions)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRPhotoplethysmogramSample
+CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(@"")
 @dynamic startDate, nanosecondsSinceStart, usage, opticalSamples, accelerometerSamples, temperature;
 CHARON_VALUE_PROPERTY(NSDate *, startDate)
 CHARON_SCALAR_PROPERTY(int64_t, nanosecondsSinceStart)

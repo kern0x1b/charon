@@ -4,9 +4,21 @@
 #import <Foundation/Foundation.h>
 #import <ImageIO/ImageIO.h>
 
+// CFStringGetCStringPtr answers NULL for a string it cannot return in place, which is most of ImageIO's
+// own tag names, and a probe that printed a name that way said "(null)" for 89 of the names the table
+// carries while CFStringGetLength and CFCopyDescription both answered the real name. So the C string is
+// copied out instead, into one of four rotating buffers, because one printf here uses three of them.
+#define CHARON_S_BUFFERS 4
 static const char *S(CFStringRef s)
 {
-    return s ? CFStringGetCStringPtr(s, kCFStringEncodingUTF8) : "(nil)";
+    static char buffers[CHARON_S_BUFFERS][1024];
+    static unsigned next = 0;
+    if (!s)
+        return "(nil)";
+    char *buffer = buffers[next++ % CHARON_S_BUFFERS];
+    if (!CFStringGetCString(s, buffer, sizeof buffers[0], kCFStringEncodingUTF8))
+        return "(unprintable)";
+    return buffer;
 }
 
 static void answer(const char *dictName, const char *propName, CFStringRef dictionary, CFStringRef property,
@@ -17,14 +29,8 @@ static void answer(const char *dictName, const char *propName, CFStringRef dicti
         printf("empty\t%s\t%s\tNULL\n", dictName, propName);
         return;
     }
-    CFStringRef ns = CGImageMetadataTagCopyNamespace(tag);
-    CFStringRef prefix = CGImageMetadataTagCopyPrefix(tag);
-    CFStringRef name = CGImageMetadataTagCopyName(tag);
-    printf("empty\t%s\t%s\t%s\t%s\t%s\t%d\n", dictName, propName, S(ns), S(prefix), S(name),
-           (int)CGImageMetadataTagGetType(tag));
-    CFRelease(ns);
-    CFRelease(prefix);
-    CFRelease(name);
+    printf("empty\t%s\t%s\t%s\t%s\t%s\t%d\n", dictName, propName, S(CGImageMetadataTagCopyNamespace(tag)),
+           S(CGImageMetadataTagCopyPrefix(tag)), S(CGImageMetadataTagCopyName(tag)), (int)CGImageMetadataTagGetType(tag));
 }
 
 static void answerValue(const char *label, const char *dictName, const char *propName, CFStringRef dictionary,
@@ -32,12 +38,7 @@ static void answerValue(const char *label, const char *dictName, const char *pro
 {
     CGImageMetadataTagRef tag = CGImageMetadataCopyTagMatchingImageProperty(metadata, dictionary, property);
     id value = tag ? (__bridge_transfer id)CGImageMetadataTagCopyValue(tag) : nil;
-    CFStringRef text = value ? CFCopyDescription((__bridge CFTypeRef)value) : NULL;
-    printf("%s\t%s\t%s\t%s\tvalue=%s\n", label, dictName, propName, text ? S(text) : "(nil)", "");
-    if (tag)
-        CFRelease(tag);
-    if (text)
-        CFRelease(text);
+    printf("%s\t%s\t%s\tvalue=%s\n", label, dictName, propName, value ? S((__bridge CFStringRef)value) : "(nil)");
 }
 
 typedef struct {
@@ -97,13 +98,14 @@ int main(int argc, const char **argv)
             NSMutableString *after = [NSMutableString string];
             for (CFIndex t = 0; t < (CFIndex)tags.count; t++) {
                 CGImageMetadataTagRef tag = (__bridge CGImageMetadataTagRef)[tags objectAtIndex:(NSUInteger)t];
-                CFStringRef ns = CGImageMetadataTagCopyNamespace(tag);
-                CFStringRef prefix = CGImageMetadataTagCopyPrefix(tag);
-                CFStringRef name = CGImageMetadataTagCopyName(tag);
-                [after appendFormat:@"%@:%@:%@|", ns ? S(ns) : "-", prefix ? S(prefix) : "-", name ? S(name) : "-"];
-                CFRelease(ns);
-                CFRelease(prefix);
-                CFRelease(name);
+                // %s and not %@: a %@ with a C string sends -respondsToSelector: to a stack address, the
+                // ObjC runtime answers with a trap and the process dies with SIGTRAP. That is what made
+                // this probe report "the host traps" for 173 of the 192 pairs: the trap was in this line,
+                // after SetValueMatchingImageProperty had already returned true and written its tag.
+                char line[512];
+                snprintf(line, sizeof line, "%s:%s:%s|", S(CGImageMetadataTagCopyNamespace(tag)),
+                         S(CGImageMetadataTagCopyPrefix(tag)), S(CGImageMetadataTagCopyName(tag)));
+                [after appendString:@(line)];
             }
             printf("set\t%s\t%s\t%d\t%lu\t%@\n", S(pairs[index].dictionary), S(pairs[index].property), (int)ok,
                    (unsigned long)tags.count, after);

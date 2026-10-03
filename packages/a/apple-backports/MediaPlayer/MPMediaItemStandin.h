@@ -77,10 +77,98 @@ enum { MPNowPlayingInfoLanguageOptionTypeAudible = 0, MPNowPlayingInfoLanguageOp
 @property (nonatomic, readonly) MPNowPlayingInfoLanguageOption *defaultLanguageOption;
 @property (nonatomic, readonly) BOOL allowEmptySelection;
 @end
+// What MPRemoteCommandCenter71.m needs to parse, transcribed from the SDK's own headers:
+// MPRemoteCommandHandlerStatus and its cases from MediaPlayer.framework's MPRemoteCommand.h, the
+// UIEventSubtypeRemoteControl* constants from UIKit's UIEvent.h, and the command classes from the
+// framework's own headers.
+//
+// Why these are here: MPRemoteCommandCenter71.m guards its include of this header behind
+// CHARON_MEDIAPLAYER_STANDIN, so a host check may include the port's object and have the port's own code
+// measured rather than this Mac's MediaPlayer -- which has no MPSeekCommandEvent, MPSkipIntervalCommand
+// or MPRatingCommand at all, and whose MPMediaItem declares albumTrackNumber, so a category compiled
+// against it would look like a clobber. Without these declarations that include does not compile at all,
+// and coordination/crutches.md's "MediaPlayer's command events have no host check" is the entry: it is
+// still open, and the rest of what MPRemoteCommandCenter71.m needs -- MPSeekCommandEvent and
+// MPSeekCommandEventType, MPRemoteCommand's own members, MPRemoteCommandCenter's -- is named there too.
+//
+// Nothing here changes the armv7 object. This header is read only when the .m that includes it is
+// compiled with CHARON_MEDIAPLAYER_STANDIN defined, which is a host check and never a device build.
+typedef NS_ENUM(NSInteger, MPRemoteCommandHandlerStatus) {
+    MPRemoteCommandHandlerStatusSuccess = 0,
+    MPRemoteCommandHandlerStatusUnknownError = 1,
+    MPRemoteCommandHandlerStatusCommandFailed = 2,
+    MPRemoteCommandHandlerStatusNoSuchContent = 100,
+    MPRemoteCommandHandlerStatusNoActionableNowPlayingItem = 110,
+    MPRemoteCommandHandlerStatusCommandInterruptionTimedOut = 120,
+    MPRemoteCommandHandlerStatusCommandInterruptionRunLoop = 121,
+    MPRemoteCommandHandlerStatusInterrupted = 130,
+    MPRemoteCommandHandlerStatusNotApplicable = 140,
+    MPRemoteCommandHandlerStatusTimedOut = 150,
+    MPRemoteCommandHandlerStatusDenied = 160,
+};
+
+// The UIEventSubtypeRemoteControl* constants this object's switch runs on are declared by the
+// UIKit stand-in beside this one (standin/UIKit/UIKit.h), which is where UIKit's own headers
+// declare them; a second set of enumerators here and the two headers are on the include path
+// together is a redefinition, measured.
+
+// The base and the event, then the classes that subclass them: declared in this order because the
+// command classes below name both as their superclass and C reads a declaration in order.
 @interface MPRemoteCommand : NSObject
+- (instancetype)initWithCommand:(id)command;
+@property (nonatomic, assign, readonly, getter=isEnabled) BOOL enabled;
 @end
+
 @interface MPRemoteCommandEvent : NSObject
 - (instancetype)initWithCommand:(MPRemoteCommand *)command;
 @property (nonatomic, strong, readonly) MPRemoteCommand *command;
 @property (nonatomic, assign, readonly) NSTimeInterval timestamp;
+@end
+
+// MPSeekCommandEvent and the enumeration its one property is of, from MediaPlayer.framework's
+// MPRemoteCommandEvent.h. The cases' numbers are the SDK's own.
+typedef NS_ENUM(NSInteger, MPSeekCommandEventType) {
+    MPSeekCommandEventTypeBeginSeeking = 0,
+    MPSeekCommandEventTypeEndSeeking = 1,
+};
+
+@interface MPSeekCommandEvent : MPRemoteCommandEvent
+@property (nonatomic, assign, readonly) MPSeekCommandEventType type;
+@end
+
+// The command classes MPRemoteCommandCenter71.m creates lazily by class. Their own members are in their
+// own objects (MPRatingCommandEvent.m, MPSkipIntervalCommandEvent.m and the 8.0/9.0 groups beside them),
+// and none of those is what this stand-in is for: the check asks what the 7.1 object does with them.
+@interface MPFeedbackCommand : MPRemoteCommand
+@property (nonatomic, assign, readwrite) MPRemoteCommandHandlerStatus status;
+@property (nonatomic, assign, readwrite) BOOL active;
+@property (nonatomic, copy, readwrite) NSString *localizedTitle;
+@property (nonatomic, copy, readwrite) NSString *localizedShortTitle;
+@end
+@interface MPSkipIntervalCommand : MPRemoteCommand
+@property (nonatomic, assign, readwrite) NSInteger interval;
+@property (nonatomic, copy, readwrite) NSArray<NSNumber *> *preferredIntervals;
+@end
+@interface MPRatingCommand : MPRemoteCommand
+@property (nonatomic, readonly) float minimumRating;
+@property (nonatomic, readonly) float maximumRating;
+@end
+@interface MPChangePlaybackRateCommand : MPRemoteCommand
+@property (nonatomic, readonly) NSArray<NSNumber *> *supportedPlaybackRates;
+@end
+@interface MPChangeRepeatModeCommand : MPRemoteCommand
+@end
+@interface MPChangeShuffleModeCommand : MPRemoteCommand
+@end
+
+// 8.0's, which the 7.1 object's switch names; its own members are in MPRemoteCommandCenter80.m.
+@interface MPChangePlaybackPositionCommand : MPRemoteCommand
+@property (nonatomic, assign, readwrite) NSTimeInterval positionTime;
+@end
+@interface MPChangePlaybackPositionCommandEvent : MPRemoteCommandEvent
+@property (nonatomic, assign, readonly) NSTimeInterval positionTime;
+@end
+
+@interface MPRemoteCommandCenter : NSObject
++ (MPRemoteCommandCenter *)sharedCommandCenter;
 @end

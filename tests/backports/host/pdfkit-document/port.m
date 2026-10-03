@@ -25,6 +25,95 @@ static const struct { CGPDFBox box; const char *name; } kinds[] = {
     { kCGPDFBleedBox, "bleedBox" }, { kCGPDFTrimBox, "trimBox" }, { kCGPDFArtBox, "artBox" },
 };
 
+// The key values of one border, in the header's own key order, in the shape both binaries print.
+static void printBorderKeys(const char *label, PDFBorder *border)
+{
+    NSDictionary *keys = [border borderKeyValues];
+    NSMutableArray *sorted = [[keys allKeys] mutableCopy];
+    [sorted sortUsingSelector:@selector(compare:)];
+    printf("%s.keys=%lu\n", label, (unsigned long)sorted.count);
+    for (NSString *key in sorted) {
+        id value = keys[key];
+        if ([value isKindOfClass:[NSArray class]]) {
+            NSMutableArray *parts = [NSMutableArray array];
+            for (id element in value)
+                [parts addObject:[NSString stringWithFormat:@"%.4f", (double)[element doubleValue]]];
+            printf("%s.key.%s=%s\n", label, [key UTF8String],
+                   [[parts componentsJoinedByString:@","] UTF8String]);
+        } else {
+            printf("%s.key.%s=%.4f\n", label, [key UTF8String], (double)[value doubleValue]);
+        }
+    }
+}
+
+// The pattern's numbers, which -dashPattern answers and the key values also publish.
+static void printBorderDash(const char *label, PDFBorder *border)
+{
+    NSArray *pattern = [border dashPattern];
+    if (pattern == nil) {
+        printf("%s.dash.values=(nil)\n", label);
+        return;
+    }
+    NSMutableArray *parts = [NSMutableArray array];
+    for (id value in pattern)
+        [parts addObject:[NSString stringWithFormat:@"%.4f", (double)[value doubleValue]]];
+    printf("%s.dash.values=%s\n", label, [[parts componentsJoinedByString:@","] UTF8String]);
+}
+
+// ---- the border as a VALUE OBJECT: its setters, its identity and -setBorder: --------------------
+//
+// The same keys, the same order and the same prints as host.m's function of the same name, and the
+// port's own PDFBorder: -init answers the fresh values, the three setters change the object, and the
+// annotation holds the object it is given rather than a copy.
+static void printBorderValueFacts(void)
+{
+    PDFBorder *fresh = [[PDFBorder alloc] init];
+    printf("border.fresh.style=%ld\n", (long)[fresh style]);
+    printf("border.fresh.lineWidth=%.4f\n", (double)[fresh lineWidth]);
+    printf("border.fresh.dash=%s\n", [fresh dashPattern] ? "an-array" : "(nil)");
+    printBorderKeys("border.fresh", fresh);
+    PDFBorder *all = [[PDFBorder alloc] init];
+    [all setStyle:kPDFBorderStyleDashed];
+    [all setLineWidth:5];
+    [all setDashPattern:@[@7, @5]];
+    printf("border.all.style=%ld\n", (long)[all style]);
+    printf("border.all.lineWidth=%.4f\n", (double)[all lineWidth]);
+    printf("border.all.dash=%s\n", [all dashPattern] ? "an-array" : "(nil)");
+    printBorderDash("border.all", all);
+    printBorderKeys("border.all", all);
+    PDFBorder *pattern = [[PDFBorder alloc] init];
+    [pattern setDashPattern:@[@7, @5]];
+    printf("border.pattern.style=%ld\n", (long)[pattern style]);
+    printf("border.pattern.lineWidth=%.4f\n", (double)[pattern lineWidth]);
+    printBorderKeys("border.pattern", pattern);
+    PDFBorder *empty = [[PDFBorder alloc] init];
+    [empty setDashPattern:@[]];
+    printf("border.empty.style=%ld\n", (long)[empty style]);
+    printf("border.empty.dash=%s\n", [empty dashPattern] ? "an-array" : "(nil)");
+    printBorderDash("border.empty", empty);
+    printBorderKeys("border.empty", empty);
+    PDFBorder *cleared = [[PDFBorder alloc] init];
+    [cleared setLineWidth:5];
+    [cleared setStyle:kPDFBorderStyleDashed];
+    [cleared setDashPattern:@[@7, @5]];
+    [cleared setDashPattern:nil];
+    printf("border.cleared.style=%ld\n", (long)[cleared style]);
+    printf("border.cleared.lineWidth=%.4f\n", (double)[cleared lineWidth]);
+    printf("border.cleared.dash=%s\n", [cleared dashPattern] ? "an-array" : "(nil)");
+    printBorderDash("border.cleared", cleared);
+    printBorderKeys("border.cleared", cleared);
+    PDFBorder *styleOnly = [[PDFBorder alloc] init];
+    [styleOnly setStyle:kPDFBorderStyleInset];
+    printf("border.styleonly.style=%ld lineWidth=%.4f dash=%s\n", (long)[styleOnly style],
+           (double)[styleOnly lineWidth], [styleOnly dashPattern] ? "an-array" : "(nil)");
+    printBorderKeys("border.styleonly", styleOnly);
+    PDFBorder *widthOnly = [[PDFBorder alloc] init];
+    [widthOnly setLineWidth:0];
+    printf("border.widthzero.lineWidth=%.4f style=%ld\n", (double)[widthOnly lineWidth],
+           (long)[widthOnly style]);
+    printBorderKeys("border.widthzero", widthOnly);
+}
+
 int main(int argc, char **argv)
 {
     setvbuf(stdout, NULL, _IOLBF, 0);
@@ -123,6 +212,51 @@ int main(int argc, char **argv)
                 printf("%s.page0.numberOfCharacters=%ld\n", name, (long)[first numberOfCharacters]);
                 printf("%s.page0.string=%s\n", name, [first string] ? [first string].UTF8String : "(nil)");
                 printf("%s.page0.annotations.count=%lu\n", name, (unsigned long)first.annotations.count);
+                // the BORDER, over PDFBorder11.m, printed in the same keys and the same order as
+                // host.m prints it
+                for (unsigned a = 0; a < first.annotations.count; a++) {
+                    PDFAnnotation *annotation = first.annotations[a];
+                    PDFBorder *border = annotation.border;
+                    if (border == nil) {
+                        printf("%s.page0.annotation%u.border=nil\n", name, a);
+                        continue;
+                    }
+                    printf("%s.page0.annotation%u.border.style=%ld\n", name, a, (long)[border style]);
+                    printf("%s.page0.annotation%u.border.lineWidth=%.6f\n", name, a,
+                           (double)[border lineWidth]);
+                    printf("%s.page0.annotation%u.border.dash=%s\n", name, a,
+                           [border dashPattern] ? "an-array" : "(nil)");
+                    if ([border dashPattern]) {
+                        NSMutableArray *parts = [NSMutableArray array];
+                        for (id value in [border dashPattern])
+                            [parts addObject:[NSString stringWithFormat:@"%.6f",
+                                               (double)[value doubleValue]]];
+                        printf("%s.page0.annotation%u.border.dash.values=%s\n", name, a,
+                               [[parts componentsJoinedByString:@","] UTF8String]);
+                    }
+                    NSDictionary *keys = [border borderKeyValues];
+                    NSMutableArray *sorted = [[keys allKeys] mutableCopy];
+                    [sorted sortUsingSelector:@selector(compare:)];
+                    printf("%s.page0.annotation%u.border.keys=%lu\n", name, a,
+                           (unsigned long)sorted.count);
+                    for (NSString *key in sorted) {
+                        id value = keys[key];
+                        if ([value isKindOfClass:[NSString class]]) {
+                            printf("%s.page0.annotation%u.border.key.%s=%s\n", name, a,
+                                   [key UTF8String], [(NSString *)value UTF8String]);
+                        } else if ([value isKindOfClass:[NSArray class]]) {
+                            NSMutableArray *parts = [NSMutableArray array];
+                            for (id element in value)
+                                [parts addObject:[NSString stringWithFormat:@"%.6f",
+                                                   (double)[element doubleValue]]];
+                            printf("%s.page0.annotation%u.border.key.%s=%s\n", name, a,
+                                   [key UTF8String], [[parts componentsJoinedByString:@","] UTF8String]);
+                        } else {
+                            printf("%s.page0.annotation%u.border.key.%s=%.6f\n", name, a,
+                                   [key UTF8String], (double)[value doubleValue]);
+                        }
+                    }
+                }
                 for (unsigned a = 0; a < first.annotations.count; a++) {
                     PDFAnnotation *an = first.annotations[a];
                     CGRect r = an.bounds;
@@ -137,6 +271,30 @@ int main(int argc, char **argv)
                     printf("%s.page0.annotation%u.shouldPrint=%d\n", name, a, (int)an.shouldPrint);
                     printf("%s.page0.annotation%u.page=%s\n", name, a, an.page ? "an-object" : "(nil)");
                 }
+                // -border's IDENTITY and -setBorder:, in the same keys as host.m prints them and after
+                // the per-annotation facts above, because they change that annotation's border
+                if (first.annotations.count > 0) {
+                    PDFAnnotation *target = first.annotations[0];
+                    PDFBorder *once = target.border;
+                    printf("%s.page0.border.identity.same=%d\n", name, (int)(once == target.border));
+                    if (once != nil) {
+                        [once setLineWidth:9];
+                        printf("%s.page0.border.identity.mutated=%.4f\n", name,
+                               (double)[target.border lineWidth]);
+                        PDFBorder *replacement = [[PDFBorder alloc] init];
+                        [replacement setLineWidth:11];
+                        [target setBorder:replacement];
+                        printf("%s.page0.border.set.same=%d\n", name,
+                               (int)(target.border == replacement));
+                        printf("%s.page0.border.set.lineWidth=%.4f\n", name,
+                               (double)[target.border lineWidth]);
+                        [replacement setLineWidth:12];
+                        printf("%s.page0.border.set.mutated=%.4f\n", name,
+                               (double)[target.border lineWidth]);
+                        [target setBorder:nil];
+                        printf("%s.page0.border.set.nil=%d\n", name, (int)(target.border == nil));
+                    }
+                }
                 for (unsigned k = 0; k < sizeof(kinds) / sizeof(*kinds); k++) {
                     CGRect box = [first boundsForBox:kinds[k].box];
                     printf("%s.page0.%s=%.4f,%.4f,%.4f,%.4f\n", name, kinds[k].name, box.origin.x,
@@ -146,6 +304,7 @@ int main(int argc, char **argv)
             PDFPage *past = [document pageAtIndex:document.pageCount];
             printf("%s.pageAtIndex.one-past-the-end=%s\n", name, past ? "an-object" : "nil");
         }
+        printBorderValueFacts();
     }
     return 0;
 }

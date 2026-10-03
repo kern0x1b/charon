@@ -22,21 +22,16 @@ libs="-framework Foundation -framework CoreGraphics -framework CoreVideo -framew
 
 # THE CORPUS, and it decides the verdict. tools/coreml/make-models.py writes TEN containers:
 # glm, glm_classifier, nn_classifier, nn_embedding, nn_image, nn_layers, nn_layers_shape, pipeline,
-# tree_classifier, vision_image. Nine of them this host's Core ML loads and the run compares: `compared
-# 723 keys, 0 differ, 0 missing` and `port: same as the system`. The tenth, vision_image, its own
-# Core ML refuses to compile - "+[MLModel compileModelAtURL:error:] answers com.apple.CoreML/0,
-# 'compiler error: Invalid height and width for the image input.'" - so the release has no answer for
-# that container at all and the 48 keys the port answers for it have nothing to be compared against. They
-# are reported by name with the refusal beside them and are not a failure; facts/CoreML/CoreML.md carries
-# the measurement, and tests/backports/host/vision/run.sh measures the same container through Vision, which
-# is the framework that runs an image model. The count is printed on every run so the corpus a verdict
-# belongs to is never a guess.
-excluded=vision_image.mlmodel
-if [ -f "$models/$excluded" ]; then
-    echo "corpus: ten, and this host's Core ML refuses $excluded, so expect its keys reported with the refusal"
-else
-    echo "corpus: nine, $excluded not written -- the keys of a container the release refuses are not compared"
-fi
+# tree_classifier, vision_image, and this host's Core ML loads and compares all ten.
+#
+# It did not, until 2026-10-03, and the reason was the container rather than the host: vision_image
+# declared its picture input as an `imageSizeRange` of 16..256, and Core ML's own compiler refuses
+# that here - "+[MLModel compileModelAtURL:error:] answers com.apple.CoreML/0, 'compiler error:
+# Invalid height and width for the image input.'" - so the release had no answer for it and the 48
+# keys the port answers had nothing to be compared against. A ranged image input needs a network
+# with flexible blob shapes and this one has fixed shapes; with `width`/`height` = 32 on both ends
+# the same network compiles and loads (measured on this host, an M4 Pro, Core ML and Vision both
+# present). The count is printed on every run so the corpus a verdict belongs to is never a guess.
 echo "corpus: $(ls "$models" | grep -c '\.mlmodel$') containers in $models"
 
 # The containers are made HERE, not asked for, for the reason the vision harness now does the same:

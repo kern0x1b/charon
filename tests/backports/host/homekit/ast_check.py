@@ -22,6 +22,14 @@ that lost `readonly` or `copy` is caught by the absence of the key rather than b
 
 The control: run against a scratch copy with one property's attribute flipped, and this must name it and
 exit non-zero. A check that cannot fail is not a check.
+
+The METHOD side reads the port's own source, not the declaration alone. This clang's JSON AST emits no
+"body" key for a method definition, so a declaration and an implementation are the same kind of node and a
+member whose body was taken away used to pass on the strength of the declaration beside it. Each such node
+is now read against the bytes its own source range covers, and a member counts as bound only where those
+bytes carry a brace: a declaration's range is a signature, an implementation's is the signature and the
+body. The control for that half is a scratch 11.3 object whose -initWithURL: is declared and not written,
+and it must go red naming the header line; with the brace test removed it does not.
 """
 import json
 import os
@@ -584,6 +592,93 @@ def append_to_implementation(text, method):
     return text[:text.rindex("@end")] + method + "\n\n" + text[text.rindex("@end"):]
 
 
+def source_of(path):
+    """One file's own text, or "" when it cannot be read.
+
+    Empty is the safe direction on purpose: a file this cannot read leaves every method of it unbound,
+    which the comparison reports as a missing member. The other direction - reading nothing and calling
+    every declaration an implementation - is the defect this replaces.
+    """
+    try:
+        with open(path, encoding="utf-8") as handle:
+            return handle.read()
+    except OSError:
+        return ""
+
+
+def writes_a_body(text, node):
+    """Whether the port's own source gives this method a BODY, and not only a declaration of it.
+
+    This clang's JSON AST emits no "body" key for a method definition, so a declaration and an
+    implementation are the same kind of node and filtering on a body finds nothing at all. What the dump
+    does carry is the node's own source RANGE, and that is enough: a definition's range runs from the
+    signature's leading - or + through the brace that opens its body, and a declaration's range stops at
+    the last token of the declaration - a parameter's type, a __attribute__, the semicolon - which is
+    source that cannot hold a brace. So the test is whether the range's own bytes contain one.
+
+    Measured on HMAccessoryProfile10_0.m, arm64-apple-ios12.0, -ast-dump=json: the port's two
+    charon_ declarations are 198 and 335 bytes with no brace, and its five definitions are 59 to 799
+    bytes with one each. It is the range and not the line, because the two shapes share a line too: a
+    category's declaration and its definition can sit a few lines apart, and reading the line alone
+    would accept whatever happens to be written there.
+    """
+    span = node.get("range") or {}
+    begin = (span.get("begin") or {}).get("offset")
+    end = (span.get("end") or {}).get("offset")
+    if begin is None or end is None or not 0 <= begin <= end <= len(text):
+        return False
+    return "{" in text[begin:end]
+
+
+def self_test_writes_a_body():
+    """writes_a_body()'s own control, on both shapes of node out of one real dump, printed so a run
+    shows it was exercised.
+
+    HMAccessoryProfile10_0.m is the file that carries both shapes of one selector: it declares
+    +charon_profileInStore:identifier:accessory: in a category interface above the @implementation and
+    defines it below, and the dump emits an ObjCMethodDecl for each. A control that only fed it a
+    definition would pass a helper that answered YES to everything, so the declaration half is the one
+    that decides, and both are named here.
+    """
+    path = os.path.join(PORT_INCLUDE, "HMAccessoryProfile10_0.m")
+    text = source_of(path)
+    seen = {}
+    for document in ast(path, "HMAccessoryProfile"):
+        for node in walk_methods(document):
+            selector = selector_of(node.get("mangledName", ""))
+            if selector == "+charon_profileInStore:identifier:accessory:":
+                seen[len(seen)] = node
+    wrong = []
+    if len(seen) != 2:
+        wrong.append("the dump carried %d nodes of the one selector that has both shapes, wanted 2"
+                     % len(seen))
+    else:
+        for index, want in ((0, False), (1, True)):
+            got = writes_a_body(text, seen[index])
+            if got != want:
+                wrong.append("node %d of the pair read %s, wanted %s" % (index, got, want))
+    # and a node with no range at all, which must be refused rather than counted
+    if writes_a_body(text, {}):
+        wrong.append("a node with no range read as a definition")
+    print("  self-test: writes_a_body on a declaration and on a definition: %s"
+          % ("ok" if not wrong else "; ".join(wrong)))
+    return wrong
+
+
+def walk_methods(node):
+    """Every method decl under one node, in the dump's own order."""
+    if isinstance(node, list):
+        for item in node:
+            yield from walk_methods(item)
+        return
+    if not isinstance(node, dict):
+        return
+    if node.get("kind") in ("ObjCMethodDecl", "ObjCInstanceMethodDecl", "ObjCClassMethodDecl"):
+        yield node
+    for child in node.get("inner", []):
+        yield from walk_methods(child)
+
+
 def from_sdk(loc):
     """Whether a decl arrived through one of the SDK's own headers, which is what tells the header's
     members from the port's -- the same join the property check documents, and the same one the protocol
@@ -720,6 +815,9 @@ def port_methods(class_name, object_name):
     # walk leaves the map empty at the moment it is needed and every synthesised accessor is silently
     # dropped. Read first, then walk.
     declared = header_properties(class_name)
+    # This object's own text, read once, for the body test below: a method counts as bound only where
+    # the file writes its body, and the file is the only thing that says so.
+    source = source_of(os.path.join(PORT_INCLUDE, object_name))
 
     def walk(node):
         if node.get("kind") == "ObjCPropertyImplDecl":
@@ -741,12 +839,15 @@ def port_methods(class_name, object_name):
         if node.get("kind") in ("ObjCMethodDecl", "ObjCInstanceMethodDecl", "ObjCClassMethodDecl"):
             selector = selector_of(node.get("mangledName", ""))
             loc = node.get("loc") or {}
-            # The PORT's side is a decl that came through no SDK header at all. There is no body test:
-            # this clang's JSON dump emits no "body" key for a method definition, so filtering on one
-            # finds nothing and the whole section passes with no rows. And a charon_ member is the port's
-            # own storage, which CharonHomeKitInternal.h says is not part of the release's surface.
-            if selector and loc.get("line") and not from_sdk(loc) and not selector.lstrip(
-                    "-+").startswith("charon_"):
+            # The PORT's side is a decl that came through no SDK header at all AND whose own source
+            # carries a body: the declaration and the definition of one method are the same kind of node
+            # here, so the file's own text is what tells them apart (writes_a_body). Without that half a
+            # member whose body was emptied still passes, on the strength of the declaration beside it.
+            # And a charon_ member is the port's own storage, which CharonHomeKitInternal.h says is not
+            # part of the release's surface.
+            if (selector and loc.get("line") and not from_sdk(loc)
+                    and not selector.lstrip("-+").startswith("charon_")
+                    and writes_a_body(source, node)):
                 found[selector] = loc["line"]
         for child in node.get("inner", []):
             walk(child)
@@ -853,6 +954,7 @@ def main():
 
     print("self-test: the helpers this check's own answers depend on")
     failures = self_test_selector_of()
+    failures.extend(self_test_writes_a_body())
     print("\nheader contract, from clang's AST of the SDK and of the port, for %s" % TARGET[0])
     for name, expected in sorted(EXPECTED.items()):
         # each class's own file: the properties arrive through that file's import, tagged with the SDK
@@ -999,6 +1101,52 @@ def main():
         else:
             print("  NOT caught: a 13.0 initialiser standing in for the 11.3 one went through unchecked")
             failures.append("the 13.0-in-11.3 mutant was not caught")
+
+    # The control this whole piece exists for: a member the object DECLARES and does not implement. The
+    # 11.3 object's -initWithURL: loses its body and gains a declaration of itself, which is what a person
+    # writes when they mean to implement it and do not. It compiles -- the header already declares the
+    # method, so the scratch copy is legal -- and the declaration is an ObjCMethodDecl in the port's own
+    # file, exactly like the definition was. Reading the decl alone cannot tell the two apart, so this is
+    # the mutation that says which of the two the check is reading; before the body test it went through
+    # as green, because a node of the right kind in the right file was all it took.
+    print("\ncontrol: an 11.3 member declared and not implemented")
+    with tempfile.TemporaryDirectory(dir=RUNS) as scratch:
+        stage(scratch, "HMAccessorySetupPayload")
+        eleven_scratch = os.path.join(scratch, SETUP_CLASSES["HMAccessorySetupPayload"]["11.3"])
+        with open(os.path.join(port, SETUP_CLASSES["HMAccessorySetupPayload"]["11.3"])) as handle:
+            text = handle.read()
+        definition = method_text(text, "- (instancetype)initWithURL:(NSURL *)setupPayloadURL")
+        # The declaration goes ABOVE the @implementation: an @interface inside one does not parse, and a
+        # scratch copy that does not compile would say nothing about the check either way.
+        declaration = ("@interface HMAccessorySetupPayload (Charon11_3DeclaredOnly)\n"
+                       "- (instancetype)initWithURL:(NSURL *)setupPayloadURL;\n"
+                       "@end\n\n"
+                       "@implementation HMAccessorySetupPayload\n")
+        broken = text.replace(definition + "\n", "").replace(
+            "@implementation HMAccessorySetupPayload\n", declaration, 1)
+        if definition not in text or declaration not in broken:
+            print("  the mutation did not apply, so it proves nothing")
+            failures.append("the declared-only control did not apply to the 11.3 object")
+        else:
+            with open(eleven_scratch, "w") as out:
+                out.write(broken)
+            original = (SETUP_CLASSES["HMAccessorySetupPayload"]["11.3"], PORT_INCLUDE)
+            try:
+                SETUP_CLASSES["HMAccessorySetupPayload"]["11.3"] = os.path.basename(eleven_scratch)
+                PORT_INCLUDE = scratch
+                declared_only, _ = compare_setup(verbose=False)
+            except SystemExit:
+                declared_only = None
+            finally:
+                SETUP_CLASSES["HMAccessorySetupPayload"]["11.3"], PORT_INCLUDE = original
+            if declared_only is None:
+                print("  the scratch copy does not compile, so this proves nothing either way")
+                failures.append("the declared-only control did not compile, so it proved nothing")
+            elif declared_only:
+                print("  control caught: %s" % "; ".join(declared_only))
+            else:
+                print("  control NOT caught: a member that is only DECLARED counted as bound")
+                failures.append("the declared-only control was not caught")
 
     # The control: a scratch copy with one attribute flipped. This must be caught, or nothing above is.
     # A missing member, not a flipped attribute: this port writes its accessors out by hand, and a method

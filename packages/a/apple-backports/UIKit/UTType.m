@@ -25,6 +25,14 @@
 
 @synthesize charon_identifier = _charon_identifier;
 
+// Carried by UTTypeDeclarations14.m, not by this object, so the auto-synthesis of a property this
+// implementation does not answer has to be turned off here: a synthesized accessor would be a second
+// definition of the selector the category already adds (and modules/apple/backports.lua counts a
+// category method only where the class does not answer the selector, so the class must not).
+@dynamic version;
+@dynamic referenceURL;
+@dynamic supertypes;
+
 + (instancetype)new
 {
     [NSException raise:NSInvalidArgumentException format:@"+[UTType new] is unavailable"];
@@ -203,4 +211,10 @@ __attribute__((constructor)) static void charon_uttype_constants(void)
     UTTypeUTF8PlainText = [UTType typeWithIdentifier:@"public.utf8-plain-text"];
     UTTypeImage = [UTType typeWithIdentifier:@"public.image"];
     UTTypePDF = [UTType typeWithIdentifier:@"com.adobe.pdf"];
+
+    // Handed to the index -[UTType supertypes] reads, with the constants of the catalogue files
+    // beside this one; see UIKit/UTTypeCatalogueIndex.m.
+    charon_uttype_catalogue_add(@[UTTypeItem, UTTypeContent, UTTypeData, UTTypeDirectory, UTTypeURL,
+                                  UTTypeFileURL, UTTypeText, UTTypePlainText, UTTypeUTF8PlainText,
+                                  UTTypeImage, UTTypePDF]);
 }

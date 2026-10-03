@@ -6,6 +6,7 @@
 
 @interface PDFPage ()
 - (CGPDFPageRef)charon_CGPDFPage;
+- (void)charon_buildAnnotations;
 @end
 
 @implementation PDFPage {
@@ -17,6 +18,9 @@
     // The CGPDFDocument itself, held strongly, because the CGPDFPage below belongs to it.
     CGPDFDocumentRef _documentRef;
     NSUInteger _index;
+    // The page's annotations, built once and handed out as a copy each time.  Strong, and not a cycle:
+    // an annotation's page is WEAK (PDFAnnotation.h:141), so page -> annotation -> page does not close.
+    NSArray *_annotations;
 }
 
 @synthesize pageIndex = _index;
@@ -335,27 +339,76 @@ static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
 // The page's ANNOTATIONS, built over the page's own /Annots array: each element is a dictionary
 // CoreGraphics already parsed, and each becomes a PDFAnnotation over that dictionary.  The order is the
 // array's own, which is the order the host hands them back in.
+//
+// AN ANNOTATION THE HOST DOES NOT SURFACE IS NOT IN THE ARRAY, which is a measured skip and not a
+// tolerance: the /Annots array of a fixture with thirteen annotations in it holds eleven that the host
+// never hands back, and this port used to hand back all thirteen.  Two shapes are skipped, and both
+// are measured over every subtype tried rather than over one:
+//
+//   no /Rect   a /Line, /Square, /Text, /Popup, /Ink, /Circle, /FreeText, /Stamp and /Link, each
+//              written with a /Contents and nothing else, is dropped - all nine, on one fixture.  /Rect
+//              is what PDF 1.7 Table 164 makes required of every annotation, so this is the format's
+//              own requirement and the host enforcing it.
+//   a /Line with no /L   the same fixture's /Line with a /Rect and no /L is dropped while a /Line with
+//              both is kept, so the line's own endpoints are as required for a /Line as the rectangle
+//              is for everything.
+//
+// A /Widget with no /FT is KEPT (the same fixture, one annotation), which is what stops the rule from
+// being "an annotation missing a required key is dropped": /FT is required of a widget by Table 8.39
+// and the host does not enforce it.  So the two shapes above are the measured rule and not the
+// format's.
 - (NSArray *)annotations
 {
+    if (_annotations == nil)
+        [self charon_buildAnnotations];
+    // A COPY each call, over objects built once.  Both halves are measured on the host, and they are two
+    // different halves: two calls answer two DIFFERENT arrays (arrays-same = 0 on every fixture) whose
+    // elements are the SAME objects (objects-same = 1), and a change made through one is visible through
+    // the other - a line width set on the first array's annotation reads back 9 on the second's, and a
+    // border assigned through the first is the very object the second answers.  So the objects are built
+    // once and kept, and the array is not: rebuilding the objects on every call, which is what this did
+    // before, makes every one of those answers unreachable through the API.
+    return _annotations != nil ? [_annotations copy] : @[];
+}
+
+- (void)charon_buildAnnotations
+{
+    _annotations = nil;
     if (_page == NULL)
-        return @[];
+        return;
     CGPDFDictionaryRef dictionary = CGPDFPageGetDictionary(_page);
-    if (dictionary == NULL)
-        return @[];
+    if (dictionary == NULL) {
+        _annotations = @[];
+        return;
+    }
     CGPDFArrayRef annots = NULL;
-    if (!CGPDFDictionaryGetArray(dictionary, "Annots", &annots) || annots == NULL)
-        return @[];
+    if (!CGPDFDictionaryGetArray(dictionary, "Annots", &annots) || annots == NULL) {
+        _annotations = @[];
+        return;
+    }
     size_t count = CGPDFArrayGetCount(annots);
     NSMutableArray *answer = [NSMutableArray arrayWithCapacity:count];
     for (size_t i = 0; i < count; i++) {
         CGPDFDictionaryRef annotation = NULL;
         if (!CGPDFArrayGetDictionary(annots, i, &annotation) || annotation == NULL)
             continue;
+        CGPDFArrayRef rect = NULL;
+        if (!CGPDFDictionaryGetArray(annotation, "Rect", &rect) || rect == NULL)
+            continue;
+        // a /Line whose endpoints are missing is skipped as well, and the /Subtype is read as the
+        // name the dictionary spells it with - the same spelling -type answers.
+        const char *subtype = NULL;
+        if (CGPDFDictionaryGetName(annotation, "Subtype", &subtype) && subtype != NULL
+            && strcmp(subtype, "Line") == 0) {
+            CGPDFArrayRef endpoints = NULL;
+            if (!CGPDFDictionaryGetArray(annotation, "L", &endpoints) || endpoints == NULL)
+                continue;
+        }
         PDFAnnotation *built = [[PDFAnnotation alloc] initWithCharonDictionary:annotation onPage:self];
         if (built != nil)
             [answer addObject:built];
     }
-    return answer;
+    _annotations = answer;
 }
 
 // The annotation COUNT is the length of that array: an array this release cannot answer, and a

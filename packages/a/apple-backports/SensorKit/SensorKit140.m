@@ -184,8 +184,19 @@ CHARON_VALUE_PROPERTY(SRDevice *, device)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
+// The class's own door, declared here because no SDK header declares it and the copy below is its
+// only caller. Both this and the registry row naming it are the shape registry/MPS graph.json uses for
+// the thirteen charon_ names its own files share.
+@interface SRFetchResult ()
+- (instancetype)initWithCharonValues:(NSDictionary *)values;
+@end
+
 @implementation SRFetchResult
 @dynamic timestamp, sample;
+CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(@"Not available")
+// The class's own framework refuses -init here, with the exception and the reason string the macro
+// carries, so the copy below cannot go through it either and takes the class's own door instead.
+CHARON_VALUE_COPY_INITIALISER
 CHARON_SCALAR_PROPERTY(SRAbsoluteTime, timestamp)
 // The header's SampleType is the class's lightweight generic parameter, an object; the value is held
 // in the store like every other member, so an archived result carries its sample through.
@@ -211,14 +222,10 @@ CHARON_VALUE_PROPERTY(id, sample)
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    // A value object: the copy is a new object with the same values under the same names.
-    id copy = [[[self class] allocWithZone:zone] init];
-    NSDictionary *values = CharonValueStore(self);
-    for (NSString *key in [values.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
-        id held = values[key];
-        CharonValueStore(copy)[key] = [held conformsToProtocol:@protocol(NSCopying)] ? [held copy] : held;
-    }
-    return copy;
+    // A value object: the copy is a new object with the same values under the same names. SRFetchResult
+    // is one of the fourteen classes whose own framework refuses -init, so the new object is made
+    // through the door the class keeps for itself.
+    return [[[self class] allocWithZone:zone] initWithCharonValues:CharonValueStore(self)];
 }
 
 @end

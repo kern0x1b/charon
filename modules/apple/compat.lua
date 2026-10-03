@@ -70,7 +70,13 @@ PROCESS_WIDE = {
 -- Calls every release exports whose meaning grew later: an older release has the symbol, so an import of it is no finding,
 -- but a caller that relies on what the call learned needs the shim, reached by name through its header.
 CHANGED = {
-    dispatch_get_global_queue = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"}
+    dispatch_get_global_queue = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    -- A barrier source's handler, which libdispatch-703 (iOS 10) runs as a barrier on its target queue and every release
+    -- before it runs beside that queue's other blocks, and the two records that answer as 10.0 does: the width of the queue
+    -- a queue is made with, and whether a source has been activated.
+    dispatch_queue_create = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    dispatch_resume = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    dispatch_source_set_event_handler = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"}
 }
 
 EMITTED = {

@@ -119,7 +119,10 @@ if [ "$differing" -eq 0 ]; then echo "  GREEN: every case answers what the host 
 # first cannot see a change in the second.
 plant=$build/plant
 rm -rf "$plant"; mkdir -p "$plant"
+# every header cases.m includes is copied beside it, or the mutated build cannot compile: an #include of a
+# header the plant does not have fails the build and the mutation is never asked.
 cp "$here/cases.m" "$plant/cases.m"
+for h in "$here"/*.h; do cp "$h" "$plant/$(basename "$h")"; done
 # shellcheck disable=SC2086
 for f in $files; do cp "$f" "$plant/$(basename "$f")"; done
 
@@ -164,6 +167,32 @@ git_dir=$plant/ImageIOSourceState7.m
   [ "$logged" -eq 0 ] || { echo "  NOT NOTICED  changing the inert row's log line and the once-check did not see it"; exit 1; }
   echo "  MUTATION 2: a changed log line empties the once-check, so that check can go red too"
 }
+# 3. the property table's own rows: a name changed in one row must move a case answer
+metadata_table=$plant/ImageIOMetadata7.m
+sed -i '' 's|"photoshop", "DateCreated" },  // kCGImagePropertyExifDateTimeOriginal|"photoshop", "DateCreatedCharonPlant" },  // kCGImagePropertyExifDateTimeOriginal|' "$metadata_table"
+hit=$(grep -c "DateCreatedCharonPlant" "$metadata_table" || true)
+[ "$hit" -eq 1 ] || { echo "FAIL  the third mutation changed nothing (the pattern is stale)"; exit 1; }
+build_plant "property table row" > /dev/null
+"$build/plantbin" > "$build/plant.out" 2>"$build/plant.err" || { echo "FAIL  the mutated port build raised"; exit 1; }
+grep -v '^PORTONLY' "$build/plant.out" > "$build/plant.cmp"
+if diff -q "$build/host.cmp" "$build/plant.cmp" > /dev/null; then
+  echo "  NOT NOTICED  changing a row of the property table and the comparison did not see it"; exit 1
+fi
+echo "  MUTATION 3: a changed name in one row of the property table moves a case answer, so the table can go red"
+
+# 4. the rule the table alone does not say: the lookup matches the namespace as well as the name, so
+#    dropping the namespace compare must move a case that asks for one name out of two namespaces
+sed -i '' 's|if (strcmp(xmlns, row\[2\]) == 0 \&\& strcmp(name, row\[4\]) == 0)|if (strcmp(name, row[4]) == 0)|' "$metadata_table"
+hit=$(grep -c 'if (strcmp(name, row\[4\]) == 0)' "$metadata_table" || true)
+[ "$hit" -eq 1 ] || { echo "FAIL  the fourth mutation changed nothing (the pattern is stale)"; exit 1; }
+build_plant "namespace compare" > /dev/null
+"$build/plantbin" > "$build/plant.out" 2>"$build/plant.err" || { echo "FAIL  the mutated port build raised"; exit 1; }
+grep -v '^PORTONLY' "$build/plant.out" > "$build/plant.cmp"
+if diff -q "$build/host.cmp" "$build/plant.cmp" > /dev/null; then
+  echo "  NOT NOTICED  dropping the namespace from the lookup's match and the comparison did not see it"; exit 1
+fi
+echo "  MUTATION 4: a lookup that matches names only moves a case answer, so the namespace rule can go red too"
+
 cp "$here/cases.m" "$plant/cases.m"
 
 echo "imageio-metadata: $n cases compared, $differing declared differences, mutation RED"

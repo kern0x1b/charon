@@ -30,7 +30,6 @@ Usage:
 import argparse
 import collections
 import hashlib
-import hashlib
 import json
 import os
 import re
@@ -170,7 +169,11 @@ def _names_for(here):
 def read_module(digester, module_dir, module, sdk, vfs, shims, workdir, search=(), extra_maps=(),
                 include_dirs=()):
     """One module's name index, written to workdir as the digester's own JSON, read back from there.
-    Returns (names, error)."""
+    Returns (names, conformances, error) -- three values on every path, error or not. It returned
+    two on the two failure paths below while the caller unpacked three, so a digester that exited
+    non-zero, or wrote JSON this could not parse, raised ValueError out of the run: the tool that
+    exists to report a module it could not read was the thing that fell over, and wrote no index,
+    so the module was absent from the output rather than named in `failures`."""
     handle, out_path = tempfile.mkstemp(suffix="-%s.json" % re.sub(r"\W", "_", module), dir=workdir)
     os.close(handle)
     try:
@@ -191,12 +194,17 @@ def read_module(digester, module_dir, module, sdk, vfs, shims, workdir, search=(
         out = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
                              errors="replace", timeout=1800)
         if out.returncode != 0:
-            return None, "swift-api-digester failed (%d): %s" % (out.returncode,
-                                                                  out.stderr.strip()[-300:])
+            # out.stdout, not out.stderr: stderr was merged into stdout three lines above, so
+            # out.stderr is None and reading it raised AttributeError out of this function -- the
+            # one failure this whole reader exists to report took the run down with a traceback and
+            # wrote no index at all, which is how a module that would not load became invisible
+            # instead of a line in `failures`.
+            return None, None, "swift-api-digester failed (%d): %s" % (
+                out.returncode, (out.stdout or "").strip()[-300:])
         with open(out_path, encoding="utf-8") as f:
             payload = json.load(f)
     except (ValueError, OSError) as error:
-        return None, "the digester's output for %s could not be read: %s" % (module, error)
+        return None, None, ("the digester's output for %s could not be read: %s" % (module, error))
     finally:
         os.unlink(out_path)
     return read_declarations(payload, module)
@@ -340,9 +348,6 @@ def main():
             if not os.path.exists(binary):
                 note("  %s/%s: no armv7-apple-ios.swiftmodule, not this port's target" % (owner, module))
                 continue
-            # Keyed over everything the content depends on: the module that is read, the digester
-            # that reads it, the overlay's shims, and this file. A change to any is a new cache file
-            # rather than a stale one nobody invalidates by hand.
             # Keyed over everything the content depends on, *this file's contents* included, not
             # its path: the reader's shapes changed twice today and a path-keyed cache kept serving
             # entries written by the older reader -- one of them a versioned record nested inside the
@@ -358,16 +363,32 @@ def main():
                 " ".join(owner_includes.get(owner, [])), TOOL_DIGEST,
             ]).encode()).hexdigest()[:16]
             cache_file = os.path.join(cache_dir, "%s-%s-%s.json" % (owner, module, key))
+            cached = None
             if os.path.exists(cache_file):
                 try:
                     with open(cache_file, encoding="utf-8") as f:
-                        names = json.load(f)
-                    modules[module] = names
-                    sources[module] = dict(package_of(binary), owner=owner, module=binary,
-                                          dylib=os.path.join(directory, "libswift%s.dylib" % module))
-                    continue
+                        cached = read_cache_record(json.load(f))
                 except ValueError:
-                    pass
+                    cached = None      # a file that is not JSON is a cache entry, not an answer
+                if cached is None:
+                    note("  %s/%s: the cache entry is not a record this reader wrote, read again"
+                         % (owner, module))
+            if cached is not None:
+                # read_cache_record, not json.load: what is stored is a versioned record, and
+                # handing the whole record on as the name index left `modules` holding
+                # {"version":.., "names":{..}} where every other reader expects {name: kind} --
+                # tolerated downstream, so nothing failed, and no conformances at all. A hit
+                # therefore placed every synthesised operator (X.==, X.<, from a conformance and
+                # from nothing else) as absent, and the index a warm run wrote was not the index
+                # the cold run before it wrote. dylib_there went missing the same way.
+                names, conformances = cached
+                modules[module] = names
+                all_conformances.update(conformances)
+                dylib = os.path.join(directory, "libswift%s.dylib" % module)
+                sources[module] = dict(package_of(binary), owner=owner, module=binary, dylib=dylib,
+                                       dylib_there=os.path.exists(dylib))
+                note("  %s/%s: %d declarations (from cache)" % (owner, module, len(names)))
+                continue
             names, conformances, error = read_module(digester, directory, module, args.sdk, args.vfs,
                                                     shims, workdir, search,
                                                     extra_maps + owner_maps.get(owner, []),
@@ -429,7 +450,7 @@ def main():
              "search-dirs": search, "extra-module-maps": extra_maps,
              "module-maps-for": owner_maps, "include-dirs-for": owner_includes, "modules": modules,
              "conformances": {k: sorted(set(v)) for k, v in all_conformances.items()},
-             "conformances": {k: sorted(set(v)) for k, v in all_conformances.items()}, "sources": sources, "failures": failures,
+             "sources": sources, "failures": failures,
              "references": references}
     path = os.path.join(args.out, "swift-modules.json")
     with open(path, "w", encoding="utf-8") as f:

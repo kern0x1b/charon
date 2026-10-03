@@ -42,6 +42,7 @@
     BOOL _collecting;
     BOOL _finished;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
 @dynamic workoutActivities;
 @dynamic allStatistics;
 

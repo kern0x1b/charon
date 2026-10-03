@@ -11,19 +11,13 @@
 
 #import "CharonMLCompute.h"
 
-// A CATEGORY and not a second @implementation of the class: a file-level
-// -Wincomplete-implementation pragma hides the warning, and the two objects then both define
-// _OBJC_CLASS_$_MLCAdamOptimizer, which ld64 refuses as a duplicate symbol the moment the library is
-// built. The coordinator found it by nm over the two objects; it is written here as the category it has to
-// be, and the pragma that hid it is not carried over.
-@interface MLCAdamOptimizer (CharonMLCAdamAMSGrad15)
-+ (instancetype)optimizerWithDescriptor:(MLCOptimizerDescriptor *)optimizerDescriptor
-                                  beta1:(float)beta1
-                                  beta2:(float)beta2
-                                epsilon:(float)epsilon
-                            usesAMSGrad:(BOOL)usesAMSGrad
-                               timeStep:(NSUInteger)timeStep;
-@end
+// A category and not a second @implementation of the class: MLCOptimizers14.m defines MLCAdamOptimizer, and
+// a class implementation here emitted _OBJC_CLASS_$_MLCAdamOptimizer a second time (nm over both objects),
+// with getters and ivars of its own beside the 14.0 ones. clang's note that a category implements a method
+// its primary class also implements is the release split itself - the primary class, MLCOptimizers14.m,
+// leaves this one factory out because it is 15.0's - and is silenced for that reason alone, as
+// PHPickerConfiguration15.m and MPSImageThreshold13.m silence it.
+#pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
 @implementation MLCAdamOptimizer (CharonMLCAdamAMSGrad15)
 

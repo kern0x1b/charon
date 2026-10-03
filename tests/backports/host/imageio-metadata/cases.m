@@ -13,6 +13,11 @@
 #import <ImageIO/ImageIO.h>
 #include <dlfcn.h>
 
+// Every (dictionary, property) pair the SDK's CGImageProperties.h declares, generated from it by
+// gen-property-pairs.py so the list cannot drift from the header. The property bridge below is
+// asked about all of them, and table.sh is where the same list is measured on the host alone.
+#include "property-pairs-all.h"
+
 static void record(NSString *name, NSString *answer)
 {
     printf("%s\t%s\n", name.UTF8String, answer.UTF8String);
@@ -108,6 +113,35 @@ static void dumpAll(const char *label, CGImageMetadataRef m)
             if (tags)
                 CFRelease(tags);
         }
+
+// Put a tag into a tree the way a caller holding XMP would: by its path, after registering the prefix when
+// the namespace is not one of the ten ImageIO declares a prefix for. Both builds answer the same question,
+// so a difference here is a difference in the library and not in the setup.
+static void put(CGImageMetadataRef metadata, CFStringRef ns, CFStringRef prefix, CFStringRef name, CFTypeRef value)
+{
+    CGImageMetadataRegisterNamespaceForPrefix(metadata, ns, prefix, NULL);
+    NSString *path = [NSString stringWithFormat:@"%@:%@", (__bridge NSString *)prefix, (__bridge NSString *)name];
+    if (!CGImageMetadataSetValueWithPath(metadata, NULL, (__bridge CFStringRef)path, value))
+        record([NSString stringWithFormat:@"PUT FAILED %@", path], @"(no)");
+}
+
+// Both functions of the image-property bridge, for one pair: the set direction's answer and the tag it
+// leaves behind, the lookup over that tree, and the lookup over an empty one.
+static void bridgeCase(CGImageMetadataRef one, CFStringRef dictionary, CFStringRef property)
+{
+    NSString *label = [NSString stringWithFormat:@"%@/%@", (__bridge NSString *)dictionary,
+                                                 (__bridge NSString *)property];
+    BOOL ok = CGImageMetadataSetValueMatchingImageProperty(one, dictionary, property, CFSTR("v"));
+    record([NSString stringWithFormat:@"set %@", label], ok ? @"true" : @"false");
+    dumpAll([NSString stringWithFormat:@"after set %@", label].UTF8String, one);
+    report([NSString stringWithFormat:@"lookup set %@", label],
+           CGImageMetadataCopyTagMatchingImageProperty(one, dictionary, property));
+    CGMutableImageMetadataRef nothing = CGImageMetadataCreateMutable();
+    report([NSString stringWithFormat:@"lookup empty %@", label],
+           CGImageMetadataCopyTagMatchingImageProperty(nothing, dictionary, property));
+    if (nothing)
+        CFRelease(nothing);
+}
 
 int main(void)
 {
@@ -377,6 +411,261 @@ int main(void)
             return YES;
         });
         record(@"enumerate missing root", none);
+
+        // MARK: the image-property bridge
+        // CGImageMetadataCopyTagMatchingImageProperty and CGImageMetadataSetValueMatchingImageProperty over
+        // every pair the header declares. 518 pairs, each in a fresh container: the set direction's answer,
+        // the tag it wrote, the lookup over that tree and the lookup over an empty one. A pair the host does
+        // not map answers false, writes nothing, and answers NULL for the lookup, and that is the header's
+        // own "Not all dictionaries and properties are supported at this time".
+        {
+            charon_pair pairs[600];
+            size_t npairs = charon_pairs(pairs);
+            record(@"bridge pairs", [NSString stringWithFormat:@"%lu", (unsigned long)npairs]);
+            for (size_t i = 0; i < npairs; i++) {
+                CGMutableImageMetadataRef one = CGImageMetadataCreateMutable();
+                bridgeCase(one, pairs[i].dictionary, pairs[i].property);
+                if (one)
+                    CFRelease(one);
+            }
+        }
+
+        // THE RULES THE TABLE ALONE DOES NOT SAY. Each of these is a pair the table answers, asked of a tree
+        // that holds something else as well, because a table that is right and a lookup that matches only
+        // names would agree on all 518 above and differ here.
+        {
+            CGMutableImageMetadataRef m = CGImageMetadataCreateMutable();
+            // one name, two namespaces: LensSerialNumber is exifEX's for kCGImagePropertyExifLensSerialNumber
+            // and aux's for kCGImagePropertyExifAuxLensSerialNumber, so the namespace is part of the match
+            put(m, CFSTR("http://cipa.jp/exif/1.0/"), CFSTR("exifEX"), CFSTR("LensSerialNumber"), CFSTR("e"));
+            report(@"namespace exifEX asked for ExifAux",
+                   CGImageMetadataCopyTagMatchingImageProperty(m, kCGImagePropertyExifAuxDictionary,
+                                                               kCGImagePropertyExifAuxLensSerialNumber));
+            report(@"namespace exifEX asked for Exif",
+                   CGImageMetadataCopyTagMatchingImageProperty(m, kCGImagePropertyExifDictionary,
+                                                               kCGImagePropertyExifLensSerialNumber));
+            if (m)
+                CFRelease(m);
+            CGMutableImageMetadataRef n = CGImageMetadataCreateMutable();
+            put(n, CFSTR("http://ns.adobe.com/exif/1.0/aux/"), CFSTR("aux"), CFSTR("LensSerialNumber"), CFSTR("a"));
+            report(@"namespace aux asked for Exif",
+                   CGImageMetadataCopyTagMatchingImageProperty(n, kCGImagePropertyExifDictionary,
+                                                               kCGImagePropertyExifLensSerialNumber));
+            report(@"namespace aux asked for ExifAux",
+                   CGImageMetadataCopyTagMatchingImageProperty(n, kCGImagePropertyExifAuxDictionary,
+                                                               kCGImagePropertyExifAuxLensSerialNumber));
+            if (n)
+                CFRelease(n);
+            CGMutableImageMetadataRef r = CGImageMetadataCreateMutable();
+            put(r, CFSTR("http://ns.adobe.com/xap/1.0/"), CFSTR("xmp"), CFSTR("Rating"), CFSTR("x"));
+            report(@"namespace xmp asked for IPTCStarRating",
+                   CGImageMetadataCopyTagMatchingImageProperty(r, kCGImagePropertyIPTCDictionary,
+                                                               kCGImagePropertyIPTCStarRating));
+            report(@"namespace xmp asked for IPTCExtRating",
+                   CGImageMetadataCopyTagMatchingImageProperty(r, kCGImagePropertyIPTCDictionary,
+                                                               kCGImagePropertyIPTCExtRating));
+            if (r)
+                CFRelease(r);
+            // both of the name: each pair answers its own tag and not the other's
+            CGMutableImageMetadataRef both = CGImageMetadataCreateMutable();
+            put(both, CFSTR("http://cipa.jp/exif/1.0/"), CFSTR("exifEX"), CFSTR("LensSerialNumber"), CFSTR("e"));
+            put(both, CFSTR("http://ns.adobe.com/exif/1.0/aux/"), CFSTR("aux"), CFSTR("LensSerialNumber"), CFSTR("a"));
+            report(@"both namespaces asked for Exif",
+                   CGImageMetadataCopyTagMatchingImageProperty(both, kCGImagePropertyExifDictionary,
+                                                               kCGImagePropertyExifLensSerialNumber));
+            report(@"both namespaces asked for ExifAux",
+                   CGImageMetadataCopyTagMatchingImageProperty(both, kCGImagePropertyExifAuxDictionary,
+                                                               kCGImagePropertyExifAuxLensSerialNumber));
+            if (both)
+                CFRelease(both);
+        }
+
+        // A PROPERTY'S OWN NAME IS NOT ITS TAG: kCGImagePropertyExifDateTimeOriginal maps to
+        // photoshop:DateCreated, so a tree holding only exif:DateTimeOriginal answers NULL and a tree
+        // holding both answers the mapped one whichever order they went in.
+        {
+            CGMutableImageMetadataRef own = CGImageMetadataCreateMutable();
+            put(own, kCGImageMetadataNamespaceExif, kCGImageMetadataPrefixExif, CFSTR("DateTimeOriginal"), CFSTR("e"));
+            report(@"own name only",
+                   CGImageMetadataCopyTagMatchingImageProperty(own, kCGImagePropertyExifDictionary,
+                                                               kCGImagePropertyExifDateTimeOriginal));
+            if (own)
+                CFRelease(own);
+            CGMutableImageMetadataRef mappedFirst = CGImageMetadataCreateMutable();
+            put(mappedFirst, kCGImageMetadataNamespacePhotoshop, kCGImageMetadataPrefixPhotoshop, CFSTR("DateCreated"),
+                CFSTR("p"));
+            put(mappedFirst, kCGImageMetadataNamespaceExif, kCGImageMetadataPrefixExif, CFSTR("DateTimeOriginal"),
+                CFSTR("e"));
+            report(@"mapped then own name",
+                   CGImageMetadataCopyTagMatchingImageProperty(mappedFirst, kCGImagePropertyExifDictionary,
+                                                               kCGImagePropertyExifDateTimeOriginal));
+            if (mappedFirst)
+                CFRelease(mappedFirst);
+            CGMutableImageMetadataRef ownFirst = CGImageMetadataCreateMutable();
+            put(ownFirst, kCGImageMetadataNamespaceExif, kCGImageMetadataPrefixExif, CFSTR("DateTimeOriginal"), CFSTR("e"));
+            put(ownFirst, kCGImageMetadataNamespacePhotoshop, kCGImageMetadataPrefixPhotoshop, CFSTR("DateCreated"),
+                CFSTR("p"));
+            report(@"own name then mapped",
+                   CGImageMetadataCopyTagMatchingImageProperty(ownFirst, kCGImagePropertyExifDictionary,
+                                                               kCGImagePropertyExifDateTimeOriginal));
+            if (ownFirst)
+                CFRelease(ownFirst);
+        }
+
+        // THE TOP LEVEL OF THE TREE, AND NOT INTO IT: a tag inside a structure's fields is not what the
+        // lookup answers, for the property's own name and for the name it maps to.
+        {
+            CGMutableImageMetadataRef m = CGImageMetadataCreateMutable();
+            CGImageMetadataRegisterNamespaceForPrefix(m, kCGImageMetadataNamespaceExif, kCGImageMetadataPrefixExif, NULL);
+            CGImageMetadataRegisterNamespaceForPrefix(m, kCGImageMetadataNamespacePhotoshop,
+                                                     kCGImageMetadataPrefixPhotoshop, NULL);
+            record(@"nested structure put",
+                   CGImageMetadataSetValueWithPath(m, NULL, CFSTR("exif:Sub"),
+                                                   (__bridge CFTypeRef)@{ @"DateTimeOriginal" : @"v" })
+                       ? @"yes"
+                       : @"no");
+            report(@"nested own name",
+                   CGImageMetadataCopyTagMatchingImageProperty(m, kCGImagePropertyExifDictionary,
+                                                               kCGImagePropertyExifDateTimeOriginal));
+            if (m)
+                CFRelease(m);
+            CGMutableImageMetadataRef n = CGImageMetadataCreateMutable();
+            CGImageMetadataRegisterNamespaceForPrefix(n, kCGImageMetadataNamespaceExif, kCGImageMetadataPrefixExif, NULL);
+            CGImageMetadataRegisterNamespaceForPrefix(n, kCGImageMetadataNamespacePhotoshop,
+                                                     kCGImageMetadataPrefixPhotoshop, NULL);
+            record(@"nested mapped name put",
+                   CGImageMetadataSetValueWithPath(n, NULL, CFSTR("exif:Sub"),
+                                                   (__bridge CFTypeRef)@{ @"DateCreated" : @"v" })
+                       ? @"yes"
+                       : @"no");
+            report(@"nested mapped name",
+                   CGImageMetadataCopyTagMatchingImageProperty(n, kCGImagePropertyExifDictionary,
+                                                               kCGImagePropertyExifDateTimeOriginal));
+            if (n)
+                CFRelease(n);
+        }
+
+        // THE PREFIX IS NOT PART OF THE MATCH: a tag whose namespace and name are the row's and whose
+        // prefix is one a caller registered is still the answer.
+        {
+            CGMutableImageMetadataRef m = CGImageMetadataCreateMutable();
+            put(m, CFSTR("http://cipa.jp/exif/1.0/"), CFSTR("charonprobe"), CFSTR("ISOSpeed"), CFSTR("v"));
+            report(@"custom prefix mapped namespace",
+                   CGImageMetadataCopyTagMatchingImageProperty(m, kCGImagePropertyExifDictionary,
+                                                               kCGImagePropertyExifISOSpeed));
+            if (m)
+                CFRelease(m);
+            CGMutableImageMetadataRef n = CGImageMetadataCreateMutable();
+            put(n, kCGImageMetadataNamespaceExif, CFSTR("charonprobe"), CFSTR("Flash"), CFSTR("v"));
+            report(@"custom prefix exif flash",
+                   CGImageMetadataCopyTagMatchingImageProperty(n, kCGImagePropertyExifDictionary,
+                                                               kCGImagePropertyExifFlash));
+            if (n)
+                CFRelease(n);
+        }
+
+        // THE VALUE DECIDES THE TYPE OF THE TAG THE SET DIRECTION WRITES, and a second set for the same
+        // pair keeps one tag and its second value.
+        {
+            const char *labels[3] = { "string", "number", "array" };
+            for (int v = 0; v < 3; v++) {
+                CGMutableImageMetadataRef m = CGImageMetadataCreateMutable();
+                CFTypeRef value = v == 0 ? CFSTR("v")
+                                 : v == 1 ? (__bridge CFTypeRef)@3
+                                          : (__bridge CFTypeRef)[NSArray arrayWithObjects:@"one", @"two", nil];
+                BOOL ok = CGImageMetadataSetValueMatchingImageProperty(m, kCGImagePropertyExifDictionary,
+                                                                       kCGImagePropertyExifISOSpeed, value);
+                NSString *label = [NSString stringWithFormat:@"%s", labels[v]];
+                record([NSString stringWithFormat:@"value %@ set", label], ok ? @"true" : @"false");
+                report([NSString stringWithFormat:@"value %@ tag", label],
+                       CGImageMetadataCopyTagMatchingImageProperty(m, kCGImagePropertyExifDictionary,
+                                                                   kCGImagePropertyExifISOSpeed));
+                if (m)
+                    CFRelease(m);
+            }
+            CGMutableImageMetadataRef twice = CGImageMetadataCreateMutable();
+            BOOL first = CGImageMetadataSetValueMatchingImageProperty(twice, kCGImagePropertyExifDictionary,
+                                                                      kCGImagePropertyExifDateTimeOriginal,
+                                                                      CFSTR("one"));
+            BOOL second = CGImageMetadataSetValueMatchingImageProperty(twice, kCGImagePropertyExifDictionary,
+                                                                       kCGImagePropertyExifDateTimeOriginal,
+                                                                       CFSTR("two"));
+            record(@"set twice", [NSString stringWithFormat:@"%d %d", (int)first, (int)second]);
+            dumpAll(@"after set twice", twice);
+            if (twice)
+                CFRelease(twice);
+        }
+
+        // A DICTIONARY AND A PROPERTY NO HEADER DECLARES, AND A PROPERTY THE HEADER DECLARES AND THE TABLE
+        // DOES NOT CARRY: all three are "not supported at this time", and all three write nothing.
+        {
+            CGMutableImageMetadataRef m = CGImageMetadataCreateMutable();
+            record(@"no such dictionary set",
+                   CGImageMetadataSetValueMatchingImageProperty(m, CFSTR("NoSuchDictionary"),
+                                                                kCGImagePropertyTIFFOrientation, CFSTR("v"))
+                       ? @"true"
+                       : @"false");
+            record(@"no such property set",
+                   CGImageMetadataSetValueMatchingImageProperty(m, kCGImagePropertyTIFFDictionary, CFSTR("NoSuchProperty"),
+                                                                CFSTR("v"))
+                       ? @"true"
+                       : @"false");
+            dumpAll(@"after no such pair", m);
+            report(@"no such dictionary lookup",
+                   CGImageMetadataCopyTagMatchingImageProperty(m, CFSTR("NoSuchDictionary"),
+                                                               kCGImagePropertyTIFFOrientation));
+            report(@"no such property lookup",
+                   CGImageMetadataCopyTagMatchingImageProperty(m, kCGImagePropertyTIFFDictionary, CFSTR("NoSuchProperty")));
+            CGMutableImageMetadataRef unmapped = CGImageMetadataCreateMutable();
+            put(unmapped, kCGImageMetadataNamespaceExif, kCGImageMetadataPrefixExif, CFSTR("DensityUnit"), CFSTR("d"));
+            report(@"unmapped property holding its name",
+                   CGImageMetadataCopyTagMatchingImageProperty(unmapped, kCGImagePropertyJFIFDictionary,
+                                                               kCGImagePropertyJFIFDensityUnit));
+            record(@"unmapped property set",
+                   CGImageMetadataSetValueMatchingImageProperty(unmapped, kCGImagePropertyJFIFDictionary,
+                                                                kCGImagePropertyJFIFDensityUnit, CFSTR("v"))
+                       ? @"true"
+                       : @"false");
+            dumpAll(@"after unmapped property", unmapped);
+            if (m)
+                CFRelease(m);
+            if (unmapped)
+                CFRelease(unmapped);
+        }
+
+        // A container that is not this library's, and the _Nonnull arguments the host traps on: both are the
+        // port's own guards, so they are recorded on their own and dropped from the comparison.
+#ifdef CHARON_PORT
+        record(@"PORTONLY bridge foreign metadata",
+               CGImageMetadataSetValueMatchingImageProperty((__bridge CGMutableImageMetadataRef)
+                                                                [NSDictionary dictionary],
+                                                            kCGImagePropertyTIFFDictionary,
+                                                            kCGImagePropertyTIFFOrientation, CFSTR("v"))
+                   ? @"true"
+                   : @"false");
+        record(@"PORTONLY bridge foreign copy",
+               CGImageMetadataCopyTagMatchingImageProperty((__bridge CGImageMetadataRef)[NSDictionary dictionary],
+                                                           kCGImagePropertyTIFFDictionary,
+                                                           kCGImagePropertyTIFFOrientation)
+                   ? @"answered"
+                   : @"(nil)");
+        record(@"PORTONLY bridge null value",
+               CGImageMetadataSetValueMatchingImageProperty(CGImageMetadataCreateMutable(),
+                                                            kCGImagePropertyTIFFDictionary,
+                                                            kCGImagePropertyTIFFOrientation, NULL)
+                   ? @"true"
+                   : @"false");
+        record(@"PORTONLY bridge null dictionary",
+               CGImageMetadataSetValueMatchingImageProperty(CGImageMetadataCreateMutable(), NULL,
+                                                            kCGImagePropertyTIFFOrientation, CFSTR("v"))
+                   ? @"true"
+                   : @"false");
+        record(@"PORTONLY bridge null property copy",
+               CGImageMetadataCopyTagMatchingImageProperty(CGImageMetadataCreateMutable(),
+                                                           kCGImagePropertyTIFFDictionary, NULL)
+                   ? @"answered"
+                   : @"(nil)");
+#endif
 
         if (sourceTags)
             CFRelease(sourceTags);

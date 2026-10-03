@@ -56,6 +56,7 @@
     BOOL _finished;
     BOOL _discarded;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
 
 - (instancetype)initWithHealthStore:(HKHealthStore *)healthStore
                        quantityType:(HKQuantityType *)quantityType
