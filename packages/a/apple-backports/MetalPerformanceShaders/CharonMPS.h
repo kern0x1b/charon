@@ -434,14 +434,48 @@ static inline double CharonMPSNeuronA(const CharonMPSNeuron *neuron, NSUInteger 
 
 // A temporary resource's read count, decremented by a kernel that reads it, as MPSCommandBuffer.h and
 // MPSMatrix.h document: each -encode.. that reads a temporary decrements it, and a count of zero means
-// the storage may be reused. A non-temporary matrix or vector has no read count of its own and is
-// never recycled, so its count is left alone.
+// the storage may be reused. A non-temporary matrix, vector or image has no read count of its own and
+// is never recycled, so its count is left alone.
+//
+// MPSTemporaryImage is in this list, and it is here rather than in each kernel so that no kernel has to
+// remember which temporaries this framework has. MPSImage.h:1030-1036 is the header's own statement
+// that it belongs: "each time a MPSTemporaryImage is read by a MPSCNNKernel -encode... method, its
+// readCount is automatically decremented". The class carries the count - MPSImage.h:1051 declares
+// @property (readwrite, nonatomic) NSUInteger readCount on MPSTemporaryImage and on no other image -
+// and MPSImageElements10.m answers -readCount and -setReadCount:, so a kernel that read one and left
+// the count alone would leave the count describing a use that has already happened.
+//
+// WHAT WAS MEASURED, and what could not be. The number this rests on is the port's own, measured by
+// tests/backports/host/mpstemporary/run.sh: a temporary image at readCount 2 answers 2 after
+// -setReadCount:2 (so the reader is alive and a zero cannot come from a dead one), an encode that
+// reads it answers 1 and the next answers 0, and a plain MPSImage through the same kernel answers
+// nothing at all - MPSImage.h declares no readCount on it - so it is left alone.
+//
+// THE RELEASE ANSWERED NOTHING ON THIS HOST, and the case prints the selector rather than a number.
+// Every path that makes an MPSTemporaryImage out of Apple's own MPS on this machine - the class
+// method of MPSImage.h:955-975 with a texture descriptor, the same with an MPSImageDescriptor, and
+// [MPSTemporaryImage defaultAllocator]'s -imageForCommandBuffer:imageDescriptor:kernel: of
+// MPSImage.h:230-249 - raises
+//
+//     -[AGXG16XFamilyCommandBuffer_mtlnext userDictionary]: unrecognized selector
+//
+// out of MPSAutoTexture::InitDeferredUsingTextureCache, while +[MPSImage initWithDevice:imageDescriptor:]
+// on the same command buffer answers an MPSImage and [MPSTemporaryImage defaultAllocator] answers
+// MPSTemporaryImageDefaultAllocator. So there is no release-side number for this decrement to be
+// compared against on this machine, the header's sentence is the only statement of it, and the case
+// says which rather than implying one.
 static inline void CharonMPSConsumeReadCount(id object)
 {
     if ([object isKindOfClass:[MPSTemporaryMatrix class]] || [object isKindOfClass:[MPSTemporaryVector class]]) {
         NSUInteger count = [(MPSTemporaryVector *)object readCount];
         if (count)
             [(MPSTemporaryVector *)object setReadCount:count - 1];
+        return;
+    }
+    if ([object isKindOfClass:[MPSTemporaryImage class]]) {
+        NSUInteger count = [(MPSTemporaryImage *)object readCount];
+        if (count)
+            [(MPSTemporaryImage *)object setReadCount:count - 1];
     }
 }
 
