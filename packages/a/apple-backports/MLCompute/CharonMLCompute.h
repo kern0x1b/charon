@@ -44,3 +44,41 @@ NSArray<NSNumber *> *CharonMLCStrideOfShape(NSArray<NSNumber *> *shape, MLCDataT
 // and the first MLCLayer of a process are 0 and every later one is one higher (measured).
 NSUInteger CharonMLCNextTensorID(void);
 NSUInteger CharonMLCNextLayerID(void);
+
+// What an MLCOptimizer and its subclasses hold: the descriptor's numbers and the ones of the subclass,
+// in one object. It is named Charon*, so the gate weighs none of it against a release and asks the
+// registry about none of it, and the three seams below are the registered names an application never
+// calls. They are declared here rather than in the object that defines them because three objects of
+// this library read them: the 14.0 object that holds the state, the 15.0 object that adds AdamW, and the
+// object that carries the one factory the SDK annotates "ios(15)".
+@interface CharonMLCOptimizerState : NSObject
+@property (readwrite, nonatomic) float learningRate;
+@property (readwrite, nonatomic) float gradientRescale;
+@property (readwrite, nonatomic) BOOL appliesGradientClipping;
+@property (readwrite, nonatomic) MLCGradientClippingType gradientClippingType;
+@property (readwrite, nonatomic) float gradientClipMax;
+@property (readwrite, nonatomic) float gradientClipMin;
+@property (readwrite, nonatomic) MLCRegularizationType regularizationType;
+@property (readwrite, nonatomic) float regularizationScale;
+@property (readwrite, nonatomic) float maximumClippingNorm;
+@property (readwrite, nonatomic) float customGlobalNorm;
+@property (readwrite, nonatomic) float momentumScale;
+@property (readwrite, nonatomic) BOOL usesNesterovMomentum;
+@property (readwrite, nonatomic) float beta1;
+@property (readwrite, nonatomic) float beta2;
+@property (readwrite, nonatomic) float epsilon;
+@property (readwrite, nonatomic) BOOL usesAMSGrad;
+@property (readwrite, nonatomic) NSUInteger timeStep;
+@end
+
+@interface MLCOptimizer (CharonMLCOptimizerState)
+// The numbers this optimizer holds. An optimizer that has not been given any yet is given the measured
+// defaults of the family, which is what the base class's own +new and -init answer on this host.
+- (CharonMLCOptimizerState *)charon_mlc_state;
+// Give this optimizer the descriptor's numbers, over the measured defaults of the family. A nil
+// descriptor is the defaults and nothing else.
+- (void)charon_mlc_takeStateFrom:(MLCOptimizerDescriptor *)descriptor;
+// An optimizer of the given class holding a copy of another's numbers, which is what -copyWithZone:
+// answers.
++ (instancetype)charon_mlc_optimizerOfClass:(Class)cls copying:(MLCOptimizer *)other;
+@end
