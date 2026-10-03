@@ -1810,10 +1810,11 @@
    "kind": "method",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITraitCollection a method like it: it arrived in iOS 18",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "implemented on a class the PORT owns: UITraitCollection is absent from both band ends, so a member of it is a member of the port's own class and there is no release behaviour to be faithful to. What 18.0 added is the constructor for the trait the port already carries on both sides - UITraitListEnvironment is implemented with minimum 6.0 (UITraitList18.m) and -listEnvironment is implemented by that store's reader (UITraitCollection+Traits17.m:239) - so the constructor is one call to the store's own writer, +traitCollectionWithNSIntegerValue:forTrait: (UITraitCollection+Traits17.m:321), and what it writes is what the getter reads. Not validated, because the store does not validate and the system does not either: an out-of-range value is stored and read back unchanged",
+   "effect": "the value is stored under the trait's own name, ListEnvironment, and read back by -listEnvironment and by the colour appearance that names the trait; the collection a caller gets is a real trait collection, not a copy of itself. An unset collection answers the trait's own default, 0, which is what Unspecified is: measured on the system, Unspecified leaves no ListEnvironment in the collection's description at all while every other case has one",
+   "source": "the host's own UIKit under Mac Catalyst, one collection per line, .agent-work/runs/w-uikit-18/probe-listenv.m compiled for arm64-apple-ios18.0-macabi: Unspecified/None/Plain/Grouped read back 0/1/2/3 with the trait named in the description, 99 and -1 are stored and read back unchanged with no exception, and a collection with nothing set answers 0 with no ListEnvironment either; the enum's four cases are in the same run. The release side, for why there is no release behaviour to copy: class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597, with seven selector controls green on both - UITableView is in both and reads -reloadData, so the absence of UITraitCollection is the release's and not the reader's. The object's own compile: 0 lines matching ' error: ' at armv7-apple-ios6.1.3 and armv7-apple-ios4.3 with the flags modules/apple/backports.lua assembles",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "-[NSAttributedString prefersRTFDInRange:]",
