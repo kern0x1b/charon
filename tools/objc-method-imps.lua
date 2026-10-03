@@ -140,10 +140,11 @@ end
 --
 -- nil when the address does not hold text, so a caller never prints a sentence it did not read.
 local function literal_at(cache, address)
-    -- An address no image of the cache holds is not something this reader can read as text, and read_address
-    -- raises on one rather than answering nil, so the question is asked of the image table first: that is
-    -- what keeps a body whose adrp+add names a gap between the images from ending the run.
-    if not dyld.image_at(cache, address) then
+    -- Whether the cache can be read here is asked before it is read: read_address raises on an address
+    -- outside every mapping rather than answering nil, and an adrp+add of a body can name one (measured).
+    -- cache.mapped is the cache's own predicate for that, and a mapping is not an image: the text a
+    -- __cfstring names can sit in a mapping no single image's segments cover.
+    if not cache.mapped(address, 32) then
         return nil
     end
     local held = cache.read_address(address, 32)
@@ -152,7 +153,8 @@ local function literal_at(cache, address)
     end
     local _, _, pointer, length = string.unpack("<I8I8I8I8", held, 1)
     local target = pointer & 0x7FFFFFFFFFF
-    if target == 0 or target <= address then
+    -- The same question of the text the record names, for the same reason.
+    if target == 0 or target <= address or not cache.mapped(target, 1) then
         return nil
     end
     local text = cache.read_address(target, 256)
@@ -183,15 +185,17 @@ local function name_of(cache, address)
     local inside = held and #held >= 12 and handed_to(disassemble(held), address) or nil
     local reached
     if inside and inside.kind == "slot" then
-        local slot = cache.read_address(inside.address, 8)
+        -- The slot's address comes out of the thunk's adrp and add, and one that lands outside every
+        -- mapping ends the run otherwise (measured).
+        local slot = cache.mapped(inside.address, 8) and cache.read_address(inside.address, 8) or nil
         reached = slot and (string.unpack("<I8", slot, 1) & 0x7FFFFFFFFFF) or nil
     elseif inside and inside.kind == "branch" then
         reached = inside.address
     end
-    -- The same guard for a thunk's slot: what a slot holds is followed only where an image of the cache
--- holds the address it names (measured: the slot a HomeKit thunk reads is tagged 0x80090000 and the
-    -- low half is not an address any image holds), and the thunk is reported as what it is when it is not.
-    if reached and not dyld.image_at(cache, reached) then
+    -- What a slot holds is followed only where the cache is mapped: the slot a HomeKit thunk reads is
+    -- tagged 0x80090000 and its low half is not an address any mapping holds (measured), and the call is
+    -- then reported as what it is - one whose callee this cache does not name.
+    if reached and not cache.mapped(reached, 1) then
         reached = nil
     end
     if reached then
