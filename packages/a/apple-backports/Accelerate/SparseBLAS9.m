@@ -33,9 +33,6 @@
 #import <Accelerate/Accelerate.h>
 #include "CharonSparseBLAS.h"
 
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-#pragma clang diagnostic ignored "-Wunguarded-availability"
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 typedef struct sparse_m_float CharonSparseFloatMatrix;
 typedef struct sparse_m_double CharonSparseDoubleMatrix;

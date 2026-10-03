@@ -49,9 +49,6 @@
 #include "CharonSparseBLAS.h"
 #include "CharonSparseComplex.h"
 
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-#pragma clang diagnostic ignored "-Wunguarded-availability"
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 // ---------------------------------------------------------------- shape of a matrix
 

@@ -27,7 +27,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 #define RENAME(name) charon_host_##name
 
