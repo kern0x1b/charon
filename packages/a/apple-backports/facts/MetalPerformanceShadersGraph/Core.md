@@ -246,10 +246,10 @@ written, in `MPSGraph14.m` and in the interpreter beside it: the transcendentals
 six comparisons and the six logicals, the three questions about a value, the two remainders, a minimum, a
 maximum, a division that answers no NaN, the select, the clamp, a ReLU and a sigmoid with their gradients.
 Every one of them is asked over the case file's sixteen input classes in `MPSDataTypeFloat32` and in
-`MPSDataTypeFloat16`, and **24 of the 53 come back with every cell of every case agreeing with the release in both
+`MPSDataTypeFloat16`, and **32 of the 53 come back with every cell of every case agreeing with the release in both
 types** - the row of each is in the registry, and the run's verdict line is
-`port: same as the system on 3600 of the 3808 cells with a result buffer; 3392 within the release's own
-precision, 208 recorded` with `checks=128 failures=0`.
+`port: same as the system on 3642 of the 3808 cells with a result buffer; 3476 within the release's own
+precision, 166 recorded` with `checks=128 failures=0`.
 
 **A predicate's result is a boolean and the logical family's is not.** Measured on this host's own
 MPSGraph over a rank-3 float32 operand: `isNaN`, `isFinite`, `isInfinite`, `equal`, `notEqual`,
@@ -392,9 +392,37 @@ reason a tolerance is safe here: the plant is every stored element off by one wh
 which is between 10^6 and 10^38 units in the last place, so no tolerance anywhere near one or two can hide
 it.
 
+### What a NaN, an infinity and a zero are in half, per operation
+
+The release's half kernels do not agree with each other about a NaN, and each of them answers it its own
+way. Measured over the case file's thirty-two classes, `CharonMPSGraphHalfNaNOf` in the interpreter is the
+table, one entry per kind, and this is what it says:
+
+| a kind's answer in half for a NaN operand | the kinds | measured |
+| --- | --- | --- |
+| an infinity of the NaN's own sign | the arithmetic family (`abs`, `identity`, `add`, `subtract`, `square`), and `ceil`, `floor`, `round`, `select`, a ReLU's gradient, a ReLU | `0x7e00` is `0x7c00` and `0xfe00` is `0xfc00` |
+| an infinity of the other sign | `negative` | the negation of `0x7e00` is `0xfc00` and of `0xfe00` is `0x7c00` |
+| a zero | `sin`, `cos`, `logBase2` | each of `0x7e00` and `0xfe00` is `0x0000`, and so is each of them of an infinity of either sign |
+| the canonical positive NaN | `asin`, `acos`, `asinh`, `acosh`, `atanh` | the arcsine, the hyperbolic arc-sine and the hyperbolic arc-tangent of `0xfe00` are `0x7e00` |
+| a saturation at the NaN's sign | `erf`, `tanh` | `erf(0x7e00)` is `0x3c00` and `erf(0xfe00)` is `0xbc00`; the hyperbolic tangent the same |
+| a saturation at one whatever the sign | `power` | a power of an infinity, of a NaN and of a negative ordinary value are all `0x3c00` |
+| one for a positive NaN and a zero for a negative one | `sigmoid` | `sigmoid(0x7e00)` is `0x3c00` and `sigmoid(0xfe00)` is `0x0000` |
+| read off the bit rather than off the class | `sqrt`, `sign` | the square root of `0x7e00` is `0x7c00` and of `0xfe00` is `0x0000`, and the sign of a NaN is the sign of the NaN |
+
+**A zero is a positive zero in half, for every kind and not per operation.** Measured: the ceiling and the
+floor and the sine of a positive zero, a product of a negative zero, the negation of a negative zero, a
+maximum of `-1.0` and `-0.0`, a select whose value is a negative zero, a ReLU's gradient of a negative
+ordinary source and an error function of a positive zero are each `0x0000`, where IEEE answers a zero of
+the operand's own sign. The rule is applied after the half block and before the store, so it also covers
+the kinds the half block does not reach.
+
+Together the table and that rule take the run from 208 recorded cells to 166 and make **32 of the 58 cases
+of this family clean in every type**: the six comparisons and the four orderings are clean in float32 only,
+and the six remainders' float32 answers are the recorded group the previous pass measured.
+
 ### The recorded cells, grouped
 
-`tests/backports/host/mpsgraph/recorded-cells.txt` names each of the 208 with the two runs' bytes, read
+`tests/backports/host/mpsgraph/recorded-cells.txt` names each of the 166 with the two runs' bytes, read
 out of the run's own outputs by `.agent-work/record.py`. They are of three kinds, and none of them is a
 tolerance:
 
