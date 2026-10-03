@@ -8,6 +8,10 @@
 @implementation HMAction
 @synthesize charon_identifier = _charon_identifier;
 
+// -init, as the release's own class answers it: the body read out of the arm64e cache of iOS 16.0 is
+// `[self initWithUUID:[NSUUID UUID]]`, so an action made this way carries an identifier nobody supplied,
+// which is what a fresh action has, and it is not a raise. The header closes -init; Apple's class does
+// not. facts/HomeKit/HMAccessoryProfile.md carries the body and the names out of it.
 - (instancetype)init
 {
     self = [super init];

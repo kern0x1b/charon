@@ -19,6 +19,18 @@ both selectors, HealthKit's define -init and inherit +new, and AVFoundation's on
 (AVCaptureDeviceDiscoverySession) defines -init with an answer of nil rather than a refusal and inherits
 +new - the last new value of `port-init`, `nil`, next to `raise` and `none`.
 
+THE ANSWER a measured -init gives is the table's `port-init` column, and there are four of them, because
+four different bodies were measured out of the release's own code:
+
+  raise     the macro raises the measured exception with the measured reason, and the object's own
+            instance list carries -init;
+  nil       the macro answers nil and the object carries -init - not the SensorKit shape and not the
+            HealthKit one: six of HomeKit's own classes release the receiver and answer nil, which is a
+            third body and is read out of the code rather than off the header;
+  construct the class's block defines -init of its own, because the release builds the object here rather
+            than refusing or answering nothing, and the object carries it;
+  none      Apple's class carries the selector nowhere, so the port defines neither (unchanged).
+
 For each class two things are asked, and they fail differently, which is why both are:
 
   * THE SOURCE. The class's @implementation block must carry the macro the table names for every selector
@@ -116,6 +128,13 @@ def check_source(body, row, package, problems):
                 problems.append("%s is defined here and Apple's own class carries neither: a definition "
                                 "would answer the caller what NSObject's already answers" % selector)
             continue
+        # A body the release builds is written in the class, not in a macro: what the release does there
+        # is its own construction, and the port's answer is the port's own construction.
+        if owed == "construct":
+            if selector == "init" and not defined_by_hand:
+                problems.append("the table says the release builds the object in -init and the block does "
+                                "not define one")
+            continue
         if row["port-macro"] == "-":
             problems.append("the table says %s is owed and names no macro for it" % selector)
             continue
@@ -135,6 +154,17 @@ def check_source(body, row, package, problems):
             problems.append("%s is owed and the block does not answer with %s"
                             % (selector, row["port-macro"]))
             continue
+        if owed == "nil":
+            # The measured body answers nil: `[self release]; return nil` in the release's own code, and
+            # the port answers nil. A macro that raised here would be a different body, and a macro that
+            # forwarded to [super init] would be NSObject's answer, which is the third thing it is not.
+            if "raise" in definition or "NSException" in definition:
+                problems.append("the measured body answers nil and the macro raises")
+            if not re.search(r"\breturn\s+nil\s*;", definition):
+                problems.append("the measured body answers nil and the macro does not return nil")
+            if "[super init]" in definition:
+                problems.append("the measured body answers nil and the macro forwards to NSObject's -init")
+            continue
         if row["exception"] not in definition:
             problems.append("the measured exception is %s and the macro raises something else"
                             % row["exception"])
@@ -144,10 +174,17 @@ def check_source(body, row, package, problems):
         # that is how the six HealthKit classes produce six different sentences from one line.
         if row.get("reason-template"):
             if ('@"' + row["reason-template"] + '"') not in definition:
-                problems.append("the measured reason is built from the class name as %r and the macro "
-                                "carries no such format string" % row["reason-template"])
-            if "NSStringFromClass([self class])" not in definition:
+                problems.append("the measured reason is built as %r and the macro carries no such "
+                                "format string" % row["reason-template"])
+            # Which value fills the template is the measurement's own: HealthKit's six sentences name the
+            # class, so the macro has to read it off the receiver; HomeKit's two name the selector, so
+            # the macro has to read the selector instead. A sentence that names the class is the half that
+            # tells them apart, and the table's reason column is that sentence.
+            if row["class"] in row["reason"] and "NSStringFromClass([self class])" not in definition:
                 problems.append("the measured reason names the class and the macro does not read it")
+            if row["class"] not in row["reason"] and "NSStringFromSelector(_cmd)" not in definition:
+                problems.append("the measured reason does not name the class and the macro does not read "
+                                "the selector, which is what fills it")
         elif row["reason"] and ('@"' + row["reason"] + '"') not in body \
                 and ('@"' + row["reason"] + '"') not in definition:
             problems.append("the reason measured is %r and neither the block nor the macro carries it"
@@ -156,13 +193,16 @@ def check_source(body, row, package, problems):
 
 def check_object(carried, row, selector, problems):
     """The selector is either owed or not, and `owed` is what the row's answer was: `raise` for the classes
-    whose own -init refuses, `nil` for the one whose own -init answers nil and raises nothing, `none` for a
-    selector Apple's own class does not define and every class inherits. The three are the same question with
-    three answers, so they are one branch."""
+    whose own -init refuses, `nil` for the classes whose own -init answers nil and raises nothing, `construct` for a
+    class whose own -init builds the object, `none` for a selector Apple's own class does not define and every
+    class inherits. The four are the same question with four answers, so they are one branch."""
     kind = "instance" if selector == "init" else "class"
     there = ("-" + selector) in carried[kind]
+    # Every answer that is a definition asks for the selector in the object's own list: raise, nil and
+    # construct all mean the port defines the method, and which body it has is what the source check and
+    # the plants are about.
     owed = row["port-" + selector]
-    if owed in ("raise", "nil") and not there:
+    if owed in ("raise", "nil", "construct") and not there:
         problems.append("%s is not in the class's %s list of %s, and the measured answer is %s"
                         % (selector, kind, row["port-object"], owed))
     elif owed == "none" and there:

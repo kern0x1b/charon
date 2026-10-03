@@ -62,6 +62,42 @@ CHARON_HOMEKIT_CONSTRUCTION(HMNumberRange)
 
 #undef CHARON_HOMEKIT_CONSTRUCTION
 
+// **-init, where Apple's own class has one and the header closes it.** The 26.2 headers mark `-init`
+// NS_UNAVAILABLE on the classes above, which decides nothing at run time, and Apple's own class
+// implements it on ten of them. What it does is read out of the code of the arm64e cache of iOS 16.0 -
+// facts/HomeKit/HMAccessoryProfile.md carries every body, the literal each one names and the symbol the
+// call resolves to - and the port answers with that body rather than with NSObject's, which is what a
+// caller reaches today and which is a different answer for all ten. Three shapes, and nothing else:
+//
+//   * six of them - HMActionSet, HMHome, HMRoom, HMServiceGroup, HMTimerTrigger, HMZone - release the
+//     receiver and answer nil (`_objc_release` with the receiver in x0, then x0 = 0). ARC has no
+//     `[self release]` and the port does not perform one, so what a caller reaches is nil, which is
+//     what the body makes observable;
+//   * two of them - HMAccessControl, HMUser - raise `NSInternalInconsistencyException` whose reason is
+//     Apple's own sentence for the selector, built by `+[NSString stringWithFormat:@"%@ is
+//     unavailable", NSStringFromSelector(_cmd)]`. It is built from the selector and not written out,
+//     because that is how the framework builds it, and the sentence a caller sees is then "init is
+//     unavailable";
+//   * the other two - HMAction, HMHomeManager - construct, and each answers with the port's own
+//     construction rather than with a macro, in the file that defines the class.
+//
+// +new is not in this header and is not in any of those classes: the metaclass of all ten carries no
+// +new of its own in the cache of iOS 16.0, so each of them inherits NSObject's, which is `[[self
+// alloc] init]` and therefore reaches the -init measured above.
+#define CHARON_HOMEKIT_NIL_INIT                                                             \
+    -(instancetype)init                                                                     \
+    {                                                                                      \
+        return nil;                                                                        \
+    }
+
+#define CHARON_HOMEKIT_UNAVAILABLE_INIT                                                     \
+    -(instancetype)init                                                                     \
+    {                                                                                      \
+        [NSException raise:NSInternalInconsistencyException                                 \
+                        format:@"%@ is unavailable", NSStringFromSelector(_cmd)];           \
+        return nil;                                                                        \
+    }
+
 // The identifier of an object as the type Apple's headers give it, and as the string the store keys it
 // by. HomeKit's uniqueIdentifier family is an NSUUID; a property list holds strings; every accessor is
 // written with this pair, so a record's key and the value handed back cannot disagree about which.

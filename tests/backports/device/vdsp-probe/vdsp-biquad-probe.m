@@ -43,7 +43,13 @@ static uint32_t bits_of(const void *p, size_t n)
     return h;
 }
 
-static void report(const char *what, const void *a, size_t an, const void *b, size_t bn, const char *note)
+// **The first differing index is printed in ELEMENTS, always, with both values at it.** An earlier version
+// printed whole-array hashes and named a byte only when the two sides were the same length and at most 64
+// bytes - which is why a run whose ten failures were all one defect could not say where they were: the two
+// sides were 512 bytes of which 384 were unwritten, so the hashes were of different garbage. `width` is the
+// element size, so the index printed is the sample.
+static void report(const char *what, const void *a, size_t an, const void *b, size_t bn, const char *note,
+                   size_t width)
 {
     checks++;
     if (an == bn && memcmp(a, b, an) == 0) {
@@ -52,15 +58,41 @@ static void report(const char *what, const void *a, size_t an, const void *b, si
     }
     failures++;
     printf("FAIL %s%s%s\n", what, note[0] ? " - " : "", note);
-    printf("     the release's bytes %08x, the port's %08x\n", bits_of(a, an), bits_of(b, bn));
-    if (an == bn && an <= 64) {
+    printf("     the release's bytes %08x over %zu, the port's %08x over %zu\n", bits_of(a, an), an,
+           bits_of(b, bn), bn);
+    if (an == bn) {
         const uint8_t *pa = (const uint8_t *)a, *pb = (const uint8_t *)b;
-        for (size_t i = 0; i < an; i++)
-            if (pa[i] != pb[i]) {
-                printf("     first differs at byte %zu: the release %02x, the port %02x\n", i, pa[i], pb[i]);
+        for (size_t i = 0; i < an; i += width)
+            if (memcmp(pa + i, pb + i, width) != 0) {
+                uint64_t va = 0, vb = 0;
+                memcpy(&va, pa + i, width);
+                memcpy(&vb, pb + i, width);
+                printf("     first differs at index %zu: the release 0x%llx, the port 0x%llx\n", i / width,
+                       (unsigned long long)va, (unsigned long long)vb);
                 break;
             }
+    } else {
+        printf("     the two sides are %zu and %zu bytes, so there is no index in common\n", an, bn);
     }
+}
+
+// **The red control's plant, read once.** `VDSPPROBE_PLANT_ULP=<n>` moves the port's float answer at sample
+// `n` by one unit in the last place, after the call and before the comparison, so the float case has to go
+// red AND name that index. It is the comparison's sensitivity this tests, not the port's arithmetic: the
+// bytes the port wrote are untouched, and the plant moves them in this file's own copy of them.
+static int plant_ulp = -1;
+static int plant_applied;
+
+static void maybe_plant_ulp(float *y, size_t count)
+{
+    plant_applied = 0;
+    if (plant_ulp < 0 || (size_t)plant_ulp >= count)
+        return;
+    int32_t bits;
+    memcpy(&bits, &y[plant_ulp], sizeof bits);
+    bits += 1;
+    memcpy(&y[plant_ulp], &bits, sizeof bits);
+    plant_applied = 1;
 }
 
 void charon_probe_vDSP_sve_svesq(const float *a, vDSP_Stride ia, float *sum, float *sumsquares, vDSP_Length n);
@@ -96,15 +128,29 @@ static void run_float(const char *label, const double *coeffs, vDSP_Length secti
     }
     // two calls on one setup, so the carried state is compared too
     for (int call = 0; call < 2; call++) {
+        // **Both answers are zeroed before every call, and only the SAMPLES the call writes are compared.**
+        // The arrays are SAMPLES * 4 long because the strided case reads four times as far into `x`, and a
+        // first version compared `sizeof host_y` - 128 floats for a call that writes 32 - so 96 unwritten
+        // floats on each side were compared and each side's unwritten tail is its own stack: ten red cases
+        // on the 6.1.3 guest that were neither the release nor the port. The delay, which is compared
+        // exactly, was ok on every case, and the search's per-sample comparison over the 32 written samples
+        // reported 0 of 32 differing - which is what said so.
+        memset(host_y, 0, sizeof host_y);
+        memset(port_y, 0, sizeof port_y);
         vDSP_biquad((const struct vDSP_biquad_SetupStruct *)host, host_delay, x, stride, host_y, 1, SAMPLES);
         charon_probe_vDSP_biquad((const struct vDSP_biquad_SetupStruct *)port, port_delay, x, stride, port_y, 1, SAMPLES);
+        maybe_plant_ulp(port_y, SAMPLES);
         char note[80];
         snprintf(note, sizeof note, "%s, %d sections, stride %ld, call %d", label, (int)sections, (long)stride, call);
-        report(note, host_y, sizeof host_y, port_y, sizeof port_y, "the samples, bit for bit");
+        report(note, host_y, SAMPLES * sizeof(float), port_y, SAMPLES * sizeof(float), "the samples, bit for bit",
+               sizeof(float));
+        if (plant_applied)
+            printf("     the red control's plant moved the port's sample %d by one ULP before this "
+                   "comparison\n", plant_ulp);
         char delay_note[96];
         snprintf(delay_note, sizeof delay_note, "%s, %d sections, call %d", label, (int)sections, call);
         report(delay_note, host_delay, (2 * (sections + 1)) * sizeof(float), port_delay,
-               (2 * (sections + 1)) * sizeof(float), "the Delay the call left behind, bit for bit");
+               (2 * (sections + 1)) * sizeof(float), "the Delay the call left behind, bit for bit", sizeof(float));
     }
     vDSP_biquad_DestroySetup(host);
     charon_probe_vDSP_biquad_DestroySetup(port);
@@ -129,15 +175,17 @@ static void run_double(const char *label, const double *coeffs, vDSP_Length sect
         return;
     }
     for (int call = 0; call < 2; call++) {
+        memset(host_y, 0, sizeof host_y);
+        memset(port_y, 0, sizeof port_y);
         vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)host, host_delay, x, 1, host_y, 1, SAMPLES);
         charon_probe_vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)port, port_delay, x, 1, port_y, 1, SAMPLES);
         char note[80];
         snprintf(note, sizeof note, "%s, %d sections, call %d", label, (int)sections, call);
-        report(note, host_y, sizeof host_y, port_y, sizeof port_y, "the samples, bit for bit");
+        report(note, host_y, sizeof host_y, port_y, sizeof port_y, "the samples, bit for bit", sizeof(double));
         char delay_note[96];
         snprintf(delay_note, sizeof delay_note, "%s, %d sections, call %d", label, (int)sections, call);
         report(delay_note, host_delay, (2 * (sections + 1)) * sizeof(double), port_delay,
-               (2 * (sections + 1)) * sizeof(double), "the Delay the call left behind, bit for bit");
+               (2 * (sections + 1)) * sizeof(double), "the Delay the call left behind, bit for bit", sizeof(double));
     }
     vDSP_biquad_DestroySetupD(host);
     charon_probe_vDSP_biquad_DestroySetupD(port);
@@ -152,11 +200,14 @@ static void run_specials(void)
     for (int i = 0; i < 4; i++) { host_delay[i] = 0.0f; port_delay[i] = 0.0f; }
     vDSP_biquad_Setup host = vDSP_biquad_CreateSetup(kUnstable, 1);
     vDSP_biquad_Setup port = charon_probe_vDSP_biquad_CreateSetup(kUnstable, 1);
+    memset(host_y, 0, sizeof host_y);
+    memset(port_y, 0, sizeof port_y);
     vDSP_biquad((const struct vDSP_biquad_SetupStruct *)host, host_delay, x, 1, host_y, 1, 8);
     charon_probe_vDSP_biquad((const struct vDSP_biquad_SetupStruct *)port, port_delay, x, 1, port_y, 1, 8);
     report("a NaN and signed zeroes, one section", host_y, sizeof host_y, port_y, sizeof port_y,
-           "by bit pattern, because NaN never equals NaN and -0 equals +0");
-    report("the same call's Delay", host_delay, sizeof host_delay, port_delay, sizeof port_delay, "by bit pattern");
+           "by bit pattern, because NaN never equals NaN and -0 equals +0", sizeof(float));
+    report("the same call's Delay", host_delay, sizeof host_delay, port_delay, sizeof port_delay, "by bit pattern",
+           sizeof(float));
     vDSP_biquad_DestroySetup(host);
     charon_probe_vDSP_biquad_DestroySetup(port);
 }
@@ -944,7 +995,13 @@ static void sve_search_reductions(void)
 
 int main(int argc, char **argv)
 {
+    const char *plant = getenv("VDSPPROBE_PLANT_ULP");
+    int plant_index = plant && *plant ? atoi(plant) : -1;
     @autoreleasepool {
+        if (plant && *plant)
+            printf("probe: the red control's plant is on: sample %s of the port's float answer is moved by one "
+                   "ULP before it is compared\n", plant);
+        plant_ulp = plant_index;
         printf("probe: vDSP_biquad on the guest, the release against the port\n");
         printf("probe: minimum = %s\n", [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String]);
         run_float("the stable filter", kStable, 1, 1);

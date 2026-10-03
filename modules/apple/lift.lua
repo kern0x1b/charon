@@ -67,6 +67,59 @@ local function framework_headers(sdk, framework)
     return table.join(files, generation_headers(sdk, framework))
 end
 
+-- The overlay entries that carry the nested frameworks of the frameworks read: a framework inside another's
+-- Frameworks folder. clang resolves an include of one from the directory of the header that asks for it and not
+-- from a framework search path (`#import <MPSCore/MPSCore.h>` in MetalPerformanceShaders.h), so a header this
+-- lift stages - written under the output folder, outside the framework it belongs to - is asked for the nested
+-- framework where the SDK keeps it, and there is nothing there: the include fails by name. Measured on
+-- iPhoneOS16.4.sdk, where the whole lift stopped on that one import.
+--
+-- So an overlay over a staged tree carries each nested framework at the path a staged header reaches it by, and
+-- carries every header of it: the staged copy where the lift wrote one (staged names them, so the enumeration
+-- cannot name a copy that was never written) and the SDK's own file where it did not, since a nested framework
+-- is reachable only through the header that asks for it and a file missing from the tree fails the same way.
+-- Only the public Frameworks folder of a framework the lift read is walked: a PrivateFramework is no header a
+-- lifted one imports, and no SDK's Headers reaches one.
+--
+-- staging is the folder the staged tree hangs from (<outputdir>/headers, <outputdir>/expand), staged the files
+-- of it by the SDK path they were read from.
+local function nested_frameworks(sdk, frameworks, staging, staged)
+    local function contents(folder)
+        local files, folders = {}, {}
+        for _, file in ipairs(os.files(path.join(folder, "*"))) do
+            table.insert(files, file)
+        end
+        -- os.filedirs is the one that lists a folder, and it lists files as well, so each of its entries is asked
+        for _, item in ipairs(os.filedirs(path.join(folder, "*"))) do
+            if os.isdir(item) then
+                table.insert(folders, item)
+            end
+        end
+        table.sort(files)
+        table.sort(folders)
+        local entries = {}
+        for _, file in ipairs(files) do
+            table.insert(entries, {type = "file", name = path.filename(file), ["external-contents"] = staged[file] or file})
+        end
+        for _, sub in ipairs(folders) do
+            table.insert(entries, {type = "directory", name = path.filename(sub), contents = contents(sub)})
+        end
+        return entries
+    end
+    local roots = {}
+    for _, framework in ipairs(frameworks) do
+        local nested = path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Frameworks")
+        for _, one in ipairs(os.filedirs(path.join(nested, "*.framework"))) do
+            local headers = path.join(one, "Headers")
+            if os.isdir(one) and os.isdir(headers) then
+                table.insert(roots, {type = "directory", name = path.join(staging, path.relative(headers, sdk)),
+                                     contents = contents(headers)})
+            end
+        end
+    end
+    return roots
+end
+
 -- The public headers of the SDK's usr/include that bring in what charon@apple-compat carries: every file that names a
 -- symbol followed by a paren outside a directive, as a module map reaches it - the file itself where a module map names
 -- it as a header, the umbrella header of its folder where one covers the folder. A header a module map lists that another
@@ -876,7 +929,7 @@ end
 -- the expansions, and is not lowered. A use a language does not reach (inside #ifdef __OBJC__) is not read by it either.
 -- headers: the SDK's headers read, whose conditionals say which predefined macros they test. files: {file, lines, sites}
 -- each. Answers found[site] = expansion or {branches}, refused[site] = why.
-local function expander(opt, headers, languages)
+local function expander(opt, frameworks, headers, languages)
     -- The macros each language predefines (clang -dM on an empty input), and of those whose presence differs between
     -- the languages the ones the SDK's own #if, #ifdef, #ifndef and #elif test, most tested first.
     local empty = path.join(opt.outputdir, "empty.h")
@@ -908,7 +961,7 @@ local function expander(opt, headers, languages)
         return tested[a] ~= tested[b] and tested[a] > tested[b] or tested[a] == tested[b] and a < b
     end)
     return function (files)
-        local all, roots = {}, {}
+        local all, roots, staged = {}, {}, {}
         for _, item in ipairs(files) do
             local insertions = {}
             for _, site in ipairs(item.sites) do
@@ -937,11 +990,16 @@ local function expander(opt, headers, languages)
             local folder = path.directory(item.file)
             roots[folder] = roots[folder] or {}
             table.insert(roots[folder], {type = "file", name = path.filename(item.file), ["external-contents"] = copy})
+            staged[item.file] = copy
         end
         local overlay = {version = 0, ["case-sensitive"] = "false", roots = {}}
         for _, folder in ipairs(table.orderkeys(roots)) do
             table.insert(overlay.roots, {type = "directory", name = folder, contents = roots[folder]})
         end
+        -- the nested frameworks too, for the reason nested_frameworks() gives: this preprocesses the same
+        -- umbrella, out of the same staged headers, and clang resolves a nested framework from the staged header
+        local expand = path.join(opt.outputdir, "expand")
+        table.join2(overlay.roots, nested_frameworks(opt.sdk, frameworks, expand, staged))
         local vfs = path.join(opt.outputdir, "expand.yaml")
         json.savefile(vfs, overlay)
         local forms, texts = {}, {}
@@ -1230,10 +1288,14 @@ end
 -- A type the headers alone declare - an enumeration, a set of options, a structure - has no entry in the registry: the
 -- backports carry nothing of it. It comes down when every API of the SDK that uses it and is above the port's release is
 -- implemented, to the latest minimum among those; one that is not, or a use that cannot be told, keeps it where it is.
-local function type_marks(node)
+--
+-- A case or a field the registry names is a member of its type, and it follows the rule a class entry already follows for
+-- the members of its surface: one with an entry of its own that is not implemented keeps its own mark, and only that
+-- one. kept is the registry's non-implemented names, as computed() holds them.
+local function type_marks(node, kept)
     local found = marks(node)
     for _, child in ipairs(node.inner or {}) do
-        if child.kind == "EnumConstantDecl" or child.kind == "FieldDecl" then
+        if (child.kind == "EnumConstantDecl" or child.kind == "FieldDecl") and not (kept and kept[child.name]) then
             table.join2(found, marks(child))
         end
     end
@@ -1340,8 +1402,12 @@ end
 -- its name (a block or a function pointer), or a type that still carries an attribute the release does not replace.
 -- The attributes a declaration node carries, by clang's own kind, and the ones a redeclaration here cannot carry.
 -- AvailabilityAttr is written by member_declaration() itself, and SwiftPrivateAttr is written as the macro the SDK
--- spells, so both are carried; every other attribute is a fact about the declaration this cannot repeat, and a
--- redeclaration without it would say something the SDK does not.
+-- spells, so both are carried. ObjCNSObjectAttr is carried on a property, which is what the redeclaration needs and
+-- where member_declaration() writes it: __attribute__((NSObject)) is what tells clang a CF type is an object, and a
+-- property that keeps `retain` without it does not compile (measured on iPhoneOS16.4.sdk: the AVQueuedSampleBuffer-
+-- Rendering timebase, whose redeclaration was refused with "property with 'retain (or strong)' attribute must be of
+-- object type" while the SDK's own declaration, which spells the attribute, compiles). On a method the dump says the
+-- attribute is there but not which of its types it belongs to, so it is still refused there.
 local function attributes_of(node)
     local found = {}
     for _, child in ipairs((node or {}).inner or {}) do
@@ -1353,6 +1419,16 @@ local function attributes_of(node)
 end
 
 local CARRIED_ATTRIBUTES = {AvailabilityAttr = true, SwiftPrivateAttr = true}
+
+-- The attributes a redeclaration of one kind of declaration carries, by clang's own attribute kind: a property's
+-- also carries ObjCNSObjectAttr, which member_declaration() writes (see there); anything else carries what every
+-- declaration carries.
+local function carried_attributes(kind)
+    if kind == "ObjCPropertyDecl" then
+        return {AvailabilityAttr = true, SwiftPrivateAttr = true, ObjCNSObjectAttr = true}
+    end
+    return CARRIED_ATTRIBUTES
+end
 
 -- The accessors of a carried property that no row carries, and so which the class would not answer.
 --
@@ -1396,8 +1472,9 @@ end
 
 function uncarried_attributes(node)
     local left = {}
+    local carried = carried_attributes(node.kind)
     for _, kind in ipairs(attributes_of(node)) do
-        if not CARRIED_ATTRIBUTES[kind] then
+        if not carried[kind] then
             table.insert(left, kind)
         end
     end
@@ -1453,8 +1530,13 @@ function member_declaration(member, name, target)
         -- inside the property's own attribute list, where clang reads the expansion as an unknown property attribute.
         -- The fact is clang's attribute kind; what is written is the macro's name, as a header spells it.
         local refined = has_attribute(member, "SwiftPrivateAttr") and "NS_REFINED_FOR_SWIFT " or ""
-        return string.format("@property (%s) %s %s %sAPI_AVAILABLE(ios(%s));", table.concat(attributes, ", "), type,
-                             name, refined, target)
+        -- __attribute__((NSObject)) is the SDK's own spelling of the attribute, on the property's type, where a
+        -- header puts it: @property (retain, readonly) __attribute__((NSObject)) CMTimebaseRef timebase; (all 20 of
+        -- them in iPhoneOS16.4.sdk and 22 in iPhoneOS26.2.sdk are properties spelled this way). Without it a CF type
+        -- is not an object to clang and `retain` is refused, so the redeclaration would not compile.
+        local object = has_attribute(member, "ObjCNSObjectAttr") and "__attribute__((NSObject)) " or ""
+        return string.format("@property (%s) %s%s %s %sAPI_AVAILABLE(ios(%s));", table.concat(attributes, ", "), object,
+                             type, name, refined, target)
     end
     local parameters, parts = {}, {}
     for _, child in ipairs(member.inner or {}) do
@@ -1742,7 +1824,7 @@ local function computed(opt)
     mark("conformer")
     local languages = languages_of(opt)
     mark("languages")
-    local expand = expander(opt, header_files(opt.sdk, frameworks), languages)
+    local expand = expander(opt, frameworks, header_files(opt.sdk, frameworks), languages)
     mark("expander")
     local kept, entries = {}, {}
     for api, entry in pairs(listed) do
@@ -2556,7 +2638,7 @@ local function computed(opt)
         end
         local above = false
         for _, node in ipairs(declared) do
-            for _, mark in ipairs(type_marks(node)) do
+            for _, mark in ipairs(type_marks(node, kept)) do
                 above = above or later(mark.introduced, opt.minimum)
             end
         end
@@ -2575,16 +2657,21 @@ local function computed(opt)
         end
         local above = false
         for _, node in ipairs(declared) do
-            for _, mark in ipairs(type_marks(node)) do
+            for _, mark in ipairs(type_marks(node, kept)) do
                 above = above or later(mark.introduced, opt.minimum)
             end
         end
-        if above then
+        -- A type the registry names itself is not a type the headers alone declare, and a name that is not implemented
+        -- keeps its release and everything it owns: the check over the overlay refuses a kept name that moved, which is
+        -- what CoreML's MLMultiArrayDataType is (iPhoneOS16.4.sdk, measured: "MLMultiArrayDataTypeFloat is inert and
+        -- was lowered from iOS 14.0 to 6.1.3", and the type and its other three cases beside it).
+        local own = listed[name]
+        if above and (not own or own.status == "implemented") then
             local blocking, target = users(name, declared, {})
             if #blocking == 0 then
                 lowered_types[name] = target
                 for _, node in ipairs(declared) do
-                    for _, mark in ipairs(type_marks(node)) do
+                    for _, mark in ipairs(type_marks(node, kept)) do
                         place(mark, target)
                     end
                 end
@@ -2598,7 +2685,7 @@ local function computed(opt)
     -- The copies: each mark rewritten where its macro was written - the release inside ios(...) or the positional argument
     -- lift_macro knows, and for any other macro its own expansion at that place, with the release lowered. Only the
     -- places our marks name change: a macro's definition, and every other place it is used, stay as the SDK wrote them.
-    local roots, lifted = {}, 0
+    local roots, staged, lifted = {}, {}, 0
     for file, categories in pairs(redeclared) do
         edits[file] = edits[file] or {}
     end
@@ -2722,6 +2809,7 @@ local function computed(opt)
         local folder = path.directory(file)
         roots[folder] = roots[folder] or {}
         table.insert(roots[folder], {type = "file", name = path.filename(file), ["external-contents"] = copy})
+        staged[file] = copy
     end
     mark("rewrite:write")
     -- marked, so that no edit at all still writes `"roots": []`, which clang reads, not `{}`, which it refuses
@@ -2732,6 +2820,11 @@ local function computed(opt)
     for _, folder in ipairs(folders) do
         table.insert(overlay.roots, {type = "directory", name = folder, contents = roots[folder]})
     end
+    -- and the nested frameworks, for the reason nested_frameworks() gives: every staged header above is carried
+    -- at the SDK's own path, where clang finds it by its framework's name, and a nested framework is found by no
+    -- such path - only from the directory of the header that asks for it, which is the staged tree's
+    local staging = path.join(opt.outputdir, "headers")
+    table.join2(overlay.roots, nested_frameworks(opt.sdk, frameworks, staging, staged))
     local vfs = path.join(opt.outputdir, "vfs.yaml")
     json.savefile(vfs, overlay)
     mark("rewrite:prefetch")
@@ -2782,7 +2875,7 @@ local function computed(opt)
     for name, target in pairs(lowered_types) do
         for _, node in ipairs(latest(dump(name, vfs))) do
             if (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and (node.name or node._qualified) == name then
-                for _, mark in ipairs(type_marks(node)) do
+                for _, mark in ipairs(type_marks(node, kept)) do
                     if later(mark.introduced, target) then
                         table.insert(failures, string.format("the type %s still says iOS %s", name, mark.introduced))
                     end

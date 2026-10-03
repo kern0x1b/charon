@@ -5,7 +5,7 @@
 // SensorKit of iOS 26.0, the properties that arrived then.
 @implementation SRAcousticSettings
 @dynamic environmentalSoundMeasurementsEnabled, audioExposureSampleLifetime, headphoneSafetyAudioLevel, musicEQSettings, accessibilitySettings;
-CHARON_SCALAR_PROPERTY(BOOL, environmentalSoundMeasurementsEnabled)
+CHARON_SCALAR_GETTER(BOOL, environmentalSoundMeasurementsEnabled, isEnvironmentalSoundMeasurementsEnabled)
 CHARON_SCALAR_PROPERTY(SRAcousticSettingsSampleLifetime, audioExposureSampleLifetime)
 CHARON_VALUE_PROPERTY(NSNumber *, headphoneSafetyAudioLevel)
 CHARON_VALUE_PROPERTY(SRAcousticSettingsMusicEQ *, musicEQSettings)
@@ -17,7 +17,7 @@ CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @implementation SRAcousticSettingsAccessibility
 @dynamic leftRightBalance, monoAudioEnabled, backgroundSounds, headphoneAccommodations;
 CHARON_SCALAR_PROPERTY(double, leftRightBalance)
-CHARON_SCALAR_PROPERTY(BOOL, monoAudioEnabled)
+CHARON_SCALAR_GETTER(BOOL, monoAudioEnabled, isMonoAudioEnabled)
 CHARON_VALUE_PROPERTY(SRAcousticSettingsAccessibilityBackgroundSounds *, backgroundSounds)
 CHARON_VALUE_PROPERTY(SRAcousticSettingsAccessibilityHeadphoneAccommodations *, headphoneAccommodations)
 @end
@@ -26,19 +26,19 @@ CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRAcousticSettingsAccessibilityBackgroundSounds
 @dynamic enabled, soundName, relativeVolume, playWithMediaEnabled, relativeVolumeWithMedia, stopOnLockEnabled;
-CHARON_SCALAR_PROPERTY(BOOL, enabled)
+CHARON_SCALAR_GETTER(BOOL, enabled, isEnabled)
 CHARON_SCALAR_PROPERTY(SRAcousticSettingsAccessibilityBackgroundSoundsName, soundName)
 CHARON_SCALAR_PROPERTY(double, relativeVolume)
-CHARON_SCALAR_PROPERTY(BOOL, playWithMediaEnabled)
+CHARON_SCALAR_GETTER(BOOL, playWithMediaEnabled, isPlayWithMediaEnabled)
 CHARON_SCALAR_PROPERTY(double, relativeVolumeWithMedia)
-CHARON_SCALAR_PROPERTY(BOOL, stopOnLockEnabled)
+CHARON_SCALAR_GETTER(BOOL, stopOnLockEnabled, isStopOnLockEnabled)
 @end
 @implementation SRAcousticSettingsAccessibilityBackgroundSounds (CharonSensorKitValue)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRAcousticSettingsAccessibilityHeadphoneAccommodations
 @dynamic enabled, mediaEnhanceTuning, mediaEnhanceBoosting, mediaEnhanceApplication;
-CHARON_SCALAR_PROPERTY(BOOL, enabled)
+CHARON_SCALAR_GETTER(BOOL, enabled, isEnabled)
 CHARON_SCALAR_PROPERTY(SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceTuning, mediaEnhanceTuning)
 CHARON_SCALAR_PROPERTY(SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceBoosting, mediaEnhanceBoosting)
 CHARON_SCALAR_PROPERTY(SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceApplication, mediaEnhanceApplication)
@@ -48,8 +48,8 @@ CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRAcousticSettingsMusicEQ
 @dynamic soundCheckEnabled, lateNightModeEnabled;
-CHARON_SCALAR_PROPERTY(BOOL, soundCheckEnabled)
-CHARON_SCALAR_PROPERTY(BOOL, lateNightModeEnabled)
+CHARON_SCALAR_GETTER(BOOL, soundCheckEnabled, isSoundCheckEnabled)
+CHARON_SCALAR_GETTER(BOOL, lateNightModeEnabled, isLateNightModeEnabled)
 @end
 @implementation SRAcousticSettingsMusicEQ (CharonSensorKitValue)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
