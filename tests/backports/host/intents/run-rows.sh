@@ -7,7 +7,8 @@
 # the SDK's header forbids naming that selector at compile time and the port's own emitted body is
 # built around the same restriction.  factory-rows.m reads the six release-13 rows of
 # registry/Intents/ios16.json that the file listed as absent with a reason about a group of the
-# delivery.
+# delivery.  intents12-rows.m reads the twelve members of the iOS 12.0 group that the generator
+# writes by hand, including whether each completion handler runs before the call returns.
 #
 # BOTH PROGRAMS LINK -framework Intents, and that is not decoration.  A first attempt at
 # factory-rows.m read the four classes with NSClassFromString from a program that did not link the
@@ -55,3 +56,68 @@ for section in destination resolution file usercontext; do
         echo "intents rows:   the $section section was killed, so the host does not answer it" | tee -a "$build/factory-rows.log"
     fi
 done
+
+# The twelve members of the 12.0 group that gen-intents.py's EXTRA_METHODS writes by hand.  One
+# PROCESS PER SECTION and one per receiver: intents12-rows.m's own comment gives the measurement that
+# showed a single process cannot measure two receivers of the same member.
+echo "intents rows: building the 12.0 group harness"
+xcrun clang $flags "$here/intents12-rows.m" -framework Intents -framework Foundation -o "$build/intents12-rows"
+: > "$build/intents12-rows.log"
+
+# The reader's own two controls first.  A class the system does not carry must read ABSENT, or a
+# harness that measured nothing is indistinguishable from one that measured an answer; and all five
+# classes must be found, or every section below is the reader's blindness rather than the host's.
+"$build/intents12-rows" classes | tee -a "$build/intents12-rows.log"
+classes_line=$("$build/intents12-rows" classes)
+case "$classes_line" in
+    *INCharonNoSuchClassForThisHarness=0*) : ;;
+    *) echo "intents rows: FAIL the system answered for a class it does not carry: $classes_line"
+       exit 1 ;;
+esac
+for want in INShortcut INVoiceShortcut INVoiceShortcutCenter INRelevantShortcutStore INUpcomingMediaManager; do
+    case "$classes_line" in
+        *"$want=1"*) : ;;
+        *) echo "intents rows: FAIL the system does not answer for $want, so the sections below would be blind"
+           exit 1 ;;
+    esac
+done
+# ABSENT and IMP non-NULL are matched as a whole line, so an empty output cannot pass: a harness that
+# printed nothing would leave the case below unmatched and fail, rather than look like a control
+# that agreed.
+absent_line=$("$build/intents12-rows" absent-control)
+echo "$absent_line" | tee -a "$build/intents12-rows.log"
+case "$absent_line" in
+    *ABSENT*) : ;;
+    *) echo "intents rows: FAIL the harness answered for a class the system does not carry: $absent_line"
+       exit 1 ;;
+esac
+object_line=$("$build/intents12-rows" object-control)
+echo "$object_line" | tee -a "$build/intents12-rows.log"
+case "$object_line" in
+    *"IMP non-NULL"*) : ;;
+    *) echo "intents rows: FAIL a class whose header marks nothing unavailable did not answer: $object_line"
+       exit 1 ;;
+esac
+echo "intents rows: the two controls are as they must be"
+
+echo "intents rows: the twelve members of the 12.0 group, one process per section"
+for section in new-shortcut new-voice new-centre defaultStore sharedManager sharedCenter \
+                setShortcutSuggestions setSuggestedMediaIntents setPredictionMode; do
+    if "$build/intents12-rows" "$section" 2>&1 | tee -a "$build/intents12-rows.log"; then
+        :
+    else
+        echo "intents rows:   the $section section was killed, so the host does not answer it" | tee -a "$build/intents12-rows.log"
+    fi
+done
+
+echo "intents rows: the three members that take a handler, once per receiver"
+for section in setRelevantShortcuts getAllVoiceShortcuts getVoiceShortcut; do
+    for receiver in singleton fresh; do
+        if "$build/intents12-rows" "$section" "$receiver" 2>&1 | tee -a "$build/intents12-rows.log"; then
+            :
+        else
+            echo "intents rows:   the $section/$receiver section was killed, so the host does not answer it" | tee -a "$build/intents12-rows.log"
+        fi
+    done
+done
+echo "intents rows: 12.0 group measured; what it settles and what it does not is in facts/Intents/Intents.md"
