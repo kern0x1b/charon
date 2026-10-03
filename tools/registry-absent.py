@@ -15,10 +15,11 @@ A path with no registry under it prints nothing and says so, and exits 1: a coun
 nothing is not a count.
 """
 import collections
-import glob
-import json
 import os
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from registry_rows import documents, rows as rows_of  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_REGISTRY = os.path.join(ROOT, "packages/a/apple-backports/registry")
@@ -50,6 +51,16 @@ for argument in sys.argv[1:]:
         WRITE_FRAMEWORK = argument
 
 
+# A row's status, as the table prints it: a row whose file states none (the Intents constants manifest
+# carries introduced and rung and nothing else) is counted and printed as "(no status)", never dropped
+# and never compared against a string by the sort below.
+NO_STATUS = "(no status)"
+
+
+def status_of(entry):
+    return entry.get("status") or NO_STATUS
+
+
 def framework_of(path):
     # registry/<Framework>.json and registry/<Framework>/<part>.json are the two shapes the
     # registry's own README gives; the key inside the file is not consulted, because five files
@@ -64,13 +75,11 @@ def walk():
     by_framework = collections.Counter()
     absent = collections.defaultdict(list)
     rows = 0
-    for path in sorted(glob.glob(os.path.join(REGISTRY, "**", "*.json"), recursive=True)):
-        document = json.load(open(path))
-        entries = document["entries"] if isinstance(document, dict) else document
+    for path, document in documents(REGISTRY):
         framework = framework_of(path)
-        for entry in entries:
+        for entry in rows_of(document):
             rows += 1
-            by_framework[(framework, entry.get("status"))] += 1
+            by_framework[(framework, status_of(entry))] += 1
             if entry.get("status") == "absent":
                 absent[framework].append((entry.get("api"), entry.get("kind"), entry.get("introduced")))
     return by_framework, absent, rows

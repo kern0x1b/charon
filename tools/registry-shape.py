@@ -21,6 +21,9 @@ import os
 import subprocess
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from registry_rows import apis as apis_of, rows as rows_of  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT = os.path.join(ROOT, "packages/a/apple-backports/registry")
 
@@ -42,8 +45,9 @@ def duplicates(path):
 
 
 def entries_of(path):
-    document = json.load(open(path))
-    return document["entries"] if isinstance(document, dict) else document
+    """The rows of one registry file. Which shapes a document may have is registry_rows' question, not
+    this tool's, so the reader is its own and a fourth shape is taught in one place."""
+    return rows_of(json.load(open(path)))
 
 
 def resolves(ref):
@@ -59,7 +63,7 @@ def apis_in(ref, relative):
     if text.returncode != 0:
         return None
     document = json.loads(text.stdout)
-    return [r.get("api") for r in (document["entries"] if isinstance(document, dict) else document)]
+    return apis_of(document)
 
 
 def main():
@@ -104,7 +108,7 @@ def main():
                 # the ref resolves but this file did not exist there: not a row list to compare
                 continue
             compared += 1
-            after = [r.get("api") for r in entries_of(path)]
+            after = [row.get("api") for row in entries_of(path)]
             if before != after:
                 bad += 1
                 lost = [a for a in before if a not in after]

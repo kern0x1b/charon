@@ -11,10 +11,12 @@ member. A row the tree has never heard of, or whose line has moved, is reported 
     tools/registry-called-through.py [registry-root] [package-root]     a count; exit 1 if any row is uncalled
 """
 import glob
-import json
 import os
 import re
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from registry_rows import documents, rows as rows_of  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REGISTRY = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "packages/a/apple-backports/registry")
@@ -45,10 +47,8 @@ def main():
     rows = 0
     called = 0
     uncalled = []
-    for path in sorted(glob.glob(os.path.join(REGISTRY, "**", "*.json"), recursive=True)):
-        document = json.load(open(path))
-        entries = document["entries"] if isinstance(document, dict) else document
-        for entry in entries:
+    for _, document in documents(REGISTRY):
+        for entry in rows_of(document):
             effect = entry.get("effect") or ""
             site = CALL_SITE.search(effect)
             if not site:

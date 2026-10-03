@@ -8,11 +8,12 @@ count is the one a slice is cut from, so it is computed here rather than written
 hand, and the row each number rests on is named.
 """
 import collections
-import glob
-import json
 import os
 import re
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from registry_rows import documents, rows as rows_of  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REGISTRY = os.path.join(ROOT, "packages/a/apple-backports/registry")
@@ -28,10 +29,8 @@ def owner(api):
 
 def main():
     groups = collections.defaultdict(list)
-    for path in sorted(glob.glob(os.path.join(REGISTRY, FRAMEWORK, "*.json"))):
-        document = json.load(open(path))
-        entries = document["entries"] if isinstance(document, dict) else document
-        for entry in entries:
+    for path, document in documents(os.path.join(REGISTRY, FRAMEWORK)):
+        for entry in rows_of(document):
             if entry.get("status") == "absent":
                 groups[owner(entry["api"])].append((entry["api"], os.path.basename(path)))
     for name in sorted(groups, key=lambda k: (-len(groups[k]), k)):

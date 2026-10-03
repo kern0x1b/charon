@@ -14,10 +14,11 @@ A path with no registry under it is refused **before anything is printed**, the 
 `tools/registry-absent.py` does it: a count of zero next to the refusal is the number the reader keeps.
 """
 import collections
-import glob
-import json
 import os
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from registry_rows import documents, rows as rows_of  # noqa: E402
 
 REG = sys.argv[1] if len(sys.argv) > 1 else "packages/a/apple-backports/registry"
 WANT = sys.argv[2] if len(sys.argv) > 2 else "facts/Foundation/NSURLResourceKeyStrings.md"
@@ -29,8 +30,8 @@ def parts(version):
 
 
 def main():
-    files = sorted(glob.glob(os.path.join(REG, "**", "*.json"), recursive=True))
-    if not files:
+    found = documents(REG)
+    if not found:
         # first, and printing nothing: the refusal is the whole output
         print("no registry under %s: nothing was counted, so nothing is claimed" % REG, file=sys.stderr)
         return 1
@@ -38,11 +39,8 @@ def main():
     if WINDOW:
         low, high = WINDOW.split("-")
     rows = []
-    for path in files:
-        document = json.load(open(path))
-        entries = (document["entries"] if isinstance(document, dict) and isinstance(document.get("entries"), list)
-                      else (document if isinstance(document, list) else None))
-        for entry in entries:
+    for _, document in found:
+        for entry in rows_of(document):
             if entry.get("facts") != WANT:
                 continue
             introduced = entry.get("introduced") or ""

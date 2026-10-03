@@ -9,21 +9,19 @@ two places at once - which is what the gate's red line turned out to be.
     tools/registry-duplicate-api.py [registry-root]     the duplicates, one per line; exit 1 if any
 """
 import collections
-import glob
-import json
 import os
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from registry_rows import documents, rows as rows_of  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REGISTRY = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "packages/a/apple-backports/registry")
 
 seen = collections.defaultdict(list)
 rows = 0
-for path in sorted(glob.glob(os.path.join(REGISTRY, "*.json")) + glob.glob(os.path.join(REGISTRY, "*", "*.json"))):
-    document = json.load(open(path))
-    entries = (document["entries"] if isinstance(document, dict) and isinstance(document.get("entries"), list)
-                  else (document if isinstance(document, list) else None))
-    for entry in entries:
+for path, document in documents(REGISTRY):
+    for entry in rows_of(document):
         seen[entry.get("api")].append(os.path.basename(path))
         rows += 1
 duplicates = {api: files for api, files in seen.items() if len(files) > 1}

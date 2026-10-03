@@ -45,11 +45,12 @@ a porter is a number that goes stale the next time anything lands, and this has 
 defect of that family in this facts area.
 """
 import collections
-import glob
-import json
 import os
 import re
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from registry_rows import documents, rows as rows_of  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_REGISTRY = os.path.join(ROOT, "packages/a/apple-backports/registry")
@@ -102,10 +103,8 @@ def main():
     wrong = []
     by_class = []
     every = []
-    for path in sorted(glob.glob(os.path.join(REGISTRY, "**", "*.json"), recursive=True)):
-        document = json.load(open(path))
-        entries = document["entries"] if isinstance(document, dict) else document
-        for entry in entries:
+    for path, document in documents(REGISTRY):
+        for entry in rows_of(document):
             every.append((entry, os.path.basename(path)))
             rows += 1
     # A class the backports carries is a class whose own row says implemented, whatever file that
