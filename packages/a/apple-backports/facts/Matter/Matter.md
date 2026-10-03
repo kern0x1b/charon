@@ -278,6 +278,48 @@ and the host prints the same string ending at `epochStartTime2`, because
 `MTRJointFabricDatastoreClusterDatastoreGroupKeySetStruct` has no `groupKeyMulticastPolicy` in the HOST's SDK.
 It is the member-SET rule one level down, inside a nested value. `predict.py` compares the OUTER member's
 declaration, which is the same in both SDKs, and so reports the whole string as unexplained. The fix is to
-apply the member-set rule to a nested `-description` before falling through to a value comparison, and it is
-NOT in the tree: it was written, it did not fire on the run's own output, and it was reverted rather than
-committed as a branch that does not work. 23 is the measured number.
+apply the member-set rule to a nested `-description` before falling through to a value comparison. **That is
+in the tree now**, as one rule applied at EVERY level of a value and not as a case for one class:
+
+  * a level where the member NAMES differ is a member-SET difference - the two SDKs declare different members
+    - and predicts the difference at and below it, naming the members;
+  * a level where the names agree is compared member by member, and each differing member's value goes
+    through the same rule;
+  * a difference is predicted only when EVERY differing branch ends in a member set. One value difference
+    anywhere makes the whole reading UNEXPLAINED, because a member-set difference beside it must not excuse
+    it. That clause is what the second red control tests.
+
+It is what took the `groupKeyMulticastPolicy` family: **23 unexplained is 21.** And the run carries TWO red
+controls - the first mutates a flat value, which has to become unexplained; the second plants a member INSIDE
+a port struct (`plantedByTheRedControl` on `MTRUnitTestingClusterSimpleStruct`, a class BOTH SDKs declare, so
+the planted member is not a version difference and cannot be excused as one) and requires it to be NAMED
+somewhere in the prediction. A rule that walks into values and excuses everything it finds would swallow that
+one silently, and the run exits 1 if it does.
+
+**THE 21 THAT REMAIN, per reading, in three families.**
+
+* **9 readings, one member: an empty value printed differently.** `MTRTestClusterClusterNestedStruct.c`,
+  `MTRTestClusterClusterSimpleStructEchoRequestParams.arg1`, `MTRTestClusterClusterSimpleStructResponseParams
+  .arg1`, `MTRTestClusterClusterTestEventEvent.arg4`,
+  `MTRTestClusterClusterTestNestedStructArgumentRequestParams.arg1`,
+  `MTRTestClusterClusterTestNestedStructListArgumentRequestParams.arg1`,
+  `MTRTestClusterClusterTestStructArgumentRequestParams.arg1`, `MTRUnitTestingClusterNestedStruct.c`,
+  `MTRUnitTestingClusterNestedStructList.c`, and their `MTRUnitTestingCluster*` twins - all of them the member
+  `d`, where the host's string prints `d:;` and the port's prints `d:{length = 0, bytes = 0x}; `. Both are an
+  EMPTY `NSData`; the difference is what an empty `NSData`'s `-description` returns on the host's Foundation
+  and on the one the port links. Nothing in the port's own code decides it, and the value is right on both
+  sides. It is a difference between two Foundation runtimes, and the comparison has to say so rather than
+  report it as a port defect.
+
+* **1 reading, the same shape, on a string.** `MTRTLSClientManagementClusterFindEndpointResponseParams
+  .endpoint` - `hostname:;` on the host, `hostname:{length = 0, bytes = 0x}; ` in the port. Same cause, and it
+  names which member of `MTRTLSClientManagementClusterTLSEndpointStruct` it is.
+
+* **5 readings, the hand-written classes' `-init`.** `MTRReadParams.filterByFabric`,
+  `MTRReadParams.assumeUnknownAttributesReportable`, `MTRSubscribeParams.minInterval`,
+  `MTRSubscribeParams.replaceExistingSubscriptions` and `MTRSubscribeParams.resubscribeAutomatically` - the
+  host holds `1` where the port holds `0`, and both SDKs declare the member `nonnull`. These two classes are
+  hand-written in the framework (they live in `MTRCluster.h`, not in the zap-generated payload headers), so
+  the `- (instancetype)init { _x = ...; }` rule that answered the other 922 does not apply to them, and their
+  own source has to say which members it sets. That is a read of
+  `charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/MTRCluster.mm` and it is the next measurement.

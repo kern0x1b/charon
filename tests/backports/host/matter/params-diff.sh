@@ -153,5 +153,41 @@ if [ "$moved_predicted" -lt 1 ]; then
 fi
 printf 'params-diff: red control %s readings become UNEXPLAINED, so the prediction looks at the port\n' \
     "$moved_predicted"
+
+# The SECOND red control, and it is the one that matters for a recursive rule: a NESTED member planted in
+# the port only. A rule that excuses every difference it can walk into would swallow this, so it has to come
+# back out as a NAMED reading - either predicted with the member named, or unexplained - and never as silence.
+# MTRUnitTestingClusterSimpleStruct is the class to plant in: the host's SDK declares it and so does the
+# port's, so the planted member is not a version difference and cannot be excused as one.
+mkdir -p "$build/port-nested"
+cp "$build"/port/*.m "$build/port-nested/"
+nested="$build/port-nested/CharonMatterMTRUnitTestingClusterSimpleStruct.m"
+python3 - "$nested" <<'PYTHON'
+import sys
+path = sys.argv[1]
+text = open(path).read()
+text = text.replace("@implementation MTRUnitTestingClusterSimpleStruct\n",
+                    "@interface MTRUnitTestingClusterSimpleStruct ()\n"
+                    "@property (nonatomic, copy) NSNumber *plantedByTheRedControl;\n@end\n\n"
+                    "@implementation MTRUnitTestingClusterSimpleStruct\n\n"
+                    "@synthesize plantedByTheRedControl = _plantedByTheRedControl;\n", 1)
+text = text.replace('    [text appendString:@">"];',
+                    '    [text appendFormat:@"plantedByTheRedControl:%@; ", self.plantedByTheRedControl];\n'
+                    '    [text appendString:@">"];', 1)
+open(path, "w").write(text)
+PYTHON
+compile "$build/objects-nested"
+xcrun clang -o "$build/port/probe-nested" "$build/objects-nested"/*.o "$here/params-probe.m" -framework Foundation
+"$build/port/probe-nested" "$build/cases.tsv" > "$build/port-nested.tsv"
+python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port-nested.tsv" > "$build/predicted-nested.txt"
+planted=$(grep -c 'plantedByTheRedControl' "$build/predicted-nested.txt" || true)
+if [ "$planted" -lt 1 ]; then
+    echo "params-diff: FAIL the nested red control - a member planted inside a port struct was not named" >&2
+    echo "  anywhere, so a recursive rule that walks into values can swallow a difference silently." >&2
+    exit 1
+fi
+printf 'params-diff: nested red control %s reading(s) name plantedByTheRedControl, so a planted nested'\n\
+    "$planted"
+printf 'params-diff:   member is reported and not excused\n'
 echo "params-diff: outputs under $build"
 exit $status

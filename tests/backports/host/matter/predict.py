@@ -70,6 +70,81 @@ def declared_type(module, info, name):
     return None, None
 
 
+# A nested -description arrives in two spellings: bare, where the value IS the string - `<MTRUnitTesting
+# ClusterSimpleStruct: a:0; ... >` - and wrapped, where it is printed through %@ by a probe's own renderer -
+# `MTRUnitTestingClusterSimpleStruct(<...>)`. Both are the same string inside, and the second was not matched
+# at all, which is why the `fresh` loop still reported 23 while `description` reported 21.
+NESTED = re.compile(r"^(?:([A-Za-z0-9_]+)\()?<(\w+): (.*)>\)?$")
+
+
+def members_of(text):
+    """The member names of a -description string, or None when it is not one."""
+    found = NESTED.match(text)
+    if not found:
+        return None
+    return [each.split(":", 1)[0] for each in found.group(3).split("; ") if each]
+
+
+def values_of(text):
+    """name -> what %@ printed, for a -description string."""
+    found = NESTED.match(text)
+    if not found:
+        return {}
+    pairs = {}
+    for each in found.group(3).split("; "):
+        if ":" in each:
+            name, value = each.split(":", 1)
+            pairs[name] = value
+    return pairs
+
+
+def classify(want, mine):
+    """What the difference between two -description strings IS, one rule applied at EVERY level.
+
+    Returns (verdict, reason) where verdict is "identical", "predicted" or "unexplained".
+
+    ONE rule, recursive:
+
+      * a level where the member NAMES differ is a MEMBER-SET difference - the two SDKs declare different
+        members - and predicts the difference at and below it. The naming line says which members.
+      * a level where the names agree is compared member by member, and each differing member's value is
+        classified by the same rule. A value that is not a -description string is a VALUE difference and is
+        unexplained: no declaration difference accounts for it.
+      * a difference is only "predicted" when EVERY differing branch ends in a member set. One value
+        difference anywhere makes the whole reading unexplained, because a member-set difference somewhere
+        else must not excuse it.
+
+    That last clause is what the red control for a nested member tests: a member planted in the port only,
+    inside a struct whose other members also differ in value, has to come out unexplained and not excused by
+    the member set beside it.
+    """
+    if want == mine:
+        return "identical", ""
+    their, ours = members_of(want), members_of(mine)
+    if their is None or ours is None:
+        return "unexplained", "a value difference, and no declaration difference accounts for it"
+    if their != ours:
+        only_port = [each for each in ours if each not in their]
+        only_host = [each for each in their if each not in ours]
+        return "predicted", ("the member SET differs - in the port's SDK only %s, in the host SDK only %s"
+                             % (", ".join(only_port) or "none", ", ".join(only_host) or "none"))
+    their_values, our_values = values_of(want), values_of(mine)
+    reasons = []
+    verdict = "identical"
+    for member in their:
+        one, two = their_values.get(member), our_values.get(member)
+        if one == two:
+            continue
+        nested, why = classify(one or "", two or "")
+        if nested == "unexplained":
+            return "unexplained", ("member %s holds a value difference: the host has %r and the port %r"
+                                   % (member, one, two))
+        if nested == "predicted" and verdict != "unexplained":
+            verdict = "predicted"
+            reasons.append("%s: %s" % (member, why))
+    return verdict, "; ".join(reasons)
+
+
 def main():
     host_sdk, host_tsv, port_tsv = sys.argv[1], sys.argv[2], sys.argv[3]
     module, host = declarations(host_sdk)
@@ -115,9 +190,18 @@ def main():
                          % (name, member, their_type, " nullable" if their_null else " nonnull",
                             our_type, " nullable" if our_null else " nonnull"))
             continue
-        unexplained += 1
-        named.append("%s.%s: UNEXPLAINED, both SDKs declare %s%s, the host holds %r and the port %r"
-                     % (name, member, their_type, " nullable" if their_null else " nonnull", want, mine))
+        # Same declarations both sides, so the difference is in the VALUE - and a value is a nested
+        # -description string as often as a scalar. classify() applies the member-set rule at every level of
+        # it, so a member set that differs one level down predicts the difference and a value that differs
+        # with no member set anywhere does not.
+        verdict, why = classify(want, mine)
+        if verdict == "predicted":
+            predicted += 1
+            named.append("%s.%s: predicted - %s" % (name, member, why))
+        else:
+            unexplained += 1
+            named.append("%s.%s: UNEXPLAINED, both SDKs declare %s%s, the host holds %r and the port %r"
+                         % (name, member, their_type, " nullable" if their_null else " nonnull", want, mine))
 
     fresh_same = fresh_declared = fresh_unexplained = 0
     for (name, member), want in sorted(host_fresh.items()):
@@ -141,7 +225,14 @@ def main():
                          % (name, member, their_type, " nullable" if their_null else " nonnull",
                             our_type, " nullable" if our_null else " nonnull"))
             continue
+        verdict, why = classify(want, mine)
+        if verdict == "predicted":
+            fresh_declared += 1
+            named.append("%s.%s fresh: predicted - %s" % (name, member, why))
+            continue
         fresh_unexplained += 1
+        named.append("%s.%s fresh: UNEXPLAINED, both declare %s%s, host %r port %r"
+                     % (name, member, their_type, " nullable" if their_null else " nonnull", want, mine))
         named.append("%s.%s fresh: UNEXPLAINED, both declare %s%s, host %r port %r"
                      % (name, member, their_type, " nullable" if their_null else " nonnull", want, mine))
 
