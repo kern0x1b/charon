@@ -247,6 +247,56 @@ capability the release cannot have, carried as the truthful constant.
   are the work that row names and the port has not done; this file does not count a port that has
   not written a class as an absence of the release, and the row says which is which.
 
+## What the object for the four implemented rows is, and how it was checked
+
+Two files, and every API either of them defines arrived in 11.0, so neither spans two releases and
+neither carries a class the release already has (`AVCaptureDevice` and `AVCaptureConnection` are
+classes of 6.0, present at both band ends):
+
+- `AVFoundation/AVCaptureDevice+VideoZoomRange11.m`, a category on `AVCaptureDevice` defining
+  `-maxAvailableVideoZoomFactor` and `-minAvailableVideoZoomFactor`. Both numbers come out of the
+  port's own 7.0 property, so the section above is the whole derivation; nothing is stored and no
+  release method is hooked.
+- `AVFoundation/AVCaptureConnection+CameraIntrinsics11.m`, a category on `AVCaptureConnection`
+  defining `-isCameraIntrinsicMatrixDeliverySupported`, `-isCameraIntrinsicMatrixDeliveryEnabled`
+  and `-setCameraIntrinsicMatrixDeliveryEnabled:`. The header declares both properties with
+  `getter=is...` (`AVCaptureSession.h:985` and `:995`, the properties being declared on
+  `AVCaptureConnection`), so those three are the selectors an application compiled against the real
+  SDK sends, and the property name itself is not a selector. The refusal of the flag is said once
+  through `../CharonSayOnce.h`, the seam the rest of the port uses for it.
+
+**The rows keep their place in `absent_AVFoundation.json`.** That file has carried `implemented`
+rows for a while - `-setExposureTargetBias:completionHandler:` among them - so these four were
+edited where they are rather than moved into a file named after their release: a row moved out of a
+shared file is a conflict this change did not cause.
+
+**What was checked here, and what the check could not see.** Both files compile clean for the 6.0
+armv7 target against SDK 16.4 with `-Wall -Wextra -fobjc-arc -fobjc-runtime=ios-6.0`: zero errors
+and zero warnings, with no `#pragma clang diagnostic ignored` in either, which is why neither needs
+one. The four selector names were then read out of the images' own bytes rather than from their
+metadata:
+
+    $ for r in 6.1.3 4.3; do for s in maxAvailableVideoZoomFactor minAvailableVideoZoomFactor \
+        cameraIntrinsicMatrixDeliverySupported cameraIntrinsicMatrixDeliveryEnabled \
+        setCameraIntrinsicMatrixDeliveryEnabled focusMode videoScaleAndCropFactor; do
+        printf '%s %s %s\n' $r $s "$(strings -a ~/.charon/dyld/$r/dyld_shared_cache_armv7 | grep -cxF $s)"; done; done
+    6.1.3 maxAvailableVideoZoomFactor 0            4.3 maxAvailableVideoZoomFactor 0
+    6.1.3 minAvailableVideoZoomFactor 0            4.3 minAvailableVideoZoomFactor 0
+    6.1.3 cameraIntrinsicMatrixDeliverySupported 0  4.3 cameraIntrinsicMatrixDeliverySupported 0
+    6.1.3 cameraIntrinsicMatrixDeliveryEnabled 0    4.3 cameraIntrinsicMatrixDeliveryEnabled 0
+    6.1.3 setCameraIntrinsicMatrixDeliveryEnabled 0 4.3 setCameraIntrinsicMatrixDeliveryEnabled 0
+    6.1.3 focusMode 3                              4.3 focusMode 2
+    6.1.3 videoScaleAndCropFactor 2                4.3 videoScaleAndCropFactor 1
+
+The last two lines are the control: the same reader, the same command, a hit where a name is known
+to be there. `lockForConfiguration` and `isVideoStabilizationSupported` read 0 at 4.3, which is what
+4.3 predating them should look like, and neither is used as a control here.
+
+What this does not see: `tools/release-split.lua` over these two objects would print "clean" with
+`0 symbols`, and the 0 is the tool's own documented blind spot - a category's methods export no
+symbol - so a clean line would say nothing about these files. The measurement that does see them is
+the byte table above, plus the compile, plus the four rows' own `source` lines.
+
 ## What this does not close
 
 - Nothing here is measured on a device. Every claim is read out of the armv7 caches of 6.1.3 and

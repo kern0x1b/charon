@@ -2313,20 +2313,22 @@
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "6.1.3's AVCaptureConnection carries 56 own instance methods and no intrinsic-matrix member; its geometry vocabulary is -videoScaleAndCropFactor, -videoMaxScaleAndCropFactor, -videoMinFrameDuration, -videoMaxFrameDuration, -videoOrientation, -videoMirrored and the preview layer's own points, none of which is the camera's own matrix",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release asks the device what it can do - -[AVCaptureDeviceFormat formatDescription] and -[AVCaptureConnection videoMaxScaleAndCropFactor] - which is where this release keeps the geometry of the capture; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureConnection.h for the declaration; the 6.1.3 armv7 class table of AVCaptureConnection read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 56 own instance methods, controls answered as wanted"
+      "status": "implemented",
+      "reason": "the flag of the probe above, and it cannot be honoured for the same measurement: no release this port deploys on has a calibrated camera matrix to deliver, so there is nothing the flag could turn on",
+      "effect": "NO; setting YES is refused where it can be seen - the flag keeps answering NO - and the log says so once, as AVCaptureSession.usesApplicationAudioSession does for a negotiation 6.x cannot honour (AVCaptureSession+ApplicationAudioSession7.m). Nothing is stored and no release method is hooked",
+      "source": "as AVCaptureConnection.cameraIntrinsicMatrixDeliverySupported: iPhoneOS 16.4 AVCaptureSession.h:987-995 for the declaration and its getter=isCameraIntrinsicMatrixDeliveryEnabled with the setter, and the two images answering 0 for the name and for the setter's selector, with the same control",
+      "facts": "facts/AVFoundation/Release11.md"
     },
     {
       "api": "AVCaptureConnection.cameraIntrinsicMatrixDeliverySupported",
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "6.1.3's AVCaptureConnection carries 56 own instance methods and no intrinsic-matrix member and no support flag that would answer for one; the release's own support flags on a connection are -isVideoOrientationSupported, -isVideoMirroringSupported, -isVideoStabilizationSupported, -isVideoMaxFrameDurationSupported and -isVideoMinFrameDurationSupported, and the matrix is not among them",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release asks whether the device supports what it wants with -[AVCaptureDevice supportsAVCaptureSessionPreset:] or -[AVCaptureDevice isHDRSupported], which are the release's own support answers; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureConnection.h for the declaration; the 6.1.3 armv7 class tables of AVCaptureConnection and AVCaptureDevice read from objc-inventory.lua, 56 and 100 own instance methods, controls answered as wanted"
+      "status": "implemented",
+      "reason": "the capture layer's documented-NO policy (facts/AVFoundation/AVFoundationOwed.md, 'the capture and session layer, last'), and the absence behind it is measured: no class or protocol name of 6.1.3 (11378 classes, 1171 protocols) or of 4.3 (7187, 564) contains Intrinsic, neither release has a depth capture output, a depth format or a calibration object to deliver one from, and 6.1.3's AVCaptureConnection is 56 instance and 3 class selectors that end at scale and crop, frame duration and its bounds, orientation, mirroring, retained buffer count, audio levels, active and enabled, and the stabilization switch. The tree already carries one row of exactly this shape for 6.x, AVCaptureSession.usesApplicationAudioSession",
+      "effect": "NO on every device these releases run on, so an application that gates on the probe is told the truth instead of raising on it; there is no matrix on either end for the connection to deliver",
+      "source": "iPhoneOS 16.4 AVCaptureSession.h:978-985 for the declaration and its getter=isCameraIntrinsicMatrixDeliverySupported, the class and protocol census this file already records for these rows (0 of 11378 and 0 of 7187 naming Intrinsic), the 6.1.3 AVCaptureConnection class table as this file records it (56 own instance methods, read from objc-inventory.lua through tools/corpus/class-scoped-rows.py with its controls answered as wanted), re-read here from the image's own bytes - `strings -a ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 | grep -cxF cameraIntrinsicMatrixDeliverySupported` answers 0 and the same for 4.3, with isVideoStabilizationSupported answering 2 at 6.1.3 as the control that shows the reader was looking",
+      "facts": "facts/AVFoundation/Release11.md"
     },
     {
       "api": "AVCaptureDepthDataOutput",
@@ -2373,20 +2375,22 @@
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and no zoom member at all, so there is no device-wide factor this could be a maximum of. The zoom on this release is the port's own 7.0 category, whose bound is a per-connection videoScaleAndCropFactor rather than a device factor, and 6.1.3's own member is -[AVCaptureConnection videoMaxScaleAndCropFactor]",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads -[AVCaptureConnection videoMaxScaleAndCropFactor] for the largest factor a connection will take, and -[AVCaptureDevice videoZoomFactor] for the one it is set to; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; the 6.1.3 armv7 class tables of AVCaptureDevice and AVCaptureConnection read from objc-inventory.lua, 100 and 56 own instance methods, controls answered as wanted"
+      "status": "implemented",
+      "reason": "the header documents this one against the non-virtual case, which is every device these releases run on: 'On non-virtual devices the maxAvailableVideoZoomFactor is always equal to the activeFormat.videoMaxZoomFactor' (iPhoneOS 16.4 AVCaptureDevice.h:2064). So the number is not a new capability and nothing is invented here: it is the port's own 7.0 property AVCaptureDeviceFormat.videoMaxZoomFactor (AVCaptureDevice+VideoZoom7.m), which is itself the release's own limit for its scale and crop - max(1, min(width, height) * 0.0625) of the format's dimensions, read out of the format description 6.1.3 really has. 6.1.3's AVCaptureDevice carries 100 own instance methods and no zoom of any kind among them (the class-scoped run named in this file's source), so the limit is the only one there is",
+      "effect": "the active format's own limit, and the floor outside a running session, where 6.1.3 has no active format and 7.0 always has one - the same reading and the same empty case the port's own setVideoZoomFactor: range check uses, so a caller that clamps to this value and a caller that lets the setter check agree. Both properties are readonly, so there is no setter to define",
+      "source": "iPhoneOS 16.4 AVCaptureDevice.h:2059-2068 for the property and its documented value; the 6.1.3 armv7 class table of AVCaptureDevice as this file already records it for these rows (100 own instance methods, read from objc-inventory.lua through tools/corpus/class-scoped-rows.py with its controls answered as wanted), re-read here from the image's own bytes - `strings -a ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 | grep -cxF maxAvailableVideoZoomFactor` answers 0 and the same for 4.3, with focusMode answering 3 and videoScaleAndCropFactor 2 at 6.1.3 as the controls that show the reader was looking; and the port's own limit, AVCaptureDevice+VideoZoom7.m",
+      "facts": "facts/AVFoundation/Release11.md"
     },
     {
       "api": "AVCaptureDevice.minAvailableVideoZoomFactor",
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the same absence as AVCaptureDevice.maxAvailableVideoZoomFactor: 6.1.3's AVCaptureDevice carries 100 own instance methods and no zoom member at all, and the release's own factor vocabulary is on the connection - -videoScaleAndCropFactor, -videoMaxScaleAndCropFactor and their setters",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads -[AVCaptureConnection videoScaleAndCropFactor] for the factor a connection is taking and -[AVCaptureDevice videoZoomFactor] for the one it is set to; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; the 6.1.3 armv7 class tables of AVCaptureDevice and AVCaptureConnection read from objc-inventory.lua, 100 and 56 own instance methods, controls answered as wanted"
+      "status": "implemented",
+      "reason": "the floor of the same range, and a measured constant rather than a placeholder: the header says 'On non-virtual devices the minAvailableVideoZoomFactor is always 1.0' (iPhoneOS 16.4 AVCaptureDevice.h:2052), the port's own setVideoZoomFactor: raises NSRangeException for a factor below 1 as 7.0 does, and 6.1.3 has no second, wider lens to go below 1 with, since the format's only limit is the scale-and-crop limit above. The same shape as AVCaptureSession.usesApplicationAudioSession, which this port carries as the truthful constant",
+      "effect": "1, on every device and in every session; the property is readonly, so there is no setter to define",
+      "source": "as AVCaptureDevice.maxAvailableVideoZoomFactor: iPhoneOS 16.4 AVCaptureDevice.h:2047-2056 for the property and its documented value, the 6.1.3 and 4.3 images answering 0 for the name with focusMode and videoScaleAndCropFactor as the controls, and the port's own zoom range check in AVCaptureDevice+VideoZoom7.m",
+      "facts": "facts/AVFoundation/Release11.md"
     },
     {
       "api": "AVCaptureDeviceFormat.supportedDepthDataFormats",
