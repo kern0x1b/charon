@@ -134,10 +134,10 @@ mkdir -p "$build/port"
 cp "$vision"/*.c "$vision"/*.m "$vision"/*.h "$build/port/"
 port "$build/port"
 VISION_COREML_MODELS="$models" VISION_RECORDS="$build/port.json" "$build/port/run"
-# The scores of a Core ML prediction are reported and not failed on: the model they come from is
-# nn_image, whose prediction the port and this host are a recorded divergence apart
-# (facts/CoreML/CoreML.md). Everything else -- the classes of observation, their identifiers, how
-# many there are, and every other case in this file -- is compared.
+# Everything is compared, including the scores of a Core ML prediction: the model they come from is
+# nn_image and this port's prediction of it was a recorded divergence apart until 2026-10-03, when
+# the cause turned out to be the network's own scaler being applied to an array input
+# (facts/CoreML/CoreML.md). compare.py has no exception left.
 python3 "$here/compare.py" "$build/system.json" "$build/port.json"
 if [ $? -eq 0 ]; then echo "port: same as the system"; else echo "port: DIFFERS"; exit 1; fi
 

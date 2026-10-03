@@ -5,9 +5,10 @@
 # difference is either fixed in the port or written down. Mutants of the port each have to be
 # caught, so a rule that quietly stops being applied cannot pass.
 #
-# The prediction *numbers* of one container, nn_image, are a recorded divergence and are compared
-# separately: facts/CoreML/CoreML.md sets out what has been ruled out for it, and the check fails
-# if a difference appears in any other container.
+# No container is a recorded divergence: nn_image was one until 2026-10-03, and its cause was this
+# port applying the network's own scaler to an array input, which neither Core ML nor coremltools
+# does. facts/CoreML/CoreML.md carries the measurement. COREML_DIVERGENT still names a container
+# whose prediction numbers are a recorded divergence, for whoever finds the next one.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
@@ -21,18 +22,20 @@ libs="-framework Foundation -framework CoreGraphics -framework CoreVideo -framew
 
 # THE CORPUS, and it decides the verdict. tools/coreml/make-models.py writes TEN containers:
 # glm, glm_classifier, nn_classifier, nn_embedding, nn_image, nn_layers, nn_layers_shape, pipeline,
-# tree_classifier, vision_image. On all ten this check is RED: `compared 770 keys, 0 differ, 48
-# missing` and `port: DIFFERS`. Every one of those 48 is under vision_image/, because that container is
-# the one make-models.py itself reports as "no host input" -- this host's Core ML does not run it, so
-# the description keys it would answer are in the host's record and not in the port's, and there is
-# nothing to compare them against. On the NINE that remain it is green: `compared 722 keys, 0 differ,
-# 0 missing` and `port: same as the system`. The count is printed on every run so the corpus a verdict
+# tree_classifier, vision_image. Nine of them this host's Core ML loads and the run compares: `compared
+# 723 keys, 0 differ, 0 missing` and `port: same as the system`. The tenth, vision_image, its own
+# Core ML refuses to compile - "+[MLModel compileModelAtURL:error:] answers com.apple.CoreML/0,
+# 'compiler error: Invalid height and width for the image input.'" - so the release has no answer for
+# that container at all and the 48 keys the port answers for it have nothing to be compared against. They
+# are reported by name with the refusal beside them and are not a failure; facts/CoreML/CoreML.md carries
+# the measurement, and tests/backports/host/vision/run.sh measures the same container through Vision, which
+# is the framework that runs an image model. The count is printed on every run so the corpus a verdict
 # belongs to is never a guess.
 excluded=vision_image.mlmodel
 if [ -f "$models/$excluded" ]; then
-    echo "corpus: ten, $excluded INCLUDED -- this host's Core ML cannot run it, so expect 48 missing and a red run"
+    echo "corpus: ten, and this host's Core ML refuses $excluded, so expect its keys reported with the refusal"
 else
-    echo "corpus: nine, $excluded excluded -- this host's Core ML cannot run it"
+    echo "corpus: nine, $excluded not written -- the keys of a container the release refuses are not compared"
 fi
 echo "corpus: $(ls "$models" | grep -c '\.mlmodel$') containers in $models"
 
@@ -91,20 +94,34 @@ port "$coreml" "$build/port"
 COREML_RECORDS="$build/port.json" "$build/port/run" "$models"
 
 # 3. the comparison: every key must be in both files, and must hold the same value, except the
-#    numbers of the prediction of a container that is a recorded divergence.
-# One difference is recorded rather than failed, and it is a measurement rather than a tolerance:
-# the numbers of nn_image's prediction, which facts/CoreML/CoreML.md records and the interpreter
-# check holds to coremltools' own runtime. It is printed by name below.
-COREML_DIVERGENT=${COREML_DIVERGENT:-nn_image} python3 - "$build/system.json" "$build/port.json" <<'PY'
+#    numbers of the prediction of a container that is a recorded divergence, and the keys of a
+#    container the release itself refused to load.
+# COREML_DIVERGENT names a container whose prediction numbers are a recorded divergence and is empty
+# by default: there is none, since nn_image's cause was found and fixed (see facts/CoreML/CoreML.md).
+COREML_DIVERGENT=${COREML_DIVERGENT:-} python3 - "$build/system.json" "$build/port.json" <<'PY'
 import json, os, sys
 system, port = json.load(open(sys.argv[1])), json.load(open(sys.argv[2]))
 divergent = os.environ.get("COREML_DIVERGENT", "")
-differences, missing = [], []
+differences, missing, one_sided = [], [], []
+# The containers the release refused to load, read out of its own record rather than named here: one
+# it refused has a model/<name>/error key and one it loaded has none. For such a container the release
+# has no answer at all, so what the port answers for it is not compared against nothing, and it is not
+# a port defect either: the measurement is that the release refuses this container, and what it says
+# when asked is in facts/CoreML/CoreML.md. If it ever loads the container, these keys come back and are
+# compared like any other - which is why the set is read out of the record and not spelled out.
+refused = {key[len("model/"):-len("/error")]: system[key] for key in system
+           if key.startswith("model/") and key.endswith("/error")}
 for key in sorted(set(system) | set(port)):
-    if key not in system or key not in port:
-        missing.append(key)
-    elif system[key] != port[key]:
-        differences.append((key, system[key], port[key]))
+    if key in system and key in port:
+        if system[key] != port[key]:
+            differences.append((key, system[key], port[key]))
+        continue
+    # A key of the shape every per-container key has: what was asked, of which container, of what.
+    parts = key.split("/")
+    container = parts[1] if len(parts) > 2 else ""
+    one_sided.append((key, container, "the port" if key in system else "the release",
+                      system.get(key, port.get(key))))
+missing = [row for row in one_sided if row[1] not in refused]
 # A number may differ by the width of the type it is stored in: the host runs the same arithmetic
 # on its own hardware, in float32, and the port's interpreter is measured against coremltools' own
 # runtime to 1e-5 by tools/coreml/check-predict.sh. Here the tolerance is a float32's, and a number
@@ -145,14 +162,20 @@ for key, want, got in hard:
     print("DIFF", key)
     print("  system", want[:300])
     print("  port  ", got[:300])
-for key in missing:
-    print("MISSING", key)
+for key, container, side, value in missing:
+    print("MISSING", key, "- no answer on the side of", side)
+    print("  the side that has it", value[:200])
+for key, container, side, value in one_sided:
+    if container in refused:
+        print("one side only:", key, "- no answer on", side, "; the release refused", container,
+              "with", repr(refused[container])[:120], "and answered nothing else for it")
 for key, want, got in informational:
     print("divergent (recorded):", key)
     print("  system", want[:200])
     print("  port  ", got[:200])
-print("compared %d keys, %d differ, %d missing, %d recorded divergences" %
-      (len(set(system) | set(port)), len(hard), len(missing), len(informational)))
+unanswered = len(one_sided) - len(missing)
+print("compared %d keys, %d differ, %d missing, %d recorded divergences, %d for a container the release refused"
+      % (len(set(system) | set(port)), len(hard), len(missing), len(informational), unanswered))
 if hard or missing:
     print("port: DIFFERS")
     raise SystemExit(1)
