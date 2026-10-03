@@ -69,11 +69,27 @@ OSStatus VTCopySupportedPropertyDictionaryForEncoder(
         return kVTParameterErr;
 
     // The 16.4 SDK's VTCompressionSessionCreate takes no codec list - the encoderSpecification IS how a
-    // caller names an encoder - so the caller's dictionary goes in the position the header gives it and
-    // nothing is invented on either side.
+    // caller names an encoder - so the caller's dictionary goes in the position the header gives it.
+    //
+    // And when the caller gave none, this passes an EMPTY dictionary rather than NULL, because the 6.1.3
+    // release answers a NULL specification with kVTParameterErr (-12902) - measured on the release itself
+    // through xmake emulate, for H264 and for MPEG4 - while this host's VTCompressionSessionCreate accepts
+    // both a NULL and an empty specification for H264 and answers noErr with a session either way (measured
+    // 2026-10-03). An empty dictionary is therefore a specification the release takes, and it is the least
+    // thing that can be passed: no encoder is named, so the release picks, which is what a caller who passed
+    // nothing asked for.
+    static CFDictionaryRef empty = NULL;
+    CFDictionaryRef specification = encoderSpecification;
+    if (!specification) {
+        if (!empty) {
+            empty = CFDictionaryCreate(kCFAllocatorDefault, NULL, NULL, 0, &kCFTypeDictionaryKeyCallBacks,
+                                       &kCFTypeDictionaryValueCallBacks);
+        }
+        specification = empty;
+    }
     VTCompressionSessionRef session = NULL;
     OSStatus created = VTCompressionSessionCreate(kCFAllocatorDefault, width, height, codecType,
-                                                  encoderSpecification, NULL, NULL, NULL, NULL, &session);
+                                                  specification, NULL, NULL, NULL, NULL, &session);
     if (created != noErr || !session) {
         // No encoder for this codec, or the caller's own specification refused it. Both are the -12908 the
         // host answers for a codec it has no encoder for, which is the release's own code (VTErrors.h:37),
@@ -84,13 +100,24 @@ OSStatus VTCopySupportedPropertyDictionaryForEncoder(
     }
 
     OSStatus status = noErr;
-    CFTypeRef identifier = NULL;
-    if (VTSessionCopyProperty(session, kVTCompressionPropertyKey_EncoderID, NULL, &identifier) == noErr &&
-        identifier) {
-        if (encoderIDOut)
-            *encoderIDOut = (CFStringRef)identifier;
-        else
-            CFRelease(identifier);
+    // The encoder ID, and the reason this is a CHECK and not a call: kVTCompressionPropertyKey_EncoderID is
+    // a NULL POINTER on both bands this port builds - dump-cache.lua finds no
+    // _kVTCompressionPropertyKey_EncoderID in the 4.3 or the 6.1.3 armv7 cache, and the port's own build
+    // gate names the same thing in its words ("weakly imports 1 symbol the armv7 release it is checked
+    // against does not export, each of which is NULL there and must be called only behind a check for it").
+    // An encoder ID is an iOS 11 idea, so at 4.3 and at 6.1.3 the release has no such property to read and
+    // there is nothing to ask it for: *encoderIDOut stays NULL and the status stays noErr. That is the
+    // release's answer - this band has no encoder IDs - and not an accident of a missing key, which is why
+    // the difference between the two is written here rather than left to be guessed at from the status.
+    if (kVTCompressionPropertyKey_EncoderID) {
+        CFTypeRef identifier = NULL;
+        if (VTSessionCopyProperty(session, kVTCompressionPropertyKey_EncoderID, NULL, &identifier) == noErr &&
+            identifier) {
+            if (encoderIDOut)
+                *encoderIDOut = (CFStringRef)identifier;
+            else
+                CFRelease(identifier);
+        }
     }
     CFDictionaryRef supported = NULL;
     if (VTSessionCopySupportedPropertyDictionary(session, &supported) == noErr && supported) {
