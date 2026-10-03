@@ -42,7 +42,37 @@ typedef NS_ENUM(NSInteger, CharonSemanticColor) {
     CharonSemanticColorSeparator
 };
 
-UIColor *charon_semantic_color(CharonSemanticColor which);
+// `static inline` in the header and not a function in CharonLists.m, for the reason the three geometry
+// helpers above give: a C function a file that DEFINES A CLASS calls has to be linked from a file that
+// exports no API symbol of its own, and a host differential group compiles a class file with its own
+// sources and links that group alone. UIListSeparatorConfiguration145.m calls this and did not link. The
+// body is the one CharonLists.m had, unchanged.
+static inline UIColor *charon_semantic_color(CharonSemanticColor which)
+{
+    static const SEL selectors[] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+    (void)selectors;
+    switch (which) {
+    case CharonSemanticColorLabel:
+        return [UIColor respondsToSelector:@selector(labelColor)] ? [UIColor labelColor] : [UIColor blackColor];
+    case CharonSemanticColorSecondaryLabel:
+        return [UIColor respondsToSelector:@selector(secondaryLabelColor)] ? [UIColor secondaryLabelColor] : [UIColor colorWithRed:60.0 / 255 green:60.0 / 255 blue:67.0 / 255 alpha:0.6];
+    case CharonSemanticColorTertiaryLabel:
+        return [UIColor respondsToSelector:@selector(tertiaryLabelColor)] ? [UIColor tertiaryLabelColor] : [UIColor colorWithRed:60.0 / 255 green:60.0 / 255 blue:67.0 / 255 alpha:0.3];
+    case CharonSemanticColorQuaternaryLabel:
+        return [UIColor respondsToSelector:@selector(quaternaryLabelColor)] ? [UIColor quaternaryLabelColor] : [UIColor colorWithRed:60.0 / 255 green:60.0 / 255 blue:67.0 / 255 alpha:0.18];
+    case CharonSemanticColorSystemBackground:
+        return [UIColor respondsToSelector:@selector(systemBackgroundColor)] ? [UIColor systemBackgroundColor] : [UIColor whiteColor];
+    case CharonSemanticColorSecondarySystemGroupedBackground:
+        return [UIColor respondsToSelector:@selector(secondarySystemGroupedBackgroundColor)] ? [UIColor secondarySystemGroupedBackgroundColor] : [UIColor whiteColor];
+    case CharonSemanticColorSystemGray4:
+        return [UIColor respondsToSelector:@selector(systemGray4Color)] ? [UIColor systemGray4Color] : [UIColor colorWithRed:209.0 / 255 green:209.0 / 255 blue:214.0 / 255 alpha:1];
+    case CharonSemanticColorQuaternarySystemFill:
+        return [UIColor respondsToSelector:@selector(quaternarySystemFillColor)] ? [UIColor quaternarySystemFillColor] : [UIColor colorWithRed:116.0 / 255 green:116.0 / 255 blue:128.0 / 255 alpha:0.08];
+    case CharonSemanticColorSeparator:
+        return [UIColor respondsToSelector:@selector(separatorColor)] ? [UIColor separatorColor] : [UIColor colorWithRed:60.0 / 255 green:60.0 / 255 blue:67.0 / 255 alpha:0.29];
+    }
+    return nil;
+}
 NSString *charon_elided_text(NSString *text);
 // These three are `static inline` in the header and not functions in CharonLists.m, and that is a
 // deliberate change: a C function a file that DEFINES A CLASS calls has to be linked from a file that
@@ -182,4 +212,20 @@ UICollectionView *charon_owning_collection_view(UIView *view);
 - (void)charon_setExpanded:(BOOL)expanded animated:(BOOL)animated;
 - (void)charon_setExpansionHandler:(void (^)(void))handler;
 - (void)charon_toggleExpansion;
+@end
+
+// UIListSeparatorConfiguration's visual effect (15.0), reached from the 14.5 object that DEFINES the
+// class.  Three seams, and the reason there is no other shape is measured rather than chosen: a category's
+// `[super copyWithZone:]` resolves against NSObject, not against the class it is a category of, so a 15.0
+// category could not extend the 14.5 object's own copy or archive - it could only replace them and lose the
+// six fields.  The direction that works is the one this file's neighbours use: the older object calls, and
+// the newer object implements.  Declared here because both objects import this header.
+//
+// These are internal plumbing between two objects of this library and nothing outside it reads them: the
+// case in tests/backports/host/uikit2/listseparator_test.m reads the public -visualEffect and
+// -setVisualEffect:, which the 15.0 object defines.  Nothing here is API and nothing here is a registry row.
+@interface UIListSeparatorConfiguration (CharonVisualEffect15)
+- (void)charon_takeVisualEffectFrom:(UIListSeparatorConfiguration *)other;
+- (void)charon_encodeVisualEffectWithCoder:(NSCoder *)coder;
+- (void)charon_decodeVisualEffectWithCoder:(NSCoder *)coder;
 @end

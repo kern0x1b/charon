@@ -62,6 +62,45 @@ def anchor_line(source, cls):
     return None
 
 
+def macro_takes_argument(package, macro):
+    """Whether the macro is defined with a parameter, read off its own #define line and not off the row.
+
+    The call as a class writes it depends on it: `#define M(x)` is called `M(@"reason")` and `#define M`
+    is called bare, and a needle built from the row alone gets that wrong in both directions - measured:
+    picking "bare" whenever the measured reason is empty made SensorKit's plant replace
+    `CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(@"Use initWithSensor:")` with the bare name, and the mutant
+    did not build, which is not the same as the check noticing (2026-10-03)."""
+    for folder, _, files in os.walk(package):
+        for entry in sorted(files):
+            if not entry.endswith(".h"):
+                continue
+            for line in open(os.path.join(folder, entry), encoding="utf-8", errors="replace"):
+                match = re.match(r"#define %s(\(|$)" % re.escape(macro), line)
+                if match:
+                    return match.group(1) == "("
+    return False
+
+
+def call_of(row, package):
+    """The macro's name as THIS class writes it, or None when the row names no macro."""
+    name = row["port-macro"]
+    if not name or name == "-":
+        return None
+    if not macro_takes_argument(package, name):
+        return name
+    return name + '(@"%s")' % row["reason"]
+
+
+def block_of(text, cls):
+    """The class's own @implementation block, never a category's - the same rule check_port.py reads the
+    source with, and needed here for the same reason: a file may hold two classes and one macro (measured:
+    HealthKit/HKClinicalRecord120.m holds HKClinicalRecord and HKFHIRResource, and both call
+    CHARON_HEALTHKIT_UNCREATABLE_INIT), so "how often does this needle occur in the file" is the wrong
+    question and "how often in THIS class's block" is the right one."""
+    match = re.search(r"^@implementation %s(?!\s*\()[^\n]*\n(.*?)^@end" % re.escape(cls), text, re.S | re.M)
+    return match.group(1) if match else None
+
+
 def header_of(package, macro):
     """The header that defines the macro, so the third plant edits the macro's own body."""
     for folder, _, files in os.walk(package):
@@ -91,7 +130,9 @@ def main():
     wanted = sys.argv[3:] or sorted({r["framework"] for r in rows_of(table)})
     for framework in wanted:
         mine = [r for r in rows_of(table) if r["framework"] == framework]
-        owes = [r for r in mine if r["port-init"] == "raise"]
+        # `nil` is owed exactly as `raise` is: the class's own -init exists in Apple's metadata and in the
+        # port's, and what it answers - a refusal or nil - is the row's `answer`, not whether it is owed.
+        owes = [r for r in mine if r["port-init"] in ("raise", "nil")]
         none = [r for r in mine if r["port-init"] == "none"]
         if not owes and not none:
             continue
@@ -99,15 +140,28 @@ def main():
         # The call as the class writes it: with the literal reason when the measurement gave one.
         call = None
         for row in owes:
-            # The call as the class writes it. A row whose reason is the empty string still writes it
-            # out - `MACRO(@"")` - because that is the measured reason; only a reason the framework
-            # builds from the class name is written as the bare macro.
-            candidate = row["port-macro"] + ("" if row.get("reason-template")
-                                             else '(@"%s")' % row["reason"])
+            # The call as the class writes it, decided by the MACRO's own #define line and not by the row:
+            # a macro that takes a reason is called with the measured reason - a row whose measured reason
+            # is the empty string still writes `MACRO(@"")`, because that is the reason that was measured -
+            # and a macro that takes none is written bare, which is the case for the two whose reason the
+            # framework builds from the class name and for the one whose answer is not a refusal at all.
+            candidate = call_of(row, package)
+            if candidate is None:
+                continue
             source = os.path.join(package, row["port-source"])
-            if candidate in open(source, encoding="utf-8").read():
+            body = block_of(open(source, encoding="utf-8").read(), row["class"])
+            # Exactly once in THAT class's own block, or this plant does not run. The needle is the macro's
+            # name, and a name can occur where the macro is not called - measured on this tree, where the
+            # replacement landed in a comment that named the macro, the call stayed, the object kept its
+            # -init, and check_port.py went green on the mutant (2026-10-03). str.replace with no count is
+            # the silent no-op this table's own readers are careful about, and a plant is the same edit.
+            if body is not None and body.count(candidate) == 1:
                 call, owner = candidate, row
                 break
+            if body is not None and candidate in body:
+                sys.exit("%s holds %d copies of %s in the @implementation of %s, so a plant written on it"
+                         " could replace the wrong one" % (row["port-source"], body.count(candidate),
+                                                          candidate, row["class"]))
         if call:
             # Commented out rather than deleted: a delete leaves a file the compiler is then asked about
             # for a different reason, and a mutant that does not build has proved nothing about the
@@ -116,12 +170,19 @@ def main():
                              owner["port-source"].split("/")[-1], call, "/* %s */" % call]))
         if none:
             anchor = anchor_line(os.path.join(package, none[0]["port-source"]), none[0]["class"])
-            insert = (macro + ("" if owes[0].get("reason-template") else '(@"%s")' % owes[0]["reason"])
-                     if owes else
-                     # Nothing in this framework is owed, so there is no macro to call and the mistake
-                     # has to be written out: NSObject's pair spelled into a class whose own class
-                     # carries neither selector.
-                     "-(instancetype)init { return [super init]; }")
+            # The anchor is two lines of the file's own, and it has to be there: a plant whose needle does
+            # not occur is a plant that checks nothing, which plants.py reports as no line at all.
+            # The mistake is "a class that must NOT be defined gets a definition anyway", so the definition
+            # is written the way THAT class's own file writes one. Where that file already calls the refusal
+            # macro, that macro is what a mistaken author reaches for; where it calls nothing - measured on
+            # SensorKit/SensorKit260.m, whose SRAcousticSettings block has no macro call and where the macro
+            # is not in scope at that point either, so the planted mutant did not build and the check never ran
+            # (a pre-existing red on main, measured here on 2026-10-03 with main's own plants.py) - the
+            # definition is NSObject's own, spelled out, which needs nothing in scope.
+            target = open(os.path.join(package, none[0]["port-source"]), encoding="utf-8").read()
+            insert = (call_of(owes[0], package)
+                      if owes and call_of(owes[0], package) in target else
+                      "-(instancetype)init { return [super init]; }")
             if anchor:
                 print("\t".join(["a class that must NOT be defined gets a definition anyway", framework,
                                  none[0]["port-source"].split("/")[-1],

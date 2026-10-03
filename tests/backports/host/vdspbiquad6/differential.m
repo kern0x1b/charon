@@ -108,7 +108,7 @@ static void run_float(const char *what, vDSP_Length sections, const double *patt
     // Both X and Y are arrays of POINTERS, one per channel, not pointers to arrays. Passing &hostm_y is a
     // float (*)[32] where the API wants float **, and the host walks it as a pointer per channel and dies -
     // which is how the first version of this case lost the whole run, with no summary line to say so.
-    float hostm_y[SAMPLES], hostm_delay = 0.0f;
+    float hostm_y[SAMPLES];
     const float *hostm_x[1];
     float *hostm_ys[1];
     vDSP_biquadm_Setup hostm = vDSP_biquadm_CreateSetup(coeffs, sections, 1);
@@ -438,7 +438,12 @@ static void brute_seed_printed(BruteForest *out)
     for (int i = 5; i < 9; i++) {
         t->node[i].leaf = -1;
         t->node[i].a = root;
-        t->node[i].b = i - 5;
+        // node 5 is t0+t1, node 6 is that +t2, node 7 is that +t3 and node 8 is that +t4, so the RIGHT child
+        // of node i is leaf i - 4 and not leaf i - 5. With i - 5 the seed tree reads (t0+t0)+t1)+t2)+t3: it
+        // doubles t0 and never adds t4 at all, which is why control 1 failed at sample 0 on a filter the
+        // port and the host agree on bit for bit, and why the search below reported that no association
+        // matched the host when it had never been offered the printed one.
+        t->node[i].b = i - 4;
         t->node[i].fused = 0;
         root = i;
     }
@@ -599,8 +604,12 @@ static int brute_search(const char *label, const double *coeffs, const float *x,
     brute_seed_printed(&forest);
     brute_all(leaves, 5, &forest);
     int violations = 0;
-    if (!brute_controls(&forest, coeffs, x, port_y, &violations))
+    if (!brute_controls(&forest, coeffs, x, port_y, &violations)) {
+        // One control did not hold, so nothing this search would say about the host is worth anything.
+        // Said here rather than by falling off the end of a non-void function, which is what this did
+        // before and which clang reports as "non-void function does not return a value".
         return 0;
+    }
     int tried = 0, matched_float = 0, matched_double = 0;
     // The BEST variant, by the sample it first differs at - **not the first variant tried**, which is what
     // an earlier version of this printed and which is how a "first differs at sample 0" came to be reported
@@ -627,6 +636,7 @@ static int brute_search(const char *label, const double *coeffs, const float *x,
     // result against it is a category error rather than a measurement. It needs vDSP_biquadD's own host
     // output, which is a separate run and is not in this file yet.
     (void)matched_double; (void)best_double; (void)best_double_tree;
+    return 0;
 }
 
 static void brute_report(void)

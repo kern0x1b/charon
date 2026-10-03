@@ -26,7 +26,7 @@ usually called in - the length is a pointer and the caller names the count there
 
 ## What is not carried, and why
 
-`quadrature_integrate` (iOS 10.0, first exported at 16.0) is **not** in this group. It is a port of four QUADPACK routines -
+`quadrature_integrate` (iOS 10.0, first exported at 10.0.1) is **not** in this group. It is a port of four QUADPACK routines -
 the non-adaptive QNG, the adaptive QAG and the QAGS with Peter Wynn's epsilon extrapolation, and the infinite-bound transform
 - each with its own Gauss-Kronrod rule and its own published abscissa and weight table, over a caller-provided workspace whose
 per-interval size the header fixes at 32 and 152 bytes. It is one row and the largest piece of arithmetic in vForce, and it is

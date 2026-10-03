@@ -163,9 +163,16 @@ PLANTS
 
 echo "--- the check's own control: an object carrying neither selector must not look green"
 # The control needs a framework that owes a selector; HomeKit's twenty rows all say `none`, so for it
-# there is nothing an empty object could contradict, and the control runs against one that owes.
-control=$(awk -F'\t' 'NR > 1 && $10 == "raise" { print $1; exit }' "$here/expectations.tsv")
-victim=$(awk -F'\t' -v f="$control" 'NR > 1 && $1 == f && $10 == "raise" { print $NF; exit }' \
+# there is nothing an empty object could contradict, and the control runs against one that owes. `nil` owes
+# as much as `raise` does - the object's list has to carry the selector either way, which is the half of the
+# check an empty object contradicts - so both count.
+# Only among the frameworks THIS run built, which a subset run is: the control copies the objects of the
+# framework it picks, and picking one this run did not build is a cp of nothing (measured: asking for
+# AVFoundation alone picked HealthKit, whose objects were not built, and the control never ran).
+control=$(awk -F'\t' -v built=" $(tr '\n' ' ' < "$build/frameworks")" \
+    '($10 == "raise" || $10 == "nil") && index(built, " " $1 " ") { print $1; exit }' \
+    "$here/expectations.tsv")
+victim=$(awk -F'\t' -v f="$control" 'NR > 1 && $1 == f && ($10 == "raise" || $10 == "nil") { print $NF; exit }' \
     "$here/expectations.tsv")
 : > "$build/empty.o"
 rm -rf "$build/empty"

@@ -297,6 +297,28 @@
    "reason": "the same missing capability as Create, and the two argument checks come first because they do not depend on it: a NULL session is kVTInvalidSessionErr and a NULL pixel buffer is kVTParameterErr, and the host answers kVTParameterErr for a NULL pixel buffer too (measured). A NON-NULL session is not second-guessed - this port hands out none, so there is no way to tell a caller's pointer from a real one and inventing a test would reject a session Apple accepts",
    "effect": "kVTInvalidSessionErr (-12903) for no session, kVTParameterErr (-12902) for no pixel buffer, otherwise kVTVideoEncoderNotAvailableNowErr (-12915); the sceneChange argument changes what would be measured and there is no analysis to restart",
    "source": "SDK 26.2, VTHDRPerFrameMetadataGenerationSession.h:100; VTErrors.h for kVTInvalidSessionErr (-12903) and kVTParameterErr (-12902); the host's NULL-pixel-buffer call measured on 2026-10-03 as -12902"
+  },
+  {
+   "api": "VTDecompressionSessionDecodeFrameWithOptions()",
+   "kind": "function",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the 16.4 SDK does not declare it and no release this port builds exports it (_VTDecompressionSessionDecodeFrameWithOptions 4.3=0, 6.1.3=0), so the port has to export it. It is the release's own VTDecompressionSessionDecodeFrame with an options dictionary and an infoFlags word added, and BOTH are handled the way the host handles them: the options dictionary is dropped and the infoFlags word is forwarded",
+   "effect": "the release's own decode, with the same decodeFlags, the same sourceFrameRefCon and the same infoFlagsOut forwarded. MEASURED on this host with a REAL H264 sample (a 221-byte avc1 frame at 64x48) and five dictionaries - NULL, empty, an unknown key, kVTDecodeFrameOptionKey_ContentAnalyzerRotation and kVTDecodeFrameOptionKey_ContentAnalyzerCropRectangle - and ALL FIVE ANSWER IDENTICALLY: 'DecodeFrame=0 WithOptions=0 handlerCalls=2 infoFlags=0'. handlerCalls is the session's single-image callback and rises by two per line, one from the control DecodeFrame and one from the options call, so the decode really happened; infoFlags was handed in as 0x5a5a5a5a and comes back 0, so the callee wrote it. An unknown key is therefore neither refused nor honoured: it is dropped. Those two ContentAnalyzer keys are the only kVTDecodeFrameOptionKey_ in any SDK (both 26.0) and this host acts on neither either, so the release does not implement them - consistent with no release the port builds having a kVTDecodeFrameOptionKey_ at all (4.3=0, 6.1.3=0). Calling the 16.4 SDK's five-parameter form of VTDecompressionSessionDecodeFrame at 4.3 is safe: on ARM an EXTRA argument is harmless and a MISSING one is not, and the iOS 8.0 annotation on the parameter says when the symbol became public, not how many arguments the 4.3 code reads",
+   "facts": "facts/VideoToolbox/DecodeEncodeVariants.md",
+   "source": "SDK 26.2, VTDecompressionSession.h:484-517 for the declaration; the release's own VTDecompressionSessionDecodeFrame, which the 16.4 SDK declares at VTDecompressionSession.h:184-190 and which the 4.3 and 6.1.3 armv7 caches both export"
+  },
+  {
+   "api": "VTDecompressionSessionDecodeFrameWithOptionsAndOutputHandler()",
+   "kind": "function",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the 16.4 SDK does not declare it and no release this port builds exports it (_VTDecompressionSessionDecodeFrameWithOptions 4.3=0, 6.1.3=0), so the port has to export it. The block is the whole of what it adds over the function above, and no release this port builds has the handler form of the decode at all (_VTDecompressionSessionDecodeFrameWithOutputHandler 4.3=0, 6.1.3=0), so there is nothing the port could call the block after",
+   "effect": "kVTParameterErr (-12902) for EVERY dictionary - MEASURED with the same real H264 sample and the same five dictionaries, all five lines identical at -12902 - with the caller's block neither retained nor called and infoFlagsOut not written. The refusal is about the variant and not about the options and not about the session, since the control decode on the same session answers noErr. The header sanctions it: 'If the VTDecompressionSessionDecodeFrameWithOptionsAndOutputHandler call returns an error, the block will not be called.'",
+   "facts": "facts/VideoToolbox/DecodeEncodeVariants.md",
+   "source": "SDK 26.2, VTDecompressionSession.h:527-566; VTErrors.h for kVTParameterErr"
   }
  ]
 }
