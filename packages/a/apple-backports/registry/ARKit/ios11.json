@@ -1563,9 +1563,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARAnchor.h:75 of the iPhoneOS16.4 SDK, inside ARAnchor's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARAnchor: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARAnchor in ARKit.framework/Headers/ARAnchor.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARAnchor: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARBody2D new]",
@@ -1574,9 +1574,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARBody2D.h:27 of the iPhoneOS16.4 SDK, inside ARBody2D's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARBody2D: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARBody2D in ARKit.framework/Headers/ARBody2D.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARBody2D: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARCamera new]",
@@ -1585,9 +1585,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARCamera.h:129 of the iPhoneOS16.4 SDK, inside ARCamera's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARCamera: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARCamera in ARKit.framework/Headers/ARCamera.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARCamera: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARCollaborationData new]",
@@ -1596,9 +1596,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARCollaborationData.h:44 of the iPhoneOS16.4 SDK, inside ARCollaborationData's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARCollaborationData: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARCollaborationData in ARKit.framework/Headers/ARCollaborationData.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARCollaborationData: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARConfiguration new]",
@@ -1607,9 +1607,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARConfiguration.h:211 of the iPhoneOS16.4 SDK, inside ARConfiguration's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARConfiguration: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARConfiguration in ARKit.framework/Headers/ARConfiguration.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARFaceGeometry new]",
@@ -1618,9 +1618,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARFaceGeometry.h:70 of the iPhoneOS16.4 SDK, inside ARFaceGeometry's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARFaceGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARFaceGeometry in ARKit.framework/Headers/ARFaceGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARFaceGeometry: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARFrame new]",
@@ -1629,9 +1629,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARFrame.h:231 of the iPhoneOS16.4 SDK, inside ARFrame's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARFrame: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARFrame in ARKit.framework/Headers/ARFrame.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARFrame: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARGeoTrackingStatus new]",
@@ -1640,9 +1640,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARGeoTrackingTypes.h:121 of the iPhoneOS16.4 SDK, inside ARGeoTrackingStatus's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARGeoTrackingStatus: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARGeoTrackingStatus in ARKit.framework/Headers/ARGeoTrackingTypes.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARGeoTrackingStatus: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARGeometryElement new]",
@@ -1651,9 +1651,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARMeshGeometry.h:51 of the iPhoneOS16.4 SDK, inside ARGeometryElement's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARGeometryElement: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARGeometryElement in ARKit.framework/Headers/ARMeshGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARGeometryElement: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARGeometrySource new]",
@@ -1662,9 +1662,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARMeshGeometry.h:51 of the iPhoneOS16.4 SDK, inside ARGeometrySource's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARGeometrySource: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARGeometrySource in ARKit.framework/Headers/ARMeshGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARGeometrySource: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARHitTestResult new]",
@@ -1673,9 +1673,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARHitTestResult.h:77 of the iPhoneOS16.4 SDK, inside ARHitTestResult's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARHitTestResult: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARHitTestResult in ARKit.framework/Headers/ARHitTestResult.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARHitTestResult: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARLightEstimate new]",
@@ -1684,9 +1684,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARLightEstimate.h:36 of the iPhoneOS16.4 SDK, inside ARLightEstimate's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARLightEstimate: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARLightEstimate in ARKit.framework/Headers/ARLightEstimate.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARLightEstimate: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARMatteGenerator new]",
@@ -1695,9 +1695,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARMatteGenerator.h:73 of the iPhoneOS16.4 SDK, inside ARMatteGenerator's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARMatteGenerator: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARMatteGenerator in ARKit.framework/Headers/ARMatteGenerator.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARMatteGenerator: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARMeshGeometry new]",
@@ -1706,9 +1706,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARMeshGeometry.h:51 of the iPhoneOS16.4 SDK, inside ARMeshGeometry's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARMeshGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARMeshGeometry in ARKit.framework/Headers/ARMeshGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARMeshGeometry: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARPlaneGeometry new]",
@@ -1717,9 +1717,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARPlaneGeometry.h:69 of the iPhoneOS16.4 SDK, inside ARPlaneGeometry's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARPlaneGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARPlaneGeometry in ARKit.framework/Headers/ARPlaneGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARPlaneGeometry: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARPointCloud new]",
@@ -1728,9 +1728,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARPointCloud.h:33 of the iPhoneOS16.4 SDK, inside ARPointCloud's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARPointCloud: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARPointCloud in ARKit.framework/Headers/ARPointCloud.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARPointCloud: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARReferenceImage new]",
@@ -1739,9 +1739,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARReferenceImage.h:78 of the iPhoneOS16.4 SDK, inside ARReferenceImage's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARReferenceImage: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARReferenceImage in ARKit.framework/Headers/ARReferenceImage.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARReferenceImage: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARReferenceObject new]",
@@ -1750,9 +1750,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARReferenceObject.h:107 of the iPhoneOS16.4 SDK, inside ARReferenceObject's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARReferenceObject: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARReferenceObject in ARKit.framework/Headers/ARReferenceObject.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARReferenceObject: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARSCNFaceGeometry new]",
@@ -1761,9 +1761,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARSCNFaceGeometry.h:55 of the iPhoneOS16.4 SDK, inside ARSCNFaceGeometry's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARSCNFaceGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARSCNFaceGeometry in ARKit.framework/Headers/ARSCNFaceGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARSCNFaceGeometry: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARSkeleton new]",
@@ -1772,9 +1772,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARSkeleton.h:43 of the iPhoneOS16.4 SDK, inside ARSkeleton's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARSkeleton: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARSkeleton in ARKit.framework/Headers/ARSkeleton.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARSkeleton: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARSkeleton2D new]",
@@ -1783,9 +1783,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARSkeleton.h:43 of the iPhoneOS16.4 SDK, inside ARSkeleton2D's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARSkeleton2D: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARSkeleton2D in ARKit.framework/Headers/ARSkeleton.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARSkeleton2D: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARSkeleton3D new]",
@@ -1794,9 +1794,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARSkeleton.h:43 of the iPhoneOS16.4 SDK, inside ARSkeleton3D's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARSkeleton3D: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARSkeleton3D in ARKit.framework/Headers/ARSkeleton.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARSkeleton3D: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARSkeletonDefinition new]",
@@ -1805,9 +1805,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARSkeletonDefinition.h:85 of the iPhoneOS16.4 SDK, inside ARSkeletonDefinition's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARSkeletonDefinition: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARSkeletonDefinition in ARKit.framework/Headers/ARSkeletonDefinition.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARSkeletonDefinition: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARVideoFormat new]",
@@ -1816,9 +1816,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARVideoFormat.h:50 of the iPhoneOS16.4 SDK, inside ARVideoFormat's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARVideoFormat: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARVideoFormat in ARKit.framework/Headers/ARVideoFormat.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARVideoFormat: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "+[ARWorldMap new]",
@@ -1827,9 +1827,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARWorldMap.h:47 of the iPhoneOS16.4 SDK, inside ARWorldMap's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARWorldMap: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARWorldMap in ARKit.framework/Headers/ARWorldMap.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARWorldMap: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARAnchor init]",
@@ -1838,9 +1838,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARAnchor.h:75 of the iPhoneOS16.4 SDK, inside ARAnchor's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARAnchor: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARAnchor in ARKit.framework/Headers/ARAnchor.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARAnchor's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARAnchor: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARBody2D init]",
@@ -1849,20 +1849,20 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARBody2D.h:27 of the iPhoneOS16.4 SDK, inside ARBody2D's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARBody2D: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARBody2D in ARKit.framework/Headers/ARBody2D.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARBody2D's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARBody2D: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARCamera init]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARCamera.h:129 of the iPhoneOS16.4 SDK, inside ARCamera's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARCamera: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARCamera in ARKit.framework/Headers/ARCamera.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit defines it: `-init` is in ARCamera's OWN instance selector list, read out of ARKit of the arm64e shared cache of iOS 16.0 with modules/apple/objc.lua's inventory. The 16.4 SDK header marks `-init` NS_UNAVAILABLE on ARCamera and both are true at once: the mark is the SDK telling a caller not to build this class directly, and the method is there underneath, which is what the configuration subclasses chain to. The port defines it, over NSObject's own -init",
+      "effect": "-[ARCamera init] is defined and returns an object carrying the base class's own state - worldAlignment GRAVITY, light estimation on, audio data off - and a subclass's -init chains to it, so a configuration is built the way Apple builds one",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARCollaborationData init]",
@@ -1871,20 +1871,20 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARCollaborationData.h:44 of the iPhoneOS16.4 SDK, inside ARCollaborationData's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARCollaborationData: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARCollaborationData in ARKit.framework/Headers/ARCollaborationData.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARCollaborationData's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARCollaborationData: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARConfiguration init]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARConfiguration.h:211 of the iPhoneOS16.4 SDK, inside ARConfiguration's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARConfiguration: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARConfiguration in ARKit.framework/Headers/ARConfiguration.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit defines it: `-init` is in ARConfiguration's OWN instance selector list, read out of ARKit of the arm64e shared cache of iOS 16.0 with modules/apple/objc.lua's inventory. The 16.4 SDK header marks `-init` NS_UNAVAILABLE on ARConfiguration and both are true at once: the mark is the SDK telling a caller not to build this class directly, and the method is there underneath, which is what the configuration subclasses chain to. The port defines it, over NSObject's own -init",
+      "effect": "-[ARConfiguration init] is defined and returns an object carrying the base class's own state - worldAlignment GRAVITY, light estimation on, audio data off - and a subclass's -init chains to it, so a configuration is built the way Apple builds one",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARFaceGeometry init]",
@@ -1893,9 +1893,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARFaceGeometry.h:70 of the iPhoneOS16.4 SDK, inside ARFaceGeometry's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARFaceGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARFaceGeometry in ARKit.framework/Headers/ARFaceGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARFaceGeometry's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARFaceGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARFrame init]",
@@ -1904,9 +1904,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARFrame.h:231 of the iPhoneOS16.4 SDK, inside ARFrame's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARFrame: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARFrame in ARKit.framework/Headers/ARFrame.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARFrame's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARFrame: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARGeoTrackingStatus init]",
@@ -1915,9 +1915,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARGeoTrackingTypes.h:121 of the iPhoneOS16.4 SDK, inside ARGeoTrackingStatus's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARGeoTrackingStatus: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARGeoTrackingStatus in ARKit.framework/Headers/ARGeoTrackingTypes.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARGeoTrackingStatus's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARGeoTrackingStatus: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARGeometryElement init]",
@@ -1926,9 +1926,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARMeshGeometry.h:51 of the iPhoneOS16.4 SDK, inside ARGeometryElement's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARGeometryElement: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARGeometryElement in ARKit.framework/Headers/ARMeshGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARGeometryElement's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARGeometryElement: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARGeometrySource init]",
@@ -1937,9 +1937,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARMeshGeometry.h:51 of the iPhoneOS16.4 SDK, inside ARGeometrySource's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARGeometrySource: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARGeometrySource in ARKit.framework/Headers/ARMeshGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARGeometrySource's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARGeometrySource: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARHitTestResult init]",
@@ -1948,9 +1948,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARHitTestResult.h:77 of the iPhoneOS16.4 SDK, inside ARHitTestResult's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARHitTestResult: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARHitTestResult in ARKit.framework/Headers/ARHitTestResult.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARHitTestResult's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARHitTestResult: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARLightEstimate init]",
@@ -1959,9 +1959,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARLightEstimate.h:36 of the iPhoneOS16.4 SDK, inside ARLightEstimate's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARLightEstimate: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARLightEstimate in ARKit.framework/Headers/ARLightEstimate.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARLightEstimate's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARLightEstimate: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARMatteGenerator init]",
@@ -1970,9 +1970,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARMatteGenerator.h:73 of the iPhoneOS16.4 SDK, inside ARMatteGenerator's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARMatteGenerator: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARMatteGenerator in ARKit.framework/Headers/ARMatteGenerator.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARMatteGenerator's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARMatteGenerator: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARMeshGeometry init]",
@@ -1981,9 +1981,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARMeshGeometry.h:51 of the iPhoneOS16.4 SDK, inside ARMeshGeometry's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARMeshGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARMeshGeometry in ARKit.framework/Headers/ARMeshGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARMeshGeometry's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARMeshGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARPlaneGeometry init]",
@@ -1992,9 +1992,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARPlaneGeometry.h:69 of the iPhoneOS16.4 SDK, inside ARPlaneGeometry's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARPlaneGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARPlaneGeometry in ARKit.framework/Headers/ARPlaneGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARPlaneGeometry's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARPlaneGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARPointCloud init]",
@@ -2003,9 +2003,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARPointCloud.h:33 of the iPhoneOS16.4 SDK, inside ARPointCloud's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARPointCloud: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARPointCloud in ARKit.framework/Headers/ARPointCloud.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARPointCloud's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARPointCloud: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARRaycastQuery init]",
@@ -2014,9 +2014,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARRaycastQuery.h:87 of the iPhoneOS16.4 SDK, inside ARRaycastQuery's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARRaycastQuery: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARRaycastQuery in ARKit.framework/Headers/ARRaycastQuery.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARRaycastQuery's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARRaycastQuery: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARRaycastQuery new]",
@@ -2025,9 +2025,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARRaycastQuery.h:87 of the iPhoneOS16.4 SDK, inside ARRaycastQuery's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARRaycastQuery: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARRaycastQuery in ARKit.framework/Headers/ARRaycastQuery.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARRaycastQuery: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARRaycastResult init]",
@@ -2036,9 +2036,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARRaycastResult.h:46 of the iPhoneOS16.4 SDK, inside ARRaycastResult's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARRaycastResult: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARRaycastResult in ARKit.framework/Headers/ARRaycastResult.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARRaycastResult's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARRaycastResult: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARRaycastResult new]",
@@ -2047,9 +2047,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARRaycastResult.h:46 of the iPhoneOS16.4 SDK, inside ARRaycastResult's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARRaycastResult: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARRaycastResult in ARKit.framework/Headers/ARRaycastResult.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARRaycastResult: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARReferenceImage init]",
@@ -2058,9 +2058,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARReferenceImage.h:78 of the iPhoneOS16.4 SDK, inside ARReferenceImage's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARReferenceImage: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARReferenceImage in ARKit.framework/Headers/ARReferenceImage.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARReferenceImage's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARReferenceImage: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARReferenceObject init]",
@@ -2069,9 +2069,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARReferenceObject.h:107 of the iPhoneOS16.4 SDK, inside ARReferenceObject's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARReferenceObject: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARReferenceObject in ARKit.framework/Headers/ARReferenceObject.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARReferenceObject's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARReferenceObject: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARSCNFaceGeometry init]",
@@ -2080,9 +2080,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARSCNFaceGeometry.h:55 of the iPhoneOS16.4 SDK, inside ARSCNFaceGeometry's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARSCNFaceGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARSCNFaceGeometry in ARKit.framework/Headers/ARSCNFaceGeometry.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARSCNFaceGeometry's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARSCNFaceGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARSkeleton init]",
@@ -2091,9 +2091,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARSkeleton.h:43 of the iPhoneOS16.4 SDK, inside ARSkeleton's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARSkeleton: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARSkeleton in ARKit.framework/Headers/ARSkeleton.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARSkeleton's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARSkeleton: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARSkeleton2D init]",
@@ -2102,9 +2102,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARSkeleton.h:43 of the iPhoneOS16.4 SDK, inside ARSkeleton2D's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARSkeleton2D: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARSkeleton2D in ARKit.framework/Headers/ARSkeleton.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARSkeleton2D's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARSkeleton2D: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARSkeleton3D init]",
@@ -2113,9 +2113,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARSkeleton.h:43 of the iPhoneOS16.4 SDK, inside ARSkeleton3D's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARSkeleton3D: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARSkeleton3D in ARKit.framework/Headers/ARSkeleton.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARSkeleton3D's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARSkeleton3D: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARSkeletonDefinition init]",
@@ -2124,9 +2124,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARSkeletonDefinition.h:85 of the iPhoneOS16.4 SDK, inside ARSkeletonDefinition's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARSkeletonDefinition: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARSkeletonDefinition in ARKit.framework/Headers/ARSkeletonDefinition.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARSkeletonDefinition's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARSkeletonDefinition: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARTrackedRaycast init]",
@@ -2135,9 +2135,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARTrackedRaycast.h:28 of the iPhoneOS16.4 SDK, inside ARTrackedRaycast's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARTrackedRaycast: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARTrackedRaycast in ARKit.framework/Headers/ARTrackedRaycast.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARTrackedRaycast's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARTrackedRaycast: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARTrackedRaycast new]",
@@ -2146,9 +2146,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARTrackedRaycast.h:28 of the iPhoneOS16.4 SDK, inside ARTrackedRaycast's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no new is defined on ARTrackedRaycast: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARTrackedRaycast in ARKit.framework/Headers/ARTrackedRaycast.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARTrackedRaycast: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARVideoFormat init]",
@@ -2157,9 +2157,9 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARVideoFormat.h:50 of the iPhoneOS16.4 SDK, inside ARVideoFormat's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARVideoFormat: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARVideoFormat in ARKit.framework/Headers/ARVideoFormat.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARVideoFormat's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARVideoFormat: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
       "api": "-[ARWorldMap init]",
@@ -2168,9 +2168,141 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's own header forbids it: `- (instancetype)init NS_UNAVAILABLE;` at ARWorldMap.h:47 of the iPhoneOS16.4 SDK, inside ARWorldMap's own @interface block. The port defines no such method, and that is deliberate and not a gap: defining one would put a selector in the port's class metadata that Apple's class does not have, so the port's metadata would differ from Apple's while behaving the same. The release carries no ARKit at all - 0 of the 11378 class names of the 6.1.3 armv7 cache begin AR - so this row is about the port's own metadata matching Apple's, not about a sensor the device lacks",
-      "effect": "no init is defined on ARWorldMap: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits - which is what it reaches on a release that has ARKit too",
-      "source": "the @interface block of ARWorldMap in ARKit.framework/Headers/ARWorldMap.h of the iPhoneOS16.4 SDK, and the absence of any AR class from the armv7 shared cache of iOS 6.1.3 read with modules/apple/objc.lua's inventory (0 of 11378 class names begin AR), as this file's ARDepthData row already records"
+      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARWorldMap's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
+      "effect": "no -init is defined on ARWorldMap: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "+[ARFaceTrackingConfiguration new]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARFaceTrackingConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "+[ARGeoTrackingConfiguration new]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARGeoTrackingConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "+[ARImageTrackingConfiguration new]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARImageTrackingConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "+[ARObjectScanningConfiguration new]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARObjectScanningConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "+[AROrientationTrackingConfiguration new]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on AROrientationTrackingConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "+[ARWorldTrackingConfiguration new]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
+      "effect": "no +new is defined on ARWorldTrackingConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "-[ARFaceTrackingConfiguration init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit defines it: `-init` is in ARFaceTrackingConfiguration's OWN instance selector list, read out of ARKit of the arm64e shared cache of iOS 16.0 with modules/apple/objc.lua's inventory. This subclass's own @interface in the 16.4 SDK re-declares `- (instancetype)init;` WITHOUT the NS_UNAVAILABLE its base class carries - ARConfiguration.h:114 - and Apple's metadata agrees with the subclass: the method is there and the port defines it",
+      "effect": "-[ARFaceTrackingConfiguration init] is defined and returns an object carrying the base class's state plus this class's own defaults, which is what Apple builds when a caller makes one",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "-[ARGeoTrackingConfiguration init]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit defines it: `-init` is in ARGeoTrackingConfiguration's OWN instance selector list, read out of ARKit of the arm64e shared cache of iOS 16.0 with modules/apple/objc.lua's inventory. This subclass's own @interface in the 16.4 SDK re-declares `- (instancetype)init;` WITHOUT the NS_UNAVAILABLE its base class carries - ARConfiguration.h:114 - and Apple's metadata agrees with the subclass: the method is there and the port defines it",
+      "effect": "-[ARGeoTrackingConfiguration init] is defined and returns an object carrying the base class's state plus this class's own defaults, which is what Apple builds when a caller makes one",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "-[ARImageTrackingConfiguration init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit defines it: `-init` is in ARImageTrackingConfiguration's OWN instance selector list, read out of ARKit of the arm64e shared cache of iOS 16.0 with modules/apple/objc.lua's inventory. This subclass's own @interface in the 16.4 SDK re-declares `- (instancetype)init;` WITHOUT the NS_UNAVAILABLE its base class carries - ARConfiguration.h:114 - and Apple's metadata agrees with the subclass: the method is there and the port defines it",
+      "effect": "-[ARImageTrackingConfiguration init] is defined and returns an object carrying the base class's state plus this class's own defaults, which is what Apple builds when a caller makes one",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "-[ARObjectScanningConfiguration init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit defines it: `-init` is in ARObjectScanningConfiguration's OWN instance selector list, read out of ARKit of the arm64e shared cache of iOS 16.0 with modules/apple/objc.lua's inventory. This subclass's own @interface in the 16.4 SDK re-declares `- (instancetype)init;` WITHOUT the NS_UNAVAILABLE its base class carries - ARConfiguration.h:114 - and Apple's metadata agrees with the subclass: the method is there and the port defines it",
+      "effect": "-[ARObjectScanningConfiguration init] is defined and returns an object carrying the base class's state plus this class's own defaults, which is what Apple builds when a caller makes one",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "-[AROrientationTrackingConfiguration init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit defines it: `-init` is in AROrientationTrackingConfiguration's OWN instance selector list, read out of ARKit of the arm64e shared cache of iOS 16.0 with modules/apple/objc.lua's inventory. This subclass's own @interface in the 16.4 SDK re-declares `- (instancetype)init;` WITHOUT the NS_UNAVAILABLE its base class carries - ARConfiguration.h:114 - and Apple's metadata agrees with the subclass: the method is there and the port defines it",
+      "effect": "-[AROrientationTrackingConfiguration init] is defined and returns an object carrying the base class's state plus this class's own defaults, which is what Apple builds when a caller makes one",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+    },
+    {
+      "api": "-[ARWorldTrackingConfiguration init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/ARKit/ARKit.md",
+      "reason": "Apple's ARKit defines it: `-init` is in ARWorldTrackingConfiguration's OWN instance selector list, read out of ARKit of the arm64e shared cache of iOS 16.0 with modules/apple/objc.lua's inventory. This subclass's own @interface in the 16.4 SDK re-declares `- (instancetype)init;` WITHOUT the NS_UNAVAILABLE its base class carries - ARConfiguration.h:114 - and Apple's metadata agrees with the subclass: the method is there and the port defines it",
+      "effect": "-[ARWorldTrackingConfiguration init] is defined and returns an object carrying the base class's state plus this class's own defaults, which is what Apple builds when a caller makes one",
+      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     }
   ]
 }
