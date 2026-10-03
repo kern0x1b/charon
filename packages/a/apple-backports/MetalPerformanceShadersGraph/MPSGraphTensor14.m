@@ -4,9 +4,6 @@
 
 #import "CharonMPSGraph.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-
 @implementation MPSGraphTensor {
     NSArray<NSNumber *> *_shape;
     MPSDataType _dataType;

@@ -3,9 +3,6 @@
 
 #import "CharonMPSGraph.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-
 @implementation MPSGraphShapedType {
     NSArray<NSNumber *> *_shape;
     NSArray<NSNumber *> *_strides;
