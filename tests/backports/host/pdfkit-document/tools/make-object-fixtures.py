@@ -68,6 +68,12 @@ def build(path, annotations, extra_objects=(), catalog_extra=b"", pages_extra=b"
     contents = [b"%d 0 R" % (3 + page_count + i) for i in range(page_count)]
     resources = b"<< /Font << /F1 %d 0 R >> >>" % font_number
     kids = b" ".join(b"%d 0 R" % (3 + i) for i in range(page_count))
+    # The /Pages node carries NO /Parent, and that is right: the catalog is the parent of the page tree
+    # in the sense that the TRAILER's /Root names it, and a real PDF does not put /Parent on the root
+    # /Pages node.  An earlier version of this file added one, so that -outlineRoot could reach the
+    # catalog by walking /Parent up from a page - and that walk was only ever working because of this
+    # line.  The catalog now comes from CGPDFDocumentGetCatalog, which is in the release, so the line is
+    # gone and the fixtures are ordinary documents again.
     objects[1] = (b"<< /Type /Pages /Kids [" + kids + b"] /Count " + str(page_count).encode()
                   + pages_extra + b" >>")
     for i in range(page_count):
@@ -273,6 +279,211 @@ WIDGET_NO_T = annot(b"Widget", [(b"Rect", b"[40 40 140 70]"), (b"F", b"4"), (b"F
 SQUARE_T = annot(b"Square", [(b"Rect", b"[40 40 140 140]"), (b"F", b"4"), (b"T", b"(square T)"),
                              (b"MK", b"<< /BC [0 0 1] >>")])
 
+
+# ---- /Outlines: the outline tree of PDF 1.7 Table 8.2 -------------------------------------------
+#
+# An outline is a LINKED structure and not a tree of nested dictionaries: every item names its /Parent,
+# its /Prev and its /Next, and a parent's children are its /First .. /Last chain.  So the fixtures
+# cannot be written as a literal - the object numbers depend on how many items there are above them -
+# and build_outline() below emits the whole tree from a nested spec and measures every number it writes.
+#
+# /Count is on the FIRST CHILD of an item with children and counts the item's visible descendants at
+# every level.  A POSITIVE /Count means the item is CLOSED and a NEGATIVE one means it is OPEN, which is
+# the opposite of what the sign suggests and is measured here rather than assumed: outline-closed.pdf and
+# outline-open.pdf carry the same shape with the two signs.
+
+def _outline_items(spec, root_number, first_number, signs=None):
+    """(bodies, top-level numbers, next number) for a nested spec.
+
+    Each spec entry is (title_bytes_or_None, [extra (key, value) pairs], [children]).  The bodies come
+    back in the order the numbers were handed out, which is the order the numbers are assigned in.
+    """
+    bodies = {}
+    number = first_number
+    signs = signs or {}
+
+    def emit(entries, parent_number):
+        nonlocal number
+        numbers = []
+        for _title, _extra, _children in entries:
+            numbers.append(number)
+            number += 1
+        for i, (title, extra, children) in enumerate(entries):
+            here = numbers[i]
+            body = b"<< /Type /Annot /Subtype /Link /Rect [0 0 10 10]"
+            if title is not None:
+                body += b" /Title (" + title + b")"
+            body += b" /Parent " + str(parent_number).encode() + b" 0 R"
+            if i > 0:
+                body += b" /Prev " + str(numbers[i - 1]).encode() + b" 0 R"
+            if i + 1 < len(entries):
+                body += b" /Next " + str(numbers[i + 1]).encode() + b" 0 R"
+            for key, value in extra:
+                body += b" /" + key + b" " + value
+            if children:
+                child_numbers = emit(children, here)
+                # the SIGN is per item and is what separates "has children" from "the sign of /Count":
+                # by default every item with children is written NEGATIVE, and outline-signs.pdf writes
+                # one POSITIVE beside one NEGATIVE with the same shape
+                sign = signs.get(title, -1)
+                body += (b" /First " + str(child_numbers[0]).encode() + b" 0 R /Last "
+                         + str(child_numbers[-1]).encode() + b" 0 R /Count "
+                         + str(sign * _visible_count(children)).encode())
+            body += b" >>"
+            bodies[here] = body
+        return numbers
+
+    root_numbers = emit(spec, root_number)
+    return bodies, root_numbers, number
+
+
+def _visible_count(entries):
+    """The number a /Count carries for this shape, and the SIGN that says open or closed.
+
+    An item with children counts its own descendants at every level, and the fixtures below write the
+    count by hand instead - a positive one on a closed item and a negative one on an open one - so this
+    is only the total, never the sign.
+    """
+    total = 0
+    for _title, _extra, children in entries:
+        total += 1
+        if children:
+            total += _visible_count(children)
+    return total
+
+
+def build_outline(directory, name, spec, open_sign=-1, page_count=1, signs=None, extra=()):
+    """One fixture whose catalog carries an /Outlines tree, built from a nested spec."""
+    # build()'s layout: 1 catalog, 2 pages, page_count pages, their page_count content streams, then the
+    # page's own annotations, then 1 font - so the first object this fixture may write is
+    # 3 + 2 * page_count + len(page_annotations) + 1.  The first version of this arithmetic said
+    # 5 + page_count + 1 and every reference in every outline fixture was one too high, which the host
+    # answered as NO outline root at all.
+    page_annotations = [annot(b"Square", [(b"Rect", b"[0 0 10 10]"), (b"F", b"4"),
+                                          (b"Contents", b"(filler)")])] * extra
+    first = 3 + 2 * page_count + len(page_annotations) + 1
+    # the outline ROOT dictionary takes that number and the items follow it, because a top-level item's
+    # /Parent IS the root dictionary and its number has to be known before the items are written
+    root_number = first
+    bodies, roots, _last = _outline_items(spec, root_number, first + 1, signs or {})
+    root_body = (b"<< /Type /Outlines /First " + str(roots[0]).encode() + b" 0 R /Last "
+                 + str(roots[-1]).encode() + b" 0 R /Count "
+                 + str(open_sign * _visible_count(spec)).encode() + b" >>")
+    extra = [("outline-root", root_body)] + [(str(n), bodies[n]) for n in sorted(bodies)]
+    catalog_extra = b" /Outlines " + str(root_number).encode() + b" 0 R"
+    count, numbers = build(os.path.join(directory, name), list(page_annotations), extra,
+                           catalog_extra, page_count=page_count)
+    return count, numbers, root_number, sorted(bodies)
+
+
+# a three-level tree, the sign written per item, and one sibling at the top
+OUTLINE_OPEN = [
+    (b"One", [(b"F", b"4"), (b"Dest", b"[3 0 R /XYZ 11 22 0.5]")], [
+        (b"One One", [(b"F", b"4")], [
+            (b"One One One", [(b"F", b"4")], []),
+        ]),
+        (b"One Two", [(b"F", b"4")], []),
+    ]),
+    (b"Two", [(b"F", b"4"), (b"A", b"<< /S /URI /URI (https://example.com/two) >>")], [
+        (b"Two One", [(b"F", b"4"), (b"Dest", b"[3 0 R /Fit]")], []),
+    ]),
+]
+OUTLINE_CLOSED = [
+    (b"One", [(b"F", b"4")], [
+        (b"One One", [(b"F", b"4")], []),
+    ]),
+]
+# two items with the SAME shape - one child each - and opposite /Count signs, which is the fixture that
+# tells "-isOpen is whether it has children" from "-isOpen is the sign of /Count"
+OUTLINE_SIGNS = [
+    (b"Positive", [(b"F", b"4")], [
+        (b"Positive Child", [(b"F", b"4")], []),
+        (b"Positive Child Two", [(b"F", b"4")], []),
+    ]),
+    (b"Negative", [(b"F", b"4")], [
+        (b"Negative Child", [(b"F", b"4")], []),
+        (b"Negative Child Two", [(b"F", b"4")], []),
+    ]),
+]
+OUTLINE_SIGNS_SIGNS = {b"Positive": 1, b"Negative": -1}
+
+# Four items with NO /Count at all, side by side.  The sign of /Count is what -isOpen reads, and an item
+# that carries none is the case where the host's own answer has to be looked at before it is compared:
+# in outline-shapes one such item answers YES and its neighbour answers NO.
+OUTLINE_NO_COUNT = [
+    (b"A", [(b"F", b"4")], []),
+    (b"B", [(b"F", b"4")], []),
+    (b"C", [(b"F", b"4")], []),
+    (b"D", [(b"F", b"4")], []),
+]
+
+# the shapes the members above turn on: no /Title, a /Dest AND an /A on one item, a /Count of zero, an
+# item with no /First at all, and a named destination
+OUTLINE_SHAPES = [
+    (None, [(b"F", b"4")], [
+        (b"Child", [(b"F", b"4"), (b"Dest", b"[3 0 R /XYZ 1 2 3]"),
+                    (b"A", b"<< /S /GoTo /D [3 0 R /Fit] >>")], []),
+        (None, [(b"F", b"4")], []),
+    ]),
+    (b"Closed", [(b"F", b"4")], [
+        (b"Closed Child", [(b"F", b"4")], []),
+    ]),
+    (b"Named", [(b"F", b"4"), (b"Dest", b"(chapter1)")], []),
+    (b"Alone", [(b"F", b"4")], []),
+]
+
+# One item per hypothesis about -isOpen on an item with NO /Count, because that is the case where the
+# host answered YES for one item in outline-shapes and NO for every other, and a rule has to be told
+# from an artefact.  Every item here carries no /Count and no children, and they differ only in whether
+# they are the FIRST in their chain, whether they are titled, and whether the item before them carries a
+# /Dest or an /A.
+OUTLINE_ISOPEN = [
+    (b"P1", [(b"F", b"4")], [
+        (b"C1", [(b"F", b"4"), (b"Dest", b"[3 0 R /Fit]")], []),
+        (b"C2", [(b"F", b"4")], []),
+    ]),
+    (b"P2", [], [
+        (b"C3", [(b"F", b"4")], []),
+        (b"C4", [], []),
+    ]),
+    (b"P3", [(b"F", b"4")], [
+        (b"C5", [], []),
+        (b"C6", [(b"F", b"4"), (b"A", b"<< /S /URI /URI (https://example.com/c6) >>")], []),
+    ]),
+]
+
+# A chain of four UNTITLED items, each with /F 4 and no /Count, and beside it a chain of four TITLED
+# ones with the same shape.  This is the fixture that isolates the one -isOpen answer the host gives that
+# the sign of /Count does not explain.
+OUTLINE_UNTITLED = [
+    (None, [(b"F", b"4")], [
+        (None, [(b"F", b"4")], [
+            (None, [(b"F", b"4")], [
+                (None, [(b"F", b"4")], []),
+            ]),
+        ]),
+    ]),
+]
+OUTLINE_TITLED = [
+    (b"T", [(b"F", b"4")], [
+        (b"U", [(b"F", b"4")], [
+            (b"V", [(b"F", b"4")], [
+                (b"W", [(b"F", b"4")], []),
+            ]),
+        ]),
+    ]),
+]
+
+# Three leaves that differ ONLY in what /Title says, each with no /Count: no /Title at all, an EMPTY
+# /Title (), and a real one.  That is the shape that says whether the host's -isOpen reads the PRESENCE of
+# the key or its text.
+OUTLINE_TITLE_KEY = [
+    (b"None", [(b"F", b"4")], [(None, [(b"F", b"4")], [])]),
+    (b"Empty", [(b"F", b"4")], [(b"", [(b"F", b"4")], [])]),
+    (b"Text", [(b"F", b"4")], [(b"leaf", [(b"F", b"4")], [])]),
+    (b"NoTitleNoF", [], [(None, [], [])]),
+    (b"NoTitleWithDest", [(b"F", b"4")], [(None, [(b"F", b"4"), (b"Dest", b"[3 0 R /Fit]")], [])]),
+]
 
 # ---- /A, the action dictionary of PDF 1.7 Table 8.44, and the /Dest of Table 8.42 --------------
 #
@@ -488,6 +699,24 @@ def main():
         ("mk-rot-real.pdf", [MK_ROT_REAL]),
         ("mk-r-zero.pdf", [MK_R_ZERO]),
     ]
+    for name, spec, sign, signs, extra in (("outline-collapsed.pdf", OUTLINE_OPEN, -1, None, 0),
+                                    ("outline-expanded.pdf", OUTLINE_CLOSED, 1, None, 0),
+                                    ("outline-shapes.pdf", OUTLINE_SHAPES, -1, None, 0),
+                                    ("outline-signs.pdf", OUTLINE_SIGNS, -1, OUTLINE_SIGNS_SIGNS, 0),
+                                    ("outline-nocount.pdf", OUTLINE_NO_COUNT, -1, None, 0),
+                                    ("outline-isopen.pdf", OUTLINE_ISOPEN, -1, None, 0),
+                                    # the SAME shapes as outline-shapes.pdf with ONE annotation added to
+                                    # the page, which shifts every object number after it.  Nothing about
+                                    # the outline changes, so if -isOpen moves with it, the host's answer
+                                    # for an item with no /Count is not a property of the document.
+                                    ("outline-shapes2.pdf", OUTLINE_SHAPES, -1, None, 1),
+                                    ("outline-untitled.pdf", OUTLINE_UNTITLED, -1, None, 0),
+                                    ("outline-titled.pdf", OUTLINE_TITLED, -1, None, 0),
+                                    ("outline-titlekey.pdf", OUTLINE_TITLE_KEY, -1, None, 0)):
+        count, numbers, root, items = build_outline(directory, name, spec, sign, signs=signs,
+                                                    extra=extra)
+        print("  wrote %-20s %d objects, outline root %d, items %s" % (name, count, root,
+                                                                       ",".join(str(i) for i in items)))
     for shape in shapes:
         name, annotations = shape[0], shape[1]
         extra = shape[2] if len(shape) > 2 else ()

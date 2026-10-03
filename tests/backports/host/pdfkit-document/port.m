@@ -118,6 +118,83 @@ static void printBorderValueFacts(void)
 // and read by copyFactsPage - one file, one way in, rather than a second argument.
 static const char *gCopyFactsFixture = NULL;
 
+
+// ---- the /Outlines tree -------------------------------------------------------------------------
+//
+// Walked rather than printed per fixture, because every member of an outline is read off a link in the
+// tree and the link matters: the same title in two positions answers two different -index values.  The
+// walk is depth-first over -childAtIndex: in the same order on both sides, and every key is named by the
+// path it was read at, so a difference says which item and which member.
+//
+// It does NOT ask one past the end: the host RAISES NSRangeException there - measured - so the port
+// answers nil and the boundary is named in PDFOutline11.m and in the row.
+static void printOutlineWalk(const char *name, PDFOutline *outline, int depth)
+{
+    if (outline == nil) {
+        printf("%s.outline=nil\n", name);
+        return;
+    }
+    // ONE KEY PER LINE, because the comparison reads one key=value per line - see host.m's copy.
+    printf("%s.outline.label=%s\n", name,
+           outline.label == nil ? "(nil)" : (outline.label.length == 0 ? "(empty)" : outline.label.UTF8String));
+    printf("%s.outline.children=%lu\n", name, (unsigned long)outline.numberOfChildren);
+    printf("%s.outline.index=%lu\n", name, (unsigned long)outline.index);
+    printf("%s.outline.isOpen=%d\n", name, (int)outline.isOpen);
+    printf("%s.outline.parent=%s\n", name, outline.parent ? "an-object" : "(nil)");
+    printf("%s.outline.document=%s\n", name, outline.document ? "an-object" : "(nil)");
+    PDFDestination *destination = outline.destination;
+    if (destination == nil) {
+        printf("%s.outline.dest=nil\n", name);
+    } else {
+        // one key per line here as everywhere else: the point is ONE value carrying both components,
+        // the way every other point in this harness is printed, and the zoom is its own key
+        printf("%s.outline.dest.page=%s\n", name, destination.page ? "an-object" : "(nil)");
+        printf("%s.outline.dest.point=%.4f,%.4f\n", name, (double)destination.point.x,
+               (double)destination.point.y);
+        printf("%s.outline.dest.zoom=%.4f\n", name, (double)destination.zoom);
+    }
+    PDFAction *action = outline.action;
+    if (action == nil) {
+        printf("%s.outline.action=nil\n", name);
+    } else {
+        printf("%s.outline.action.class=%s\n", name, class_getName([action class]));
+        printf("%s.outline.action.type=%s\n", name, action.type.UTF8String ?: "(nil)");
+        if ([action isKindOfClass:[PDFActionURL class]])
+            printf("%s.outline.action.URL=%s\n", name,
+                   [[(PDFActionURL *)action URL] absoluteString].UTF8String ?: "(nil)");
+        if ([action isKindOfClass:[PDFActionGoTo class]]) {
+            PDFDestination *goTo = [(PDFActionGoTo *)action destination];
+            printf("%s.outline.action.dest=%s\n", name,
+                   goTo ? (goTo.page ? "an-object" : "(nil)") : "(nil)");
+            if (goTo) {
+                printf("%s.outline.action.dest.point=%.4f,%.4f\n", name, (double)goTo.point.x,
+                       (double)goTo.point.y);
+                printf("%s.outline.action.dest.zoom=%.4f\n", name, (double)goTo.zoom);
+            }
+        }
+    }
+    for (NSUInteger i = 0; i < outline.numberOfChildren; i++) {
+        char key[512];
+        snprintf(key, sizeof(key), "%s.c%lu", name, (unsigned long)i);
+        printOutlineWalk(key, [outline childAtIndex:i], depth + 1);
+    }
+    // ONE PAST THE END, inside @try - see host.m's copy: the value is the exception's NAME, and the port
+    // raises because the host does.
+    {
+        char key[512];
+        snprintf(key, sizeof(key), "%s.childPastEnd", name);
+        @try {
+            // NIL IS ITS OWN ANSWER and is not an object: the first version of this block printed
+            // "an-object" whatever the call returned, so a side answering nil named itself as an object
+            PDFOutline *past = [outline childAtIndex:outline.numberOfChildren];
+            printf("%s=%s\n", key, past == nil ? "(nil)" : "an-object");
+        } @catch (NSException *raised) {
+            printf("%s=%s\n", key, [[raised name] UTF8String]);
+        }
+    }
+    (void)depth;
+}
+
 // ---- the action family and PDFDestination -------------------------------------------------------
 //
 // The same keys, the same order and the same prints as host.m's, on the port's own classes.  Two things
@@ -460,6 +537,59 @@ int main(int argc, char **argv)
                 printf("%s.page0.numberOfCharacters=%ld\n", name, (long)[first numberOfCharacters]);
                 printf("%s.page0.string=%s\n", name, [first string] ? [first string].UTF8String : "(nil)");
                 printf("%s.page0.annotations.count=%lu\n", name, (unsigned long)first.annotations.count);
+                printOutlineWalk(name, [document outlineRoot], 0);
+                for (unsigned a = 0; a < first.annotations.count; a++) {
+                    PDFAnnotation *each = first.annotations[a];
+                    char prefix[512];
+                    snprintf(prefix, sizeof(prefix), "%s.page0.annotation%u", name, a);
+                    printActionFacts(prefix, [each action]);
+                    printDestinationFacts(prefix, [each destination]);
+                }
+                // the BORDER, over PDFBorder11.m, printed in the same keys and the same order as
+                // host.m prints it
+                for (unsigned a = 0; a < first.annotations.count; a++) {
+                    PDFAnnotation *annotation = first.annotations[a];
+                    PDFBorder *border = annotation.border;
+                    if (border == nil) {
+                        printf("%s.page0.annotation%u.border=nil\n", name, a);
+                        continue;
+                    }
+                    printf("%s.page0.annotation%u.border.style=%ld\n", name, a, (long)[border style]);
+                    printf("%s.page0.annotation%u.border.lineWidth=%.6f\n", name, a,
+                           (double)[border lineWidth]);
+                    printf("%s.page0.annotation%u.border.dash=%s\n", name, a,
+                           [border dashPattern] ? "an-array" : "(nil)");
+                    if ([border dashPattern]) {
+                        NSMutableArray *parts = [NSMutableArray array];
+                        for (id value in [border dashPattern])
+                            [parts addObject:[NSString stringWithFormat:@"%.6f",
+                                               (double)[value doubleValue]]];
+                        printf("%s.page0.annotation%u.border.dash.values=%s\n", name, a,
+                               [[parts componentsJoinedByString:@","] UTF8String]);
+                    }
+                    NSDictionary *keys = [border borderKeyValues];
+                    NSMutableArray *sorted = [[keys allKeys] mutableCopy];
+                    [sorted sortUsingSelector:@selector(compare:)];
+                    printf("%s.page0.annotation%u.border.keys=%lu\n", name, a,
+                           (unsigned long)sorted.count);
+                    for (NSString *key in sorted) {
+                        id value = keys[key];
+                        if ([value isKindOfClass:[NSString class]]) {
+                            printf("%s.page0.annotation%u.border.key.%s=%s\n", name, a,
+                                   [key UTF8String], [(NSString *)value UTF8String]);
+                        } else if ([value isKindOfClass:[NSArray class]]) {
+                            NSMutableArray *parts = [NSMutableArray array];
+                            for (id element in value)
+                                [parts addObject:[NSString stringWithFormat:@"%.6f",
+                                                   (double)[element doubleValue]]];
+                            printf("%s.page0.annotation%u.border.key.%s=%s\n", name, a,
+                                   [key UTF8String], [[parts componentsJoinedByString:@","] UTF8String]);
+                        } else {
+                            printf("%s.page0.annotation%u.border.key.%s=%.6f\n", name, a,
+                                   [key UTF8String], (double)[value doubleValue]);
+                        }
+                    }
+                }
                 for (unsigned a = 0; a < first.annotations.count; a++) {
                     PDFAnnotation *each = first.annotations[a];
                     char prefix[512];
@@ -560,6 +690,21 @@ int main(int argc, char **argv)
             printf("%s.pageAtIndex.one-past-the-end=%s\n", name, past ? "an-object" : "nil");
         }
         printInitializerFacts(argv[1]);
+        {
+            PDFDocument *opened = [[PDFDocument alloc]
+                initWithURL:[NSURL fileURLWithPath:@(argv[1])]];
+            PDFOutline *fresh = [[PDFOutline alloc] init];
+            printf("initoutline.class=%s label=%s children=%lu index=%lu isOpen=%d parent=%s "
+                   "document=%s\n", class_getName([fresh class]),
+                   [fresh label] == nil ? "(nil)"
+                                        : ([fresh label].length == 0 ? "(empty)" : [[fresh label] UTF8String]),
+                   (unsigned long)[fresh numberOfChildren], (unsigned long)[fresh index],
+                   (int)[fresh isOpen], [fresh parent] ? "an-object" : "(nil)",
+                   [fresh document] ? "an-object" : "(nil)");
+            printf("initoutline.dest=%s action=%s\n", [fresh destination] ? "an-object" : "(nil)",
+                   [fresh action] ? "an-object" : "(nil)");
+            printf("initoutline.root=%s\n", [opened outlineRoot] ? "an-object" : "(nil)");
+        }
         printCopyFacts();
         printBorderValueFacts();
     }

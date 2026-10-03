@@ -373,6 +373,23 @@ nowhere.  It was an unreachable model with rows claiming a measurement, and the 
 host answers are kept here so the work is specified rather than lost, and the rows that described them are
 gone until there is something for them to describe.
 
+THE PAGE'S TEXT IS IN READING ORDER, and every fixture here had ONE show operator on a page until the
+selection work needed more.  That is worth writing down because it is the shape of the mistake: the
+separator BETWEEN runs was not observable, so the port joined them with nothing and answered
+"alphabeta" on a two-run page where the host answers "alpha\nbeta" - and on a three-run page,
+"shared oneshared twothird line", 30 characters, where the host answers "shared one\nshared two\nthird
+line", 32.  Three fixtures written through the same conforming writer fix both halves:
+
+    cgfixture-pair-down.pdf   "alpha" at y=360 then "beta" at y=340   host: "alpha\nbeta"    (10 chars)
+    cgfixture-pair-up.pdf     "alpha" at y=340 then "beta" at y=360   host: "beta\nalpha"    (10 chars)
+    cgfixture-pair-same.pdf   both at y=360                             host: "alphabeta"      (9 chars)
+
+So the answer is sorted by y DESCENDING - top of the page first - with a tie keeping DRAWING order, and
+consecutive runs are joined with a newline when their y DIFFERS and with NOTHING when it does not.  The
+middle row is the one a rule written from the first alone gets wrong: drawn bottom-first, answered
+top-first.  `cgfixture-lines.pdf`, three runs at y = 360, 340, 320, is the three-run case, and it found
+the defect on its first run.
+
 THE COORDINATES MUST BE DERIVED.  A probe using a fixed rect at y=360 answers "page 1" on charon-fixture-1
 and EMPTY on charon-fixture-3 - the same text, the same page index, because the two fixtures draw at y=360
 and y=752.  A selection is POSITIONAL, and a typed-in coordinate is a fixture that passes for the wrong

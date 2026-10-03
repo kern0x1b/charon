@@ -241,6 +241,33 @@
 }
 
 
+// -outlineRoot is the document's /Outlines tree: the root DICTIONARY of Table 8.2, which holds the /First
+// of the top-level chain, wrapped in the PDFOutline that is that dictionary.  The root is an outline like
+// any other - measured: it answers an empty -label because it carries no /Title, -numberOfChildren from
+// its /First chain, -index 0, -parent nil and a -document - so it is built by the same constructor the
+// items are.
+//
+// nil for a document whose catalog names no /Outlines, which is every fixture in this harness except the
+// outline ones - measured, and a document with an /Outlines the host cannot use answers nil as well.
+- (PDFOutline *)outlineRoot
+{
+    if (_document == NULL)
+        return nil;
+    // The CATALOG, through the release's own reader for it.  The first version of this walked UP from
+    // page 1 through /Parent, because CGPDFDocumentGetCatalog looked absent - and it is not: it is at
+    // CGPDFDocument.h:172, CG_AVAILABLE_STARTING(10.3, 2.0), and this SDK declares it.  The walk was
+    // worse than unnecessary: it only ever worked because the same commit gave the root /Pages node a
+    // /Parent, which a real PDF does not have, so on any real document -outlineRoot would have answered
+    // nil.  That fixture change is reverted in this commit too.
+    CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(_document);
+    if (catalog == NULL)
+        return nil;
+    CGPDFDictionaryRef root = NULL;
+    if (!CGPDFDictionaryGetDictionary(catalog, "Outlines", &root) || root == NULL)
+        return nil;
+    return [[PDFOutline alloc] initWithCharonItem:root document:self parent:nil index:0];
+}
+
 // The port's own way at the CGPDFDocument underneath, which Apple's API does not expose: the page's
 // initializer needs the document's ref so it can hold one of its own.  It was DECLARED in
 // CharonPDFKit.h's CharonInternals category and never defined - so a page asked for its document
