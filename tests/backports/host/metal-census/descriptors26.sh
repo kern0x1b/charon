@@ -48,6 +48,10 @@ MTL4RenderPipelineColorAttachmentDescriptor MTL4RenderPipelineColorAttachmentDes
 MTL4PipelineDescriptor MTL4RenderPipelineDescriptor MTL4ComputePipelineDescriptor \
 MTL4TileRenderPipelineDescriptor MTL4MeshRenderPipelineDescriptor MTL4FunctionDescriptor \
 MTL4SpecializedFunctionDescriptor MTL4StitchedFunctionDescriptor MTL4LibraryFunctionDescriptor \
+MTL4AccelerationStructureGeometryDescriptor MTL4AccelerationStructureTriangleGeometryDescriptor \
+MTL4AccelerationStructureBoundingBoxGeometryDescriptor MTL4AccelerationStructureCurveGeometryDescriptor \
+MTL4AccelerationStructureMotionTriangleGeometryDescriptor MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor \
+MTL4AccelerationStructureMotionCurveGeometryDescriptor \
 MTLTileRenderPipelineColorAttachmentDescriptor MTLTileRenderPipelineColorAttachmentDescriptorArray"
 
 prove_defined() {   # $1 nm output
@@ -113,9 +117,17 @@ cat > "$work/port/port.m" <<'PORTTU'
 #define MTL4SpecializedFunctionDescriptor charonHost_MTL4SpecializedFunctionDescriptor
 #define MTL4StitchedFunctionDescriptor charonHost_MTL4StitchedFunctionDescriptor
 #define MTL4LibraryFunctionDescriptor charonHost_MTL4LibraryFunctionDescriptor
+#define MTL4AccelerationStructureGeometryDescriptor charonHost_MTL4AccelerationStructureGeometryDescriptor
+#define MTL4AccelerationStructureTriangleGeometryDescriptor charonHost_MTL4AccelerationStructureTriangleGeometryDescriptor
+#define MTL4AccelerationStructureBoundingBoxGeometryDescriptor charonHost_MTL4AccelerationStructureBoundingBoxGeometryDescriptor
+#define MTL4AccelerationStructureCurveGeometryDescriptor charonHost_MTL4AccelerationStructureCurveGeometryDescriptor
+#define MTL4AccelerationStructureMotionTriangleGeometryDescriptor charonHost_MTL4AccelerationStructureMotionTriangleGeometryDescriptor
+#define MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor charonHost_MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor
+#define MTL4AccelerationStructureMotionCurveGeometryDescriptor charonHost_MTL4AccelerationStructureMotionCurveGeometryDescriptor
 #define MTLTileRenderPipelineColorAttachmentDescriptor charonHost_MTLileRenderPipelineColorAttachmentDescriptor
 #define MTLTileRenderPipelineColorAttachmentDescriptorArray charonHost_MTLTileRenderPipelineColorAttachmentDescriptorArray
 #include "MTL4Descriptors26.m"
+#include "MTL4AccelerationGeometry26.m"
 #include "MTLTileRenderPipelineAttachments11.m"
 PORTTU
 cp "$work/port/port.m" "$work/port/port-pristine.m"
@@ -177,7 +189,7 @@ if [ -n "$SDK16" ]; then
     # BOTH DEVICE OBJECTS ARE COMPILED ONCE, before the names are checked: the loop over the names was
     # inside the compile loop once, so only the first name was ever checked against a second compile of
     # the first file.
-    for source in MTL4Descriptors26 MTLTileRenderPipelineAttachments11; do
+    for source in MTL4Descriptors26 MTL4AccelerationGeometry26 MTLTileRenderPipelineAttachments11; do
         if ! xcrun clang -target armv7-apple-ios6.1.3 -isysroot "$SDK16" -fobjc-arc -Os -g0 -Wall \
              -Wno-unguarded-availability-new -Wno-unguarded-availability \
              -Werror=objc-missing-property-synthesis -Werror=incomplete-implementation \

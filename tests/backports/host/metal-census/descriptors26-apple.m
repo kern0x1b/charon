@@ -69,6 +69,13 @@ int main(void)
         report([MTL4SpecializedFunctionDescriptor class], "MTL4SpecializedFunctionDescriptor", YES);
         report([MTL4StitchedFunctionDescriptor class], "MTL4StitchedFunctionDescriptor", YES);
         report([MTL4LibraryFunctionDescriptor class], "MTL4LibraryFunctionDescriptor", YES);
+        report([MTL4AccelerationStructureGeometryDescriptor class], "MTL4AccelerationStructureGeometryDescriptor", YES);
+        report([MTL4AccelerationStructureTriangleGeometryDescriptor class], "MTL4AccelerationStructureTriangleGeometryDescriptor", YES);
+        report([MTL4AccelerationStructureBoundingBoxGeometryDescriptor class], "MTL4AccelerationStructureBoundingBoxGeometryDescriptor", YES);
+        report([MTL4AccelerationStructureCurveGeometryDescriptor class], "MTL4AccelerationStructureCurveGeometryDescriptor", YES);
+        report([MTL4AccelerationStructureMotionTriangleGeometryDescriptor class], "MTL4AccelerationStructureMotionTriangleGeometryDescriptor", YES);
+        report([MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor class], "MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor", YES);
+        report([MTL4AccelerationStructureMotionCurveGeometryDescriptor class], "MTL4AccelerationStructureMotionCurveGeometryDescriptor", YES);
         /* AND THE THREE NAMED MEMBERS the port-side case changes one of, asked here on Apple's side so
          * the diff of the two runs covers them too. */
         {

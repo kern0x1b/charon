@@ -14,7 +14,7 @@ sh tests/backports/host/metal-census/descriptors26.sh
 
 ```
 the differential, against Apple's own objects, with no device created:
-  the DEVICE objects define all of them under Apple's own names (MTL4PipelineOptions and 16 more)
+  the DEVICE objects define all of them under Apple's own names (MTL4PipelineOptions and 22 more)
   ok   the control: ZZZNoSuchNameCharonR16 is not a class of this framework
   ok   fresh: shaderValidation: the port 0 and Apple's own object 0
   ok   copy of a changed one: shaderReflection: the port 2 and Apple's own object 2
@@ -103,9 +103,36 @@ The seven mutations are one per thing the port decides that a header does not st
   the slot is empty again, so the getter answers a fresh descriptor and the format is the default on
   both sides.
 
+## The acceleration structure geometry descriptors, and the four defaults a guess gets wrong
+
+Seven more classes, 64 rows, and the same kind of thing: a geometry descriptor says which buffers hold
+a geometry and in what shape, and asks the device nothing. The four defaults below are Apple's own,
+measured against a fresh object of Apple's class, and every one of them is a value the enumeration or a
+zero would have got wrong:
+
+| what | Apple's own fresh value | the wrong guess |
+|---|---|---|
+| `allowDuplicateIntersectionFunctionInvocation` | **YES** | NO |
+| a triangle's `vertexFormat` | **30**, `MTLVertexFormatFloat3` | 0, a fresh enumeration |
+| a triangle's `indexType` | **1**, `MTLIndexTypeUint32` | 0 |
+| a curve's `radiusFormat` | **28**, `MTLVertexFormatFloat` - ONE component | 29, `Float2` |
+| a bounding box's `boundingBoxStride` | **24**, three float32s | 0 |
+
+**The radius format is the one worth writing down twice**: this file's own first assertion for it said
+`MTLVertexFormatFloat2`, and the measurement said 28 - which is `MTLVertexFormatFloat`, one component,
+because a radius is one number. The assertion was wrong and the measurement corrected it; both the
+assertion and the port's comment now say Float and name 28.
+
+The three motion descriptors are the same three shapes with a second buffer per vertex, and the header
+spells that with a plural - `vertexBuffers`, `boundingBoxBuffers`, `controlPointBuffers` - which this
+file keeps.
+
+**What none of them is for**: a ray tracing unit, which this port's hardware has not. That is the same
+half `facts/Metal/Metal16Absence.md` records for the 16.0 family, and every row's `effect` says it.
+
 ## Value equality, which Apple's own objects have and the port now has too
 
-**Measured on Apple's side, class by class**: all sixteen MTL4* classes carry an `-isEqual:` and an
+**Measured on Apple's side, class by class**: all twenty-three MTL4* classes carry an `-isEqual:` and an
 `-hash` OF THEIR OWN, and the two iOS 11 tile classes carry NEITHER. Measured with
 `class_copyMethodList`, not read off a header. For each of the sixteen: two freshly made objects are
 equal, their hashes agree, and a copy equals its source.
@@ -119,7 +146,7 @@ sh tests/backports/host/metal-census/descriptors26.sh
 
 ```
 Apple's own answers to the value-equality questions, in a binary of their own:
-  the port's value equality IS Apple's own, member for member: 51 answers agree
+  the port's value equality IS Apple's own, member for member: 72 answers agree
     MTL4PipelineOptions fresh-equal yes
     MTL4PipelineOptions fresh-hash-same yes
     MTL4PipelineOptions copy-equal yes

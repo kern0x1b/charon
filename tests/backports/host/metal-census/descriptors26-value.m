@@ -69,6 +69,20 @@
 @end
 @interface charonHost_MTL4LibraryFunctionDescriptor : NSObject
 @end
+@interface charonHost_MTL4AccelerationStructureGeometryDescriptor : NSObject <NSCopying>
+@end
+@interface charonHost_MTL4AccelerationStructureTriangleGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@end
+@interface charonHost_MTL4AccelerationStructureBoundingBoxGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@end
+@interface charonHost_MTL4AccelerationStructureCurveGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@end
+@interface charonHost_MTL4AccelerationStructureMotionTriangleGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@end
+@interface charonHost_MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@end
+@interface charonHost_MTL4AccelerationStructureMotionCurveGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@end
 @interface charonHost_MTLTileRenderPipelineColorAttachmentDescriptor : NSObject <NSCopying>
 @end
 /* The tile ARRAY, whose three answers are the point: no -isEqual: and no -hash of its own on Apple's
@@ -171,6 +185,13 @@ int main(void)
             check(![one isEqual:two], @"a function list makes them differ");
         }
 
+        same_value(@"MTL4AccelerationStructureGeometryDescriptor", (id)[[charonHost_MTL4AccelerationStructureGeometryDescriptor alloc] init], (id)[[charonHost_MTL4AccelerationStructureGeometryDescriptor alloc] init]);
+        same_value(@"MTL4AccelerationStructureTriangleGeometryDescriptor", (id)[[charonHost_MTL4AccelerationStructureTriangleGeometryDescriptor alloc] init], (id)[[charonHost_MTL4AccelerationStructureTriangleGeometryDescriptor alloc] init]);
+        same_value(@"MTL4AccelerationStructureBoundingBoxGeometryDescriptor", (id)[[charonHost_MTL4AccelerationStructureBoundingBoxGeometryDescriptor alloc] init], (id)[[charonHost_MTL4AccelerationStructureBoundingBoxGeometryDescriptor alloc] init]);
+        same_value(@"MTL4AccelerationStructureCurveGeometryDescriptor", (id)[[charonHost_MTL4AccelerationStructureCurveGeometryDescriptor alloc] init], (id)[[charonHost_MTL4AccelerationStructureCurveGeometryDescriptor alloc] init]);
+        same_value(@"MTL4AccelerationStructureMotionTriangleGeometryDescriptor", (id)[[charonHost_MTL4AccelerationStructureMotionTriangleGeometryDescriptor alloc] init], (id)[[charonHost_MTL4AccelerationStructureMotionTriangleGeometryDescriptor alloc] init]);
+        same_value(@"MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor", (id)[[charonHost_MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor alloc] init], (id)[[charonHost_MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor alloc] init]);
+        same_value(@"MTL4AccelerationStructureMotionCurveGeometryDescriptor", (id)[[charonHost_MTL4AccelerationStructureMotionCurveGeometryDescriptor alloc] init], (id)[[charonHost_MTL4AccelerationStructureMotionCurveGeometryDescriptor alloc] init]);
         /* THE TILE COLOUR ATTACHMENT'S THREE LINES ARE NOT IN EITHER RUN, and the reason is a harness
          * limitation rather than a member: the 16.4 SDK this package compiles against already DECLARES
          * MTLTileRenderPipelineColorAttachmentDescriptor, so the rename that gives the port's classes

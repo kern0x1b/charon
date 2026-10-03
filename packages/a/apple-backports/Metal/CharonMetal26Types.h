@@ -276,6 +276,141 @@ API_AVAILABLE(ios(26.0))
 @property (nullable, copy, atomic) NSString *name;
 @property (nullable, readwrite, nonatomic, retain) id<MTLLibrary> library;
 @end
+
+
+// FOUR MORE ENUMERATIONS, and they are Metal's own members named by the geometry descriptors below.
+// MTLCurveType, MTLCurveBasis and MTLCurveEndCaps arrived with the SDK of iOS 17 and MTLMatrixLayout
+// with the SDK of iOS 18; the SDK of 16.4 this package compiles against has none of the four, and a
+// member cannot be written with a type the build does not declare. The cases are the 26.2 header's.
+API_AVAILABLE(ios(17.0))
+typedef NS_ENUM(NSInteger, MTLCurveType) {
+    MTLCurveTypeRound = 0,
+    MTLCurveTypeFlat  = 1,
+};
+
+API_AVAILABLE(ios(17.0))
+typedef NS_ENUM(NSInteger, MTLCurveBasis) {
+    MTLCurveBasisBSpline   = 0,
+    MTLCurveBasisCatmullRom = 1,
+    MTLCurveBasisLinear     = 2,
+    MTLCurveBasisBezier     = 3,
+};
+
+API_AVAILABLE(ios(17.0))
+typedef NS_ENUM(NSInteger, MTLCurveEndCaps) {
+    MTLCurveEndCapsNone   = 0,
+    MTLCurveEndCapsDisk   = 1,
+    MTLCurveEndCapsSphere = 2,
+};
+
+API_AVAILABLE(ios(18.0))
+typedef NS_ENUM(NSInteger, MTLMatrixLayout) {
+    MTLMatrixLayoutColumnMajor = 0,
+    MTLMatrixLayoutRowMajor    = 1,
+};
+
+// THE RANGE OF A BUFFER, Metal 4's own (MTL4BufferRange.h): a GPU address - an offset into a buffer,
+// already added to the address the buffer's own gpuAddress gives - and the length of the region from
+// it, where (uint64_t)-1 means "to the end of the buffer". MTLGPUAddress arrived with the SDK of 26 and
+// is this header's; the two members and their sizes are MTL4BufferRange.h's.
+API_AVAILABLE(ios(26.0))
+typedef uint64_t MTLGPUAddress;
+
+typedef struct MTL4BufferRange {
+    MTLGPUAddress bufferAddress;
+    uint64_t length;
+} MTL4BufferRange;
+
+// THE ACCELERATION STRUCTURE GEOMETRY DESCRIPTORS. Seven classes, one base and the six shapes a
+// geometry has, and they are values: a geometry descriptor says which buffers hold the geometry and in
+// what shape, and asks nothing of anybody. What a ray tracing unit would do with one is the half that is
+// not there - facts/Metal/Metal16Absence.md records why, and facts/Metal/Descriptors26.md carries that
+// forward.
+API_AVAILABLE(ios(26.0))
+@interface MTL4AccelerationStructureGeometryDescriptor : NSObject <NSCopying>
+@property (nonatomic) NSUInteger intersectionFunctionTableOffset;
+@property (nonatomic) BOOL opaque;
+@property (nonatomic) BOOL allowDuplicateIntersectionFunctionInvocation;
+@property (nonatomic, copy, nullable) NSString *label;
+@property (nonatomic) MTL4BufferRange primitiveDataBuffer;
+@property (nonatomic) NSUInteger primitiveDataStride;
+@property (nonatomic) NSUInteger primitiveDataElementSize;
+@end
+
+API_AVAILABLE(ios(26.0))
+@interface MTL4AccelerationStructureTriangleGeometryDescriptor : MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) MTL4BufferRange vertexBuffer;
+@property (nonatomic) MTLAttributeFormat vertexFormat;
+@property (nonatomic) NSUInteger vertexStride;
+@property (nonatomic) MTL4BufferRange indexBuffer;
+@property (nonatomic) MTLIndexType indexType;
+@property (nonatomic) NSUInteger triangleCount;
+@property (nonatomic) MTL4BufferRange transformationMatrixBuffer;
+@property (nonatomic) MTLMatrixLayout transformationMatrixLayout;
+@end
+
+API_AVAILABLE(ios(26.0))
+@interface MTL4AccelerationStructureBoundingBoxGeometryDescriptor : MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) MTL4BufferRange boundingBoxBuffer;
+@property (nonatomic) NSUInteger boundingBoxStride;
+@property (nonatomic) NSUInteger boundingBoxCount;
+@end
+
+API_AVAILABLE(ios(26.0))
+@interface MTL4AccelerationStructureCurveGeometryDescriptor : MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) MTL4BufferRange controlPointBuffer;
+@property (nonatomic) NSUInteger controlPointCount;
+@property (nonatomic) NSUInteger controlPointStride;
+@property (nonatomic) MTLAttributeFormat controlPointFormat;
+@property (nonatomic) MTL4BufferRange radiusBuffer;
+@property (nonatomic) MTLAttributeFormat radiusFormat;
+@property (nonatomic) NSUInteger radiusStride;
+@property (nonatomic) MTL4BufferRange indexBuffer;
+@property (nonatomic) MTLIndexType indexType;
+@property (nonatomic) NSUInteger segmentCount;
+@property (nonatomic) NSUInteger segmentControlPointCount;
+@property (nonatomic) MTLCurveType curveType;
+@property (nonatomic) MTLCurveBasis curveBasis;
+@property (nonatomic) MTLCurveEndCaps curveEndCaps;
+@end
+
+API_AVAILABLE(ios(26.0))
+@interface MTL4AccelerationStructureMotionTriangleGeometryDescriptor : MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) MTL4BufferRange vertexBuffers;
+@property (nonatomic) MTLAttributeFormat vertexFormat;
+@property (nonatomic) NSUInteger vertexStride;
+@property (nonatomic) MTL4BufferRange indexBuffer;
+@property (nonatomic) MTLIndexType indexType;
+@property (nonatomic) NSUInteger triangleCount;
+@property (nonatomic) MTL4BufferRange transformationMatrixBuffer;
+@property (nonatomic) MTLMatrixLayout transformationMatrixLayout;
+@end
+
+API_AVAILABLE(ios(26.0))
+@interface MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor : MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) MTL4BufferRange boundingBoxBuffers;
+@property (nonatomic) NSUInteger boundingBoxStride;
+@property (nonatomic) NSUInteger boundingBoxCount;
+@end
+
+API_AVAILABLE(ios(26.0))
+@interface MTL4AccelerationStructureMotionCurveGeometryDescriptor : MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) MTL4BufferRange controlPointBuffers;
+@property (nonatomic) NSUInteger controlPointCount;
+@property (nonatomic) NSUInteger controlPointStride;
+@property (nonatomic) MTLAttributeFormat controlPointFormat;
+@property (nonatomic) MTL4BufferRange radiusBuffers;
+@property (nonatomic) MTLAttributeFormat radiusFormat;
+@property (nonatomic) NSUInteger radiusStride;
+@property (nonatomic) MTL4BufferRange indexBuffer;
+@property (nonatomic) MTLIndexType indexType;
+@property (nonatomic) NSUInteger segmentCount;
+@property (nonatomic) NSUInteger segmentControlPointCount;
+@property (nonatomic) MTLCurveType curveType;
+@property (nonatomic) MTLCurveBasis curveBasis;
+@property (nonatomic) MTLCurveEndCaps curveEndCaps;
+@end
+
 #endif
 
 NS_ASSUME_NONNULL_END
