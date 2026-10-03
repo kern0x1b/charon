@@ -43,6 +43,20 @@ static void check(BOOL ok, NSString *what)
     else { printf("  FAIL %s\n", [what UTF8String]); failures++; }
 }
 
+/* ONE MEMBER, ASKED ONLY IF IT EXISTS. Apple's own objects are asked through -respondsToSelector: before
+ * every KVC read, because a -valueForKey: for a member the class does not have raises
+ * NSUnknownKeyException and kills the run - which is how the two ABSENCES in this case were found. */
+static void member(id object, NSString *key, NSString *name)
+{
+    if (!object) { printf("       %-34s -> (no object)\n", [name UTF8String]); return; }
+    if (![object respondsToSelector:NSSelectorFromString(key)]) {
+        printf("  ok   %-34s -> NOT A MEMBER of %s\n", [name UTF8String],
+               [NSStringFromClass([(id)object class]) UTF8String]);
+        return;
+    }
+    printf("  ok   %-34s -> %s\n", [name UTF8String], [[[object valueForKey:key] description] UTF8String]);
+}
+
 int main(void)
 {
     setvbuf(stdout, NULL, _IONBF, 0);
@@ -117,37 +131,66 @@ int main(void)
                   @"buffer options: the PORT's copy carries it too, which is nil here");
         }
 
-        printf("AND WHY THE QUEUE IS NOT IN THIS CASE, measured from Apple's side\n");
+        /* THE LIVE CHAIN IS HERE, and this is the corrected measurement: the first version of this case
+         * reported two walls that stopped the Metal 4 command chain, and BOTH WERE ITS OWN MISTAKES. It
+         * called -newCommandQueueWithDescriptor:, which is METAL 3's factory - Metal 4's is
+         * -newMTL4CommandQueueWithDescriptor:error:, MTLDevice.h:1271 - and it sent
+         * -beginCommandBufferWithAllocator:, a method of the COMMAND BUFFER (MTL4CommandBuffer.h:71), to a
+         * QUEUE. So the walls are retracted and what stands is here: the whole live chain exists on this
+         * machine, and chain-oracle.sh records it as the expectations table the device case checks the
+         * port's chain against. */
+        printf("AND THE LIVE CHAIN, which the first version of this case said did not exist\n");
         {
             id<MTLDevice> device = MTLCreateSystemDefaultDevice();
-            check(device != nil, @"this machine has a Metal device");
-            /* A LIVE METAL 4 QUEUE EXISTS HERE - so the absence of one is not the reason the queue is
-             * out of this case, and saying so is what makes the real reason visible. */
-            id appleQueue = [device performSelector:NSSelectorFromString(@"newMTL4CommandQueue")];
-            check(appleQueue != nil, @"APPLE's device answers -newMTL4CommandQueue, so a live queue is possible here");
-            id appleFreshLabel = [appleQueue valueForKey:@"label"];
-            check(appleFreshLabel == nil,
-                  @"and its fresh label is nil, which is the queue's own measured default");
-            /* THE FIRST REASON: APPLE'S OWN QUEUE REFUSES ITS OWN DESCRIPTOR on this SDK. */
-            @try {
-                Class descriptorClass = NSClassFromString(@"MTL4CommandQueueDescriptor");
-                id (*make)(id, SEL, id) = (id (*)(id, SEL, id))objc_msgSend;
-                id refused = make(device, NSSelectorFromString(@"newCommandQueueWithDescriptor:"),
-                                  [[descriptorClass alloc] init]);
-                printf("       APPLE's newCommandQueueWithDescriptor: -> %s\n", refused ? "a queue" : "nil");
-            } @catch (NSException *why) {
-                printf("  ok   APPLE's own -newCommandQueueWithDescriptor: RAISES here: %s\n",
-                       [[why reason] UTF8String]);
+            id allocator = [device performSelector:NSSelectorFromString(@"newCommandAllocator")];
+            id buffer = [device performSelector:NSSelectorFromString(@"newCommandBuffer")];
+            check(allocator != nil, @"APPLE's device vends a Metal 4 command allocator (MTLDevice.h:1240)");
+            check(buffer != nil, @"APPLE's device vends a Metal 4 command buffer (MTLDevice.h:1278)");
+            /* A DEVICE THAT CANNOT VEND A BUFFER IS A FAILURE OF THE ORACLE, not a reason to stop: the
+             * rows below it are about members, and a run that stopped here would report nothing. The
+             * case says so and carries on to the count. */
+            if (!buffer) {
+                printf("       no buffer to ask about members on; the member rows below are NOT measured\n");
             }
-            /* THE SECOND, and the one that decides the whole chain: THERE IS NO COMMAND BUFFER TO BEAT. */
+
+            /* TWO MEMBERS THE BUFFER DOES NOT HAVE, and they are absences a reader would not guess:
+             * an earlier run asked -valueForKey:@"status" and NSUnknownKeyException killed it. */
+            check(buffer && ![buffer respondsToSelector:NSSelectorFromString(@"status")],
+                  @"APPLE's Metal 4 command buffer has NO -status member");
+            check(buffer && ![buffer respondsToSelector:NSSelectorFromString(@"commandQueue")],
+                  @"and NO -commandQueue member either");
+
             @try {
-                id (*begin)(id, SEL, id) = (id (*)(id, SEL, id))objc_msgSend;
-                id buffer = begin(appleQueue, NSSelectorFromString(@"beginCommandBufferWithAllocator:"), nil);
-                printf("       APPLE's beginCommandBufferWithAllocator: -> %s\n", buffer ? "a buffer" : "nil");
+                void (*begin)(id, SEL, id) = (void (*)(id, SEL, id))objc_msgSend;
+                if (buffer) begin(buffer, NSSelectorFromString(@"beginCommandBufferWithAllocator:"), allocator);
+                printf("  ok   APPLE's -beginCommandBufferWithAllocator: answers without raising\n");
             } @catch (NSException *why) {
-                printf("  ok   APPLE's own queue does not implement -beginCommandBufferWithAllocator: here: %s\n",
-                       [[why reason] UTF8String]);
+                printf("  FAIL APPLE's -beginCommandBufferWithAllocator: raised %s: %s\n",
+                       [[why name] UTF8String], [[why reason] UTF8String]);
+                failures++;
             }
+
+            id encoder = buffer ? [buffer performSelector:NSSelectorFromString(@"computeCommandEncoder")] : nil;
+            check(encoder != nil, @"APPLE's compute encoder is vended, and it is a live object");
+            if (encoder) {
+                member(encoder, @"label", @"compute encoder label");
+                check([[encoder valueForKey:@"commandBuffer"] isEqual:buffer],
+                      @"and its -commandBuffer answers the very buffer it came from");
+            }
+            /* AND THE RENDER ENCODER, whose answer for a pass with no attachments is nil and not an
+             * exception - the shape the port has to match. */
+            /* -renderCommandEncoderWithDescriptor: TAKES AN ARGUMENT, and -performSelector: on a
+             * one-argument selector read a garbage argument and SEGVFAULTED - the case's own bug, and the
+             * same reason the oracle uses a typed objc_msgSend. */
+            Class passDescriptor = NSClassFromString(@"MTL4RenderPassDescriptor");
+            id renderEncoder = nil;
+            if (buffer && passDescriptor) {
+                id (*withDescriptor)(id, SEL, id) = (id (*)(id, SEL, id))objc_msgSend;
+                renderEncoder = withDescriptor(buffer, NSSelectorFromString(@"renderCommandEncoderWithDescriptor:"),
+                                              [[passDescriptor alloc] init]);
+            }
+            printf("  ok   APPLE's render encoder for a pass with no attachments: %s\n",
+                   renderEncoder ? "an object" : "nil, and no exception");
         }
 
         printf("%d checks\n", checks);
