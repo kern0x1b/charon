@@ -313,43 +313,6 @@ compared = differences = skipped = 0
 # a difference.
 EXPECTED_DIVERGENT = ("documentAttribute.supported", "page0.pageIndex.supported",
                      "view.window.supported")
-# PDFAnnotation's TWO COLOURS AND ITS FONT, in the Catalyst binary, are answered by the PLATFORM's own
-# PDFKit and not by the port's.  Measured: that binary links no PDFKit (otool -L) and still loads
-# /System/iOSSupport/.../PDFKit.framework at run time, printing fourteen "Class ... is implemented in both"
-# lines, and a CATEGORY on a class is replaced when the image holding it loads later - which is what
-# happens to the port's PDFAnnotation(PDFAnnotationColours) members, because the platform declares the
-# same five selectors on its own PDFAnnotationUtilities category.  The port's CLASS members are not
-# affected and demonstrably run: a -777 sentinel planted in PDFAppearanceCharacteristics' own -init
-# appeared in appearance.fresh.controlType, so the appearance block above is the port's and this is not
-# about the class.  There is no other macOS process that has a UIColor: a macOS one has no UIKit, and
-# PDFAnnotationColours11.m is the only object of the port that imports it - which is why the four members
-# are a category at all, a category being the only thing a second object can add to a class whose ivars
-# live in the first.
-#
-# So those THREE are not compared, and the run says so on every line rather than dropping them silently.
-# Their rows stay inert with this measurement as the reason, and the implementation IS in the library.
-#
-# The members are named by the tail of the key, and each prints two or four sub-keys - a colour is a
-# `.space' and a `.components' and a font a `.name' and a `.size' - so the rule matches the MEMBER and takes
-# its sub-keys with it rather than listing suffixes that one more would slip past.
-import re as _re
-SHADOWED_BY_THE_PLATFORM = _re.compile(
-    r"^\S+\.colours\.nm\S+\.(backgroundColor|interiorColor|font)(\.|$)")
-SHADOW_REASON = ("answered by the platform's own PDFKit in the Catalyst binary, which loads the iOSSupport"
-                 " PDFKit at run time and whose PDFAnnotationUtilities category replaces the port's")
-
-# fontColor is a FOURTH reason and not the same one: THE PORT DOES NOT CARRY THE MEMBER, because the host
-# answers the /DA's fill operand in the GENERIC colour spaces - kCGColorSpaceGenericGray,
-# kCGColorSpaceGenericGrayGamma2_2 and kCGColorSpaceGenericRGB - and this SDK marks those three NAMES
-# API_AVAILABLE(ios(9.0)) while the row's minimum is 6.0.  CGColorSpaceCreateWithName is iOS 2.0 and would
-# be the mechanism, but the three names it would be handed are not in a 6.1.3 CoreGraphics, so a port that
-# called them would build a dylib that cannot load on its own minimum release.  The member is therefore not
-# declared and not implemented, its row says so, and the measured table - which is complete, and which is
-# what the coordinator has - is in facts/PDFKit/Annotation11.md.  Its host values are still printed above,
-# because a measurement is worth keeping even where the port has no answer to set against it.
-NOT_CARRIED_BY_THE_PORT = _re.compile(r"^\S+\.colours\.nm\S+\.fontColor(\.|$)")
-NOT_CARRIED_REASON = ("the port does not carry the member: the host answers it in the three GENERIC colour"
-                      " spaces, which this SDK marks ios(9.0) against a row whose minimum is 6.0")
 
 # and the ones this run cannot compare at all, with the reason it prints for each
 NOT_COMPARED = {
@@ -365,14 +328,6 @@ for key in sorted(set(host) | set(port)):
         if hv is not None and pv is not None and hv != pv:
             print(f"  expected to differ  {key}  host={hv} port={pv}"
                   f"  (the port implements what the host lacks)")
-        continue
-    if NOT_CARRIED_BY_THE_PORT.match(key):
-        skipped += 1
-        print(f"  not compared  {key}  host={host.get(key)}  port={port.get(key)}  -  {NOT_CARRIED_REASON}")
-        continue
-    if SHADOWED_BY_THE_PLATFORM.match(key):
-        skipped += 1
-        print(f"  not compared  {key}  host={host.get(key)}  port={port.get(key)}  -  {SHADOW_REASON}")
         continue
     if any(key.endswith(suffix) for suffix in NOT_COMPARED):
         skipped += 1
@@ -637,7 +592,21 @@ for key in \
     cgfixture-gap.pdf.find.alpha.0.string \
     cgfixture-blank.pdf.find.alpha.0.string \
     cgfixture-lead.pdf.find.bravo.0.range0 \
-    annotation-colours.pdf.colours.names
+    annotation-colours.pdf.colours.names \
+    annotation-colours.pdf.colours.nmbg-rgb.backgroundColor.space \
+    annotation-colours.pdf.colours.nmbg-rgb.backgroundColor.components \
+    annotation-colours.pdf.colours.nmbg-cmyk.backgroundColor.space \
+    annotation-colours.pdf.colours.nmbg-notarray.backgroundColor \
+    annotation-colours.pdf.colours.nmic-square-gray.interiorColor.space \
+    annotation-colours.pdf.colours.nmic-circle-cmyk.interiorColor.components \
+    annotation-colours.pdf.colours.nmda-fill-rgb.fontColor.space \
+    annotation-colours.pdf.colours.nmda-fill-rgb.fontColor.components \
+    annotation-colours.pdf.colours.nmda-fill-badcount.fontColor.components \
+    annotation-colours.pdf.colours.nmda-stroke-k.fontColor.space \
+    annotation-colours.pdf.colours.nmfont-courier-7.font.name \
+    annotation-colours.pdf.colours.nmfont-courier-7.font.size \
+    annotation-colours.pdf.colours.nmfont-abbrev-hebo.font.name \
+    annotation-colours.pdf.colours.nmfont-unknown.font.size
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then

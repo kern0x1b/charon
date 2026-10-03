@@ -322,9 +322,8 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 // NOT declared here, each for the reason its row repeats: widgetStringValue and widgetDefaultStringValue,
 // whose /V and /DV the host does not read on these fixtures; maximumLength, alignment, choices, values,
 // open, caption, URL, the two line styles, the two points, paths, quadrilateralPoints, iconType,
-// markupType and stampName.  buttonWidgetState, buttonWidgetStateString, backgroundColor,
-// interiorColor and font ARE declared: the /AS matrix is measured, and the colour and font keys are
-// measured below.  fieldName is implemented for a widget the
+// markupType and stampName.  buttonWidgetState, buttonWidgetStateString and the three colours and the
+// font ARE declared: the /AS matrix is measured, and the colour and font keys are measured below.  fieldName is implemented for a widget the
 // document NAMES and its row says what it cannot answer for one it does not.  See
 // facts/PDFKit/Annotation11.md, which carries the host's measured answer for every one of them.
 @interface PDFAnnotation (PDFAnnotationUtilitiesSubset)
@@ -377,11 +376,22 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 //                     spaces by the same component count, and nil when the annotation carries no /IC.
 //                     The 26.2 header names /Circle, /Line and /Square as the subtypes that use it; the
 //                     host answers it on every subtype measured, /Link and a /Tx /Widget included.
-//   font              the /DA's font NAME and SIZE.  The name is used as written when the platform's own
-//                     font has it, and then through an exact table of THREE abbreviations - Helv, HeBo
-//                     and Cour - which is the whole of what the host resolves out of the standard
-//                     fourteen's fourteen.  Anything else is Helvetica, with the size kept; the default
-//                     size is 12.
+//   fontColor         the /DA's FIRST fill operand, and only a fill one - text is painted with the fill
+//                     colour, so g and rg are read and G, RG and K, which set the stroke, are not, and k
+//                     is not read either.  The colours are GENERIC and not device ones, and an annotation
+//                     with NO /DA at all answers a generic gray at gamma 2.2 while a /DA with no readable
+//                     fill answers a generic gray at gamma 1.0 - two different defaults, measured apart.
+//   font              the /DA's font NAME and SIZE, read independently.  The name is used as written when
+//                     the platform's own font has it, and then through an exact table of THREE
+//                     abbreviations - Helv, HeBo and Cour - which is the whole of what the host resolves
+//                     out of the standard fourteen's fourteen.  Anything else is Helvetica, with the size
+//                     kept; the default size is 12.
+//
+// THE DERIVATION IS NOT IN THE OBJECT and not here either: it is in CharonPDFKitColours.h, as `static
+// inline` functions over the annotation's CGPDFDictionary, which this file's four members call and which
+// the harness's Catalyst side calls DIRECTLY.  That is because the platform's own PDFKit loads in that
+// binary and its category would answer these four selectors - which file holds the derivation is the
+// measured consequence, and its comment says so.
 //
 // facts/PDFKit/Annotation11.md carries the table, the fixtures that pin every clause of it, and the
 // retracted readings of the version that read this fixture by index and was one annotation out of step
@@ -389,6 +399,7 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 @interface PDFAnnotation (PDFAnnotationColours)
 @property (nonatomic, readonly, copy, nullable) UIColor *backgroundColor;
 @property (nonatomic, readonly, copy, nullable) UIColor *interiorColor;
+@property (nonatomic, readonly, copy, nullable) UIColor *fontColor;
 @property (nonatomic, readonly, copy, nullable) UIFont *font;
 @end
 

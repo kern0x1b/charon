@@ -21,6 +21,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "CharonPDFKit.h"
+#import "CharonPDFKitColours.h"
 #include <stdio.h>
 
 // A colour, by the four components its own class answers, or "(nil)".  -getRed:green:blue:alpha: is
@@ -83,25 +84,25 @@ static void printAppearanceCharacteristics(const char *label,
 // A colour is its SPACE NAME and its COMPONENTS IN THAT SPACE rather than four RGBA numbers, for the
 // reason host.m's copy of this says: most of these colours are gray or CMYK, and the four-number shape
 // only describes an RGB one.  Both sides read the two facts off CoreGraphics.
-static void printAnnotationColour(const char *label, const char *member, UIColor *colour)
+static void printAnnotationColour(const char *label, const char *member, CGColorRef colour)
 {
-    if (colour == nil) {
+    if (colour == NULL) {
         printf("%s.%s=(nil)\n", label, member);
         return;
     }
-    CGColorRef cgcolour = [colour CGColor];
-    // CGColorGetColorSpace and not cgcolour->colorSpace: struct CGColor is an OPAQUE type in this SDK -
+    // CGColorGetColorSpace and not colour->colorSpace: struct CGColor is an OPAQUE type in this SDK -
     // CF_BRIDGED_TYPE(id) - so its member is not readable and the accessor is the only way to the space.
-    CGColorSpaceRef space = cgcolour != NULL ? CGColorGetColorSpace(cgcolour) : NULL;
+    CGColorSpaceRef space = CGColorGetColorSpace(colour);
     printf("%s.%s.space=%s\n", label, member,
            space != NULL ? [(__bridge NSString *)CGColorSpaceGetName(space) UTF8String] : "(nil)");
-    size_t count = cgcolour != NULL ? CGColorGetNumberOfComponents(cgcolour) : 0;
+    size_t count = CGColorGetNumberOfComponents(colour);
     NSMutableArray *parts = [NSMutableArray array];
-    const CGFloat *raw = cgcolour != NULL ? CGColorGetComponents(cgcolour) : NULL;
+    const CGFloat *raw = CGColorGetComponents(colour);
     for (size_t i = 0; i < count; i++)
         [parts addObject:[NSString stringWithFormat:@"%.6f", (double)raw[i]]];
     printf("%s.%s.components=%s\n", label, member,
            [[parts componentsJoinedByString:@","] UTF8String]);
+    CGColorRelease(colour);
 }
 
 // The /NM of an annotation - PDF 1.7 Table 8.16's own unique-name key - or NULL when it does not carry
@@ -146,12 +147,26 @@ static void printAnnotationColourFacts(const char *fixture, PDFPage *page)
             continue;
         char label[512];
         snprintf(label, sizeof(label), "%s.colours.nm%s", fixture, name);
-        printAnnotationColour(label, "backgroundColor", annotation.backgroundColor);
-        printAnnotationColour(label, "interiorColor", annotation.interiorColor);
-        UIFont *font = annotation.font;
+        // THE SEAM, CALLED DIRECTLY, and not -[PDFAnnotation backgroundColor] and its three neighbours -
+        // and the reason is in CharonPDFKitColours.h's own comment: the platform's PDFKit loads in this
+        // binary and its PDFAnnotationUtilities category REPLACES the port's four selectors, so a
+        // differential written against the selectors would compare Apple's PDFKit with Apple's PDFKit.
+        // CGPDFDictionaryGetObject on the same dictionary the port read is the same BYTES on both sides,
+        // and no selector is dispatched anywhere below, so nothing a later image loads can take this over.
+        CGPDFDictionaryRef dictionary = [annotation charon_CGPDFDictionary];
+        printAnnotationColour(label, "backgroundColor",
+                              charon_annotation_background_colour(dictionary));
+        printAnnotationColour(label, "interiorColor",
+                              charon_annotation_interior_colour(dictionary));
+        printAnnotationColour(label, "fontColor", charon_annotation_font_colour(dictionary));
+        NSString *fontName = charon_annotation_font_name(dictionary);
+        CGFloat fontSize = charon_annotation_font_size(dictionary);
+        // and the same wrapping the port's own -font does, so that what is compared is the NAME and the
+        // SIZE the derivation chose and not the two platforms' font classes
+        UIFont *font = [UIFont fontWithName:fontName size:fontSize];
         if (font == nil) {
-            printf("%s.font.name=(nil)\n", label);
-            printf("%s.font.size=(nil)\n", label);
+            printf("%s.font.name=%s\n", label, [fontName UTF8String]);
+            printf("%s.font.size=%.6f\n", label, (double)fontSize);
         } else {
             printf("%s.font.name=%s\n", label, [font.fontName UTF8String]);
             printf("%s.font.size=%.6f\n", label, (double)font.pointSize);

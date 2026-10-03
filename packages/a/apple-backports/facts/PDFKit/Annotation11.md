@@ -2,12 +2,12 @@
 
 ## What is here
 
-`PDFAnnotation (PDFAnnotationUtilities)` declares 38 members. `annotation11.json` carries **36 rows, 11
-implemented and 25 inert** for the batch whose keys are known and whose absent answer is measurable. The
-eleven implemented are the nine **`/Ff` bit reads**, plus `-buttonWidgetStateString` and
-`-buttonWidgetState`. (The 38 is the category's total; `PDFAnnotation.destination` landed with the action
-family as the 37th, and the 36th of the remainder is `-drawWithBox:inContext:`, which belongs to the draw
-family.) Every one is measured on the host over `widget-flags.pdf`, which carries **one
+`PDFAnnotation (PDFAnnotationUtilities)` declares 38 members. `annotation11.json` carries **36 rows, 15
+implemented and 21 inert** for the batch whose keys are known and whose absent answer is measurable. The
+fifteen implemented are the nine **`/Ff` bit reads**, `-buttonWidgetStateString`, `-buttonWidgetState`, and
+the **three colours and the font**. (The 38 is the category's total; `PDFAnnotation.destination` landed
+with the action family as the 37th, and the 36th of the remainder is `-drawWithBox:inContext:`, which
+belongs to the draw family.) Every one is measured on the host over `widget-flags.pdf`, which carries **one
 annotation per bit with only that bit set** - thirteen bits, thirteen annotations - plus
 `widget-allflags.pdf`, which carries every bit at once. That shape is the whole reason these are
 measurable: a fixture with all the bits set answers every member YES and proves nothing.
@@ -321,16 +321,32 @@ Five things are now settled, and three of them the old table listed as open:
 * **No `/DA` and a `/DA` with no fill operand are TWO DIFFERENT DEFAULTS**: `kCGColorSpaceGenericGrayGamma2_2`
   against `kCGColorSpaceGenericGray`.
 
-**And this member is not declared and not implemented, for a reason of its own.** The host answers in the
-**generic** colour spaces, and this SDK marks `kCGColorSpaceGenericGray`, `kCGColorSpaceGenericGrayGamma2_2`
-and `kCGColorSpaceGenericRGB` **`API_AVAILABLE(ios(9.0))`** while the row's `minimum` is **6.0**.
-`CGColorSpaceCreateWithName` is iOS 2.0 and is the mechanism, but the three **names** it would be handed are
-not in a 6.1.3 CoreGraphics, so a port that called them would build a dylib that cannot load on its own
-minimum release. That is not a wall to argue with: it is the header's own annotation against a row the
-ledger types at 6.0. A measurement of which release first **exports** each name, from the held caches'
-export tries through `tools/symbol-first-release.lua`, was queued on this machine and **has not come back**
-(load average 15 for the whole of this session), so no claim is made here about what 6.1.3 does export - only
-about what this SDK says and about the consequence if the header is right.
+**The three colour-space NAMES this needs are marked `API_AVAILABLE(ios(9.0))` in this SDK, and the port's
+`minimum` is 6.0 - and the annotation is not the export.** Measured, and the row's minimum stands:
+
+    $ python3 tools/cache-index/first-rung.py _kCGColorSpaceGenericGray
+    _kCGColorSpaceGenericGray	3.0
+    _kCGColorSpaceGenericGray	3.0        (the three: GenericGray, GenericRGB, GenericCMYK)
+    _kCGColorSpaceGenericRGB	3.0
+    _kCGColorSpaceGenericCMYK	3.0
+    _kCGColorSpaceGenericGrayGamma2_2	4.0
+    _CGColorSpaceCreateWithName	3.0
+
+and confirmed in the two releases that matter, out of their own armv7 caches' **CoreGraphics export tries**
+through the repository's own reader, `tools/dyldcache.py` - not through a header and not through a scan:
+
+    4.3    armv7  CoreGraphics: 8 of 8 names exported
+    6.1.3  armv7  CoreGraphics: 8 of 8 names exported
+
+(the eight being the three Generic names, `GenericGrayGamma2_2`, `GenericCMYK`, `CGColorSpaceCreateWithName`
+and the three `CGColorSpaceCreateDevice*`). **`GenericGrayGamma2_2` measures 4.0 and not 3.0**, and it is
+the default for an annotation with no `/DA` at all, so it is the one that had to be checked. There is no
+availability test and no fallback: the deployment target makes the imports weak and the gate checks that
+they resolve, which is the mechanism this repository already uses for every weak import.
+
+An earlier version of this page said the member could not be carried because of that annotation. It was
+wrong, and the mistake was reading a header's `API_AVAILABLE` as an export table - which is the one thing
+`tools/cache-index/first-rung.py` exists to stop.
 
 ### `-font`: the name as written, then an EXACT table of THREE abbreviations
 
@@ -367,47 +383,90 @@ that name; else the exact table of three; else **Helvetica**, with the size read
 and defaulting to **12**. It is implemented in `PDFAnnotationColours11.m`, which needs only `UIFont`
 (iOS 2.0) and `-[UIFont fontWithName:size:]` (iOS 2.0).
 
-### The other wall, and it is the harness's: three of these four cannot be COMPARED on this machine
+### The wall was in the harness, and it is answered with a SEAM and not with a skip list
 
-`backgroundColor`, `interiorColor` and `font` are **in the library** and **measured**, and the run still
-cannot compare them, for a reason worth writing down because it is invisible by construction.
+The first version of this family ended with a skip list: 329 keys printed as `not compared`, with a reason on
+the line. That was the wrong shape, and this is why.
 
-The harness has three binaries: the host's, the port's on macOS, and - because a macOS process has no
-`UIColor` - the port's again under **Mac Catalyst**. The Catalyst binary **links no PDFKit** (`otool -L`
-lists UIKit, Foundation, CoreGraphics and nothing else) and still loads
-`/System/iOSSupport/System/Library/Frameworks/PDFKit.framework` at run time: `color.txt` carries **14**
-`Class PDFDocument is implemented in both ...` lines. A **category** on a class is *replaced* when the image
-holding it loads later, and the platform declares these same selectors on its own
-`PDFAnnotationUtilities` category - so the port's three members are shadowed there and the values printed
-under `.colours.` are the platform's.
+**The cause is real and it is not the port.** The harness has three binaries: the host's, the port's on
+macOS, and - because a macOS process has no `UIColor` - the port's again under **Mac Catalyst**. The
+Catalyst binary **links no PDFKit** (`otool -L` lists UIKit, Foundation, CoreGraphics and nothing else) and
+still loads `/System/iOSSupport/System/Library/Frameworks/PDFKit.framework` at run time: `color.txt`
+carries **14** `Class PDFDocument is implemented in both ...` lines. A **category** on a class is *replaced*
+when the image holding it loads later, and the platform declares these same selectors on its own
+`PDFAnnotationUtilities` category - so the port's four members are shadowed there and anything printed
+through those selectors is the platform's.
 
-That this is a **category** effect and not a broken port is measured, not argued: a `-777` sentinel planted
-in `PDFAppearanceCharacteristics`' own `-init` appeared as `appearance.fresh.controlType=-777` in that same
-binary, so the **class's own** members there do run - which is also why the appearance block's 72 compared
-keys are the port's and not the platform's. And the three cannot be moved into the class's own
-`@implementation` either: `PDFPage`'s and `PDFAnnotation`'s ivars are declared in `PDFAnnotation11.m`, and a
-class has one `@implementation`, so a second object can only add a **category** - and it needs `UIKit`,
-which the macOS port side has not got.
+That it is the **category** and not a broken port is measured, not argued: a `-777` sentinel planted in
+`PDFAppearanceCharacteristics`' own `-init` answered `appearance.fresh.controlType=-777` in that same
+binary, so the **class's own** members there do run - which is also why that block's keys are the port's.
 
-`run.sh` therefore prints **every** one of those keys as `not compared` **with this reason on the line** -
-329 of them - rather than dropping them silently, and the run's own comment carries the measurement.
+**The answer is a seam.** The derivation of all four members now lives in
+**`CharonPDFKitColours.h`** as `static inline` functions over the annotation's `CGPDFDictionary`, which is
+`CharonLists.h`'s shape and for `CharonLists.h`'s reason: a C symbol in a `.m` is a symbol a host
+differential that compiles the port's objects with its own sources cannot link. `PDFAnnotationColours11.m`
+is four one-line members over that seam, and the harness's Catalyst side calls the seam **directly**, on
+the same `CGPDFDictionary` the port read:
+
+    CGPDFDictionaryRef dictionary = [annotation charon_CGPDFDictionary];
+    printAnnotationColour(label, "backgroundColor", charon_annotation_background_colour(dictionary));
+    ...
+
+**No selector is dispatched anywhere in that path**, so nothing a later image loads can take it over, and
+both sides wrap the returned `CGColorRef` in their OWN platform's colour class - which is the whole of the
+platform difference `color.m`'s header already describes. The keys went back into the comparison and the
+skip list is gone: `not compared` is back to the **173** it was before this family, and the four rows are
+`implemented` on **179 named red controls**, fourteen of which name a colour or font key and one of which
+names the `/NM` list itself.
+
+The three cannot be moved into the class's own `@implementation`, and that is worth recording because it
+looks like the obvious alternative: `PDFPage`'s and `PDFAnnotation`'s ivars are declared in
+`PDFAnnotation11.m`, a class has one `@implementation`, so a second object can only add a **category** -
+and it needs UIKit, which the macOS port side has not got. The seam sidesteps the dispatch entirely rather
+than fighting for the class.
+
+### Two traps in CoreGraphics that each cost this family a whole run
+
+Both are in `CharonPDFKitColours.h` and both are about reading a PDF colour array:
+
+1. **`CGPDFArrayGetObject` is ZERO-BASED.** Its index runs `0 .. count-1`, the way `PDFKit11.m`,
+   `PDFPage11.m` and `PDFAction11.m` already read arrays in this library - so reading component `i` as
+   `i + 1` walks off the end **on the last component and no other**. That is the worst shape a bug can
+   have: `[1 0 0]` reads two components and then refuses, and a one-component `[0.25]` refuses outright.
+   It is how `backgroundColor` and `interiorColor` answered nil for every fixture while the host answered
+   all of them.
+2. **`CGColorCreate` reads the space's component count PLUS ONE**, and that last value is the **alpha**. A
+   PDF colour array has no alpha component - Table 8.40's shapes are gray, RGB and CMYK - so the array's
+   components go in and a **1** goes after them. Zero-initialising the tail instead answers every
+   background and interior colour with the right hue and a **zero alpha**: an invisible colour, which is not
+   the host's answer to any of them and which the differential caught as eleven differences on one run.
+
+A third, quieter one, and it is the reason the array components are read by their object **type** rather
+than through `CGPDFArrayGetNumber`: **`CGPDFArrayGetNumber` does not fail on an integer, it answers ZERO.**
+It returns `true` for an integer component whose value is 1 or 0 and writes 0 either way, so `[1 0 0]` read
+through it is a *black* colour rather than a refusal - worse than the refusal, because it looks like an
+answer. CoreGraphics types a bare `1` as `kCGPDFObjectTypeInteger` and a bare `0.5` as
+`kCGPDFObjectTypeReal`, so the object's own type is what says which reader to use.
 
 ### The rows
 
-All four stay **`inert`**, and for two different reasons, each of which is in its row:
+All four are **`implemented`**, and none of them is a constant or a stand-in:
 
-* **`backgroundColor`, `interiorColor`, `font`** - implemented in `PDFAnnotationColours11.m`, measured over
-  48 named fixtures, and **not comparable** on this machine because the only process that has a `UIColor`
-  loads the platform's PDFKit, which answers those selectors.
-* **`fontColor`** - measured in full above and **not carried at all**, because its three colour spaces are
-  iOS 9.0 names against a 6.0 row.
+* **`backgroundColor`, `interiorColor`, `fontColor`, `font`** - four members in
+  `PDFAnnotationColours11.m`, one line each, over five `static inline` seams in `CharonPDFKitColours.h`
+  that decide the key, the colour space, the components, the alpha and the font name and size. Compared
+  against Apple's own members over 48 named fixtures through the seam, with 179 named red controls, of which
+  fourteen name a colour or font key: `nmbg-rgb.backgroundColor.space` and `.components` (the DeviceRGB
+  space and the array's own values), `nmbg-cmyk.backgroundColor.space` (four components choose CMYK),
+  `nmbg-notarray.backgroundColor` (the wrong type is nil), `nmic-square-gray.interiorColor.space` and
+  `nmic-circle-cmyk.interiorColor.components`, `nmda-fill-rgb.fontColor.space` and `.components` (generic,
+  not device), `nmda-fill-badcount.fontColor.components` (the operand-count rule), `nmda-stroke-k.fontColor
+  .space` (k is not read), `nmfont-courier-7.font.name` and `.size`, `nmfont-abbrev-hebo.font.name` (the
+  HeBo rule) and `nmfont-unknown.font.size` (the size is kept).
 
-Neither reason is "hard", and neither is a shrug: both name the process, the mechanism and the measurement.
+## The 21 rows that are not implemented, and why each one waits
 
-## The 25 rows that are not implemented, and why each one waits
-
-Each of the 27 carries the host's measured answer in its `reason` in
-`registry/PDFKit/annotation11.json`. Grouped:
+Each carries the host's measured answer in its `reason` in `registry/PDFKit/annotation11.json`. Grouped:
 
 * **`buttonWidgetState`**, above - the /AS matrix is measured and one combination does not derive.
 * **`buttonWidgetState`** is NOT in this list any more: the hypothesis and one more clause now predict all
@@ -423,12 +482,9 @@ Each of the 27 carries the host's measured answer in its `reason` in
   (`/Q 2` -> 0), `choices` and `values` (`/Opt [(one) (two) (three)]` -> empty), `open`, `caption`, `URL`.
   Each is written in a fixture and the host does not answer it from there, which says the key or the scale
   is something else and not what I assumed.
-* **the two colours and the font**, measured above and IMPLEMENTED in `PDFAnnotationColours11.m` - every key
-  is established (`/MK` `/BG`, the annotation's own `/IC`, the `/DA`'s font name and size), the DeviceRGB
-  question is settled (there is no conversion at all) and the `/Ch` question is settled (that annotation is
-  not surfaced). What is missing is a **process that can compare them**: the only macOS binary with a
-  `UIColor` loads the platform's PDFKit and answers those selectors itself. `fontColor` is a fourth case and
-  is not carried at all, because its colour spaces are iOS 9.0 names against a 6.0 row.
+* **the three colours and the font** are NOT in this list any more: they are implemented, measured and
+  compared through the seam, and the section above carries the table, the export measurement and the two
+  CoreGraphics traps that each cost a run.
 * **the geometry six** - `startPoint`, `endPoint`, `startLineStyle`, `endLineStyle`, `paths`,
   `quadrilateralPoints`. `/InkList` is a list of variable-length point runs and needs a bezier-path object
   the port does not carry; `PDFLineStyle` is a class the port does not carry; `/QuadPoints` is a flat array
@@ -442,21 +498,21 @@ Each of the 27 carries the host's measured answer in its `reason` in
     $ sh tests/backports/host/pdfkit-document/run.sh
       images differ by construction: host=/System/.../PDFKit.framework/.../PDFKit
                                       port=.../runs/pdfkit-document/port-side
-      COMPARED 14390 MISMATCHES 0  (not compared: 519, expected to differ: 519, of which 292 compared from the Catalyst side)
+      COMPARED 14725 MISMATCHES 0  (not compared: 173, expected to differ: 519, of which 411 compared from the Catalyst side)
       RED CONTROL ok: the comparison goes red on a mutated port, and names the key
 
-178 fixtures. **165 named red controls, 165 of them with a `DIFFER` line in their own log**, among them one
+178 fixtures. **179 named red controls, 179 of them with a `DIFFER` line in their own log**, among them one
 per member over `widget-flags.pdf`'s first annotation, the three fixtures that pin
 `widgetControlType`'s priority (`noflags`, bit 16, bit 17, `allflags`), the two that pin the inversions
 (bit 15 and bit 18), the one that pins `radiosInUnison` off bit 26, the field-type fixtures that pin
 `activatableTextField`, the three annotation **counts** that pin the choice-widget skip -
-`widget-fttx1` (1), `widget-ftch2` (0) and `widget-ftch4` (1) - and `annotation-colours.pdf.colours.names`,
+`widget-fttx1` (1), `widget-ftch2` (0) and `widget-ftch4` (1) - `annotation-colours.pdf.colours.names`,
 which is the one control that names **the /NM list itself** and so pins the dropped annotation rather than a
-count of it.
+count of it, and **fourteen that name a colour or font key**, one per rule of this family.
 
-**The 519 `not compared` lines are 190 pre-existing and 329 of this family**, and the 329 name their cause
-on the line: they are `backgroundColor`, `interiorColor` and `font` over `annotation-colours.pdf`, which the
-Catalyst binary cannot answer from the port. Nothing else moved into that count.
+**The 173 `not compared` lines are all pre-existing** and none of them is this family's: an earlier version
+of this page had 519, of which 346 were the four colour and font members that the seam now brings back into
+the comparison.
 
 The harness prints the nine members one key per line, for the reason the outline facts were lost the first
 time round: a line carrying several `key=value` pairs registers as one key and drops the rest. The colour
