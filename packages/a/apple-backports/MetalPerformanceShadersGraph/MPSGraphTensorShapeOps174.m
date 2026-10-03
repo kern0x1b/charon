@@ -26,9 +26,6 @@
 
 #import "CharonMPSGraph.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-
 @implementation MPSGraph (CharonMPSGraphTensorShapeOps174)
 
 - (MPSGraphTensor *)sliceUpdateDataTensor:(MPSGraphTensor *)dataTensor
