@@ -240,7 +240,6 @@ int main(void)
         quadrature_integrate_options o;
         quadrature_status myStatus = QUADRATURE_SUCCESS, theirStatus = QUADRATURE_SUCCESS;
         double myError = -7.0, theirError = -7.0;
-        char name[160];
         memset(&o, 0, sizeof o);
         o.integrator = QUADRATURE_INTEGRATE_QNG;
         o.abs_tolerance = 1e-10;

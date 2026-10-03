@@ -710,12 +710,13 @@ static void charon_dqelg(int n, double *epstab, double *result, double *abserr, 
         *abserr = error;
         *result = res;
     }
-    // dqelg.f's label 50, the shift. It is reached from label 20 and from the end of the loop, and n is
-    // whatever the loop left: shortened at label 20, or 2 * newelm when the loop ran out.
-    if (!drop) {
-        n = 2 * newelm;
-    } else {
-        n = 2 * i;
+    // dqelg.f's label 50, the shift. It is reached from label 20 and from the end of the loop, and on the
+    // second of those `n` is the n the caller arrived with: label 20 is the only statement in the routine
+    // that assigns it, so a loop that ran all newelm iterations out carries the caller's n unchanged into
+    // the shift and into `if (num == n)`, which then takes the table as it stands.
+    if (drop) {
+        // Label 20's `n = i + i - 1`, with i one-based.
+        n = 2 * i + 1;
     }
     if (n == limexp) {
         n = 2 * (limexp / 2) - 1;
@@ -852,8 +853,10 @@ static int charon_dqags(CharonIntegrand fun, void *arg, double a, double b, doub
                         size_t limit, const CharonRule *rule, int inf, int extrapolate, double *result,
                         double *abserr, int *neval, double *work, int *iwork)
 {
-    double alist[2 * 1000], blist[2 * 1000], rlist[2 * 1000], elist[2 * 1000];
-    double rlist2[53], res3la[3], epstab[52];
+double alist[2 * 1000], blist[2 * 1000], rlist[2 * 1000], elist[2 * 1000];
+    // rlist2 is dqelg's own table: dqagse.f declares no epstab at all and hands rlist2 to dqelg as its
+    // epstab, so the sequence of results the extrapolation reads and the one the driver keeps are one array.
+    double rlist2[53], res3la[3];
     int iord[2 * 1000];
     int last, k, ier = 0, ierro = 0, maxerr, nrmax, nres, ktmin, numrl2, iroff1, iroff2, iroff3, ksgn;
     int extrap, noext, id, jupbnd;
@@ -1054,7 +1057,7 @@ extrapolate:
 do_extrapolate:
         numrl2 += 1;
         rlist2[numrl2 - 1] = area;
-        charon_dqelg(numrl2, epstab, &reseps, &abseps, res3la, &nres);
+        charon_dqelg(numrl2, rlist2, &reseps, &abseps, res3la, &nres);
         ktmin += 1;
         if (ktmin > 5 && *abserr < 0.01 * errsum) {
             ier = 5;
@@ -1083,21 +1086,19 @@ do_extrapolate:
         erlarg = errsum;
     next_interval:;
     }
-    // dqagse.f's final block, label for label. Its 100 is `if (abserr == oflow) go to 115`, so arriving at
-    // sum_up with anything else comes back here; its 115 computes the total and then falls into 130, the
-    // exit, and NOT back into 100 - which is the difference between a run that ends and a run that never
-    // does. Its 140 is the exit too, and the accuracy test above jumps there directly.
-sum_up:
-    if (*abserr != oflow) {
-        goto final;
+    goto final;
+    // dqagse.f's final block, label for label. Label 100 is its own test and its 115 is its own sum: the
+    // three `go to 115` in the routine - after the tolerance test in the loop, after `abserr.gt.errsum`
+    // here and after the comparison at 105 - all reach the SUM and not the test, and 100's own
+    // `if(abserr.eq.oflow) go to 115` is the only way into the sum from there. Merging the two is what left
+    // a run that never ends: 105 reaches the sum, the sum's first line sends it back to 100, 105 decides the
+    // same thing again, and QUADPACK's 100 - unlike 105 - falls through to 130, the exit, instead of
+    // returning to its own first line. Its 140 is the exit too, and the accuracy test in the loop jumps
+    // straight to 100.
+final:  // dqagse.f's 100
+    if (*abserr == oflow) {
+        goto sum_up;
     }
-    *result = 0.0;
-    for (k = 0; k < last; k++) {
-        *result += rlist[k];
-    }
-    *abserr = errsum;
-    goto exit;
-final:
     if (ier + ierro == 0) {
         goto divergence;
     }
@@ -1121,7 +1122,7 @@ compare:  // dqagse.f's 105
     if (*abserr / fabs(*result) > errsum / fabs(area)) {
         goto sum_up;
     }
-divergence:
+divergence:  // dqagse.f's 110
     if (ksgn == -1 && fmax(fabs(*result), fabs(area)) <= defabs * 0.01) {
         goto exit;
     }
@@ -1129,6 +1130,12 @@ divergence:
         ier = 6;
     }
     goto exit;
+sum_up:  // dqagse.f's 115, which falls into 130, the exit
+    *result = 0.0;
+    for (k = 0; k < last; k++) {
+        *result += rlist[k];
+    }
+    *abserr = errsum;
 exit:
     if (ier > 2) {
         ier -= 1;
