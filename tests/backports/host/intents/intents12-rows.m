@@ -58,6 +58,7 @@
 #import <Intents/Intents.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
+#import <unistd.h>
 
 // One wrapper per arity, so each call names its own signature.  A single variadic helper forwarding
 // a va_list would be shorter and wrong: a va_list is not a set of arguments.
@@ -104,16 +105,45 @@ static const NSTimeInterval HANDLER_WINDOW = 5.0;
    handler's values. */
 static char buffer[256];
 
+/* WHICH THREAD, and whether any run loop was needed, because those two are what the port's own
+   answer is chosen from and neither may be assumed: the port dispatches to the default global
+   queue, and the only reason that is the queue to choose is that the framework's handler is likewise
+   not the caller's thread and likewise needs no run loop.  noRunLoop is 1 when the handler fired
+   while this process sat in usleep with no run loop turning anywhere - which a main-queue handler
+   could not manage, because nothing would be running the main run loop. */
+static volatile int handlerOnMainThread = -1;
+
+/* The assertion the port's own three bodies are held to, counted and exited on. */
+static int failures = 0;
+
 static void reportHandler(const char *row, volatile int *ran, const char *detail)
 {
     int beforeReturn = *ran;
+    /* Half the window is spent with NO run loop turning at all, so "fired anyway" and "fired because
+       a run loop turned" are two different answers instead of one, and a main-queue handler is still
+       given its half rather than being written off. */
     NSDate *limit = [NSDate dateWithTimeIntervalSinceNow:HANDLER_WINDOW];
+    while (!*ran && [limit timeIntervalSinceNow] > HANDLER_WINDOW / 2) {
+        usleep(50000);
+    }
+    int withoutRunLoop = *ran;
     while (!*ran && [limit timeIntervalSinceNow] > 0) {
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
                                  beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
     }
-    printf("intents12 %-58s handler before-return=%d within-%.0fs=%d %s\n", row, beforeReturn,
-           HANDLER_WINDOW, *ran, detail);
+    printf("intents12 %-58s handler before-return=%d within-%.0fs=%d on-main-thread=%d "
+           "no-run-loop=%d %s\n", row, beforeReturn, HANDLER_WINDOW, *ran, handlerOnMainThread,
+           withoutRunLoop, detail);
+    /* THE ASSERTION: a handler called before the method returned is a different answer from one
+       called after it, and a caller that sets state after the call and reads it in the handler
+       breaks on the synchronous one only. The process exits non-zero, so run-rows.sh cannot report
+       green over it. Asserted on the receiver this section was asked about, which is the singleton:
+       a fresh instance is measured as well and is deliberately not asserted, because the host
+       answers that one in ways this run does not promise (measureHandlerMember's own comment). */
+    if (beforeReturn) {
+        printf("intents12 %-58s FAIL the handler ran BEFORE the method returned\n", row);
+        failures++;
+    }
 }
 
 /// One member that is a class method taking nothing and returning the object.
@@ -213,6 +243,7 @@ static void measureHandlerMember(const char *row, const char *className, SEL acc
     }
     volatile int ran = 0;
     buffer[0] = '\0';
+    handlerOnMainThread = -1;
     send(receiver, &ran);
     char rowName[160];
     snprintf(rowName, sizeof rowName, "%s on %s", row, which);
@@ -227,6 +258,7 @@ static void measureVoiceShortcuts(const char *row, BOOL singleton)
                 @selector(getAllVoiceShortcutsWithCompletion:),
                 ^(NSArray<INVoiceShortcut *> *found, NSError *error) {
                     *ran = 1;
+                    handlerOnMainThread = [NSThread isMainThread] ? 1 : 0;
                     snprintf(buffer, sizeof buffer, "count=%lu array-nil=%d error=%s",
                              (unsigned long)found.count, found == nil, error ? "non-nil" : "nil");
                 });
@@ -241,6 +273,7 @@ static void measureOneVoiceShortcut(const char *row, BOOL singleton)
                 @selector(getVoiceShortcutWithIdentifier:completion:), [NSUUID UUID],
                 ^(INVoiceShortcut *found, NSError *error) {
                     *ran = 1;
+                    handlerOnMainThread = [NSThread isMainThread] ? 1 : 0;
                     snprintf(buffer, sizeof buffer, "shortcut=%s error=%s",
                              found ? "an object" : "nil", error ? "non-nil" : "nil");
                 });
@@ -255,6 +288,7 @@ static void measureRelevantShortcuts(const char *row, BOOL singleton)
                 @selector(setRelevantShortcuts:completionHandler:), [NSArray array],
                 ^(NSError *error) {
                     *ran = 1;
+                    handlerOnMainThread = [NSThread isMainThread] ? 1 : 0;
                     snprintf(buffer, sizeof buffer, "error=%s", error ? "non-nil" : "nil");
                 });
         });
@@ -299,6 +333,23 @@ int main(int argc, char **argv)
         return 0;
     }
 
+    /* The negative control FOR THE ASSERTION, not for the reader.  It performs a synchronous call -
+       a handler invoked inline, before its method returns - through the same reportHandler, so a
+       check that had stopped failing on before-return=1 would pass this section and be caught here
+       instead. It reads INTENTS, which is the framework's own, and touches nothing of the twelve. */
+    if (!strcmp(section, "sync-plant")) {
+        static char planted[256];
+        static volatile int ran = 0;
+        handlerOnMainThread = -1;
+        snprintf(planted, sizeof planted, "%s", "a handler called inline");
+        ((void (^)(void))^{
+            ran = 1;
+            handlerOnMainThread = 1;
+        })();
+        reportHandler("the plant: a synchronous answer", &ran, planted);
+        return failures ? 1 : 0;
+    }
+
     if (!strcmp(section, "new-shortcut")) {
         measureFactory("+[INShortcut new]", "INShortcut", @selector(new), NO);
     } else if (!strcmp(section, "new-voice")) {
@@ -337,5 +388,7 @@ int main(int argc, char **argv)
         fprintf(stderr, "intents12-rows: no such section: %s\n", section);
         return 65;
     }
-    return 0;
+    /* The exit status is the verdict.  A run that found a handler called before its method returned
+       says so on stdout and here, so run-rows.sh cannot print green over it. */
+    return failures ? 1 : 0;
 }

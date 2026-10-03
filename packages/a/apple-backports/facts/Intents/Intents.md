@@ -724,16 +724,20 @@ process per section:
     intents12 -[INVoiceShortcutCenter setShortcutSuggestions:]           receiver=INVoiceShortcutCenter IMP non-NULL returned void
     intents12 -[INUpcomingMediaManager setSuggestedMediaIntents:]        receiver=INUpcomingMediaManager IMP non-NULL returned void
     intents12 -[INUpcomingMediaManager setPredictionMode:forType:]       receiver=INUpcomingMediaManager IMP non-NULL returned void mode=0 type=0
-    intents12 -[INRelevantShortcutStore setRelevantShortcuts:completionHandler:] on the singleton handler before-return=0 within-5s=1 error=nil
-    intents12 -[INRelevantShortcutStore setRelevantShortcuts:completionHandler:] on a fresh instance handler before-return=0 within-5s=0
-    intents12 -[INVoiceShortcutCenter getAllVoiceShortcutsWithCompletion:] on the singleton handler before-return=0 within-5s=1 count=0 array-nil=0 error=nil
-    intents12 -[INVoiceShortcutCenter getAllVoiceShortcutsWithCompletion:] on a fresh instance handler before-return=0 within-5s=1 count=0 array-nil=0 error=nil
-    intents12 -[INVoiceShortcutCenter getVoiceShortcutWithIdentifier:completion:] on the singleton handler before-return=0 within-5s=1 shortcut=nil error=nil
-    intents12 -[INVoiceShortcutCenter getVoiceShortcutWithIdentifier:completion:] on a fresh instance handler before-return=0 within-5s=1 shortcut=nil error=nil
+    intents12 -[INRelevantShortcutStore setRelevantShortcuts:completionHandler:] on the singleton handler before-return=0 within-5s=1 on-main-thread=0 no-run-loop=1 error=nil
+    intents12 -[INRelevantShortcutStore setRelevantShortcuts:completionHandler:] on a fresh instance handler before-return=0 within-5s=0 on-main-thread=-1 no-run-loop=0 
+    intents12 -[INVoiceShortcutCenter getAllVoiceShortcutsWithCompletion:] on the singleton handler before-return=0 within-5s=1 on-main-thread=0 no-run-loop=1 count=0 array-nil=0 error=nil
+    intents12 -[INVoiceShortcutCenter getAllVoiceShortcutsWithCompletion:] on a fresh instance handler before-return=0 within-5s=1 on-main-thread=0 no-run-loop=1 count=0 array-nil=0 error=nil
+    intents12 -[INVoiceShortcutCenter getVoiceShortcutWithIdentifier:completion:] on the singleton handler before-return=0 within-5s=1 on-main-thread=0 no-run-loop=1 shortcut=nil error=nil
+    intents12 -[INVoiceShortcutCenter getVoiceShortcutWithIdentifier:completion:] on a fresh instance handler before-return=0 within-5s=1 on-main-thread=0 no-run-loop=1 shortcut=nil error=nil
+    intents12 port INRelevantShortcutStore -setRelevantShortcuts:completionHandler: dispatches its handler
+    intents12 port INVoiceShortcutCenter -getAllVoiceShortcutsWithCompletion: dispatches its handler
+    intents12 port INVoiceShortcutCenter -getVoiceShortcutWithIdentifier:completion: dispatches its handler
+    port bodies: 3 of 3 dispatch, 0 failed
 
 Four things it settles, and one it changes:
 
-- **The three `+new` return an instance of their own class**, not of `NSObject` - which is what the
+- **The three `+new` return an instance of their own class**, not of `NSObject` — which is what the
   table above left as `returns=object`. The emitted body reaches `NSObject`'s `+new` and that is
   correct, because `+new` is where the class's own `-init` is entered from.
 - **The three singleton accessors are singletons on the system's own framework too**: two calls in
@@ -743,17 +747,53 @@ Four things it settles, and one it changes:
 - **The three handler members' VALUES are the port's own, measured on the host**: an empty array
   that is not nil with a nil error, a nil shortcut with a nil error, and a nil error for a
   relevant-shortcut set the singleton took.
-- **Their TIMING is not the port's.** Every one of them is `before-return=0`: the framework calls
-  the handler after the method returns, and the port calls it inside. The values agree and the
-  timing does not, so each of the three bodies now says so and gives the reason - there is no
-  daemon on this release to hand the work to, and a handler that fired later would need a run loop
-  the caller has no reason to turn. That is this port's answer, deliberately, and not a claim that
-  the framework answers the same way.
-- **One host behaviour has no port counterpart at all**: `-setRelevantShortcuts:completionHandler:`
-  on a receiver that is **not** the singleton never calls its handler inside the window
-  (`within-5s=0`). The port always answers, on any receiver, because its answer is its own state
-  and not a handoff. Which of the two is right for an application is not decidable from here, and
-  is not claimed either way.
+- **Their TIMING was not, and now is.** Every one of them is `before-return=0` **and**
+  `on-main-thread=0` **and** `no-run-loop=1`: the framework calls the handler after the method
+  returns, on a thread that is not the caller's, and it fires with no run loop turning anywhere in
+  the process — so it is not the main queue and needs no run loop of the caller's. The port now
+  answers the same way, from `dispatch_async` on the default global queue, and each of the three
+  bodies says so and gives the measurement. **Which queue the framework uses is not measurable from
+  outside it and no claim is made that it is this one**; what is claimed, and measured, is that the
+  port's is likewise not the caller's thread and likewise needs no run loop. The harness now
+  **fails** on `before-return=1`, so a synchronous answer cannot come back unnoticed, and its own
+  negative control for that check is the `sync-plant` section, which calls a handler inline through
+  the same path and must exit non-zero.
+- **One host behaviour still has no port counterpart**: `-setRelevantShortcuts:completionHandler:` on
+  a receiver that is **not** the singleton never calls its handler at all inside the window
+  (`within-5s=0`, and `on-main-thread=-1` because it never ran). That is recorded and not imitated,
+  because a handler that never runs is a hang and the port answers every receiver.
+
+**What this is about the host, and what it is about the port.** The rows above are measurements of
+the system's own framework, taken by a host binary. The port's bodies are armv7 and do not run on
+this host, and they cannot be linked beside the framework either — that is measured, and the earlier
+version of this page had it wrong:
+
+> "Comparing the two needs `tests/backports/host/prefix_selectors.py`, which renames the port's
+> classes so its implementations are reached under names of their own"
+
+`prefix_selectors.py` renames **selectors** and not class names (its own comment: "gives one to the
+selectors the port's Charon categories carry"; `IN12_0.m` carries none, so for this file it renames
+nothing at all — measured, 0 occurrences of the prefix in its output). The class renaming is `-D`,
+and a `-D` moves the SDK's own declaration of a class along with the port's, because it applies to
+every occurrence in the translation unit. So the host build of `IN12_0.m` answers
+
+    CharonIntents262.h:39: error: duplicate interface definition for class
+        'CharonHostINMessageLinkMetadata'
+    MacOSX.sdk/…/Intents.framework/Headers/INMessageLinkMetadata.h:14:12: note: previous definition is here
+
+— the port's own header renamed onto the SDK's own header, which is the same name twice. Every one
+of this group's five classes is declared by the macOS SDK, so there is no name here a `-D` can move
+without moving the SDK's with it. **Nothing in the tree renames a port class without the SDK's**, so
+the port's runtime behaviour for this group cannot be measured beside the framework's, and that is
+owed and stays owed.
+
+What *is* checked on the port's side is the one thing that can be, and it is checked in the same
+run: `run-rows.sh` reads the three generated bodies out of `IN12_0.m` and fails unless each hands
+its handler to a `dispatch_async` with no call before it. The expectation comes from the measurement
+above and not from the body; the mechanism reads the port's own generated source, so this is a check
+of the port's *shape*, not a measurement of its behaviour, and it is labelled that way in the script.
+It was mutated both ways to confirm it is live: a body with its dispatch removed, and a body that
+keeps its dispatch but also calls the handler inline first — one FAIL and one exit non-zero each.
 
 Two limits, both measured rather than assumed:
 
@@ -962,14 +1002,17 @@ release that could be asked for the thing the method names.
   itself, and a second `--write` is a no-op — checked by running it twice and diffing.
 - **The port's own `-init` has not been run against the system's.** The harness above reads the
   system's class; the port's side is proven by the compile, the presence of each `-init` per `nm`,
-  and the registry's own text. Comparing the two needs `tests/backports/host/prefix_selectors.py`,
-  which renames the port's classes so its implementations are reached under names of their own —
-  the port's classes and the framework's share a name, so a lookup in one process returns the
-  framework's object and the check compares the framework with itself. The port's Intents sources
-  additionally need `CharonIntents262.h` renamed with them, because that header re-declares the
-  classes the port's own SDK lacks and the host's has, and without the rename the host build fails
-  with *duplicate interface definition*. The rename list is generated from the port's own object
-  symbols, so every name in it is a class the port really defines.
+  and the registry's own text. **Comparing the two is owed and is not blocked on anything but a
+  rename that does not exist yet.** An earlier version of this bullet said it "needs
+  `tests/backports/host/prefix_selectors.py`, which renames the port's classes"; it does not — it
+  renames selectors, and the class renaming is `-D`, which moves the SDK's own declaration of a class
+  along with the port's. `CharonIntents262.h` re-declares the classes the port's own SDK lacks and
+  the host's has, so a `-D` renames the port's copy and the SDK's copy onto one name and the build
+  answers *duplicate interface definition* — measured, with the exact text, in the 12.0 section
+  above. Every class of this framework is declared by the macOS SDK, so what the comparison needs is
+  a **source-level** rename of the port's own class names that leaves the SDK's alone. Teaching
+  `prefix_selectors.py` that is owed; nothing else is. Until then the port's behaviour is compared
+  by shape only, and `run-rows.sh` says which kind of check each of its steps is.
 - **Nothing here runs on a device or under `xmake emulate`.** Every answer above is the macOS host's
   own Intents, and the port's objects are armv7 iOS 6.1.3. That the `-init` survives into a linked
   6.1.3 binary is the link step's job.
