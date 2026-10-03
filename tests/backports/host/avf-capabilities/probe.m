@@ -84,10 +84,37 @@ static void answer_of(id object, SEL selector, char *out, size_t room)
                 NSArray *sorted = [[set allObjects] sortedArrayUsingSelector:@selector(compare:)];
                 snprintf(out, room, "%lu reason(s): %s", (unsigned long)[sorted count],
                          [sorted componentsJoinedByString:@","].UTF8String);
+            } else if (selector == @selector(isCameraLensSmudgeDetectionSupported)) {
+                /* This one row is asked with its exception NAME and not its reason, and the reason is why:
+                 * sent to this host's own camera, -[AVCaptureDeviceFormat isCameraLensSmudgeDetectionSupported]
+                 * raises NSInvalidArgumentException for all seven of its formats ("-[__NSCFType mediaType]:
+                 * unrecognized selector sent to instance 0x...", inside Apple's own -figCaptureSourceVideoFormat),
+                 * and that reason carries an object's ADDRESS, which is a different string on every run and so
+                 * cannot be a table's expectation. The name is the part that is a value. */
+                int raised = 0;
+                @try {
+                    snprintf(out, room, "%d", (int)((BOOL (*)(id, SEL))objc_msgSend)(object, selector));
+                } @catch (NSException *exception) {
+                    raised = 1;
+                    snprintf(out, room, "RAISED %s", exception.name.UTF8String);
+                }
+                (void)raised;
+            } else if (selector == @selector(dynamicAspectRatio)) {
+                id ratio = ((id (*)(id, SEL))objc_msgSend)(object, selector);
+                snprintf(out, room, "%s", ratio ? [ratio UTF8String] : "nil");
+            } else if (selector == @selector(dynamicDimensions)) {
+                CMVideoDimensions size = ((CMVideoDimensions (*)(id, SEL))objc_msgSend)(object, selector);
+                snprintf(out, room, "%dx%d", size.width, size.height);
+            } else if (selector == @selector(supportedDynamicAspectRatios)) {
+                id list = ((id (*)(id, SEL))objc_msgSend)(object, selector);
+                NSArray *sorted = [[list allObjects] sortedArrayUsingSelector:@selector(compare:)];
+                snprintf(out, room, "%lu ratio(s): %s", (unsigned long)[sorted count],
+                         [sorted componentsJoinedByString:@","].UTF8String);
             } else if (selector == @selector(minSupportedLockedVideoFrameDuration) ||
                        selector == @selector(minSupportedExternalSyncFrameDuration) ||
                        selector == @selector(activeLockedVideoFrameDuration) ||
-                       selector == @selector(activeExternalSyncVideoFrameDuration)) {
+                       selector == @selector(activeExternalSyncVideoFrameDuration) ||
+                       selector == @selector(cameraLensSmudgeDetectionInterval)) {
                 /* A CMTime is a struct returned in registers, so it cannot be read through a pointer cast the
                  * way an object can; and its invalid value is the header's own answer for five of this
                  * family's rows, so it is spelled out rather than printed as zeroes. */
@@ -602,6 +629,50 @@ static void sync_phase(id hostInput, id portInput)
            hostAnswer, portAnswer);
 }
 
+/* THE 26.0 DYNAMIC-ASPECT-RATIO, SMUDGE-DETECTION AND APERTURE PHASE: the two device setters and the input's
+ * aperture, each asked of both sides. All three refuse on this release, two of them with Apple's own measured
+ * reason, and the aperture setter's refusal is the header's rule read through the format's minimum - which is
+ * what the plant `smudge` moves. */
+static void dynamic_phase(id hostCamera, id portCamera, id hostInput, id portInput)
+{
+    struct { const char *label; SEL selector; int kind; } cases[] = {
+        {"-[AVCaptureDevice setDynamicAspectRatio:completionHandler:] 16x9",
+         @selector(setDynamicAspectRatio:completionHandler:), 0},
+        {"-[AVCaptureDevice setCameraLensSmudgeDetectionEnabled:detectionInterval:] true 1s",
+         @selector(setCameraLensSmudgeDetectionEnabled:detectionInterval:), 0},
+        {"AVCaptureDeviceInput.setSimulatedAperture: 2", @selector(setSimulatedAperture:), 1},
+    };
+    for (unsigned i = 0; i < sizeof cases / sizeof cases[0]; i++) {
+        char hostAnswer[512], portAnswer[512];
+        for (int side = 0; side < 2; side++) {
+            id camera = side ? portCamera : hostCamera;
+            id input = side ? portInput : hostInput;
+            char *out = side ? portAnswer : hostAnswer;
+            @autoreleasepool {
+                @try {
+                    switch (i) {
+                    case 0:
+                        ((void (*)(id, SEL, id, id))objc_msgSend)(camera, cases[i].selector, @"16x9", (id)0);
+                        break;
+                    case 1:
+                        ((void (*)(id, SEL, BOOL, CMTime))objc_msgSend)(camera, cases[i].selector, YES,
+                                                                         CMTimeMake(1, 1));
+                        break;
+                    default:
+                        ((void (*)(id, SEL, float))objc_msgSend)(input, cases[i].selector, 2.0f);
+                        break;
+                    }
+                    snprintf(out, 512, "returned");
+                } @catch (NSException *exception) {
+                    snprintf(out, 512, "raised %s: %s", exception.name.UTF8String,
+                             exception.reason ? exception.reason.UTF8String : "(no reason)");
+                }
+            }
+        }
+        printf("ANSWER\t%s\thost=[%s]\tport=[%s]\n", cases[i].label, hostAnswer, portAnswer);
+    }
+}
+
 static void prefcam_phase(Class hostDevice, Class portDevice, const char *mode)
 {
     /* The host's own answer, with the authorization printed beside it - the measurement the coordinator asked
@@ -817,6 +888,9 @@ int main(int argc, char **argv)
 
         /* The 26.0 external-sync family's two methods, and the locked-duration setter. */
         sync_phase(hostInput, portInput);
+
+        /* The 26.0 dynamic family's three setters. */
+        dynamic_phase(camera, portCamera, hostInput, portInput);
 
         /* The members whose answer is a refusal rather than a value, asked of both sides. */
         raise_of(camera, portCamera, @selector(performEffectForReaction:), @"ReactionHeart",
