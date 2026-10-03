@@ -83,10 +83,18 @@ fi
 head -n "$n" "$build/system.txt" > "$build/system.prefix"
 head -n "$n" "$build/port.txt" > "$build/port.prefix"
 echo "compared: $n cases"
+# The verdict, in the words the host sweep reads. It counted this directory as DEAD whatever the
+# comparison said, because nothing here began a line the sweep recognises: this run ended
+# "port: DIFFERS in 1 cases" and a sweep cannot tell that from a test nobody ran. The two counts are
+# the comparison's own - the cases both sides answered, and how many of them differ - so the line
+# says what happened rather than what someone hoped would.
 if cmp -s "$build/system.prefix" "$build/port.prefix"; then
     echo "port: same as the system, case for case and bit for bit"
+    echo "checks=$n failures=0"
 else
     diff "$build/system.prefix" "$build/port.prefix" | head -40
-    echo "port: DIFFERS in $(diff "$build/system.prefix" "$build/port.prefix" | grep -c '^<') cases"
+    differs=$(diff "$build/system.prefix" "$build/port.prefix" | grep -c '^<')
+    echo "port: DIFFERS in $differs cases"
+    echo "checks=$n failures=$differs"
     exit 1
 fi
