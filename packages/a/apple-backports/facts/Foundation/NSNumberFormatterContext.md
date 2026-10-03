@@ -38,3 +38,32 @@ Two details the rule needs and that the number itself cannot tell you: where the
 (the locale's own decimal separator, since a full stop groups in de_DE as well as separating) and
 which character groups (the locale's own `groupingSeparator`, for the same reason). Both are read from
 the locale rather than guessed.
+
+## How the grouping reaches `-stringFromNumber:`
+
+A category cannot take a release method over, and that is `attach.c`'s rule rather than a spelling:
+`charon_collect` adds a category's method only when `charon_implements` says the class does not
+answer the selector (attach.c:165). `-stringFromNumber:` arrived with the first release, so the
+category's copy was dropped on every release this port is for and the grouping was never applied: the
+port read back the minimum it was given and formatted without it, which
+`tests/backports/device/foundation15batch.m` asks for and did not get.
+
+Reaching the release's implementation the way a category is written does not work either. A
+category's `[super ...]` skips the class it is written on, and naming the class in
+`objc_msgSendSuper` does not skip it, so the lookup starts at the class, finds the port's own method
+and calls it again. Measured, on the host: a stack of alternating
+`-[NSNumberFormatter(CharonContext) stringFromNumber:]` and `charon_release_string` frames ending in
+`objc_storeStrong`, which is what `tests/backports/host/foundationbatch` died on.
+
+So the release's implementation is held by name instead, from a `+load` -- the only point at which the
+class still has the release's own: the runtime finishes every `+load` in the image before it runs the
+first constructor, and `attach.c` is a constructor. That is the arrangement
+`UICollectionView+Prefetching10.m`, `UIImageView+Template7.m` and `CharonConfigurationHost.m` use.
+
+The install is guarded on the release not answering `-minimumGroupingDigits`, asked with
+`NSSelectorFromString` and not with `@selector`: where the release's own formatter has the minimum it
+applies it itself, so its `-stringFromNumber:` is the answer and taking the name over would replace a
+method the host differential still needs. The spelling matters for the same reason it matters in
+`Foundation/NSNumberFormatter+Context8.m`: `tests/backports/host/prefix_selectors.py` moves an
+`@selector` of a selector the file defines, and the release's own spelling is the one that must not
+move.
