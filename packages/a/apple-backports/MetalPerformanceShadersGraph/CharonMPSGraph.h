@@ -157,6 +157,12 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
     // everything after it, in one direction or the other. Which of the four it is, which direction, and
     // whether the element at a position is in its own answer are all parameters of the operation, for the
     // same reason the reduction family's are.
+    CharonMPSGraphOperationKindTranspose,
+    CharonMPSGraphOperationKindSqueeze,
+    CharonMPSGraphOperationKindExpandDims,
+    CharonMPSGraphOperationKindFlatten2D,
+    CharonMPSGraphOperationKindBroadcast,
+    CharonMPSGraphOperationKindReverse,
     CharonMPSGraphOperationKindCumulativeSum,
     CharonMPSGraphOperationKindCumulativeProduct,
     CharonMPSGraphOperationKindCumulativeMaximum,
@@ -209,6 +215,7 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
 
 @interface MPSGraphTensor (CharonMPSGraph)
 - (NSUInteger)charon_mps_index;
+- (void)charon_mps_setShape:(NSArray<NSNumber *> *)shape;
 - (NSUInteger)charon_mps_elementCount;
 - (BOOL)isEqualToTensor:(MPSGraphTensor *)tensor;
 - (instancetype)initWithShape:(NSArray<NSNumber *> *)shape
@@ -253,6 +260,28 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
                                   tensor:(MPSGraphTensor *)tensor
                              parameters:(NSDictionary *)parameters
                                     name:(NSString *)name;
+// A GATHER: an operation whose result is the operand's elements in some other order or extent, and whose
+// whole behaviour is which source axis each result axis comes from and whether that axis is reversed or
+// wrapped. That is the walk over a reshape, a squeeze, an expanded dimension, a flatten, a broadcast, a
+// reverse and a transpose, and it is asked of the operation's own parameters - which transformation
+// (@"gather"), the parameter of it the caller wrote down (@"gatherAxis", @"gatherAxes",
+// @"gatherPermutation") or which of the operation's inputs carries it instead (@"gatherOperand"), and the
+// result's shape (@"shape") - so every release's factory of the family fills those in and names only its own
+// methods, and the result's shape is derived by the walk and put on the output tensor before anything is
+// allocated for it - which is what lets a shape the caller FEEDS be one of them.
+// A squeeze and an expanded dimension and a flatten are the same gather with the axes left alone:
+// measured on this host's own MPSGraph, all three answer the operand's own bytes in the operand's own order.
+- (MPSGraphTensor *)charon_mps_gather:(CharonMPSGraphOperationKind)kind
+                                tensor:(MPSGraphTensor *)tensor
+                           parameters:(NSDictionary *)parameters
+                                  name:(NSString *)name;
+// The same over a parameter the caller feeds at run time rather than writing down - an axis, a set of axes
+// or a shape - which becomes the operation's second input and is read by the walk when the graph runs.
+- (MPSGraphTensor *)charon_mps_gather:(CharonMPSGraphOperationKind)kind
+                                tensor:(MPSGraphTensor *)tensor
+                         fedParameter:(MPSGraphTensor *)fedParameter
+                           parameters:(NSDictionary *)parameters
+                                  name:(NSString *)name;
 // A cumulative operation along one axis of one operand: the result is the operand's own shape, and each
 // element holds a fold of the elements on one side of it. The axis is the caller's, so it is normalised
 // here - negative counted from the end of the rank, and an axis outside it refused the way the reduction

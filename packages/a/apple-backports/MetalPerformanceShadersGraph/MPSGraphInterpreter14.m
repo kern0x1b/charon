@@ -1091,6 +1091,294 @@ static void CharonMPSGraphScan(MPSGraphOperation *operation, MPSGraphTensorData 
     free(stride);
 }
 
+// The integers out of a fed 1-D tensor of any integer type, which is how a reverse's axes and a broadcast's
+// shape arrive when the caller fed them rather than writing them down.
+static NSMutableArray<NSNumber *> *CharonMPSGraphGatherIntegers(MPSGraphTensorData *parameter, NSUInteger count)
+{
+    NSMutableArray<NSNumber *> *values = [NSMutableArray arrayWithCapacity:count];
+    for (NSUInteger i = 0; i < count; i++)
+        [values addObject:@((NSInteger)CharonMPSLoad([parameter charon_mps_bytes], parameter.dataType, i))];
+    return values;
+}
+
+// THE GATHER FAMILY: the operations whose result is the operand's elements in some other order or some other
+// extent. Every one of them is one walk here, because every one of them is the same question - for each axis
+// of the result, which axis of the operand feeds it, how many of the operand's axes it covers, and whether
+// that one is reversed or wrapped - and the operation's parameters are the answer. This function is the
+// plan: the result's shape and that mapping, both derived from the transformation the operation names.
+//
+// Every rule is measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40):
+//
+//   - a transpose is the row-major transpose, in both forms: (1, 10, 2, 20, 3, 30, 4, 40) into a 4x2, and a
+//     negative axis is counted from the end, so `dimension:-1 withDimension:0` answers what
+//     `dimension:0 withDimension:1` answers.
+//   - a squeeze drops the unit axes it is given - every unit axis when it is given none - an expanded
+//     dimension adds an axis of extent one, and a flatten collapses every axis from its axis on into one. All
+//     three answer the operand's own bytes in the operand's own order, which is what makes them one gather
+//     with the axes left alone: a 1x2x4 squeezed is a 2x4 of the same bytes, a 2x4 expanded at axis 0 is a
+//     1x2x4 of the same bytes, and a 2x3x4 flattened at axis 0 is a 1x24 of them.
+//   - a broadcast aligns the operand to the RIGHT of the shape given and wraps each axis the shape makes
+//     wider, so a 2x4 into a 4x4 answers each of its rows twice and into a 2x2x4 answers the 2x4 twice.
+//   - a reverse flips the axes it is given and nothing else, so reversing axis 1 of the 2x4 answers
+//     (4, 3, 2, 1 | 40, 30, 20, 10), axis 0 answers the two rows the other way round, and no axes at all
+//     reverses every axis.
+//
+// An axis or an extent the release refuses is refused here too, with NSInvalidArgumentException: a squeeze of
+// an axis whose extent is not one is a graph it cannot build (measured: "squeezed axis must have length 1,
+// input.shape[1] == 2", then "LLVM ERROR: Failed to infer result type(s)" takes the process down), an axis or
+// a permutation outside the rank is the same refusal the reduction family raises, and an extent of zero is a
+// shape with no elements in it.
+static NSDictionary *CharonMPSGraphGatherPlan(MPSGraphOperation *operation, MPSGraphTensorData *source,
+                                              MPSGraphTensorData *parameter)
+{
+    NSDictionary *parameters = operation.charon_mps_parameters;
+    const char *gather = [parameters[@"gather"] UTF8String];
+    NSArray<NSNumber *> *sourceShape = source.shape;
+    NSUInteger sourceRank = sourceShape.count;
+    NSMutableArray<NSNumber *> *shape = [NSMutableArray array];
+    NSMutableArray<NSNumber *> *sourceAxes = [NSMutableArray array];
+    NSMutableArray<NSNumber *> *sourceCounts = [NSMutableArray array];
+    NSMutableArray<NSNumber *> *reversed = [NSMutableArray array];
+    NSMutableArray<NSNumber *> *wrapped = [NSMutableArray array];
+    NSString *name = [operation name];
+
+    if (gather == NULL || sourceRank == 0) {
+        CharonMPSGraphRefuse(@"MPSGraph: the operation named %@ asked for a gather this interpreter does not "
+                             @"know, so nothing was written to its output", name);
+        return nil;
+    }
+    if (strcmp(gather, "squeeze") == 0 || strcmp(gather, "expand") == 0) {
+        // The squeeze and the expanded dimension, which are the same gather with the axes left alone - every
+        // one of the seven methods of 15.4 answers the operand's own bytes in the operand's own order. What
+        // differs between them is which axes are dropped and which are added, and the factory is what knows
+        // that: it names them in @gatherDrop and @gatherAdd, or says with @gatherOperand that the caller fed
+        // them and they are read out of the operation's second input here.
+        int expanding = strcmp(gather, "expand") == 0;
+        NSArray<NSNumber *> *declared = nil;
+        if ([parameters[@"gatherOperand"] isEqual:@"axes"])
+            declared = CharonMPSGraphGatherIntegers(parameter, [parameters[@"gatherCount"] unsignedIntegerValue]);
+        else
+            declared = expanding ? parameters[@"gatherAdd"] : parameters[@"gatherDrop"];
+        NSMutableIndexSet *named = [NSMutableIndexSet indexSet];
+        for (NSNumber *axis in declared) {
+            NSInteger where = axis.integerValue;
+            if (where < 0)
+                where += (NSInteger)sourceRank;
+            if (where < 0 || (NSUInteger)where > sourceRank || (!expanding && (NSUInteger)where >= sourceRank)) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to %@ axis %ld of a rank-%lu tensor, and %@",
+                                name, expanding ? @"expand" : @"squeeze", (long)axis.integerValue,
+                                (unsigned long)sourceRank,
+                                expanding ? @"axis 0 to the rank is all it has"
+                                          : @"only an axis of extent one can be squeezed"];
+            }
+            if (!expanding && sourceShape[(NSUInteger)where].integerValue != 1) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to squeeze axis %ld of a %s tensor, and only an "
+                                   @"axis of extent one can be squeezed",
+                                name, (long)axis.integerValue,
+                                [[sourceShape componentsJoinedByString:@"x"] UTF8String]];
+            }
+            [named addIndex:(NSUInteger)where];
+        }
+        if (expanding) {
+            // Each added axis becomes an axis of extent one before the operand's axis it reads, and one added
+            // past the last axis reads nothing - which is why the trailing axis is the rank itself.
+            NSUInteger source = 0;
+            for (NSUInteger position = 0; position <= sourceRank; position++) {
+                if ([named containsIndex:position]) {
+                    [shape addObject:@1];
+                    [sourceAxes addObject:@(source)];
+                    [sourceCounts addObject:@1];
+                    [reversed addObject:@0];
+                    [wrapped addObject:@0];
+                }
+                if (position < sourceRank) {
+                    [shape addObject:sourceShape[position]];
+                    [sourceAxes addObject:@(position)];
+                    [sourceCounts addObject:@1];
+                    [reversed addObject:@0];
+                    [wrapped addObject:@0];
+                    source = position + 1;
+                }
+            }
+        } else {
+            // Every axis the caller did not name is kept, in order, and the extents are the operand's own.
+            for (NSUInteger position = 0; position < sourceRank; position++) {
+                if ([named containsIndex:position])
+                    continue;
+                [shape addObject:sourceShape[position]];
+                [sourceAxes addObject:@(position)];
+                [sourceCounts addObject:@1];
+                [reversed addObject:@0];
+                [wrapped addObject:@0];
+            }
+        }
+    } else if (strcmp(gather, "flatten") == 0) {
+        // A flatten's axis is NOT normalised the way the family's other axes are, and that is measured: the
+        // release takes it as the unsigned number it is given, so axis:-1 of a 2x4 is a dimension length of
+        // 4294967295 and the framework refuses it outright ("Error: NDArray dimension length > INT_MAX",
+        // MPSNDArray.mm:831) and takes the process down. An expanded dimension and a transpose do count a
+        // negative axis from the end - measured, both answer - so the rule is this operation's and not the
+        // family's, and it is here rather than in a shared normaliser.
+        NSInteger axis = [parameters[@"gatherOperand"] isEqual:@"axis"] && parameter != nil
+            ? (NSInteger)CharonMPSLoad([parameter charon_mps_bytes], parameter.dataType, 0)
+            : [parameters[@"gatherAxis"] integerValue];
+        if (axis < 0 || (NSUInteger)axis >= sourceRank) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was asked to flatten at axis %ld of a rank-%lu tensor, and axis 0 "
+                               @"to %lu is all it has: the release takes that axis as the unsigned number it "
+                               @"is given, so a negative one is a dimension length past what it can build",
+                                name, (long)axis, (unsigned long)sourceRank, (unsigned long)sourceRank];
+        }
+        NSUInteger from = (NSUInteger)axis;
+        unsigned long long after = 1;
+        for (NSUInteger i = from; i < sourceRank; i++)
+            after *= (unsigned long long)sourceShape[i].unsignedIntegerValue;
+        for (NSUInteger i = 0; i < from; i++) {
+            [shape addObject:sourceShape[i]];
+            [sourceAxes addObject:@(i)];
+            [sourceCounts addObject:@1];
+            [reversed addObject:@0];
+            [wrapped addObject:@0];
+        }
+        [shape addObject:@(after)];
+        [sourceAxes addObject:@(from)];
+        [sourceCounts addObject:@(sourceRank - from)];
+        [reversed addObject:@0];
+        [wrapped addObject:@0];
+    } else if (strcmp(gather, "broadcast") == 0) {
+        NSArray<NSNumber *> *declared = [parameters[@"gatherOperand"] isEqual:@"shape"]
+            ? CharonMPSGraphGatherIntegers(parameter, [parameters[@"gatherCount"] unsignedIntegerValue])
+            : parameters[@"gatherShape"];
+        for (NSUInteger k = 0; k < declared.count; k++) {
+            NSInteger extent = declared[k].integerValue;
+            if (extent < 1) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to broadcast into a shape holding %ld, and every "
+                                   @"extent of a shape is one or more", name, (long)extent];
+            }
+            [shape addObject:@(extent)];
+            NSInteger which = (NSInteger)k - ((NSInteger)declared.count - (NSInteger)sourceRank);
+            NSUInteger axis = which < 0 ? 0 : (NSUInteger)which;
+            [sourceAxes addObject:@(axis)];
+            [sourceCounts addObject:@1];
+            [reversed addObject:@0];
+            [wrapped addObject:@(axis < sourceRank &&
+                                       sourceShape[axis].unsignedIntegerValue != (NSUInteger)extent)];
+        }
+    } else if (strcmp(gather, "reverse") == 0) {
+        NSMutableIndexSet *flipped = [NSMutableIndexSet indexSet];
+        if ([parameters[@"gatherOperand"] isEqual:@"axes"])
+            for (NSNumber *axis in CharonMPSGraphGatherIntegers(parameter, [parameters[@"gatherCount"] unsignedIntegerValue]))
+                [flipped addIndex:(NSUInteger)axis.integerValue];
+        else if ([parameters[@"gatherAxes"] isKindOfClass:[NSArray class]] && [parameters[@"gatherAxes"] count])
+            for (NSNumber *axis in parameters[@"gatherAxes"])
+                [flipped addIndex:(NSUInteger)axis.integerValue];
+        else
+            for (NSUInteger i = 0; i < sourceRank; i++)
+                [flipped addIndex:i];
+        for (NSUInteger i = 0; i < sourceRank; i++) {
+            [shape addObject:sourceShape[i]];
+            [sourceAxes addObject:@(i)];
+            [sourceCounts addObject:@1];
+            [reversed addObject:@([flipped containsIndex:i])];
+            [wrapped addObject:@0];
+        }
+    } else if (strcmp(gather, "transpose") == 0) {
+        NSArray<NSNumber *> *permutation = parameters[@"gatherPermutation"];
+        for (NSUInteger k = 0; k < permutation.count; k++) {
+            // The header's spelling of the two-axis transpose is NSUInteger and the release's permutation
+            // form is an array of them, and it still counts a negative value from the end - measured,
+            // dimension:(NSUInteger)-1 withDimension:0 answers what dimension:0 withDimension:1 answers - so
+            // the value is read back as the signed number it was written as, which is what the header's own
+            // type makes a caller of a negative axis write.
+            NSInteger which = (NSInteger)(int32_t)permutation[k].unsignedIntegerValue;
+            if (which < 0)
+                which += (NSInteger)sourceRank;
+            if (which < 0 || (NSUInteger)which >= sourceRank) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to transpose with axis %ld of a rank-%lu tensor, "
+                                   @"and axis 0 to %lu is all it has",
+                                name, (long)which, (unsigned long)sourceRank, (unsigned long)sourceRank];
+            }
+            [shape addObject:sourceShape[(NSUInteger)which]];
+            [sourceAxes addObject:@(which)];
+            [sourceCounts addObject:@1];
+            [reversed addObject:@0];
+            [wrapped addObject:@0];
+        }
+    } else {
+        CharonMPSGraphRefuse(@"MPSGraph: the operation named %@ asked for a gather this interpreter does not "
+                             @"know, so nothing was written to its output", name);
+        return nil;
+    }
+    return @{@"shape": shape, @"sourceAxes": sourceAxes, @"sourceCounts": sourceCounts,
+             @"reversed": reversed, @"wrapped": wrapped};
+}
+
+// The walk itself: each element of the result, its coordinates read from the last axis backwards (the operand
+// is row-major with its FIRST axis the slowest moving), each coordinate turned into a coordinate of the
+// operand's axes that axis of the result covers and weighted by that axis's stride.
+static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorData *source,
+                                  MPSGraphTensorData *parameter, MPSGraphTensorData *result,
+                                  NSDictionary *plan)
+{
+    NSArray<NSNumber *> *sourceShape = source.shape;
+    NSArray<NSNumber *> *resultShape = result.shape;
+    NSArray<NSNumber *> *sourceAxes = plan[@"sourceAxes"];
+    NSArray<NSNumber *> *sourceCounts = plan[@"sourceCounts"];
+    NSArray<NSNumber *> *reversed = plan[@"reversed"];
+    NSArray<NSNumber *> *wrapped = plan[@"wrapped"];
+    NSUInteger sourceRank = sourceShape.count;
+    NSUInteger resultRank = resultShape.count;
+    NSUInteger count = CharonMPSGraphElementCount(resultShape);
+    NSUInteger sourceCount = CharonMPSGraphElementCount(sourceShape);
+    if (count == 0)
+        return;
+    MPSDataType type = source.dataType;
+    void *in = [source charon_mps_bytes];
+    void *out = [result charon_mps_bytes];
+
+    unsigned long long *sourceStride = calloc(sourceRank ? sourceRank : 1, sizeof(unsigned long long));
+    for (NSUInteger i = sourceRank; i-- > 0;) {
+        sourceStride[i] = (i + 1 < sourceRank ? sourceStride[i + 1] : 1) *
+                          (unsigned long long)sourceShape[i].unsignedIntegerValue;
+    }
+    for (NSUInteger element = 0; element < count; element++) {
+        unsigned long long rest = element, sourceIndex = 0;
+        for (NSUInteger k = resultRank; k-- > 0;) {
+            NSUInteger extent = (NSUInteger)resultShape[k].unsignedIntegerValue;
+            unsigned long long coordinate = extent ? rest % extent : 0;
+            if (extent)
+                rest /= extent;
+            NSUInteger first = (NSUInteger)sourceAxes[k].unsignedIntegerValue;
+            NSUInteger covered = (NSUInteger)sourceCounts[k].unsignedIntegerValue;
+            for (NSUInteger c = 0; c < covered; c++) {
+                NSUInteger axis = first + c;
+                if (axis >= sourceRank)
+                    break;
+                unsigned long long extentOfSource = sourceShape[axis].unsignedIntegerValue;
+                if (extentOfSource == 0)
+                    continue;
+                // The coordinate of one axis of the result over several of the operand's is the coordinate
+                // divided into them from the last, which is the same row-major order one axis carries.
+                unsigned long long place = c == 0 ? coordinate : coordinate / extentOfSource;
+                coordinate %= extentOfSource;
+                if ([reversed[k] boolValue])
+                    place = extentOfSource - 1 - place;
+                if ([wrapped[k] boolValue])
+                    place %= extentOfSource;
+                sourceIndex += place * sourceStride[axis];
+            }
+        }
+        if (sourceIndex < (unsigned long long)sourceCount)
+            CharonMPSStoreRounded(out, result.dataType, element,
+                                  CharonMPSLoad(in, type, (NSUInteger)sourceIndex), 1);
+    }
+    free(sourceStride);
+}
+
 @implementation MPSGraph (CharonMPSGraphInterpreter)
 
 - (void)charon_mps_runOperation:(MPSGraphOperation *)operation values:(NSMutableDictionary *)values
@@ -1114,6 +1402,33 @@ static void CharonMPSGraphScan(MPSGraphOperation *operation, MPSGraphTensorData 
     // read out of its own parameters and not out of its kind, because a kind names the release the
     // operation came from and the walk here is one walk for every release: a reduction says which fold it
     // is in @"combination", and nothing else in this interpreter knows that a fold exists by its name.
+    if (operation.charon_mps_parameters[@"gather"]) {
+        // The gather family, whose result is the operand's elements in another order or another extent. The
+        // operation carries which transformation it is and the parameter of it the caller wrote down or fed;
+        // see CharonMPSGraphGather.
+        MPSGraphTensorData *source = values[inputs.firstObject];
+        if (![source isKindOfClass:[MPSGraphTensorData class]]) {
+            CharonMPSGraphRefuse(@"MPSGraph: the gather named %@ has no value for its first input, so "
+                                 @"nothing was written to its output", [operation name]);
+            return;
+        }
+        MPSGraphTensorData *parameter = inputs.count > 1 ? values[inputs[1]] : nil;
+        NSDictionary *plan = CharonMPSGraphGatherPlan(operation, source, parameter);
+        if (plan == nil)
+            return;
+        // The result's own shape can be the caller's to feed, so it comes out of the plan and is put on the
+        // output tensor before anything is allocated for it.
+        [output charon_mps_setShape:plan[@"shape"]];
+        NSUInteger gathered_ = CharonMPSGraphElementCount(plan[@"shape"]);
+        MPSGraphTensorData *gathered = [[MPSGraphTensorData alloc] initWithDevice:source.device
+                                                                     elementCount:gathered_
+                                                                            shape:plan[@"shape"]
+                                                                         dataType:dataType];
+        [gathered charon_mps_bytes];
+        CharonMPSGraphGather(operation, source, parameter, gathered, plan);
+        values[output] = gathered;
+        return;
+    }
     if (operation.charon_mps_parameters[@"scanCombination"]) {
         // The cumulative family, which is the reduction family's fold walked along an axis: the result is the
         // operand's own shape, so this cannot be the elementwise loop below either, and it is asked for the

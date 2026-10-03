@@ -55,6 +55,24 @@
 - (MPSGraphTensor *)cumulativeMinimumWithTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis exclusive:(BOOL)exclusive reverse:(BOOL)reverse name:(NSString *)name;
 - (MPSGraphTensor *)cumulativeMinimumWithTensor:(MPSGraphTensor *)tensor axisTensor:(MPSGraphTensor *)axisTensor name:(NSString *)name;
 - (MPSGraphTensor *)cumulativeMinimumWithTensor:(MPSGraphTensor *)tensor axisTensor:(MPSGraphTensor *)axisTensor exclusive:(BOOL)exclusive reverse:(BOOL)reverse name:(NSString *)name;
+// The shape and axis operations: 14.0's two-axis transpose, 15.0's flattens, broadcasts and reverses, 15.4's
+// squeezes and expanded dimensions, and 16.0's permutation transpose (MPSGraphTensorShapeOps.h).
+- (MPSGraphTensor *)transposeTensor:(MPSGraphTensor *)tensor dimension:(NSUInteger)dimension withDimension:(NSUInteger)withDimension name:(NSString *)name;
+- (MPSGraphTensor *)transposeTensor:(MPSGraphTensor *)tensor permutation:(NSArray<NSNumber *> *)permutation name:(NSString *)name;
+- (MPSGraphTensor *)flatten2DTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
+- (MPSGraphTensor *)flatten2DTensor:(MPSGraphTensor *)tensor axisTensor:(MPSGraphTensor *)axisTensor name:(NSString *)name;
+- (MPSGraphTensor *)broadcastTensor:(MPSGraphTensor *)tensor toShape:(NSArray<NSNumber *> *)toShape name:(NSString *)name;
+- (MPSGraphTensor *)broadcastTensor:(MPSGraphTensor *)tensor toShapeTensor:(MPSGraphTensor *)toShapeTensor name:(NSString *)name;
+- (MPSGraphTensor *)reverseTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)reverseTensor:(MPSGraphTensor *)tensor axes:(NSArray<NSNumber *> *)axes name:(NSString *)name;
+- (MPSGraphTensor *)reverseTensor:(MPSGraphTensor *)tensor axesTensor:(MPSGraphTensor *)axesTensor name:(NSString *)name;
+- (MPSGraphTensor *)squeezeTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)squeezeTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
+- (MPSGraphTensor *)squeezeTensor:(MPSGraphTensor *)tensor axes:(NSArray<NSNumber *> *)axes name:(NSString *)name;
+- (MPSGraphTensor *)squeezeTensor:(MPSGraphTensor *)tensor axesTensor:(MPSGraphTensor *)axesTensor name:(NSString *)name;
+- (MPSGraphTensor *)expandDimsOfTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
+- (MPSGraphTensor *)expandDimsOfTensor:(MPSGraphTensor *)tensor axes:(NSArray<NSNumber *> *)axes name:(NSString *)name;
+- (MPSGraphTensor *)expandDimsOfTensor:(MPSGraphTensor *)tensor axesTensor:(MPSGraphTensor *)axesTensor name:(NSString *)name;
 @end
 
 static id<MTLDevice> gDevice;
@@ -692,6 +710,27 @@ static void cumulative_families(MPSDataType type, const void *values, const char
         }
     }
 }
+
+// THE GATHER FAMILY - the sixteen methods whose result is the operand's elements in some other order or
+// another extent, declared above with their 26.2 spellings - is NOT asked in this file, and the reason is
+// measured rather than guessed: this program compiles three hundred graphs before it is done, and the
+// release's own gather operations start asserting partway through the family. "Error: NDArray dimension
+// length > INT_MAX" (MPSNDArray.mm:831) is what it wrote over a flatten2D of a 2x4 - asked as the fifth
+// gather of the family and as the first one alike - and over a fed broadcast of a 2x4 into its own shape.
+// Asked in a program of its own every form of all sixteen answers, and those answers are what the port was
+// written against: .agent-work/mps4/probe-shape.m and .agent-work/mps4/runs/probe-shape.txt carry the
+// release's own bytes for the transpose in both forms and with a negative axis, the squeeze with no axis,
+// with one axis and with a set, the expanded dimension at axis 0, at axis 2, at axis -1 and with a set, the
+// flatten at axis 0, at axis 1 and over a 2x3x4, the broadcast into a 4x4 and into a 2x2x4, and the reverse
+// with no axes, with axis 0, with axis 1 and with both - over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and
+// over the sixteen input classes. What this harness does NOT do is compare them, and that gap is named in
+// the row of each of the sixteen and in facts/MetalPerformanceShadersGraph/Core.md; the fix is one process
+// per family in run.sh rather than one for three hundred cases.
+//
+// A gather's case, when it is asked, has to give the compile a feed of the operand's shape and a
+// destination of the result's - the way reduction_case does and the elementwise run() above cannot - and
+// where the caller fed the operation's parameter, an axis, a set of axes or a shape, that parameter is a
+// second feed of its own.
 
 // The data types the two NaN-propagating binaries do not answer, and the feeds they are asked over: eight
 // ascending bytes against eight descending ones, so every type here reads the same two numbers.

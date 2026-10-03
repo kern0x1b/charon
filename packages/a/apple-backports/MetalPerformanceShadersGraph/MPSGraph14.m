@@ -661,6 +661,63 @@ typedef enum {
                                 name:name];
 }
 
+- (MPSGraphTensor *)transposeTensor:(MPSGraphTensor *)tensor
+                           dimension:(NSUInteger)dimension
+                        withDimension:(NSUInteger)withDimension
+                                name:(NSString *)name
+{
+    // The one shape operation that arrived with the framework itself, and the row-major transpose it is:
+    // measured over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) it answers (1, 10, 2, 20, 3, 30, 4, 40) into a
+    // 4x2, and a negative dimension is counted from the end, so dimension:-1 withDimension:0 answers what
+    // dimension:0 withDimension:1 answers. The walk refuses an axis outside the rank, which is the same
+    // refusal the reduction family's axis is.
+    return [self charon_mps_gather:CharonMPSGraphOperationKindTranspose
+                             tensor:tensor
+                        parameters:@{@"gather": @"transpose",
+                                     @"gatherPermutation": @[@((int32_t)dimension), @((int32_t)withDimension)]}
+                               name:name];
+}
+
+#pragma mark - the gather family: the one seam every release's shape factory goes through
+
+// What a gather is: the result's shape, and the parameters that say which transformation produces it. The
+// walk in MPSGraphInterpreter14.m is one function for the whole family - the squeeze and the expanded
+// dimension and the flatten are the same gather with the axes left alone, and the transpose, the broadcast
+// and the reverse are the same gather with them not - so this only has to hand the parameters over and to
+// put the result's own shape where the factory computed it, which is the @shape every operation in this
+// framework already carries.
+- (MPSGraphTensor *)charon_mps_gather:(CharonMPSGraphOperationKind)kind
+                                tensor:(MPSGraphTensor *)tensor
+                           parameters:(NSDictionary *)parameters
+                                  name:(NSString *)name
+{
+    return [self charon_mps_operation:kind inputs:@[tensor] parameters:parameters name:name];
+}
+
+// The gather whose parameter is fed rather than written down: the axis, the axes or the shape arrives as the
+// operation's second input, and the walk reads it when the graph runs. Measured, an int32 and an int64 of
+// shape [1] both answer for an axis, and a floating point one is refused by the factory because the release
+// cannot build the graph over it at all.
+- (MPSGraphTensor *)charon_mps_gather:(CharonMPSGraphOperationKind)kind
+                                tensor:(MPSGraphTensor *)tensor
+                         fedParameter:(MPSGraphTensor *)fedParameter
+                           parameters:(NSDictionary *)parameters
+                                  name:(NSString *)name
+{
+    MPSDataType type = fedParameter.dataType;
+    if (type == MPSDataTypeFloat32 || type == MPSDataTypeFloat16 || type == MPSDataTypeBool) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked for a parameter fed as a tensor of data type 0x%x, and "
+                           @"an axis, a set of axes and a shape are all indices: measured, the release's own "
+                           @"compiler refuses a floating point operand and the process goes down with it",
+                            name, (unsigned)type];
+    }
+    NSMutableDictionary *all = [NSMutableDictionary dictionary];
+    all[@"gatherCount"] = @(CharonMPSGraphElementCount(fedParameter.shape));
+    [all addEntriesFromDictionary:parameters];
+    return [self charon_mps_operation:kind inputs:@[tensor, fedParameter] parameters:all name:name];
+}
+
 #pragma mark - the cumulative family, whose seam every release's scan factory goes through
 
 // The axis of a scan is the caller's and is normalised the way the reduction family's is: a negative axis
