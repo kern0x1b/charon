@@ -52,9 +52,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-#pragma clang diagnostic ignored "-Wnonnull"
-
 // The three machine constants d1mach answers, named as dqng and dqk21 name them.
 #define CHARON_EPMACH 2.2204460492503131e-16
 #define CHARON_UFLOW 2.2250738585072014e-308
