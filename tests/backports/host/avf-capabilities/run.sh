@@ -37,14 +37,16 @@ rm -rf "$build"
 mkdir -p "$build/src" "$build/o"
 
 for source in AVCaptureDeviceReactions17.m AVCaptureDeviceFormatDepthZoom17.m AVCaptureDeviceCapabilities18.m \
-            AVCaptureDeviceRectsOfInterest26.m AVCaptureDeviceCinematicVideo26.m; do
+            AVCaptureDeviceRectsOfInterest26.m AVCaptureDeviceCinematicVideo26.m \
+            AVCaptureDeviceExternalSync26.m; do
     [ -f "$avf/$source" ] || {
         echo "FAIL: $avf/$source does not exist, so the surface this run checks for is not there"
         exit 1
     }
 done
 for header in CharonAVCaptureDeviceReactions17.h CharonAVCaptureDeviceCapabilities18.h \
-            CharonAVCaptureDeviceRectsOfInterest26.h CharonAVCaptureDeviceCinematicVideo26.h; do
+            CharonAVCaptureDeviceRectsOfInterest26.h CharonAVCaptureDeviceCinematicVideo26.h \
+            CharonAVCaptureDeviceExternalSync26.h; do
     [ -f "$avf/$header" ] || {
         echo "FAIL: $avf/$header does not exist, so these members are declared nowhere"
         exit 1
@@ -59,12 +61,14 @@ done
 # in its own header and its own registry file (AVCaptureDeviceReactions17.h + reactions*.json carry the 17.0 and
 # 17.2 rows, CharonAVCaptureDeviceCapabilities18.h + capabilities18.json the 18.0 ones,
 # CharonAVCaptureDeviceRectsOfInterest26.h + rectsofinterest26.json the 26.0 rectangles and
-# CharonAVCaptureDeviceCinematicVideo26.h + cinematicvideo26.json the 26.0 Cinematic Video ones), and a row is
-# asked for through the header that declares it.
-python3 - 4 "$avf/CharonAVCaptureDeviceReactions17.h:reactions" \
+# CharonAVCaptureDeviceCinematicVideo26.h + cinematicvideo26.json the 26.0 Cinematic Video ones and
+# CharonAVCaptureDeviceExternalSync26.h + externalsync26.json the 26.0 external-sync ones), and a row is asked
+# for through the header that declares it.
+python3 - 5 "$avf/CharonAVCaptureDeviceReactions17.h:reactions" \
         "$avf/CharonAVCaptureDeviceCapabilities18.h:capabilities18" \
         "$avf/CharonAVCaptureDeviceRectsOfInterest26.h:rectsofinterest26" \
         "$avf/CharonAVCaptureDeviceCinematicVideo26.h:cinematicvideo26" \
+        "$avf/CharonAVCaptureDeviceExternalSync26.h:externalsync26" \
         "$root/packages/a/apple-backports/registry/AVFoundation" \
         "$build/members.tsv" <<'MEMBERS'
 import json, os, re, sys
@@ -181,15 +185,15 @@ MEMBERS
 # the stand-in, which only the port's own code can do.
 python3 - "$avf/CharonAVCaptureDeviceReactions17.h" "$avf/CharonAVCaptureDeviceCapabilities18.h" \
         "$avf/CharonAVCaptureDeviceRectsOfInterest26.h" "$avf/CharonAVCaptureDeviceCinematicVideo26.h" \
-        "$build/src/prologue.h" <<'PROLOGUE'
+        "$avf/CharonAVCaptureDeviceExternalSync26.h" "$build/src/prologue.h" <<'PROLOGUE'
 import re, sys
 out = sys.argv[-1]
 headers = sys.argv[1:-1]
 text = "".join(open(header).read() for header in headers)
 categories = re.findall(r"@interface\s+(\w+)\s+\((\w+)\)", text)
-if len(categories) != 10:
-    raise SystemExit("expected the ten categories these four headers declare (three, three, one and three) and"
-                     " found %d: %s" % (len(categories), categories))
+if len(categories) != 12:
+    raise SystemExit("expected the twelve categories these five headers declare (three, three, one, three and"
+                     " two) and found %d: %s" % (len(categories), categories))
 owners = sorted(set(owner for owner, _ in categories))
 if owners != ["AVCaptureDevice", "AVCaptureDeviceFormat", "AVCaptureDeviceInput"]:
     raise SystemExit("expected the three owners these categories sit on and found %s" % owners)
@@ -425,7 +429,8 @@ for triple in "AVCaptureDeviceReactions17.m:CharonAVCaptureDeviceReactions17.h:r
              "AVCaptureDeviceFormatDepthZoom17.m:CharonAVCaptureDeviceReactions17.h:depthzoom17.rn:1:0" \
              "AVCaptureDeviceCapabilities18.m:CharonAVCaptureDeviceCapabilities18.h:capabilities18.rn:3:0" \
              "AVCaptureDeviceRectsOfInterest26.m:CharonAVCaptureDeviceRectsOfInterest26.h:rects26.rn:2:0" \
-             "AVCaptureDeviceCinematicVideo26.m:CharonAVCaptureDeviceCinematicVideo26.h:cinematic26.rn:3:0"; do
+             "AVCaptureDeviceCinematicVideo26.m:CharonAVCaptureDeviceCinematicVideo26.h:cinematic26.rn:3:0" \
+             "AVCaptureDeviceExternalSync26.m:CharonAVCaptureDeviceExternalSync26.h:externalsync26.rn:3:0"; do
     src=$(printf '%s\n' "$triple" | cut -d: -f1)
     header=$(printf '%s\n' "$triple" | cut -d: -f2)
     python3 - "$avf/$src" "$header" "$build/src/prologue.h" \
@@ -467,7 +472,8 @@ done
 objects=""
 for pair in "reactions17.rn:reactions17.o" "depthzoom17.rn:depthzoom17.o" \
             "capabilities18.rn:capabilities18.o" "rects26.rn:rects26.o" \
-            "cinematic26.rn:cinematic26.o" "standins.rn:standins.o"; do
+            "cinematic26.rn:cinematic26.o" "externalsync26.rn:externalsync26.o" \
+            "standins.rn:standins.o"; do
     src=${pair%%:*}; obj=${pair##*:}
     if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$src" \
             -o "$build/o/$obj" > "$build/o/$obj.log" 2>&1; then
@@ -490,9 +496,10 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
     capabilities) plant=capabilities; target=capabilities18 ;;
     multichannel) plant=multichannel; target=capabilities18 ;;
     rectsupport)  plant=rectsupport;  target=rects26 ;;
+    syncmin)      plant=syncmin;      target=externalsync26 ;;
     cinematic)    plant=cinematic;    target=cinematic26 ;;
     *) echo "FAIL: AVFCAPSMUTANT=$mutant is not a plant this harness writes; run it as 1, as prefcam, as"
-       echo "      capabilities, as multichannel, as rectsupport or as cinematic"
+       echo "      capabilities, as multichannel, as rectsupport, as cinematic or as syncmin"
        exit 1 ;;
     esac
     python3 - "$build/src/$target.rn" "$plant" <<'PERTURB'
@@ -543,6 +550,16 @@ plants = {
     # a format that claims Cinematic Video support has to move the format's own row, the input's support row
     # (which reads that format through the release's -activeFormat), the input's setter (which would then
     # accept YES) and all three focus methods (which would then return instead of refusing).
+    # The external-sync family's plant: a device with a real minimum locked frame duration. Two rows have to
+    # move with it - the device's own minimum and the input's support flag - because the flag is DERIVED from
+    # that minimum by the header's own sentence, and that is what makes the derivation visible.
+    "syncmin": ("""- (CMTime)minSupportedLockedVideoFrameDuration
+{
+    return kCMTimeInvalid;
+}""", """- (CMTime)minSupportedLockedVideoFrameDuration
+{
+    return CMTimeMake(1, 60); /* PLANTED */
+}"""),
     "cinematic": ("""- (BOOL)isCinematicVideoCaptureSupported
 {
     return NO;
@@ -568,6 +585,8 @@ print("# the mutation applied: " + {"reactions": "-canPerformReactionEffects ans
                                                      " mode, so the setter accepts Stereo and ambisonics too",
                                      "rectsupport": "a device that supports focus rectangles of interest,"
                                                      " which this release cannot weigh and this port does not claim",
+                                     "syncmin": "a device with a real minimum locked frame duration, so the"
+                                                " input's support flag answers YES as well",
                                      "cinematic": "every format claims Cinematic Video support, so the input's"
                                                   " flag, its setter and the three focus methods follow"}[plant])
 PERTURB

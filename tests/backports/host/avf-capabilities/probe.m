@@ -84,6 +84,21 @@ static void answer_of(id object, SEL selector, char *out, size_t room)
                 NSArray *sorted = [[set allObjects] sortedArrayUsingSelector:@selector(compare:)];
                 snprintf(out, room, "%lu reason(s): %s", (unsigned long)[sorted count],
                          [sorted componentsJoinedByString:@","].UTF8String);
+            } else if (selector == @selector(minSupportedLockedVideoFrameDuration) ||
+                       selector == @selector(minSupportedExternalSyncFrameDuration) ||
+                       selector == @selector(activeLockedVideoFrameDuration) ||
+                       selector == @selector(activeExternalSyncVideoFrameDuration)) {
+                /* A CMTime is a struct returned in registers, so it cannot be read through a pointer cast the
+                 * way an object can; and its invalid value is the header's own answer for five of this
+                 * family's rows, so it is spelled out rather than printed as zeroes. */
+                CMTime time = ((CMTime (*)(id, SEL))objc_msgSend)(object, selector);
+                if (CMTIME_IS_INVALID(time))
+                    snprintf(out, room, "kCMTimeInvalid");
+                else
+                    snprintf(out, room, "%lld/%lld", (long long)time.value, (long long)time.timescale);
+            } else if (selector == @selector(externalSyncDevice)) {
+                id device = ((id (*)(id, SEL))objc_msgSend)(object, selector);
+                snprintf(out, room, "%s", device ? "a device" : "nil");
             } else if (selector == @selector(cinematicVideoCaptureSceneMonitoringStatuses)) {
                 id set = ((id (*)(id, SEL))objc_msgSend)(object, selector);
                 NSArray *sorted = [[set allObjects] sortedArrayUsingSelector:@selector(compare:)];
@@ -524,6 +539,69 @@ static void rect_phase(id hostCamera, id portCamera, Class portStandinClass)
                "AVCaptureDevice.setExposureRectOfInterest: half by half, locked");
 }
 
+/* THE 26.0 EXTERNAL-SYNC AND LOCKED-FRAME-DURATION PHASE: the two methods, which are the family's only
+ * writes. followExternalSyncDevice:videoFrameDuration:delegate: refuses on this release with Apple's own
+ * reason, measured; unfollowExternalSyncDevice returns, because nothing is followed. The locked-duration
+ * setter is asked too, since it is the one write whose behaviour DIFFERS between the two sides and the
+ * difference belongs in a row of its own. */
+static void sync_phase(id hostInput, id portInput)
+{
+    char hostAnswer[512], portAnswer[512];
+    for (int side = 0; side < 2; side++) {
+        id object = side ? portInput : hostInput;
+        char *out = side ? portAnswer : hostAnswer;
+        @autoreleasepool {
+            @try {
+                ((void (*)(id, SEL, id, CMTime, id))objc_msgSend)(object,
+                                                                  @selector(followExternalSyncDevice:videoFrameDuration:delegate:),
+                                                                  nil, CMTimeMake(1, 30), nil);
+                snprintf(out, 512, "returned");
+            } @catch (NSException *exception) {
+                snprintf(out, 512, "raised %s: %s", exception.name.UTF8String,
+                         exception.reason ? exception.reason.UTF8String : "(no reason)");
+            }
+        }
+    }
+    printf("ANSWER\t-[AVCaptureDeviceInput followExternalSyncDevice:videoFrameDuration:delegate:] nil 1/30 nil"
+           "\thost=[%s]\tport=[%s]\n", hostAnswer, portAnswer);
+    for (int side = 0; side < 2; side++) {
+        id object = side ? portInput : hostInput;
+        char *out = side ? portAnswer : hostAnswer;
+        @autoreleasepool {
+            @try {
+                ((void (*)(id, SEL))objc_msgSend)(object, @selector(unfollowExternalSyncDevice));
+                snprintf(out, 512, "returned");
+            } @catch (NSException *exception) {
+                snprintf(out, 512, "raised %s: %s", exception.name.UTF8String,
+                         exception.reason ? exception.reason.UTF8String : "(no reason)");
+            }
+        }
+    }
+    printf("ANSWER\t-[AVCaptureDeviceInput unfollowExternalSyncDevice]\thost=[%s]\tport=[%s]\n", hostAnswer,
+           portAnswer);
+    /* The locked-duration setter, which is where the two sides differ: the host's own class ACCEPTS a valid
+     * value on a device that cannot lock (measured) and the port refuses, by the header's rule. */
+    for (int side = 0; side < 2; side++) {
+        id object = side ? portInput : hostInput;
+        char *out = side ? portAnswer : hostAnswer;
+        @autoreleasepool {
+            @try {
+                ((void (*)(id, SEL, CMTime))objc_msgSend)(object, @selector(setActiveLockedVideoFrameDuration:),
+                                                          CMTimeMake(1, 30));
+                CMTime after = ((CMTime (*)(id, SEL))objc_msgSend)(object,
+                                                                    @selector(activeLockedVideoFrameDuration));
+                snprintf(out, 512, "returned, the getter answers %s",
+                         CMTIME_IS_INVALID(after) ? "kCMTimeInvalid" : "a valid time");
+            } @catch (NSException *exception) {
+                snprintf(out, 512, "raised %s: %s", exception.name.UTF8String,
+                         exception.reason ? exception.reason.UTF8String : "(no reason)");
+            }
+        }
+    }
+    printf("ANSWER\tAVCaptureDeviceInput.setActiveLockedVideoFrameDuration: 1/30\thost=[%s]\tport=[%s]\n",
+           hostAnswer, portAnswer);
+}
+
 static void prefcam_phase(Class hostDevice, Class portDevice, const char *mode)
 {
     /* The host's own answer, with the authorization printed beside it - the measurement the coordinator asked
@@ -736,6 +814,9 @@ int main(int argc, char **argv)
 
         /* The 26.0 Cinematic Video family's own writes. */
         cinematic_phase(camera, portCamera, hostInput, portInput);
+
+        /* The 26.0 external-sync family's two methods, and the locked-duration setter. */
+        sync_phase(hostInput, portInput);
 
         /* The members whose answer is a refusal rather than a value, asked of both sides. */
         raise_of(camera, portCamera, @selector(performEffectForReaction:), @"ReactionHeart",
