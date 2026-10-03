@@ -1736,9 +1736,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 18",
+   "reason": "it needs the glyph class of 18.0 and the release's attributed string has no attribute to hold one",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "+[NSAttributedString attributedStringWithAttachment:attributes:]",
@@ -1746,9 +1746,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 18",
+   "reason": "the release's attributed string has its own attachment attribute and no attributes: variant, and a caller who passes attributes has them dropped",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "+[UIBackgroundConfiguration listCellConfiguration]",
@@ -1821,9 +1821,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 18",
+   "reason": "the release reads RTF and RTFD through its own document types and states no preference for either per range",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[NSObject accessibilityHitTest:withEvent:]",
@@ -1842,9 +1842,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIActivityItemSource a method like it: it arrived in iOS 18",
+   "reason": "UIActivityItemSource is a protocol the 6.1.3 release carries, and a protocol carries no accessors to look a member up on; the release's conforming objects are asked for none of these",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UIColor colorWithProminence:]",
@@ -1852,9 +1852,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColor a method like it: it arrived in iOS 18",
+   "reason": "the release's UIColor has no prominence hierarchy to resolve a colour against",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UIListContentImageProperties resolvedStrokeColorForTintColor:]",
@@ -1862,9 +1862,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIListContentImageProperties a method like it: it arrived in iOS 18",
+   "reason": "the class is absent from both band ends, so the release resolves no stroke colour",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarController initWithTabs:]",
@@ -1872,9 +1872,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a method like it: it arrived in iOS 18",
+   "reason": "it takes the tab objects 18.0 introduced, which no band end carries",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarController setTabBarHidden:animated:]",
@@ -1882,9 +1882,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a method like it: it arrived in iOS 18",
+   "reason": "it animates the sidebar, a class of 18.0",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarController setTabs:animated:]",
@@ -1892,9 +1892,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a method like it: it arrived in iOS 18",
+   "reason": "it sets the tab objects 18.0 introduced, which no band end carries",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarController tabForIdentifier:]",
@@ -1902,9 +1902,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a method like it: it arrived in iOS 18",
+   "reason": "it looks in the tab objects 18.0 introduced, which no band end carries",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarControllerDelegate tabBarController:didSelectTab:previousTab:]",
@@ -1912,9 +1912,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "both arguments are tab objects of 18.0, and the release's own callback names two view controllers",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarControllerDelegate tabBarController:displayOrderDidChangeForGroup:]",
@@ -1922,9 +1922,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the group whose order changed is a class of 18.0",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarControllerDelegate tabBarController:displayedViewControllersForTab:proposedViewControllers:]",
@@ -1932,9 +1932,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the tab it is asked about is a class of 18.0",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarControllerDelegate tabBarController:shouldSelectTab:]",
@@ -1942,9 +1942,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "it is asked about a tab object of 18.0, and the release asks about a view controller",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarControllerDelegate tabBarController:tab:acceptItemsFromDropSession:]",
@@ -1952,9 +1952,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the tab is a class of 18.0, and the release's own drop is onto a table or collection view",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarControllerDelegate tabBarController:tab:operationForAcceptingItemsFromDropSession:]",
@@ -1962,9 +1962,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the tab is a class of 18.0",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarControllerDelegate tabBarController:visibilityDidChangeForTabs:]",
@@ -1972,9 +1972,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the visibility being reported is the sidebar's, a class of 18.0",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarControllerDelegate tabBarControllerDidEndEditing:]",
@@ -1982,9 +1982,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the editing it reports is the tab-bar customization mode, which exists where tabs are objects",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITabBarControllerDelegate tabBarControllerWillBeginEditing:]",
@@ -1992,9 +1992,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the editing it reports is the tab-bar customization mode, which exists where tabs are objects",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITextInput didDismissWritingTools]",
@@ -2002,9 +2002,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 18",
+   "reason": "the release's keyboard dismisses no Writing Tools, so nothing calls it",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITextInput insertAdaptiveImageGlyph:replacementRange:]",
@@ -2012,9 +2012,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 18",
+   "reason": "it inserts the glyph class of 18.0 and a text range the release's input protocol does not carry",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITextInput willPresentWritingTools]",
@@ -2022,9 +2022,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 18",
+   "reason": "the release's keyboard presents no Writing Tools, so nothing calls it",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITextView drawTextHighlightBackgroundForTextRange:origin:]",
@@ -2032,9 +2032,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextView a method like it: it arrived in iOS 18",
+   "reason": "the release draws its own selection and insertion points and never calls out to draw a highlight for a range it does not have",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITextViewDelegate textView:didBeginFormattingWithViewController:]",
@@ -2042,9 +2042,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the release presents no formatting panel, so a delegate is never asked",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITextViewDelegate textView:didEndFormattingWithViewController:]",
@@ -2052,9 +2052,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the release presents no formatting panel, so a delegate is never asked",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITextViewDelegate textView:willBeginFormattingWithViewController:]",
@@ -2062,9 +2062,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the release presents no formatting panel, so a delegate is never asked",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITextViewDelegate textView:willEndFormattingWithViewController:]",
@@ -2072,9 +2072,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the release presents no formatting panel, so a delegate is never asked",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITextViewDelegate textView:writingToolsIgnoredRangesInEnclosingRange:]",
@@ -2082,9 +2082,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "the release asks for no such ranges, having no Writing Tools",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITextViewDelegate textViewWritingToolsDidEnd:]",
@@ -2092,9 +2092,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "UITextViewDelegate is a protocol the 6.1.3 release carries, and a protocol carries no accessors to look a member up on; the release's conforming objects are asked for none of these",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "-[UITextViewDelegate textViewWritingToolsWillBegin:]",
@@ -2102,9 +2102,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "UITextViewDelegate is a protocol the 6.1.3 release carries, and a protocol carries no accessors to look a member up on; the release's conforming objects are asked for none of these",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "NSAdaptiveImageGlyph",
@@ -2122,9 +2122,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+   "reason": "VoiceOver of the release asks nothing of a bare object's expansion state",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "NSObject.accessibilityExpandedStatusBlock",
@@ -2132,9 +2132,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+   "reason": "nothing of the release calls it, so a block stored here would never run",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "NSObject.accessibilityNextTextNavigationElement",
@@ -2142,9 +2142,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+   "reason": "the release's VoiceOver navigates text through the text view's own traversal, not through an element property on an object",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "NSObject.accessibilityNextTextNavigationElementBlock",
@@ -2152,9 +2152,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+   "reason": "nothing of the release calls it",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "NSObject.accessibilityPreviousTextNavigationElement",
@@ -2162,9 +2162,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+   "reason": "the release's VoiceOver navigates text through the text view's own traversal",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "NSObject.accessibilityPreviousTextNavigationElementBlock",
@@ -2172,9 +2172,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+   "reason": "nothing of the release calls it",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UIAccessibilityCustomAction.category",
@@ -2182,9 +2182,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIAccessibilityCustomAction a property like it: it arrived in iOS 18",
+   "reason": "the class is absent from both band ends, and the release's VoiceOver lists custom actions under no category",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UIActivityCollaborationModeRestriction",
@@ -2202,9 +2202,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIActivityViewController a property like it: it arrived in iOS 18",
+   "reason": "the release's share sheet has no sections to exclude a type from",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UIBackgroundConfiguration.shadowProperties",
@@ -2212,9 +2212,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a property like it: it arrived in iOS 18",
+   "reason": "the class is absent from both band ends, and the release draws a shadow through CALayer with no object holding its values",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UICalendarSelectionWeekOfYear",
@@ -2242,9 +2242,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UICollectionLayoutListConfiguration a property like it: it arrived in iOS 18",
+   "reason": "the class is absent from both band ends, so the release's layouts ask for no content-hugging element",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UIColor.prominence",
@@ -2252,9 +2252,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColor a property like it: it arrived in iOS 18",
+   "reason": "the release's UIColor states no prominence, and 6.1.3's colours are the fixed ones",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UIDocumentViewControllerLaunchOptions",
@@ -2283,9 +2283,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIListContentImageProperties a property like it: it arrived in iOS 18",
+   "reason": "the class is absent from both band ends, so there is no image properties object to hold a stroke",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UIListContentImageProperties.strokeColorTransformer",
@@ -2293,9 +2293,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIListContentImageProperties a property like it: it arrived in iOS 18",
+   "reason": "the class is absent from both band ends",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UIListContentImageProperties.strokeWidth",
@@ -2303,9 +2303,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIListContentImageProperties a property like it: it arrived in iOS 18",
+   "reason": "the class is absent from both band ends",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UISceneSystemProtectionManager",
@@ -2353,9 +2353,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+   "reason": "it names tabs by identifier, and the tab is a class of 18.0",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITabBarController.customizationIdentifier",
@@ -2363,9 +2363,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+   "reason": "it names a tab-bar customization scope that exists only where tabs are objects",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITabBarController.mode",
@@ -2373,9 +2373,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+   "reason": "the modes it names are placements of tab objects, which no band end carries",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITabBarController.selectedTab",
@@ -2383,9 +2383,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+   "reason": "what 18.0 made it select from is the tab objects it introduced",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITabBarController.sidebar",
@@ -2393,9 +2393,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+   "reason": "the sidebar is a class of 18.0, which no band end carries",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITabBarController.tabBarHidden",
@@ -2403,9 +2403,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+   "reason": "the animated hide it pairs with is the sidebar's transition, a class of 18.0",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITabBarController.tabs",
@@ -2413,9 +2413,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+   "reason": "the tab objects it holds are what 18.0 introduced, and no band end carries them",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITabBarControllerSidebar",
@@ -2493,9 +2493,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 18",
+   "reason": "the release's table view asks no cell for a layout element, and its rows are its own",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITextFormattingViewController",
@@ -2583,9 +2583,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInput a property like it: it arrived in iOS 18",
+   "reason": "the release's input protocol states editability through its own insertText: and deleteBackward, which its conforming text views implement",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITextInput.supportsAdaptiveImageGlyph",
@@ -2593,9 +2593,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInput a property like it: it arrived in iOS 18",
+   "reason": "the release's input view is asked for no glyph support",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITextInputTraits.allowedWritingToolsResultOptions",
@@ -2603,9 +2603,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInputTraits a property like it: it arrived in iOS 18",
+   "reason": "it names the results the Writing Tools may return, and the release's keyboard returns none",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITextInputTraits.mathExpressionCompletionType",
@@ -2613,9 +2613,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInputTraits a property like it: it arrived in iOS 18",
+   "reason": "the release's keyboard completes text and knows nothing of a math expression type",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITextInputTraits.writingToolsBehavior",
@@ -2623,9 +2623,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInputTraits a property like it: it arrived in iOS 18",
+   "reason": "it configures the keyboard's Writing Tools, which the release's keyboard has no setting for",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITextView.allowedWritingToolsResultOptions",
@@ -2633,9 +2633,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
+   "reason": "it names the results the Writing Tools may return, and the release's keyboard returns none",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITextView.textFormattingConfiguration",
@@ -2643,9 +2643,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
+   "reason": "it configures the formatting panel, a class of 18.0",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITextView.textHighlightAttributes",
@@ -2653,9 +2653,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
+   "reason": "the release's text view draws its own selection and stores no highlight attributes for a caller to set",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITextView.writingToolsActive",
@@ -2663,9 +2663,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
+   "reason": "the release's keyboard presents no Writing Tools, so nothing turns them active",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UITextView.writingToolsBehavior",
@@ -2673,9 +2673,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
+   "reason": "it configures the keyboard's Writing Tools, which the release's keyboard has no setting for",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UIUpdateActionPhase",
@@ -2713,9 +2713,9 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 18",
+   "reason": "the UIViewController class the release does carry holds no such member, and the release's controller transitions are its own -pushViewController:animated: and -presentViewController:animated:completion: - and there is no transition object to hand one",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "class-scoped objc-inventory over both armv7 band ends, 6.1.3 reading 11378 classes / 1171 protocols / 705 UI* classes and 4.3 reading 7187 / 564 / 597; the selector-level control is green on both (UITabBarController selectedViewController and setViewControllers:animated:, UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad), so a zero on this row is the release's and not the reader's"
   },
   {
    "api": "UIViewControllerTransition",
