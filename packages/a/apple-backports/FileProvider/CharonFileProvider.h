@@ -49,20 +49,6 @@ typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {
 @interface NSFileProviderKnownFolderLocation : NSObject
 @end
 
-// The storage the 16.0 object answers, reached the only way a category can on this target: the class owns
-// it and hands it over. A class extension may not carry ivars on armv7 - the compiler says
-//     instance variables may not be placed in class extension
-// - and an @implementation ivar block is private to its own file, so neither place is reachable from a
-// second object. One slot on the class, a method that returns it, and the category stores through that.
-@interface NSFileProviderDomain (Charon16Storage)
-- (void)charon_setUserEnabled:(BOOL)userEnabled replicated:(BOOL)replicated
-                     hidden:(BOOL)hidden supportsSyncingTrash:(BOOL)supportsSyncingTrash;
-- (BOOL)charon_userEnabled;
-- (BOOL)charon_replicated;
-- (BOOL)charon_hidden;
-- (BOOL)charon_supportsSyncingTrash;
-@end
-
 @interface NSFileProviderKnownFolderLocations : NSObject
 @end
 
@@ -91,6 +77,34 @@ typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {
 
 
 #endif
+
+// The storage the 16.0 object answers, reached the only way a category can on this target: the class owns
+// it and hands it over. A class extension may not carry ivars on armv7 - the compiler says
+//     instance variables may not be placed in class extension
+// - and an @implementation ivar block is private to its own file, so neither place is reachable from a
+// second object. One slot on the class, a method that returns it, and the category stores through that.
+//
+// IT IS NOT UNDER THE __has_include GUARD ABOVE, and the reason is measured rather than stylistic.
+// It sat there, and the host build answered:
+//     FileProvider16.m:37:36: error: no visible @interface for 'NSFileProviderDomain' declares the
+//     selector 'charon_userEnabled'
+// which is tests/backports/host/inventory/run.sh FileProvider failing on this framework's own band
+// object. The guard is for the KNOWN FOLDERS, which the macOS SDK declares and the 16.4 SDK does
+// not; every name in this category is the port's own and NEITHER SDK declares one of them
+// (`grep -rl charon_userEnabled <macOS SDK>/.../FileProvider.framework/Headers
+// <16.4 SDK>/.../FileProvider.framework/Headers` answers nothing), so there is nothing here to guard
+// against - the same argument the disconnect enums below make, for the same reason. A named category
+// is not a second @interface for the class either: it is its own symbol, and that is what the
+// 16.4 build has always compiled.
+@interface NSFileProviderDomain (Charon16Storage)
+- (void)charon_setUserEnabled:(BOOL)userEnabled replicated:(BOOL)replicated
+                     hidden:(BOOL)hidden supportsSyncingTrash:(BOOL)supportsSyncingTrash;
+- (BOOL)charon_userEnabled;
+- (BOOL)charon_replicated;
+- (BOOL)charon_hidden;
+- (BOOL)charon_supportsSyncingTrash;
+@end
+
 /**
  The reason a domain is disconnected, and the options it is disconnected with.
 
