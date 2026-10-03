@@ -464,6 +464,17 @@
       "source": "the header of the SDK 26.2 for the whole surface, transcribed into CharonAVMetrics18.h, which is where every class, protocol and member here is declared because SDK 16.4 ships no AVMetrics.h; the release this object is placed in is measured - tools/symbol-first-release.lua puts the _OBJC_CLASS_$_ symbol of every class here at 18.0"
     },
     {
+      "api": "AVMetricEventStreamSubscriber",
+      "kind": "protocol",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the port's minimum release has no protocol of this name, so a caller cannot conform to it; CharonAVMetrics18.h declares it with its one method, and the protocol object is emitted for it",
+      "effect": "a caller can declare a class conforming to AVMetricEventStreamSubscriber and hand it to -[AVMetricEventStream setSubscriber:queue:]; nothing on iOS 6.1.3 publishes an event, so its method is never called",
+      "facts": "facts/AVFoundation/Metrics.md",
+      "source": "SDK 26.2, AVFoundation, AVMetrics.h:26-35 (API_AVAILABLE ios(18)), transcribed into CharonAVMetrics18.h"
+    },
+    {
       "api": "-[AVMetricEventStreamSubscriber publisher:didReceiveEvent:]",
       "kind": "method",
       "introduced": "18.0",
