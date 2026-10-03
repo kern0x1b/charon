@@ -197,6 +197,16 @@ def parse(alltext):
     protocols = {}
     for p in PROTO_NAMES:
         m = re.search(r'@protocol\s+%s\s*(?:<[^>]*>)?(.*?)@end' % p, alltext, re.S)
+        # A protocol this tool reads that the SDK does not declare is a FINDING, not a reason to fall
+        # over: the whole point of the comparison is that the port answers what the SDK declares, so a
+        # name that has gone from the headers has to be said out loud and by name. It used to be
+        # `m.group(1)` on a None, which is `AttributeError: 'NoneType' object has no attribute 'group'`
+        # with the protocol nowhere in it - and a traceback is not a line the host sweep can read, so
+        # the sweep called this DEAD, which reads as "nobody has run this lately".
+        if m is None:
+            raise SystemExit("FAIL: the SDK headers declare no @protocol %s, so there is nothing to "
+                             "compare the port's %s against; the name is gone from VideoToolbox and the "
+                             "ledger needs a row saying so" % (p, p))
         protocols[p] = props_of(m.group(1))
     classes = {}
     for c in ORDER:

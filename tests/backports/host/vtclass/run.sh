@@ -17,6 +17,7 @@
 # one class per file is what makes each mutation's anchor unique, so mutate.py can insist on it.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+root=$(cd "$here/../../../.." && pwd)
 # The lists the run asks about come from the environment when it is given them, so a driver can ask about
 # a class that is not committed yet WITHOUT writing the class into the committed lists first. A class that
 # fails its differential must leave no trace that would make the next run skip it - which is exactly what
@@ -34,7 +35,10 @@ vt="$appledir/VideoToolbox"
 #    FIRST and its exit code is checked; a recipe that does not parse turns this run red.
 light_tests=${LIGHT_TESTS:-$HOME/Git/projects/ios/coordination/run_light_tests.lua}
 if [ "${VT_SKIP_LIGHT:-0}" != "1" ] && [ -f "$light_tests" ]; then
-    xmake l "$light_tests" "$PWD" || {
+# The repository root, not $PWD: the sweep runs every run.sh from tests/backports, so $PWD there is
+# tests/backports and `xmake l run_light_tests.lua` cannot find its modules - it said "cannot import
+# module: descriptions_test, not found!" and the run died there, before any SDK was looked for.
+    xmake l "$light_tests" "$root" || {
         echo "the package recipe does not load, and this differential cannot see that: exit 1 above is"
         echo "descriptions_test, and the value files below were compiled without it"
         exit 1
@@ -52,7 +56,21 @@ libs="-framework Foundation -framework CoreMedia -framework VideoToolbox"
 #    initialiser of VTMotionBlurConfiguration was declared with four arguments where the SDK declares five
 #    for twenty-six commits before anything noticed.
 # with a default, so a bare ./run.sh needs nothing set; the driver exports the same path
-VT_SDK=${VT_SDK:-$HOME/.xmake/packages/i/iphoneos-sdk/26.2/05d7872150914e1884a8de9d9dc71896/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.2.sdk}
+# The SDK whose VideoToolbox headers this compares against, found the way the other host tests find
+# one: a version glob under the shared store, with VT_SDK naming a particular SDK. The path that was
+# here spelled the recipe digest - .../iphoneos-sdk/26.2/05d7872150914e1884a8de9d9dc71896/... - and
+# iOS 26.2 is not installed in this store at all (measured: the 26.2 directory does not exist), so
+# probe-types.py read VideoToolbox headers out of a path that is not there, globbed nothing, and died
+# on `AttributeError: 'NoneType' object has no attribute 'group'` twenty lines later with the SDK
+# nowhere in the message. An input that is not on the machine is said by name, in the words the sweep
+# reads, and not as a traceback about a protocol.
+VT_SDK=${VT_SDK:-$(ls -d "$HOME"/.xmake/packages/i/iphoneos-sdk/26.2/*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.2.sdk 2>/dev/null | head -1)}
+if [ -z "$VT_SDK" ] || [ ! -d "$VT_SDK" ]; then
+    echo "FAIL: no iPhoneOS26.2.sdk under $HOME/.xmake/packages/i/iphoneos-sdk/26.2/, so there"
+    echo "      are no VideoToolbox headers to compare the port's declarations against."
+    echo "      Build the SDK once, or set VT_SDK to an iPhoneOS 26.2 SDK."
+    exit 1
+fi
 export VT_SDK
 # 0a. PROVISION THE INPUTS. A clean tree has no .agent-work/generated/vt: probe-types.py and emit.py
 #     both write there, and cases-roundtrip.m includes the header emit.py produces, so a run that skipped
