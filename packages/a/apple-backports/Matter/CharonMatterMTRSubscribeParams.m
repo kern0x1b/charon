@@ -19,15 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-// Storage for the deprecated names the SDK declares in a CATEGORY of this class, and for
-// the members they share it with: a category cannot hold an ivar, so these are the port's
-// own, and they are here because the accessors below are what read and write them.
-@interface MTRSubscribeParams () {
-    NSNumber * _charon_keepPreviousSubscriptions;
-    NSNumber * _charon_autoResubscribe;
-}
-@end
-
 @implementation MTRSubscribeParams
 
 @synthesize replaceExistingSubscriptions = _replaceExistingSubscriptions;
@@ -54,24 +45,26 @@
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
 // are shaped so. Their accessors are written out over the storage above, because a category
 // cannot hold an ivar and clang refuses @synthesize for one in either place.
+    // keepPreviousSubscriptions is a NSNumber * and shares the storage of the bool member; the host converts between them, and this is that conversion.
 - (NSNumber *)keepPreviousSubscriptions
 {
-    return _charon_keepPreviousSubscriptions;
+    return [NSNumber numberWithBool:_replaceExistingSubscriptions];
 }
 
 - (void)setKeepPreviousSubscriptions:(NSNumber *)keepPreviousSubscriptions
 {
-    _charon_keepPreviousSubscriptions = [keepPreviousSubscriptions copy];
+    _replaceExistingSubscriptions = [keepPreviousSubscriptions boolValue];
 }
 
+    // autoResubscribe is a NSNumber * and shares the storage of the bool member; the host converts between them, and this is that conversion.
 - (NSNumber *)autoResubscribe
 {
-    return _charon_autoResubscribe;
+    return [NSNumber numberWithBool:_resubscribeAutomatically];
 }
 
 - (void)setAutoResubscribe:(NSNumber *)autoResubscribe
 {
-    _charon_autoResubscribe = [autoResubscribe copy];
+    _resubscribeAutomatically = [autoResubscribe boolValue];
 }
 
 @end

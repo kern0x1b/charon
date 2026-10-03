@@ -133,6 +133,8 @@ CLUSTER_INTERFACES = []
 # type than the member has: counted and printed, not a failure. The host's measurement says whether the two
 # share storage, and where they cannot the port gives the alias its own and says which.
 SHARED_STORAGE_REFUSED = []
+# An alias that shares its successor's ivar over a conversion: (class, alias, alias type, successor type).
+CONVERSIONS = []
 # The plain data classes' buckets, kept so --cases can write the probe's driver from them in the same run.
 CASES = []
 # The plain data classes' @interface lines, for CharonMatterTypes.h: see payload_interface().
@@ -1455,7 +1457,32 @@ def member_slot(prop, measured=None):
     return "_charon_" + prop["name"]
 
 
-def member_accessors(prop, slots):
+# The successor type each measured pair converts to, filled in per class by the run.
+CONVERSION_TYPES = {}
+
+CONVERTERS = {
+    # (alias type, the type of the shared ivar) -> (getter expression, setter body). Read off the host's own
+    # behaviour, which is what params-probe.m measures: set MTRReadParams' BOOL `filterByFabric` to 42 and the
+    # NSNumber alias `fabricFiltered` reads NSNumber(1), so a BOOL ivar read through an NSNumber alias reads
+    # 0 or 1; set MTRDeviceControllerStartupParams' NSNumber `vendorID` to 42 and the uint64_t alias
+    # `vendorId` reads 42, so an NSNumber ivar read through a scalar alias reads the number itself.
+    # `%s` is the ivar in both, and the second `%s` in a setter is the argument.
+    ("BOOL", "NSNumber *"): ("[NSNumber numberWithBool:%s]", "%s = @(%s);"),
+    ("BOOL", "uint64_t"): ("(BOOL)%s", "%s = (%s);"),
+    ("uint64_t", "NSNumber *"): ("[%s unsignedLongLongValue]", "%s = @(%s);"),
+    ("uint64_t", "uint64_t"): ("%s", "%s = %s;"),
+    ("NSNumber *", "BOOL"): ("[NSNumber numberWithBool:%s]", "%s = [%s boolValue];"),
+    ("NSNumber *", "uint64_t"): ("[NSNumber numberWithUnsignedLongLong:%s]",
+                                 "%s = [%s unsignedLongLongValue];"),
+}
+
+
+def bare_type_of(name, kinds=None):
+    """The successor's own type, for the conversion table; None when it is not one of the pairs."""
+    return CONVERSION_TYPES.get(name)
+
+
+def member_accessors(prop, slots, ivar_type=None):
     """The getter and setter of one category-declared property, written out.
 
     A category cannot hold an ivar: clang answers `@synthesize not allowed in a category's implementation`
@@ -1471,13 +1498,20 @@ def member_accessors(prop, slots):
     slot = slots[prop["name"]]
     attributes = prop["attributes"]
     words = [each.strip() for each in attributes.split(",")]
-    if "copy" in words or "strong" in words or "retain" in words:
+    conversion = CONVERTERS.get((bare_type(prop), ivar_type or bare_type(prop)))
+    read = conversion[0] % slot if conversion else slot
+    if conversion:
+        stored = "    %s\n" % (conversion[1] % (slot, prop["name"]))
+    elif "copy" in words or "strong" in words or "retain" in words:
         stored = "    %s = [%s copy];\n" % (slot, prop["name"])
     else:
         stored = "    %s = %s;\n" % (slot, prop["name"])
     getter = prop["getter"] or prop["name"]
     setter = "set%s%s:" % (prop["name"][0].upper(), prop["name"][1:])
-    return ("- (%s)%s\n{\n    return %s;\n}\n\n" % (kind, getter, slot)
+    why = ("    // %s is a %s and shares the storage of the %s %s; the host converts between them, and this"
+           " is that conversion.\n" % (prop["name"], bare_type(prop), (ivar_type or "").lower(),
+                                       "member" if ivar_type else "property")) if conversion else ""
+    return (why + "- (%s)%s\n{\n    return %s;\n}\n\n" % (kind, getter, read)
             + "- (void)%s(%s)%s\n{\n%s}\n\n" % (setter, kind, prop["name"], stored))
 
 
@@ -1588,7 +1622,11 @@ def describe_helpers():
 // anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    return value == nil ? @"(nil)" : [value description];
+    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
+    // which is what the host prints for a nil member - `subjects:(null)` in the measured
+    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
+    // it differed from the host's on every nil member.
+    return [value description];
 }
 
 static NSString *charonDescribeScalar(long long value)
@@ -1642,13 +1680,27 @@ def emit_params(path, name, info, version, buckets, copying, counts, host=None):
                   else prop.get("successor"))
         if not shared:
             continue
-        if shared in kinds and kinds[shared] == kinds[prop["name"]]:
+        if shared in kinds:
             prop["shares"] = shared
+        if shared in kinds and kinds[shared] == kinds[prop["name"]]:
             continue
-        unplaced.append((name, prop["name"], "%s is a %s and %s is a %s, so they cannot be one ivar; the"
-                         " port gives the alias its own and the host gives it %s"
-                         % (prop["name"], kinds[prop["name"]], shared, kinds.get(shared, "a member"),
-                            (entry["measured"] if entry else "no measurement"))))
+        if shared in kinds:
+            # Two different types, and the HOST shares the storage anyway: measured, and the conversion is
+            # what the host's own accessors do. MTRReadParams' `filterByFabric` is a BOOL and
+            # `fabricFiltered` an NSNumber, and setting the BOOL to 42 reads back NSNumber(1) - the
+            # successor is an NSNumber carrying a BOOL. So the alias converts, and the ivar is the
+            # SUCCESSOR's type, because that is the member the SDK declares in the class's own @interface.
+            prop["shares"] = shared
+            CONVERSIONS.append((name, prop["name"], kinds[prop["name"]], kinds[shared]))
+            continue
+        # The deprecation names a CLASS, not a member: MTRTestClusterClusterSimpleStruct's members all say
+        # "Please use MTRUnitTestingClusterSimpleStruct", the subclass this class is a deprecated alias of.
+        # That is a statement about the class and not about a member, so there is nothing to share and
+        # nothing to refuse. It IS reported when the host measured a shared member and the port cannot use
+        # it, which is the case a reader has to know about.
+        if entry and entry["measured"] and entry["measured"] != "own":
+            unplaced.append((name, prop["name"], "the host shares %s with %s and the port cannot"
+                             % (prop["name"], shared)))
 
     # One slot per property, and one per SHARED value: an alias and the member it shares with are one ivar,
     # which is what the host does and what the port must do.
@@ -1656,6 +1708,9 @@ def emit_params(path, name, info, version, buckets, copying, counts, host=None):
     # storage with are one ivar, which is what the host does. A category member has no @synthesize to give
     # it an ivar, so its slot is declared in the object's own class extension below - and when the two types
     # differ there is no shared ivar at all, and the alias keeps one of its own.
+    CONVERSION_TYPES.clear()
+    CONVERSION_TYPES.update({shared: kinds[shared] for prop in own + members
+                             if (shared := prop.get("shares")) and shared in kinds})
     slots = {prop["name"]: "_" + prop["name"] for prop in own}
     for prop in members:
         slots[prop["name"]] = ("_" + prop["shares"] if prop.get("shares")
@@ -1729,7 +1784,9 @@ def emit_params(path, name, info, version, buckets, copying, counts, host=None):
                     "// are shaped so. Their accessors are written out over the storage above, because a category\n"
                     "// cannot hold an ivar and clang refuses @synthesize for one in either place.\n")
         for prop in members:
-            body.append(member_accessors(prop, slots))
+            shared = prop.get("shares")
+            body.append(member_accessors(prop, slots,
+                                         bare_type_of(shared) if shared else None))
     described = (host or {}).get("own_description")
     if described is None:
         body.append("// -description: the host does not have this class, so the header's answer stands and this\n"
@@ -2708,9 +2765,18 @@ def main():
             with open(arguments.cases, "w") as out:
                 for each, (own, categories) in CASES:
                     out.write("%s\town\n" % each)
+                    # An alias line only where the deprecation text names a PROPERTY of this class. It often
+                    # names a CLASS instead - MTRTestClusterClusterSimpleStruct's members all say "Please use
+                    # MTRUnitTestingClusterSimpleStruct", the subclass it is a deprecated alias of - and asking
+                    # the probe to write a sentinel through those 11 members is what produced 11 `raised` rows
+                    # that were the probe's own artifact and not host behaviour.
+                    named = {prop["name"] for prop in own}
+                    for props in categories.values():
+                        named.update(prop["name"] for prop in props)
                     for prop in own + [q for label in sorted(categories) for q in categories[label]]:
-                        if prop.get("successor"):
-                            out.write("%s\t%s\t%s\talias\n" % (each, prop["name"], prop["successor"]))
+                        if prop.get("successor") and prop["successor"] in named:
+                            out.write("%s\t%s\t%s\talias\t%s\n"
+                                      % (each, prop["name"], prop["successor"], prop["type"]))
             print("probe driver written: %d class lines" % len(CASES))
         for name in missing[:8]:
             print("  not declared: %s" % name)

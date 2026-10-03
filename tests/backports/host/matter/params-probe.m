@@ -31,6 +31,7 @@
 
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
+#import <objc/message.h>
 
 /// The date the table was measured, written into the file beside the host's own version string, so a
 /// reader can tell which binary answered without asking. It is the date this tree's run happened.
@@ -65,17 +66,53 @@ static id safeRead(id object, NSString *key)
     }
 }
 
-/// A value nothing else in a fresh class holds, so "which member reads this" is one reading and not a guess.
-static id sentinel(NSString *tag)
+/// A value of one member's OWN type, different for each index, so writing it twice with two indexes and
+/// watching the other member move is a measurement of shared storage and not of a sentinel's identity.
+///
+/// The type decides the value, and that is the whole point: the first version of this probe wrote an NSValue
+/// through KVC whatever the member's type was, and a BOOL or a uint64_t member answers that with
+/// NSInvalidArgumentException - which is how 6 rows came to read `raised` and looked like host behaviour.
+/// They were the probe's own artifact, and the six members that raised are the six whose type differs from
+/// their successor's, which is exactly the case a single sentinel cannot serve.
+static id typedValue(NSString *type, NSInteger index, NSString *tag)
 {
-    static NSMutableDictionary *made = nil;
-    if (made == nil) {
-        made = [NSMutableDictionary dictionary];
+    NSString *spelling = type;
+    for (NSString *word in @[ @"_Nonnull", @"_Nullable" ]) {
+        spelling = [spelling stringByReplacingOccurrencesOfString:word withString:@""];
     }
-    if (made[tag] == nil) {
-        made[tag] = [NSValue valueWithRange:NSMakeRange(0x5AFE0000, 1)];
+    spelling = [[spelling componentsSeparatedByString:@"<"] firstObject];
+    spelling = [spelling stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    static NSMutableDictionary *marks = nil;
+    if (marks == nil) {
+        marks = [NSMutableDictionary dictionary];
     }
-    return made[tag];
+    if ([spelling hasSuffix:@"*"]) {
+        NSString *key = [NSString stringWithFormat:@"%@/%ld", tag, (long)index];
+        if (marks[key] == nil) {
+            marks[key] = [NSValue valueWithRange:NSMakeRange(0x5AFE0000 + (index * 4096), 1)];
+        }
+        return marks[key];
+    }
+    return @((long)(index == 0 ? 0 : (index == 1 ? 1 : 42)));
+}
+
+/// Write through the SETTER by name, falling back to KVC. The setter is the member's own API and a scalar
+/// member has no KVC path that takes a value of its own type without boxing it first.
+static BOOL writeValue(id object, NSString *key, id value)
+{
+    SEL setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%c:", [[key substringToIndex:1]
+                                                                                 uppercaseString],
+                                      [[key substringFromIndex:1] characterAtIndex:0]]);
+    if ([object respondsToSelector:setter]) {
+        ((void (*)(id, SEL, id))objc_msgSend)(object, setter, value);
+        return YES;
+    }
+    @try {
+        [object setValue:value forKey:key];
+        return YES;
+    } @catch (NSException *exception) {
+        return NO;
+    }
 }
 
 /// The property names the CLASS ITSELF declares, in the runtime's own order, inherited ones excluded.
@@ -149,30 +186,36 @@ int main(int argc, char **argv)
             if (fields.count < 3) {
                 continue;
             }
-            // (ii) an alias: the declared successor, and the member that MEASURES as sharing its storage.
+            // (ii) an alias: the declared successor, and which member MEASURES as sharing its storage. The
+            // test is behavioural - write the alias twice, with two values of ITS OWN type, and see whether
+            // another member's reading moves - so it works for a BOOL and for an NSNumber alike.
             NSString *alias = fields[1];
             NSString *declared = fields[2];
+            NSString *aliasType = fields.count > 3 ? fields[3] : @"id";
             id object = [[cls alloc] init];
-            id mark = sentinel(alias);
-            [object setValue:mark forKey:alias];
             NSMutableArray<NSString *> *sharing = [NSMutableArray array];
             for (NSString *property in ownProperties(cls)) {
                 if ([property isEqualToString:alias]) {
                     continue;
                 }
-                if (safeRead(object, property) == mark) {
+                writeValue(object, alias, typedValue(aliasType, 0, alias));
+                NSString *before = render(safeRead(object, property));
+                writeValue(object, alias, typedValue(aliasType, 1, alias));
+                NSString *after = render(safeRead(object, property));
+                if (![before isEqualToString:after]) {
                     [sharing addObject:property];
                 }
             }
             printf("alias\t%s\t%s\tdeclared=%s\tmeasured=%s\n", name.UTF8String, alias.UTF8String,
                    declared.UTF8String,
                    ([sharing count] == 0 ? @"own" : [sharing componentsJoinedByString:@","]).UTF8String);
-            // And the other way round: set what measured as shared, read the alias.
+            // And the other way round: write the member that moved, read the alias - which is what a
+            // conversion between two different types has to reproduce.
             for (NSString *property in sharing) {
                 id other = [[cls alloc] init];
-                [other setValue:mark forKey:property];
-                printf("aliasBack\t%s\t%s\t%s\t%s\n", name.UTF8String, property.UTF8String, alias.UTF8String,
-                       render(safeRead(other, alias)).UTF8String);
+                writeValue(other, property, typedValue(aliasType, 2, property));
+                printf("aliasBack\t%s\t%s\t%s\t%s\n", name.UTF8String, property.UTF8String,
+                       alias.UTF8String, render(safeRead(other, alias)).UTF8String);
             }
             }
             @catch (NSException *exception) {

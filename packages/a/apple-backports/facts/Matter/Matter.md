@@ -31,8 +31,21 @@ Two families, and both are read out of the headers rather than listed:
   what the caller put in it, hands back what it holds, and `-copyWithZone:` is written out over its own ivars
   so writing to the copy never reaches back into the original. 565 of the 923 carry `<NSCopying>` in their own
   protocol list and the rest inherit it from a superclass that does, so 863 of them get the copy; the 60 that
-  do not are the event classes, and giving them one would be a method the framework does not have. `-init` is
-  written for none of them: `MTRDeviceControllerStartupParams.h` marks it `NS_UNAVAILABLE`, and an
+  do not are the event classes, and the host's own method list is what says so - `-copyWithZone:` is written
+  for a class the MEASUREMENT gives one, which is `respondsToSelector:` read over the class's own methods and
+  not the protocol list, because the protocol list is a declaration and this is a binary.
+
+  **`-init` IS written, and it is not NSObject's.** Every class in this family except the ones whose header
+  marks it `NS_UNAVAILABLE` gets an initialiser that stores what the host's initialiser stores: a NONNULL
+  object member is the zero value of its own type and a nullable one is nil. Measured, by
+  `tests/backports/host/matter/params-probe.m`:
+
+      fresh  MTRGroupsClusterAddGroupParams  groupID               NSNumber(0)
+      fresh  MTRGroupsClusterAddGroupParams  groupName             NSString()
+      fresh  MTRGroupsClusterAddGroupParams  timedInvokeTimeoutMs  (nil)
+      fresh  MTRTestClusterClusterSimpleStruct  d                  NSData(0)
+
+  The three exceptions are the classes whose own header writes `- (instancetype)init NS_UNAVAILABLE`, and an
   `@implementation` that defines an unavailable method is the compiler's own error.
 
 **Three declarations, because the SDK this library compiles against (16.4) does not have all of it.** Which
@@ -160,6 +173,37 @@ this machine at this tree, and the difference is the host's framework, not the p
 whose `Matter.framework` declares none of the 78, or the port's cluster declarations under a guard the
 differential can turn off.
 
+## What the host differential says about the PORT (2026-10-03, the coordinator's ruling)
+
+`sh tests/backports/host/matter/params-diff.sh` runs the same probe on both sides - the host against
+`/System/Library/Frameworks/Matter.framework`, the port against the generator's own objects regenerated for
+this host with `--sdk16 <the host SDK>`, the same rule the shipped tree applies to 16.4. It compares what
+each side answers for the same driver, and it runs a RED CONTROL: one value in one port object changed, and
+the run must notice.
+
+**THE PORT DOES NOT YET MATCH, and the numbers are the measurement.** The first run of the comparison, with
+the port side generated WITHOUT `--host-measurements` so that it wrote no `-description` at all:
+
+    params-diff: classes the host has 918, absent 5, raised 0
+    params-diff: ownDescription 66 of the hosts 918 readings the port answers identically
+    params-diff: description    0 of the hosts 918 readings the port answers identically
+    params-diff: fresh          3141 of the hosts 3273 readings the port answers identically
+    params-diff: alias          25 of the hosts 37 readings the port answers identically
+    params-diff: red control 923 readings move, so this comparison can fail
+
+66 on `ownDescription` is exactly the number of classes that do NOT override `-description`, which is what a
+port that wrote none of them looks like. The red control moved 923 readings, so the comparison can fail and
+its verdict is a verdict.
+
+**The second run's port side does not build.** Generated with `--host-measurements` and `--sdk16 <the host
+SDK>`, 23 of 1067 objects do not compile against the macOS SDK - `CharonMatterMTRAccessControlCluster
+AccessControlEntryStruct.m`, `CharonMatterMTRChannelClusterProgramStruct.m` and 21 more - because the
+port's `-description` reads each member through its SDK 26.2 getter and the host SDK declares some of them
+differently or not at all. That is the same defect the shipped tree has for its own target and it is NOT
+fixed. Until it is, the honest statement is: the three behaviours are measured, the port has the -init
+defaults and the alias storage, and it has NOT been shown to answer -description or the alias conversions the
+way the host does.
+
 ## What the host answers, and what the port does not (measured 2026-10-03, review of 5b0f9f271)
 
 Three behaviours of the 923 plain data classes are NOT what the port does. They are measured here by
@@ -180,7 +224,8 @@ come from the runtime and from its driver - so the same source is the whole comp
 
 so a NONNULL object property is the zero value of its own type and a NULLABLE one is nil. That IS derivable
 from the header - the type and the nullability are in the declaration - and the derivation is
-`default_of()` in `tools/matter-generate.py`. LANDED.
+`default_of()` in `tools/matter-generate.py`. The port's side is NOT yet shown to match - the differential
+counts 3141 of 3273 `fresh` readings identical - so this is "written and measured on the host", not "matched".
 
 **2. A deprecated alias is the same value as its successor.** Measured, both directions:
 
@@ -195,13 +240,30 @@ property", which is prose, and the host gives it storage of its own. LANDED: the
 storage by setting the alias to a sentinel and reading every own member, so the name is a measurement and not
 a reading of the prose.
 
-An alias shares its successor's ivar only where the two are the SAME TYPE. The host shares the storage either
-way - `MTRReadParams`' `fabricFiltered` is an `NSNumber *` and `filterByFabric` is a `BOOL` - but two
-declarations of different types cannot be one ivar in C and the conversion between them is a value nobody has
-measured, so **6 aliases keep storage of their own** and the generator counts and names them:
-`MTRReadParams.fabricFiltered`, `MTRSubscribeParams.replaceExistingSubscriptions`,
-`MTRDeviceControllerStartupParams.fabricId`, `MTRControllerFactoryParams.storageDelegate`,
-`MTRControllerFactoryParams.startServer`, and one more.
+**Whether an alias shares storage is MEASURED, per pair, and the answer is not what the deprecation text
+says.** The probe writes the alias TWICE, with two values of the alias's OWN type, and watches whether another
+member's reading moves. An earlier version of it wrote one `NSValue` sentinel through KVC whatever the type
+was, and that produced 11 rows reading `raised` which were the probe's own artifact and not host behaviour: a
+`BOOL` or a `uint64_t` member answers an `NSValue` with `NSInvalidArgumentException`. With a typed value the
+run is clean - **0 raised rows** - and 36 of the 37 alias pairs measure as SHARING their successor's storage.
+
+Four of those 36 are pairs whose two types DIFFER, and the host converts between them rather than keeping two
+storages. The conversion is measured too, by writing the successor and reading the alias:
+
+    aliasBack  MTRReadParams  filterByFabric  fabricFiltered  NSNumber(1)
+    aliasBack  MTRSubscribeParams  replaceExistingSubscriptions  keepPreviousSubscriptions  NSNumber(0)
+    aliasBack  MTRSubscribeParams  resubscribeAutomatically  autoResubscribe  NSNumber(1)
+
+A `BOOL` ivar read back through an `NSNumber *` alias reads 0 or 1 and never the value written - 42 goes in as
+a `BOOL`, 1 comes out - so the ivar is the successor's type and the alias's accessors convert. The four:
+`MTRReadParams.fabricFiltered`, `MTRSubscribeParams.keepPreviousSubscriptions`,
+`MTRSubscribeParams.autoResubscribe`, and `MTRDeviceControllerStartupParams.fabricId`, whose successor
+`fabricID` the host measures as NOT shared.
+
+**One pair measures as NOT sharing**: `MTRDeviceControllerStartupParams.fabricId`, whose declared successor
+is `fabricID`. That is host behaviour and the port answers the same - its own storage. So one alias keeps
+storage of its own, and the generator counts and names it rather than a list of six that included five
+measurements nobody had taken.
 
 **3. `-description` is overridden, BUT NOT BY EVERY CLASS.** The format, where it is overridden, is measured:
 
@@ -218,7 +280,8 @@ MEASURED: `tests/backports/host/matter/params-probe.m` reads `class_copyMethodLi
 committed as `tests/backports/host/matter/host-measurements.tsv` with the host's own version
 (`Matter.framework 1.4.0.94`) and the date in its first line. `tools/matter-generate.py
 --host-measurements` reads it, and a class the host does not have is 5 of the 923: the port keeps the
-header's answer for those and says so, per class, in the object. LANDED.
+header's answer for those and says so, per class, in the object. The port's side is NOT yet shown to match:
+the differential counts 25 of 37 alias readings identical.
 
 The copy the port writes is right: `copy  <class> <property> original-after-copy-write` and
 `copy-after-original-write` differ on the host in every fixture tried, and so do they in the port.

@@ -57,6 +57,7 @@
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
 // are shaped so. Their accessors are written out over the storage above, because a category
 // cannot hold an ivar and clang refuses @synthesize for one in either place.
+    // fabricId is a uint64_t and shares the storage of the  property; the host converts between them, and this is that conversion.
 - (uint64_t)fabricId
 {
     return _charon_fabricId;

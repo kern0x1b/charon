@@ -19,14 +19,6 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-// Storage for the deprecated names the SDK declares in a CATEGORY of this class, and for
-// the members they share it with: a category cannot hold an ivar, so these are the port's
-// own, and they are here because the accessors below are what read and write them.
-@interface MTRReadParams () {
-    NSNumber * _charon_fabricFiltered;
-}
-@end
-
 @implementation MTRReadParams
 
 @synthesize filterByFabric = _filterByFabric;
@@ -48,14 +40,15 @@
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
 // are shaped so. Their accessors are written out over the storage above, because a category
 // cannot hold an ivar and clang refuses @synthesize for one in either place.
+    // fabricFiltered is a NSNumber * and shares the storage of the bool member; the host converts between them, and this is that conversion.
 - (NSNumber *)fabricFiltered
 {
-    return _charon_fabricFiltered;
+    return [NSNumber numberWithBool:_filterByFabric];
 }
 
 - (void)setFabricFiltered:(NSNumber *)fabricFiltered
 {
-    _charon_fabricFiltered = [fabricFiltered copy];
+    _filterByFabric = [fabricFiltered boolValue];
 }
 
 @end
