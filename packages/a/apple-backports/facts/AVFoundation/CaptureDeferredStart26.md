@@ -78,6 +78,28 @@ claim. Then:
 The plant `linkread` asks the read about version 4.0 - which every band passes - so the session's row answers YES
 where the link says NO, and both the two-build check and the table comparison see it.
 
+### The count in that line was wrong for four runs, and it was my fault
+
+The line above used to end "and the other **0** answers are the same in both", while the check was comparing all
+108. The count came from `grep -c '^ANSWER' "$build/answers26"` and that file holds the comparison's working
+form - `api<TAB>host<TAB>port`, the leading `ANSWER` field already dropped - so the pattern could never match and
+the count was zero on every run. I read that as a formatting slip, wrote **103** into this page by hand, and
+reported it to the coordinator as "the other 103 answers are the same in both": a number no run printed.
+
+Three things are different now, and the first is the one that matters:
+
+1. **The check refuses to be vacuous.** It fails when it compared fewer answers than the 26 build's table holds,
+   when any answer had no row in the other build, or when the one row the header makes depend on the link alone
+   did not move. Measured on a scratch copy of the run with the pre-26 build's ANSWER rows removed and its
+   CONTROL lines kept - the one shape the control checks cannot see:
+   `FAIL: the two linked probes were compared over 0 of the 108 answers the table holds (108 of them had no row in
+   the other build), so this check would pass without comparing anything - a vacuous check is not a check`
+2. **The count is measured in the loop** rather than grepped out of a file that does not carry the field.
+3. **The red control turns it red by the guard**, which is what the coordinator asked to see:
+   `AVFCAPSMUTANT=linkread` -> `FAIL: no row moved between the two linked probes, so the port's
+   linked-on-or-after read is not following the binary it is in` (with the comparison at version 4.0 both builds
+   answer YES, so nothing moves - and a check that only counted differences would have passed).
+
 ## Three rows where the port follows the header and the host does not, each with both columns
 
 | case | host | port | the sentence |
@@ -108,9 +130,9 @@ header's own documented default.
 
 ```
 sh tests/backports/host/avf-capabilities/run.sh   exit 0
-  ok  two probes, linked against [27.0] and [16.4]: the one row whose only condition is the link
-      moves with it, the two rows the header pins through a term this port answers NO do not, and the
-      other 103 answers are the same in both
+  ok  two probes, linked against [27.0] and [16.4]: 1 row(s) whose only condition is the link
+      moves with it, 2 of the 2 rows the header pins through a term this port answers NO stayed at
+      NO, and all 108 answers were compared - none fewer than the 108 the table holds
   ok  66 members are answered by both sides, or by the port alone where the table says the host has none
   ok  103 answers are the ones expectations.tsv names, the host's and the port's columns both
   ok  AVCaptureSession.deferredStartDelegate after every refused set - host and port both nil, which is what

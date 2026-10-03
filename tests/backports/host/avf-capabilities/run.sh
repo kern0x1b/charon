@@ -836,12 +836,20 @@ esac
 # The preview layer's default names no version at all (:271), so it must not move either.
 moves=" AVCaptureSession.automaticallyRunsDeferredStart "
 pinned=" AVCaptureOutput.deferredStartEnabled AVCaptureVideoPreviewLayer.deferredStartEnabled "
-moved=0; disagreement=0; linked_wrong=0; pinned_wrong=0
+moved=0; disagreement=0; linked_wrong=0; pinned_wrong=0; compared_links=0; missing_in_16=0
+# The rows to compare, one per line as api<TAB>host<TAB>port - NOT the ANSWER rows with their leading field,
+# which is why the count below is read from this file's own lines and not from a grep for ANSWER: the file it
+# used to be asked about was this one before the field was dropped, and `grep -c '^ANSWER'` on it answers 0 for
+# every run, which is how a check that compares 108 rows came to print "the other 0 answers" and me to write
+# "103" into the facts page by hand instead of measuring (the coordinator's finding of 2026-10-03). The guard
+# below is what makes that impossible now.
 awk -F'\t' '$1 == "ANSWER" { print $2 "\t" $3 "\t" $4 }' "$build/table26" > "$build/answers26"
+answer_rows26=$(wc -l < "$build/answers26" | tr -d ' ')
 while IFS=$(printf '\t') read -r api host26 port26; do
     case "$api" in ''|\#*) continue ;; esac
     line16=$(answer_row_in "$build/table" "$api")
-    [ -n "$line16" ] || continue
+    if [ -z "$line16" ]; then missing_in_16=$((missing_in_16 + 1)); continue; fi
+    compared_links=$((compared_links + 1))
     [ "$host26" = "$(printf '%s\n' "$line16" | cut -f3)" ] || disagreement=$((disagreement + 1))
     port16=$(printf '%s\n' "$line16" | cut -f4)
     case "$moves" in
@@ -851,6 +859,21 @@ while IFS=$(printf '\t') read -r api host26 port26; do
         [ "$port26" = "$port16" ] || disagreement=$((disagreement + 1)) ;;
     esac
 done < "$build/answers26"
+# THE CHECK IS NOT ALLOWED TO BE VACUOUS. It must have compared every answer the 26 table holds, found each of
+# them in the pre-26 table, and it must have moved the one row the header makes depend on the link alone. A run
+# where the comparison covered nothing, or covered less than the table, or where the governed row did not move,
+# is a run that cannot fail - and that is exactly how this check spent four runs printing ok.
+if [ "$compared_links" -lt "$answer_rows26" ] || [ "$missing_in_16" != 0 ]; then
+    echo "FAIL: the two linked probes were compared over $compared_links of the $answer_rows26 answers the table"
+    echo "      holds ($missing_in_16 of them had no row in the other build), so this check would pass without"
+    echo "      comparing anything - a vacuous check is not a check"
+    exit 1
+fi
+if [ "$moved" -lt 1 ]; then
+    echo "FAIL: no row moved between the two linked probes, so the port's linked-on-or-after read is not"
+    echo "      following the binary it is in"
+    exit 1
+fi
 # The disagreement is COUNTED and not exited on, so that a planted run reaches the verdict below and says
 # "the mutation was noticed" like every other plant does; a clean run fails on it in the verdict section.
 if [ "$disagreement" != 0 ]; then
@@ -869,9 +892,9 @@ if [ "$pinned_wrong" != 0 ]; then
     echo "note: $pinned_wrong of the two rows the header pins to NO through a term this port answers NO did not"
     echo "      answer NO in both builds; the verdict below decides"
 fi
-echo "ok  two probes, linked against [$linked26] and [$linked16]: the one row whose only condition is the link"
-echo "    moves with it, the two rows the header pins through a term this port answers NO do not, and the"
-echo "    other $(grep -c '^ANSWER' "$build/answers26") answers are the same in both"
+echo "ok  two probes, linked against [$linked26] and [$linked16]: $moved row(s) whose only condition is the link"
+echo "    moved with it, $pinned_no of the 2 rows the header pins through a term this port answers NO stayed at"
+echo "    NO, and all $compared_links answers were compared - none fewer than the $answer_rows26 the table holds"
 
 members=$(grep -c '^RESPONDS	' "$build/table" || true)
 listed=$(wc -l < "$build/members.tsv" | tr -d ' ')
