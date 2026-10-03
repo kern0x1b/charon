@@ -46,3 +46,85 @@ SecureTransport. The same measurement is what made the stream task itself possib
    the honest answer is 0 for a stream. The wall is not the socket -- it is that the *data* task's
    transaction is the release's connection, whose header bytes reach the release's parser and stop there.
    Those two rows are therefore a different row each from the six above, and they stay as they are.
+
+## 5. The two header byte counts: what the release's own CFNetwork does with them, measured
+
+Section 4 above says the two rows stay `absent` and that the wall is the data task's connection. The
+row's own `source` used to add that "there is no dyld_shared_cache here to read a 10.x inventory
+from" - **which was wrong, and this is the measurement that replaces it.** The ladder has the whole
+10.x and 11.x range, so "does the release's own class answer this getter between 10.0 and 13.0" is
+answerable here.
+
+The reading is the cache index `tools/cache-index/build.py` writes, one file per held rung: every
+registered selector (`__TEXT,__objc_methname`), every class name (`__TEXT,__objc_classname`), every C
+string literal (`__TEXT,__cstring`), the export trie and the whole symbol table. Every number below is
+`tools/cache-index/first-rung.py`'s own `_names_of()` over those files - names as **bytes**, the header
+line skipped, a whitespace-only line not a name - so the name count is that reader's and the queries are
+the same bytes it searches.
+
+| held rung | arch | `NSURLSessionTaskTransactionMetrics` | `countOfRequestHeaderBytesSent` | `countOfResponseHeaderBytesReceived` | names in that rung's index |
+| --- | --- | --- | --- | --- | --- |
+| 8.0, 9.0, 9.3.6 and every older rung | armv7 | **no class** | - | - | 1,288,265 at 9.3.6 |
+| 10.0.1, 10.1.1, 10.2, 10.2.1, 10.3, 10.3.1, 10.3.2, 10.3.3, 10.3.4 | armv7s | present | no | no | 1,486,384 at 10.0.1 |
+| 11.0, 12.0 | arm64 | present | no | no | 1,964,780 at 11.0, 2,265,101 at 12.0 |
+| 13.0 - 15.x | - | **no held rung** | - | - | - |
+| 16.0 | arm64e | present | **yes** | **yes** | 5,104,177 |
+| 18.0 | arm64e | present | **yes** | **yes** | 6,919,864 |
+
+    $ python3 tools/cache-index/first-rung.py NSURLSessionTaskTransactionMetrics \
+        countOfRequestHeaderBytesSent countOfResponseHeaderBytesReceived
+    NSURLSessionTaskTransactionMetrics       10.0.1
+    countOfRequestHeaderBytesSent            16.0
+    countOfResponseHeaderBytesReceived       16.0
+
+`first-rung.py` answers "the oldest held rung carrying the name", which is what the class column above
+rests on; the per-release answers come from the per-rung index files it reads, and one reader a reader can
+run over any subset is:
+
+    $ python3 -c 'import gzip,os,sys                       # first-rung.py _names_of(), inlined
+    p=os.path.expanduser("~/.charon/cache-index/"+sys.argv[1]+".names.gz")
+    with gzip.open(p,"rb") as h:
+        h.readline(); body={l.rstrip(b"\n") for l in h if l.strip()}
+    for n in sys.argv[2:]:
+        print(n, "PRESENT" if n.encode() in body else "absent")' 12.0 \
+        countOfRequestHeaderBytesSent NSURLSessionTaskTransactionMetrics UIView
+    # (the header line the reader skips names the release, arch, cache, mtime, size and name count)
+    countOfRequestHeaderBytesSent absent
+    NSURLSessionTaskTransactionMetrics PRESENT
+    UIView PRESENT
+
+**One hole in the index, so a reader is not sent into it.** `--rungs` cannot answer over the whole
+ladder yet: 8.4 has no index file, so the query stops there with a `FileNotFoundError` on
+`8.4.names.gz` (`python3 tools/cache-index/build.py --only 8.4` builds that one rung). Every rung this
+table names has its file, so the table stands without it.
+
+**What this reading does and does not decide.** It does not report any one class's own method list, so
+it cannot say how many selectors `NSURLSessionTaskTransactionMetrics` carries - only which names the
+release has at all. That is enough for these two rows, because a method in a cache must have its
+selector name in that cache: either in `__TEXT,__objc_methname`, or as a `__cstring` literal it is
+registered from. Neither name is anywhere in the held rungs 10.0.1 through 12.0, so the release's own
+class cannot answer either getter there; both are present at 16.0 and 18.0, so it can there.
+
+Note what a whole-cache count is not. `countOfRequestBodyBytesSent` is in the cache from 8.0, while
+`NSURLSessionTaskTransactionMetrics` only appears at 10.0.1, so both of those facts are true at once and
+neither says which class owns that name - a count over the whole cache is not a statement about one
+class's method list. That is the trap a per-class reading exists to avoid, and it is why this section
+claims what it claims and no more: which names the release has, not how many methods one class has.
+
+Three things follow, and only the first two were known before:
+
+1. **`maximum: 10.0` is right, and now for a measured reason.** From 10.0.1 the release's own class is
+   the one in charge, and the port's implementation could not be reached even if it existed. The row
+   leaves the bands there.
+2. **The release does not have the getter in any release the ladder holds between 10.0.1 and 12.0** -
+   which is the measurement the row's old `source` said was unavailable, and which the 16.4 header
+   agrees with: `Foundation/NSURLSession.h:1327` and `:1343` annotate both properties `ios(13.0)`.
+3. **The gap the port leaves is 10.0 to 15.x, and 13.0 to 15.x of it is not measurable on this
+   machine**: the held ladder has no rung between 12.0 and 16.0. Stated as a limit rather than rounded
+   off.
+
+The reason the two rows stay `absent` is therefore narrower than "the port cannot see the header
+bytes", and it is the part that is true in every band: the port *could* count the header block it
+composed, and CFNetwork's own additions to that block - `Host`, `Connection`, `User-Agent` - are not
+observable from the port, so the number would differ from the release's instead of matching it. A
+count that is close is not a count that answers.

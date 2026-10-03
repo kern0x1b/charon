@@ -255,9 +255,10 @@
       "introduced": "26.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSPredicate a method like it: it arrived in iOS 26",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "facts": "facts/Foundation/NSPredicateValidating.md",
+      "reason": "the contract is not readable on this machine, and a row must not invent one. Neither name is declared anywhere in the 16.4 build SDK this package compiles against: 0 of its files name NSPredicateValidating and 0 name allowEvaluationWithValidator, where the same search returns 95 files for NSPredicate. That SDK is the only iPhoneOS SDK here - ~/.xmake/packages/i/iphoneos-sdk holds 16.4 and nothing else, and there is no Xcode on this machine - so no newer header can be read; and the held release ladder stops at 18.0, which is older than this pair, so the release's own metadata cannot say what either name declares either. NSPredicateValidating's required selector is the whole contract of the protocol and the method's return type is part of the method's, so writing either from the name would be a guess about a signature",
+      "effect": "the protocol is not declared, so a class cannot be said to conform to it and the compiler is told so; the method is not declared either, so respondsToSelector: answers NO and an unchecked call raises. Nothing in the port answers a predicate validation either: 0 of the package's 2,350 .m, .h and .c sources name either name",
+      "source": "the 16.4 build SDK this package compiles against, read whole - 0 of its files name NSPredicateValidating and 0 name allowEvaluationWithValidator, NSPredicate itself in 95 as the control; ~.xmake/packages/i/iphoneos-sdk holding 16.4 as the only iPhoneOS SDK on this machine; the 53 held rungs tools/cache-index/first-rung.py reads, 18.0 the newest of them"
     },
     {
       "api": "NSPredicateValidating",
@@ -265,9 +266,10 @@
       "introduced": "26.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 26, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "facts": "facts/Foundation/NSPredicateValidating.md",
+      "reason": "the contract is not readable on this machine, and a row must not invent one. Neither name is declared anywhere in the 16.4 build SDK this package compiles against: 0 of its files name NSPredicateValidating and 0 name allowEvaluationWithValidator, where the same search returns 95 files for NSPredicate. That SDK is the only iPhoneOS SDK here - ~/.xmake/packages/i/iphoneos-sdk holds 16.4 and nothing else, and there is no Xcode on this machine - so no newer header can be read; and the held release ladder stops at 18.0, which is older than this pair, so the release's own metadata cannot say what either name declares either. NSPredicateValidating's required selector is the whole contract of the protocol and the method's return type is part of the method's, so writing either from the name would be a guess about a signature",
+      "effect": "the protocol is not declared, so a class cannot be said to conform to it and the compiler is told so, and NSProtocolFromString(\"NSPredicateValidating\") answers nil. Nothing in the port declares it either: 0 of the package's 2,350 .m, .h and .c sources name NSPredicateValidating or allowEvaluationWithValidator, so there is no conformance of ours for a caller to find and no validator to be asked",
+      "source": "the 16.4 build SDK this package compiles against, read whole - 0 of its files name NSPredicateValidating and 0 name allowEvaluationWithValidator, NSPredicate itself in 95 as the control; ~.xmake/packages/i/iphoneos-sdk holding 16.4 as the only iPhoneOS SDK on this machine; the 53 held rungs tools/cache-index/first-rung.py reads, 18.0 the newest of them"
     }
   ]
 }

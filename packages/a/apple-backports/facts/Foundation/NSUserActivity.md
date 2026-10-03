@@ -59,20 +59,43 @@ Three rows in this family are not answered by code, each for a measured reason:
   port serves reaches either selector. They are declarations plus a log line for the case where
   something does - which needs a host case that links the port's declaration beside a conforming object
   (the host has neither selector, so the read is sound), not yet written.
-- `-[NSFilePresenter accommodatePresentedItemEvictionWithCompletionHandler:]` (17.4). **The port cannot
-  implement this one, and the reason is in the SDK:** the 16.4 `NSFilePresenter.h` has no
-  `@interface NSFilePresenter` at all - the class is macOS's and its members are marked
-  `API_UNAVAILABLE(ios, watchos, tvos)` - and the 26.2 SDK has the 17.4 method as a **Mac Catalyst**
-  API, which is what this row's own `source` says. So it is a macOS surface, not one of the iOS
-  releases the port carries: there is no release class to extend and nothing on a device to answer it.
-  It wants the owner's decision (a Catalyst port, or the row recorded as a macOS-only surface) before
-  any code is written.
+- `-[NSFilePresenter accommodatePresentedItemEvictionWithCompletionHandler:]` (17.4). **The sentence this
+  file used to carry here was wrong in its second half, and the header it cited does not say it.** The
+  claim was that the 16.4 `NSFilePresenter.h` declares no `@interface` "because the class is macOS's and
+  its members are marked `API_UNAVAILABLE(ios, watchos, tvos)`". The first half holds and the reason
+  does not. Measured on the 16.4 build SDK's own header, which is 18,251 bytes and 152 lines: it
+  declares `@protocol NSFilePresenter<NSObject>` at `:20` and **no `@interface` of that name at all** -
+  `grep -n "@interface" NSFilePresenter.h` is empty. Of its 20 declarations, exactly three carry an
+  availability annotation, and only `:40` (`primaryPresentedItemURL`) is unavailable on iOS, reading
+  `API_AVAILABLE(macos(10.8)) API_UNAVAILABLE(ios, watchos, tvos)`; `:97` and `:105` are explicitly
+  available, `API_AVAILABLE(macos(10.13), ios(11.0)) API_UNAVAILABLE(watchos, tvos)`. The other 17
+  carry none. The method this row is about is not in that header either -
+  `grep -c accommodatePresentedItemEvictionWithCompletionHandler NSFilePresenter.h` is 0.
+  **What would settle its platform:** a newer SDK's `NSFilePresenter.h`. The 26.2 one reads
+  `API_AVAILABLE(macos(14.4), ios(17.4))` at `:74`, and that line is the record of the 2026-09-28 review
+  of this family (`coordination/reviews/live/foundation.md`, chunk `6e4309e7c2`, which read it out of a
+  26.2 tree this machine no longer has) - it is quoted here as that reading, not re-measured, because
+  the 16.4 build SDK is the newest iPhoneOS SDK on this machine. What decides the row either way is
+  measured and older than both: the 16.4 headers declare no class of that name to hang a category on,
+  and `Foundation17ReleaseAbsences.md` read the 6.1.3 armv7 rung's own class census - 11,378 classes,
+  188,523 instance selectors - and found `class NSFilePresenter ABSENT` with `NSAttributedString` present
+  as the control. So the row is `absent` for the ordinary reason on the bands it is in. **The owner
+  decision this paragraph asked for is withdrawn**, because the question it rested on ("macOS surface or
+  iOS surface?") is not what the header says. What remains open is a different one, and it is the
+  review's: 17.4 is below the ladder's newest rung, 18.0, so whether an 18.0 band *owes* this method is
+  a question about the port's band coverage, not about which platform declares it. Implementing it
+  would take a whole `NSFilePresenter` - a presentation coordinator an application registers items
+  with - which is a family of its own and not one method.
 - `NSPredicateValidating` and `-[NSPredicate allowEvaluationWithValidator:error:]` (both 26.4). Their
-  declarations are on **neither** SDK on this machine: absent from the 16.4 (the build SDK, so the port
-  would need a Charon header) and absent from the 26.2 tree under `.agent-work/sdk-26.2`, and this
-  row's own `source` names SDK 26.5. Without the declaration the validator's required selector and the
-  method's return are unreadable, and writing them from the name would be a guess about a contract.
-  They owe one SDK newer than 26.2.
+  declarations are on **no SDK on this machine**: 0 files of the whole 16.4 build SDK name
+  `NSPredicateValidating` and 0 name `allowEvaluationWithValidator`, where the same search returns 95
+  files for `NSPredicate`; and 16.4 is the newest iPhoneOS SDK here, so no newer header can be read.
+  The row's own `source` said `SDK 26.5`, which is not on this machine either, and 26.4 is above the
+  held ladder's newest rung (18.0), so the release's own metadata cannot settle it. Without the
+  declaration the validator's required selector and the method's return are unreadable, and writing
+  them from the name would be a guess about a contract. They owe one SDK that declares them, which is a
+  fetch and not an implementation. The measurements and the commands are in
+  `facts/Foundation/NSPredicateValidating.md`, which is the page their rows name.
 
 ## The two continuation members, and how "nothing calls it" was measured
 
@@ -83,25 +106,41 @@ protocol an application's own delegate adopts. The caller is the system's **cont
 handing this device an activity another device sent - and the releases this package carries have none:
 there is no `continueUserActivity:` to call from and no second device to continue to.
 
-So they are `ignored`, and the claim that status rests on is a claim about this package's own sources,
-which is checkable. `tools/called-sites.py` reads every `.m`, `.c` and `.h` in the package, and reports
-each kind separately so a declaration cannot pass for a call:
+So they are `absent`, and the claim that status rests on is a claim about this package's own sources,
+which is checkable. **The transcript below replaces one that cited `tools/called-sites.py`, which is not
+in this repository** - a facts file naming a reader nobody can run is a claim with nothing behind it, and
+the two rows' `source` fields cited that tool too. `grep` over the package's own sources is what is in
+the tree, with the file count beside it:
 
 ```
-$ python3 tools/called-sites.py "userActivityWasContinued:"
-userActivityWasContinued:: 0 message send(s), 0 C call(s), 0 other mention(s), in 1878 source file(s)
-$ python3 tools/called-sites.py "userActivity:didReceiveInputStream:outputStream:"
-userActivity:didReceiveInputStream:outputStream:: 0 message send(s), 0 C call(s), 0 other mention(s), in 1878 source file(s)
+$ cd packages/a/apple-backports
+$ grep -rn "userActivityWasContinued\|userActivity:didReceiveInputStream:outputStream" --include="*.m" --include="*.h" --include="*.c" .
+(no output; grep exits 1)
+$ find . \( -name "*.m" -o -name "*.h" -o -name "*.c" \) | wc -l
+2350
+$ grep -rF "becomeCurrentWithPendingUnitCount:" --include="*.m" --include="*.h" --include="*.c" . | wc -l
+8
 ```
 
-The strong form is what those numbers give: the selector does not appear **at all**, so nothing in the
-package can call it. The search's own control is a selector the port does name and call -
-`os_log_type_enabled` comes back `0 message send(s), 1 C call(s), 6 other mention(s)` - and a root with
-no sources is refused (`no source under …: nothing was searched, so nothing is claimed`, exit 1).
+**0 occurrences in 2,350 sources**, which is the strong form of the claim: the selector does not appear at
+all, so nothing in the package can call it and no declaration of it can hide behind a send. The search's
+own control is a selector the port does name, and it comes back with 8 in the same run - so the zero is
+the package's and not the search's. The zero form is also a count over files, so a file that is not there
+cannot be counted as empty:
 
-A message send split over several lines is counted as a mention, not a send, so the send figure is a
-lower bound and the mention figure an upper one; for these two rows both are zero, which is the only
-form of the claim that is needed.
+```
+$ grep -rc "userActivityWasContinued" --include="*.m" --include="*.h" . | grep -v ":0$"
+(no output)
+```
+
+so a run that searched nothing cannot be mistaken for a run that found nothing.
+
+The release side is measured too, and it is the half that decides the status word: neither
+`NSUserActivity` nor `NSUserActivityDelegate` is in the 4.3 or the 6.1.3 rung's own name index - 0 of
+the 317,453 names at 4.3 and 0 of the 568,965 at 6.1.3, with `UIView`, `NSObject` and `setObject:forKey:`
+present in both as the control. That is `~/.charon/cache-index/<release>.names.gz` - the index
+`tools/cache-index/build.py` writes, read here by `tools/cache-index/first-rung.py`'s own `_names_of()`
+over the bytes it holds.
 
 **Both rows are `absent`**, which is the tree's word for "not there at all, so `respondsToSelector:`
 answers honestly": the port declares neither protocol and has no caller, so there is no implementation

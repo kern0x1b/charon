@@ -502,13 +502,14 @@
     },
     {
       "api": "-[NSURLSessionTaskDelegate URLSession:didCreateTask:]",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "effect": "the method is not there, so respondsToSelector: answers NO and an unchecked call raises. Nothing answers it: not the port, whose 2,350 .m, .h and .c sources name the selector 0 times, and not the release, whose 4.3 and 6.1.3 rungs carry no NSURLSession at all - 0 of the 317,453 and 568,965 names each rung's index holds for the class, the protocol and this selector, against controls that come back with hits",
       "introduced": "16.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports have a NSURLSessionTaskDelegate that sends anything like it: the message arrived in iOS 16",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "reason": "nothing in a program the port serves sends it, and on these bands nothing could. The message is how the system reports a task it created itself (SDK 16.4 Foundation/NSURLSession.h:912-913, \"Notification that a task has been created\"), and every task in a port session is one the application asked the session for, so the application already holds the task the message would name. The owner class and protocol are absent from the releases this row's minimum of 6.0 reaches as well - tools/cache-index/first-rung.py puts the first held rung carrying either name at 7.0 - so there is no release implementation for a call to reach, and that is what separates absent from ignored",
+      "source": "SDK 16.4 Foundation/NSURLSession.h:918-919 for the declaration and its ios(16.0) availability, :912-913 for what the message is; the package's own 2,350 .m, .h and .c sources read for the selector (0 occurrences, control becomeCurrentWithPendingUnitCount: with 8 occurrences); tools/cache-index/first-rung.py for the first held rung carrying either name (7.0), and its own _names_of() over ~/.charon/cache-index/4.3.names.gz and 6.1.3's, read for the selector, NSURLSession and NSURLSessionTaskDelegate (0 occurrences each of 317,453 and 568,965 names, controls UIView, NSObject and setObject:forKey: present in both); facts/Foundation/Foundation17ReleaseAbsences.md for the 4.3 and 6.0 class censuses",
+      "status": "absent",
+      "facts": "facts/Foundation/NSURLSession.md"
     },
     {
       "api": "NSAttributedStringMarkdownSourcePosition",
