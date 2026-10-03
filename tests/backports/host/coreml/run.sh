@@ -36,8 +36,18 @@ else
 fi
 echo "corpus: $(ls "$models" | grep -c '\.mlmodel$') containers in $models"
 
+# The containers are made HERE, not asked for, for the reason the vision harness now does the same:
+# a fresh worktree had none, this test stopped with the command to run printed at the reader, and the
+# sweep - which looks for a run.sh that reaches a check - counted the whole family DEAD. The writer is
+# this repository's own and takes a second.
 if [ ! -d "$models" ]; then
-    echo "no containers in $models: run sh tools/coreml/make-models.py --out $models first"
+    echo "no containers in $models: writing them with tools/coreml/make-models.py"
+    python3 "$root/tools/coreml/make-models.py" --out "$models" > "$build/models.log" 2>&1 || {
+        echo "FAIL: the containers could not be written, so there is nothing to record:"
+        tail -3 "$build/models.log" | sed 's/^/    /'; exit 1; }
+fi
+if [ ! -d "$models" ]; then
+    echo "no containers in $models, and the writer left none: nothing to record"
     exit 1
 fi
 
