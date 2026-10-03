@@ -8,7 +8,6 @@
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
 #import "check.h"
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
 // The port's two classes, under the names run.sh's renamer gives them. run.sh compiles the group's SOURCES
 // with the rename flags and the TEST without them, so the test declares the port's side itself - the same
@@ -87,13 +86,14 @@ static void check_the_zeros(void)
 static void check_the_five_values(void)
 {
     NSURL *url = [NSURL URLWithString:@"https://example.invalid/a"];
+    NSString *source = @"a source";
     CharonHostUIEventAttribution *ours = [[CharonHostUIEventAttribution alloc] initWithSourceIdentifier:7
                                                                           destinationURL:url
-                                                                      sourceDescription:@"a source"
+                                                                      sourceDescription:source
                                                                                purchaser:@"a purchaser"];
     UIEventAttribution *theirs = [[UIEventAttribution alloc] initWithSourceIdentifier:7
                                                                       destinationURL:url
-                                                                  sourceDescription:@"a source"
+                                                                  sourceDescription:source
                                                                            purchaser:@"a purchaser"];
     charon_check(ours != nil && theirs != nil, "both sides build an attribution", @"one side answered nothing");
 
@@ -110,8 +110,8 @@ static void check_the_five_values(void)
     BOTH(@"the destination URL is the URL it was given", ours.destinationURL == url ? @"same" : @"copied",
          theirs.destinationURL == url ? @"same" : @"copied");
     BOTH(@"the source description is the string it was given",
-         [ours.sourceDescription isEqual:@"a source"] && ours.sourceDescription == @"a source" ? @"same" : @"copied",
-         [theirs.sourceDescription isEqual:@"a source"] && theirs.sourceDescription == @"a source" ? @"same" : @"copied");
+         [ours.sourceDescription isEqual:@"a source"] && ours.sourceDescription == source ? @"same" : @"copied",
+         [theirs.sourceDescription isEqual:@"a source"] && theirs.sourceDescription == source ? @"same" : @"copied");
 
     // The copy: equal to its receiver and holding the same five values, which is the question a copy of a
     // value object has to answer.
@@ -126,11 +126,11 @@ static void check_the_five_values(void)
     BOTH(@"a copy keeps the purchaser", ourCopy.purchaser, theirCopy.purchaser);
     CharonHostUIEventAttribution *ourTwin = [[CharonHostUIEventAttribution alloc] initWithSourceIdentifier:7
                                                                            destinationURL:url
-                                                                       sourceDescription:@"a source"
+                                                                       sourceDescription:source
                                                                                 purchaser:@"a purchaser"];
     UIEventAttribution *theirTwin = [[UIEventAttribution alloc] initWithSourceIdentifier:7
                                                                destinationURL:url
-                                                           sourceDescription:@"a source"
+                                                           sourceDescription:source
                                                                     purchaser:@"a purchaser"];
     BOTH(@"two attributions with the same values are equal", [ours isEqual:ourTwin] ? @"equal" : @"other",
          [theirs isEqual:theirTwin] ? @"equal" : @"other");
@@ -138,11 +138,11 @@ static void check_the_five_values(void)
     // Two that differ are not equal, on either side, so -isEqual: is not answering YES to everything.
     CharonHostUIEventAttribution *other = [[CharonHostUIEventAttribution alloc] initWithSourceIdentifier:8
                                                                          destinationURL:url
-                                                                     sourceDescription:@"a source"
+                                                                     sourceDescription:source
                                                                               purchaser:@"a purchaser"];
     UIEventAttribution *theirOther = [[UIEventAttribution alloc] initWithSourceIdentifier:8
                                                              destinationURL:url
-                                                         sourceDescription:@"a source"
+                                                         sourceDescription:source
                                                                       purchaser:@"a purchaser"];
     BOTH(@"two attributions that differ are not equal", [ours isEqual:other] ? @"equal" : @"other",
          [theirs isEqual:theirOther] ? @"equal" : @"other");
