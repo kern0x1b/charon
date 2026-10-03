@@ -78,7 +78,7 @@ xcrun clang -fobjc-arc -Wall "$here/host.m" -framework Foundation -framework App
 xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation -I "$port" "$here/port.m" \
     "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
     "$port/PDFBorder11.m" "$port/PDFAppearanceCharacteristics11.m" \
-    "$port/PDFDestination11.m" "$port/PDFAction11.m" \
+    "$port/PDFDestination11.m" "$port/PDFAction11.m" "$port/PDFOutline11.m" \
     "$port/PDFKitConstants11.m" \
     -framework Foundation -framework CoreGraphics -o "$build/port-side" 2> "$build/port.log" || {
     echo "BUILD the port side did not compile:"; head -8 "$build/port.log" | sed 's/^/    /'; exit 1; }
@@ -93,7 +93,7 @@ xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation \
     -I "$port" "$here/color.m" \
     "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
     "$port/PDFBorder11.m" "$port/PDFAppearanceCharacteristics11.m" \
-    "$port/PDFDestination11.m" "$port/PDFAction11.m" \
+    "$port/PDFDestination11.m" "$port/PDFAction11.m" "$port/PDFOutline11.m" \
     "$port/PDFKitConstants11.m" \
     -framework Foundation -framework UIKit -framework CoreGraphics \
     -o "$build/port-color-side" 2> "$build/color.log" || {
@@ -434,7 +434,34 @@ for key in \
     copy.named.nameAfterSet \
     copy.remote.pageIndex \
     copy.reset.fields.same \
-    copy.action.class
+    copy.action.class \
+    initoutline.class \
+    initoutline.dest \
+    initoutline.root \
+    initoutline.root \
+    outline-open.pdf.outline.label \
+    outline-open.pdf.outline.children \
+    outline-open.pdf.outline.isOpen \
+    outline-open.pdf.outline.parent \
+    outline-open.pdf.c0.outline.index \
+    outline-open.pdf.c0.outline.isOpen \
+    outline-open.pdf.c0.outline.dest.point \
+    outline-open.pdf.c0.outline.action.type \
+    outline-open.pdf.c0.c0.outline.label \
+    outline-open.pdf.c0.c1.outline.index \
+    outline-open.pdf.c1.outline.action.class \
+    outline-signs.pdf.c0.outline.isOpen \
+    outline-signs.pdf.c1.outline.isOpen \
+    outline-nocount.pdf.c0.outline.isOpen \
+    outline-untitled.pdf.c0.c0.c0.c0.outline.isOpen \
+    outline-titled.pdf.c0.c0.c0.c0.outline.isOpen \
+    outline-titlekey.pdf.c0.c0.outline.isOpen \
+    outline-titlekey.pdf.c1.c0.outline.isOpen \
+    outline-titlekey.pdf.c2.c0.outline.isOpen \
+    outline-shapes.pdf.c0.c0.outline.action.dest.point \
+    outline-shapes.pdf.c2.outline.dest.page \
+    outline-shapes2.pdf.c0.c1.outline.isOpen \
+    act-goto-fit.pdf.outline
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then

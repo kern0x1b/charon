@@ -31,6 +31,71 @@ static const struct { CGPDFBox box; const char *name; } kinds[] = {
 // and read by copyFactsPage - one file, one way in, rather than a second argument.
 static const char *gCopyFactsFixture = NULL;
 
+
+// ---- the /Outlines tree -------------------------------------------------------------------------
+//
+// Walked rather than printed per fixture, because every member of an outline is read off a link in the
+// tree and the link matters: the same title in two positions answers two different -index values.  The
+// walk is depth-first over -childAtIndex: in the same order on both sides, and every key is named by the
+// path it was read at, so a difference says which item and which member.
+//
+// It does NOT ask one past the end: the host RAISES NSRangeException there - measured - so the port
+// answers nil and the boundary is named in PDFOutline11.m and in the row.
+static void printOutlineWalk(const char *name, PDFOutline *outline, int depth)
+{
+    if (outline == nil) {
+        printf("%s.outline=nil\n", name);
+        return;
+    }
+    // ONE KEY PER LINE, because the comparison reads one key=value per line: a line carrying seven of
+    // them registers as the first and loses the rest.  Every other fact in this harness is printed the
+    // same way and the first version of this block was not.
+    printf("%s.outline.label=%s\n", name,
+           outline.label == nil ? "(nil)" : (outline.label.length == 0 ? "(empty)" : outline.label.UTF8String));
+    printf("%s.outline.children=%lu\n", name, (unsigned long)outline.numberOfChildren);
+    printf("%s.outline.index=%lu\n", name, (unsigned long)outline.index);
+    printf("%s.outline.isOpen=%d\n", name, (int)outline.isOpen);
+    printf("%s.outline.parent=%s\n", name, outline.parent ? "an-object" : "(nil)");
+    printf("%s.outline.document=%s\n", name, outline.document ? "an-object" : "(nil)");
+    PDFDestination *destination = outline.destination;
+    if (destination == nil) {
+        printf("%s.outline.dest=nil\n", name);
+    } else {
+        // one key per line here as everywhere else: the point is ONE value carrying both components,
+        // the way every other point in this harness is printed, and the zoom is its own key
+        printf("%s.outline.dest.page=%s\n", name, destination.page ? "an-object" : "(nil)");
+        printf("%s.outline.dest.point=%.4f,%.4f\n", name, (double)destination.point.x,
+               (double)destination.point.y);
+        printf("%s.outline.dest.zoom=%.4f\n", name, (double)destination.zoom);
+    }
+    PDFAction *action = outline.action;
+    if (action == nil) {
+        printf("%s.outline.action=nil\n", name);
+    } else {
+        printf("%s.outline.action.class=%s\n", name, class_getName([action class]));
+        printf("%s.outline.action.type=%s\n", name, action.type.UTF8String ?: "(nil)");
+        if ([action isKindOfClass:[PDFActionURL class]])
+            printf("%s.outline.action.URL=%s\n", name,
+                   [[(PDFActionURL *)action URL] absoluteString].UTF8String ?: "(nil)");
+        if ([action isKindOfClass:[PDFActionGoTo class]]) {
+            PDFDestination *goTo = [(PDFActionGoTo *)action destination];
+            printf("%s.outline.action.dest=%s\n", name,
+                   goTo ? (goTo.page ? "an-object" : "(nil)") : "(nil)");
+            if (goTo) {
+                printf("%s.outline.action.dest.point=%.4f,%.4f\n", name, (double)goTo.point.x,
+                       (double)goTo.point.y);
+                printf("%s.outline.action.dest.zoom=%.4f\n", name, (double)goTo.zoom);
+            }
+        }
+    }
+    for (NSUInteger i = 0; i < outline.numberOfChildren; i++) {
+        char key[512];
+        snprintf(key, sizeof(key), "%s.c%lu", name, (unsigned long)i);
+        printOutlineWalk(key, [outline childAtIndex:i], depth + 1);
+    }
+    (void)depth;
+}
+
 // ---- the action family and PDFDestination -------------------------------------------------------
 //
 // Printed once per annotation, after the border facts, in the same keys on both sides.  Three things
@@ -512,6 +577,7 @@ int main(int argc, char **argv)
                 // rules and the fixtures that fix them.  A nil border is printed as nil and is NOT
                 // compared against the port's nil by accident - it is compared like anything else, and
                 // the subtypes that answer one where the port does not would show up here.
+                printOutlineWalk(name, document.outlineRoot, 0);
                 for (unsigned a = 0; a < first.annotations.count; a++) {
                     PDFAnnotation *each = first.annotations[a];
                     NSString *prefix = [NSString stringWithFormat:@"%s.page0.annotation%u", name, a];
@@ -667,6 +733,21 @@ int main(int argc, char **argv)
         }
         printBorderValueFacts();
         printInitializerFacts(argv[1]);
+        {
+            PDFDocument *opened = [[PDFDocument alloc]
+                initWithURL:[NSURL fileURLWithPath:@(argv[1])]];
+            PDFOutline *fresh = [[PDFOutline alloc] init];
+            printf("initoutline.class=%s label=%s children=%lu index=%lu isOpen=%d parent=%s "
+                   "document=%s\n", class_getName([fresh class]),
+                   fresh.label == nil ? "(nil)"
+                                       : (fresh.label.length == 0 ? "(empty)" : fresh.label.UTF8String),
+                   (unsigned long)fresh.numberOfChildren, (unsigned long)fresh.index,
+                   (int)fresh.isOpen, fresh.parent ? "an-object" : "(nil)",
+                   fresh.document ? "an-object" : "(nil)");
+            printf("initoutline.dest=%s action=%s\n", fresh.destination ? "an-object" : "(nil)",
+                   fresh.action ? "an-object" : "(nil)");
+            printf("initoutline.root=%s\n", opened.outlineRoot ? "an-object" : "(nil)");
+        }
         printCopyFacts();
     }
     return 0;

@@ -233,6 +233,16 @@
    "source": "the header grep above, and the host's 0 on all six fixtures"
   },
   {
+  "api": "PDFDocument.outlineRoot",
+  "kind": "property",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "effect": "the document's /Outlines tree: the root dictionary of PDF 1.7 Table 8.2, which holds the /First of the top-level chain, wrapped in the PDFOutline that IS that dictionary.  The root is an outline like any other - measured, it answers an empty -label, a child count from its /First chain, index 0, a nil parent and a -document - so it is built by the same constructor the items are.  nil for a document whose catalog names no /Outlines, which is every fixture in the harness but the outline ones",
+  "facts": "facts/PDFKit/Outline11.md",
+  "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures"
+  },
+  {
    "api": "PDFDocument.allowsCopying",
    "kind": "property",
    "introduced": "11.0",

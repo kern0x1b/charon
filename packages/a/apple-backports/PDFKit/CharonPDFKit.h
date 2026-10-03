@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class UIColor;
 @class PDFAction;
 @class PDFDestination;
+@class PDFOutline;
 
 // -init is the third way the header's own comment names a document being made ("either the init
 // method, initWithURL:, or initWithData:"), so it is a convenience initializer here and it reaches
@@ -44,6 +45,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) BOOL allowsCopying;     // YES: the release carries no permission of its own
 @property (readonly, nullable) NSURL *documentURL;   // the URL this document was opened with
 @property (readonly, nullable) NSData *dataRepresentation;
+// The /Outlines tree, when the catalog names one - the only path in to PDFOutline, and nil for every
+// document that does not.  See PDFDocument11.m.
+@property (readonly, nullable) PDFOutline *outlineRoot;
 @end
 
 // PDFView without a window, which is the whole of what this release can offer for it.  The defaults
@@ -388,6 +392,42 @@ typedef NS_ENUM(NSInteger, PDFActionNamedName) {
 
 @interface PDFActionResetForm (CharonInternals)
 - (nullable instancetype)initWithCharonActionDictionary:(CGPDFDictionaryRef)action;
+@end
+
+// ---- PDFOutline -------------------------------------------------------------------------------
+//
+// The /Outlines tree of PDF 1.7 Table 8.2, which is a LINKED structure: the catalog names a root
+// dictionary through /Outlines, every item names its /Parent, /Prev and /Next, and an item's children are
+// its /First .. /Last chain.  -[PDFDocument outlineRoot] is the only path in from a document.
+//
+// NOT declared, each for a named reason its row repeats: -insertChild:atIndex: and -removeFromParent,
+// which are WRITE paths - this port reads documents, and a method that changed an outline would have to
+// write one back into the file.
+//
+// -childAtIndex: answers nil past the last child where the host RAISES NSRangeException.  That is a
+// measured boundary and not a match: a differential cannot compare a raised exception against an answer,
+// so the harness does not ask one past the end, and a caller that gets nil can say so.  See PDFOutline11.m
+// and the row.
+@interface PDFOutline : NSObject
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly, weak, nullable) PDFDocument *document;
+@property (nonatomic, readonly, weak, nullable) PDFOutline *parent;
+@property (nonatomic, readonly) NSUInteger numberOfChildren;
+@property (nonatomic, readonly) NSUInteger index;
+- (nullable PDFOutline *)childAtIndex:(NSUInteger)index;
+@property (nonatomic, copy, nullable) NSString *label;
+@property (nonatomic, readonly) BOOL isOpen;
+@property (nonatomic, readonly, nullable) PDFDestination *destination;
+@property (nonatomic, readonly, nullable) PDFAction *action;
+@end
+
+// The port's own constructor, over one item dictionary of the tree, with the links the walk already
+// knows: the document it belongs to, its parent and its position in that parent's chain.
+@interface PDFOutline (CharonInternals)
+- (nullable instancetype)initWithCharonItem:(CGPDFDictionaryRef)item
+                                  document:(nullable PDFDocument *)document
+                                    parent:(nullable PDFOutline *)parent
+                                     index:(NSUInteger)index;
 @end
 
 NS_ASSUME_NONNULL_END

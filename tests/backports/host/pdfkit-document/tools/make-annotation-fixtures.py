@@ -48,7 +48,7 @@ def build(path, annotations):
     """1 catalog, 1 pages, 1 page, the content stream, the annotations, the font."""
     objects = [
         b"<< /Type /Catalog /Pages 2 0 R >>",
-        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        b"<< /Type /Pages /Kids [3 0 R] /Count 1 /Parent 1 0 R >>",
         None,                                    # the page, filled in once the numbers are known
         b"<< /Length " + str(len(TEXT)).encode() + b" >>\nstream\n" + TEXT + b"\nendstream",
     ]
