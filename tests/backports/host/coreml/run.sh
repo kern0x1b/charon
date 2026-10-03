@@ -98,7 +98,7 @@ COREML_RECORDS="$build/port.json" "$build/port/run" "$models"
 #    container the release itself refused to load.
 # COREML_DIVERGENT names a container whose prediction numbers are a recorded divergence and is empty
 # by default: there is none, since nn_image's cause was found and fixed (see facts/CoreML/CoreML.md).
-COREML_DIVERGENT=${COREML_DIVERGENT:-} python3 - "$build/system.json" "$build/port.json" <<'PY'
+COREML_DIVERGENT=${COREML_DIVERGENT:-} python3 - "$build/system.json" "$build/port.json" "$build/verdict" <<'PY'
 import json, os, sys
 system, port = json.load(open(sys.argv[1])), json.load(open(sys.argv[2]))
 divergent = os.environ.get("COREML_DIVERGENT", "")
@@ -176,11 +176,15 @@ for key, want, got in informational:
 unanswered = len(one_sided) - len(missing)
 print("compared %d keys, %d differ, %d missing, %d recorded divergences, %d for a container the release refused"
       % (len(set(system) | set(port)), len(hard), len(missing), len(informational), unanswered))
-if hard or missing:
-    print("port: DIFFERS")
-    raise SystemExit(1)
-print("port: same as the system")
+# The verdict is written where the rest of the run can read it instead of ending the script here.
+# A red comparison used to raise SystemExit at this line, which is above the mutants: a test that was
+# red for any reason never reached its controls, so a dead mutant could not be seen for as long as the
+# comparison stayed red. The two verdicts are reported together and either one fails the run.
+with open(sys.argv[3], "w") as out:
+    out.write("differs\n" if hard or missing else "same\n")
 PY
+verdict=$(cat "$build/verdict")
+echo "comparison: $verdict"
 
 # 4. mutants: each of these has to change the PORT's own record, or the rule it stands for is not
 #    being applied. Not one is here: -[MLModel predictionFromFeatures:error:]'s skip of an undefined
@@ -248,4 +252,9 @@ mutant MLFeatureValue.m "    [coder encodeObject:self.multiArrayValue forKey:@\"
 mutant MLFeatureValue.m "        _multiArray = array;" "        _multiArray = nil;"
 mutant MLConstants.m '@"com.apple.CoreML"' '@"CoreML"'
 echo "mutants: $ran run, $survived surviving"
-[ "$survived" -eq 0 ]
+if [ "$verdict" = differs ]; then
+    echo "port: DIFFERS"
+else
+    echo "port: same as the system"
+fi
+[ "$verdict" = same ] && [ "$survived" -eq 0 ]

@@ -138,8 +138,11 @@ VISION_COREML_MODELS="$models" VISION_RECORDS="$build/port.json" "$build/port/ru
 # nn_image and this port's prediction of it was a recorded divergence apart until 2026-10-03, when
 # the cause turned out to be the network's own scaler being applied to an array input
 # (facts/CoreML/CoreML.md). compare.py has no exception left.
-python3 "$here/compare.py" "$build/system.json" "$build/port.json"
-if [ $? -eq 0 ]; then echo "port: same as the system"; else echo "port: DIFFERS"; exit 1; fi
+# The comparison's verdict is kept rather than ending the run: the mutants are below, and a red
+# comparison used to exit here, so a red test never checked that its controls still fire. Both
+# verdicts are reported and either one fails the run.
+if python3 "$here/compare.py" "$build/system.json" "$build/port.json"; then verdict=same; else verdict=differs; fi
+echo "comparison: $verdict"
 
 # 4. mutants: each of these has to change the record, or the rule it stands for is not applied
 survived=0
@@ -209,4 +212,5 @@ mutant VNHandlers.m "if (handler)
 # made for it, unverified here.
 echo "mutants: $ran run, $survived surviving"
 
-[ "$survived" -eq 0 ]
+if [ "$verdict" = differs ]; then echo "port: DIFFERS"; else echo "port: same as the system"; fi
+[ "$verdict" = same ] && [ "$survived" -eq 0 ]
