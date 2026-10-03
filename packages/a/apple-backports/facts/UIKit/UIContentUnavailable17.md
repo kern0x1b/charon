@@ -263,13 +263,42 @@ Measured over `UIKitCore` of the arm64e shared cache of iOS 18.0, read with `mod
 | read | result |
 | --- | --- |
 | `-init` in `UIContentUnavailableConfigurationState`'s own instance list | **no** (`no-own-init`) |
-| `+new` in the own metaclass list of any class of that cache | **no**, 0 of 190858 |
+| a method named `new` in the own metaclass list of any class of that cache | yes, **665** of 190858 - see the correction below, this line first read 0 |
 | control: `-init` in a class's own instance list | yes, 37248 of 190858, `NSObject` among them, and `ARConfiguration`, whose header marks `-init` `NS_UNAVAILABLE` all the same |
-| control: `+new` in `NSObject`'s own metaclass list | no - it is inherited rather than redeclared |
+| control: `+new` in `NSObject`'s own metaclass list | **yes** - `NSObject` declares `+new` itself |
 
 So Apple's class defines neither, and the port defines neither: `UIContentUnavailableProperties.m` carries
 `initWithTraitCollection:`, `initWithCoder:` and the six `UIConfigurationState` members, and no `-init` or
 `+new`. What a call reaches is `NSObject`'s, on this release and on Apple's alike.
+
+### CORRECTION, 2026-10-03: the two `+new` lines above were a control that could not fail
+
+This section first said `+new` is in the own metaclass list of **0 of 190858** classes, "because +new is
+NSObject's and is inherited rather than redeclared", and listed `NSObject` not declaring it as the control
+that made the zero believable.  **Both claims are wrong, and the number was never a measurement.**
+
+`modules/apple/objc.lua`'s `method_list` stores every method name as `"-" .. name`, whichever list it read it
+from (`objc.lua:91-93`).  There is no `+` anywhere in the reader, so asking whether a class's metaclass list
+holds `"+new"` asks for a key that no read can ever produce: the count is 0 for every cache, always, and it
+would have stayed 0 with the port's own `+new` definitions in front of it.  A control that comes out at zero
+for something that cannot be zero is a defect in the control.
+
+Asked the way the reader actually stores names - is there a method named `new` in the metaclass list - the same
+one pass over the same cache answers:
+
+    CENSUS  classes=190858  protocols=30845  own_init=37248  own_new=665
+
+**665**, not 0, and `NSObject` is one of them: `NSObject` declares `+new` in its own metaclass list rather than
+having callers inherit it.  (The iOS 18.0 reading is in `.agent-work/runs/initnew/own-18b.tsv` of the band that
+corrected it; the shape question this file also rests on - which LIST a name is in - is unaffected, because
+that is what the reader does distinguish, and `UIContentUnavailable26.md` now carries a case where the
+distinction decides a row.)
+
+**What this does and does not change.**  The eight rows this section decides keep their answer: all seven
+classes read `no-own-init` and `no-own-new`, each measured per class in the list's own metaclass list, which
+is the reading that was always sound; what was unsound was the sentence about the cache at large.  A claim
+repeated in `coordination/wave-2026-10-03/v-spatial-report.md` - "`+new` is in the OWN class list of 0 of
+143137 classes" of the iOS 16.0 cache - is the same measurement and is due the same correction.
 
 The header half, measured so the row can say why no definition is needed.
 `UIContentUnavailableConfigurationState.h:21-22` redeclares both `NS_UNAVAILABLE`, and an **`NS_UNAVAILABLE`
