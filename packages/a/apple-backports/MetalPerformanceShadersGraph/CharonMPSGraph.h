@@ -157,6 +157,10 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
     // everything after it, in one direction or the other. Which of the four it is, which direction, and
     // whether the element at a position is in its own answer are all parameters of the operation, for the
     // same reason the reduction family's are.
+    // The gather family, which is one walk: the result's shape and, for each of its axes, which axis of the
+    // operand feeds it and whether that one is reversed. Which transformation it is (@"gather") is what the
+    // walk reads, not which of these it is, for the reason the reduction family's are read the same way.
+    CharonMPSGraphOperationKindReshape,
     CharonMPSGraphOperationKindTranspose,
     CharonMPSGraphOperationKindSqueeze,
     CharonMPSGraphOperationKindExpandDims,

@@ -821,6 +821,44 @@ an int32 and an int64 of shape [1] both answer, measured.
   shape holds no elements and then takes the process down inside `MPSNDArray` ("device may not be nil",
   MPSNDArray.mm:759).
 
+## The reshape: two rows, and the flat index
+
+`reshapeTensor:withShape:name:` (14.0, in `MPSGraph14.m`) and `reshapeTensor:withShapeTensor:name:` (15.0, in
+`MPSGraphTensorShapeOps150.m`). Both are one gather with the axes left alone and the result's shape the
+caller's, and both are compared in a process of their own (`gather_reshape`): **11 cases, every cell and
+every shape byte-identical to the release, `gather_reshape checks=11 failures=0 recorded=0` over 160 cells**,
+with the red control differing from the release in 12 of the 25 case lines of that group.
+
+**The answer is the flat index and not a mapping of axes.** Both shapes are row-major and the volumes match,
+which is all the header asks for, so the result's element at a flat index is the operand's element at the same
+flat index - measured: a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) answers those eight values over a 4x2, over a 2x4
+and over a 1x8 alike, and NOT the transpose a 4x2 could be read as, and a 2x3x4 answers its own twenty-four in
+order over a 6x4, over itself and over a 24x1. This is why the walk takes a flat mapping for this operation and
+not the per-axis one every other gather uses: a 2x4 into a 4x2 puts one axis of the result across HALF of an
+axis of the operand, which no per-axis mapping can say.
+
+**A dynamic extent is the header's -1 and is resolved against the element count.** Measured: a 2x4 into
+`@[@4, -1]` answers a 4x2, into `@[@-1, @4]` a 2x4, and into a shape of `@[@-1]` alone a shape of `8` - a rank
+of one, which prints without an `x`.
+
+**Three shapes the release refuses, each with its own words, each asked in a process of its own by
+`refusals.m` and held in `refusals.txt`:**
+
+* **A volume that does not match.** The release builds the tensor the caller asked for - the shape line prints
+  `1x7` for a 2x4 into a 1x7 - and its own compiler refuses it: `'mps.reshape' op the result shape is not
+  compatible with the input shape` (MPSGraphUtilities.mm:310), and the process is gone. The port raises
+  `NSInvalidArgumentException` where the graph is built, which is the named divergence the family's other
+  refusals carry.
+* **Two dynamic extents**, which the header's own words rule out ("allowed to contain dynamic dimensions (-1)
+  when the result type can be inferred unambiguously"). The release does not resolve them either: the shape
+  line prints `-1x-1` and `MPSNDArray` then asserts "NDArray dimension length > INT_MAX" (MPSNDArray.mm:831)
+  and takes the process down. The port refuses it where the graph is built.
+* **The fed form.** Asked in a process of its own the process dies with SIGSEGV and writes nothing (exit 139),
+  so there is no answer of the release for a case to compare against and the port's answer is its header's -
+  the same named divergence the family's other five fed forms carry. An int32 and an int64 of shape [1] both
+  answer on the port; a floating point shape is refused where the graph is built, because the release cannot
+  build the graph over one at all.
+
 ## The cumulative family of 16.0
 
 Sixteen rows in one object (`MPSGraphCumulativeOps160.m`): `cumulativeSum`, `cumulativeProduct`,
@@ -905,7 +943,7 @@ that is gone, so there is nothing to compare a line against. Both are measuremen
 
 ### What is not measured here
 
-The rest of the shape family (`reshape`, `slice`, `pad`, `tile`, `concat`, `stack`, `split`, `spaceToDepth`,
+The rest of the shape family (`slice`, `pad`, `tile`, `concat`, `stack`, `split`, `spaceToDepth`,
 `depthToSpace`, `spaceToBatch`, `batchToSpace`, `coordinateAlongAxis`, `nonZeroIndices`, the `gather*` and
 `scatter*` forms and the `topK`/`bottomK` pair) is not in this page and not in the tree: it is the rest of the
 rows the ledger carries as `missing` for this family.

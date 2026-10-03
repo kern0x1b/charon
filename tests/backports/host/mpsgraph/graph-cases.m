@@ -725,10 +725,13 @@ static void cumulative_families(MPSDataType type, const void *values, const char
 //   - a broadcast aligns to the RIGHT of the shape given and wraps each axis the shape makes wider;
 //   - a reverse flips the axes it is given and nothing else.
 //
-// The five FED forms - the flatten's axis, the broadcast's shape and the reverse's, the squeeze's and the
-// expanded dimension's set of axes - are NOT cases here: asked in a process of its own each of them takes
-// the release down (facts/MetalPerformanceShadersGraph/Core.md carries each one's own assertion), so
-// there is no answer of the release for a case to compare against and the port's answer is its header's.
+// The FED forms - the reshape's shape, the flatten's axis, the broadcast's shape and the reverse's,
+// the squeeze's and the expanded dimension's set of axes - are NOT cases here where the release
+// takes the process down over one (facts/MetalPerformanceShadersGraph/Core.md and refusals.txt
+// carry each one's own assertion), so there is no answer of the release for a case to compare
+// against and the port's answer is its header's. Which of them those are is a measurement and not
+// a decision: refusals.txt names them, one process each, and run.sh fails a question whose answer
+// changed.
 
 // Every family below ends with the chain, which is defined with the rest of the cases at the end of this
 // file - the six gather families come before it in the file's order because they come before the table of
@@ -842,6 +845,60 @@ static void family_gather_transpose(void)
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g transposeTensor:a permutation:@[@1, @2, @0] name:@"t"]; },
                 MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    chain_case();
+}
+
+// The reshape, which is the same walk with the axes left alone and the result's shape the caller's: the
+// operand's elements in the same row-major order at another extent. A dynamic extent is the header's -1 and
+// is the element count over the product of the extents written down.
+static void family_gather_reshape(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+    gather_case("reshape-4x2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@4, @2] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-1x8 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@1, @8] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-own-shape float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@2, @4] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-dynamic0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@4, @-1] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-dynamic1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@-1, @4] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-rank1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@8] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-24-6x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@6, @4] name:@"r"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("reshape-24-2x3x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@2, @3, @4] name:@"r"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("reshape-24-24x1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@24, @1] name:@"r"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("reshape-classes-4x8 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@4, @8] name:@"r"]; },
+                MPSDataTypeFloat32, @[@8, @4], leftValues);
+    gather_case("reshape-rank2-identity float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@2, @4] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
     chain_case();
 }
 
@@ -1419,6 +1476,7 @@ static const Family kFamilies[] = {
     { "reduction_rest", family_reduction_rest },
     { "cumulative", family_cumulative },
     { "gather_transpose", family_gather_transpose },
+    { "gather_reshape", family_gather_reshape },
     { "gather_flatten", family_gather_flatten },
     { "gather_broadcast", family_gather_broadcast },
     { "gather_reverse", family_gather_reverse },

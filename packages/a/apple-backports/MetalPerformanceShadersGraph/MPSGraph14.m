@@ -703,6 +703,21 @@ typedef enum {
                                name:name];
 }
 
+// The reshape, which arrived with the framework itself: the operand's elements in the same order at another
+// extent, which is one gather with the axes left alone and the result's shape the caller's. The header allows
+// a dynamic extent (-1) where the result type can be inferred unambiguously, and the walk resolves it; the
+// volumes have to match or the release cannot build the graph at all (measured: "LLVM ERROR: Failed to infer
+// result type(s)" takes the process down), so the port refuses that where the graph is built.
+- (MPSGraphTensor *)reshapeTensor:(MPSGraphTensor *)tensor
+                        withShape:(NSArray<NSNumber *> *)shape
+                             name:(NSString *)name
+{
+    return [self charon_mps_gather:CharonMPSGraphOperationKindReshape
+                             tensor:tensor
+                        parameters:@{@"gather": @"reshape", @"gatherShape": shape ?: @[]}
+                               name:name];
+}
+
 #pragma mark - the gather family: the one seam every release's shape factory goes through
 
 // What a gather is: the result's shape, and the parameters that say which transformation produces it. The

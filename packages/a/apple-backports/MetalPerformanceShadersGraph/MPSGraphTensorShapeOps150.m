@@ -20,6 +20,20 @@
 
 @implementation MPSGraph (CharonMPSGraphTensorShape150)
 
+// The fed form of the reshape, which arrived with 15.0: the shape is a 1D tensor of int32 or int64, so the
+// result's own shape is not known until the graph runs and the walk reads it out of the operation's second
+// input. Measured, an int32 and an int64 of shape [1] both answer.
+- (MPSGraphTensor *)reshapeTensor:(MPSGraphTensor *)tensor
+                  withShapeTensor:(MPSGraphTensor *)shapeTensor
+                             name:(NSString *)name
+{
+    return [self charon_mps_gather:CharonMPSGraphOperationKindReshape
+                             tensor:tensor
+                      fedParameter:shapeTensor
+                        parameters:@{@"gather": @"reshape", @"gatherOperand": @"shape"}
+                               name:name];
+}
+
 // The axis is the caller's and is normalised by the walk: negative counted from the end of the rank, and an
 // axis outside it refused there, because the release destroys the process over one.
 - (MPSGraphTensor *)flatten2DTensor:(MPSGraphTensor *)tensor

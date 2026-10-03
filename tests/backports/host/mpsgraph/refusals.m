@@ -16,6 +16,8 @@
 #import <MetalPerformanceShadersGraph/MetalPerformanceShadersGraph.h>
 
 @interface MPSGraph (MPSGraph26)
+- (MPSGraphTensor *)reshapeTensor:(MPSGraphTensor *)tensor withShape:(NSArray<NSNumber *> *)withShape name:(NSString *)name;
+- (MPSGraphTensor *)reshapeTensor:(MPSGraphTensor *)tensor withShapeTensor:(MPSGraphTensor *)withShapeTensor name:(NSString *)name;
 - (MPSGraphTensor *)transposeTensor:(MPSGraphTensor *)tensor dimension:(NSUInteger)dimension withDimension:(NSUInteger)withDimension name:(NSString *)name;
 - (MPSGraphTensor *)transposeTensor:(MPSGraphTensor *)tensor permutation:(NSArray<NSNumber *> *)permutation name:(NSString *)name;
 - (MPSGraphTensor *)flatten2DTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
@@ -134,6 +136,7 @@ int main(int argc, const char *argv[])
         fprintf(stderr, "name the question; these are: ");
         static const char *const kQuestions[] = {
             "broadcast-wider", "broadcast-added", "broadcast-narrower", "broadcast-zero-extent",
+            "reshape-fed-shape", "reshape-volume-mismatch", "reshape-two-dynamic", "reshape-dynamic-only",
             "fed-flatten-axis", "fed-broadcast-shape", "fed-reverse-axes", "fed-squeeze-axes",
             "fed-expand-axes", "squeeze-not-unit", "flatten-axis-outside", "expand-axis-outside",
             "transpose-axis-outside", "reverse-axis-outside", "reverse-axes-empty", "squeeze-axes-empty",
@@ -178,6 +181,26 @@ int main(int argc, const char *argv[])
         }
         // The five FED forms. Each of these is a parameter that arrives at run time rather than written down,
         // and each is asked in a process of its own because the release takes the process down.
+        if (strcmp(q, "reshape-fed-shape") == 0) {
+            fed(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
+                return [g reshapeTensor:a withShapeTensor:p name:@"r"]; }, twoByFour, rowFeed, 4, MPSDataTypeInt32, @[@1], "reshape-fed-shape");
+            return 0;
+        }
+        if (strcmp(q, "reshape-volume-mismatch") == 0) {
+            one(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                return [g reshapeTensor:a withShape:@[@1, @7] name:@"r"]; }, twoByFour, rowFeed, "reshape-volume-mismatch");
+            return 0;
+        }
+        if (strcmp(q, "reshape-two-dynamic") == 0) {
+            one(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                return [g reshapeTensor:a withShape:@[@-1, @-1] name:@"r"]; }, twoByFour, rowFeed, "reshape-two-dynamic");
+            return 0;
+        }
+        if (strcmp(q, "reshape-dynamic-only") == 0) {
+            one(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                return [g reshapeTensor:a withShape:@[@-1] name:@"r"]; }, twoByFour, rowFeed, "reshape-dynamic-only");
+            return 0;
+        }
         if (strcmp(q, "fed-flatten-axis") == 0) {
             fed(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
                 return [g flatten2DTensor:a axisTensor:p name:@"f"]; }, twoByFour, rowFeed, 1, MPSDataTypeInt32, @[@1], "fed-flatten-axis");

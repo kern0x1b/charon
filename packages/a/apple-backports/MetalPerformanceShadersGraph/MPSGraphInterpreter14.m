@@ -1131,6 +1131,10 @@ static NSMutableArray<NSNumber *> *CharonMPSGraphGatherIntegers(MPSGraphTensorDa
 //     operand's own bytes in the operand's own order, which is what makes them one gather with the axes left
 //     alone: a 1x2x4 squeezed is a 2x4 of the same bytes, a 2x4 expanded at axis 0 is a 1x2x4 of the same
 //     bytes, and a 2x3x4 flattened at axis 0 is a 1x24 of them.
+//   - a reshape is the same walk with the axes left alone and the result's shape the caller's: a 2x4 into a
+//     4x2 answers (1, 2, 3, 4, 10, 20, 30, 40) and a 2x4 into a 1x8 the operand's own eight values, neither of
+//     which moves an element, and a dynamic extent (the header's -1) is the element count over the product of
+//     the extents written down (measured: a 2x4 into @[@4, -1] answers a 4x2).
 //   - a flatten collapses every axis from its axis on into one.
 //   - a broadcast aligns the operand to the RIGHT of the shape given, takes the LARGER of the two extents on
 //     every axis they share (measured: a 2x4 into a 4x4 answers a 4x4 and a 2x4 into a 1x4 answers the 2x4
@@ -1337,6 +1341,71 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
             [sourceCounts addObject:@1];
             [reversed addObject:([flipped containsIndex:i] ? @YES : @NO)];
         }
+    } else if (strcmp(gather, "reshape") == 0) {
+        // A reshape is the same walk with the axes left alone and the result's shape the caller's: the operand
+        // and the result hold the same elements in the same row-major order, so the result's axes consume the
+        // operand's in turn - a 2x4 into a 4x2 answers (1, 2, 3, 4, 10, 20, 30, 40) and a 2x4 into a 1x8 the
+        // operand's own eight values, and neither moves an element. An axis of the result covers the operand's
+        // axes from the first one not yet consumed to the last one that fits inside it, which is the split the
+        // walk already does for a flatten's collapse.
+        //
+        // A DYNAMIC extent, the header's -1, is resolved here: the shape is allowed to hold one when the
+        // result type can be inferred unambiguously, so the product of the extents written down divides the
+        // operand's element count and the answer is the quotient. Two of them, or a shape whose product does
+        // not divide, is a shape this cannot answer and the port refuses it where the graph is built.
+        NSArray<NSNumber *> *written = [parameters[@"gatherOperand"] isEqual:@"shape"] ? fed
+                                                                                     : parameters[@"gatherShape"];
+        if (written == nil)
+            return nil;
+        NSUInteger elementCount = CharonMPSGraphElementCount(sourceShape);
+        NSMutableArray<NSNumber *> *declared = [NSMutableArray arrayWithCapacity:written.count];
+        NSInteger dynamic = 0;
+        unsigned long long writtenProduct = 1;
+        for (NSNumber *extent in written) {
+            NSInteger value = extent.integerValue;
+            if (value == -1) {
+                dynamic++;
+                [declared addObject:@(-1)];
+                continue;
+            }
+            if (value < 1) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to reshape into a shape holding %ld, and every "
+                                   @"extent of a shape is one or more", name, (long)value];
+            }
+            writtenProduct *= (unsigned long long)value;
+            [declared addObject:@(value)];
+        }
+        if (dynamic > 1) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was asked to reshape into a shape with %ld dynamic extents, and "
+                               @"the release's own header allows one only where the result type can be "
+                               @"inferred unambiguously", name, (long)dynamic];
+        }
+        if (dynamic == 1) {
+            if (writtenProduct == 0 || elementCount % writtenProduct != 0) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to reshape %lu elements into a shape whose written "
+                                   @"extents are a product of %llu, which does not divide them", name,
+                                    (unsigned long)elementCount, writtenProduct];
+            }
+            [declared replaceObjectAtIndex:[declared indexOfObject:@(-1)] withObject:@(elementCount / writtenProduct)];
+        }
+        unsigned long long total = 1;
+        for (NSNumber *extent in declared)
+            total *= (unsigned long long)extent.unsignedIntegerValue;
+        if (total != (unsigned long long)elementCount) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was asked to reshape %lu elements into %llu, and the release's "
+                               @"own header wants the volumes to match", name, (unsigned long)elementCount, total];
+        }
+        // The result's element at a flat index is the operand's element at the SAME flat index, which is what
+        // the two row-major orders and the volumes matching are, and which the per-axis mapping cannot express
+        // when the two shapes share no boundary - a 2x4 into a 4x2 puts one axis of the result across half of
+        // an axis of the operand. So the plan says the walk is flat and the walk reads the index, and the
+        // measured answers are the operand's own bytes in order: a 2x4 into a 4x2 and into a 2x4 and into a 1x8
+        // all answer (1, 2, 3, 4, 10, 20, 30, 40).
+        return @{@"shape": declared, @"flat": @YES};
     } else if (strcmp(gather, "transpose") == 0) {
         NSArray<NSNumber *> *permutation = parameters[@"gatherPermutation"];
         if (permutation.count != sourceRank) {
@@ -1373,7 +1442,7 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
         return nil;
     }
     return @{@"shape": shape, @"sourceAxes": sourceAxes, @"sourceCounts": sourceCounts,
-             @"reversed": reversed};
+             @"reversed": reversed, @"flat": @NO};
 }
 
 // The walk itself: each element of the result, its coordinates read from the last axis backwards (the operand
@@ -1398,6 +1467,14 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
     MPSDataType type = source.dataType;
     void *in = [source charon_mps_bytes];
     void *out = [result charon_mps_bytes];
+
+    // A reshape, whose answer is the operand's elements at the same flat index - see the plan.
+    if ([plan[@"flat"] boolValue]) {
+        for (NSUInteger element = 0; element < count && element < sourceCount; element++)
+            CharonMPSStoreRounded(out, result.dataType, element,
+                                  CharonMPSLoad(in, type, element), 1);
+        return;
+    }
 
     // The last axis's stride is one and every earlier axis's is the next one's weighted by the next axis's
     // extent, which is the row-major order the operand's own bytes are in.
