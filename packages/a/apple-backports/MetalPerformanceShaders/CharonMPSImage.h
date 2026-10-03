@@ -98,4 +98,27 @@ MPSDataType CharonMPSImageDataTypeOf(MPSImageFeatureChannelFormat format);
 void *CharonMPSImageReadRegion(MPSImage *image, const CharonMPSImageLayout *layout, MTLRegion region, NSString *what);
 BOOL CharonMPSImageWriteRegion(MPSImage *image, const CharonMPSImageLayout *layout, MTLRegion region, const void *buffer, NSString *what);
 
+// Lay one image's channels into another's at a feature channel offset, the source and the destination in
+// SEPARATE buffers. This is the concatenation MPSNNGraphNodes.h:2443 describes - "[0,M-1] will be drawn
+// from image M, [M, M+N-1] from image N" - and it is a scatter through the destination's own element
+// width, so a source and a destination of different channel formats join correctly rather than byte for
+// byte.
+//
+// `source` and `sourceBytes` are one source region as CharonMPSImageReadRegion returned it;
+// `destination` and `destinationBytes` are a whole destination image, one row after another, each of
+// `destination->width * destination->channels` elements. Two buffers, not one, because a concatenation's
+// destination is wider than every source: CharonMPSImageReadRegion allocates
+// width * height * sourceChannels elements, and joining in place writes a row of
+// width * destinationChannels into a buffer of the source's own size. Measured on one channel into four:
+// the write puts a row of four elements into a buffer of one and walks off the end of it, a SIGSEGV
+// inside objc_storeStrong.
+//
+// It answers NO, and writes nothing, when the two cannot be joined: the widths or the heights differ,
+// because a concatenation joins channels of one plane and not pixels of two, or the destination has no
+// channels at `offset .. offset + sourceChannels`, or either side names no element size. The caller's
+// refusal in the log is where the numbers go; a partial join would leave an image half joined and the
+// caller none the wiser.
+BOOL CharonMPSImageConcatRows(const CharonMPSImageLayout *source, const CharonMPSImageLayout *destination,
+                              NSUInteger offset, const void *sourceBytes, void *destinationBytes);
+
 NS_ASSUME_NONNULL_END

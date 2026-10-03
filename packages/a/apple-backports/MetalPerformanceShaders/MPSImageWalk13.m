@@ -389,3 +389,39 @@ BOOL CharonMPSImageMapBinary(MPSImage *primaryImage, MPSImage *secondaryImage, M
     free(result);
     return ok;
 }
+
+// Lay one image's channels into another's at a feature channel offset, the two sides in SEPARATE
+// buffers. MPSNNGraphNodes.h:2443-2446 is the rule: "As all images are padded out to a multiple of four
+// feature channels, M, N and O here are also multiples of four, even when the MPSImages are not", and the
+// channels of one source land in one block of the destination. So this reads a source row of
+// `source->channels` elements and writes them at `offset .. offset + source->channels` of a destination
+// row of `destination->channels` elements, at each side's own element width.
+//
+// The header's declaration of this and its refusal cases are at CharonMPSImage.h:98-121; the reason the
+// two sides are separate buffers rather than one is in the comment there, and it is a measured SIGSEGV.
+BOOL CharonMPSImageConcatRows(const CharonMPSImageLayout *source, const CharonMPSImageLayout *destination,
+                              NSUInteger offset, const void *sourceBytes, void *destinationBytes)
+{
+    if (!source || !destination || !sourceBytes || !destinationBytes)
+        return NO;
+    if (source->width != destination->width || source->height != destination->height)
+        return NO;
+    if (!source->elementSize || !destination->elementSize)
+        return NO;
+    if (offset + source->channels > destination->channels)
+        return NO;
+    size_t sourceRow = (size_t)source->width * source->channels;
+    size_t destinationRow = (size_t)destination->width * destination->channels;
+    for (NSUInteger y = 0; y < source->height; y++) {
+        const char *from = (const char *)sourceBytes + (size_t)y * sourceRow * source->elementSize;
+        char *to = (char *)destinationBytes + (size_t)y * destinationRow * destination->elementSize;
+        for (NSUInteger x = 0; x < source->width; x++) {
+            const char *pixel = from + (size_t)x * source->channels * source->elementSize;
+            char *out = to + ((size_t)x * destination->channels + offset) * destination->elementSize;
+            for (NSUInteger c = 0; c < source->channels; c++)
+                memcpy(out + (size_t)c * destination->elementSize,
+                       pixel + (size_t)c * source->elementSize, source->elementSize);
+        }
+    }
+    return YES;
+}
