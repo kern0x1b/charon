@@ -12,6 +12,47 @@ already has; the host's own AVFoundation run beside the port through Mac Catalys
 It lives in a library of its own, `libAVFoundationBackports.dylib`, built with the `avfoundation` config, so that only a
 port that looks for cameras loads AVFoundation.
 
+## `-init` and `+new`: the header says both unavailable, and the class's own metadata says one of them
+
+The SDK header closes this class with `AV_INIT_UNAVAILABLE` (AVCaptureDevice.h:2841 in 26.2, :2368 in 16.4),
+which declares `- (instancetype)init NS_UNAVAILABLE` and `+ (instancetype)new NS_UNAVAILABLE`. An **unavailable**
+redeclaration forces no definition - only an *available* one does - so the header half decides nothing here and the
+class's own method lists decide. Measured with the repository's own reader, `tools/corpus/objc-inventory.lua`, over
+the held caches:
+
+| cache | the class's own instance methods | the metaclass's own methods |
+| --- | --- | --- |
+| 10.0.1 arm64 | `-_initWithDeviceTypes:mediaType:position:`, `-dealloc`, `-description`, `-devices`, **`-init`** | `+discoverySessionWithDeviceTypes:mediaType:position:` — and nothing else |
+| 16.0 arm64e | `...`, **`-init`**, `...` (7 entries) | 13 entries, `+initialize` among them, and **never `+new`** |
+
+So the class **implements `-init`** from the first release that has it, and **does not implement `+new`** at any
+release measured. `+new` is `NSObject`'s and every class inherits it — measured on the host as well: `new` is in
+`NSObject`'s own metaclass list of 115 entries and not in this class's metaclass list of 16.
+
+What that `-init` answers is **nil, with no exception** — measured on the host's own class:
+
+```
+CLASS AVCaptureDeviceDiscoverySession own-init=1 own-new=0 init=ok nil new=ok nil
+```
+
+The port therefore defines `-init` and answers nil (`CHARON_AVFOUNDATION_UNAVAILABLE_INIT` in `CharonAVCapture.h`,
+carried by `AVCaptureDeviceDiscoverySession.m`) and deliberately does **not** define `+new`: a definition would put
+a selector in the port's metadata where Apple's class has none and answer the caller exactly what `NSObject`'s
+already answers. `+[NSObject new]` calls `[[self alloc] init]`, so the inherited `+new` reaches that same `-init` and
+answers nil too, which is what the host answers.
+
+`tests/backports/host/unavailable-init` holds both halves — the row is in `expectations.tsv` as framework
+`AVFoundation`, with `port-init=nil` (a third value beside `raise` and `none`: owed, and the answer is nil rather
+than a refusal) and `port-new=none`.
+
+### One measurement about the harness itself, since it decides whether the row can be asked
+
+`[[cls alloc] performSelector:@selector(init)]` **takes this process down** (SIGSEGV, exit 139) for this class, while
+`objc_msgSend(allocated, @selector(init))` answers nil; `+new` answers nil through either path. The probe now sends
+with `objc_msgSend`, which is the same IMP `performSelector:` would reach. The other 43 rows' answers are **byte for
+byte unchanged** by that (measured: the host output for every HealthKit and SensorKit row before and after the change
+diffs to nothing), so the change is the probe's mechanism and not its answers.
+
 ## The device types
 
 The four constants are strings whose values are their own names, and `AVCaptureDeviceTypeBuiltInDuoCamera`, which

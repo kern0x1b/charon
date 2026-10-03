@@ -44,3 +44,5 @@ SensorKit	host	SRSpeechMetrics	1	1	raises	NSInternalInconsistencyException			rai
 SensorKit	host	SRSupplementalCategory	1	1	raises	NSInternalInconsistencyException	Not available		raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit164.m	SensorKit164.m.o
 SensorKit	host	SRWristTemperature	1	1	raises	NSInternalInconsistencyException			raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
 SensorKit	host	SRWristTemperatureSession	1	1	raises	NSInternalInconsistencyException			raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
+
+AVFoundation	host	AVCaptureDeviceDiscoverySession	1	0	ok				nil	none	CHARON_AVFOUNDATION_UNAVAILABLE_INIT	AVFoundation/AVCaptureDeviceDiscoverySession.m	AVCaptureDeviceDiscoverySession.m.o

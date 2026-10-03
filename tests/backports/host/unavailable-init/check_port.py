@@ -14,8 +14,10 @@ defines -init with the measured body; where Apple's own class inherits +new, the
 +new either. A definition where Apple's class has none would put the selector in the port's metadata
 where Apple's has none, changing what the class IS and answering the caller exactly what NSObject's
 already answers. That is the rule the coordinator settled on 2026-10-03
-(coordination/wave-2026-10-03/QUEUE.md), and the two differ per framework: SensorKit's classes define
-both selectors, HealthKit's define -init and inherit +new.
+(coordination/wave-2026-10-03/QUEUE.md), and the three frameworks differ: SensorKit's classes define
+both selectors, HealthKit's define -init and inherit +new, and AVFoundation's one class in this table
+(AVCaptureDeviceDiscoverySession) defines -init with an answer of nil rather than a refusal and inherits
++new - the last new value of `port-init`, `nil`, next to `raise` and `none`.
 
 For each class two things are asked, and they fail differently, which is why both are:
 
@@ -153,11 +155,17 @@ def check_source(body, row, package, problems):
 
 
 def check_object(carried, row, selector, problems):
+    """The selector is either owed or not, and `owed` is what the row's answer was: `raise` for the classes
+    whose own -init refuses, `nil` for the one whose own -init answers nil and raises nothing, `none` for a
+    selector Apple's own class does not define and every class inherits. The three are the same question with
+    three answers, so they are one branch."""
     kind = "instance" if selector == "init" else "class"
     there = ("-" + selector) in carried[kind]
-    if row["port-" + selector] == "raise" and not there:
-        problems.append("%s is not in the class's %s list of %s" % (selector, kind, row["port-object"]))
-    elif row["port-" + selector] == "none" and there:
+    owed = row["port-" + selector]
+    if owed in ("raise", "nil") and not there:
+        problems.append("%s is not in the class's %s list of %s, and the measured answer is %s"
+                        % (selector, kind, row["port-object"], owed))
+    elif owed == "none" and there:
         problems.append("%s is in the class's %s list of %s, and Apple's own class carries neither"
                         % (selector, kind, row["port-object"]))
 
