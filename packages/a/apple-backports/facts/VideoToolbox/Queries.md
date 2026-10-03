@@ -68,18 +68,43 @@ VTCopySupportedPropertyDictionaryForEncoder(320, 240, codec, NULL, &id, &propert
   codec 0x61763031 AV1        -> -12908  encoderID=(null)  keys=0
 ```
 
-Two things in that table are worth naming because they are the whole content of the row:
+Two things in that table are the whole content of the row:
 
-- **every value in the returned dictionary is NULL** - 140 keys and 140 NULL values for H264, 169 and 169 for
-  HEVC, 59 and 59 for ProRes422, 54 and 54 for JPEG. The function's own documentation says it "builds a list
-  of supported properties", and what it builds is the KEY SET: a caller that reads a value gets NULL back, so
-  the port must hand back the keys with no values rather than inventing any.
+- **every value is an ATTRIBUTE DICTIONARY**, not a value and not nothing. Counted per codec:
+
+  | codec | keys | NULL values | attribute dictionaries | of those, EMPTY | with `PropertyType` | `ReadWrite` | `ReadOnly` |
+  | --- | --- | --- | --- | --- | --- | --- | --- |
+  | H264 | 140 | **0** | 140 | 45 | 82 | 81 | 14 |
+  | HEVC | 169 | **0** | 169 | 43 | 92 | 110 | 16 |
+  | ProRes422 | 59 | **0** | 59 | 59 | 0 | 0 | 0 |
+  | JPEG | 54 | **0** | 54 | 52 | 2 | 2 | 0 |
+
+  A non-empty one is `{ PropertyType = Number; ReadWriteStatus = ReadWrite; }`, and the 14 H264 and 16 HEVC
+  read-only properties are `{ PropertyType = Number; ReadWriteStatus = ReadOnly; }`. The rest are `{ }`, empty
+  dictionaries - and ProRes422's fifty-nine are ALL empty, which is that encoder's own answer rather than a
+  defect in the reading. So the function builds a key set AND a per-key attribute dictionary, and the port
+  has to answer both.
 - **a codec with no encoder answers `kVTCouldNotFindVideoEncoderErr` (-12908)**, with no encoder ID and no
-  dictionary, rather than an empty dictionary. `-12908` is the release's own code (`VTErrors.h:37`).
+  dictionary, rather than an empty dictionary. `-12908` is the release's own code (`VTErrors.h:37`). That part
+  of the first measurement stands.
+
+**The first version of this section was wrong, and the correction is the interesting part.** It said every
+value in the dictionary was NULL - 140 keys and 140 NULL values - and told the reader the port must not invent
+any. The cause was the probe's, not the function's: `CFDictionaryGetKeysAndValues` takes **two** buffers, one
+for the keys and one for the values, and that probe passed a single buffer of `n` entries and read the values
+out of its second half, which is past the end of what it had allocated. With two buffers the same call answers
+0 NULL values for every codec. The coordinator's own measurement of H264 - 140 keys, 0 NULL, each value an
+attribute dictionary - is what made me look at the buffer arithmetic instead of at the function.
+
+Two readings in this family were mine before this one: the cross-format one in `PixelRotationSession.md`,
+where an off-by-one on a destination pixel index made an exact channel swap look like a lossy conversion, and
+the SIGSEGV below. All three were the same shape - an index computed by hand and then trusted - so the
+harness for this row reads the dictionary through the documented two-buffer call and not through a hand-rolled
+walk of it.
 
 A first version of the probe asked for those six codecs in one process and died with SIGSEGV on the fifth;
-each codec asked in its own process answers cleanly, so the crash was the probe's own doing (it was reading
-the value of a NULL entry through a bridge cast) and not the function's.
+each codec asked in its own process answers cleanly, so the crash was the probe's own doing - it was reading
+the value of an entry through a bridge cast - and not the function's.
 
 **The one row whose behaviour is a change rather than an answer is `VTRegisterSupplementalVideoDecoderIfAvailable`**:
 it returns void, and on this host it moved `VTIsHardwareDecodeSupported(VP9)` from 0 to 1 - the decoder was
