@@ -1398,8 +1398,12 @@ end
 -- its name (a block or a function pointer), or a type that still carries an attribute the release does not replace.
 -- The attributes a declaration node carries, by clang's own kind, and the ones a redeclaration here cannot carry.
 -- AvailabilityAttr is written by member_declaration() itself, and SwiftPrivateAttr is written as the macro the SDK
--- spells, so both are carried; every other attribute is a fact about the declaration this cannot repeat, and a
--- redeclaration without it would say something the SDK does not.
+-- spells, so both are carried. ObjCNSObjectAttr is carried on a property, which is what the redeclaration needs and
+-- where member_declaration() writes it: __attribute__((NSObject)) is what tells clang a CF type is an object, and a
+-- property that keeps `retain` without it does not compile (measured on iPhoneOS16.4.sdk: the AVQueuedSampleBuffer-
+-- Rendering timebase, whose redeclaration was refused with "property with 'retain (or strong)' attribute must be of
+-- object type" while the SDK's own declaration, which spells the attribute, compiles). On a method the dump says the
+-- attribute is there but not which of its types it belongs to, so it is still refused there.
 local function attributes_of(node)
     local found = {}
     for _, child in ipairs((node or {}).inner or {}) do
@@ -1411,6 +1415,16 @@ local function attributes_of(node)
 end
 
 local CARRIED_ATTRIBUTES = {AvailabilityAttr = true, SwiftPrivateAttr = true}
+
+-- The attributes a redeclaration of one kind of declaration carries, by clang's own attribute kind: a property's
+-- also carries ObjCNSObjectAttr, which member_declaration() writes (see there); anything else carries what every
+-- declaration carries.
+local function carried_attributes(kind)
+    if kind == "ObjCPropertyDecl" then
+        return {AvailabilityAttr = true, SwiftPrivateAttr = true, ObjCNSObjectAttr = true}
+    end
+    return CARRIED_ATTRIBUTES
+end
 
 -- The accessors of a carried property that no row carries, and so which the class would not answer.
 --
@@ -1454,8 +1468,9 @@ end
 
 function uncarried_attributes(node)
     local left = {}
+    local carried = carried_attributes(node.kind)
     for _, kind in ipairs(attributes_of(node)) do
-        if not CARRIED_ATTRIBUTES[kind] then
+        if not carried[kind] then
             table.insert(left, kind)
         end
     end
@@ -1511,8 +1526,13 @@ function member_declaration(member, name, target)
         -- inside the property's own attribute list, where clang reads the expansion as an unknown property attribute.
         -- The fact is clang's attribute kind; what is written is the macro's name, as a header spells it.
         local refined = has_attribute(member, "SwiftPrivateAttr") and "NS_REFINED_FOR_SWIFT " or ""
-        return string.format("@property (%s) %s %s %sAPI_AVAILABLE(ios(%s));", table.concat(attributes, ", "), type,
-                             name, refined, target)
+        -- __attribute__((NSObject)) is the SDK's own spelling of the attribute, on the property's type, where a
+        -- header puts it: @property (retain, readonly) __attribute__((NSObject)) CMTimebaseRef timebase; (all 20 of
+        -- them in iPhoneOS16.4.sdk and 22 in iPhoneOS26.2.sdk are properties spelled this way). Without it a CF type
+        -- is not an object to clang and `retain` is refused, so the redeclaration would not compile.
+        local object = has_attribute(member, "ObjCNSObjectAttr") and "__attribute__((NSObject)) " or ""
+        return string.format("@property (%s) %s%s %s %sAPI_AVAILABLE(ios(%s));", table.concat(attributes, ", "), object,
+                             type, name, refined, target)
     end
     local parameters, parts = {}, {}
     for _, child in ipairs(member.inner or {}) do

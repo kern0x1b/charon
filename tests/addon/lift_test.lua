@@ -121,6 +121,14 @@ function failures(opt)
         {{kind = "ObjCPropertyDecl", readwrite = true, nonatomic = true, assign = true, unsafe_unretained = true,
           getter = {kind = "ObjCMethodDecl", name = "isEnabled"}, type = {qualType = "BOOL"}},
          "enabled", "6.1.3", "@property (nonatomic, readwrite, assign, unsafe_unretained, getter=isEnabled) BOOL enabled API_AVAILABLE(ios(6.1.3));"},
+        -- AVQueuedSampleBufferRendering's timebase, whose type the SDK marks as an object with the attribute rather
+        -- than with an @interface: @property (retain, readonly) __attribute__((NSObject)) CMTimebaseRef timebase;
+        -- every one of the 20 the 16.4 SDK spells is a property, and the redeclaration has to carry it or clang
+        -- refuses the `retain` (it is also what keeps uncarried_attributes() from refusing the redeclaration)
+        {{kind = "ObjCPropertyDecl", readonly = true, retain = true, atomic = true, type = {qualType = "CMTimebaseRef _Nonnull"},
+          inner = {{kind = "ObjCNSObjectAttr"}}},
+         "timebase", "6.1.3",
+         "@property (atomic, readonly, retain) __attribute__((NSObject)) CMTimebaseRef _Nonnull timebase API_AVAILABLE(ios(6.1.3));"},
         -- refused: a block property needs a declarator around its name, and a type that keeps another macro's attribute
         -- would lose it
         {{kind = "ObjCPropertyDecl", copy = true, nonatomic = true, type = {qualType = "void (^)(void)"}}, "handler", "6.1.3", nil},
@@ -490,6 +498,17 @@ function failures(opt)
                  table.concat(lift.uncarried_attributes(others), ","), "SwiftObjCMembersAttr")
     expect_equal(found, "and availability alone is carried",
                  table.concat(lift.uncarried_attributes({inner = {{kind = "AvailabilityAttr"}}}), ","), "")
+    -- __attribute__((NSObject)) is carried on a property, which is where member_declaration() writes it, and refused
+    -- on a method, where the dump says the attribute is there but not which of its types it belongs to
+    local object = property_with({{kind = "ObjCNSObjectAttr"}})
+    expect_equal(found, "a property the SDK marks as an object by the attribute carries it",
+                 table.concat(lift.uncarried_attributes(object), ","), "")
+    expect_equal(found, "and the redeclaration spells it where the SDK does",
+                 lift.member_declaration(object, "destinationFrame", "6.0"),
+                 "@property (readonly) __attribute__((NSObject)) id destinationFrame API_AVAILABLE(ios(6.0));")
+    expect_equal(found, "a method carrying it is refused by name",
+                 table.concat(lift.uncarried_attributes({kind = "ObjCMethodDecl", inner = {{kind = "ObjCNSObjectAttr"}}}), ","),
+                 "ObjCNSObjectAttr")
 
     -- The redeclaration clang accepts, asked of clang and not of a string: a comparison let two
     -- compiler-confirmed defects through a green suite - NS_REFINED_FOR_SWIFT inside the property's attribute
