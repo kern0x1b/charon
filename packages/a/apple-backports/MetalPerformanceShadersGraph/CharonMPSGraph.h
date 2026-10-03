@@ -1,4 +1,4 @@
-// CharonMPSGraph.h — what this framework's own files share.
+// CharonMPSGraph.h - what this framework's own files share.
 //
 // The guard is not decoration: the host harness includes this header twice over, once through a
 // source's own import and once through its prefixed declarations, and a header that declares classes
@@ -157,10 +157,21 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
     // everything after it, in one direction or the other. Which of the four it is, which direction, and
     // whether the element at a position is in its own answer are all parameters of the operation, for the
     // same reason the reduction family's are.
-    CharonMPSGraphOperationKindCumulativeSum,
+CharonMPSGraphOperationKindCumulativeSum,
     CharonMPSGraphOperationKindCumulativeProduct,
     CharonMPSGraphOperationKindCumulativeMaximum,
-    CharonMPSGraphOperationKindCumulativeMinimum
+    CharonMPSGraphOperationKindCumulativeMinimum,
+    // The gather family, which is one walk: the result's shape and, for each of its axes, which axis of the
+    // operand feeds it and whether that one is reversed. Which transformation it is (@"gather") is what the
+    // walk reads, not which of these it is, for the reason the reduction family's are read the same way.
+    CharonMPSGraphOperationKindSlice,
+    CharonMPSGraphOperationKindReshape,
+    CharonMPSGraphOperationKindTranspose,
+    CharonMPSGraphOperationKindSqueeze,
+    CharonMPSGraphOperationKindExpandDims,
+    CharonMPSGraphOperationKindFlatten2D,
+    CharonMPSGraphOperationKindBroadcast,
+    CharonMPSGraphOperationKindReverse
 };
 
 @class MPSGraph;
@@ -209,6 +220,7 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
 
 @interface MPSGraphTensor (CharonMPSGraph)
 - (NSUInteger)charon_mps_index;
+- (void)charon_mps_setShape:(NSArray<NSNumber *> *)shape;
 - (NSUInteger)charon_mps_elementCount;
 - (BOOL)isEqualToTensor:(MPSGraphTensor *)tensor;
 - (instancetype)initWithShape:(NSArray<NSNumber *> *)shape
@@ -253,6 +265,37 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
                                   tensor:(MPSGraphTensor *)tensor
                              parameters:(NSDictionary *)parameters
                                     name:(NSString *)name;
+// A GATHER: an operation whose result is the operand's elements in some other order or extent, and whose
+// whole behaviour is which source axis each result axis comes from, whether that axis is reversed, and whether
+// the coordinate has an element of the operand behind it at all. That is the walk over a reshape, a squeeze,
+// an expanded dimension, a flatten, a broadcast, a reverse and a transpose, and it is asked of the
+// operation's own parameters - which transformation (@"gather"), the parameter of it the caller wrote down
+// (@"gatherAxis", @"gatherDrop", @"gatherAdd", @"gatherShape", @"gatherAxes", @"gatherPermutation") or which of
+// the operation's inputs carries it instead (@"gatherOperand") - so every release's factory of the family
+// fills those in and names only its own methods, and the result's shape is derived by the walk and put on the
+// output tensor: at build time where the plan can be derived then, and when the graph runs otherwise, which
+// is what lets a shape the caller FEEDS be one of them.
+// A squeeze and an expanded dimension and a flatten are the same gather with the axes left alone:
+// measured on this host's own MPSGraph, all three answer the operand's own bytes in the operand's own order.
+- (MPSGraphTensor *)charon_mps_gather:(CharonMPSGraphOperationKind)kind
+                                tensor:(MPSGraphTensor *)tensor
+                           parameters:(NSDictionary *)parameters
+                                  name:(NSString *)name;
+// The same over a parameter the caller feeds at run time rather than writing down - an axis, a set of axes
+// or a shape - which becomes the operation's second input and is read by the walk when the graph runs.
+- (MPSGraphTensor *)charon_mps_gather:(CharonMPSGraphOperationKind)kind
+                                tensor:(MPSGraphTensor *)tensor
+                         fedParameter:(MPSGraphTensor *)fedParameter
+                           parameters:(NSDictionary *)parameters
+                                  name:(NSString *)name;
+// The result's shape of such a gather, asked when the graph is BUILT so that the output tensor carries it
+// before anything runs: the release infers the result's type at build time - which is why an axis it cannot
+// use aborts there - so a caller can read the shape off the tensor it was handed, and this is where the port
+// answers that. It is the walk's own plan with the operand's shape and no fed parameter, so a parameter the
+// caller fed gives nil and the interpreter puts the shape on when it runs.
+- (NSArray<NSNumber *> *)charon_mps_gatherShapeOfTensor:(MPSGraphTensor *)tensor
+                                             parameters:(NSDictionary *)parameters
+                                                    named:(NSString *)name;
 // A cumulative operation along one axis of one operand: the result is the operand's own shape, and each
 // element holds a fold of the elements on one side of it. The axis is the caller's, so it is normalised
 // here - negative counted from the end of the rank, and an axis outside it refused the way the reduction

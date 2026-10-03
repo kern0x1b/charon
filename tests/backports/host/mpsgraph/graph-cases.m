@@ -1,4 +1,4 @@
-// graph-cases.m — the builder side and the arithmetic family of MPSGraph, run twice: once against the
+// graph-cases.m - the builder side and the arithmetic family of MPSGraph, run twice: once against the
 // system's own MPSGraph and once against this port's classes under names of their own. Every case
 // prints the bytes of a buffer the case owns, so the two runs are compared exactly.
 #import <Foundation/Foundation.h>
@@ -55,6 +55,24 @@
 - (MPSGraphTensor *)cumulativeMinimumWithTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis exclusive:(BOOL)exclusive reverse:(BOOL)reverse name:(NSString *)name;
 - (MPSGraphTensor *)cumulativeMinimumWithTensor:(MPSGraphTensor *)tensor axisTensor:(MPSGraphTensor *)axisTensor name:(NSString *)name;
 - (MPSGraphTensor *)cumulativeMinimumWithTensor:(MPSGraphTensor *)tensor axisTensor:(MPSGraphTensor *)axisTensor exclusive:(BOOL)exclusive reverse:(BOOL)reverse name:(NSString *)name;
+// The shape and axis operations: 14.0's two-axis transpose, 15.0's flattens, broadcasts and reverses, 15.4's
+// squeezes and expanded dimensions, and 16.0's permutation transpose (MPSGraphTensorShapeOps.h).
+- (MPSGraphTensor *)transposeTensor:(MPSGraphTensor *)tensor dimension:(NSUInteger)dimension withDimension:(NSUInteger)withDimension name:(NSString *)name;
+- (MPSGraphTensor *)transposeTensor:(MPSGraphTensor *)tensor permutation:(NSArray<NSNumber *> *)permutation name:(NSString *)name;
+- (MPSGraphTensor *)flatten2DTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
+- (MPSGraphTensor *)flatten2DTensor:(MPSGraphTensor *)tensor axisTensor:(MPSGraphTensor *)axisTensor name:(NSString *)name;
+- (MPSGraphTensor *)broadcastTensor:(MPSGraphTensor *)tensor toShape:(NSArray<NSNumber *> *)toShape name:(NSString *)name;
+- (MPSGraphTensor *)broadcastTensor:(MPSGraphTensor *)tensor toShapeTensor:(MPSGraphTensor *)toShapeTensor name:(NSString *)name;
+- (MPSGraphTensor *)reverseTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)reverseTensor:(MPSGraphTensor *)tensor axes:(NSArray<NSNumber *> *)axes name:(NSString *)name;
+- (MPSGraphTensor *)reverseTensor:(MPSGraphTensor *)tensor axesTensor:(MPSGraphTensor *)axesTensor name:(NSString *)name;
+- (MPSGraphTensor *)squeezeTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)squeezeTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
+- (MPSGraphTensor *)squeezeTensor:(MPSGraphTensor *)tensor axes:(NSArray<NSNumber *> *)axes name:(NSString *)name;
+- (MPSGraphTensor *)squeezeTensor:(MPSGraphTensor *)tensor axesTensor:(MPSGraphTensor *)axesTensor name:(NSString *)name;
+- (MPSGraphTensor *)expandDimsOfTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
+- (MPSGraphTensor *)expandDimsOfTensor:(MPSGraphTensor *)tensor axes:(NSArray<NSNumber *> *)axes name:(NSString *)name;
+- (MPSGraphTensor *)expandDimsOfTensor:(MPSGraphTensor *)tensor axesTensor:(MPSGraphTensor *)axesTensor name:(NSString *)name;
 @end
 
 static id<MTLDevice> gDevice;
@@ -693,6 +711,470 @@ static void cumulative_families(MPSDataType type, const void *values, const char
     }
 }
 
+// THE GATHER FAMILY - the sixteen methods whose result is the operand's elements in some other order or
+// another extent - is six families here, and one process each, because within one process the release's own
+// gather operations assert over the SECOND flatten even when the process holds nothing else: "Error: NDArray
+// dimension length > INT_MAX" (MPSNDArray.mm:831). What is measured for each form is written down in
+// facts/MetalPerformanceShadersGraph/Core.md, and the rules the walk in MPSGraphInterpreter14.m answers
+// are:
+//
+//   - a transpose is the row-major transpose, in both forms and with a permutation, and a negative axis is
+//     counted from the end;
+//   - the squeeze, the expanded dimension and the flatten are ONE gather with the axes left alone - each
+//     answers the operand's own bytes in the operand's own order;
+//   - a broadcast aligns to the RIGHT of the shape given and wraps each axis the shape makes wider;
+//   - a reverse flips the axes it is given and nothing else.
+//
+// The FED forms - the reshape's shape, the flatten's axis, the broadcast's shape and the reverse's,
+// the squeeze's and the expanded dimension's set of axes - are NOT cases here where the release
+// takes the process down over one (facts/MetalPerformanceShadersGraph/Core.md and refusals.txt
+// carry each one's own assertion), so there is no answer of the release for a case to compare
+// against and the port's answer is its header's. Which of them those are is a measurement and not
+// a decision: refusals.txt names them, one process each, and run.sh fails a question whose answer
+// changed.
+
+// Every family below ends with the chain, which is defined with the rest of the cases at the end of this
+// file - the six gather families come before it in the file's order because they come before the table of
+// families in the run order, and a declaration here is what lets them end with it.
+static void chain_case(void);
+
+// The feeds the gather families are asked over. The ordinary one is the case file's own 2x4 of (1, 2, 3, 4 |
+// 10, 20, 30, 40), whose answers a reader can work out by hand; the rank-3 one is the 1 to 24 a 2x3x4 holds
+// in row-major order, which is the same: every answer below is either the operand's own bytes in another
+// order or the same bytes at another extent, so the feed is what makes the answer readable rather than the
+// shape alone.
+static float cubeFeed[24] = {
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+};
+// The sixteen input classes' first row, as a 2x4: a positive and a negative, both zeros, both infinities and
+// a NaN of each sign. A gather copies, so these are what says it copies - a NaN's sign and a negative zero's
+// sign are the two things a walk that recomputes a value would lose.
+static float gatherClasses[8] = { 1.0f, -1.0f, -0.0f, 0.0f, INFINITY, -INFINITY, NAN, -NAN };
+
+// A gather's case: the compile is given a feed of the OPERAND's shape and a destination of the RESULT's,
+// which the elementwise run() above cannot do - a reduction_case's arrangement, with the operand and the
+// result named apart because a gather's result is a different shape at least as often as the same one.
+//
+// Two lines a case. The shape is printed as well as the bytes, because a gather's answer is its SHAPE as much
+// as its elements and the two do not go together: dropping a unit axis never moves an element, so a squeeze's
+// bytes cannot say whether the axis was dropped, and adding one neither. Reading a shaped type's EQUALITY takes
+// the release down (it calls a selector its own MPSGraphTensor does not declare), but reading the shape off
+// the tensor is what every other case here already does and it answers.
+//
+// `fill` is a byte the destination is filled with before the run, 0 for a fresh buffer. One case asks for it
+// because the release writes zeros where a broadcast has no element to read, and a destination the caller had
+// already filled is what tells a written zero from one that was simply never written.
+static void gather_case_filled(const char *name, MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *),
+                               MPSDataType type, NSArray<NSNumber *> *shape, const void *values,
+                               unsigned char fill)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:shape dataType:type name:@"a"];
+    MPSGraphTensor *t = build(one, a);
+    NSUInteger count = 1;
+    for (NSNumber *dimension in t.shape) count *= (NSUInteger)dimension.integerValue;
+    size_t bytes = count * MPSSizeofMPSDataType(t.dataType);
+    id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+    if (fill) memset([buffer contents], fill, bytes);
+    printf("#case %s-shape %s\n", name, [[t.shape componentsJoinedByString:@"x"] UTF8String]);
+    MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:t.shape
+                                                                             dataType:t.dataType];
+    remember(buffer, resultBytes, bytes);
+    MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:shape dataType:type];
+    MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice feeds:@{a: shaped}
+                                              targetTensors:@[t] targetOperations:@[] compilationDescriptor:nil];
+    [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                          inputsArray:@[feed(values, shape, type)]
+                           resultsArray:@[destination] executionDescriptor:nil];
+    put(name, resultBytes, bytes);
+}
+
+static void gather_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *),
+                        MPSDataType type, NSArray<NSNumber *> *shape, const void *values)
+{
+    gather_case_filled(name, build, type, shape, values, 0);
+}
+
+// The transpose, in both of the forms the family has: 14.0's two axes and 16.0's permutation. The rank-3
+// cases are here because a two-axis transpose of a rank above two is a different question from a rank of
+// two - the result keeps the operand's rank with two of its axes exchanged, and a permutation of a whole
+// ordering is the same question written the other way round.
+static void family_gather_transpose(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+    gather_case("transpose-axes0-1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g transposeTensor:a dimension:0 withDimension:1 name:@"t"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("transpose-axesNeg1-0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g transposeTensor:a dimension:(NSUInteger)-1 withDimension:0 name:@"t"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("transpose-permutation10 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g transposeTensor:a permutation:@[@1, @0] name:@"t"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("transpose-permutation01 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g transposeTensor:a permutation:@[@0, @1] name:@"t"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("transpose-classes-permutation10 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g transposeTensor:a permutation:@[@1, @0] name:@"t"]; },
+                MPSDataTypeFloat32, twoByFour, gatherClasses);
+    // The 32 classes over a whole 8x4, where a NaN's sign and a denormal's bytes have to survive a walk of
+    // the whole operand.
+    gather_case("transpose-classes32-permutation10 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g transposeTensor:a permutation:@[@1, @0] name:@"t"]; },
+                MPSDataTypeFloat32, @[@8, @4], leftValues);
+    gather_case("transpose-axes0-2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g transposeTensor:a dimension:0 withDimension:2 name:@"t"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("transpose-axes1-2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g transposeTensor:a dimension:1 withDimension:2 name:@"t"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("transpose-permutation201 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g transposeTensor:a permutation:@[@2, @0, @1] name:@"t"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("transpose-permutation120 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g transposeTensor:a permutation:@[@1, @2, @0] name:@"t"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    chain_case();
+}
+
+// The slice, which is the same walk with an OFFSET and a STRIDE: the result's axis k reads the operand's axis
+// k from the caller's start, stepping by the caller's stride. The header's two forms are the same walk.
+static void family_gather_slice(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+    gather_case("slice-axis1-start1-length2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a dimension:1 start:1 length:2 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-axis1-startNeg2-length2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a dimension:1 start:-2 length:2 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-axis0-start1-length1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a dimension:0 start:1 length:1 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-stride2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @0] ends:@[@2, @4] strides:@[@1, @2] name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-strideNeg1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @3] ends:@[@2, @0] strides:@[@1, @-1] name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-endsPastEnd float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @2] ends:@[@2, @9] strides:@[@1, @1] name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-rank3 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@1, @1, @1] ends:@[@2, @3, @4] strides:@[@1, @1, @2] name:@"s"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("slice-classes float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a dimension:1 start:1 length:3 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, gatherClasses);
+    gather_case("slice-all float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @0] ends:@[@2, @4] strides:@[@1, @1] name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    chain_case();
+}
+
+// The reshape, which is the same walk with the axes left alone and the result's shape the caller's: the
+// operand's elements in the same row-major order at another extent. A dynamic extent is the header's -1 and
+// is the element count over the product of the extents written down.
+static void family_gather_reshape(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+    gather_case("reshape-4x2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@4, @2] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-1x8 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@1, @8] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-own-shape float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@2, @4] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-dynamic0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@4, @-1] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-dynamic1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@-1, @4] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-rank1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@8] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reshape-24-6x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@6, @4] name:@"r"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("reshape-24-2x3x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@2, @3, @4] name:@"r"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("reshape-24-24x1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@24, @1] name:@"r"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("reshape-classes-4x8 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@4, @8] name:@"r"]; },
+                MPSDataTypeFloat32, @[@8, @4], leftValues);
+    gather_case("reshape-rank2-identity float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reshapeTensor:a withShape:@[@2, @4] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    chain_case();
+}
+
+// The flatten, which collapses every axis from the one named on into a single axis. A rank of three is where
+// the collapse covers more than one axis, so the axes of the result there read two and three of the operand's
+// at once - which is the one thing in this family that is not a copy of the operand's bytes in order.
+static void family_gather_flatten(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+    gather_case("flatten-axis0-2x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g flatten2DTensor:a axis:0 name:@"f"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("flatten-axis1-2x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g flatten2DTensor:a axis:1 name:@"f"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("flatten-axis0-2x3x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g flatten2DTensor:a axis:0 name:@"f"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("flatten-axis1-2x3x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g flatten2DTensor:a axis:1 name:@"f"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("flatten-axis2-2x3x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g flatten2DTensor:a axis:2 name:@"f"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("flatten-classes-axis0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g flatten2DTensor:a axis:0 name:@"f"]; },
+                MPSDataTypeFloat32, twoByFour, gatherClasses);
+    chain_case();
+}
+
+// The broadcast, which aligns the operand to the RIGHT of the shape given and wraps each axis that shape
+// makes wider. The three cases are the three shapes there are: wider on one axis, an axis added at the front,
+// and the operand's own shape.
+static void family_gather_broadcast(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    gather_case("broadcast-4x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g broadcastTensor:a toShape:@[@4, @4] name:@"b"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("broadcast-2x2x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g broadcastTensor:a toShape:@[@2, @2, @4] name:@"b"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("broadcast-own-shape float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g broadcastTensor:a toShape:@[@2, @4] name:@"b"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("broadcast-classes-4x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g broadcastTensor:a toShape:@[@4, @4] name:@"b"]; },
+                MPSDataTypeFloat32, twoByFour, gatherClasses);
+    // A rank of three on both sides, where the axis the shape adds is the one the operand has no axis for.
+    gather_case("broadcast-2x3x4-4x3x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g broadcastTensor:a toShape:@[@4, @3, @4] name:@"b"]; },
+                MPSDataTypeFloat32, @[@2, @3, @4], cubeFeed);
+    gather_case("broadcast-1x2x4-2x2x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g broadcastTensor:a toShape:@[@2, @2, @4] name:@"b"]; },
+                MPSDataTypeFloat32, @[@1, @2, @4], cubeFeed);
+    // The two axes the shape makes wider than the operand's are the ones the release answers a ZERO at, so
+    // this case is asked over a destination filled with a pattern: the answer has to be the release's zeros and
+    // not the bytes the caller happened to leave there.
+    gather_case_filled("broadcast-4x4-prefilled float32",
+                       ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                           return [g broadcastTensor:a toShape:@[@4, @4] name:@"b"]; },
+                       MPSDataTypeFloat32, twoByFour, rowFeed, 0xbd);
+    // And a broadcast that narrows, which is not a broadcast at all: the release keeps the operand's own extent
+    // on that axis and answers the operand's bytes, so the result's shape is the case that says so.
+    gather_case("broadcast-narrower float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g broadcastTensor:a toShape:@[@1, @4] name:@"b"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    chain_case();
+}
+
+// The reverse, which flips the axes it is given and nothing else. The cases are each axis on its own, both,
+// neither (the form with no axes at all) and a nil, which is the same question asked the other way round.
+static void family_gather_reverse(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    gather_case("reverse-none float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reverseTensor:a name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reverse-axesNil float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reverseTensor:a axes:nil name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reverse-axis0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reverseTensor:a axes:@[@0] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reverse-axis1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reverseTensor:a axes:@[@1] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reverse-axes01 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reverseTensor:a axes:@[@1, @0] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reverse-negative-axis float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reverseTensor:a axes:@[@-1] name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("reverse-classes-none float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reverseTensor:a name:@"r"]; },
+                MPSDataTypeFloat32, twoByFour, gatherClasses);
+    gather_case("reverse-rank3 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g reverseTensor:a name:@"r"]; },
+                MPSDataTypeFloat32, @[@1, @2, @4], cubeFeed);
+    chain_case();
+}
+
+// The squeeze, which drops the axes of extent one it is given - every unit axis when it is given none - and
+// keeps the rest in order. The cases are the two forms with no axes (an operand that has a unit axis and one
+// that has none), one axis, a set of axes, a negative axis and a nil.
+static void family_gather_squeeze(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    NSArray<NSNumber *> *oneByTwoByFour = @[@1, @2, @4];
+    NSArray<NSNumber *> *oneByOneByFour = @[@1, @1, @4];
+    NSArray<NSNumber *> *twoByFourByOne = @[@2, @4, @1];
+    gather_case("squeeze-none-1x2x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g squeezeTensor:a name:@"s"]; },
+                MPSDataTypeFloat32, oneByTwoByFour, cubeFeed);
+    gather_case("squeeze-none-2x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g squeezeTensor:a name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("squeeze-axis0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g squeezeTensor:a axis:0 name:@"s"]; },
+                MPSDataTypeFloat32, oneByTwoByFour, cubeFeed);
+    gather_case("squeeze-axes0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g squeezeTensor:a axes:@[@0] name:@"s"]; },
+                MPSDataTypeFloat32, oneByTwoByFour, cubeFeed);
+    gather_case("squeeze-axes01 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g squeezeTensor:a axes:@[@0, @1] name:@"s"]; },
+                MPSDataTypeFloat32, oneByOneByFour, cubeFeed);
+    gather_case("squeeze-axesNil float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g squeezeTensor:a axes:nil name:@"s"]; },
+                MPSDataTypeFloat32, oneByTwoByFour, cubeFeed);
+    gather_case("squeeze-negative-axis float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g squeezeTensor:a axis:-1 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFourByOne, cubeFeed);
+    gather_case("squeeze-classes float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g squeezeTensor:a name:@"s"]; },
+                MPSDataTypeFloat32, oneByTwoByFour, gatherClasses);
+    // A unit axis in the MIDDLE, where dropping it moves no element: the eight values of a 2x1x4 read the same
+    // whether the axis is there or not, so this case is about the shape line and about nothing else - which is
+    // what the shape line is in this file for.
+    gather_case("squeeze-none-2x1x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g squeezeTensor:a name:@"s"]; },
+                MPSDataTypeFloat32, @[@2, @1, @4], cubeFeed);
+    gather_case("squeeze-axesNil-2x1x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g squeezeTensor:a axes:nil name:@"s"]; },
+                MPSDataTypeFloat32, @[@2, @1, @4], cubeFeed);
+    gather_case("squeeze-axesEmpty-2x1x4 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g squeezeTensor:a axes:@[] name:@"s"]; },
+                MPSDataTypeFloat32, @[@2, @1, @4], cubeFeed);
+    chain_case();
+}
+
+// The expanded dimension, which adds an axis of extent one where it is asked for. A negative axis is counted
+// from the end and may be the rank itself, which is the trailing unit axis, so the last case is that one.
+static void family_gather_expand(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    gather_case("expand-axis0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g expandDimsOfTensor:a axis:0 name:@"e"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("expand-axis2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g expandDimsOfTensor:a axis:2 name:@"e"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("expand-axisNeg1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g expandDimsOfTensor:a axis:-1 name:@"e"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("expand-axes02 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g expandDimsOfTensor:a axes:@[@0, @2] name:@"e"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // Two more sets of two axes, which is where "an axis at each index named" and "one axis inserted after
+    // another" come apart: over a 2x4 the release answers a 1x1x2x4 and a 2x1x1x4, and inserting each axis
+    // into the result of the last would answer a 1x1x2x4 and a 2x1x1x4 for the second and a different shape
+    // again for the first.
+    gather_case("expand-axes01 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g expandDimsOfTensor:a axes:@[@0, @1] name:@"e"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("expand-axes12 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g expandDimsOfTensor:a axes:@[@1, @2] name:@"e"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("expand-axesNil float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g expandDimsOfTensor:a axes:nil name:@"e"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("expand-classes-axis0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g expandDimsOfTensor:a axis:0 name:@"e"]; },
+                MPSDataTypeFloat32, twoByFour, gatherClasses);
+    gather_case("expand-rank3-axis1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g expandDimsOfTensor:a axis:1 name:@"e"]; },
+                MPSDataTypeFloat32, @[@2, @3, @4], cubeFeed);
+    chain_case();
+}
+
 // The data types the two NaN-propagating binaries do not answer, and the feeds they are asked over: eight
 // ascending bytes against eight descending ones, so every type here reads the same two numbers.
 static unsigned char refusedBytes[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -910,7 +1392,153 @@ static void families(MPSDataType type, const void *left, const void *right, cons
     }
 }
 
-int main(void)
+// The three cases that are not a family of operations, each asked last by the family that holds it.
+//
+// THE CHAIN is three operations in the order they were added - an addition, its product with itself and
+// a square root of the result - so it is the walk over the operations in order that every family runs its
+// last case through. It is asked last on purpose: a family whose last case on either side is not the chain
+// is a family whose process did not reach the end, and run.sh fails it. "misc" is the one family that
+// cannot end with it, because the case below is asked after it.
+//
+// THE CONSTANT is -[MPSGraph constantWithShape:dataType:values:name:], which aborts the host of this
+// machine, so it is asked after everything the host does answer - in one family of its own end, not in the
+// middle of the unary family, where it was taking seven cases down with it.
+static void chain_case(void)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+    MPSGraphTensor *b = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"b"];
+    MPSGraphTensor *sum = [one additionWithPrimaryTensor:a secondaryTensor:b name:@"sum"];
+    MPSGraphTensor *doubled = [one multiplicationWithPrimaryTensor:sum secondaryTensor:sum name:@"doubled"];
+    MPSGraphTensor *root = [one squareRootWithTensor:doubled name:@"root"];
+    memset(resultBytes, 0, sizeof(resultBytes));
+    run(one, @[a, b], @[feed(&leftValues[0], @[@8, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@8, @4], MPSDataTypeFloat32)], root, resultBytes, 32 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
+    put("chain", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
+}
+
+static void constant_case(void)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+    MPSGraphTensor *c = [one constantWithShape:@[@8, @4] dataType:MPSDataTypeFloat32
+                                     values:[NSData dataWithBytes:&constantValues[0] length:sizeof(constantValues)] name:@"c"];
+    MPSGraphTensor *t = [one additionWithPrimaryTensor:a secondaryTensor:c name:@"withConstant"];
+    memset(resultBytes, 0, sizeof(resultBytes));
+    run(one, @[a], @[feed(&leftValues[0], @[@8, @4], MPSDataTypeFloat32)], t, resultBytes, 32 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
+    put("constant", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
+}
+
+// An integer division, which is the only case in this file whose feed is not a class vector: four
+// integers over four divisors, so the truncated quotients and the zero divisor are both in it.
+static void integer_divide_case(void)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"a"];
+    MPSGraphTensor *b = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"b"];
+    MPSGraphTensor *t = [one divisionWithPrimaryTensor:a secondaryTensor:b name:@"idiv"];
+    memset(integerResult, 0, sizeof(integerResult));
+    run(one, @[a, b], @[feed(&integerValues[0], @[@2, @2], MPSDataTypeInt32),
+                        feed(&integerDivisors[0], @[@2, @2], MPSDataTypeInt32)], t, &integerResult[0], sizeof(integerResult), MPSDataTypeInt32, MPSDataTypeInt32);
+    put("integer-divide", &integerResult[0], sizeof(integerResult));
+}
+
+// The builder side, as far as the release answers it on this host, and it is compared like every other
+// answer here: two lines of no result buffer, each of them the whole of what the release answers.
+// Reading a shaped type's equality and a placeholder's data type both make the framework call a selector
+// its own MPSGraphTensor does not declare -[MPSGraphTensor tensorDataType] - and take the process down,
+// so the device's type, the shape and the data type are what is compared, and the rest of the builder
+// side is checked in a program of its own.
+static void builder_side(void)
+{
+    printf("#case graph-device %d\n", (int)gGraphDevice.type);
+    MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@8, @4] dataType:MPSDataTypeFloat32];
+    printf("#case shaped-dataType %d\n", (int)shaped.dataType);
+}
+
+// THE FAMILIES, each of which is a process of its own.
+//
+// One family per process because the release makes it necessary, and the measurement is in
+// facts/MetalPerformanceShadersGraph/Core.md: in a process that holds three hundred graphs the release's
+// own gather operations start asserting partway through the family - "Error: NDArray dimension length >
+// INT_MAX" (MPSNDArray.mm:831) over a flatten of a 2x4 that answers in a program of its own - and every
+// FED gather parameter takes the process down whatever else it holds. So this file is asked for one family
+// at a time, run.sh runs and judges each of them separately, and the comparison of the recorded cells is
+// scoped to the cases the family actually ran: a cell another family recorded is not in these two runs and
+// is not a divergence that has gone away.
+//
+// Every family ends with the chain, so a family's two runs both reaching it is what says the process ran
+// to the end of the family rather than dying at a case whose lines happened to be there.
+static void family_misc(void)
+{
+    chain_case();
+    constant_case();
+}
+
+static void family_arithmetic(void)
+{
+    // The unary family and the arithmetic family, over the sixteen classes above, in float32 and then in
+    // float16. Both are asked for every operation of the family, because the two types do not answer alike
+    // and a case in one of them says nothing about the other.
+    families(MPSDataTypeFloat32, &leftValues[0], &rightValues[0], "float32");
+    families(MPSDataTypeFloat16, &halfValues[0], &halfRightValues[0], "float16");
+    integer_divide_case();
+    chain_case();
+}
+
+// The reduction family of 14.0, which is the first thing in this file whose result is not the operand's
+// shape, so it is asked of its own feeds and of the sixteen classes above.
+static void family_reduction(void)
+{
+    reduction_families();
+    chain_case();
+}
+
+// The rest of the reduction family: the two argument reductions and the two binary NaN-propagating
+// extremes of 15.0, the two truth folds of 15.3 and the set of data types the propagating pair refuses.
+static void family_reduction_rest(void)
+{
+    reduction_rest_families();
+    chain_case();
+}
+
+// The cumulative family of 16.0, whose result is the operand's own shape, in float32 and float16 - and the
+// seeds and the NaN rule are asked of the sixteen classes and a row of NaNs inside it.
+static void family_cumulative(void)
+{
+    cumulative_families(MPSDataTypeFloat32, &leftValues[0], "float32");
+    cumulative_families(MPSDataTypeFloat16, &halfValues[0], "float16");
+    chain_case();
+}
+
+typedef struct { const char *name; void (*cases)(void); } Family;
+
+// The table run.sh walks, and the one place a family is named: it prints the list on an unknown argument
+// so a family that is renamed here is renamed there or nowhere.
+static const Family kFamilies[] = {
+    { "misc", family_misc },
+    { "arithmetic", family_arithmetic },
+    { "reduction", family_reduction },
+    { "reduction_rest", family_reduction_rest },
+    { "cumulative", family_cumulative },
+    { "gather_transpose", family_gather_transpose },
+    { "gather_slice", family_gather_slice },
+    { "gather_reshape", family_gather_reshape },
+    { "gather_flatten", family_gather_flatten },
+    { "gather_broadcast", family_gather_broadcast },
+    { "gather_reverse", family_gather_reverse },
+    { "gather_squeeze", family_gather_squeeze },
+    { "gather_expand", family_gather_expand },
+};
+
+static void family_names(void)
+{
+    unsigned i;
+    for (i = 0; i < sizeof(kFamilies) / sizeof(kFamilies[0]); i++)
+        fprintf(stderr, "%s ", kFamilies[i].name);
+    fprintf(stderr, "\n");
+}
+
+int main(int argc, const char *argv[])
 {
     // Line buffering, and it is what makes the comparison trustworthy: the framework this file runs
     // against writes its own diagnostics to this same standard output, and with a block-buffered stream
@@ -919,69 +1547,22 @@ int main(void)
     // buffered stream hands the whole line to one write, so a case is one line or nothing.
     setvbuf(stdout, NULL, _IOLBF, 0);
     @autoreleasepool {
+        unsigned i;
         gDevice = MTLCreateSystemDefaultDevice();
         gGraphDevice = [MPSGraphDevice deviceWithMTLDevice:gDevice];
-        printf("graph-device %d\n", (int)gGraphDevice.type);
-
-        // The builder side, as far as the release answers it on this host. Reading a shaped type's
-        // equality and a placeholder's data type both make the framework call a selector its own
-        // MPSGraphTensor does not declare -[MPSGraphTensor tensorDataType] - and take the process down,
-        // so the shape, the data type and the graph's placeholder count are what is compared here, and
-        // the rest of the builder side is checked in a program of its own.
-        MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@8, @4] dataType:MPSDataTypeFloat32];
-        printf("shaped dataType %d\n", (int)shaped.dataType);
-
-        // The unary family and the arithmetic family, over the sixteen classes above, in float32 and
-        // then in float16. Both are asked for every operation of the family, because the two types do not
-        // answer alike and a case in one of them says nothing about the other.
-        families(MPSDataTypeFloat32, &leftValues[0], &rightValues[0], "float32");
-        families(MPSDataTypeFloat16, &halfValues[0], &halfRightValues[0], "float16");
-        // The reduction family, which is the first thing in this file whose result is not the operand's
-        // shape, so it is asked of its own feeds and of the sixteen classes above.
-        reduction_families();
-        // The rest of the reduction family: the two argument reductions and the two binary
-        // NaN-propagating extremes of 15.0, and the two truth folds of 15.3.
-        reduction_rest_families();
-        // The cumulative family of 16.0, whose result is the operand's own shape, in float32 and float16 -
-        // and the seeds and the NaN rule are asked of the sixteen classes and a row of NaNs inside it.
-        cumulative_families(MPSDataTypeFloat32, &leftValues[0], "float32");
-        cumulative_families(MPSDataTypeFloat16, &halfValues[0], "float16");
-        {
-            MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"a"];
-            MPSGraphTensor *b = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"b"];
-            MPSGraphTensor *t = [one divisionWithPrimaryTensor:a secondaryTensor:b name:@"idiv"];
-            memset(integerResult, 0, sizeof(integerResult));
-            run(one, @[a, b], @[feed(&integerValues[0], @[@2, @2], MPSDataTypeInt32),
-                                feed(&integerDivisors[0], @[@2, @2], MPSDataTypeInt32)], t, &integerResult[0], sizeof(integerResult), MPSDataTypeInt32, MPSDataTypeInt32);
-            put("integer-divide", &integerResult[0], sizeof(integerResult));
+        builder_side();
+        if (argc < 2) {
+            fprintf(stderr, "graph-cases.m: name the family to run; these are: ");
+            family_names();
+            return 2;
         }
-        // A chain, so the walk over the operations in order is checked too.
-        {
-            MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"a"];
-            MPSGraphTensor *b = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"b"];
-            MPSGraphTensor *sum = [one additionWithPrimaryTensor:a secondaryTensor:b name:@"sum"];
-            MPSGraphTensor *doubled = [one multiplicationWithPrimaryTensor:sum secondaryTensor:sum name:@"doubled"];
-            MPSGraphTensor *root = [one squareRootWithTensor:doubled name:@"root"];
-            memset(resultBytes, 0, sizeof(resultBytes));
-            run(one, @[a, b], @[feed(&leftValues[0], @[@8, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@8, @4], MPSDataTypeFloat32)], root, resultBytes, 32 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
-            put("chain", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
+        for (i = 0; i < sizeof(kFamilies) / sizeof(kFamilies[0]); i++) {
+            if (strcmp(argv[1], kFamilies[i].name) != 0) continue;
+            kFamilies[i].cases();
+            return 0;
         }
-        // Last, and on its own: -constantWithShape:dataType:values:name: aborts the host of this
-        // machine, so it is asked for after everything the host does answer. In the middle of the unary
-        // family it was taking seven cases down with it.
-        {
-            MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"a"];
-            MPSGraphTensor *c = [one constantWithShape:@[@8, @4] dataType:MPSDataTypeFloat32
-                                             values:[NSData dataWithBytes:&constantValues[0] length:sizeof(constantValues)] name:@"c"];
-            MPSGraphTensor *t = [one additionWithPrimaryTensor:a secondaryTensor:c name:@"withConstant"];
-            memset(resultBytes, 0, sizeof(resultBytes));
-            run(one, @[a], @[feed(&leftValues[0], @[@8, @4], MPSDataTypeFloat32)], t, resultBytes, 32 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
-            put("constant", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
-        }
-
+        fprintf(stderr, "graph-cases.m: unknown family '%s'; these are: ", argv[1]);
+        family_names();
+        return 2;
     }
-    return 0;
 }
