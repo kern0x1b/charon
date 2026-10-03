@@ -952,16 +952,6 @@
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
     },
     {
-      "api": "-[MPSGraph erfWithTensor:name:]",
-      "kind": "method",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m agrees with the release over the file's thirty-two input classes in both MPSDataTypeFloat32 and MPSDataTypeFloat16: byte for byte where the operation is not a transcendental, and within the distance tests/backports/host/mpsgraph/tolerances.txt gives for this operation where it is, which is the largest distance this differential has measured between the two and which no cell exceeds; the half answer for a NaN, an infinity and a zero is the rule of that operation's own row in CharonMPSGraphHalfNaNOf, measured class by class; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
-      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
-      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
-    },
-    {
       "api": "-[MPSGraph floorWithTensor:name:]",
       "kind": "method",
       "introduced": "14.0",
@@ -1008,6 +998,38 @@
       "minimum": "6.0",
       "status": "implemented",
       "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m agrees with the release over the file's thirty-two input classes in both MPSDataTypeFloat32 and MPSDataTypeFloat16: byte for byte where the operation is not a transcendental, and within the distance tests/backports/host/mpsgraph/tolerances.txt gives for this operation where it is, which is the largest distance this differential has measured between the two and which no cell exceeds; the half answer for a NaN, an infinity and a zero is the rule of that operation's own row in CharonMPSGraphHalfNaNOf, measured class by class; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph asinWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m agrees with the release over the file's thirty-two input classes in both MPSDataTypeFloat32 and MPSDataTypeFloat16: byte for byte where the specification holds the operation to the correctly rounded answer, and otherwise within the figure tests/backports/host/mpsgraph/tolerances.txt gives for it, which is the Metal Shading Language Specification's own, cited there by table and page; the half answer for a NaN, an infinity and a zero is the rule of that operation's own row in CharonMPSGraphHalfNaNOf, measured class by class; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+
+    {
+      "api": "-[MPSGraph asinhWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m agrees with the release over the file's thirty-two input classes in both MPSDataTypeFloat32 and MPSDataTypeFloat16: byte for byte where the specification holds the operation to the correctly rounded answer, and otherwise within the figure tests/backports/host/mpsgraph/tolerances.txt gives for it, which is the Metal Shading Language Specification's own, cited there by table and page; the half answer for a NaN, an infinity and a zero is the rule of that operation's own row in CharonMPSGraphHalfNaNOf, measured class by class; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+
+    {
+      "api": "-[MPSGraph atanhWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m agrees with the release over the file's thirty-two input classes in both MPSDataTypeFloat32 and MPSDataTypeFloat16: byte for byte where the specification holds the operation to the correctly rounded answer, and otherwise within the figure tests/backports/host/mpsgraph/tolerances.txt gives for it, which is the Metal Shading Language Specification's own, cited there by table and page; the half answer for a NaN, an infinity and a zero is the rule of that operation's own row in CharonMPSGraphHalfNaNOf, measured class by class; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
     }

@@ -246,10 +246,10 @@ written, in `MPSGraph14.m` and in the interpreter beside it: the transcendentals
 six comparisons and the six logicals, the three questions about a value, the two remainders, a minimum, a
 maximum, a division that answers no NaN, the select, the clamp, a ReLU and a sigmoid with their gradients.
 Every one of them is asked over the case file's sixteen input classes in `MPSDataTypeFloat32` and in
-`MPSDataTypeFloat16`, and **32 of the 53 come back with every cell of every case agreeing with the release in both
+`MPSDataTypeFloat16`, and **36 of the 53 come back with every cell of every case agreeing with the release in both
 types** - the row of each is in the registry, and the run's verdict line is
-`port: same as the system on 3642 of the 3808 cells with a result buffer; 3476 within the release's own
-precision, 166 recorded` with `checks=128 failures=0`.
+`port: same as the system on 3609 of the 3808 cells with a result buffer; 3410 within the release's own
+precision, 199 recorded` with `checks=128 failures=0`.
 
 **A predicate's result is a boolean and the logical family's is not.** Measured on this host's own
 MPSGraph over a rank-3 float32 operand: `isNaN`, `isFinite`, `isInfinite`, `equal`, `notEqual`,
@@ -345,52 +345,68 @@ their own rows.
 
 ### What "the same arithmetic" means for a kernel that is not the C library's
 
-Sixteen classes are not enough to measure a precision, so the sweep is **thirty-two**: the sixteen
-classes above and then sixteen ordinary values - `2^-16` and `2^-15` and three quarters and seven eighths
-of each, and one plus each of those, and their negatives - because those are the inputs whose last bit a
-kernel's own rounding is decided on. Every case of every family runs over the whole thirty-two in both
-types, and the run compares **3808 cells** where it compared 2048.
+Sixteen classes are not enough to measure a precision, so the sweep is **thirty-two**: the sixteen classes
+above and then sixteen ordinary values - `2^-16` and `2^-15` and three quarters and seven eighths of each,
+and one plus each of those, and their negatives - because those are the inputs whose last bit a kernel's own
+rounding is decided on. Every case of every family runs over the whole thirty-two in both types, and the run
+compares **3808 cells** where it compared 2048.
 
 Where the two answers of a cell differ, the comparison asks how far apart they are in units in the last
-place before it calls the cell a difference: the bit patterns are read as signed integers in
-sign-magnitude order, so the distance is how many representable values lie between them, and a zero of
-either sign is the same value and a NaN against a number is no distance at all.
+place before it calls the cell a difference: the bit patterns are read as signed integers in sign-magnitude
+order, so the distance is how many representable values lie between them; a zero of either sign is the same
+value, and a NaN against a number is no distance at all and stays recorded whatever the tolerance says.
 
-`tests/backports/host/mpsgraph/tolerances.txt` is the table of what each operation may be that far apart,
-and **every number in it is a measurement, not a figure quoted from a specification**: it is the largest
-distance the differential has seen between the release and the port for that operation in that data type
-over the thirty-two inputs, and a cell further out fails. It therefore cannot be looser than what has been
-observed, and it does not widen by itself - if the port drifts, the run says so.
+**And how far they may be is the specification's figure, not this differential's.** The source is the
+*Metal Shading Language Specification*, version 2026-06-04, section **8.4 "ULPs and Relative Error"**: its
+single-precision table is **Table 8.1** (pages 368-369) and its half-precision table is **Table 8.3**
+(pages 373-374, which "applies to iOS and macOS, starting with Apple GPU Family 4 hardware" - what this
+host is). `tests/backports/host/mpsgraph/tolerances.txt` carries the figures by table and page, and where a
+row of either table reads "Correctly rounded" the figure is zero: the specification holds `sqrt`, `rsqrt`,
+`rint`, `round`, `ceil` and `floor` to the correctly rounded answer, so those are compared byte for byte.
+The figures that are here: `acos`, `acosh`, `asin`, `asinh` four and `atan`, `atanh` five in single
+precision; `atan2` six; `cos`, `cosh`, `exp2`, `exp10`, `log2`, `log10`, `sin`, `sinh` four; `tan` six;
+`tanh` five; `pow` sixteen. Every half figure is one, Table 8.3 giving one for each of them.
 
-**The measured maximum, per operation and per type.** Every transcendental's value differences are one or
-two units in the last place, and the arctangent's in half reach three and the hyperbolic tangent's reach
-eleven:
+**Two operations of this family are in neither table, and that is what decides them.** The specification
+does not define or bound `erf` at all, in either precision, so there is no documented bound to hold it to
+and its fifteen cells are compared byte for byte and recorded where the two differ - its row stays
+`missing`. A half `pow` is likewise absent from Table 8.3 while the single-precision `pow` is in Table 8.1,
+so `pow` carries the single figure and its half cells are byte for byte. A sigmoid is not a function the
+specification names either, so its figure is the sum of two it does: `sigmoid(x)` is one over one plus an
+exponential of the negated argument, `exp` is four in Table 8.1 and one in Table 8.3, and `x / y` and
+`1.0 / x` are "Correctly rounded" in the same two tables and add nothing - four and one.
 
-| operation | float32 | float16 | what the rest of its difference is |
-| --- | --- | --- | --- |
-| `sin`, `cos`, `tan`, `sinh`, `cosh`, `acosh`, `exp2`, `log2` | 1 | 1 | `sin` and `cos` have float16 special classes left, five and six cells |
-| `asin` | 1 | 0 | one float16 cell: the canonicalisation of a NaN |
-| `asinh` | 2 | 0 | one float16 cell |
-| `atan` | 0 | 3 | six float16 cells: a NaN and the four ordinary values below one |
-| `atanh` | 0 | 0 | one float16 cell |
-| `erf` | 2 | 1 | seven float16 cells, including its saturating answer for a NaN |
-| `exp10`, `log10` | 1 | 0 | - |
-| `power` | 1 | 2 | six float16 cells |
-| `sigmoid` | 1 | 1 | four float16 cells |
-| `tanh` | 1 | 11 | nine float32 and six float16 special-class cells, the largest group left in the file |
+**The measured distance, next to the figure it is held to.** Every operation's measured maximum over the
+thirty-two classes is one or two units in the last place except three: the hyperbolic tangent's is eleven in
+half against a figure of one, the arctangent's is three against a figure of one, and a power's is two in
+half against no figure at all. All three are recorded cell by cell, which is what the record is for. The
+other measured maxima sit at or inside their figure:
+
+| operation | measured float32 | figure | measured float16 | figure |
+| --- | --- | --- | --- | --- |
+| `sin`, `cos`, `sinh`, `cosh`, `tan` | 1 | 4, 4, 4, 4, 6 | 1 | 1 |
+| `asin`, `asinh` | 1 | 4 | 0 | 1 |
+| `atan` | 0 | 5 | 3 | 1 |
+| `atanh` | 0 | 5 | 0 | 1 |
+| `atan2` | 1 | 6 | 0 | 1 |
+| `acos`, `acosh` | 0 | 4 | 0 | 1 |
+| `exp2`, `exp10`, `log2`, `log10` | 1 | 4 | 0 or 1 | 1 |
+| `power` | 1 | 16 | 2 | none |
+| `sigmoid` | 1 | 4 | 1 | 1 |
+| `tanh` | 1 | 5 | 11 | 1 |
+| `erf` | 2 | **none** | 1 | **none** |
 
 **No non-transcendental case has a tolerance at all.** A predicate, a logical, both remainders, a minimum,
 a maximum, a select, a clamp, a rounding, the three questions about a value, a ReLU and a ReLU gradient are
-compared byte for byte in both types, and the six comparisons and the four orderings are compared byte for
-byte as one byte each. That is deliberate: their answers are a truth, a whole number or one of two
-orderings, and "within N units in the last place" is not a thing for any of them.
+compared byte for byte in both types, and the six comparisons and the four orderings byte for byte as one
+byte each. That is deliberate: their answers are a truth, a whole number or one of two orderings, and "within
+N units in the last place" is not a thing for any of them.
 
-**The run's own verdict, and what a mutation does to it**: `port: same as the system on 3600 of the 3808
-cells with a result buffer; 3392 within the release's own precision, 208 recorded`, `checks=128 failures=0`,
-and the planted build still differs from the release in 128 of the 130 cases. The red control is the
-reason a tolerance is safe here: the plant is every stored element off by one whole unit of the value,
-which is between 10^6 and 10^38 units in the last place, so no tolerance anywhere near one or two can hide
-it.
+**What a mutation does to it**: `port: same as the system on 3609 of the 3808 cells with a result buffer;
+3410 within the release's own precision, 199 recorded`, `checks=128 failures=0`, and the planted build still
+differs from the release in 128 of the 130 cases. The red control is why a tolerance is safe here: the plant
+is every stored element off by one whole unit of the value, which is between 10^6 and 10^38 units in the
+last place, so no figure anywhere near four can hide it.
 
 ### What a NaN, an infinity and a zero are in half, per operation
 
@@ -416,13 +432,13 @@ ordinary source and an error function of a positive zero are each `0x0000`, wher
 the operand's own sign. The rule is applied after the half block and before the store, so it also covers
 the kinds the half block does not reach.
 
-Together the table and that rule take the run from 208 recorded cells to 166 and make **32 of the 58 cases
-of this family clean in every type**: the six comparisons and the four orderings are clean in float32 only,
+Together the table and that rule took the run from 208 recorded cells to 166, and with the figures the
+specification gives, **36 of the 58 cases of this family are clean in every type**: the six comparisons and the four orderings are clean in float32 only,
 and the six remainders' float32 answers are the recorded group the previous pass measured.
 
 ### The recorded cells, grouped
 
-`tests/backports/host/mpsgraph/recorded-cells.txt` names each of the 166 with the two runs' bytes, read
+`tests/backports/host/mpsgraph/recorded-cells.txt` names each of the 199 with the two runs' bytes, read
 out of the run's own outputs by `.agent-work/record.py`. They are of three kinds, and none of them is a
 tolerance:
 
