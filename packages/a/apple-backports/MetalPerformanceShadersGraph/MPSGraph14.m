@@ -97,6 +97,19 @@ typedef enum {
     return tensor;
 }
 
+// The same constant written the way MPSGraphMemoryOps.h spells it, with the data as an NSData rather than
+// as bytes and a length. It is the same operation: the header's own note is that the number of bytes should
+// be sizeof(dataType) times the number of elements and that the shape has to be statically shaped, which is
+// what a constant is. It is here because a caller that has its data in an NSData has no other way to put it
+// in a graph, and because the slice's gradient takes the shape of its forward input as a TENSOR, so a graph
+// that is to answer one before it runs anything needs this factory to build it.
+- (MPSGraphTensor *)constantWithData:(NSData *)data
+                               shape:(NSArray<NSNumber *> *)shape
+                            dataType:(MPSDataType)dataType
+{
+    return [self constantWithShape:shape dataType:dataType values:data name:nil];
+}
+
 - (MPSGraphTensor *)charon_mps_operation:(CharonMPSGraphOperationKind)kind
                                 inputs:(NSArray<MPSGraphTensor *> *)inputs
                             parameters:(NSDictionary *)parameters
@@ -765,8 +778,89 @@ typedef enum {
                                name:name];
 }
 
-#pragma mark - the gather family: the one seam every release's shape factory goes through
+// The strided slice with the three masks, which is 14.0's own form of the same walk: a bit of startMask
+// says the start written down for that axis is not to be read - the axis starts at zero instead, which is
+// measured: a start of 5 and a start of -3 over a 2x4 both answer what a start of 0 answers, and a start of
+// 9 with an end of 0 answers a result of no elements, which the release builds and then cannot make an
+// NDArray for - a bit of endMask says the end is not to be read either, and the axis runs to its own last
+// element (measured: endMask over axis 1 of a 2x4 from a start of 1 answers three elements, 2, 3 and 4, and
+// with a stride of -1 from 3 it answers four, 4, 3, 2 and 1), and a bit of squeezeMask says the axis is
+// dropped from the RESULT's shape whatever its extent, the elements being the mapped walk's own in order
+// (measured: axis 0 of a 2x4 with squeezeMask answers a rank of one holding the first row, and it answers
+// the same rank of one over two selected rows, and both axes together answer a rank of zero holding the
+// first element).
+- (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor
+                         starts:(NSArray<NSNumber *> *)starts
+                           ends:(NSArray<NSNumber *> *)ends
+                        strides:(NSArray<NSNumber *> *)strides
+                      startMask:(uint32_t)startMask
+                        endMask:(uint32_t)endMask
+                    squeezeMask:(uint32_t)squeezeMask
+                           name:(NSString *)name
+{
+    return [self charon_mps_slice:CharonMPSGraphOperationKindSlice
+                          inputs:@[tensor]
+                      parameters:@{@"gather": @"slice",
+                                   @"sliceStarts": starts ?: @[], @"sliceEnds": ends ?: @[],
+                                   @"sliceStrides": strides ?: @[],
+                                   @"sliceStartMask": @(startMask), @"sliceEndMask": @(endMask),
+                                   @"sliceSqueezeMask": @(squeezeMask)}
+                             name:name];
+}
 
+// The slice's GRADIENT, which goes the other way: the result is a tensor of the shape the FORWARD pass's
+// input had - which is why that shape is a tensor here and not a shape, and why it is the second input of
+// the operation - and the gradient's elements are written into the region the same starts, ends and strides
+// select, every other element of the result a zero. Measured on the release with the shape a constant, which
+// is the only way it can be asked at all: over a destination filled with the byte 0xbd the zeros are written
+// and not left, so the gradient is a scatter over a zeroed result and not a copy of the region.
+//
+// The shape arrives as data, and a shape that arrives as data is the one thing the release cannot build a
+// graph over - measured: the result tensor's shape is nil at build and after the run, and the process writes
+// the gradient's element 0 into the destination's element 0 and nothing else, whatever the destination's
+// shape. The port reads that shape when the graph runs and answers this gradient, which is the header's own
+// words ("The shape of the forward pass input, that is the shape of the gradient output"); the divergence is
+// named in the row of each of the three methods with the release's measurement.
+- (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor
+                       fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor
+                                 starts:(NSArray<NSNumber *> *)starts
+                                   ends:(NSArray<NSNumber *> *)ends
+                                strides:(NSArray<NSNumber *> *)strides
+                                   name:(NSString *)name
+{
+    return [self charon_mps_slice:CharonMPSGraphOperationKindSlice
+                          inputs:@[inputGradientTensor, fwdInShapeTensor]
+                      parameters:@{@"gather": @"sliceGradient",
+                                   @"sliceStarts": starts ?: @[], @"sliceEnds": ends ?: @[],
+                                   @"sliceStrides": strides ?: @[],
+                                   @"sliceForwardShape": [self charon_mps_constantShapeOfTensor:fwdInShapeTensor],
+                                   @"sliceScatteredShape": inputGradientTensor.shape}
+                             name:name];
+}
+
+- (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor
+                       fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor
+                                 starts:(NSArray<NSNumber *> *)starts
+                                   ends:(NSArray<NSNumber *> *)ends
+                                strides:(NSArray<NSNumber *> *)strides
+                              startMask:(uint32_t)startMask
+                                endMask:(uint32_t)endMask
+                            squeezeMask:(uint32_t)squeezeMask
+                                   name:(NSString *)name
+{
+    return [self charon_mps_slice:CharonMPSGraphOperationKindSlice
+                          inputs:@[inputGradientTensor, fwdInShapeTensor]
+                      parameters:@{@"gather": @"sliceGradient",
+                                   @"sliceStarts": starts ?: @[], @"sliceEnds": ends ?: @[],
+                                   @"sliceStrides": strides ?: @[],
+                                   @"sliceStartMask": @(startMask), @"sliceEndMask": @(endMask),
+                                   @"sliceSqueezeMask": @(squeezeMask),
+                                   @"sliceForwardShape": [self charon_mps_constantShapeOfTensor:fwdInShapeTensor],
+                                   @"sliceScatteredShape": inputGradientTensor.shape}
+                             name:name];
+}
+
+#pragma mark - the gather family: the one seam every release's shape factory goes through
 // What a gather is: the result's shape, and the parameters that say which transformation produces it. The
 // walk in MPSGraphInterpreter14.m is one function for the whole family - the squeeze and the expanded
 // dimension and the flatten are the same gather with the axes left alone, and the transpose, the broadcast
@@ -813,6 +907,61 @@ typedef enum {
     // so the count of its elements is read out of the fed tensor data itself then, and the parameters say
     // only which of the operation's inputs carries it.
     return [self charon_mps_operation:kind inputs:@[tensor, fedParameter] parameters:parameters name:name];
+}
+
+#pragma mark - the slice family: the one seam its three directions go through
+
+// The slice family's operation, of whichever direction the factory names in `parameters`, over the inputs
+// it hands over. This is the gather seam with the inputs named rather than the one operand they are all
+// built from: a gradient carries the gradient and the forward input's shape, an update carries the data and
+// the update, and a fed form carries its starts, ends and strides as the operation's own later inputs.
+//
+// The result's shape goes on the output tensor where the plan can be derived now, which is what a caller
+// reads off the tensor before it runs anything - and what the release can answer, because it infers the
+// result's type when the graph is built (measured: with the shape of a gradient fed rather than written down,
+// the release's own result tensor carries no shape at all, before the run or after it). A parameter the
+// caller fed is data and arrives when the graph runs, so the interpreter puts the shape on then.
+- (MPSGraphTensor *)charon_mps_slice:(CharonMPSGraphOperationKind)kind
+                               inputs:(NSArray<MPSGraphTensor *> *)inputs
+                           parameters:(NSDictionary *)parameters
+                                  name:(NSString *)name
+{
+    MPSGraphTensor *result = [self charon_mps_operation:kind inputs:inputs parameters:parameters name:name];
+    NSArray<NSNumber *> *shape = [self charon_mps_gatherShapeOfTensor:inputs.firstObject
+                                                          parameters:parameters
+                                                                 named:name];
+    if (shape != nil)
+        [result charon_mps_setShape:shape];
+    return result;
+}
+
+// The shape a CONSTANT tensor holds, and nil for anything else. A slice's gradient takes the shape of its
+// forward input as a tensor, so the shape is a shape the graph has to be told - and the only place the graph
+// can be told is a value that is in the graph, which is what a constant is. This is the release's own
+// arrangement and not this port's convenience: with the shape a constant the release's result tensor carries
+// its shape at build time and answers the gradient, and with the shape fed it carries none and writes one
+// element (measured, both, in the row of each of the gradient methods).
+- (NSArray<NSNumber *> *)charon_mps_constantShapeOfTensor:(MPSGraphTensor *)tensor
+{
+    MPSGraphOperation *operation = tensor.operation;
+    if (operation == nil || [operation charon_mps_kind] != CharonMPSGraphOperationKindConstant)
+        return nil;
+    NSData *bytes = [operation charon_mps_parameters][@"values"];
+    if (bytes == nil)
+        return nil;
+    // An int32 or an int64 is what a shape is fed as, and the release takes both: measured, an int32 and an
+    // int64 of shape [1] each answer for an axis, and a shape is the same kind of number one axis longer.
+    NSUInteger width = MPSSizeofMPSDataType(tensor.dataType);
+    if (width != 4 && width != 8)
+        return nil;
+    NSUInteger count = bytes.length / width;
+    NSMutableArray<NSNumber *> *shape = [NSMutableArray arrayWithCapacity:count];
+    const uint8_t *raw = bytes.bytes;
+    for (NSUInteger i = 0; i < count; i++) {
+        int64_t extent = width == 4 ? (int64_t)((const int32_t *)raw)[i] : ((const int64_t *)raw)[i];
+        [shape addObject:@(extent)];
+    }
+    return shape;
 }
 
 #pragma mark - the cumulative family, whose seam every release's scan factory goes through

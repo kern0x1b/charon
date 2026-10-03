@@ -1158,11 +1158,19 @@ static NSMutableArray<NSNumber *> *CharonMPSGraphGatherIntegers(MPSGraphTensorDa
 // interpreter asks it when the operation runs, which is the only time a FED parameter can be read. A fed
 // parameter, and an operand whose own shape is not known yet (a gather of a fed gather), give nil here, and
 // the interpreter puts the shape on when it walks the operation.
+//
+// `fed` is one entry per parameter the caller fed rather than wrote down, in the order the operation's own
+// inputs carry them after the ones the walk reads as the operand: the gathers above take one (an axis, a set
+// of axes, a shape), and the slice family takes up to three (the starts, the ends or the sizes, and the
+// strides), which is why it is a list and not a single array. Its first entry is what the branches above read
+// as the fed parameter, so they are unchanged by it.
 static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *> *sourceShape,
-                                              NSDictionary *parameters, NSArray<NSNumber *> *fed)
+                                              NSDictionary *parameters,
+                                              NSArray<NSArray<NSNumber *> *> *fed)
 {
     const char *gather = [parameters[@"gather"] UTF8String];
     NSUInteger sourceRank = sourceShape.count;
+    NSArray<NSNumber *> *fedOne = fed.firstObject;
 
     if (fed == nil && (parameters[@"gatherOperand"] != nil || sourceShape == nil))
         return nil;
@@ -1184,7 +1192,7 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
         // that: it names them in @gatherDrop and @gatherAdd, or says with @gatherOperand that the caller fed
         // them and they are read out of the operation's second input here.
         int expanding = strcmp(gather, "expand") == 0;
-        NSArray<NSNumber *> *declared = [parameters[@"gatherOperand"] isEqual:@"axes"] ? fed
+        NSArray<NSNumber *> *declared = [parameters[@"gatherOperand"] isEqual:@"axes"] ? fedOne
             : (expanding ? parameters[@"gatherAdd"] : parameters[@"gatherDrop"]);
         NSMutableIndexSet *named = [NSMutableIndexSet indexSet];
         for (NSNumber *axis in declared) {
@@ -1258,7 +1266,7 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
         // negative axis from the end - measured, both answer - so the rule is this operation's and not the
         // family's, and it is here rather than in a shared normaliser.
         NSInteger axis = [parameters[@"gatherOperand"] isEqual:@"axis"]
-            ? (NSInteger)fed.firstObject.integerValue
+            ? (NSInteger)fedOne.firstObject.integerValue
             : [parameters[@"gatherAxis"] integerValue];
         if (axis < 0 || (NSUInteger)axis >= sourceRank) {
             [NSException raise:NSInvalidArgumentException
@@ -1288,7 +1296,7 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
         [sourceCounts addObject:@(sourceRank - from)];
         [reversed addObject:@0];
     } else if (strcmp(gather, "broadcast") == 0) {
-        NSArray<NSNumber *> *declared = [parameters[@"gatherOperand"] isEqual:@"shape"] ? fed
+        NSArray<NSNumber *> *declared = [parameters[@"gatherOperand"] isEqual:@"shape"] ? fedOne
                                                                                       : parameters[@"gatherShape"];
         for (NSUInteger k = 0; k < declared.count; k++) {
             NSInteger extent = declared[k].integerValue;
@@ -1314,7 +1322,7 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
         }
     } else if (strcmp(gather, "reverse") == 0) {
         NSMutableIndexSet *flipped = [NSMutableIndexSet indexSet];
-        NSArray<NSNumber *> *named = [parameters[@"gatherOperand"] isEqual:@"axes"] ? fed
+        NSArray<NSNumber *> *named = [parameters[@"gatherOperand"] isEqual:@"axes"] ? fedOne
                                                                                   : parameters[@"gatherAxes"];
         if (named.count)
             for (NSNumber *axis in named) {
@@ -1341,33 +1349,105 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
             [sourceCounts addObject:@1];
             [reversed addObject:([flipped containsIndex:i] ? @YES : @NO)];
         }
-    } else if (strcmp(gather, "slice") == 0) {
-        // A slice is one gather with an OFFSET and a STRIDE: the result's axis k reads the operand's axis k,
-        // starting at the caller's start and stepping by the caller's stride. The header's two forms are the
-        // same walk: `sliceTensor:dimension:start:length:name:` is one axis with a length (a stride of one and
-        // an end of start + length), and `sliceTensor:starts:ends:strides:name:` is every axis at once with
-        // TensorFlow's strided-slice semantics, which is what the header says it is based on.
+    } else if (strcmp(gather, "slice") == 0 || strcmp(gather, "sliceGradient") == 0
+               || strcmp(gather, "sliceUpdate") == 0) {
+        // THE SLICE FAMILY, which is one piece of arithmetic in three directions. What all three share is the
+        // per-axis region: a start, an end (or a size), a stride and a count, with the three masks applied.
+        // The header's two plain forms are the same region too - `sliceTensor:dimension:start:length:name:` is
+        // one axis with a length (a stride of one and an end of start + length) and the strided form is every
+        // axis at once with TensorFlow's strided-slice semantics, which is what the header says it is based on.
         //
-        // A NEGATIVE start, end or stride counts from the end of that axis of the operand, measured: axis 1 of
-        // a 2x4 sliced from -2 with a length of two answers (3, 4) and a stride of -1 from the end answers the
-        // row the other way round. The count of the result's axis is how many steps from the start reach the
-        // end, and a result coordinate with no element of the operand behind it is a zero, as it is for a
-        // broadcast (measured over a destination filled with a pattern).
+        // A NEGATIVE start, end or stride counts from the end of that axis, measured: axis 1 of a 2x4 sliced
+        // from -2 with a length of two answers (3, 4) and a stride of -1 from the end answers the row the
+        // other way round. The count of the axis is how many steps of the stride from the start reach the end,
+        // and a result coordinate with no element of the operand behind it is a zero, as it is for a broadcast
+        // (measured over a destination filled with a pattern).
+        //
+        // THE THREE MASKS, each measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40):
+        //
+        //   - startMask: the start written down is NOT read, and the axis starts at ZERO. A start of 5 and a
+        //     start of -3 both answer what a start of 0 answers, and a start of 9 with an end of 0 - which is
+        //     then before the start - answers a result of no elements, which the release builds and then
+        //     cannot make an NDArray for ("device may not be nil", MPSNDArray.mm:759).
+        //   - endMask: the end written down is NOT read either, and the axis runs to its own last element. For
+        //     a positive stride the count is therefore the whole of the axis from the start (measured, an
+        //     endMask over axis 1 from a start of 1 answers three elements, 2, 3 and 4, and a written end of
+        //     -9 answers the same three), and for a NEGATIVE stride the end is the one before the axis begins,
+        //     so the count reaches index 0 (measured, an endMask over axis 1 with a stride of -1 from 3
+        //     answers four elements, 4, 3, 2 and 1).
+        //   - squeezeMask: the axis is dropped from the RESULT's shape whatever its extent, and the elements
+        //     are the mapped walk's own in order, so a result of fewer axes holds the first of them. Measured:
+        //     axis 0 of a 2x4 with its bit set answers a rank of one holding (1, 2, 3, 4); with two rows
+        //     selected it answers the same rank of one over the same four values; and both axes together
+        //     answer a rank of zero holding the first element. That is why the plan keeps the full shape of the
+        //     walk as well as the shape of the result, and why the walk writes into the first of the one into
+        //     the other.
         NSArray<NSNumber *> *starts = parameters[@"sliceStarts"];
+        NSArray<NSNumber *> *ends = parameters[@"sliceEnds"];
         NSArray<NSNumber *> *strides = parameters[@"sliceStrides"];
-        if (starts.count != sourceRank || strides.count != sourceRank) {
-            [NSException raise:NSInvalidArgumentException
-                        format:@"MPSGraph: %@ was asked to slice a rank-%lu tensor with %lu starts and %lu "
-                               @"strides, and the release wants one of each per axis", name,
-                                (unsigned long)sourceRank, (unsigned long)starts.count,
-                                (unsigned long)strides.count];
+        NSUInteger startMask = [parameters[@"sliceStartMask"] unsignedIntegerValue];
+        NSUInteger endMask = [parameters[@"sliceEndMask"] unsignedIntegerValue];
+        NSUInteger squeezeMask = [parameters[@"sliceSqueezeMask"] unsignedIntegerValue];
+        BOOL sizes = [parameters[@"sliceSizes"] boolValue];
+        // The rank the region is over. For the slice it is the operand's own rank, and for the gradient and
+        // the update it is the rank of the tensor the region selects elements OF - the forward input for the
+        // gradient, the data tensor for the update - which is not the rank of the gradient or of the update:
+        // those have the shape of the REGION, and the release refuses a gradient or an update whose shape is
+        // not it (measured: a gradient of a shape that is not the region's writes one element and nothing
+        // else, and an update that is wider than the region is refused by its own compiler).
+        NSArray<NSNumber *> *regionShape = sourceShape;
+        NSUInteger fedFrom = [parameters[@"sliceFedFrom"] unsignedIntegerValue];
+        if (fedFrom != 0) {
+            // The caller fed the parameters instead of writing them down, and they are the operation's own
+            // inputs from `fedFrom` on: the starts, then the ends or the sizes, then the strides. A shape
+            // that is fed is one the release cannot build a graph over at all (measured: the fed slice of
+            // 18.2 dies in its own NDArray whatever the fed tensor is made of), so the plan cannot be
+            // derived here at build time, and the refusal those rows carry is the named divergence; the port
+            // reads the fed values when the graph runs and answers the header.
+            NSUInteger wanted = 3 - (sizes ? 1 : 0);
+            if (fed.count < wanted)
+                return nil;
+            starts = fed[0];
+            ends = fed[1];
+            strides = wanted > 2 ? fed[2] : nil;
+            // A stride is not fed by the SIZE form at all - a size is a count along the axis - so the region
+            // of that axis is the size from the start, one pace at a time.
+            if (sizes)
+                strides = nil;
         }
-        NSMutableArray<NSNumber *> *offsets = [NSMutableArray arrayWithCapacity:sourceRank];
-        NSMutableArray<NSNumber *> *steps = [NSMutableArray arrayWithCapacity:sourceRank];
-        for (NSUInteger k = 0; k < sourceRank; k++) {
-            NSInteger extentOfSource = sourceShape[k].integerValue;
-            NSInteger from = starts[k].integerValue;
-            NSInteger step = strides[k].integerValue;
+        if (strcmp(gather, "sliceGradient") == 0) {
+            // The gradient's result is a tensor of the shape the forward pass's INPUT had, which arrives as
+            // the operation's second input. Where that tensor is a CONSTANT the factory read its value when
+            // the graph was built and put it in the parameters, and where it is a feed it is the last of the
+            // values read here, when the graph runs - which is the only time the release cannot be asked at
+            // all (measured: fed, its result tensor carries no shape and it writes one element).
+            NSArray<NSNumber *> *forward = parameters[@"sliceForwardShape"];
+            if (forward == nil)
+                forward = fed.lastObject;
+            if (forward == nil)
+                return nil;
+            regionShape = forward;
+        }
+        NSUInteger rank = regionShape.count;
+        if (sizes ? (starts.count != rank || ends.count != rank)
+                  : (starts.count != rank || ends.count != rank || strides.count != rank)) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was asked to slice a rank-%lu tensor with %lu starts, %lu %@ and "
+                               @"%lu strides, and the release wants one of each per axis", name,
+                        (unsigned long)rank, (unsigned long)starts.count, (unsigned long)ends.count,
+                        sizes ? @"sizes" : @"ends", (unsigned long)strides.count];
+        }
+        NSMutableArray<NSNumber *> *counts = [NSMutableArray arrayWithCapacity:rank];
+        NSMutableArray<NSNumber *> *offsets = [NSMutableArray arrayWithCapacity:rank];
+        NSMutableArray<NSNumber *> *steps = [NSMutableArray arrayWithCapacity:rank];
+        for (NSUInteger k = 0; k < rank; k++) {
+            NSInteger extentOfSource = regionShape[k].integerValue;
+            BOOL maskStart = (startMask >> k & 1) != 0;
+            BOOL maskEnd = (endMask >> k & 1) != 0;
+            // A size is the count itself, so there is no end to count the steps to and no stride to count
+            // them by: the region of that axis is the size from the start, one pace at a time.
+            NSInteger step = sizes ? 1 : strides[k].integerValue;
+            NSInteger from = maskStart ? 0 : starts[k].integerValue;
             if (from < 0)
                 from += extentOfSource;
             if (step == 0) {
@@ -1379,22 +1459,28 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
                 [NSException raise:NSInvalidArgumentException
                             format:@"MPSGraph: %@ was asked to slice axis %lu from %ld, and the release's own "
                                    @"compiler wants a start value that fits the dimension size %ld", name,
-                                    (unsigned long)k, (long)starts[k].integerValue, (long)extentOfSource];
+                            (unsigned long)k, (long)starts[k].integerValue, (long)extentOfSource];
             }
-            // The simple form is one axis with a LENGTH and the strided form is every axis with an END; both
-            // are how many steps of the stride from the start reach it, and the release takes the SMALLER of
-            // that and the number of steps the operand's own extent allows - measured, a 2x4 sliced from 2
-            // with an end of 9 answers a 2x2 and not a 2x7.
+            // The simple form is one axis with a LENGTH, the strided form is every axis with an END and the
+            // size form is every axis with a SIZE; all three are how many steps of the stride from the start
+            // reach it, and the release takes the SMALLER of that and the number of steps the axis's own
+            // extent allows - measured, a 2x4 sliced from 2 with an end of 9 answers a 2x2 and not a 2x7.
             NSInteger length = [parameters[@"sliceLength"] integerValue];
-            NSInteger end = [parameters[@"sliceEnds"][k] integerValue];
-            if (end < 0)
+            // A masked end is already relative: the axis's own extent for a positive stride, and the one
+            // BEFORE the axis begins for a negative one, which is why counting from the end does not apply
+            // to it (measured: an endMask with a stride of -1 from 3 answers four elements, 4, 3, 2 and 1).
+            NSInteger end = ends[k].integerValue;
+            if (maskEnd)
+                end = step > 0 ? extentOfSource : -1;
+            else if (end < 0)
                 end += extentOfSource;
             // The simple form writes the length down and the strided form does not, so the LENGTH's presence
             // is what tells them apart - a length of zero is a form of its own, refused below, and not the
             // strided form's absence of one.
             NSInteger asked = (parameters[@"sliceLength"] != nil && k == [parameters[@"sliceAxis"] unsignedIntegerValue])
                 ? length
-                : (NSInteger)ceil((double)(end - from) / (double)step);
+                : sizes ? ends[k].integerValue
+                        : (NSInteger)ceil((double)(end - from) / (double)step);
             NSInteger step_ = step < 0 ? -step : step;
             NSInteger available = step > 0 ? (extentOfSource - from + step_ - 1) / step_
                                             : (from + step_) / step_;
@@ -1403,17 +1489,63 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
                 [NSException raise:NSInvalidArgumentException
                             format:@"MPSGraph: %@ was asked to slice axis %lu into a result of no elements, and "
                                    @"the release builds that shape and then cannot make an NDArray for it",
-                                name, (unsigned long)k];
+                            name, (unsigned long)k];
             }
-            [shape addObject:@(howMany)];
-            [sourceAxes addObject:@(k)];
-            [sourceCounts addObject:@1];
-            [reversed addObject:@0];
+            [counts addObject:@(howMany)];
             [offsets addObject:@(from)];
             [steps addObject:@(step)];
         }
-        return @{@"shape": shape, @"sourceAxes": sourceAxes, @"sourceCounts": sourceCounts,
-                 @"reversed": reversed, @"offsets": offsets, @"strides": steps};
+
+        if (strcmp(gather, "sliceGradient") == 0 || strcmp(gather, "sliceUpdate") == 0) {
+            // The two directions that SCATTER rather than gather: the result is bigger than what is read into
+            // it - the whole forward input for the gradient, the whole data tensor for the update - and what
+            // is read is the gradient or the update, whose own shape IS the region's shape. The release
+            // refuses the two that differ (measured: an update wider than the region, and an update narrower
+            // than it, are both refused by its own compiler, "Optimize Original Module MLIR pass manager
+            // failed"; a gradient that is not the region's shape is not refused but writes one element and
+            // nothing else, which is the degenerate answer the row names).
+            NSArray<NSNumber *> *scattered = parameters[@"sliceScatteredShape"];
+            for (NSUInteger k = 0; k < counts.count; k++) {
+                if (scattered == nil || scattered.count != counts.count
+                    || scattered[k].integerValue != counts[k].integerValue) {
+                    [NSException raise:NSInvalidArgumentException
+                                format:@"MPSGraph: %@ was asked for a shape of %@ where the region it %@ is of "
+                                       @"rank %lu, and the release refuses the two that differ", name,
+                                [scattered componentsJoinedByString:@"x"],
+                                strcmp(gather, "sliceUpdate") == 0 ? @"writes" : @"is the gradient of",
+                                (unsigned long)counts.count];
+                }
+            }
+            // The result is the whole tensor the region selects elements OF, which is the forward input's
+            // shape for the gradient and the data tensor's own shape for the update - the first input of each
+            // of them, and the same shape in both cases.
+            return @{@"shape": regionShape, @"counts": counts, @"offsets": offsets, @"strides": steps,
+                     @"scatter": @YES, @"update": @(strcmp(gather, "sliceUpdate") == 0)};
+        }
+
+        // The slice itself is a gather, so the mapping is the region's axes one for one, and the axes the
+        // squeezeMask names are dropped from the result's shape and not from the walk.
+        NSMutableArray<NSNumber *> *mapped = [NSMutableArray arrayWithCapacity:rank];
+        NSUInteger dropped = 0;
+        for (NSUInteger k = 0; k < rank; k++) {
+            [mapped addObject:counts[k]];
+            [sourceAxes addObject:@(k)];
+            [sourceCounts addObject:@1];
+            [reversed addObject:@0];
+            if ((squeezeMask >> k & 1) != 0) {
+                dropped++;
+                continue;
+            }
+            [shape addObject:counts[k]];
+        }
+        if (dropped == 0)
+            return @{@"shape": shape, @"sourceAxes": sourceAxes, @"sourceCounts": sourceCounts,
+                     @"reversed": reversed, @"offsets": offsets, @"strides": steps};
+        // A squeezed axis is dropped from the RESULT's shape and not from the walk, which is why the plan
+        // carries the shape the walk is over as well: the elements are the walk's own in order, and the
+        // result holds as many of them as its own shape asks for.
+        return @{@"shape": shape, @"mappedShape": mapped, @"sourceAxes": sourceAxes,
+                 @"sourceCounts": sourceCounts, @"reversed": reversed, @"offsets": offsets, @"strides": steps};
     } else if (strcmp(gather, "reshape") == 0) {
         // A reshape is the same walk with the axes left alone and the result's shape the caller's: the operand
         // and the result hold the same elements in the same row-major order, so the result's axes consume the
@@ -1426,7 +1558,7 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
         // result type can be inferred unambiguously, so the product of the extents written down divides the
         // operand's element count and the answer is the quotient. Two of them, or a shape whose product does
         // not divide, is a shape this cannot answer and the port refuses it where the graph is built.
-        NSArray<NSNumber *> *written = [parameters[@"gatherOperand"] isEqual:@"shape"] ? fed
+        NSArray<NSNumber *> *written = [parameters[@"gatherOperand"] isEqual:@"shape"] ? fedOne
                                                                                      : parameters[@"gatherShape"];
         if (written == nil)
             return nil;
@@ -1624,6 +1756,70 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
     free(sourceStride);
 }
 
+// THE OTHER DIRECTION, which the slice's family needs and the gather above cannot be: a scatter writes the
+// SOURCE's elements into a result that is BIGGER than the source, at the coordinates the slice's own start
+// and stride give - which is what a gradient is (the gradient of a slice, written back into a tensor of the
+// forward input's shape) and what an update is (the update's elements written over the region of the data
+// tensor). The walk is the gather's coordinate arithmetic with the roles exchanged: here the source's own
+// coordinates are read and the result's are computed, so the stride table is the RESULT's.
+//
+// The result is zeroed first, because an element of it that the source does not reach is a zero and not the
+// bytes the caller left in the buffer - measured, over a destination filled with the byte 0xbd the zeros of a
+// gradient are written and the pattern is not among them.
+static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData *result, NSDictionary *plan)
+{
+    NSArray<NSNumber *> *sourceShape = source.shape;
+    NSArray<NSNumber *> *resultShape = result.shape;
+    NSArray<NSNumber *> *offsets = plan[@"offsets"];
+    NSArray<NSNumber *> *strides = plan[@"strides"];
+    NSUInteger rank = resultShape.count;
+    NSUInteger count = CharonMPSGraphElementCount(sourceShape);
+    if (count == 0)
+        return;
+    MPSDataType type = source.dataType;
+    void *in = [source charon_mps_bytes];
+    void *out = [result charon_mps_bytes];
+    size_t width = MPSSizeofMPSDataType(result.dataType);
+
+    unsigned long long *resultStride = calloc(rank ? rank : 1, sizeof(unsigned long long));
+    for (NSUInteger i = rank; i-- > 0;)
+        resultStride[i] = (i + 1 < rank
+                           ? resultStride[i + 1] * (unsigned long long)resultShape[i + 1].unsignedIntegerValue
+                           : 1);
+    // The zero the result starts at, which is the zero of its own type rather than of the source's. A
+    // GRADIENT's result is zeroed over its whole shape - every element the gradient does not reach is a
+    // written zero, measured over a destination filled with the byte 0xbd - and an UPDATE's is not, because
+    // its result is the data tensor's own elements with one region written over them, which the interpreter
+    // has copied in already and which this walk must leave alone outside the region.
+    if (![plan[@"update"] boolValue])
+        memset(out, 0, CharonMPSGraphElementCount(resultShape) * width);
+    for (NSUInteger element = 0; element < count; element++) {
+        unsigned long long rest = element, index = 0;
+        BOOL outside = NO;
+        for (NSUInteger k = rank; k-- > 0;) {
+            NSUInteger extent = (NSUInteger)sourceShape[k].unsignedIntegerValue;
+            unsigned long long coordinate = extent ? rest % extent : 0;
+            if (extent)
+                rest /= extent;
+            NSInteger from = [offsets[k] integerValue];
+            NSInteger step = [strides[k] integerValue];
+            long long place = (long long)coordinate * (long long)step + (long long)from;
+            // A coordinate the region does not reach is left as the zero above, which is what a region the
+            // release itself would refuse leaves here: the plan has already refused a region that does not
+            // fit, so this can only be an extent of zero, and there is nothing to write.
+            if (place < 0 || (NSUInteger)place >= (NSUInteger)resultShape[k].unsignedIntegerValue) {
+                outside = YES;
+                break;
+            }
+            index += (unsigned long long)place * resultStride[k];
+        }
+        if (outside || index >= CharonMPSGraphElementCount(resultShape))
+            continue;
+        CharonMPSStoreRounded(out, result.dataType, (NSUInteger)index, CharonMPSLoad(in, type, element), 1);
+    }
+    free(resultStride);
+}
+
 @implementation MPSGraph (CharonMPSGraphInterpreter)
 
 // The shape of a gather's result, asked when the graph is BUILT so that the output tensor carries it before
@@ -1671,10 +1867,28 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
                                  @"nothing was written to its output", [operation name]);
             return;
         }
-        MPSGraphTensorData *parameter = inputs.count > 1 ? values[inputs[1]] : nil;
+        // Every fed parameter of this operation, in the order the plan reads them: one for the gathers above,
+        // and for the slice family the starts, the ends (or the sizes) and the strides - and for the slice's
+        // gradient the shape of its forward input last, which is the one parameter the release cannot be
+        // asked at all and this port reads when the graph runs.
+        NSMutableArray<NSArray<NSNumber *> *> *fed = [NSMutableArray array];
+        NSString *gather = operation.charon_mps_parameters[@"gather"];
+        BOOL sliceFamily = [gather hasPrefix:@"slice"];
+        if (sliceFamily) {
+            NSUInteger from = [operation.charon_mps_parameters[@"sliceFedFrom"] unsignedIntegerValue];
+            if (from != 0)
+                for (NSUInteger i = from; i < inputs.count; i++)
+                    [fed addObject:CharonMPSGraphGatherIntegers(values[inputs[i]]) ?: @[]];
+            if ([gather isEqualToString:@"sliceGradient"] && inputs.count > 1)
+                // The forward input's shape is the operation's second input, whether the caller made it a
+                // constant - whose value the factory read when the graph was built, and which is in the
+                // values here as well - or a feed, which arrives now and is read now.
+                [fed addObject:CharonMPSGraphGatherIntegers(values[inputs[1]]) ?: @[]];
+        } else if (inputs.count > 1) {
+            [fed addObject:CharonMPSGraphGatherIntegers(values[inputs[1]])];
+        }
         NSDictionary *plan = CharonMPSGraphGatherPlan([operation name], source.shape,
-                                                      operation.charon_mps_parameters,
-                                                      CharonMPSGraphGatherIntegers(parameter));
+                                                      operation.charon_mps_parameters, fed);
         if (plan == nil)
             return;
         // The result's own shape can be the caller's to feed, so it comes out of the plan and is put on the
@@ -1687,7 +1901,51 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
                                                                             shape:plan[@"shape"]
                                                                          dataType:dataType];
         [gathered charon_mps_bytes];
-        CharonMPSGraphGather(operation, source, gathered, plan);
+        if ([plan[@"scatter"] boolValue]) {
+            // The two directions that write into a result bigger than what they read. A gradient's source is
+            // its first input; an update's source is its SECOND, because its first input is the data tensor
+            // the result is a copy of.
+            MPSGraphTensorData *scattered = [plan[@"update"] boolValue] && inputs.count > 1 ? values[inputs[1]]
+                                                                                          : source;
+            if (![scattered isKindOfClass:[MPSGraphTensorData class]]) {
+                CharonMPSGraphRefuse(@"MPSGraph: the slice operation named %@ has no value for the tensor it "
+                                     @"writes, so nothing was written to its output", [operation name]);
+                return;
+            }
+            if ([plan[@"update"] boolValue]) {
+                // The update REPLACES what the region of the data tensor held, so the result starts as the
+                // data's own elements - measured: a 1x2 region of a 2x4 updated with four new values answers
+                // the data everywhere else, byte for byte, and the update's own four inside the region.
+                // The whole of the data, not the update's own count of elements: the result is the data
+                // tensor's shape and its elements, and the update is written over one region of it.
+                NSUInteger available = CharonMPSGraphElementCount(source.shape);
+                NSUInteger room = CharonMPSGraphElementCount(gathered.shape);
+                void *out = [gathered charon_mps_bytes];
+                void *in = [source charon_mps_bytes];
+                for (NSUInteger i = 0; i < available && i < room; i++)
+                    CharonMPSStoreRounded(out, dataType, i, CharonMPSLoad(in, source.dataType, i), 1);
+            }
+            CharonMPSGraphScatter(scattered, gathered, plan);
+        } else {
+            // The result of a slice whose squeezeMask dropped an axis is smaller than the walk: the elements
+            // are the walk's own in order, so the walk goes over the full shape and the first of them fill the
+            // result - measured, axis 0 of a 2x4 squeezed answers the first row, over two selected rows too,
+            // and both axes squeezed answer the first element.
+            NSArray<NSNumber *> *mapped = plan[@"mappedShape"];
+            if (mapped != nil) {
+                NSUInteger walked = CharonMPSGraphElementCount(mapped);
+                MPSGraphTensorData *full = [[MPSGraphTensorData alloc] initWithDevice:source.device
+                                                                          elementCount:walked
+                                                                                 shape:mapped
+                                                                              dataType:dataType];
+                [full charon_mps_bytes];
+                CharonMPSGraphGather(operation, source, full, plan);
+                memcpy([gathered charon_mps_bytes], [full charon_mps_bytes],
+                       MIN(walked, gathered_) * MPSSizeofMPSDataType(dataType));
+            } else {
+                CharonMPSGraphGather(operation, source, gathered, plan);
+            }
+        }
         values[output] = gathered;
         return;
     }

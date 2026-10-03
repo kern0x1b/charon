@@ -69,3 +69,49 @@ slice-length-zero 134 device may not be nil
 slice-start-past-end 134 start value 9 does not fit dimension size
 slice-stride-zero 134 stride cannot be 0
 slice-length-past-end 134 does not fit within the dimension size
+
+# THE SLICE FAMILY'S OWN ELEVEN ROWS. What is measured here is the family in its three directions - the
+# masks, the gradient and the update - and what each of the eleven methods of 18.2's fed forms and of the
+# gradient's fed shape does to a release that cannot use a shape which arrives as data. Every question here
+# is asked in a process of its own and every one of them is a measurement in the row of its own method.
+#
+# A masked start is ZERO, so a start of 9 with an end of 0 asks for a result of no elements, which the
+# release builds and then cannot make an NDArray for.
+slice-mask-start-empty 134 device may not be nil
+
+# The three FED slice forms of 18.2, and the floating point one beside them. All four print the same thing
+# first: a result shape of -1x-1, which is the release's own way of saying it could not resolve the shape it
+# was given, and then the process goes. The exit status depends on the destination the caller hands it -
+# measured, SIGSEGV (139) into a 2x4 destination and "NDArray dimension length > INT_MAX" (134,
+# MPSNDArray.mm:759) into a destination of one element - so the status here is this harness's and the shape
+# line is what every destination agrees on.
+slice-fed-ends 139 result-shape -1x-1
+slice-fed-sizes 139 result-shape -1x-1
+slice-fed-float32 139 result-shape -1x-1
+
+# The gradient whose forward input's shape is FED rather than a constant: the release's own result tensor
+# carries no shape at all, before the run and after it, and the process writes the gradient's element 0 into
+# the destination's element 0 and nothing else, whatever the destination's shape is. This is why the four
+# gradient rows are carried with a constant shape in the cases and name this measurement in their text.
+slice-gradient-fed-shape 0 result-shape nil
+slice-gradient-fed 0 result-shape nil
+# Three gradients the release's own compiler will not build: a squeezeMask (alone and with the mask it pairs
+# with), and a stride above one.
+slice-gradient-squeeze 134 Optimize Original Module MLIR pass manager failed
+slice-gradient-stride2 134 Optimize Original Module MLIR pass manager failed
+# A gradient of one row where a startMask over axis 0 makes the region two rows: the release's own words are
+# "'mps.strided_slice_gradient' op `grad_input`[0] = 1 should match dimension size: 2 deduced from
+# `fwd_shape'", which is the check this port makes where the graph is built.
+slice-gradient-shape-mismatch 134 Optimize Original Module MLIR pass manager failed
+
+# The update's own questions. An endMask and a squeezeMask are refused on an update, and an update whose
+# shape is not the region's is refused: wider in the NDArray's own words, narrower in the compiler's. The
+# port refuses all three where the graph is built.
+slice-update-end-mask 134 Optimize Original Module MLIR pass manager failed
+slice-update-squeeze-mask 134 Optimize Original Module MLIR pass manager failed
+slice-update-shape-wide 134 initWithBufferImpl
+slice-update-shape-narrow 134 Optimize Original Module MLIR pass manager failed
+# And the one fed form of the family the release answers, which is the whole of what separates 18.0's fed
+# update from the seven fed parameters it cannot build a graph over: the starts, the ends and the strides
+# arrive as int32 of shape [2] and the answer is the written-down form's answer byte for byte.
+slice-update-fed-answer 0 0000c842000080bf000000c00000c8430000fa430000164400002f4400004844

@@ -1731,6 +1731,146 @@
       "reason": "a name no SDK header declares: the one place a tensor's shape is written rather than read, which the gather walk uses for the result of an operation whose shape the caller feeds - it is decided when the graph runs and not when it is built; its own files share it and an application never calls it",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
-    }
+    },
+  {
+    "api": "-[MPSGraph sliceTensor:starts:ends:strides:startMask:endMask:squeezeMask:name:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the strided slice with the three masks, which is 14.0's own form of the walk the family's two plain forms are and which carries what the header calls the TensorFlow strided-slice semantics: THE THREE MASKS, each measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and every one of them in the differential: a startMask bit means the start written down is NOT read and the axis starts at ZERO - a start of 5 and a start of -3 each answer what a start of 0 answers, and a start of 9 with an end of 0 answers a result of no elements, which the release builds and then cannot make an NDArray for (\"device may not be nil\", MPSNDArray.mm:759, and it is refusals.m's slice-mask-start-empty); an endMask bit means the end is not read either and the axis runs to its own last element - measured, over axis 1 from a start of 1 it answers three elements (2, 3, 4) whether the written end is 0 or -9 - and with a NEGATIVE stride the end is the one before the axis begins, so the count reaches index 0 (measured: an endMask with a stride of -1 from 3 answers four elements, 4, 3, 2 and 1); and a squeezeMask bit drops the axis from the RESULT's shape whatever its extent, the elements being the mapped walk's own in order, so a result of fewer axes holds the first of them - measured, axis 0 of a 2x4 with its bit set answers a rank of one holding (1, 2, 3, 4), it answers the same rank of one over two selected rows, axis 1 answers a rank of one holding (1, 10), and both bits together answer a rank of zero holding the first element. The walk is the gather family's own with an offset and a stride in it, so the axes a squeezeMask drops are dropped from the result's shape and not from the walk. every cell and every shape byte-identical to the release: the run's verdict line is \"gather_slice_rest checks=24 failures=0 recorded=0\" over 145 cells in 51 cases, the red control differing from the release in 24 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraph sliceGradientTensor:fwdInShapeTensor:starts:ends:strides:name:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the slice's GRADIENT, which goes the other way: the result is a tensor of the shape the forward pass's input had - which is why that shape is a TENSOR here and not a shape, and why it is the second input of the operation - and the gradient's elements are written into the region the same starts, ends and strides select, every other element of the result a ZERO. Measured on this host's own MPSGraph with the forward input's shape a CONSTANT, which is the only way the release can be asked for one at all: over a 2x4 of (1, 2, 3, 4 | 5, 6, 7, 8) the whole slice answers the gradient, a 1x3 gradient of row 0 answers (-1, -2, -3, 0 | 0, 0, 0, 0) and a 1x2 gradient of columns 1 and 2 answers (0, -1, -2, 0 | 0, 0, 0, 0), and over a destination filled with the byte 0xbd the zeros are WRITTEN rather than left, which is what makes this a scatter over a zeroed result and not a copy of the region. every cell and every shape byte-identical to the release: the run's verdict line is \"gather_slice_rest checks=24 failures=0 recorded=0\" over 145 cells in 51 cases, the red control differing from the release in 24 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement. WITH THE SHAPE FED rather than constant the release's own result tensor carries NO shape, before the run and after it, and the process writes the gradient's element 0 into the destination's element 0 and nothing else, whatever the destination's shape is (measured over five shapes of the destination and five of the forward input, and it is refusals.m's slice-gradient-fed-shape and slice-gradient-fed): the port reads that shape when the graph runs and answers this gradient, which is the header's own words, and the row names the divergence. A gradient whose shape is not the region's is refused where the graph is built, with the release's own words for it (\"'mps.strided_slice_gradient' op `grad_input`[0] = 1 should match dimension size: 2 deduced from `fwd_shape`\"), as are a squeezeMask (measured: the release's compiler refuses it, alone and with the mask it pairs with) and a stride above one.",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraph sliceGradientTensor:fwdInShapeTensor:starts:ends:strides:startMask:endMask:squeezeMask:name:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the same gradient with the three masks, and the masks are the slice's own - measured on this host's own MPSGraph: a startMask bit over axis 0 with a written start of 1 and an end of 2 selects the WHOLE axis, so a gradient of two rows is the gradient of that slice, and the release refuses a gradient of one row there with its own words (which is the check this port makes where the graph is built). An endMask runs that axis to its own last element. every cell and every shape byte-identical to the release: the run's verdict line is \"gather_slice_rest checks=24 failures=0 recorded=0\" over 145 cells in 51 cases, the red control differing from the release in 24 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement. The fed shape and the two refusals are the two above's, word for word: the shape fed is a named divergence measured in refusals.m, and a squeezeMask and a stride above one are refused by the release's own compiler.",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraph sliceUpdateDataTensor:updateTensor:starts:ends:strides:startMask:endMask:squeezeMask:name:]",
+    "kind": "method",
+    "introduced": "17.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the slice's UPDATE, which is the third direction of the same arithmetic: the result is the DATA tensor's own shape and its own elements with the update written OVER the region the starts, the ends and the strides select. Measured on this host's own MPSGraph over a 2x4 of (100, 200, 300, 400 | 500, 600, 700, 800): the update REPLACES and does not add - a region of row 0, columns 1 and 2 updated with (-1, -2) answers (100, -1, -2, 400 | 500, 600, 700, 800), so the data is byte for byte what it was everywhere else - a NEGATIVE stride writes the update's elements along the region's own order (measured: a region that walks axis 1 from 3 with a stride of -1 puts the update's first element at index 3), and the masks are the slice's own (measured: a startMask over axis 0 with a written start of 1 and an end of 2 writes the WHOLE axis). every cell and every shape byte-identical to the release: the run's verdict line is \"gather_slice_rest checks=24 failures=0 recorded=0\" over 145 cells in 51 cases, the red control differing from the release in 24 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement. The update's shape must BE the region's: one wider and one narrower are both refused, by the release's own NDArray and by its compiler (\"Optimize Original Module MLIR pass manager failed\"), and so are an endMask and a squeezeMask - each measured in refusals.m and refused by the port where the graph is built.",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 26.2, which declares this form, and the behaviour measured against the system's own MPSGraph"
+  },
+  {
+    "api": "-[MPSGraph sliceUpdateDataTensor:updateTensor:startsTensor:endsTensor:stridesTensor:startMask:endMask:squeezeMask:name:]",
+    "kind": "method",
+    "introduced": "17.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the same update with the starts, the ends and the strides FED as tensors, which the release answers because the result's shape is the data tensor's own and the graph knows it when the graph is built - measured, int32 of shape [2] for all three, and the answer is the written-down form's answer byte for byte. That is the whole of what separates it from the seven fed parameters of this family the release cannot build a graph over: a fed parameter the result's SHAPE depends on is one it cannot use. The three masks are the ones above, and the four refusals are the ones above's. every cell and every shape byte-identical to the release: the run's verdict line is \"gather_slice_rest checks=24 failures=0 recorded=0\" over 145 cells in 51 cases, the red control differing from the release in 24 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 26.2, which declares this form, and the behaviour measured against the system's own MPSGraph"
+  },
+  {
+    "api": "-[MPSGraph sliceUpdateDataTensor:updateTensor:starts:ends:strides:name:]",
+    "kind": "method",
+    "introduced": "18.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the update of 18.0, which is the update of 17.4 with the three masks left out of it - what the header's own note says these two are (\"Creates a strided-slice update operation with zero masks\") - and the region is the one the caller wrote down and nothing else. The behaviour is 17.4's own measurement, in the header of that object: the result is the data tensor's own shape and elements with the update written over the region it selects, and the update replaces. every cell and every shape byte-identical to the release: the run's verdict line is \"gather_slice_rest checks=24 failures=0 recorded=0\" over 145 cells in 51 cases, the red control differing from the release in 24 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 26.2, which declares this form, and the behaviour measured against the system's own MPSGraph"
+  },
+  {
+    "api": "-[MPSGraph sliceUpdateDataTensor:updateTensor:startsTensor:endsTensor:stridesTensor:name:]",
+    "kind": "method",
+    "introduced": "18.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the fed form of 18.0's update, and the ONE fed parameter of this family the release answers: measured over a 2x4 of (100, 200, 300, 400 | 500, 600, 700, 800) with the starts, ends and strides fed as int32 of shape [2] and a region of row 0, columns 1 and 2, it answers (100, -1, -2, 400 | 500, 600, 700, 800) - the written-down form's answer byte for byte, and refusals.m's slice-update-fed-answer holds the line. The reason is the family's own rule: the result's shape is the data tensor's own, which the graph knows when it is built, so the starts, the ends and the strides can arrive as data. every cell and every shape byte-identical to the release: the run's verdict line is \"gather_slice_rest checks=24 failures=0 recorded=0\" over 145 cells in 51 cases, the red control differing from the release in 24 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 26.2, which declares this form, and the behaviour measured against the system's own MPSGraph"
+  },
+  {
+    "api": "-[MPSGraph sliceTensor:startTensor:endTensor:strideTensor:startMask:endMask:squeezeMask:name:]",
+    "kind": "method",
+    "introduced": "18.2",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the slice with the starts, the ends and the strides fed as tensors - one gather with an offset and a stride, the same walk, the same three masks (which are the ones measured in the 14.0 row above and which this port shares with it through one seam). THE FED FORM OF THIS ONE IS A NAMED DIVERGENCE: the result's shape comes out of fed tensors, and a shape that arrives as data is the one thing the release cannot build a graph over. Measured on this host: an int32 of shape [2], an int32 of shape [1] and an int64 of shape [2] each print a result shape of -1x-1 - the release's own way of saying it could not resolve it - and then the process goes, with SIGSEGV into a 2x4 destination and \"NDArray dimension length > INT_MAX\" (MPSNDArray.mm:759, exit 134) into a destination of one element; a float32 of shape [2] prints the same -1x-1. Those four measurements are refusals.m's slice-fed-ends, slice-fed-sizes and slice-fed-float32, one process each. THE PORT ANSWERS THE HEADER: the starts, the ends and the strides are read out of the fed tensors when the graph runs, which is the only time a fed value is there to read, and the result is the region they select. A floating point fed index is refused where the graph is built, because the release's own compiler refuses one at build time and takes the process down with it. A floating point fed index is refused where the graph is built, and so is a stride of zero, a start outside the axis and a result of no elements, all measured in refusals.m.",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 26.2, which declares this form, and the behaviour measured against the system's own MPSGraph"
+  },
+  {
+    "api": "-[MPSGraph sliceTensor:startTensor:sizeTensor:squeezeMask:name:]",
+    "kind": "method",
+    "introduced": "18.2",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the same slice with the ends written down as SIZES, which is the one form that is not the strided form: a size is a count along the axis, so there is no end to count the steps to and no stride to count them by, and the region of each axis is the size from the start at one pace a time. The squeezeMask is the one above. THE FED FORM OF THIS ONE IS A NAMED DIVERGENCE: the result's shape comes out of fed tensors, and a shape that arrives as data is the one thing the release cannot build a graph over. Measured on this host: an int32 of shape [2], an int32 of shape [1] and an int64 of shape [2] each print a result shape of -1x-1 - the release's own way of saying it could not resolve it - and then the process goes, with SIGSEGV into a 2x4 destination and \"NDArray dimension length > INT_MAX\" (MPSNDArray.mm:759, exit 134) into a destination of one element; a float32 of shape [2] prints the same -1x-1. Those four measurements are refusals.m's slice-fed-ends, slice-fed-sizes and slice-fed-float32, one process each. THE PORT ANSWERS THE HEADER: the starts, the ends and the strides are read out of the fed tensors when the graph runs, which is the only time a fed value is there to read, and the result is the region they select. A floating point fed index is refused where the graph is built, because the release's own compiler refuses one at build time and takes the process down with it.",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 26.2, which declares this form, and the behaviour measured against the system's own MPSGraph"
+  },
+  {
+    "api": "-[MPSGraph sliceGradientTensor:fwdInShapeTensor:startTensor:endTensor:strideTensor:startMask:endMask:squeezeMask:name:]",
+    "kind": "method",
+    "introduced": "18.2",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the gradient of 14.0 with its starts, ends and strides fed, which does not make it answerable where 18.2's fed slice is not, because the gradient's result's shape is the shape of its forward input and THAT is fed too. Measured: the release's own result tensor carries no shape, before the run or after it, and the process writes the gradient's element 0 into the destination's element 0 and nothing else (refusals.m's slice-gradient-fed). THE PORT ANSWERS THE HEADER: the shape, the starts, the ends and the strides are read when the graph runs and the gradient is the one of the 14.0 row above, whose measurements are in facts/MetalPerformanceShadersGraph/Core.md. A floating point fed index is refused where the graph is built.",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 26.2, which declares this form, and the behaviour measured against the system's own MPSGraph"
+  },
+  {
+    "api": "-[MPSGraph sliceGradientTensor:fwdInShapeTensor:startTensor:sizeTensor:squeezeMask:name:]",
+    "kind": "method",
+    "introduced": "18.2",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the same gradient with the ends written down as SIZES, the one form of the family that is not the strided form: a size is a count along the axis, so the region of each axis is the size from the start at one pace a time. Its result's shape is the shape of the forward input, which this form also takes as a fed tensor, so it answers exactly as the fed form above does - and the port answers the header in the same way. every cell and every shape byte-identical to the release: the run's verdict line is \"gather_slice_rest checks=24 failures=0 recorded=0\" over 145 cells in 51 cases, the red control differing from the release in 24 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 26.2, which declares this form, and the behaviour measured against the system's own MPSGraph"
+  },
+  {
+    "api": "-[MPSGraph constantWithData:shape:dataType:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the constant written the way MPSGraphMemoryOps.h spells it, with the data as an NSData rather than as bytes and a length, and it is the same operation the 14.0 constant is: the header's own note is that the number of bytes should be sizeof(dataType) times the number of elements and that the shape has to be statically shaped, which is what a constant is. It is here because a caller that has its data in an NSData has no other way to put it in a graph, and because the slice's gradient takes the shape of its forward input as a TENSOR - so a graph that is to answer a gradient before it runs anything needs this factory to build that tensor, which is the only way the release answers one at all (measured, and it is what tests/backports/host/mpsgraph/graph-cases.m does over constantWithData:shape:dataType: in five of the family's cases). the run's verdict line is \"gather_slice_rest checks=24 failures=0 recorded=0\" over 145 cells in 51 cases, the red control differing from the release in 24 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraph charon_mps_slice:inputs:parameters:name:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "a name no SDK header declares: the ONE seam the slice family's eleven methods go through, in its three directions - the slice itself, which is a gather, and the gradient and the update, which are scatters. It takes the inputs rather than one operand because a gradient carries the gradient and the shape of its forward input, an update carries the data and the update, and a fed form carries its index tensors as the operation's own later inputs; everything the plan needs is in `parameters`, which is which direction (@\"gather\"), the starts, the ends or the sizes, the strides, the three masks, the forward input's shape where the graph already knows it and the index in `inputs` where the fed parameters start (@\"sliceFedFrom\"), so each release's factory fills those in and names only its own methods. It puts the result's shape on the output tensor where the plan can be derived now, which is what a caller reads off the tensor before it runs anything. Its own files share it and an application never calls it",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+  },
+  {
+    "api": "-[MPSGraph charon_mps_constantShapeOfTensor:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "a name no SDK header declares: the shape a CONSTANT tensor holds, and nil for any other tensor, which is how a slice's gradient is given the shape of its forward input before the graph runs. It is the release's own arrangement and not a convenience of this port's: with the shape a constant the release's result tensor carries its shape when the graph is built and answers the gradient, and with the shape fed it carries none and writes one element (measured, both, in the rows of the three gradient methods). Its own files share it and an application never calls it",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+  }
   ]
 }
