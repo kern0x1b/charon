@@ -238,14 +238,14 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
     // Reading a nonnull parameter is not tested against NULL: the port's rule (QUEUE.md, v-tail-a6) is
     // that a NULL test of a parameter the header declares nonnull is made through a volatile read, or
     // not at all, so this answers CGRectNull for a nil page without a NULL test at all.
-    NSArray<PDFSelectionSpan *> *spans = [self charon_spansOnPage:page];
+    NSArray<CharonPDFSelectionSpan *> *spans = [self charon_spansOnPage:page];
     if (spans.count == 0)
         return CGRectNull;
     // The union over EVERY range the selection has on this page, and not just the first: two ranges on
     // one page are one rect, and the union is the only shape that says so.  The spans do not overlap -
     // -addSelection: removes overlaps - so the union is also the tightest rect over both.
     CGRect answer = CGRectNull;
-    for (PDFSelectionSpan *span in spans) {
+    for (CharonPDFSelectionSpan *span in spans) {
         // The RANGE and not the text range: a match that takes the line break after it has a range one
         // character longer than its text, and the break is a position on the page with no glyph, so
         // including it changes nothing - which is measured rather than argued, because the host's rect
