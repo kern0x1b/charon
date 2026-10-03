@@ -39,58 +39,38 @@
 
 // VTDecompressionSessionSetMultiImageCallback, and this one does NOT refuse.
 //
-// The first version of this function answered kVTVideoDecoderNotAvailableNowErr (-12913) on the reasoning
-// that the release's decode callback ends at CVImageBuffer and so could never call the callback it is given.
-// MEASURED on this host, 2026-10-03, on an ORDINARY single-image H264 session with no key and no special
-// decoder: **VTDecompressionSessionSetMultiImageCallback answers 0**. The host installs the callback and
-// reports success, so a caller that has done nothing unusual is told it worked. A port that answered -12913
-// here would refuse a call the release accepts, which is worse than the reverse: the caller is told no where
-// the real thing says yes.
+// The first version answered kVTVideoDecoderNotAvailableNowErr (-12913) on the reasoning that the release's
+// decode callback ends at CVImageBuffer and so could never reach the callback it is given. MEASURED on this
+// host, 2026-10-03, on an ORDINARY single-image H264 session with no key and no special decoder:
+// **VTDecompressionSessionSetMultiImageCallback answers 0**. So a caller that did nothing unusual is told the
+// installation worked, and a port that answered -12913 would refuse a call the release accepts - the worse
+// direction of the two, because the caller is told no where the real thing says yes.
 //
-// So this stores what it was given and answers noErr, and the honest part is the storing. The callback and
-// its reference value go into a table this file owns, keyed by the session's address as a VALUE rather than
-// by sending it a message: a VTDecompressionSessionRef is an opaque CF type with no toll-free ObjC class on
-// this side, so -hash and -isEqual: cannot be sent to it, and NSValue is what carries the pointer instead.
-// What the table is FOR is stated here rather than left to be found: a session this port creates is the
-// RELEASE's session, and the release's decode has no multi-image output at all, so nothing in this port calls
-// what is stored - on this band or on any band the port builds. It is stored because the function's contract
-// is "install this callback", and a version that accepted the argument and discarded it would be claiming an
-// installation that never happened.
-static NSMutableDictionary *charon_multi_image_callbacks(void)
-{
-    static NSMutableDictionary *table = nil;
-    if (!table)
-        table = [[NSMutableDictionary alloc] init];
-    return table;
-}
-
-// The callback and its reference value together, because one without the other is not the callback.
-@interface CharonVTMultiImageCallback : NSObject {
-@public
-    VTDecompressionOutputMultiImageCallback _callback;
-    void *_refcon;
-}
-@end
-
-@implementation CharonVTMultiImageCallback
-- (void)dealloc
-{
-    _callback = NULL;
-    _refcon = NULL;
-}
-@end
-
+// WHAT THIS DOES NOT DO, and the difference is named rather than papered over. The second version of this
+// function stored the callback and its reference value in a process-global table keyed by the session's
+// ADDRESS. That table was wrong twice over and is gone: it is never emptied when a session dies, so it
+// leaks; and an address is not an identity, so a later session allocated at the same address would be handed
+// a callback it was never given - the same hazard a release-local allocator raises and the one a stored
+// pointer into a dead object always does. A second reason it was wrong: nothing read it.
+//
+// So this accepts the callback, stores nothing, and answers noErr, and here is precisely what a caller gets
+// that the host's caller would not. The 26.2 header says of the installed callback: "When installed,
+// outputMultiImageCallback will also be used when DecodeFrame operations fail and return a nonzero status."
+// On the host that is true. **On the port a failing decode still reaches the session's single-image
+// callback**, because the session is the RELEASE's session and the release's decode output has no
+// multi-image parameter to carry the failure anywhere else. A caller that installed the callback to watch
+// for failures will not see them, and that is the difference - stated here and in the registry row rather than
+// hidden behind a table that would have looked like the installation worked.
 OSStatus VTDecompressionSessionSetMultiImageCallback(
     VTDecompressionSessionRef CM_NONNULL decompressionSession,
     VTDecompressionOutputMultiImageCallback CM_NONNULL outputMultiImageCallback,
     void * CM_NULLABLE outputMultiImageRefcon)
 {
+    // Both arguments are checked because the header marks the session and the callback non-null, and a NULL
+    // session is the one case where noErr would be a lie about something: there is no session to install on.
     if (!decompressionSession || !outputMultiImageCallback)
         return kVTParameterErr;
-    CharonVTMultiImageCallback *stored = [[CharonVTMultiImageCallback alloc] init];
-    stored->_callback = outputMultiImageCallback;
-    stored->_refcon = outputMultiImageRefcon;
-    charon_multi_image_callbacks()[[NSValue valueWithPointer:decompressionSession]] = stored;
+    (void)outputMultiImageRefcon;
     return noErr;
 }
 
