@@ -18,11 +18,11 @@
 # outputs. facts/MetalPerformanceShadersGraph/Core.md groups them and says what was measured about
 # each group and what was attempted for it.
 # rejected for it, is in packages/a/apple-backports/facts/MetalPerformanceShadersGraph/Core.md.
-asin float16 3 0080 0000
-asinh float16 3 0080 0000
 atan float16 6 483e 007e
 atan float16 7 48be 00fe
-atanh float16 3 0080 0000
+atan float16 13 fd13 0014
+atan float16 16 fd27 ff27
+atan float16 17 fda7 ffa7
 divide float16 1 00fc 007c
 divide float16 4 0000 007e
 divide float16 5 0000 007e
@@ -32,6 +32,34 @@ divisionNoNaN float16 4 0000 007e
 divisionNoNaN float16 5 0000 007e
 divisionNoNaN float16 6 007c 007e
 divisionNoNaN float16 7 00fa 007e
+erf float16 10 8104 8204
+erf float16 11 8204 8304
+erf float16 13 8214 8314
+erf float16 15 cc35 cd35
+erf float16 16 8228 8328
+erf float16 17 82a8 83a8
+erf float32 0 3cbb573f 3dbb573f
+erf float32 1 3cbb57bf 3dbb57bf
+erf float32 10 bc6e9000 bb6e9000
+erf float32 11 bc6e9000 bb6e9000
+erf float32 12 bc6e9035 bb6e9035
+erf float32 13 3bbb573f 3dbb573f
+erf float32 14 bc6e90b5 bb6e90b5
+erf float32 15 1325551e 1125551e
+erf float32 16 bc6e9037 bb6e9037
+erf float32 17 bc6e90b7 bb6e90b7
+erf float32 18 1aa6d837 18a6d837
+erf float32 19 1aa6d8b7 18a6d8b7
+erf float32 20 bc6e1038 bb6e1038
+erf float32 21 bc6e10b8 bb6e10b8
+erf float32 22 1aa65838 18a65838
+erf float32 23 1aa658b8 18a658b8
+erf float32 25 dcbb573f ddbb573f
+erf float32 26 10bc573f 12bc573f
+erf float32 27 7bbc573f 7cbc573f
+erf float32 29 dcbb57bf ddbb57bf
+erf float32 30 10bc57bf 12bc57bf
+erf float32 31 7bbc57bf 7cbc57bf
 expBase2 float16 6 007c 007e
 expBase2 float16 7 0000 007e
 floorModulo float16 0 003c 007e
@@ -106,6 +134,7 @@ multiply float16 5 007c 007e
 multiply float16 6 001e 007e
 multiply float16 7 00fc 007e
 power float16 9 003c 007e
+power float16 10 0d29 0b29
 power float16 17 003c 007e
 power float16 19 003c 007e
 power float16 21 003c 007e
@@ -161,13 +190,18 @@ sigmoidGradient float32 13 270b393d 290b393d
 sigmoidGradient float32 24 1207d73d 1407d73d
 sigmoidGradient float32 27 1a9b6e3a b59e6e3a
 signbit float16 3 0000 003c
-sinh float16 3 0080 0000
 sqrt float16 14 013c 003c
 sqrt float16 24 013c 003c
 subtract float16 4 00f8 007c
 subtract float16 5 0078 00fc
-tan float16 3 0080 0000
-tanh float32 1 d4f742bf d6f742bf
+tanh float16 10 fa03 ff03
+tanh float16 11 fb03 0004
+tanh float16 13 f513 0014
+tanh float16 15 2135 2535
+tanh float16 16 f527 ff27
+tanh float16 17 f5a7 ffa7
+tanh float16 18 f52b fd2b
+tanh float16 19 f5ab fdab
 tanh float32 6 0000803f 0000c07f
 tanh float32 7 0000803f 0000c07f
 tanh float32 10 00000000 00008000
@@ -183,4 +217,3 @@ tanh float32 20 00feff37 00000038
 tanh float32 21 000100b8 000000b8
 tanh float32 22 c0fd3f38 00004038
 tanh float32 23 400240b8 000040b8
-tanh float32 30 abf842bf adf842bf
