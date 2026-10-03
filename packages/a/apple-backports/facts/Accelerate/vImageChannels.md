@@ -20,6 +20,57 @@ compared afterwards, so a destination written past its own width is a difference
 overrun. Two runs of the case suite: `889 checks, 0 failures`, and the same under AddressSanitizer,
 `891 checks, 0 failures`.
 
+## The refusal is in the object, and keeping it there took a measurement
+
+**Every function of this family declares its buffers `VIMAGE_NON_NULL`, and clang assumes such a parameter
+is non-null *inside* the function.** So the refusal the release makes - measured above, `kvImageNullPointerArgument`
+for a NULL source, destination or map - is folded away at `-Os`. Not "could be": built for armv7-apple-ios6.0
+at `-Os` with the package line, `vImagePermuteChannels_ARGB16F` contained **no compare against zero at
+all**, and the map was dereferenced straight through (`ldrb r6, [r2, r3]`). The front end says so itself:
+`warning: nonnull parameter 'permuteMap' will evaluate to 'true' on first encounter [-Wpointer-bool-conversion]`.
+
+Four spellings of the same test were built at `-Os` and read in the disassembly:
+
+| spelling | the compare |
+| --- | --- |
+| `if (!pointer)` on the parameter | gone |
+| the same inside a `__attribute__((noinline))` helper | gone - LLVM infers nonnull from the call site |
+| the same on a one-element array the parameter is stored into | gone |
+| **the same on a `volatile` copy of the parameter** | **there** |
+
+because the attribute is an assumption about a *value* and a volatile read is a memory access the optimizer
+has to honour. That is what `CharonChannelsIsNull` is, and every NULL test of the three files goes through
+it. **No pragma is involved and none could be**: `-Wnonnull` and `-Wpointer-bool-conversion` are warnings, so
+suppressing them would silence the diagnostic that names the folded test without bringing the test back.
+The three files now carry no `#pragma` at all - `-Wunguarded-availability-new` was already off on the
+package's own line, and the other two were hiding this.
+
+`tests/backports/host/vimagechannels/run.sh` builds the port's objects **with the package line**, not with
+clang's default optimisation, so every case runs against the arithmetic the bands link, and it prints the
+diagnostics per object:
+
+```
+vImageChannels7.m      errors=0 warnings=0, with the package line
+vImageChannels8.m      errors=0 warnings=0, with the package line
+vImageChannels16.m     errors=0 warnings=0, with the package line
+```
+
+The red control is the same script with the NULL test removed from scratch copies of the three files, and
+what it shows is worth stating exactly, because the red is not the shape one would guess: with the test
+gone the port dereferences the pointer, so **the run ends on a signal** rather than printing a mismatch -
+which is the release's own behaviour on three of these inputs, and what the test exists to prevent. The
+script asserts its own target before planting it (a `str.replace` on a missing needle is a silent no-op) and
+fails if the planted run is clean:
+
+```
+$ PLANT='if (CharonChannelsIsNull(src) || CharonChannelsIsNull(dest))
+        return kvImageNullPointerArgument;' sh tests/backports/host/vimagechannels/run.sh
+planted: removed 3 occurrence(s) of the NULL test
+PLANT: the control holds - without the NULL test the run ends on a signal (exit 139),
+```
+
+and the same script unplanted is `889 checks, 0 failures`.
+
 ## The bit order, and which way round the mask is
 
 Conversion.h's own pseudocode for the masked insert is

@@ -14,9 +14,6 @@
 #import <Accelerate/Accelerate.h>
 #include "CharonChannels.h"
 
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-#pragma clang diagnostic ignored "-Wpointer-bool-conversion"
-#pragma clang diagnostic ignored "-Wnonnull"
 
 // **The flag set is measured per function, and the two functions of this file differ.** Asked of the host one
 // bit at a time over all thirty-two (tests/backports/host/vimagechannels prints every one of them): the
@@ -33,7 +30,7 @@ static vImage_Error charon_channels16_ready(const vImage_Buffer *src, const vIma
         return kvImageUnknownFlagsBit;
     if (flags & kvImageGetTempBufferSize)
         return 0;
-    if (!src || !dest)
+    if (CharonChannelsIsNull(src) || CharonChannelsIsNull(dest))
         return kvImageNullPointerArgument;
     if (src->width < dest->width || src->height < dest->height)
         return kvImageRoiLargerThanInputBuffer;
@@ -48,7 +45,7 @@ static vImage_Error charon_channels16_ready_dest(const vImage_Buffer *dest, vIma
         return kvImageUnknownFlagsBit;
     if (flags & kvImageGetTempBufferSize)
         return 0;
-    if (!dest)
+    if (CharonChannelsIsNull(dest))
         return kvImageNullPointerArgument;
     return kvImageNoError;
 }
@@ -59,7 +56,7 @@ vImage_Error vImagePermuteChannels_ARGB16F(const vImage_Buffer *src, const vImag
     vImage_Error ready = charon_channels16_ready(src, dest, flags, charon_channels16_permute_flags);
     if (ready != kvImageNoError)
         return ready;
-    if (!permuteMap)
+    if (CharonChannelsIsNull(permuteMap))
         return kvImageNullPointerArgument;
     for (int i = 0; i < 4; i++)
         if (permuteMap[i] > 3)

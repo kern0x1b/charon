@@ -28,6 +28,32 @@
 #define CHARON_CHANNELS_MAX_CHANNELS 4
 #define CHARON_CHANNELS_MAX_BYTES 4
 
+// **The NULL test, in the one spelling the optimizer keeps.** Every function of this family has its buffers
+// declared with `VIMAGE_NON_NULL`, and an attributed parameter is assumed non-null *inside* the function: at
+// -Os for armv7 with the package line, `if (!src) ...` on such a parameter is folded away completely - there
+// is no compare against zero anywhere in the object - and clang says so at the front end ("nonnull parameter
+// 'src' will evaluate to 'true' on first encounter"). The object the bands link would then carry no refusal
+// at all, and the release makes one: measured, the host answers kvImageNullPointerArgument for a NULL source,
+// a NULL destination and a NULL map, and answers nothing at all (its process ends on a signal) for four
+// others.
+//
+// Four spellings were built at -Os and read in the disassembly:
+//
+//   if (!pointer)                              the compare is gone
+//   the same test inside a __attribute__((noinline)) helper    gone - LLVM infers nonnull from the call site
+//   the same test on a one-element array the parameter is stored into    gone
+//   the same test on a volatile copy of the parameter            **there**
+//
+// because the attribute is an assumption about a value and a volatile read is a memory access the optimizer
+// has to honour. No pragma is involved, and none can be: `-Wnonnull` and `-Wpointer-bool-conversion` are
+// warnings, so suppressing them would silence the warning that names the folded test without bringing it
+// back.
+static inline int CharonChannelsIsNull(const void *pointer)
+{
+    const void *volatile checked = pointer;
+    return checked == NULL;
+}
+
 // One row of a permute. `insert` is NULL for a plain permute and the inserted pixel otherwise: a channel
 // whose copyMask bit is SET takes the inserted value. The mask is the header's - 0x8 alpha, 0x4 red, 0x2
 // green, 0x1 blue - tested from the top bit down, and the sense is the header's too: Conversion.h's own
