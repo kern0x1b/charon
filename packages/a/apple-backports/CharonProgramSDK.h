@@ -24,32 +24,17 @@
 // for the same reason: two libraries that include this each get their own copy and neither needs a symbol from
 // the other. UIViewController+AutomaticPresentation.m includes it and no longer keeps a copy of its own.
 //
-// Returns the sdk field as the packed version the load command stores (0x010d0000 for 13.0), or 0 where the
-// main image records none - which is the value the UIKit caller's own rule was written against.
-static inline uint32_t charon_program_sdk(void)
-{
-    const struct mach_header *header = (const struct mach_header *)_NSGetMachExecuteHeader();
-    if (!header)
-        return 0;
-    const char *command = (const char *)header +
-                          (header->magic == MH_MAGIC_64 ? sizeof(struct mach_header_64) : sizeof(struct mach_header));
-    for (uint32_t index = 0; index < header->ncmds; index++) {
-        const struct load_command *load = (const struct load_command *)command;
-        if (load->cmd == LC_VERSION_MIN_IPHONEOS)
-            return ((const struct version_min_command *)load)->sdk;
-        if (load->cmd == LC_BUILD_VERSION && ((const struct build_version_command *)load)->platform == PLATFORM_IOS)
-            return ((const struct build_version_command *)load)->sdk;
-        command += load->cmdsize;
-    }
-    return 0;
-}
-
-/// The same read with the platform as an argument, which is what the two callers here need. <platform> is
-/// PLATFORM_IOS for the question an iOS program asks - the same as charon_program_sdk() above, and the same
-/// answer - or 0 for "whatever platform this image was linked for", which is what a host-side check of the
-/// same rule needs: the field is the SDK the program was BUILT against and the question is the same one
-/// whichever platform it was built for, so a check that ran only where the platform is iOS could not answer it
-/// off-device at all.
+// The walk below is the ONE walk. There were two - this one and an iOS-only copy of it beside it, with a
+// comment claiming they were the same answer - and the coordinator's finding of 2026-10-03 was that a comment
+// saying so is not a thing: the two were compared command for command and are now one function and a call.
+//
+// It returns the sdk field as the packed version the load command stores (0x00100400 for 16.4, and
+// 0x010d0000 for 13.0), or 0 where the main image records none - which is the value the UIKit caller's own rule
+// was written against. <platform> is PLATFORM_IOS for the question an iOS program asks - which
+// charon_program_sdk() below is exactly this call with that argument - or 0 for "whatever platform this image was
+// linked for", which is what a host-side check of the same rule needs: the field is the SDK the program was
+// BUILT against and the question is the same one whichever platform it was built for, so a check that ran only
+// where the platform is iOS could not answer it off-device at all.
 static inline uint32_t charon_program_sdk_on_platform(uint32_t platform)
 {
     const struct mach_header *header = (const struct mach_header *)_NSGetMachExecuteHeader();
@@ -69,6 +54,12 @@ static inline uint32_t charon_program_sdk_on_platform(uint32_t platform)
         command += load->cmdsize;
     }
     return 0;
+}
+
+/// The read narrowed to iOS, which is what the UIKit caller's rule asks and what this header's name says.
+static inline uint32_t charon_program_sdk(void)
+{
+    return charon_program_sdk_on_platform(PLATFORM_IOS);
 }
 
 /// The question the headers ask, in the form they ask it: is the program linked against SDK <version> or later?
