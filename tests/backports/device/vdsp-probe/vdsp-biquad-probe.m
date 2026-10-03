@@ -12,6 +12,7 @@
 #import <Foundation/Foundation.h>
 #import <Accelerate/Accelerate.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 #include <math.h>
@@ -19,9 +20,14 @@
 
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
-// The port's six, renamed by the build.
+// The port's six, renamed by the build. **All six are declared here**, including the two frees: the port's
+// own file is a separate translation unit and declares nothing in a header this probe can include, so the
+// calls to the Destroy pair below were implicit declarations - which this clang rejects outright, so the
+// probe did not compile at all.
 vDSP_biquad_Setup charon_probe_vDSP_biquad_CreateSetup(const double *coeffs, vDSP_Length m);
 vDSP_biquad_SetupD charon_probe_vDSP_biquad_CreateSetupD(const double *coeffs, vDSP_Length m);
+void charon_probe_vDSP_biquad_DestroySetup(vDSP_biquad_Setup setup);
+void charon_probe_vDSP_biquad_DestroySetupD(vDSP_biquad_SetupD setup);
 void charon_probe_vDSP_biquad(const struct vDSP_biquad_SetupStruct *setup, float *delay, const float *x,
                               vDSP_Stride ix, float *y, vDSP_Stride iy, vDSP_Length n);
 void charon_probe_vDSP_biquadD(const struct vDSP_biquad_SetupStructD *setup, double *delay, const double *x,
@@ -156,109 +162,302 @@ static void run_specials(void)
 }
 
 // ============================================================================================
-// The float search, run HERE, on the target, where the control finally works.
+// The float search, run HERE, on the target, where the release's own answer is the oracle.
 //
-// **Control: the search's variant 0 in DOUBLE must reproduce the release's own double output bit for
-// bit.** This port already does, so a search that fails that control is broken and reports nothing.
-// That is the control the macOS probe could not pass, and it exists here because the double case is
-// bit-exact on the target.
+// **Every binary tree over the five labelled leaves, and every way of combining each of its nodes** - a
+// fused multiply-add or a plain add, one choice per internal node - so 1681 trees and 26896 variants,
+// each a whole 32-sample recurrence with its own answer fed back as the next sample's state.
 //
-// **A fused combine is not a candidate on this machine at all.** armv7 VFP before VFPv4 has no
-// fused multiply-add, so the fma masks in the tree enumeration are recorded as unavailable rather than
-// run: the compiler has no fmaf here, and a variant that needs one is a variant the target cannot take.
+// **A fused combine IS a candidate on this machine, and an earlier version of this file saying otherwise
+// was wrong.** armv7 with NEON is VFPv3, and VFPv3 has VFMA.f32: a fused multiply-accumulate on floats is
+// exactly what a vector biquad kernel accumulates with. The comment that stood here said "armv7 VFP before
+// VFPv4 has no fused multiply-add, so the fma masks are recorded as unavailable rather than run". That is
+// true of VFPv2 (no NEON) and of the F64 form, and false of the float form on a VFPv3 target - which is
+// the form this search is about. `fmaf` is how a C program asks for the fused result whatever the target
+// has, and it is what the enumeration uses below. The double form is left out of the fused space on
+// purpose, since there is no F64 multiply-accumulate in VFPv3 at all and the double cases are already
+// bit-exact with the release.
+//
+// Both controls are computed here and both are cheap; nothing the search says about the release is
+// printed unless they hold.
 // ============================================================================================
 
-typedef struct { int a, b, leaf, fused; } SearchNode;
-typedef struct { SearchNode node[9]; int used; } SearchTree;
-typedef struct { SearchTree tree[128]; int count; } SearchForest;
+#define SEARCH_LEAVES 5
+#define SEARCH_NODES 9
+#define SEARCH_TREES 2048       // 1680 built, plus the printed form seeded in front of them
+#define SEARCH_SUBTREES 128     // one recursion level's worst case: 120 trees is the most over four leaves
 
-static void search_all(const int *leaves, int count, SearchForest *out)
+typedef struct { int a, b, leaf; } SearchNode;
+typedef struct { SearchNode node[SEARCH_NODES]; int used; } SearchTree;
+typedef struct { SearchTree tree[SEARCH_TREES]; int count; } SearchForest;
+
+// One enumeration, into whatever destination the caller has, with the destination's capacity carried with
+// it. The top level holds every tree over five leaves - 1680 of them, 180 KB - and belongs in a file-scope
+// object; each level of the recursion holds at most 120 and stays on the stack. Sizing one type for both
+// is either too small at the top or too large on every stack frame, and the first of those is a silent
+// overflow: measured on this host, where the top-level forest was sized for the recursion's 128 trees, the
+// run ended in SIGSEGV having printed 121. The count is checked, not assumed.
+static int search_all_into(const int *leaves, int count, SearchTree *out, int capacity, int *used)
 {
     if (count == 1) {
-        SearchTree *t = &out->tree[out->count++];
-        t->used = 1; t->node[0].a = t->node[0].b = -1; t->node[0].leaf = leaves[0]; t->node[0].fused = 0;
-        return;
+        if (*used >= capacity) return 0;
+        SearchTree *t = &out[(*used)++];
+        t->used = 1; t->node[0].a = t->node[0].b = -1; t->node[0].leaf = leaves[0];
+        return 1;
     }
-    for (int mask = 1; mask < (1 << count) - 1; mask += 2) {
+    for (int mask = 1; mask < (1 << count) - 1; mask++) {
         int left[5], right[5], nl = 0, nr = 0;
         for (int i = 0; i < count; i++) { if ((mask >> i) & 1) left[nl++] = leaves[i]; else right[nr++] = leaves[i]; }
-        SearchForest lf, rf; lf.count = 0; rf.count = 0;
-        search_all(left, nl, &lf);
-        search_all(right, nr, &rf);
-        for (int i = 0; i < lf.count; i++)
-            for (int j = 0; j < rf.count; j++) {
-                SearchTree *t = &out->tree[out->count++];
+        SearchTree lbuf[SEARCH_SUBTREES], rbuf[SEARCH_SUBTREES];
+        int lused = 0, rused = 0;
+        if (!search_all_into(left, nl, lbuf, SEARCH_SUBTREES, &lused)) return 0;
+        if (!search_all_into(right, nr, rbuf, SEARCH_SUBTREES, &rused)) return 0;
+        for (int i = 0; i < lused; i++)
+            for (int j = 0; j < rused; j++) {
+                if (*used >= capacity) return 0;
+                SearchTree *t = &out[(*used)++];
                 int k = 0;
-                for (int q = 0; q < lf.tree[i].used; q++) t->node[k++] = lf.tree[i].node[q];
-                int lroot = lf.tree[i].used - 1;
-                for (int q = 0; q < rf.tree[j].used; q++) t->node[k++] = rf.tree[j].node[q];
-                int rroot = lf.tree[i].used + rf.tree[j].used - 1;
-                t->node[k].a = lroot; t->node[k].b = rroot; t->node[k].leaf = -1; t->node[k].fused = 0;
+                for (int q = 0; q < lbuf[i].used; q++) t->node[k++] = lbuf[i].node[q];
+                int lroot = lbuf[i].used - 1;
+                for (int q = 0; q < rbuf[j].used; q++) {
+                    t->node[k] = rbuf[j].node[q];
+                    if (t->node[k].a >= 0) t->node[k].a += lbuf[i].used;
+                    if (t->node[k].b >= 0) t->node[k].b += lbuf[i].used;
+                    k++;
+                }
+                int rroot = lbuf[i].used + rbuf[j].used - 1;
+                t->node[k].a = lroot; t->node[k].b = rroot; t->node[k].leaf = -1;
                 t->used = k + 1;
             }
     }
+    return 1;
 }
 
-static void search_printed(SearchForest *out)
+static SearchForest search_forest;
+
+// **The line that makes this an enumeration rather than a pile of broken trees**: a subtree's nodes point
+// at indices into its OWN array, so when it is copied to offset `left.used` every one of those references
+// has to move with it. It did not, and the probe reported "no association reproduces the release" for a
+// filter the release and the port agree on for the first two samples. The host differential has the same
+// defect in its own copy and the same fix; see tests/backports/host/vdspbiquad6/differential.m.
+//
+// **Every bipartition, not one of each complementary pair.** `mask` and its complement are the same split
+// with the sides swapped, and they are NOT the same variant: a node that fuses its left child's leaf is a
+// different rounding from one that fuses its right child's. Keeping one of each pair throws away half the
+// fused space, which is where the answer lives.
+// Variant 0 is the header's printed form, (((t0 + t1) + t2) + t3) + t4, left to right and unfused, built by
+// hand and seeded in front of the enumeration so variant 0 is that whatever the enumeration's order is.
+//
+// **The right child of node i is leaf i - 4, and it said i - 5.** Node 5 is t0+t1, node 6 is that +t2, node 7
+// is that +t3 and node 8 is that + t4, so the seed this file was running was (((t0+t0)+t1)+t2)+t3 - it
+// doubled t0 and never added t4 at all. The host differential had the same line and the same defect
+// (tests/backports/host/vdspbiquad6/differential.m, `brute_seed_printed`), which is how the double control
+// below came to fail at sample 0 on a filter the port reproduces exactly: the tree it was comparing against
+// is not a sum of the five products.
+static void search_printed(SearchTree *out)
 {
-    SearchTree *t = &out->tree[out->count++];
-    for (int i = 0; i < 5; i++) { t->node[i].a = t->node[i].b = -1; t->node[i].leaf = i; t->node[i].fused = 0; }
+    SearchTree *t = out++;
+    for (int i = 0; i < SEARCH_LEAVES; i++) { t->node[i].a = t->node[i].b = -1; t->node[i].leaf = i; }
     int root = 0;
-    for (int i = 5; i < 9; i++) {
-        t->node[i].a = root; t->node[i].b = i - 5; t->node[i].leaf = -1; t->node[i].fused = 0; root = i;
+    for (int i = SEARCH_LEAVES; i < SEARCH_NODES; i++) {
+        t->node[i].a = root;
+        t->node[i].b = i - SEARCH_LEAVES + 1;
+        t->node[i].leaf = -1;
+        root = i;
     }
-    t->used = 9;
+    t->used = SEARCH_NODES;
 }
 
 #define SEARCH_SAMPLES 32
 
-// The delay, the header's layout: Delay[2s] = x[s][N-2] and Delay[2s+1] = x[s][N-1].
-static float tree_run(const SearchTree *tree, const double *c, const float *x, int n_samples, float *delay)
+// One variant, `how[q]` saying whether internal node q fuses. A fused node multiplies its left child's leaf
+// by the right child's value in one rounding; where the left child is not a leaf there is nothing to fuse,
+// which is what keeps the count at 16 per tree rather than 512.
+//
+// The whole recurrence runs at run once, and every intermediate is the caller's own type: in the float form
+// the five products and the four adds are float, which is what makes it a float kernel rather than a double
+// one with a float answer. `x` is float in both forms and is widened where the run is a double one.
+static double search_run_variant(const SearchTree *tree, const int *how, const double *c, const float *x,
+                                 int n_samples, double *delay, int is_double)
 {
     for (int n = 0; n < n_samples; n++) {
-        float fa[5][2];
-        fa[0][0] = (float)c[0]; fa[0][1] = x[n];
-        fa[1][0] = (float)c[1]; fa[1][1] = delay[1];
-        fa[2][0] = (float)c[2]; fa[2][1] = delay[0];
-        fa[3][0] = (float)-c[3]; fa[3][1] = delay[3];
-        fa[4][0] = (float)-c[4]; fa[4][1] = delay[2];
-        float v[9];
+        const double xn = (double)x[n];
+        if (!is_double) {
+            // The header's layout for the delay - Delay[2s] = x[s][N-2], Delay[2s+1] = x[s][N-1] - with the
+            // two A terms already negated in the factors, and every coefficient narrowed to float where the
+            // port narrows it.
+            float fa[5][2];
+            fa[0][0] = (float)c[0]; fa[0][1] = (float)xn;
+            fa[1][0] = (float)c[1]; fa[1][1] = (float)delay[1];
+            fa[2][0] = (float)c[2]; fa[2][1] = (float)delay[0];
+            fa[3][0] = (float)-c[3]; fa[3][1] = (float)delay[3];
+            fa[4][0] = (float)-c[4]; fa[4][1] = (float)delay[2];
+            float v[SEARCH_NODES];
+            for (int i = 0; i < tree->used; i++) {
+                if (tree->node[i].leaf >= 0)
+                    v[i] = fa[tree->node[i].leaf][0] * fa[tree->node[i].leaf][1];
+                else {
+                    int l = tree->node[i].a, r = tree->node[i].b;
+                    if (how[i] && tree->node[l].leaf >= 0)
+                        v[i] = fmaf(fa[tree->node[l].leaf][0], fa[tree->node[l].leaf][1], v[r]);
+                    else
+                        v[i] = v[l] + v[r];
+                }
+            }
+            float out = v[tree->used - 1];
+            delay[0] = delay[1]; delay[1] = x[n];
+            delay[2] = delay[3]; delay[3] = (double)out;
+            if (n == n_samples - 1) return (double)out;
+            continue;
+        }
+        double fa[5][2];
+        fa[0][0] = c[0]; fa[0][1] = xn;
+        fa[1][0] = c[1]; fa[1][1] = delay[1];
+        fa[2][0] = c[2]; fa[2][1] = delay[0];
+        fa[3][0] = -c[3]; fa[3][1] = delay[3];
+        fa[4][0] = -c[4]; fa[4][1] = delay[2];
+        double v[SEARCH_NODES];
         for (int i = 0; i < tree->used; i++) {
             if (tree->node[i].leaf >= 0)
                 v[i] = fa[tree->node[i].leaf][0] * fa[tree->node[i].leaf][1];
-            else
-                v[i] = v[tree->node[i].a] + v[tree->node[i].b];
+            else {
+                int l = tree->node[i].a, r = tree->node[i].b;
+                if (how[i] && tree->node[l].leaf >= 0)
+                    v[i] = fma(fa[tree->node[l].leaf][0], fa[tree->node[l].leaf][1], v[r]);
+                else
+                    v[i] = v[l] + v[r];
+            }
         }
-        float out = v[tree->used - 1];
-        delay[0] = delay[1]; delay[1] = x[n];
+        double out = v[tree->used - 1];
+        delay[0] = delay[1]; delay[1] = xn;
         delay[2] = delay[3]; delay[3] = out;
         if (n == n_samples - 1) return out;
     }
     return 0;
 }
 
-static double tree_run_double(const SearchTree *tree, const double *c, const float *x, int n_samples, double *delay)
+// The variant that reproduces `want`, sample by sample, in the precision `want` is in, or the sample it
+// first differs at.
+static int search_matches(const SearchTree *tree, const int *how, const double *c, const float *x,
+                          const void *want, size_t width, int *first_diff)
 {
-    for (int n = 0; n < n_samples; n++) {
-        double fa[5][2];
-        fa[0][0] = c[0]; fa[0][1] = x[n];
-        fa[1][0] = c[1]; fa[1][1] = delay[1];
-        fa[2][0] = c[2]; fa[2][1] = delay[0];
-        fa[3][0] = -c[3]; fa[3][1] = delay[3];
-        fa[4][0] = -c[4]; fa[4][1] = delay[2];
-        double v[9];
-        for (int i = 0; i < tree->used; i++) {
-            if (tree->node[i].leaf >= 0)
-                v[i] = fa[tree->node[i].leaf][0] * fa[tree->node[i].leaf][1];
-            else
-                v[i] = v[tree->node[i].a] + v[tree->node[i].b];
+    // **The delay is zeroed per sample, not once for the loop.** Each call runs the recurrence from the
+    // start for n + 1 samples, so the state it starts from has to be the caller's zero delay every time;
+    // one delay declared outside this loop carries sample n's state into sample n + 1's run, and then every
+    // variant of every tree disagrees with the release from sample 1 on while agreeing at sample 0 - which
+    // reads exactly like an arithmetic that no association can match.
+    for (int n = 0; n < SEARCH_SAMPLES; n++) {
+        double delay[4] = {0, 0, 0, 0};
+        double got = search_run_variant(tree, how, c, x, n + 1, delay, width == sizeof(double));
+        // **The run always answers in double and the comparison is on the bits, in the width `want` is
+        // in.** Comparing `width` bytes of the double against a float answer would read the double's low
+        // word, which is not the float's bit pattern at all: every float variant then differs at sample 0,
+        // where the two sides hold the same number. A float run's answer is narrowed once here, which is
+        // the same narrowing the port does when it stores its result in the caller's float.
+        int differs;
+        if (width == sizeof(float)) {
+            float narrowed = (float)got;
+            differs = memcmp(&narrowed, want + n * width, width) != 0;
+        } else {
+            differs = memcmp(&got, want + n * width, width) != 0;
         }
-        double out = v[tree->used - 1];
-        delay[0] = delay[1]; delay[1] = x[n];
-        delay[2] = delay[3]; delay[3] = out;
-        if (n == n_samples - 1) return out;
+        if (differs) { if (first_diff) *first_diff = n; return 0; }
     }
+    return 1;
+}
+
+// The shape of a variant, in the order its terms are combined, read off the node array: `t0..t4` are the
+// header's five terms, `fma(` a multiply fused into the add that consumes it. Printed, because "tree N,
+// code C" is not a measurement anybody can check.
+static void search_dump(int i, const SearchTree *tree, const int *how, char *out, size_t n, size_t *at)
+{
+    if (tree->node[i].leaf >= 0) {
+        *at += (size_t)snprintf(out + *at, n - *at, "t%d", tree->node[i].leaf);
+        return;
+    }
+    *at += (size_t)snprintf(out + *at, n - *at, "%s", how[i] ? "fma(" : "+(");
+    search_dump(tree->node[i].a, tree, how, out, n, at);
+    *at += (size_t)snprintf(out + *at, n - *at, ", ");
+    search_dump(tree->node[i].b, tree, how, out, n, at);
+    *at += (size_t)snprintf(out + *at, n - *at, ")");
+}
+
+static const char *search_how_text(const SearchTree *tree, const int *how)
+{
+    static char text[256];
+    size_t at = 0;
+    text[0] = 0;
+    search_dump(tree->used - 1, tree, how, text, sizeof text, &at);
+    return text;
+}
+
+// The internal nodes of a tree, one combine choice each.
+static int search_inner(const SearchTree *tree, int *inner)
+{
+    int count = 0;
+    for (int i = 0; i < tree->used; i++)
+        if (tree->node[i].leaf < 0) inner[count++] = i;
+    return count;
+}
+
+static void search_choose(const SearchTree *tree, const int *inner, int count, int code, int *how)
+{
+    for (int q = 0; q < SEARCH_NODES; q++) how[q] = 0;
+    for (int q = 0; q < count; q++) how[inner[q]] = (code >> q) & 1;
+}
+
+// The variant that reproduces `want`, in the precision `want` is in. When there is none, the variant that
+// survives longest comes back too, with the sample it first differs at - because "none of 26896" and "the
+// closest is this shape, and it first differs at sample 28" are very different things to read, and the
+// second one says whether the space is the wrong space or the evaluator is.
+static int search_find(const SearchForest *forest, const double *c, const float *x, const void *want,
+                       size_t width, int *out_tree, int *out_code, char *out_shape, size_t shape_n,
+                       int *out_best_sample)
+{
+    int how[SEARCH_NODES];
+    int best = -1;
+    *out_tree = -1;
+    *out_code = -1;
+    if (out_shape && shape_n) out_shape[0] = 0;
+    for (int t = 0; t < forest->count; t++) {
+        int inner[SEARCH_NODES], count = search_inner(&forest->tree[t], inner);
+        for (int code = 0; code < (1 << count); code++) {
+            int first = -1;
+            search_choose(&forest->tree[t], inner, count, code, how);
+            if (search_matches(&forest->tree[t], how, c, x, want, width, &first)) {
+                *out_tree = t;
+                *out_code = code;
+                if (out_shape && shape_n) {
+                    const char *text = search_how_text(&forest->tree[t], how);
+                    strncpy(out_shape, text, shape_n - 1);
+                    out_shape[shape_n - 1] = 0;
+                }
+                return 1;
+            }
+            if (first > best) {
+                best = first;
+                if (out_shape && shape_n) {
+                    const char *text = search_how_text(&forest->tree[t], how);
+                    strncpy(out_shape, text, shape_n - 1);
+                    out_shape[shape_n - 1] = 0;
+                }
+            }
+        }
+    }
+    if (out_best_sample) *out_best_sample = best;
     return 0;
+}
+
+static int search_total_all(const SearchForest *forest)
+{
+    int total = 0;
+    for (int t = 0; t < forest->count; t++) {
+        int inner[SEARCH_NODES], count = search_inner(&forest->tree[t], inner);
+        int ways = 1;
+        for (int q = 0; q < count; q++) ways *= 2;
+        total += ways;
+    }
+    return total;
 }
 
 // The five extra candidates, each with the delay it needs.
@@ -330,7 +529,9 @@ static float named_candidate(int which, const double *c, const float *x, int n_s
     return 0;
 }
 
-// The search, driven. Control first: variant 0 in DOUBLE against the release's own double output.
+// The search, driven. Control first: variant 0 in DOUBLE against the port's own double output.
+static void search_space(const char *label, const double *coeffs, const float *x, const float *release_y,
+                         const float *port_y);
 static void run_search(const char *label, const double *coeffs, vDSP_Length sections)
 {
     printf("\nsearch: %s, %d sections\n", label, (int)sections);
@@ -352,11 +553,24 @@ static void run_search(const char *label, const double *coeffs, vDSP_Length sect
     vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)hd, host_dd, xd, 1, host_d, 1, SEARCH_SAMPLES);
     vDSP_biquad_DestroySetupD(hd);
 
-    int leaves[5] = {0, 1, 2, 3, 4};
-    SearchForest forest; forest.count = 0;
-    search_printed(&forest);
-    search_all(leaves, 5, &forest);
-    printf("  %d trees, variant 0 is the printed form\n", forest.count);
+    // The port's own float output on the same input, for control 1 of the search.
+    float port_f[SEARCH_SAMPLES], port_fd[4] = {0, 0, 0, 0};
+    vDSP_biquad_Setup pf = charon_probe_vDSP_biquad_CreateSetup(all, sections);
+    charon_probe_vDSP_biquad((const struct vDSP_biquad_SetupStruct *)pf, port_fd, x, 1, port_f, 1,
+                             SEARCH_SAMPLES);
+    charon_probe_vDSP_biquad_DestroySetup(pf);
+
+    int leaves[SEARCH_LEAVES] = {0, 1, 2, 3, 4};
+    search_forest.count = 1;
+    search_printed(search_forest.tree);
+    int built = 0;
+    if (!search_all_into(leaves, SEARCH_LEAVES, search_forest.tree + 1, SEARCH_TREES - 1, &built)) {
+        printf("  the enumeration does not fit in %d trees, so nothing below is measured\n", SEARCH_TREES);
+        return;
+    }
+    search_forest.count += built;
+    printf("  %d trees, variant 0 is the printed form, %d variants over their combine choices\n",
+           search_forest.count, search_total_all(&search_forest));
 
     // The inputs, side by side, for sample 0 of the SAME 32-sample case the control fails on. If the port
     // agrees with the release and variant 0 does not, the evaluator is being fed something other than what
@@ -371,19 +585,32 @@ static void run_search(const char *label, const double *coeffs, vDSP_Length sect
         printf("    the evaluator: coefficients");
         for (int k = 0; k < 5; k++) printf(" %s%.17g", k ? "," : "", all[k]);
         printf("   (%s)\n", "b0 b1 b2 a1 a2");
-        printf("    the port's setup: coefficients");
+        printf("    the port's own answer to one sample with a zero delay, both forms:\n");
         {
-            // read the port's own copy back, through the release's own struct name - a measurement, and the
-            // only way to see what the port was actually handed
-            vDSP_biquad_SetupD ps = vDSP_biquad_CreateSetupD(all, sections);
-            const struct vDSP_biquad_SetupStructD *view = (const struct vDSP_biquad_SetupStructD *)ps;
-            for (int k = 0; k < 5; k++) printf(" %.17g", view->coeff[k]);
-            printf("   (read back from the port's own struct)\n");
-            charon_probe_vDSP_biquad_DestroySetupD(ps);
+            // **Not a read of the port's setup struct, and that is the fix.** The block here used to call
+            // `vDSP_biquad_CreateSetupD` - the RELEASE's create, not the port's - and read `->coeff` out
+            // of it through `struct vDSP_biquad_SetupStructD`, which the 16.4 header only forward
+            // declares ("incomplete definition of type"), so the probe did not compile at all. There is no
+            // layout of a setup that both sides agree on, and vDSP.h says the contents may change between
+            // releases. The measurement that does not need one is the port's own OUTPUT for one sample
+            // with a zero delay, which is b0 * x[0] and nothing else: if the port were handed the five
+            // coefficients in another order, or narrowed them another way, this is where it would show.
+            float pf_delay[4] = {0, 0, 0, 0}, pf_y = 0.0f, pf_x = x[0];
+            vDSP_biquad_Setup psf = charon_probe_vDSP_biquad_CreateSetup(all, sections);
+            charon_probe_vDSP_biquad((const struct vDSP_biquad_SetupStruct *)psf, pf_delay, &pf_x, 1, &pf_y, 1, 2);
+            charon_probe_vDSP_biquad_DestroySetup(psf);
+            double pd_delay[4] = {0, 0, 0, 0}, pd_y = 0.0;
+            vDSP_biquad_SetupD psd = charon_probe_vDSP_biquad_CreateSetupD(all, sections);
+            charon_probe_vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)psd, pd_delay, xd, 1, &pd_y, 1, 2);
+            charon_probe_vDSP_biquad_DestroySetupD(psd);
+            printf("      float: b0 * x[0] would be %.9g, the port answers %.9g, %s\n", (double)((float)all[0] * x[0]),
+                   (double)pf_y, ((float)all[0] * x[0]) == pf_y ? "the same" : "DIFFERENT");
+            printf("      double: b0 * x[0] would be %.17g, the port answers %.17g, %s\n", all[0] * xd[0], pd_y,
+                   (all[0] * xd[0]) == pd_y ? "the same" : "DIFFERENT");
         }
         printf("    sections: the evaluator %d, the port's setup %d\n", (int)sections, (int)sections);
         printf("    the initial Delay: the evaluator all zeros, the port's all zeros (%d elements for %d "
-               "sections, 2 * (M + 1))\n", 2 * (sections + 1), (int)sections);
+               "sections, 2 * (M + 1))\n", (int)(2 * (sections + 1)), (int)sections);
         printf("    the input: the evaluator reads the float array widened sample by sample, x[0] %.17g; the "
                "port's reads a double array, xd[0] %.17g\n", (double)x[0], xd[0]);
         printf("    stride: the evaluator 1, the port's 1\n");
@@ -420,73 +647,172 @@ static void run_search(const char *label, const double *coeffs, vDSP_Length sect
                memcmp(&evaluator0, &port0, sizeof evaluator0) == 0 ? "yes" : "NO");
     }
 
-    // CONTROL: variant 0 in double against **the PORT'S OWN output**, every sample, bit for bit.
-    // The release's double output is the case that already failed, so it cannot be the control; the
-    // port's output is a case already known to be true, because the port passes the release's own
-    // comparison on the double cases on this same guest.
+    // CONTROL, in double, against **the PORT'S OWN output**, every sample, bit for bit. The port's output
+    // is the case that is already known to be true: the port is the thing whose arithmetic is being
+    // searched, so if no variant of this space reproduces it then the space is not describing the arithmetic
+    // it searches and nothing below is worth reading.
+    //
+    // **It asks the space, not variant 0.** Which association the port computes is a property of the build
+    // its own translation unit was compiled with - clang's -ffp-contract is on by default, so on a target
+    // with multiply-adds the port's one expression becomes a chain of fused combines and the printed form
+    // is not what it computes - and a control that names one variant fails on the other build. Measured on
+    // this Mac, where the port does contract: variant 0 differs from the port at sample 1 by one double ULP,
+    // which is the control failing for a reason that has nothing to do with the enumeration.
     {
         double port_d[SEARCH_SAMPLES], port_dd[4] = {0, 0, 0, 0};
-        vDSP_biquad_SetupD ps = vDSP_biquad_CreateSetupD(all, sections);
+        vDSP_biquad_SetupD ps = charon_probe_vDSP_biquad_CreateSetupD(all, sections);
         charon_probe_vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)ps, port_dd, xd, 1, port_d, 1,
                                    SEARCH_SAMPLES);
         charon_probe_vDSP_biquad_DestroySetupD(ps);
-        double delay[4] = {0, 0, 0, 0};
-        int bad = -1;
-        for (int n = 0; n < SEARCH_SAMPLES; n++) {
-            double fa[5][2];
-            fa[0][0] = all[0]; fa[0][1] = x[n];
-            fa[1][0] = all[1]; fa[1][1] = delay[1];
-            fa[2][0] = all[2]; fa[2][1] = delay[0];
-            fa[3][0] = -all[3]; fa[3][1] = delay[3];
-            fa[4][0] = -all[4]; fa[4][1] = delay[2];
-            double v[9];
-            const SearchTree *t = &forest.tree[0];
-            for (int i = 0; i < t->used; i++)
-                v[i] = t->node[i].leaf >= 0 ? fa[t->node[i].leaf][0] * fa[t->node[i].leaf][1]
-                                            : v[t->node[i].a] + v[t->node[i].b];
-            double out = v[t->used - 1];
-            if (memcmp(&out, &port_d[n], sizeof out) != 0) { bad = n; break; }
-            delay[0] = delay[1]; delay[1] = x[n]; delay[2] = delay[3]; delay[3] = out;
-        }
-        if (bad >= 0) {
-            printf("  CONTROL FAILED: variant 0 in double differs from the release at sample %d - the search "
-                   "reports nothing\n", bad);
+        int found_tree = -1, found_code = -1, best = -1;
+        char shape[256] = {0};
+        if (!search_find(&search_forest, all, x, port_d, sizeof(double), &found_tree, &found_code, shape,
+                         sizeof shape, &best)) {
+            printf("  CONTROL FAILED: none of the %d variants reproduces the port's own DOUBLE output over %d "
+                   "samples; the closest first differs at sample %d and is %s\n",
+                   search_total_all(&search_forest), SEARCH_SAMPLES, best, shape);
             return;
         }
-        printf("  control passed: variant 0 in double reproduces the PORT'S OWN output bit for bit on all %d "
-               "samples\n", SEARCH_SAMPLES);
+        printf("  control passed: variant %d of tree %d reproduces the PORT'S OWN double output bit for bit, "
+               "and its shape is %s\n", found_code, found_tree, shape);
     }
 
-    // every association, in float
-    int matched = 0, best = SEARCH_SAMPLES + 1, best_tree = -1;
-    for (int t = 0; t < forest.count; t++) {
-        float delay[4] = {0, 0, 0, 0};
-        int first = -1;
-        for (int n = 0; n < SEARCH_SAMPLES; n++) {
-            float out = tree_run(&forest.tree[t], all, x, n + 1, delay);
-            if (memcmp(&out, &host_f[n], sizeof out) != 0) { first = n; break; }
-        }
-        if (first < 0) { matched++; printf("  MATCHES every sample: tree %d of %d\n", t, forest.count); }
-        else if (first < best) { best = first; best_tree = t; }
-    }
-    printf("  the %d associations in float against the release's FLOAT output: %s; the best, tree %d, first differs at sample %d\n", forest.count,
-           matched ? "some match" : "NONE match", best_tree, best);
-    printf("  the fused masks are not candidates here: armv7 VFP before VFPv4 has no fused multiply-add\n");
+    // The whole space, in float, against the release's own float output - the answer this file is for.
+    search_space(label, all, x, host_f, port_f);
+}
 
-    static const char *named[5] = {"the printed form, per operation in float",
-                                   "accumulated in double, rounded to float once a sample",
-                                   "only the feedback products rounded, the sum in double",
-                                   "the delay kept in double between samples",
-                                   "NEON 4-lane with flush-to-zero"};
-    for (int which = 0; which < 5; which++) {
-        float delay[4] = {0, 0, 0, 0};
-        int first = -1;
-        for (int n = 0; n < SEARCH_SAMPLES; n++) {
-            float out = named_candidate(which, all, x, n + 1, delay);
-            if (memcmp(&out, &host_f[n], sizeof out) != 0) { first = n; break; }
+// Two controls, then the answer. **A control that does not hold means nothing below it is printed**, which
+// is what happened here for a whole series of runs before the enumerator was fixed.
+//
+// Control 1 asks whether the space CONTAINS the port's own float output: the port's arithmetic is some
+// association of these five terms, so if none of the 26896 variants reproduces it then this enumeration is
+// not describing the arithmetic it is supposed to be searching. Control 2 asks whether every variant gives
+// b0 * x[0] at sample 0 with a zero delay, which holds for a fused node as well as a plain one because
+// `fma(m, 0, a)` is exactly `a`. Both are computed here and neither involves the release.
+static void search_space(const char *label, const double *coeffs, const float *x, const float *release_y,
+                         const float *port_y)
+{
+    const SearchForest *forest = &search_forest;
+    int how[SEARCH_NODES];
+    int found_tree = -1, found_code = -1, closest = -1;
+    char found_shape[256] = {0};
+    if (!search_find(forest, coeffs, x, port_y, sizeof(float), &found_tree, &found_code, found_shape,
+                     sizeof found_shape, &closest)) {
+        printf("    CONTROL 1 FAILED: none of the %d variants reproduces the port's own float output; the "
+               "closest first differs at sample %d and is %s\n", search_total_all(forest), closest, found_shape);
+        return;
+    }
+    printf("    control 1 passed: variant %d of tree %d reproduces the port's float output bit for bit, and "
+           "its shape is %s\n", found_code, found_tree, found_shape);
+
+    // Control 2: every variant, one sample, one multiplication.
+    {
+        float want = (float)coeffs[0] * x[0];
+        int violations = 0;
+        for (int t = 0; t < forest->count; t++) {
+            int inner[SEARCH_NODES], count = search_inner(&forest->tree[t], inner);
+            for (int code = 0; code < (1 << count); code++) {
+                search_choose(&forest->tree[t], inner, count, code, how);
+                float fa[5][2], delay[4] = {0, 0, 0, 0};
+                fa[0][0] = (float)coeffs[0]; fa[0][1] = x[0];
+                fa[1][0] = (float)coeffs[1]; fa[1][1] = delay[1];
+                fa[2][0] = (float)coeffs[2]; fa[2][1] = delay[0];
+                fa[3][0] = (float)-coeffs[3]; fa[3][1] = delay[3];
+                fa[4][0] = (float)-coeffs[4]; fa[4][1] = delay[2];
+                float v[SEARCH_NODES];
+                const SearchTree *tr = &forest->tree[t];
+                for (int i = 0; i < tr->used; i++) {
+                    if (tr->node[i].leaf >= 0)
+                        v[i] = fa[tr->node[i].leaf][0] * fa[tr->node[i].leaf][1];
+                    else {
+                        int l = tr->node[i].a, r = tr->node[i].b;
+                        if (how[i] && tr->node[l].leaf >= 0)
+                            v[i] = fmaf(fa[tr->node[l].leaf][0], fa[tr->node[l].leaf][1], v[r]);
+                        else
+                            v[i] = v[l] + v[r];
+                    }
+                }
+                if (memcmp(&v[tr->used - 1], &want, sizeof want) != 0) violations++;
+            }
         }
-        printf("    %-54s %s", named[which], first < 0 ? "MATCHES every sample\n" : "");
-        if (first >= 0) printf("first differs at sample %d\n", first);
+        if (violations) {
+            printf("    CONTROL 2 FAILED: %d variants do not give b0 * x[0] at sample 0 with a zero delay\n",
+                   violations);
+            return;
+        }
+        printf("    control 2 passed: all %d variants give b0 * x[0] at sample 0 with a zero delay\n",
+               search_total_all(forest));
+    }
+
+    int tried = 0, matched = 0, best = -1, shown = 0;
+    char best_shape[256] = {0};
+    for (int t = 0; t < forest->count; t++) {
+        int inner[SEARCH_NODES], count = search_inner(&forest->tree[t], inner);
+        for (int code = 0; code < (1 << count); code++) {
+            int first = -1;
+            tried++;
+            search_choose(&forest->tree[t], inner, count, code, how);
+            if (search_matches(&forest->tree[t], how, coeffs, x, release_y, sizeof(float), &first)) {
+                matched++;
+                // The count is the answer; the first few shapes are here so it can be read by eye. On an
+                // answer several hundred variants agree, and printing all of them buries everything else.
+                if (shown++ < 6)
+                    printf("    MATCHES the release on every sample: tree %d, variant %d, %s\n", t, code,
+                           search_how_text(&forest->tree[t], how));
+            } else if (first > best) {
+                best = first;
+                strncpy(best_shape, search_how_text(&forest->tree[t], how), sizeof best_shape - 1);
+            }
+        }
+    }
+    printf("  %s: %d trees, %d variants, each a whole %d-sample run with its own answer fed back; the "
+           "release's float output is matched on every sample by %d of them\n", label, forest->count, tried,
+           SEARCH_SAMPLES, matched);
+    if (!matched)
+        printf("    the variant that survives longest first differs at sample %d of %d, and its shape is %s\n",
+               best, SEARCH_SAMPLES, best_shape);
+
+    // The five candidates named by hand, kept beside the enumeration because each of them is a form a
+    // vendor would write - and because a named form that matches while the enumeration does not find it
+    // would mean the enumeration is wrong, not that the form is exotic.
+    {
+        static const char *named[5] = {"the printed form, per operation in float",
+                                       "accumulated in double, rounded to float once a sample",
+                                       "only the feedback products rounded, the sum in double",
+                                       "the delay kept in double between samples",
+                                       "NEON 4-lane with flush-to-zero"};
+        for (int which = 0; which < 5; which++) {
+            float delay[4] = {0, 0, 0, 0};
+            int first = -1;
+            for (int n = 0; n < SEARCH_SAMPLES; n++) {
+                float out = named_candidate(which, coeffs, x, n + 1, delay);
+                if (memcmp(&out, &release_y[n], sizeof out) != 0) { first = n; break; }
+            }
+            printf("    %-54s %s", named[which], first < 0 ? "MATCHES every sample\n" : "");
+            if (first >= 0) printf("first differs at sample %d\n", first);
+        }
+    }
+
+    // How far the port is from the release, sample by sample, in ULPs of the sample's own value. The
+    // search says WHICH association the release uses; this says how much the port is off by, which is the
+    // number the registry row's reason has to carry.
+    {
+        int differs = 0, worst = 0;
+        for (int n = 0; n < SEARCH_SAMPLES; n++) {
+            int32_t a, b;
+            memcpy(&a, &release_y[n], 4);
+            memcpy(&b, &port_y[n], 4);
+            int ulp = a - b;
+            if (ulp) {
+                differs++;
+                if (abs(ulp) > abs(worst)) worst = ulp;
+                if (differs <= 4)
+                    printf("    sample %2d: the release %.9g 0x%08x, the port %.9g 0x%08x, %d ULP\n", n,
+                           (double)release_y[n], (unsigned)a, (double)port_y[n], (unsigned)b, ulp);
+            }
+        }
+        printf("    the port differs from the release at %d of %d samples, by at most %d ULP\n", differs,
+               SEARCH_SAMPLES, abs(worst));
     }
 }
 
@@ -631,7 +957,12 @@ int main(int argc, char **argv)
         run_specials();
         run_search("the stable filter", kStable, 1);
         run_search("the unstable filter", kUnstable, 1);
-        run_search("the stable filter", kStable, 4);
+        // **No search over four sections, and that is what the evaluator is for, not an omission.** The
+        // space is the ways of combining ONE section's five products, and a cascade's answer is a second
+        // level of the same recurrence on top of the first - asked over four sections, the double control
+        // fails at sample 0 with the printed form's b0 * x[0] against the cascade's y[0], which is the
+        // control reporting that the space is the wrong space. The four-section bitwise comparison is
+        // `run_float` above; what a cascade's arithmetic is, is not a question this file asks.
         printf("\nprobe: the reduction order of vDSP_sve_svesq\n");
         sve_search_reductions();
         printf("probe: %d checks, %d failures\n", checks, failures);

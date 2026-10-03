@@ -1,6 +1,9 @@
 #!/bin/sh
-# The probe on the emulated iPhone2,1 6.1.3 (10B329) guest, through heavy.sh. The log is the deliverable:
+# The probe on the emulated iPhone3,1 6.1.3 (10B329) guest, through heavy.sh. The log is the deliverable:
 # the release's own vDSP against this band's kernel, on the target's own arithmetic.
+#
+# VDSPPROBE_DEVICE and VDSPPROBE_RELEASE name the device and the release, and both the install and the run
+# are given them, so the program cannot be installed into one image and run in another.
 #
 # **The hash check is the point of this script, not a nicety in it.** `xmake emulate install` has been observed
 # reporting "installing .. install ok!" and leaving the image's copy of the program unchanged, so a guest run
@@ -14,13 +17,23 @@ out="$here/run"
 mkdir -p "$out"
 cd "$here"
 export VDSPPROBE_ROOT="$root"
+
+# **iPhone3,1 is the device this run uses, and it is asked for.** The default device of the emulate command is
+# the first catalog device of the architecture, an iPhone2,1, and this project's image for it no longer
+# installs; iPhone3,1 at 6.1.3 has a golden image in ~/.charon/emulator today. Both the install and the run
+# take the same -d and -r, or the program is installed into one image and run in another.
+device=${VDSPPROBE_DEVICE:-iPhone3,1}
+release=${VDSPPROBE_RELEASE:-6.1.3}
+
 /opt/homebrew/bin/xmake f -c -p iphoneos -a armv7 -y > "$out/configure.log" 2>&1
-/opt/homebrew/bin/xmake emulate install > "$out/install.log" 2>&1
+/opt/homebrew/bin/xmake emulate -d "$device" -r "$release" install > "$out/install.log" 2>&1
 
 program=vdsp-biquad-probe
 built=$(find "$here/build" -name "$program" -type f 2>/dev/null | head -1)
 image=$(ls -d "$HOME"/.charon/emulator/images.noindex/vdspprobe-* 2>/dev/null | head -1)
-installed="$image/iPhone2,1_10B329/rootfs/usr/libexec/$program"
+# The image directory is named for the device and its build, so it is globbed rather than spelled: a spelled
+# one that names another device would compare this build against a program that was never installed here.
+installed=$(ls "$image"/${device}_*/rootfs/usr/libexec/$program 2>/dev/null | head -1)
 
 # **LC_UUID, not a byte hash, and that is 7e035ac0's rule rather than mine.** A hash of the bytes before the
 # code signature cannot prove provenance: strip rewrites those bytes, and an unsigned build has no bytes there
@@ -33,8 +46,9 @@ uuid_of() {
 }
 
 {
+  printf 'device    %s, release %s\n' "$device" "$release"
   printf 'built     %s\n' "${built:-NOT FOUND}"
-  printf 'installed %s\n' "$installed"
+  printf 'installed %s\n' "${installed:-NOT FOUND}"
   if [ -n "$built" ] && [ -f "$installed" ]; then
     ua=$(uuid_of "$built"); ub=$(uuid_of "$installed")
     printf 'built     LC_UUID %s\n' "$ua"
@@ -58,5 +72,5 @@ uuid_of() {
 grep -q "HASHES MATCH" "$out/hash.txt" || { cat "$out/hash.txt"; exit 1; }
 cat "$out/hash.txt"
 
-/opt/homebrew/bin/xmake emulate -t 900 -s 300 run "/usr/libexec/$program" > "$out/run.log" 2>&1 || true
+/opt/homebrew/bin/xmake emulate -d "$device" -r "$release" -t 900 -s 300 run "/usr/libexec/$program" > "$out/run.log" 2>&1 || true
 /opt/homebrew/bin/xmake emulate log > "$out/guest.log" 2>&1 || true
