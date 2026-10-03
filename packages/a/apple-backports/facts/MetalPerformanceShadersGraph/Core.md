@@ -246,10 +246,10 @@ written, in `MPSGraph14.m` and in the interpreter beside it: the transcendentals
 six comparisons and the six logicals, the three questions about a value, the two remainders, a minimum, a
 maximum, a division that answers no NaN, the select, the clamp, a ReLU and a sigmoid with their gradients.
 Every one of them is asked over the case file's sixteen input classes in `MPSDataTypeFloat32` and in
-`MPSDataTypeFloat16`, and **19 of the 53 come back with every cell byte-identical to the release in both
+`MPSDataTypeFloat16`, and **24 of the 53 come back with every cell of every case agreeing with the release in both
 types** - the row of each is in the registry, and the run's verdict line is
-`port: same as the system on 1870 of the 2048 cells with a result buffer; 178 recorded` with
-`checks=128 failures=0`.
+`port: same as the system on 3600 of the 3808 cells with a result buffer; 3392 within the release's own
+precision, 208 recorded` with `checks=128 failures=0`.
 
 **A predicate's result is a boolean and the logical family's is not.** Measured on this host's own
 MPSGraph over a rank-3 float32 operand: `isNaN`, `isFinite`, `isInfinite`, `equal`, `notEqual`,
@@ -343,12 +343,62 @@ transcendental kernels are Metal's own, and neither precision of the C function 
 family registers are therefore the ones whose cells agree whatever the spelling, and they are named in
 their own rows.
 
+### What "the same arithmetic" means for a kernel that is not the C library's
+
+Sixteen classes are not enough to measure a precision, so the sweep is **thirty-two**: the sixteen
+classes above and then sixteen ordinary values - `2^-16` and `2^-15` and three quarters and seven eighths
+of each, and one plus each of those, and their negatives - because those are the inputs whose last bit a
+kernel's own rounding is decided on. Every case of every family runs over the whole thirty-two in both
+types, and the run compares **3808 cells** where it compared 2048.
+
+Where the two answers of a cell differ, the comparison asks how far apart they are in units in the last
+place before it calls the cell a difference: the bit patterns are read as signed integers in
+sign-magnitude order, so the distance is how many representable values lie between them, and a zero of
+either sign is the same value and a NaN against a number is no distance at all.
+
+`tests/backports/host/mpsgraph/tolerances.txt` is the table of what each operation may be that far apart,
+and **every number in it is a measurement, not a figure quoted from a specification**: it is the largest
+distance the differential has seen between the release and the port for that operation in that data type
+over the thirty-two inputs, and a cell further out fails. It therefore cannot be looser than what has been
+observed, and it does not widen by itself - if the port drifts, the run says so.
+
+**The measured maximum, per operation and per type.** Every transcendental's value differences are one or
+two units in the last place, and the arctangent's in half reach three and the hyperbolic tangent's reach
+eleven:
+
+| operation | float32 | float16 | what the rest of its difference is |
+| --- | --- | --- | --- |
+| `sin`, `cos`, `tan`, `sinh`, `cosh`, `acosh`, `exp2`, `log2` | 1 | 1 | `sin` and `cos` have float16 special classes left, five and six cells |
+| `asin` | 1 | 0 | one float16 cell: the canonicalisation of a NaN |
+| `asinh` | 2 | 0 | one float16 cell |
+| `atan` | 0 | 3 | six float16 cells: a NaN and the four ordinary values below one |
+| `atanh` | 0 | 0 | one float16 cell |
+| `erf` | 2 | 1 | seven float16 cells, including its saturating answer for a NaN |
+| `exp10`, `log10` | 1 | 0 | - |
+| `power` | 1 | 2 | six float16 cells |
+| `sigmoid` | 1 | 1 | four float16 cells |
+| `tanh` | 1 | 11 | nine float32 and six float16 special-class cells, the largest group left in the file |
+
+**No non-transcendental case has a tolerance at all.** A predicate, a logical, both remainders, a minimum,
+a maximum, a select, a clamp, a rounding, the three questions about a value, a ReLU and a ReLU gradient are
+compared byte for byte in both types, and the six comparisons and the four orderings are compared byte for
+byte as one byte each. That is deliberate: their answers are a truth, a whole number or one of two
+orderings, and "within N units in the last place" is not a thing for any of them.
+
+**The run's own verdict, and what a mutation does to it**: `port: same as the system on 3600 of the 3808
+cells with a result buffer; 3392 within the release's own precision, 208 recorded`, `checks=128 failures=0`,
+and the planted build still differs from the release in 128 of the 130 cases. The red control is the
+reason a tolerance is safe here: the plant is every stored element off by one whole unit of the value,
+which is between 10^6 and 10^38 units in the last place, so no tolerance anywhere near one or two can hide
+it.
+
 ### The recorded cells, grouped
 
-`tests/backports/host/mpsgraph/recorded-cells.txt` names each of the 178 with the two runs' bytes, read
-out of the run's own outputs. They are of four kinds and none of them is a tolerance:
+`tests/backports/host/mpsgraph/recorded-cells.txt` names each of the 208 with the two runs' bytes, read
+out of the run's own outputs by `.agent-work/record.py`. They are of three kinds, and none of them is a
+tolerance:
 
-* **34 float32 cells, all in the transcendental family and in the two sigmoid gradients.** The release's
+* **The float32 cells that are not a difference in value**: the hyperbolic tangent's nine and the two sigmoid gradients' four, where the release's answer for a NaN, a zero or a denormal is not a number at all. The release's
   transcendentals are not the C library's, in either precision. Measured cell by cell over the sixteen
   classes: the release's `sin` of `1.0` is `0x3f576aa5`, this machine's own `sinf(1.0f)` is `0x3f576aa4`
   and `(float)sin(1.0)` is `0x3f576aa4` as well, and `0x3f576aa4` is the correctly rounded one - the exact
@@ -363,7 +413,7 @@ out of the run's own outputs. They are of four kinds and none of them is a toler
   spelling, the double one, and the transcendental family's float32 cells stay recorded. What would remove
   them is the release's own polynomial, which is not in any header and is not derivable from the
   specification of the operation.
-* **144 of the 178 are float16.** The same four kinds in `MPSDataTypeFloat16`, where the release's half kernels
+* **Most of the 208 are float16.** The same four kinds in `MPSDataTypeFloat16`, where the release's half kernels
   answer the special classes by rules of their own - the ones already measured for the arithmetic family
   are the table above - and where a per-operation half rule has not been derived yet. The families with
   the fewest are `expBase10` and `acosh` and `acos` and `rint` (none), `signbit` and `reLU` and `minimum`
