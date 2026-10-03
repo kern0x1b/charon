@@ -238,6 +238,52 @@ renderer side of the same family is not affected: `AVSampleBufferAudioRendererWa
 is an 11.0 constant (in `AVFoundationConstants110.m`) and the renderer posts it when a rate change really
 discards media it was holding.
 
+## What a run on 6.1.3 hardware has to prove, so the next band does not have to guess
+
+The one measurement this machine cannot make is the audible path, and it is the only thing left open for
+these two classes. It needs a package on a device that has audio hardware - the fleet's iPhone 4S or iPad 2,
+which are the ones with iOS 6.1.3 - and it needs the canon built from the branch that carries these four
+objects. Nothing here has to be re-derived first; these are the calls and the questions, in the order a run
+would meet them.
+
+**1. Does the queue get a device clock?** The whole mapping rests on `_AudioQueueGetCurrentTime` answering a
+valid `AudioTimeStamp` (`mFlags & kAudioTimeStampSampleTimeValid`), which it cannot do here
+(measured: -66678, empty flags). On the device it must answer 0, and `mSampleTime` must advance by about
+`mSampleRate` per second while the rate is 1.0. That single answer is what turns "cannot be measured here"
+into "measured".
+
+**2. Does a buffer actually play at the time its presentation timestamp names?** The mapping is
+`start.mSampleTime = anchor.mSampleTime + llround(seconds(pts - CMTimebaseGetTime(timebase)) * format.mSampleRate / rate)`.
+Two ways to see it, both with the release's own calls and neither needing the port to expose anything:
+
+- `AudioQueueEnqueueBufferWithParameters`'s `outActualStartTime`, compared with the `inStartTime` asked for.
+  The queue reports when it will really play the buffer, in the queue's own timeline; if it agrees with what
+  the port asked, the port's number was a time the queue could place.
+- the buffer callback's own `mAudioDataByteSize` against the format: a buffer that plays is a buffer the
+  callback returns, and its return is the queue's word that the audio went out rather than being dropped.
+
+**3. Does the audio that comes out carry the media that went in?** The routes the brief names: an
+`AudioQueue` **input tap** on the device, recording what the speaker played, or the queue's own current time
+against the PTS. A 1 kHz sine at 44.1 kHz is what `tests/backports/host/avf-samplerender11/samplerender.m`
+already generates, so the same fixture answers here: the recorded frequency is the tone's, and at a
+synchronizer rate of 2.0 the spacing of the buffers is halved with the pitch following it, which is what this
+port's mapping does and what no time-pitch unit on the release could change.
+
+**4. What the three questions this machine refused become.** The with-media flush, a rate change on a
+renderer that holds media, and `-isReadyForMoreMediaData` coming back YES are the three rows the differential
+had to ask of an *unfed* renderer here because this Mac's own class ABORTS on them (measured, SIGABRT). On a
+device with a device clock the port's renderer holds none of those aborts, and those rows can be asked of a
+fed renderer - which is the whole point of the run.
+
+**5. What it does not have to re-measure.** The synchronizer needs no device: its clock, its rate, its
+anchored form, both observers and the renderer list are all answered on this Mac and all agree with this
+Mac's own class (107 rows, 98 of them identical). A device run is for the audio path and nothing else.
+
+**Where the run would go in the check:** the four "absent:" rows and the five media rows are the ones that
+change shape, and a run that closes this should be the check's host half replaced by the device - a new
+`avf-samplerender11-device` case rather than an edit of this one, so the row set that is green on this Mac
+stays green on it.
+
 ## clang synthesises the properties the rows say are absent, and how that was found
 
 **The coordinator's gate caught this on my branch: "listed as absent, but what is built answers it" for

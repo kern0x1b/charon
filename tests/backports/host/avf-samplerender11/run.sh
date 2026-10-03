@@ -214,7 +214,7 @@ fi
 
 # ---- 5. the join, and the value every row must answer
 set +e
-python3 - "$build" "$oracle_dir" <<'PYEOF'
+python3 - "$build" "$oracle_dir" > "$build/join.log" 2>&1 <<'PYEOF'
 import json, os, sys
 build, oracle_dir = sys.argv[1], sys.argv[2]
 
@@ -338,6 +338,7 @@ print("SUMMARY rows: host=%d port=%d  allowed-differences=%d answers-less=%d hos
 sys.exit(1 if (less or more or unexplained) else 0)
 PYEOF
 join_status=$?
+cat "$build/join.log"
 set -e
 
 # ---- 6. the directionality assertion, and the control
@@ -424,6 +425,7 @@ if [ "$join_status" != 0 ]; then
     echo "FAIL: the differential is not green"
     exit 1
 fi
-echo "ok  every row both halves answer is answered the same, apart from the nine this check names, and each"
-echo "    of them carries the value the port is required to answer and the measurement behind it"
+allowed=$(grep -c '^ALLOWED' "$build"/join.log 2>/dev/null || echo "")
+echo "ok  every row both halves answer is answered the same, apart from the $(grep -oE 'allowed-differences=[0-9]+' "$build/join.log" | head -1 | cut -d= -f2) this check names, and each of them carries"
+echo "    the value the port is required to answer and the measurement behind it"
 echo "log=$build"
