@@ -3486,6 +3486,72 @@
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
+    },
+    {
+      "api": "kUTType3dObject",
+      "effect": "the symbol is there and holds the string public.geometry-definition-format",
+      "facts": "facts/ModelIO/UTTypes.md",
+      "introduced": "9.0",
+      "kind": "constant",
+      "minimum": "6.0",
+      "reason": "an exported data symbol of ModelIO.framework that the release does not export, so an application that names it is killed by dyld before its main; the name is carried with the text the host own ModelIO holds at that symbol",
+      "source": "macOS ModelIO.framework, read through dlsym off the loaded image with tests/backports/host/modelio/uttypes.c, which prints the six; the headers of the SDK 16.4 for the release each name first appears in; the 6.1.3 armv7 cache, which exports none of them, as the control",
+      "status": "implemented"
+    },
+    {
+      "api": "kUTTypeAlembic",
+      "effect": "the symbol is there and holds the string public.alembic",
+      "facts": "facts/ModelIO/UTTypes.md",
+      "introduced": "9.0",
+      "kind": "constant",
+      "minimum": "6.0",
+      "reason": "an exported data symbol of ModelIO.framework that the release does not export, so an application that names it is killed by dyld before its main; the name is carried with the text the host own ModelIO holds at that symbol",
+      "source": "macOS ModelIO.framework, read through dlsym off the loaded image with tests/backports/host/modelio/uttypes.c, which prints the six; the headers of the SDK 16.4 for the release each name first appears in; the 6.1.3 armv7 cache, which exports none of them, as the control",
+      "status": "implemented"
+    },
+    {
+      "api": "kUTTypePolygon",
+      "effect": "the symbol is there and holds the string public.polygon-file-format",
+      "facts": "facts/ModelIO/UTTypes.md",
+      "introduced": "9.0",
+      "kind": "constant",
+      "minimum": "6.0",
+      "reason": "an exported data symbol of ModelIO.framework that the release does not export, so an application that names it is killed by dyld before its main; the name is carried with the text the host own ModelIO holds at that symbol",
+      "source": "macOS ModelIO.framework, read through dlsym off the loaded image with tests/backports/host/modelio/uttypes.c, which prints the six; the headers of the SDK 16.4 for the release each name first appears in; the 6.1.3 armv7 cache, which exports none of them, as the control",
+      "status": "implemented"
+    },
+    {
+      "api": "kUTTypeStereolithography",
+      "effect": "the symbol is there and holds the string public.standard-tesselated-geometry-format",
+      "facts": "facts/ModelIO/UTTypes.md",
+      "introduced": "9.0",
+      "kind": "constant",
+      "minimum": "6.0",
+      "reason": "an exported data symbol of ModelIO.framework that the release does not export, so an application that names it is killed by dyld before its main; the name is carried with the text the host own ModelIO holds at that symbol",
+      "source": "macOS ModelIO.framework, read through dlsym off the loaded image with tests/backports/host/modelio/uttypes.c, which prints the six; the headers of the SDK 16.4 for the release each name first appears in; the 6.1.3 armv7 cache, which exports none of them, as the control",
+      "status": "implemented"
+    },
+    {
+      "api": "kUTTypeUniversalSceneDescription",
+      "effect": "the symbol is there and holds the string com.pixar.universal-scene-description",
+      "facts": "facts/ModelIO/UTTypes.md",
+      "introduced": "10.0",
+      "kind": "constant",
+      "minimum": "6.0",
+      "reason": "an exported data symbol of ModelIO.framework that the release does not export, so an application that names it is killed by dyld before its main; the name is carried with the text the host own ModelIO holds at that symbol",
+      "source": "macOS ModelIO.framework, read through dlsym off the loaded image with tests/backports/host/modelio/uttypes.c, which prints the six; the headers of the SDK 16.4 for the release each name first appears in; the 6.1.3 armv7 cache, which exports none of them, as the control",
+      "status": "implemented"
+    },
+    {
+      "api": "kUTTypeUniversalSceneDescriptionMobile",
+      "effect": "the symbol is there and holds the string com.pixar.universal-scene-description-mobile",
+      "facts": "facts/ModelIO/UTTypes.md",
+      "introduced": "14.0",
+      "kind": "constant",
+      "minimum": "6.0",
+      "reason": "an exported data symbol of ModelIO.framework that the release does not export, so an application that names it is killed by dyld before its main; the name is carried with the text the host own ModelIO holds at that symbol",
+      "source": "macOS ModelIO.framework, read through dlsym off the loaded image with tests/backports/host/modelio/uttypes.c, which prints the six; the headers of the SDK 16.4 for the release each name first appears in; the 6.1.3 armv7 cache, which exports none of them, as the control",
+      "status": "implemented"
     }
   ],
   "framework": "ModelIO"
