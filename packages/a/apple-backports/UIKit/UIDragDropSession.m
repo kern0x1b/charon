@@ -36,6 +36,17 @@
 @synthesize progressIndicatorStyle = _progressIndicatorStyle;
 @synthesize localDragSession = _localDragSession;
 
+// The plain -init reaches the same place as the designated one, so a session made with alloc/init is
+// not half built. It used to be: only -initWithItems: created the NSProgress, and
+// -loadObjectsOfClass:completion: hands back exactly that object, so a caller that allocated and
+// initialised a session the obvious way was handed nil where the release's own load hands back a
+// progress - measured, tests/backports/host/dragdrop: "FAIL drop session load returns a finished
+// progress". One initialiser path, and every session has a progress to report into.
+- (instancetype)init
+{
+    return [self initWithItems:@[]];
+}
+
 - (instancetype)initWithItems:(NSArray<UIDragItem *> *)items
 {
     if ((self = [super init])) {

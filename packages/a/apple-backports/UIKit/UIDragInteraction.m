@@ -104,6 +104,36 @@
     return self.lift.view;
 }
 
+// The two halves of UIInteraction's move, and NEITHER is optional: the protocol declares both, and
+// -[UIView addInteraction:] sends them without asking. An interaction that answers neither cannot be
+// added to a view at all - measured, tests/backports/host/dragdrop:
+//   *** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason:
+//       '-[CharonHostUIDragInteraction willMoveToView:]: unrecognized selector sent to instance'
+// The port's UIDropInteraction, UIPointerInteraction, UIPencilInteraction12, UITextInteraction and
+// UILargeContentViewer all answer both; this class was the one that did not.
+//
+// They are also what makes a drag work. -charon_installGestures builds the lift and the carry
+// recognisers, and a recogniser with no view never sees a touch, so before this the port's drag
+// interaction could be created, held, and configured and would never lift anything. The two
+// recognisers go onto the view the interaction arrives at and come off the one it leaves, which is
+// what -view reads back through -[UIGestureRecognizer view] and what the harness measures next to
+// the system's own UIDragInteraction.
+- (void)willMoveToView:(UIView *)view
+{
+    [self.lift.view removeGestureRecognizer:self.lift];
+    [self.carry.view removeGestureRecognizer:self.carry];
+}
+
+- (void)didMoveToView:(UIView *)view
+{
+    if (!view) {
+        [self willMoveToView:nil];
+        return;
+    }
+    [view addGestureRecognizer:self.lift];
+    [view addGestureRecognizer:self.carry];
+}
+
 - (void)charon_installGestures
 {
     if (self.lift)
