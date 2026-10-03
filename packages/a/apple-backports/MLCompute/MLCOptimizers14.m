@@ -63,30 +63,81 @@
 @synthesize usesAMSGrad = _usesAMSGrad;
 @synthesize timeStep = _timeStep;
 
-// A fresh optimizer of any of the three kinds has the measured defaults of all of them, so one
-// initialiser serves the family and each subclass overwrites only what is its own. The numbers are the
-// header's own defaults read back off the host: 0.9, 0.999, 1e-8, no AMSGrad, step 1, no momentum, no
-// nesterov, no clipping, MLCGradientClippingTypeByValue, clip max 1, clip min -1, norm 1, custom norm 1.
+// A fresh state carries what a subclass brings and NOTHING else: the two a SGD adds - a momentum scale of
+// 0.0 and nesterov NO - and the five an Adam and an AdamW add - beta1 0.9, beta2 0.999, epsilon 1e-8, no
+// AMSGrad and step 1 - all six and all five measured on the host's own MLCompute. Every other number is a
+// zero here, and that is measured too: a factory given a nil descriptor answers a learning rate of 0, a
+// clip max of 0, a clip min of 0, a clip type of MLCGradientClippingTypeByValue (which is 0) and both norms
+// of 0, where an optimizer made from a descriptor that says nothing answers a clip max of 1, a clip min of
+// -1 and both norms of 1. Those three and the clip type therefore come from the DESCRIPTOR and not from
+// here, and a base class's own +new and -init - which answer an MLCOptimizer - answer all zeros.
 - (instancetype)init
 {
     if ((self = [super init])) {
-        _gradientClipMax = 1.0f;
-        _gradientClipMin = -1.0f;
-        _gradientClippingType = MLCGradientClippingTypeByValue;
-        _maximumClippingNorm = 1.0f;
-        _customGlobalNorm = 1.0f;
         _beta1 = 0.9f;
         _beta2 = 0.999f;
         _epsilon = 1e-8f;
         _timeStep = 1;
+#if defined(CHARON_MLC_PLANT)
+        // THE RED CONTROL. Compiled only into tests/backports/host/mlcompute's planted build, never into the
+        // library: every default of the family is one step off, which is what a default nobody measured looks
+        // like - the momentum, the nesterov flag, the clipping bounds, the clip type, both norms, all five of
+        // an Adam's and none of the two flags. It is here rather than in the case file because the case file
+        // only proves the comparison can read two numbers, while a plant here proves it notices when the port
+        // holds the wrong ones, and it reaches every optimizer of the three kinds through the one place they
+        // are all made.
+#if CHARON_MLC_PLANT == 1
+        _gradientClipMax = 0.0f;
+        _gradientClipMin = 0.0f;
+        _gradientClippingType = MLCGradientClippingTypeByNorm;
+        _maximumClippingNorm = 0.0f;
+        _customGlobalNorm = 0.0f;
+        _momentumScale = 1.0f;
+        _usesNesterovMomentum = YES;
+        _beta1 = 0.0f;
+        _beta2 = 0.0f;
+        _epsilon = 0.0f;
+        _usesAMSGrad = YES;
+        _timeStep = 2;
+#endif
+#endif
     }
     return self;
 }
+
+// A copy of the state object is another state object holding the same seventeen numbers, which is what
+// the copy of an optimizer needs and what nothing else in the library asks for. It is a method of the
+// state object's own @implementation and not of the optimizer's: sent to the wrong one it is
+// doesNotRecognizeSelector, because NSObject does not implement -copy by itself.
+- (id)copyWithZone:(NSZone *)zone
+{
+    CharonMLCOptimizerState *copy = [[CharonMLCOptimizerState allocWithZone:zone] init];
+    copy->_learningRate = _learningRate;
+    copy->_gradientRescale = _gradientRescale;
+    copy->_appliesGradientClipping = _appliesGradientClipping;
+    copy->_gradientClippingType = _gradientClippingType;
+    copy->_gradientClipMax = _gradientClipMax;
+    copy->_gradientClipMin = _gradientClipMin;
+    copy->_regularizationType = _regularizationType;
+    copy->_regularizationScale = _regularizationScale;
+    copy->_maximumClippingNorm = _maximumClippingNorm;
+    copy->_customGlobalNorm = _customGlobalNorm;
+    copy->_momentumScale = _momentumScale;
+    copy->_usesNesterovMomentum = _usesNesterovMomentum;
+    copy->_beta1 = _beta1;
+    copy->_beta2 = _beta2;
+    copy->_epsilon = _epsilon;
+    copy->_usesAMSGrad = _usesAMSGrad;
+    copy->_timeStep = _timeStep;
+    return copy;
+}
+
 
 @end
 
 // The one ivar the optimizer and its subclasses share. A class extension rather than a category,
 // because a category cannot carry storage and all three kinds of optimizer read this one.
+
 @interface MLCOptimizer () {
     CharonMLCOptimizerState *_state;
 }
@@ -102,6 +153,11 @@
     if (!_state)
         _state = [[CharonMLCOptimizerState alloc] init];
     return _state;
+}
+
+- (void)charon_mlc_setState:(CharonMLCOptimizerState *)state
+{
+    _state = state;
 }
 
 - (void)charon_mlc_takeStateFrom:(MLCOptimizerDescriptor *)descriptor
@@ -183,13 +239,38 @@
 
 + (instancetype)charon_mlc_optimizerOfClass:(Class)cls copying:(MLCOptimizer *)other
 {
-    // The copy of an optimizer is an optimizer of its own class with the same numbers, which is what
-    // NSCopying means here and what the host answers (measured: a SGD made with a momentum scale of
-    // 0.625 and nesterov YES, copied, is an MLCSGDOptimizer answering 0.625 and YES again). The numbers
-    // are the state object's, so every one of the seventeen crosses without being written out here.
+    // The copy of an optimizer is an optimizer of its own class holding the same seventeen numbers, which
+    // is what NSCopying means for a set of numbers and what the host answers: measured, an AdamW made with
+    // beta1 0.7, beta2 0.8, epsilon 0.9, AMSGrad and step 11, copied, is an MLCAdamWOptimizer answering
+    // those five again and the descriptor's seven besides, and a SGD made with a momentum scale of 0.625 and
+    // nesterov YES, copied, answers 0.625 and YES.
+    //
+    // The seventeen are written out one by one from the original's state into the new one's. That is not
+    // brevity, it is the only shape that is certainly right: -copy on a state the port owns reaches
+    // -copyWithZone: through the copy protocol's dispatch, and a call that reads as one call reaches another
+    // method entirely if a category anywhere answers -copy - which is what the port's own header for the
+    // optimizer's storage makes possible.
     MLCOptimizer *copy = [cls allocWithZone:NSDefaultMallocZone()];
-    CharonMLCOptimizerState *state = [[[CharonMLCOptimizerState allocWithZone:NSDefaultMallocZone()] init] copy];
-    copy->_state = state;
+    CharonMLCOptimizerState *from = [other charon_mlc_state];
+    CharonMLCOptimizerState *into = [CharonMLCOptimizerState new];
+    into.learningRate = from.learningRate;
+    into.gradientRescale = from.gradientRescale;
+    into.appliesGradientClipping = from.appliesGradientClipping;
+    into.gradientClippingType = from.gradientClippingType;
+    into.gradientClipMax = from.gradientClipMax;
+    into.gradientClipMin = from.gradientClipMin;
+    into.regularizationType = from.regularizationType;
+    into.regularizationScale = from.regularizationScale;
+    into.maximumClippingNorm = from.maximumClippingNorm;
+    into.customGlobalNorm = from.customGlobalNorm;
+    into.momentumScale = from.momentumScale;
+    into.usesNesterovMomentum = from.usesNesterovMomentum;
+    into.beta1 = from.beta1;
+    into.beta2 = from.beta2;
+    into.epsilon = from.epsilon;
+    into.usesAMSGrad = from.usesAMSGrad;
+    into.timeStep = from.timeStep;
+    [copy charon_mlc_setState:into];
     return copy;
 }
 

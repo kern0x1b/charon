@@ -77,3 +77,48 @@ never weighs it. Three methods of `MLCOptimizer` are the seams between it and th
 `charon_mlc_state`, `charon_mlc_takeStateFrom:` and `charon_mlc_optimizerOfClass:copying:` - and each is a
 registered row, as the graph library's own thirteen are. They are declared in `CharonMLCompute.h` because
 three objects of the library read them.
+## What the host differential found that the probe did not ask
+
+`tests/backports/host/mlcompute/optimizer-cases.m` asks every number of every optimizer of the three
+kinds, over two descriptors, through the factories the SDK declares and through the two the 16.4 SDK does
+not, and run.sh compiles the port's three objects beside the port's other five and compares the two runs.
+Four things came out of it that the probe had not asked for, and each is now in the port:
+
+* **A nil descriptor is not the family default.** Measured: `+[MLCSGDOptimizer optimizerWithDescriptor:nil]`
+  answers a learning rate of 0, a clip max of **0**, a clip min of **0**, a clip type of
+  `MLCGradientClippingTypeByValue` (which is 0) and both norms of **0**, where an optimizer made from a
+  descriptor that says nothing answers a clip max of **1**, a clip min of **-1** and both norms of **1**.
+  So the clip bounds and the two norms come from the *descriptor*, and the state's own initialiser carries
+  only what a subclass brings - a SGD's momentum of 0 and nesterov of NO, an Adam's and an AdamW's 0.9,
+  0.999, 1e-8, no AMSGrad and step 1 - and leaves every other number a zero. An Adam made with a nil
+  descriptor still answers beta1 0.899999976, which is what makes the two separable.
+* **A base class's own `+new` and `-init` are all zeros**, and it is not enough to ask for them by name: a
+  name reached with `NSClassFromString` finds the *framework's* class on the port's side too, so the case
+  compares the host with itself. The case reaches the base class as `class_getSuperclass` of an optimizer a
+  factory made, which is the port's own base class on the port's side.
+* **The same is true of the device data class**, and there is nothing whose superclass reaches it, so that
+  one name is written through a two-level stringifying macro: `#define X CharonX` does not reach inside a
+  string literal, and `@(CHARON_STRINGIFY(MLCTensorOptimizerDeviceData))` goes through the macro first,
+  so each side asks for the class it actually has.
+* **A copy carries all seventeen numbers**, and the port's first answer did not: it wrote `-copy` and
+  `-copy` is NSObject's, reaching `-copyWithZone:` through the copy protocol's dispatch, and the port's own
+  header for the optimizer's storage is exactly the kind of place a category answers `-copy`. The seventeen
+  are now written out one by one from the original's state into the new one's, which is the only shape that
+  is certainly right, and `-[MLCOptimizer charon_mlc_setState:]` is the registered seam that carries them
+  across.
+
+**The red control.** `-DCHARON_MLC_PLANT=1` is compiled into `CharonMLCOptimizerState`'s initialiser in
+`MLCOptimizers14.m` and into nothing else, so a build of the library carries no plant. It puts every default
+of the family one step off - the clip bounds to 0, the clip type to `ByNorm`, both norms to 0, the momentum
+to 1, nesterov to YES, beta1, beta2 and epsilon to 0, AMSGrad to YES and the step to 2 - and run.sh builds
+a third binary with it and requires the planted run to differ from the host's. Measured: it differs in 39
+cases, 36 of them optimizer cases. A comparison that cannot see a wrong default is not a comparison, and
+that is what the third binary is for.
+
+**The coordinator's duplicate, found by this harness and fixed in the same commit.** `MLCAdamAMSGrad15.m`
+carried a second `@implementation MLCAdamOptimizer`, which the file-level `-Wincomplete-implementation`
+pragma hid and which put `_OBJC_CLASS_$_MLCAdamOptimizer` in two objects; ld64 refuses the link as a
+duplicate symbol the moment the harness compiles both. It is a category now, the pragma is not carried over,
+and the three 15.0 properties of `MLCOptimizer` are `readonly` in the category as the SDK declares them - a
+category that redeclares an SDK-readonly property readwrite answers `-Wobjc-property-implementation` three
+times and promises something the header does not.
