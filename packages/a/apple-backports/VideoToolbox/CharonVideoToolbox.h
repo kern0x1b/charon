@@ -47,6 +47,89 @@ NS_ASSUME_NONNULL_BEGIN
 // same arrangement CharonMediaPlayerProtocols.h and CharonWebExtension.h use for the same reason.
 @protocol MTLCommandBuffer;
 
+// The multi-image decode and encode variants, which SDK 26.2 declares at 17.0 and 18.0 and the 16.4 SDK
+// does not declare at all (measured: the 16.4 SDK's VTDecompressionSession.h and VTCompressionSession.h name
+// none of the six, and the 4.3 and 6.1.3 armv7 caches export none of the six either - tools/corpus/
+// dump-cache.lua and v-audio's 6.1.3 dump, 2026-10-03). The signatures are transcribed from SDK 26.2 with
+// the availability annotations left out, and they need one type the 16.4 SDK does not have:
+// CMTaggedBufferGroup, which arrived with iOS 14 and is named here because three of the six take it. It is
+// an OPAQUE type in those signatures - every use below is a pointer the caller owns - so a forward
+// declaration is the whole of it, the same arrangement CharonMediaPlayerProtocols.h makes for a type from
+// a framework this library does not link.
+typedef struct CMTaggedBufferGroup *CMTaggedBufferGroupRef;
+
+// SDK 26.2, VTDecompressionSession.h:380-384. The multi-image callback receives a CMTaggedBufferGroup
+// where the single-image callback of the 16.4 SDK receives a CVImageBuffer, and that difference is the whole
+// of the family: no release the port builds can call it, because its own decode callback has no such
+// parameter.
+typedef void (*VTDecompressionOutputMultiImageCallback)(
+    void * CM_NULLABLE decompressionOutputMultiImageRefCon,
+    void * CM_NULLABLE sourceFrameRefCon,
+    OSStatus status,
+    VTDecodeInfoFlags infoFlags,
+    CMTaggedBufferGroupRef CM_NULLABLE taggedBufferGroup,
+    CMTime presentationTimeStamp,
+    CMTime presentationDuration);
+
+#if defined(__BLOCKS__)
+// SDK 26.2, VTDecompressionSession.h:432-439.
+typedef void (^VTDecompressionMultiImageCapableOutputHandler)(
+    OSStatus status,
+    VTDecodeInfoFlags infoFlags,
+    CVImageBufferRef CM_NULLABLE imageBuffer,
+    CMTaggedBufferGroupRef CM_NULLABLE taggedBufferGroup,
+    CMTime presentationTimeStamp,
+    CMTime presentationDuration);
+#endif
+
+extern OSStatus VTDecompressionSessionSetMultiImageCallback(
+    VTDecompressionSessionRef CM_NONNULL decompressionSession,
+    VTDecompressionOutputMultiImageCallback CM_NONNULL outputMultiImageCallback,
+    void * CM_NULLABLE outputMultiImageRefcon);
+
+extern OSStatus VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler(
+    VTDecompressionSessionRef CM_NONNULL session,
+    CMSampleBufferRef CM_NONNULL sampleBuffer,
+    VTDecodeFrameFlags decodeFlags,
+    VTDecodeInfoFlags * CM_NULLABLE infoFlagsOut,
+    VTDecompressionMultiImageCapableOutputHandler CM_NONNULL multiImageCapableOutputHandler);
+
+extern OSStatus VTDecompressionSessionDecodeFrameWithOptions(
+    VTDecompressionSessionRef CM_NONNULL session,
+    CMSampleBufferRef CM_NONNULL sampleBuffer,
+    VTDecodeFrameFlags decodeFlags,
+    CFDictionaryRef CM_NULLABLE frameOptions,
+    void * CM_NULLABLE sourceFrameRefCon,
+    VTDecodeInfoFlags * CM_NULLABLE infoFlagsOut);
+
+extern OSStatus VTDecompressionSessionDecodeFrameWithOptionsAndOutputHandler(
+    VTDecompressionSessionRef CM_NONNULL session,
+    CMSampleBufferRef CM_NONNULL sampleBuffer,
+    VTDecodeFrameFlags decodeFlags,
+    CFDictionaryRef CM_NULLABLE frameOptions,
+    VTDecodeInfoFlags * CM_NULLABLE infoFlagsOut,
+    VTDecompressionOutputHandler CM_NONNULL outputHandler);
+
+extern OSStatus VTCompressionSessionEncodeMultiImageFrame(
+    VTCompressionSessionRef CM_NONNULL session,
+    CMTaggedBufferGroupRef CM_NONNULL taggedBufferGroup,
+    CMTime presentationTimeStamp,
+    CMTime duration,
+    CFDictionaryRef CM_NULLABLE frameProperties,
+    void * CM_NULLABLE sourceFrameRefcon,
+    VTEncodeInfoFlags * CM_NULLABLE infoFlagsOut);
+
+#if defined(__BLOCKS__)
+extern OSStatus VTCompressionSessionEncodeMultiImageFrameWithOutputHandler(
+    VTCompressionSessionRef CM_NONNULL session,
+    CMTaggedBufferGroupRef CM_NONNULL taggedBufferGroup,
+    CMTime presentationTimeStamp,
+    CMTime duration,
+    CFDictionaryRef CM_NULLABLE frameProperties,
+    VTEncodeInfoFlags * CM_NULLABLE infoFlagsOut,
+    VTCompressionOutputHandler CM_NONNULL outputHandler);
+#endif
+
 // kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder, which VTIsHardwareDecodeSupported asks
 // the release by.
 //
