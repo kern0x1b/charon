@@ -183,6 +183,14 @@ local function section_entries(read, image, wanted)
     return entries
 end
 
+-- The classes, protocols and categories every image of a source carries, one entry per class: its own method
+-- lists, the class methods of its metaclass, the protocols it adopts, and the selectors every category in
+-- every image adds to it. Both category sections are read, and they answer two different questions, so the
+-- caller decides what to do with the answer: `__objc_catlist` is a category Apple's or the port's own image
+-- carries, and `__charon_catlist` is the same section renamed by the link in backports.lua, so it holds
+-- nothing but this repository's own categories. A class of a release is read by inventory(), which refuses an
+-- image carrying the second (release_only below); a class of a band is read by binary_inventory and
+-- binary_categories, where the port's own categories are the answer the caller asked for.
 local function collect(cache)
     local read = reader(cache)
     function read.raw(address, count)
@@ -190,6 +198,7 @@ local function collect(cache)
     end
     local classes, protocols = {}, {}
     local extensions = {instance = {}, class = {}, protocols = {}}
+    local port = {}
     local function entry(name)
         local found = classes[name]
         if not found then
@@ -214,7 +223,11 @@ local function collect(cache)
                 end
             end
         end
-        for _, category in ipairs(table.join(section_entries(read, loaded.image, "__objc_catlist"), section_entries(read, loaded.image, "__charon_catlist"))) do
+        local charon = section_entries(read, loaded.image, "__charon_catlist")
+        if #charon > 0 then
+            table.insert(port, loaded.install)
+        end
+        for _, category in ipairs(table.join(section_entries(read, loaded.image, "__objc_catlist"), charon)) do
             local class = read.pointer(category + read.size)
             local bound = cache.bound and cache.bound[category + read.size]
             local name = class ~= 0 and class_data(read, class).name or (bound and bound:match("^_OBJC_CLASS_%$_(.+)$"))
@@ -235,7 +248,7 @@ local function collect(cache)
             end
         end
     end
-    return {architecture = cache.architecture, classes = classes, protocols = protocols, extensions = extensions, read = read}
+    return {architecture = cache.architecture, classes = classes, protocols = protocols, extensions = extensions, port = port, read = read}
 end
 
 local function file_source(binary, architecture)
@@ -327,6 +340,24 @@ local function gather(into, found)
     merge(into.extensions.instance, found.extensions.instance)
     merge(into.extensions.class, found.extensions.class)
     merge(into.extensions.protocols, found.extensions.protocols)
+    table.join2(into.port, found.port)
+end
+
+-- A release's own Objective-C metadata, or the reading is not one. An image this repository built renames its
+-- category section to __charon_catlist (backports.lua links every library that way), and collect() reads that
+-- section beside __objc_catlist because a built object is the port's own code: every caller of binary_inventory
+-- and binary_categories reads an object of a band and wants both. Fed a folder that holds such a library,
+-- inventory() would answer "the release and the port" for every class the port extends, and a registry row
+-- written from that claims of the release a method only the backport defines - which is the reading
+-- modules/apple/backports.lua keeps and the tests/addon/objc_test.lua cases object_failures and
+-- selector_failures require. Measured 2026-10-03: none of the 354 images of the held 4.3 armv7 cache carries
+-- the section, so this refuses nothing the tree reads today. Read a built library with binary_inventory, or
+-- take it out of the folder that holds the release's own libraries.
+local function release_only(source, found)
+    if #found.port > 0 then
+        raise("%s holds %d image%s this repository built, whose category section is renamed to __charon_catlist: a release's own metadata is what inventory() reads, and the port's categories merged into it would make every class the port extends look like the release's own. Read such a library with binary_inventory, or take it out of the folder that holds the release's libraries",
+              source, #found.port, #found.port == 1 and "" or "s")
+    end
 end
 
 function inventory(source)
@@ -336,9 +367,10 @@ function inventory(source)
         local found = collect(cache)
         cache.close()
         found.read = nil
+        release_only(source, found)
         return found
     end
-    local found = {architecture = architecture, classes = {}, protocols = {},
+    local found = {architecture = architecture, classes = {}, protocols = {}, port = {},
                    extensions = {instance = {}, class = {}, protocols = {}}}
     local read = 0
     for _, binary in ipairs(macho.binaries_under(source)) do
@@ -351,6 +383,7 @@ function inventory(source)
     if read == 0 then
         raise("%s holds no %s library to read Objective-C metadata from", source, architecture)
     end
+    release_only(source, found)
     return found
 end
 
@@ -406,6 +439,9 @@ end
 -- defines the class itself, `bound` (the symbol) when dyld binds the reference. A
 -- reference under chained fixups is neither: this reads classic bind opcodes only.
 -- `instance` and `class_methods` hold the selectors each adds, keyed as the inventory keys them.
+-- A binary here is an object of a band, so its own renamed categories are part of the answer: the check in
+-- backports.lua that reads this asks whether each of them is attached at all, which is a question about the
+-- port's own code and not about the release.
 function binary_categories(binary, architecture)
     local source, image = file_source(binary, architecture)
     if not source then
@@ -447,11 +483,42 @@ function binary_aliases(binary, architecture)
     return found
 end
 
+-- What the reader itself is, as a short key: the three files whose code decides which name a byte pattern is
+-- read as. Memoised, because known_selectors() is on the path of every binary the platform checks.
+local READER_KEY
+local function reader_key()
+    if not READER_KEY then
+        local parts = {}
+        for _, name in ipairs({"objc.lua", "dyld.lua", "macho.lua"}) do
+            table.insert(parts, hash.strhash128(io.readfile(path.join(os.scriptdir(), name))))
+        end
+        READER_KEY = hash.strhash32(table.concat(parts, "\n"))
+    end
+    return READER_KEY
+end
+
+-- Every selector name the release's own Objective-C metadata carries, keyed "-name". The names are kept in a
+-- file beside the release, and the mtime of the source decides that the file is current - but a shared cache
+-- taken out of a firmware keeps that firmware's own mtime (2011 for the held 4.3 one, 2013 for 6.1.3), so the
+-- comparison stays true for the machine's lifetime and a reader that has changed is never read at all. The
+-- file therefore carries the key of the reader that wrote it, beside it in a file of its own: the name stays
+-- what it is, because tools/crash-demand.py, tools/corpus/{crash-demand,selector-demand,observed,
+-- static-candidates}.py and tests/backports/host/mediaplayeritem/README.md read it by that name, and what a
+-- reader may answer with is the question the key settles. Measured 2026-10-03: the list beside the held 4.3
+-- armv7 cache holds 70062 names and answers exactly what a fresh reading of that cache answers, and it names
+-- isPaused, deviceName, isAsynchronous and distance - which the cache's own images do carry, on
+-- AVCaptureVideoPreviewLayer and SSDownloadStatus, on CADisplay, ISDevice, UIHardware,
+-- PLAirPlayBackgroundView, GKDevice and CAWindowServerDisplay, on NSOperation, and on MKRouteStep,
+-- MKMapViewPositioningChange, SCRCGestureFactory and two OfficeImport classes. A selector belongs to no named
+-- class, so a name the platform carries is no evidence about a class of it, and no image of a release carries
+-- a __charon_catlist: none of the 354 images of the held 4.3 armv7 cache, none of the 524 of 6.1.3, and none
+-- of the 581 files the store keeps in the four libraries_<arch> folders it has (1.1.4, 2.2.1 and 3.0).
 function known_selectors(source)
     local architecture = path.filename(source):match("^dyld_shared_cache_([%w_]+)") or path.filename(source):match("^libraries_([%w_]+)$")
     local list = path.join(path.directory(source), "selectors_" .. architecture .. ".txt")
+    local written_by = list .. ".reader"
     local known = {}
-    if os.isfile(list) and os.mtime(list) >= os.mtime(source) then
+    if os.isfile(list) and os.isfile(written_by) and io.readfile(written_by) == reader_key() and os.mtime(list) >= os.mtime(source) then
         for line in io.readfile(list):gmatch("[^\n]+") do
             known["-" .. line] = true
         end
@@ -464,6 +531,7 @@ function known_selectors(source)
     end
     table.sort(names)
     io.writefile(list, table.concat(names, "\n") .. "\n")
+    io.writefile(written_by, reader_key() .. "\n")
     return known
 end
 

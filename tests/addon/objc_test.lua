@@ -80,14 +80,21 @@ local function armv7_cache(file, opt)
     end
     put(text + 0x100, string.pack("<I8I8I8I4I4", text + 0x1000, 0, 0, 0x140, 0))
     put(text + 0x140, "/System/Library/Frameworks/Probe.framework/Probe\0")
+    local sections = {{"__objc_classlist", data, 4}}
+    if opt.charon then
+        table.insert(sections, {"__charon_catlist", data + 0x100, 4})
+    end
     local commands = {}
-    for _, segment in ipairs({{"__TEXT", text + 0x1000, 5}, {"__DATA", data, 3, {"__objc_classlist", data, 4}}, {"__LINKEDIT", linkedit, 1}}) do
-        local section = segment[4] and string.pack("<c16c16I4I4I4I4I4I4I4I4I4", segment[4][1], segment[1], segment[4][2], segment[4][3], segment[4][2] - text, 2, 0, 0, 0, 0, 0) or ""
+    for _, segment in ipairs({{"__TEXT", text + 0x1000, 5}, {"__DATA", data, 3, sections}, {"__LINKEDIT", linkedit, 1}}) do
+        local section = ""
+        for _, one in ipairs(segment[4] or {}) do
+            section = section .. string.pack("<c16c16I4I4I4I4I4I4I4I4I4", one[1], segment[1], one[2], one[3], one[2] - text, 2, 0, 0, 0, 0, 0)
+        end
         table.insert(commands, string.pack("<I4I4c16I4I4I4I4i4i4I4I4", 0x1, 56 + #section, segment[1], segment[2], 0x1000, segment[2] - text, 0x1000,
-                                           segment[3], segment[3], segment[4] and 1 or 0, 0) .. section)
+                                           segment[3], segment[3], #(segment[4] or {}), 0) .. section)
     end
     put(text + 0x1000, string.pack("<I4i4i4I4I4I4I4", 0xFEEDFACE, 12, 9, 6, #commands, #table.concat(commands), 0) .. table.concat(commands))
-    put(text + 0x1800, "Probe\0probe\0v8@0:4\0")
+    put(text + 0x1800, "Probe\0probe\0v8@0:4\0" .. (opt.charon and "ported\0" or ""))
     words(text + 0x1900, 8, 0x7FFFFFFF)
     local class = data + 0x10
     pointers(data, class + (opt.slide or 0))
@@ -99,6 +106,15 @@ local function armv7_cache(file, opt)
     pointers(data + 0x80, text + 0x1800, 0, 0)
     words(data + 0x90, 12, 1)
     pointers(data + 0x98, text + 0x1806, text + 0x180c, text + 0x1001)
+    if opt.charon then
+        -- The category list of a library this repository built, which backports.lua's link renames, holding one
+        -- selector the class does not define. No image of a release carries such a section.
+        words(data + 0xB0, 12, 1)
+        pointers(data + 0xB8, text + 0x1813, text + 0x180c, text + 0x1001)
+        pointers(data + 0xC0, text + 0x1800, class, 0, 0)
+        pointers(data + 0xC8, data + 0xB0, 0, 0)
+        pointers(data + 0x100, data + 0xC0)
+    end
     local bitmap = {}
     for index = 1, 128 do
         bitmap[index] = 0
@@ -121,6 +137,8 @@ local function inventory_failures(folder, opt)
     io.writefile(path.join(folder, "inventory.lua"), INVENTORY)
     for index, case in ipairs({{"a cache read from firmware", {}, "Probe -probe"},
                            {"a class whose method list address has its low bit set, as garbage from a device copy does", {methods = 0x30001901}, "Probe "},
+                           {"an image carrying the category list a built library's link renames, which a release's image never does",
+                            {charon = true}, nil, "holds 1 image this repository built, whose category section is renamed to __charon_catlist"},
                            {"a cache copied from a running device, its pages slid", {slide = 0x10000000}, nil, "copied from a running device: 1 of its pages hold pointers the device slid"}}) do
         local cachefile = armv7_cache(path.join(folder, "dyld_shared_cache_armv7_" .. index), case[2])
         local output, log = cachefile .. ".txt", cachefile .. ".log"
@@ -174,6 +192,37 @@ local function held_failures(folder, opt)
     local errors = fixtures.refusal(function () objc.inventory(path.join(folder, "libraries_armv6")) end)
     if not errors or not errors:find("holds no armv6 library", 1, true) then
         table.insert(found, "an inventory of a folder holding nothing of the architecture must refuse rather than report an empty system: " .. tostring(errors))
+    end
+    return found
+end
+
+-- The selector list known_selectors() keeps beside a release is named by the reader that wrote it. A shared
+-- cache taken out of a firmware keeps that firmware's own mtime - 2011 for the held 4.3 one, 2013 for 6.1.3 -
+-- so a comparison of times alone holds a list true for the machine's lifetime and a changed reader is never
+-- read at all. A list this reader did not write is therefore not the answer, whatever its times say.
+local function kept_failures(folder, opt)
+    local found = {}
+    local objc = import("apple.objc", {rootdir = opt.modules, anonymous = true})
+    local libraries = path.join(folder, "kept", "libraries_armv7")
+    os.mkdir(path.join(libraries, "usr", "lib"))
+    io.writefile(path.join(folder, "kept", "held.m"), HELD)
+    fixtures.run(path.join(folder, "kept"), opt.clang, {"-target", "armv7-apple-ios6.0", "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-w",
+                                                        "-mlinker-version=" .. fixtures.linker_version(opt.ld64), "-fuse-ld=" .. opt.ld64, "-dynamiclib",
+                                                        "-framework", "Foundation", "-install_name", "/usr/lib/libheld.dylib",
+                                                        "held.m", "-o", path.join(libraries, "usr", "lib", "libheld.dylib")})
+    io.writefile(path.join(folder, "kept", "selectors_armv7.txt"), "charonNoSuchSelectorAnywhere\n")
+    local known = objc.known_selectors(libraries)
+    if known["-charonNoSuchSelectorAnywhere"] then
+        table.insert(found, "a selector list beside the release that this reader did not write must not answer it, and it answered -charonNoSuchSelectorAnywhere")
+    end
+    if not known["-heldMethod"] then
+        table.insert(found, "the reading is kept beside the release and read back: -heldMethod must be in the answer, and the answer names " ..
+                    table.concat(table.slice(table.orderkeys(known), 1, 8), " "))
+    end
+    local keyed = os.files(path.join(folder, "kept", "selectors_armv7.txt.reader"))
+    if #keyed ~= 1 then
+        table.insert(found, "the list this reader writes names the reader that wrote it beside it, and beside the release there are " .. #keyed ..
+                    " such files: " .. table.concat(keyed, " "))
     end
     return found
 end
@@ -248,7 +297,7 @@ end
 function failures(opt)
     local found = {}
     local folder = fixtures.scratch()
-    for _, check in ipairs({stub_failures, selector_failures, inventory_failures, held_failures, object_failures}) do
+    for _, check in ipairs({stub_failures, selector_failures, inventory_failures, held_failures, kept_failures, object_failures}) do
         table.join2(found, check(folder, opt))
     end
     os.tryrm(folder)
