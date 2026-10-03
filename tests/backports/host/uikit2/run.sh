@@ -506,16 +506,41 @@ control() {  # $1: what to plant, $2: the exit status that must come back
         status=1
     fi
 }
-for key in "a fresh configuration has no base foreground colour" \
-           "a fresh configuration has no base background colour" \
-           "a fresh configuration has no image" \
-           "a fresh configuration has no image colour transformer" \
-           "a fresh configuration has no preferred symbol configuration" \
-           "a fresh configuration has no title"; do
-    control "$key" 1
-done
-control "--no-plant" 2
-control "no such key" 2
+# The control belongs to the buttonconfig group above, so it runs only when that group is in scope - the
+# same gate group() applies, and for the same reason.
+#
+# It used to run unconditionally, and on a UIKIT2_ONLY run the group is skipped, so "$build/buttonconfig-test"
+# was never built.  The shell then failed to EXECUTE it, and every control read that failure's status as if
+# it were a verdict.  Measured, on /bin/sh here, a command that cannot be executed exits 1, not 127:
+#
+#   $ cat $build/buttonconfig-mutated.log
+#   run.sh: line 496: .../buttonconfig-test: No such file or directory
+#   $ UIKIT2_ONLY=eventattraction sh run.sh
+#   ok   buttonconfig control [a fresh configuration has no title]: exit=1
+#   FAIL buttonconfig control [--no-plant]: exit=1, and it must be 2
+#   FAIL buttonconfig control [no such key]: exit=1, and it must be 2
+#
+# Six of the eight therefore printed "ok" having run nothing at all, because 1 is what the six PLANTING
+# controls expect and 1 is what a missing binary returns; only the two refusals, which expect 2, showed the
+# truth.  A control that can report a pass without executing anything is the exact failure this block exists
+# to prevent, so the fix is the gate - not a second exit code to recognise, and not a quiet skip.
+# An EMPTY $only means every group is in scope - that is what UIKIT2_ONLY's own comment says - so the test
+# is "nothing was asked for, or buttonconfig was", not the case pattern alone, which an empty $only would
+# fail and would silently stop the control on an ordinary unfiltered run.
+case "$only" in
+    "" | *" buttonconfig "*)
+        for key in "a fresh configuration has no base foreground colour" \
+                   "a fresh configuration has no base background colour" \
+                   "a fresh configuration has no image" \
+                   "a fresh configuration has no image colour transformer" \
+                   "a fresh configuration has no preferred symbol configuration" \
+                   "a fresh configuration has no title"; do
+            control "$key" 1
+        done
+        control "--no-plant" 2
+        control "no such key" 2
+        ;;
+esac
 
 
 group contentunavailable "UIContentUnavailableProperties.m UIContentUnavailableConfiguration.m" contentunavailable_test.m
