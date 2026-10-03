@@ -11,7 +11,7 @@ They are read out of an annotation's `/A` action dictionary (PDF 1.7 Table 8.44)
 `tests/backports/host/pdfkit-document`, the same harness the first two families use: one verdict line, a
 red control per rule, and every fixture a file whose dictionaries this repository writes.
 
-**All six designated initializers are implemented.** That is not padding — the coordinator sent the first
+**All six designated initializers are implemented.** That is not padding - the coordinator sent the first
 commit back for asking about `PDFBorder`'s, and the answer was measured before any of this code was
 written: `[[PDFDestination alloc] init]`, `-initWithPage:atPoint:`, `-initWithDestination:`,
 `-initWithName:`, `-initWithURL:`, `-initWithPageIndex:atPoint:fileURL:` and `-init` on the reset form all
@@ -20,7 +20,7 @@ work on the host, and the harness compares each of them in its own `init.*` keys
 ## The page a destination names, and the one API this SDK does not have
 
 A destination is `[pageRef /XYZ left top zoom]`, so something has to turn `3 0 R` into a `PDFPage`. **This
-SDK's C API has no object-number accessor at all** — `CGPDFDictionary` and `CGPDFArray` expose no way to
+SDK's C API has no object-number accessor at all** - `CGPDFDictionary` and `CGPDFArray` expose no way to
 ask an indirect reference for its number. What it does have is `CGPDFArrayGetDictionary`, which *follows*
 the reference, so the port takes the pointer that comes back and matches it against `CGPDFPageGetDictionary`
 over the document's pages.
@@ -29,13 +29,13 @@ That was measured before it was relied on, because it is the load-bearing step o
 
     element 0 resolves to a dictionary: 1  page1=0 page2=1
 
-on a two-page fixture whose `/D` names object 4 — the pointer equals page 2's dictionary and not page
+on a two-page fixture whose `/D` names object 4 - the pointer equals page 2's dictionary and not page
 1's. And `act-goto-page2` is the fixture that shows it end to end: the host answers page index 1 and so
 does the port.
 
 **That needed a fix in `PDFDocument`.** `-[PDFDocument pageAtIndex:]` built a *fresh* `PDFPage` on every
-call, so the differential — which finds a destination's page by asking the document for each of its pages
-and seeing which one is that object — never matched, and answered the page count instead of the index. The
+call, so the differential - which finds a destination's page by asking the document for each of its pages
+and seeing which one is that object - never matched, and answered the page count instead of the index. The
 host answers the **same object** on two calls. The pages are now built once and kept, the same fix
 `-[PDFPage annotations]` got in the previous commit and for the same reason.
 
@@ -75,10 +75,10 @@ annotation each, and the host answers an object for exactly eight:
 | `/Print` | 9 | yes, `-name` 9 |
 | `/ZoomIn` | 10 | **no action** |
 | `/ZoomOut` | 11 | **no action** |
-| `/NotAName` | — | **no action** |
+| `/NotAName` | - | **no action** |
 
 Reading the name as its enum value would answer an object for all thirteen, four of which the host never
-builds — so this is an eight-entry table mapping each name to the value it answers, not the enum.
+builds - so this is an eight-entry table mapping each name to the value it answers, not the enum.
 
 `-initWithName:` keeps whatever it is given, and so does the host's: 0 and 99 both come back as 0 and 99
 (`init.namedNone.name`, `init.named99.name`).
@@ -87,17 +87,17 @@ builds — so this is an eight-entry table mapping each name to the value it ans
 
 The reader refuses, and every refusal below is a fixture in `act-goto-shapes`:
 
-* the `/D` is not an array — `/D 3` and a `/D` that is a dictionary both answer **no destination**;
-* the array has no second element — `[3 0 R]` answers **no destination**;
-* the second element is a name the format does not list — `[3 0 R /Zoom 3]` (a PDF 1.0 name the format
+* the `/D` is not an array - `/D 3` and a `/D` that is a dictionary both answer **no destination**;
+* the array has no second element - `[3 0 R]` answers **no destination**;
+* the second element is a name the format does not list - `[3 0 R /Zoom 3]` (a PDF 1.0 name the format
   dropped) and `[3 0 R /Bogus 1 2]` both answer **no destination**;
-* the **first** element is a *name* — `[/XYZ 1 2 3]` answers **no destination** on the host with a
+* the **first** element is a *name* - `[/XYZ 1 2 3]` answers **no destination** on the host with a
   perfectly good `/XYZ` behind it. That one needed measuring the SDK's own reader to tell apart, because it
-  is not "no page named" but "no page wanted": `CGPDFArrayGetName(array, 0, …)` succeeds for that element
+  is not "no page named" but "no page wanted": `CGPDFArrayGetName(array, 0, ...)` succeeds for that element
   and fails for every page reference, which every `/D` fixture in the run confirms.
 
-And the case that looks like all four but is none of them: a **named** destination — the format's other
-spelling, `[page /XYZ]` against `(aName)` — answers a `PDFDestination` whose **page is nil**, over both of
+And the case that looks like all four but is none of them: a **named** destination - the format's other
+spelling, `[page /XYZ]` against `(aName)` - answers a `PDFDestination` whose **page is nil**, over both of
 the `/Dests` spellings this harness writes (a name tree and a plain dictionary, `act-goto-named` and
 `act-goto-named-dict`). So the port builds the object with nothing in it and does not resolve the name:
 the host does not resolve it either on these fixtures, and a name it *did* resolve would be a second answer
@@ -106,20 +106,20 @@ nothing here has measured.
 ## `PDFDestination`'s three members
 
 **`-page`** is weak, as `PDFDestination.h:19` declares, and nil in the two cases above. It is a page and
-not an index — `act-goto-page2` answers page index 1 for a `/D` naming object 4.
+not an index - `act-goto-page2` answers page index 1 for a `/D` naming object 4.
 
 **`-point`** is the `/XYZ` left and top, read by position and each independently: `/XYZ 5 6` answers
 `(5, 6)` with an unspecified zoom, `/XYZ 7` answers `(7, unspecified)`, `/XYZ` with no numbers answers
-unspecified for both. **Every other fit name answers an unspecified point** — `/Fit`, `/FitB`, `/FitH`,
-`/FitBH`, `/FitBV`, one fixture each — and the last three carry numbers of their own, which are the box to
+unspecified for both. **Every other fit name answers an unspecified point** - `/Fit`, `/FitB`, `/FitH`,
+`/FitBH`, `/FitBV`, one fixture each - and the last three carry numbers of their own, which are the box to
 fit and not a position.
 
 **`-zoom`** is the `/XYZ` zoom, and **a zero is not a value**: `/XYZ 0 0 0` answers an unspecified zoom
 while its point answers `0,0`, and `/XYZ -1 -2 -3` answers zoom `-3`. So the point reads a zero and the
-zoom does not — measured both ways rather than assumed.
+zoom does not - measured both ways rather than assumed.
 
 The unspecified answer is `kPDFDestinationUnspecifiedValue`, which the port already exported as
-`(CGFloat)FLT_MAX` — **the host's own value, and not `CGFLOAT_MAX`**, already recorded in
+`(CGFloat)FLT_MAX` - **the host's own value, and not `CGFLOAT_MAX`**, already recorded in
 `registry/PDFKit/constants.json`. It is compared as the number it is, not symbolically, and that matters:
 `FLT_MAX` is the same number on a 32-bit and a 64-bit `CGFloat`, while `CGFLOAT_MAX` would not be.
 
@@ -133,7 +133,7 @@ sentinel for all three.
 `-URL` on a `/URI` action is the string read out of the dictionary handed to `NSURL`. The host answers
 `https://example.com/a b` as `https://example.com/a%20b`, a relative `/URI` as itself, and keeps a fragment
 (`act-uri`, `act-uri-shapes`). That percent-encoding is `NSURL`'s own, which both sides share, so what the
-comparison establishes is that the port read the right string out of the dictionary — not that the port has
+comparison establishes is that the port read the right string out of the dictionary - not that the port has
 its own URL parser.
 
 `-URL` on a `/GoToR` action is the `/F` **resolved against the document's own directory, as a relative name
@@ -141,12 +141,12 @@ whatever it looks like**:
 
 | `/F` | the host answers |
 | --- | --- |
-| `other.pdf` | `file:///…/fixtures/other.pdf` |
-| `https://example.com/other.pdf` | `file:///…/fixtures/https://example.com/other.pdf` |
+| `other.pdf` | `file:///.../fixtures/other.pdf` |
+| `https://example.com/other.pdf` | `file:///.../fixtures/https://example.com/other.pdf` |
 
 That second row is why the resolution is a string concatenation of a **path**, not of a URL's
-`absoluteString`: concatenating the URL string gives `file:/…` — one slash — where the host answers
-`file:///…`, and `act-goto-page2` is the fixture that showed it. An action with no `/F` answers nil, and so
+`absoluteString`: concatenating the URL string gives `file:/...` - one slash - where the host answers
+`file:///...`, and `act-goto-page2` is the fixture that showed it. An action with no `/F` answers nil, and so
 does a document opened with no URL of its own.
 
 ## `PDFActionRemoteGoTo.pageIndex` and `.point`
@@ -154,7 +154,7 @@ does a document opened with no URL of its own.
 `-pageIndex` is **0 on every `/GoToR` fixture measured, and that is not a constant standing in for
 behaviour.** The host's own `-initWithPageIndex:atPoint:fileURL:` keeps the index it is given and answers 2
 for 2 (`init.remote.class`). The 0s are a *reading* result: `act-goto-page2`'s `/D` names object 4, which
-**is** the second page of that document, and the host still answers 0 — because a remote action's page
+**is** the second page of that document, and the host still answers 0 - because a remote action's page
 belongs to the *other* file, which is the whole point of a remote action. A `/D` that is a page index
 rather than a page reference answers 0 as well.
 
@@ -180,7 +180,7 @@ So it is YES exactly when `/Fields` is present **and** the `/Flags` bit of value
 rows are what make it a rule about both keys rather than about the bit: `/Flags 2` alone would answer YES
 if only the bit mattered, and it answers NO.
 
-`-init` — the header's own designated initializer — answers **YES** with no fields, which is the header's
+`-init` - the header's own designated initializer - answers **YES** with no fields, which is the header's
 default and *not* what a dictionary carrying neither key reads as (`act-reset`'s second annotation answers
 NO). Both are in the harness, because "the default" and "the read" are two different answers.
 
@@ -194,13 +194,13 @@ destination, and the host builds one (`ann-dest-array`, `ann-dest-named`). It is
 own `-initWithDestination:` over the very object `-destination` answers, so the two are one object and not
 two reads of one array.
 
-**`-destination` is the destination of the action, not the `/Dest` read on its own** — and that is the
+**`-destination` is the destination of the action, not the `/Dest` read on its own** - and that is the
 opposite of what this first did. `ann-dest-and-a` carries **both** a `/Dest` whose `/XYZ` names `(1, 2)`
-with zoom `3` and an `/A` whose `/D` is a `/Fit`, and the host answers point **unspecified** — the `/A`'s.
+with zoom `3` and an `/A` whose `/D` is a `/Fit`, and the host answers point **unspecified** - the `/A`'s.
 So `-destination` is one line over `-action`: the destination of a `/GoTo`, nil for every other action.
 
-Which also means the earlier version of `-destination` and `-action` were **infinite recursion** — each
-reached the other — and that showed up as a `SIGSEGV` on the first run, not as a wrong answer. The
+Which also means the earlier version of `-destination` and `-action` were **infinite recursion** - each
+reached the other - and that showed up as a `SIGSEGV` on the first run, not as a wrong answer. The
 destination is now read through a private builder that `-action` calls directly.
 
 The `NSCopying` conformances the headers declare (`PDFAction.h:29` and each subclass) are **not**
@@ -216,20 +216,20 @@ Measured on the host, in the harness's own `copy.*` keys:
 | | answered |
 | --- | --- |
 | the copy's class | the original's own class, every one of the seven |
-| the copy IS the original | **no** — `copy.action.same` 0 for a bare `PDFAction` too |
-| `PDFDestination`'s **page** | **the same object** — a destination names a page and does not own it, and the page is weak here as `PDFDestination.h:19` declares |
+| the copy IS the original | **no** - `copy.action.same` 0 for a bare `PDFAction` too |
+| `PDFDestination`'s **page** | **the same object** - a destination names a page and does not own it, and the page is weak here as `PDFDestination.h:19` declares |
 | `PDFDestination`'s zoom | copied, and **independent**: 9 on the copy leaves 2.5 on the original |
-| `PDFActionGoTo`'s destination | a **new** object — the copy's destination is not the original's, and its page is again the same page |
-| `PDFActionNamed`'s name | copied and independent — 9 on the copy leaves 8 on the original |
+| `PDFActionGoTo`'s destination | a **new** object - the copy's destination is not the original's, and its page is again the same page |
+| `PDFActionNamed`'s name | copied and independent - 9 on the copy leaves 8 on the original |
 | `PDFActionURL`'s URL, `PDFActionRemoteGoTo`'s three members | copied |
-| `PDFActionResetForm`'s `-fields` | **the same array**, `copy.reset.fields.same` 1 — the one shallow member in the family |
-| a destination with **no page**, copied | an object, `copy.nopage` — so `-copyWithZone:` cannot be built through `-initWithPage:atPoint:`, which answers nil for a nil page |
+| `PDFActionResetForm`'s `-fields` | **the same array**, `copy.reset.fields.same` 1 - the one shallow member in the family |
+| a destination with **no page**, copied | an object, `copy.nopage` - so `-copyWithZone:` cannot be built through `-initWithPage:atPoint:`, which answers nil for a nil page |
 
 ## `-initWithPage:atPoint:` answers no object for a nil page
 
 Found by the harness rather than asked for. The copy block was written against
 `initWithPage:nil atPoint:(3, 4)` and the host answered **nil** for it, so every read off that object
-answered nil or zero and `[made copy]` answered nil as well — nine differences that all said the same
+answered nil or zero and `[made copy]` answered nil as well - nine differences that all said the same
 thing. The SDK does not say why; the measurement is that a caller who passes no page gets nothing back,
 and the port does the same.
 
@@ -305,14 +305,14 @@ for this diagnostic.
 * **Resolving a named destination.** Measured to answer a nil page on the host for both `/Dests`
   spellings, so the port does not resolve it and says so in the row.
 * **A colour parser for the `/BC` arrays of a widget's `/MK`.** That belongs to `-[PDFAnnotation color]`,
-  which is `inert` on main; what this family needed of it — a component count — is measured in
+  which is `inert` on main; what this family needed of it - a component count - is measured in
   `Border11.md`.
 
 ## The run
 
     $ sh tests/backports/host/pdfkit-document/run.sh
-      images differ by construction: host=/System/…/PDFKit.framework/…/PDFKit
-                                      port=…/runs/pdfkit-document/port-side
+      images differ by construction: host=/System/.../PDFKit.framework/.../PDFKit
+                                      port=.../runs/pdfkit-document/port-side
       COMPARED 6403 MISMATCHES 0  (not compared: 105, expected to differ: 315, of which 72 compared from the Catalyst side)
       RED CONTROL ok: the comparison goes red on a mutated port, and names the key
       RED CONTROL ok for act-goto-xyz.pdf.page0.annotation0.action.class
@@ -323,12 +323,12 @@ for this diagnostic.
       RED CONTROL ok for act-reset-flags.pdf.page0.annotation2.action.cleared
       RED CONTROL ok for ann-dest-and-a.pdf.page0.annotation0.destination.point.x
       RED CONTROL ok for init.remote.class
-      … 68 red controls in all, 51 of them naming an action, destination, initializer or copy key —
+      ... 68 red controls in all, 51 of them naming an action, destination, initializer or copy key -
       among them initdest.nilpage, initgoto.class, initnamed.class, copy.destination.same,
       copy.destination.page.same, copy.destination.zoomAfterSet, copy.destination.zoomOriginal,
       copy.nopage, copy.goto.destination.same, copy.goto.destination.page.same,
       copy.named.nameAfterSet, copy.remote.pageIndex, copy.reset.fields.same and copy.action.class
 
-105 fixtures, 88 of them this series' — 3 box, 3 hand-written text, 9 annotation and 2 conforming-writer
+105 fixtures, 88 of them this series' - 3 box, 3 hand-written text, 9 annotation and 2 conforming-writer
 text from before, plus 88 from `tools/make-object-fixtures.py`, each with every xref offset measured from
 the object bytes as they are written.
