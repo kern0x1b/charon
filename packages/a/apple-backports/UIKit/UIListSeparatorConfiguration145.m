@@ -95,32 +95,31 @@ static UIColor *charon_multiple_selection_separator_colour(void)
     return self;
 }
 
-// -init and +new are NS_UNAVAILABLE in the SDK's header: a separator configuration without an appearance
-// has no defaults to apply.  The port cannot remove NSObject's two, and MEASURED, the host's answer rather
-// than refusing - and what they answer is NOT the initialiser's shape.  Measured:
+// -init and +new are NS_UNAVAILABLE in the SDK's header and this object defines NEITHER, which is
+// decided by the class's own method lists and not by the header.
 //
-//   +new: topVis=0 bottomVis=0 color=(nil) msc=(nil)
-//     +new topInsets = 0 0 0 0
-//     +new bottomInsets = 0 0 0 0
-//   -init: topVis=0 bottomVis=0 color=(nil)
-//     -init topInsets = 0 0 0 0
+// The arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: `-init` is NOT in
+// UIListSeparatorConfiguration's own instance list and no method named `new` is in its own metaclass
+// list - `no-own-init`, `no-own-new`. The controls of that read, because a reader that answered nothing
+// would answer this too: `-init` is in the own instance list of 28851 of the cache's classes,
+// ARConfiguration among them and NSObject among those, and a method named `new` is in the own metaclass
+// list of 523 of them, NSObject itself among those. The coordinator's own class_copyMethodList count on
+// the host agrees and is the same shape: 37 instance methods with no `init`, 6 metaclass methods with no
+// `new`. The 18.0 cache reads the same - no-own-init, no-own-new, and its own 37 instance methods carry
+// -initWithCoder: and -initWithListAppearance: and no `init`, its own 6 metaclass methods no `new` - and its
+// census is 37248 and 665, the numbers this band's item 1 measured on that cache. No 14.x cache is held
+// here and the class arrived in 14.5, so 16.0 is the oldest release on this machine that carries it.
 //
-// Every value is the zero of its type - the two visibilities' zero happens to be Automatic - and in
-// particular the insets are ZERO where the initialiser gives the automatic ones, and both colours are nil.
-// The port answers exactly that.  The difference between the two paths is in the code and not in this
-// comment: -initWithListAppearance: above writes every field, and -init below writes none of them, so
-// [super init] is the whole of it and an object built this way reads back every zero.
-- (instancetype)init
-{
-    return [super init];
-}
-
-+ (instancetype)new
-{
-    // [[self alloc] init], not [self init]: inside a class method `self` is the class object and sending
-    // -init to a class raises "cannot init a class object".
-    return [[self alloc] init];
-}
+// So a call reaches NSObject's -init, on this release and on Apple's alike, and what it answers is the
+// zero of every field: both visibilities 0, both insets 0 0 0 0 - ZERO, where -initWithListAppearance:,
+// the header's NS_DESIGNATED_INITIALIZER, gives the automatic ones - and both colours nil. The port
+// answers exactly that by defining nothing, which is why those numbers need no code here.
+//
+// An earlier version of this file DID define both, -init as `[super init]` and +new as
+// `[[self alloc] init]`, and the first was also the only warning the package's own line printed on it:
+// "convenience initializer should not invoke an initializer on 'super'". Both are gone, and the warning
+// with them: the header already marks -initWithListAppearance: NS_DESIGNATED_INITIALIZER, so the class's
+// one initializer is a designated one and there is no secondary initializer left to warn about.
 
 - (UIListSeparatorVisibility)topSeparatorVisibility { return _topVisibility; }
 - (void)setTopSeparatorVisibility:(UIListSeparatorVisibility)visibility { _topVisibility = visibility; }

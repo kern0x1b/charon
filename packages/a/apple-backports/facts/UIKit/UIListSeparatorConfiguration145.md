@@ -46,11 +46,27 @@ The archive round trip goes through `NSKeyedArchiver` with `requiringSecureCodin
 the band that measured them. A configuration written with visibility `2`/`1` and insets `1 2 3 4` / `5 6 7 8`
 reads back with all four, and with a colour present.
 
-## M3. `+new` and `-init` are `NS_UNAVAILABLE`, and what they answer is not the initialiser's shape
+## M3. `+new` and `-init` are `NS_UNAVAILABLE`, the port defines neither, and what a call reaches is `NSObject`'s
 
-The 14.5 header marks both unavailable, and the port cannot take `NSObject`'s two away, so a caller that ignores
-the annotation gets an object rather than a link error. Measured on the host, and every value is the zero of
-its type:
+The 14.5 header marks both unavailable, and Apple's own class defines neither. Measured on the class's own
+method lists, the way item 1's eight rows are decided and not by the header:
+
+| read | source | result |
+| --- | --- | --- |
+| `-init` in `UIListSeparatorConfiguration`'s own instance list | arm64e cache of iOS 16.0, `modules/apple/objc.lua`'s `inventory` | **no** (`no-own-init`) |
+| a method named `new` in its own metaclass list | the same read | **no** (`no-own-new`) |
+| control: `-init` in a class's own instance list | the same read | yes, **28851** of that cache's classes, `ARConfiguration` and `NSObject` among them |
+| control: a method named `new` in a class's own metaclass list | the same read | yes, **523** of them, `NSObject` itself among those |
+| `UIListSeparatorConfiguration`'s own lists, on the host | `class_copyMethodList` | 37 instance methods, no `init`; 6 metaclass methods, no `new` |
+
+The class arrived in 14.5 and no 14.x cache is held on this machine, so **16.0 is the oldest release here
+that carries it** and 18.0 the newest read for this ruling; both agree, and both agree with the host. The two
+rows are therefore `absent`, and the object carries `-initWithListAppearance:`, `-initWithCoder:` and the
+header's ten members and nothing else.
+
+What a call reaches is `NSObject`'s, on this release and on Apple's alike, and what that answers is every
+field at the zero of its type - measured on the host, and the port's own case asks both constructors on both
+sides with `objc_msgSend` and reads every field back:
 
 | read | `+[UIListSeparatorConfiguration new]` | `-[UIListSeparatorConfiguration init]` |
 | --- | --- | --- |
@@ -61,17 +77,27 @@ its type:
 | `color` | nil | nil |
 | `multipleSelectionColor` | nil | nil |
 
-So the insets are **zero** where `-initWithListAppearance:` gives the automatic ones, and both colours are nil
-where the initialiser gives the separator colour. That difference is in the code and not in this comment:
-`-initWithListAppearance:` writes every field and `-init` writes none of them, so `[super init]` is the whole of
-it, and the case asks both shapes on both sides.
+The insets are **zero** where `-initWithListAppearance:` - the header's `NS_DESIGNATED_INITIALIZER` - gives
+the automatic ones, and both colours are nil where it gives the separator colour. Those numbers need no code
+here: they are what an object that wrote nothing reads back as.
+
+**The port defined both for a while, and the header was not the reason to take them out.** It defined
+`-init` as `[super init]` and `+new` as `[[self alloc] init]`, and the `-init` was also the only warning the
+package's own compile line printed on the file:
+
+    UIListSeparatorConfiguration145.m:115:19: warning: convenience initializer should not invoke an
+    initializer on 'super' [-Wobjc-designated-initializers]
+
+Both are gone and the warning with them: the header already marks `-initWithListAppearance:`
+`NS_DESIGNATED_INITIALIZER`, so the class's one initializer is a designated one and there is no secondary
+initializer left to warn about. The two definitions were answering what `NSObject`'s already answers, on a
+class Apple's own metadata does not give them to.
 
 A first version of this file, and of the row beside it, said the port had a `-initCharonWithDefaults:` method
 "stated as a separate method so the difference between the two paths is in the code rather than in a comment".
-**There is no such method** and there never was: `-init` is `[super init]` and the initialiser writes its
-defaults inline. The registry check's coherence pass is what found it - it named the selector as one the row
-cites and the file the row names does not define. A comment that describes a method which is not there is the
-same defect as a row that describes one, so both were corrected forward.
+**There is no such method** and there never was. The registry check's coherence pass is what found it - it
+named the selector as one the row cites and the file the row names does not define. A comment that describes a
+method which is not there is the same defect as a row that describes one, so both were corrected forward.
 
 ## What this port does not do
 
