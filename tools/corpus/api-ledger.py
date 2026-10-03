@@ -394,15 +394,27 @@ def _selector_present(entry, selector):
     return selector in entry["instance"] or selector in entry["class"]
 
 
-def classify_method(api, built_classes, release_classes, built_protocols=None, release_protocols=None):
+def classify_method(api, built_classes, release_classes, built_protocols=None, release_protocols=None,
+                    decided=None):
     """A method row's owner is named without saying whether it is a class or a protocol, and the
     surface has both, so both are searched: a protocol that declares the selector is the release
     carrying that API. Looking only at classes read `-[CLLocationManagerDelegate
-    locationManager:didDetermineState:forRegion:]` missing while the 6.1.3 cache declares it."""
+    locationManager:didDetermineLocation:error:]` missing while the 6.1.3 cache declares it.
+
+    One selector is answered without the owner declaring it: `+new`. It is NSObject's, and every
+    class inherits it -- measured in the release's own 6.1.3 cache, 2 of 11378 classes declare
+    `+new` in their own metaclass list (NSObject and _PFCachedNumber) and 11376 inherit it, so a row
+    whose owner is a class that does not declare it reads "selector new is not" for a selector the
+    release carries. The port's own libraries do not declare it either, and do not need to: they are
+    loaded beside the device's libSystem, whose NSObject has it. `decided` holds the rows a registry
+    has decided, and this never applies to one of them -- `+[VNFaceLandmarkRegion new]` is answered
+    by NSObject's `+new` only to call the class's own NS_UNAVAILABLE `-init`, which is a measurement
+    somebody took, and an inference from the release's metadata does not overrule it. Protocols are
+    not reached this way: a protocol has no metaclass chain to inherit from."""
     m = METHOD_RE.match(api)
     if not m:
         return "undecided", "method api does not parse as +/-[Class sel]: %r" % api
-    _, owner, selector = m.groups()
+    sign, owner, selector = m.groups()
     key = "-" + selector
     built = built_classes.get(owner)
     if built and _selector_present(built, key):
@@ -411,11 +423,20 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
     if released and _selector_present(released, key):
         return "implemented", "release-native: 6.1.3 dyld cache"
     for protocols, why in ((built_protocols or {}, "built: "), (release_protocols or {},
-                                                           "release-native: 6.1.3 dyld cache")):
+                                                                   "release-native: 6.1.3 dyld cache")):
         entry = protocols.get(owner)
         if entry and _selector_present(entry, key):
             label = why + (entry.get("library", "") if why == "built: " else "")
             return "implemented", label + " (the protocol %s declares it)" % owner
+    if sign == "+" and selector == "new" and api not in (decided or ()) \
+            and (owner in built_classes or owner in release_classes):
+        # The owner is a class -- a protocol is answered or excluded above, and a name in neither
+        # inventory falls to the line below -- and the release's own NSObject carries `+new`, which
+        # every class inherits. The reason names the measurement rather than the port, because the
+        # port is not what answers it: the device's libSystem NSObject is.
+        return "implemented", ("+new is NSObject's and every class inherits it: the 6.1.3 cache's "
+                               "own NSObject declares it and 2 of its 11378 classes declare one of "
+                               "their own")
     if not built and not released and not (built_protocols or {}).get(owner) \
             and not (release_protocols or {}).get(owner):
         return "missing", "owner %s is neither a class nor a protocol in the built libraries or the 6.1.3 cache" % owner
@@ -1242,6 +1263,11 @@ def main():
     registries = read_package_registries(args.registries or default_checkout(args.surface))
     note("package registries: %d entries, of which %d record a decision"
          % (len(registries), sum(1 for v in registries.values() if v[0] in DECIDED_STATUSES)))
+    # The rows a registry has decided, handed to classify_method so that an answer it infers from the
+    # release's own metadata -- `+new` is NSObject's and every class inherits it -- cannot overrule a
+    # decision somebody measured. decide() still runs after the classification and still stands; this
+    # only keeps the classification from making the question moot.
+    decided_apis = {api for api, entry in registries.items() if entry[0] in DECIDED_STATUSES}
 
     # Pass 1: everything the built artifacts and the release cache can place on their own.
     results = []
@@ -1263,7 +1289,8 @@ def main():
                 status, reason = classify_class(api, built_classes, built_protocols, release_classes, release_protocols)
             elif kind == "method":
                 status, reason = classify_method(api, built_classes, release_classes,
-                                                 built_protocols, release_protocols)
+                                                 built_protocols, release_protocols,
+                                                 decided=decided_apis)
             else:
                 status, reason = classify_property(api, built_classes, release_classes, built_protocols,
                                             release_protocols, getter=row["getter"])
