@@ -174,6 +174,10 @@ static void conversionCase(void)
         printf("case conversion-null-info  NOT COMPARED: the port has no MPSImageConversion, which is what"
                " this row's absence says - the class needs a CGColorConversionInfoRef this port does not"
                " carry. The SYSTEM side below is the measurement: its no-op is what makes the row's claim.\n");
+        /* And that branch is what the port is measured against, not a name written into run.sh: the port
+           DOES carry MPSImageConversion as of the row at absent_MetalPerformanceShaders.json:212, where
+           it refuses a non-NULL conversionInfo at initialization rather than being absent, so with a NULL
+           conversionInfo it runs and this case is compared like any other. */
         gNotCompared++;
         return;
     }

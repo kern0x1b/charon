@@ -149,10 +149,10 @@ def read(path):
     return cases, skipped, defaults
 a, a_skipped, a_defaults = read(system_path)
 b, b_skipped, b_defaults = read(port_path)
-# A case the PORT refused is expected here and is reported, not failed: MPSImageConversion is not
-# carried, which is exactly what its row says, and the case's purpose is to print the SYSTEM's no-op as
-# the measurement the row rests on. A case the SYSTEM refused would be a defect in the harness, so that
-# is still red.
+# A case the PORT refused is expected here and is reported, not failed: a case the probe itself declared
+# NOT COMPARED is one the port does not carry, which is what its row says, and the case's purpose is then
+# to print the SYSTEM's answer as the measurement the row rests on. A case the SYSTEM refused would be a
+# defect in the harness, so that is still red.
 if a_skipped:
     print("the SYSTEM side refused a case, which is a harness defect:")
     for name, why in a_skipped:
@@ -166,18 +166,26 @@ if not a:
     print("the system answered no case at all:", open(system_path).read()[:200])
     raise SystemExit(1)
 # The two sides need not reach the same cases, and the difference is EXPECTED only where the port has
-# said it does not carry the class. So the difference is checked against that list rather than demanded
-# to be empty: any case the system ran and the port did not, which is NOT in the list, is a defect.
-NOT_CARRIED = {"conversion-null-info"}
+# said it does not carry the class -- which the probe says ITSELF, by printing NOT COMPARED for exactly
+# that case, so the expectation is read back out of the port's own transcript rather than written here.
+# That list was the name of one case, hard-coded, and it went stale the moment the port began carrying
+# MPSImageConversion (it is refused at initialization by name, not absent: registry/MetalPerformanceShaders/
+# absent_MetalPerformanceShaders.json:212), and the run then died on a port that had reached MORE than the
+# list expected. Any case the system ran and the port did not, which the port's own transcript does not
+# name as NOT COMPARED, is still a defect.
+not_compared = sorted({name for name, _ in b_skipped})
 missing = sorted(set(a) - set(b))
 extra = sorted(set(b) - set(a))
 if extra:
     print("the port reached cases the system did not, which cannot be right: %s" % extra)
     raise SystemExit(1)
-if missing != sorted(NOT_CARRIED):
-    print("the port did not reach %s, which is not a class its rows say it does not carry" % missing)
+if missing != not_compared:
+    print("the port did not reach %s, which its own transcript does not name as NOT COMPARED and"
+          " which its rows therefore say it does carry" % missing)
     raise SystemExit(1)
-print("the port did not reach %s, which is what its rows say it does not carry" % ", ".join(missing))
+print("the port reached every case the system reached" if not missing else
+      "the port did not reach %s, which its own transcript names as NOT COMPARED and which is what"
+      " its rows say it does not carry" % ", ".join(missing))
 for name, why in b_skipped:
     print("  port: %s: %s" % (name, why[:90]))
 # The fresh-kernel property values are compared as TEXT, which is stricter than a tolerance: the
