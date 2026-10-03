@@ -1547,3 +1547,66 @@ filter's rows happen to sum to the full scale; on 6.1.3 they do not, and the sho
 That is the next measurement and it is one delta sweep: a source with a single column carrying 255 makes every
 destination answer one row entry divided by the full scale, which names the row and the base tap the release
 used without any reasoning about the kernel.
+
+## The delta sweep on the device: what the mapping is, and the one shape that is not a row (2026-10-04, v-tail-a11)
+
+A source with **one column carrying 255 and every other column zero** makes every destination answer one row
+entry divided by the full scale, so the release's own output names the weight it used without any reasoning
+about the kernel. Alpha is 255 in every pixel, which matters: the same sweep with alpha 0 gives different
+answers, so ARGB8888's alpha is on the path and a sweep that leaves it at zero measures something else.
+
+**A scale of one is a perfect identity, with no cross-talk at all** - destination `x` answers 255 for source
+column `x` and 0 for every other column, at `x = 0 .. 6`:
+
+        c\x     0    1    2    3    4    5    6    7
+          0     0  255    0    0    0    0    0    0
+          1     0    0  255    0    0    0    0    0
+          2     0    0    0  255    0    0    0    0
+          3     0    0    0    0  255    0    0    0
+          4     0    0    0    0    0  255    0    0
+          5     0    0    0    0    0    0  255    0
+          6     0    0    0    0    0    0    0  255
+
+**A scale of two is not a convolution of its own row at consecutive columns.** The full response matrix, the
+release's own bytes, a translate of 0 and a slope of 0:
+
+        c\x     0    1    2    3    4    5    6    7
+          0     0  156  255  156    0    0    0    6
+          1     0    0    0  156  255  156    0    0
+          2     0    6    0    0    0  156  255  156
+          3     0    0    0    6    0    0    0  156
+          4     0    0    0    0    0    6    0    0
+          5     0    0    0    0    0    0    0    6
+
+Three things are readable off it without any model:
+
+- **Source column `c` lands at destination `2c + 2`** - the 255 is at `(0,2)`, `(1,4)`, `(2,6)` - so the
+  magnification is real and one source pixel becomes two.
+- **The weights are the release's own.** `156/255 = 0.6118` and `6/255 = 0.0235` against the row's
+  `10017/16384 = 0.6113` and `400/16384 = 0.0244`, so they are `L(0.5)` and `L(1.5)` off phase 32, and the 255
+  is phase 0.
+- **A destination's answers over the source do not sum to 255.** At `x = 3` they come to `156 + 255 + 156 + 6 =
+  573`, two and a quarter times the input. A convolution whose taps all land inside the picture sums to the
+  input, so **the release is not applying one row at one base tap**, and a search over all 64 phases and 36
+  base taps found no `(phase, base)` that reproduces even one of these columns.
+
+**So the mapping is open at a scale of two, and this is where the family stands.** The first thing to rule out
+is the probe, not the release: the sweep used a source and a destination that are both forty pixels wide for a
+**magnification**, and a magnification whose destination is the source's own size asks the release to compress,
+which is a different call. Re-run the sweep with the destination `2 * srcWidth + 4` wide before anything is
+concluded about the arithmetic - but note that the 280-sample model scoring **1 of 280** at a scale of two is
+from a sweep with that same shape, so the 1 and the matrix may share one cause.
+
+**What is closed by this run**, and it is what this band was sent for:
+
+- the header layout, nine of nine shapes, byte for byte, on the device as well as in the disassembly;
+- **the scale, `1.0 / *(double *)object`, exact at every shape including 0.75 and above one**;
+- the phase count, nine of nine, a power of two, 64 at 0.75;
+- `K0 = argmax(row 0) = (numTaps - 2) / 2`, nine of nine;
+- the row sums, which are **not** the full scale on 6.1.3: the widest `|row sum - 16384|` over every row of
+  every shape is **3, 3, 4, 4, 5, 3, 3, 3, 4** for scales 1, 2, 0.75, 0.5, 0.25 at three lobes and 1, 2, 0.75,
+  0.5 at five. That is the bound a refusal test on the rows may use, and it is the measurement that retires
+  the "every row sums to 16384" invariant as a release property;
+- that the **scale-1 and scale-2 Q14 tables are byte-identical** on the device (phase 32 is
+  `[400, -2226, 10017, 10017, -2226, 400, 0, 0]` at both), which is what the phase rule's being a power of two
+  predicts and what no host measurement had shown.
