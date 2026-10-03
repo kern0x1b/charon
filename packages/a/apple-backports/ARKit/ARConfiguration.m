@@ -60,6 +60,29 @@
     return NO;
 }
 
+/// Whether a session may capture in HDR. It may not, and the reason is the camera rather than the
+/// setting: HDR is a property of the pixel format a capture device offers, and every format this port
+/// builds an ARVideoFormat from is an AVCaptureDeviceFormat, which on the releases this package
+/// builds carries no HDR format at all - `-[ARVideoFormat isVideoHDRSupported]` answers NO for the
+/// same reason and on the same measurement. A setter that stored YES would answer a caller that asked
+/// for HDR and then hand the session a camera that cannot deliver it, which is what makes the setting
+/// a lie; this one says no and stays said. The release carries both accessors, read with
+/// tools/corpus/skeleton-table.lua in ARKitCore of the arm64e shared cache of iOS 16.0:
+/// `videoHDRAllowed` at 0x1af0f3134 and `setVideoHDRAllowed:` at 0x1af0f313c.
+- (BOOL)videoHDRAllowed { return NO; }
+- (void)setVideoHDRAllowed:(BOOL)videoHDRAllowed { (void)videoHDRAllowed; }
+
+/// Which semantic operation a session runs. None, always, and the setter says so rather than storing
+/// a value nothing reads: `+supportsFrameSemantics:` above answers NO for every semantics, because a
+/// semantics is a depth sensor's classification of the scene (ARConfiguration.h:27-35 names them
+/// person segmentation and the two scene-depth kinds, and each of the three is read out of depth this
+/// device has none of), so there is no semantics a caller could set that this port would honour. Left
+/// to clang's own synthesis this property would store and return whatever was set, which reads as a
+/// session running a classification it never runs. The release carries both accessors:
+/// `frameSemantics` at 0x1af084078 and `setFrameSemantics:` at 0x1af0f1cd0.
+- (ARFrameSemantics)frameSemantics { return ARFrameSemanticNone; }
+- (void)setFrameSemantics:(ARFrameSemantics)frameSemantics { (void)frameSemantics; }
+
 - (id)copyWithZone:(NSZone *)zone
 {
     // A configuration describes what a session is asked to do; copying one and changing the copy
@@ -68,7 +91,6 @@
     copy.worldAlignment = self.worldAlignment;
     copy.lightEstimationEnabled = self.isLightEstimationEnabled;
     copy.providesAudioData = self.providesAudioData;
-    copy.frameSemantics = self.frameSemantics;
     return copy;
 }
 

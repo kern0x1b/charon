@@ -27,6 +27,8 @@
 {
     ARPlaneDetection _planeDetection;
     AREnvironmentTexturing _environmentTexturing;
+    NSSet<ARReferenceImage *> *_detectionImages;
+    NSInteger _maxTrackedImages;
 }
 
 - (instancetype)init
@@ -51,12 +53,40 @@
 - (AREnvironmentTexturing)environmentTexturing { return _environmentTexturing; }
 - (void)setEnvironmentTexturing:(AREnvironmentTexturing)environmentTexturing { _environmentTexturing = environmentTexturing; }
 
+// The two settings below are answered for the same reason and with the same shape as
+// ARWorldTrackingConfiguration's in ARConfiguration2.m, and the reason is measured there: nothing
+// about them needs a sensor this device has not. The pictures to look for are found in the camera's
+// own frames, and how many of them at once is a number the caller sets, so what the header's own
+// attributes say is what these answer -- the set is copied, so a later change to the caller's set
+// does not change the configuration, and nil resets it, which for a `null_resettable` property means
+// empty rather than nil. The release has both pairs in this class's own instance list
+// (`detectionImages` 0x1af1684fc, `setDetectionImages:` 0x1af16850c, `maximumNumberOfTrackedImages`
+// 0x1af168558, `setMaximumNumberOfTrackedImages:` 0x1af166620 in ARKitCore of the 16.0 arm64e cache).
+//
+// What the tracker does with either is a separate question and this file does not answer it, here or
+// there: the tracker matches features between consecutive frames and reports planes, and it names
+// neither ARReferenceImage nor ARImageAnchor, so no image anchor is ever reported and the number
+// limits nothing. The two rows say so.
+- (NSSet<ARReferenceImage *> *)detectionImages
+{
+    return _detectionImages ?: [NSSet set];
+}
+
+- (void)setDetectionImages:(NSSet<ARReferenceImage *> *)detectionImages
+{
+    _detectionImages = [detectionImages copy];
+}
+
+- (NSInteger)maximumNumberOfTrackedImages { return _maxTrackedImages; }
+- (void)setMaximumNumberOfTrackedImages:(NSInteger)maximumNumberOfTrackedImages
+{
+    _maxTrackedImages = maximumNumberOfTrackedImages;
+}
+
 @dynamic initialWorldMap;
-@dynamic detectionImages;
 @dynamic wantsHDREnvironmentTextures;
 @dynamic automaticImageScaleEstimationEnabled;
 @dynamic automaticSkeletonScaleEstimationEnabled;
-@dynamic maximumNumberOfTrackedImages;
 @dynamic appClipCodeTrackingEnabled;
 
 
