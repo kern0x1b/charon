@@ -1,4 +1,4 @@
-// CharonMPSGraph.h — what this framework's own files share.
+// CharonMPSGraph.h - what this framework's own files share.
 //
 // The guard is not decoration: the host harness includes this header twice over, once through a
 // source's own import and once through its prefixed declarations, and a header that declares classes
@@ -261,14 +261,15 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
                              parameters:(NSDictionary *)parameters
                                     name:(NSString *)name;
 // A GATHER: an operation whose result is the operand's elements in some other order or extent, and whose
-// whole behaviour is which source axis each result axis comes from and whether that axis is reversed or
-// wrapped. That is the walk over a reshape, a squeeze, an expanded dimension, a flatten, a broadcast, a
-// reverse and a transpose, and it is asked of the operation's own parameters - which transformation
-// (@"gather"), the parameter of it the caller wrote down (@"gatherAxis", @"gatherAxes",
-// @"gatherPermutation") or which of the operation's inputs carries it instead (@"gatherOperand"), and the
-// result's shape (@"shape") - so every release's factory of the family fills those in and names only its own
-// methods, and the result's shape is derived by the walk and put on the output tensor before anything is
-// allocated for it - which is what lets a shape the caller FEEDS be one of them.
+// whole behaviour is which source axis each result axis comes from, whether that axis is reversed, and whether
+// the coordinate has an element of the operand behind it at all. That is the walk over a reshape, a squeeze,
+// an expanded dimension, a flatten, a broadcast, a reverse and a transpose, and it is asked of the
+// operation's own parameters - which transformation (@"gather"), the parameter of it the caller wrote down
+// (@"gatherAxis", @"gatherDrop", @"gatherAdd", @"gatherShape", @"gatherAxes", @"gatherPermutation") or which of
+// the operation's inputs carries it instead (@"gatherOperand") - so every release's factory of the family
+// fills those in and names only its own methods, and the result's shape is derived by the walk and put on the
+// output tensor: at build time where the plan can be derived then, and when the graph runs otherwise, which
+// is what lets a shape the caller FEEDS be one of them.
 // A squeeze and an expanded dimension and a flatten are the same gather with the axes left alone:
 // measured on this host's own MPSGraph, all three answer the operand's own bytes in the operand's own order.
 - (MPSGraphTensor *)charon_mps_gather:(CharonMPSGraphOperationKind)kind
