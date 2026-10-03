@@ -37,6 +37,46 @@ out when there is none, `<none>` for no input, the flags left out when 0 and nam
 title as its title too. The key command holds no more than it did: iOS 6 sends nothing to a key command (see
 `KeyboardAndAccessibility.md`); the three members iOS 15 added are held in `UIKeyCommandPriority.md`.
 
+### The eight properties UIKeyCommand's own header declares
+
+`UIKeyCommand.h:56-82` declares ten names of its own: `title`, `image`, `discoverabilityTitle`, `action`, `input`,
+`modifierFlags`, `propertyList`, `attributes`, `state` and `alternates`. `input` and `modifierFlags` are the key command's
+own since iOS 7 and the port defines both on it. The other eight it shares with `UICommand`, and it shares them the same way
+here: Apple makes `UIKeyCommand` a `UICommand` in the same release (`UIKeyCommand.h:63`), so the eight are answered by
+`UICommand`'s accessors over its own `_action`, `_propertyList`, `_alternates`, `_discoverabilityTitle`, `_attributes` and
+`_state`, and by `UIMenuElement`'s `_title` and `_image` below that. A caller holding a `UIKeyCommand` gets UIKit's answer
+either way.
+
+Measured on the host, the port's objects and the system's in one process (the `commands` group of
+`tests/backports/host/uikit2`, `commands_test.m`, the rows named):
+
+| read | the system's own answer | the port's |
+| --- | --- | --- |
+| a command built by `commandWithTitle:image:action:input:modifierFlags:propertyList:`, then `setTitle:`, `setImage:`, `setDiscoverabilityTitle:`, `setAttributes:UIMenuElementAttributesDestructive`, `setState:UIMenuElementStateOn` | title `after`, discoverabilityTitle `D`, attributes `2`, state `1` | the same four |
+| `-image` after that `setImage:`, against the very object passed in | the **same object**, size 1x1, scale 1 | the same |
+| a command built with that image in the factory, and its `-copy` | both answer that image; and title `t`, action `foo:`, propertyList nil, alternates empty, discoverabilityTitle nil, attributes `0`, state `0` | the same |
+| `setImage:nil`, then read | nil, and the title is unchanged | the same |
+| all thirteen accessors, through `instancesRespondToSelector:` | YES for each | YES for each |
+
+`setImage:` keeping the object it was handed is the one that could have gone the other way: the header says `copy`, and a copy
+would have answered a different object than the one the caller passed.
+
+The comparison responds to a wrong answer on these rows, which is what makes the table evidence rather than a green run. Two
+plants in a scratch copy of the port's sources - `-setState:` that keeps nothing, and `-charon_setImage:` that drops the image
+- and the run says so by name, on exactly the rows above:
+
+    FAIL key command values:
+        port   after setters ( after, D, 2, 0 )
+        system after setters ( after, D, 2, 1 )
+        port   image written ( NO, 0, 0, 0 )
+        system image written ( YES, 1, 1, 1 )
+    checks=7 failures=2
+
+Six of the eight already carried a row - `title`, `image`, `alternates`, `attributes`, `propertyList` and `state`, all 13.0 -
+and the corpus export read them `missing`, because it looks for the accessor in the owner's OWN selector list and the port
+defines none of the eight on `UIKeyCommand` itself. They were answered before this was measured; `UIKeyCommand.action` (7.0)
+and `UIKeyCommand.discoverabilityTitle` (9.0) had no row at all and have one now.
+
 ## In a menu
 
 A `UICommand` is a menu element like an action. The action sheet of the context menu interaction lists it, and when it is chosen the

@@ -241,7 +241,7 @@
    "status": "implemented",
    "effect": "a key command is a command, so it has what a command has; it is equal to another of the same input and modifier flags, as UIKit's is",
    "facts": "facts/UIKit/UICommand.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the commands group); the header of SDK 16.4"
+   "source": "the accessor is UICommand's, not the key command's: UIKeyCommand.h:63 makes UIKeyCommand a UICommand in Apple's UIKit too, and the port's UICommand.m defines -action, -propertyList, -alternates, -discoverabilityTitle, -attributes/-setAttributes: and -state/-setState: over its own ivars, with -title/-setTitle: and -image/-setImage: reaching UIMenuElement's _title and _image below it, so a UIKeyCommand is answered through its superclass exactly as Apple's is. Measured on the host (the commands group of tests/backports/host/uikit2, the port's objects and the system's in one process) and the table in facts/UIKit/UICommand.md, section 'The eight properties UIKeyCommand's own header declares': all thirteen accessors answer instancesRespondToSelector: YES on both sides, and the values are the table's. Two plants in a scratch copy of the port's sources - a -setState: that keeps nothing and a -charon_setImage: that drops the image - and the comparison goes red on exactly the rows above (checks=7 failures=2)"
   },
   {
    "api": "UIKeyCommand.attributes",
@@ -251,7 +251,7 @@
    "status": "implemented",
    "effect": "a key command is a command, so it has what a command has; it is equal to another of the same input and modifier flags, as UIKit's is",
    "facts": "facts/UIKit/UICommand.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the commands group); the header of SDK 16.4"
+   "source": "the accessor is UICommand's, not the key command's: UIKeyCommand.h:63 makes UIKeyCommand a UICommand in Apple's UIKit too, and the port's UICommand.m defines -action, -propertyList, -alternates, -discoverabilityTitle, -attributes/-setAttributes: and -state/-setState: over its own ivars, with -title/-setTitle: and -image/-setImage: reaching UIMenuElement's _title and _image below it, so a UIKeyCommand is answered through its superclass exactly as Apple's is. Measured on the host (the commands group of tests/backports/host/uikit2, the port's objects and the system's in one process) and the table in facts/UIKit/UICommand.md, section 'The eight properties UIKeyCommand's own header declares': all thirteen accessors answer instancesRespondToSelector: YES on both sides, and the values are the table's. Two plants in a scratch copy of the port's sources - a -setState: that keeps nothing and a -charon_setImage: that drops the image - and the comparison goes red on exactly the rows above (checks=7 failures=2)"
   },
   {
    "api": "UIKeyCommand.image",
@@ -261,7 +261,7 @@
    "status": "implemented",
    "effect": "a key command is a command, so it has what a command has; it is equal to another of the same input and modifier flags, as UIKit's is",
    "facts": "facts/UIKit/UICommand.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the commands group); the header of SDK 16.4"
+   "source": "the accessor is UICommand's, not the key command's: UIKeyCommand.h:63 makes UIKeyCommand a UICommand in Apple's UIKit too, and the port's UICommand.m defines -action, -propertyList, -alternates, -discoverabilityTitle, -attributes/-setAttributes: and -state/-setState: over its own ivars, with -title/-setTitle: and -image/-setImage: reaching UIMenuElement's _title and _image below it, so a UIKeyCommand is answered through its superclass exactly as Apple's is. Measured on the host (the commands group of tests/backports/host/uikit2, the port's objects and the system's in one process) and the table in facts/UIKit/UICommand.md, section 'The eight properties UIKeyCommand's own header declares': all thirteen accessors answer instancesRespondToSelector: YES on both sides, and the values are the table's. Two plants in a scratch copy of the port's sources - a -setState: that keeps nothing and a -charon_setImage: that drops the image - and the comparison goes red on exactly the rows above (checks=7 failures=2)"
   },
   {
    "api": "UIKeyCommand.propertyList",
@@ -271,7 +271,7 @@
    "status": "implemented",
    "effect": "a key command is a command, so it has what a command has; it is equal to another of the same input and modifier flags, as UIKit's is",
    "facts": "facts/UIKit/UICommand.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the commands group); the header of SDK 16.4"
+   "source": "the accessor is UICommand's, not the key command's: UIKeyCommand.h:63 makes UIKeyCommand a UICommand in Apple's UIKit too, and the port's UICommand.m defines -action, -propertyList, -alternates, -discoverabilityTitle, -attributes/-setAttributes: and -state/-setState: over its own ivars, with -title/-setTitle: and -image/-setImage: reaching UIMenuElement's _title and _image below it, so a UIKeyCommand is answered through its superclass exactly as Apple's is. Measured on the host (the commands group of tests/backports/host/uikit2, the port's objects and the system's in one process) and the table in facts/UIKit/UICommand.md, section 'The eight properties UIKeyCommand's own header declares': all thirteen accessors answer instancesRespondToSelector: YES on both sides, and the values are the table's. Two plants in a scratch copy of the port's sources - a -setState: that keeps nothing and a -charon_setImage: that drops the image - and the comparison goes red on exactly the rows above (checks=7 failures=2)"
   },
   {
    "api": "UIKeyCommand.state",
@@ -281,7 +281,7 @@
    "status": "implemented",
    "effect": "a key command is a command, so it has what a command has; it is equal to another of the same input and modifier flags, as UIKit's is",
    "facts": "facts/UIKit/UICommand.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the commands group); the header of SDK 16.4"
+   "source": "the accessor is UICommand's, not the key command's: UIKeyCommand.h:63 makes UIKeyCommand a UICommand in Apple's UIKit too, and the port's UICommand.m defines -action, -propertyList, -alternates, -discoverabilityTitle, -attributes/-setAttributes: and -state/-setState: over its own ivars, with -title/-setTitle: and -image/-setImage: reaching UIMenuElement's _title and _image below it, so a UIKeyCommand is answered through its superclass exactly as Apple's is. Measured on the host (the commands group of tests/backports/host/uikit2, the port's objects and the system's in one process) and the table in facts/UIKit/UICommand.md, section 'The eight properties UIKeyCommand's own header declares': all thirteen accessors answer instancesRespondToSelector: YES on both sides, and the values are the table's. Two plants in a scratch copy of the port's sources - a -setState: that keeps nothing and a -charon_setImage: that drops the image - and the comparison goes red on exactly the rows above (checks=7 failures=2)"
   },
   {
    "api": "UIKeyCommand.title",
@@ -291,7 +291,7 @@
    "status": "implemented",
    "effect": "a key command is a command, so it has what a command has; it is equal to another of the same input and modifier flags, as UIKit's is",
    "facts": "facts/UIKit/UICommand.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the commands group); the header of SDK 16.4"
+   "source": "the accessor is UICommand's, not the key command's: UIKeyCommand.h:63 makes UIKeyCommand a UICommand in Apple's UIKit too, and the port's UICommand.m defines -action, -propertyList, -alternates, -discoverabilityTitle, -attributes/-setAttributes: and -state/-setState: over its own ivars, with -title/-setTitle: and -image/-setImage: reaching UIMenuElement's _title and _image below it, so a UIKeyCommand is answered through its superclass exactly as Apple's is. Measured on the host (the commands group of tests/backports/host/uikit2, the port's objects and the system's in one process) and the table in facts/UIKit/UICommand.md, section 'The eight properties UIKeyCommand's own header declares': all thirteen accessors answer instancesRespondToSelector: YES on both sides, and the values are the table's. Two plants in a scratch copy of the port's sources - a -setState: that keeps nothing and a -charon_setImage: that drops the image - and the comparison goes red on exactly the rows above (checks=7 failures=2)"
   },
   {
    "api": "UIActivityItemsConfiguration",
@@ -4621,6 +4621,26 @@
    "effect": "the getter of modalInPresentation, read back as set and read by the sheet",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
+  },
+  {
+   "api": "UIKeyCommand.action",
+   "kind": "property",
+   "introduced": "7.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the selector the command was made with, read back unchanged: a command from +keyCommandWithInput:modifierFlags:action: or from either +commandWithTitle:...:alternates: form answers the selector it was handed, and the port answers the same. UIKeyCommand.h:66 declares it readonly, so there is no setter to answer",
+   "facts": "facts/UIKit/UICommand.md",
+   "source": "the accessor is UICommand's, not the key command's: UIKeyCommand.h:63 makes UIKeyCommand a UICommand in Apple's UIKit too, and the port's UICommand.m defines -action, -propertyList, -alternates, -discoverabilityTitle, -attributes/-setAttributes: and -state/-setState: over its own ivars, with -title/-setTitle: and -image/-setImage: reaching UIMenuElement's _title and _image below it, so a UIKeyCommand is answered through its superclass exactly as Apple's is. Measured on the host (the commands group of tests/backports/host/uikit2, the port's objects and the system's in one process) and the table in facts/UIKit/UICommand.md, section 'The eight properties UIKeyCommand's own header declares': all thirteen accessors answer instancesRespondToSelector: YES on both sides, and the values are the table's. Two plants in a scratch copy of the port's sources - a -setState: that keeps nothing and a -charon_setImage: that drops the image - and the comparison goes red on exactly the rows above (checks=7 failures=2)"
+  },
+  {
+   "api": "UIKeyCommand.discoverabilityTitle",
+   "kind": "property",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the elaborate title, read and written: nil on a command made by +keyCommandWithInput:modifierFlags:action:, and what was written after -setDiscoverabilityTitle:, which is also what +keyCommandWithInput:modifierFlags:action:discoverabilityTitle: puts in the title. The port answers the same on both sides of that comparison",
+   "facts": "facts/UIKit/UICommand.md",
+   "source": "the accessor is UICommand's, not the key command's: UIKeyCommand.h:63 makes UIKeyCommand a UICommand in Apple's UIKit too, and the port's UICommand.m defines -action, -propertyList, -alternates, -discoverabilityTitle, -attributes/-setAttributes: and -state/-setState: over its own ivars, with -title/-setTitle: and -image/-setImage: reaching UIMenuElement's _title and _image below it, so a UIKeyCommand is answered through its superclass exactly as Apple's is. Measured on the host (the commands group of tests/backports/host/uikit2, the port's objects and the system's in one process) and the table in facts/UIKit/UICommand.md, section 'The eight properties UIKeyCommand's own header declares': all thirteen accessors answer instancesRespondToSelector: YES on both sides, and the values are the table's. Two plants in a scratch copy of the port's sources - a -setState: that keeps nothing and a -charon_setImage: that drops the image - and the comparison goes red on exactly the rows above (checks=7 failures=2)"
   }
  ]
 }

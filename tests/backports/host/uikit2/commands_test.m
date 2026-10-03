@@ -172,7 +172,22 @@ static NSArray *command_lines(Class command, Class alternate)
     return lines;
 }
 
-static NSArray *key_lines(Class key, Class command, Class alternate)
+// One image, made once and handed to both sides, so a comparison of what a command answers is a
+// comparison of the two classes and not of two pictures.
+static UIImage *one_pixel_image(void)
+{
+    unsigned char pixels[4] = {255, 0, 0, 255};
+    CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(pixels, 1, 1, 8, 4, space, kCGImageAlphaPremultipliedLast);
+    CGColorSpaceRelease(space);
+    CGImageRef cgImage = CGBitmapContextCreateImage(context);
+    CGContextRelease(context);
+    UIImage *image = [UIImage imageWithCGImage:cgImage];
+    CGImageRelease(cgImage);
+    return image;
+}
+
+static NSArray *key_lines(Class key, Class command, Class alternate, UIImage *image)
 {
     NSMutableArray *lines = [NSMutableArray array];
     UIKeyCommand *plain = [key keyCommandWithInput:@"a" modifierFlags:UIKeyModifierCommand action:@selector(foo:)];
@@ -205,6 +220,21 @@ static NSArray *key_lines(Class key, Class command, Class alternate)
         [lines addObject:line(@"description flags", [key keyCommandWithInput:@"z" modifierFlags:flags.integerValue action:@selector(foo:)])];
     [lines addObject:line(@"later members", @[yes([key instancesRespondToSelector:@selector(wantsPriorityOverSystemBehavior)]), yes([key instancesRespondToSelector:@selector(allowsAutomaticLocalization)]), yes([key instancesRespondToSelector:@selector(allowsAutomaticMirroring)])])];
     [lines addObject:line(@"superclass", @[NSStringFromClass(class_getSuperclass(key)).length ? yes(class_getSuperclass(key) == command) : @""])];
+
+    // The eight properties UIKeyCommand's own header declares, UIKeyCommand.h:56-82. Each writable
+    // one written and read back here, on the class the factory above returned, so the row that says
+    // implemented rests on a read of both sides rather than on a reading of the port's source.
+    UIKeyCommand *written = [key commandWithTitle:@"before" image:nil action:@selector(foo:) input:@"i" modifierFlags:0 propertyList:nil];
+    [written setTitle:@"after"];
+    [written setImage:image];
+    [written setDiscoverabilityTitle:@"D"];
+    [written setAttributes:UIMenuElementAttributesDestructive];
+    [written setState:UIMenuElementStateOn];
+    [lines addObject:line(@"after setters", @[[written title], [written discoverabilityTitle], @([written attributes]), @([written state])])];
+    [lines addObject:line(@"image written", @[yes([written image] == image), @([written image].size.width), @([written image].size.height), @([written image].scale)])];
+    [lines addObject:line(@"image built in", @[raised(^id { UIKeyCommand *made = [key commandWithTitle:@"t" image:image action:@selector(foo:) input:@"i" modifierFlags:0 propertyList:nil]; return @[yes([made image] == image), yes([[made copy] image] == image), [made title], NSStringFromSelector([made action]), [made propertyList] ?: @"nil", [made alternates], [made discoverabilityTitle] ?: @"nil", @([made attributes]), @([made state])]; })])];
+    [lines addObject:line(@"image nil", @[raised(^id { UIKeyCommand *made = [key commandWithTitle:@"t" image:nil action:@selector(foo:) input:@"i" modifierFlags:0 propertyList:nil]; [made setImage:nil]; return @[[made image] ?: @"nil", [made title]]; })])];
+    [lines addObject:line(@"key properties", @[yes([key instancesRespondToSelector:@selector(title)]), yes([key instancesRespondToSelector:@selector(setTitle:)]), yes([key instancesRespondToSelector:@selector(image)]), yes([key instancesRespondToSelector:@selector(setImage:)]), yes([key instancesRespondToSelector:@selector(discoverabilityTitle)]), yes([key instancesRespondToSelector:@selector(setDiscoverabilityTitle:)]), yes([key instancesRespondToSelector:@selector(action)]), yes([key instancesRespondToSelector:@selector(propertyList)]), yes([key instancesRespondToSelector:@selector(alternates)]), yes([key instancesRespondToSelector:@selector(attributes)]), yes([key instancesRespondToSelector:@selector(setAttributes:)]), yes([key instancesRespondToSelector:@selector(state)]), yes([key instancesRespondToSelector:@selector(setState:)])])];
     return lines;
 }
 
@@ -214,7 +244,8 @@ int main(void)
         Class ourCommand = NSClassFromString(@"CharonHostUICommand"), ourAlternate = NSClassFromString(@"CharonHostUICommandAlternate"), ourKey = NSClassFromString(@"CharonHostUIKeyCommand");
         charon_check(ourCommand && ourAlternate && ourKey, "the port's classes are linked under their host names", @"one is missing");
         agree(@"command values", command_lines(ourCommand, ourAlternate), command_lines([UICommand class], [UICommandAlternate class]));
-        agree(@"key command values", key_lines(ourKey, ourCommand, ourAlternate), key_lines([UIKeyCommand class], [UICommand class], [UICommandAlternate class]));
+        UIImage *image = one_pixel_image();
+        agree(@"key command values", key_lines(ourKey, ourCommand, ourAlternate, image), key_lines([UIKeyCommand class], [UICommand class], [UICommandAlternate class], image));
         charon_check([[NSString stringWithUTF8String:class_getName(class_getSuperclass(ourKey))] isEqualToString:@"CharonHostUICommand"], "a key command is a command", @"it is not");
         charon_check(![ourCommand instancesRespondToSelector:@selector(subtitle)] && ![ourCommand instancesRespondToSelector:@selector(selectedImage)] && ![ourCommand instancesRespondToSelector:@selector(repeatBehavior)] &&
                          ![ourCommand instancesRespondToSelector:@selector(sender)] && ![ourCommand instancesRespondToSelector:@selector(performWithSender:target:)],
