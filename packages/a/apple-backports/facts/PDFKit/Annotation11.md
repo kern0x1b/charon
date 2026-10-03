@@ -333,7 +333,8 @@ Five things are now settled, and three of them the old table listed as open:
     _CGColorSpaceCreateWithName	3.0
 
 and confirmed in the two releases that matter, out of their own armv7 caches' **CoreGraphics export tries**
-through the repository's own reader, `tools/dyldcache.py` - not through a header and not through a scan:
+through the repository's own reader, `tools/dyldcache.py`, walking each cache's CoreGraphics image export
+trie - not through a header and not through a scan of the cache's bytes:
 
     4.3    armv7  CoreGraphics: 8 of 8 names exported
     6.1.3  armv7  CoreGraphics: 8 of 8 names exported
@@ -373,10 +374,20 @@ wrong, and the mistake was reading a header's `API_AVAILABLE` as an export table
 the size kept. That is the whole of the map, and it is a fact about PDFKit rather than about the format:
 PDF 1.7 9.6.2.2's fourteen would have `/TiRo` as Times-Roman, and it does not.
 
-**The platform's own font lookup is not what does this.** `-[NSFont fontWithName:]` is **nil for every one
-of the fourteen** (measured on this Mac, `.agent-work/v-pdfkit2/probe-fontnames.m`), and answers the full
-PostScript names, which is clause one. The table is **exact and case-sensitive**, pinned by the three prefix
-names and the two wrong-case ones.
+**The platform's own font lookup is not what does this.** `-[NSFont fontWithName:size:]` is **nil for every
+one of the fourteen**, and answers the full PostScript names, which is clause one. Measured on this Mac with
+a fifteen-line probe over the fourteen abbreviations and the fourteen PostScript names: nil for all fourteen
+abbreviations, and the name itself for each of `Helvetica`, `Helvetica-Bold`, `Helvetica-Oblique`,
+`Helvetica-BoldOblique`, `Courier`, `Courier-Bold`, `Courier-Oblique`, `Courier-BoldOblique`, `Times-Roman`,
+`Times-Bold`, `Times-Italic`, `Times-BoldItalic` and `Symbol`. The one full name that answers **nil** is
+`ZapfDingbats`, which is worth knowing and is not load-bearing here: no fixture of this family names it, and
+`ZaDb` reaches clause three whatever the platform does with it.
+
+**The probe is not committed and its path is not the citation** - it was scratch under this worktree's
+`.agent-work/`, which a worktree sweep removes, so the measurement is written out here in full instead. A
+fact that can only be checked by a file the reader does not have is not a fact they can check.
+
+The table is **exact and case-sensitive**, pinned by the three prefix names and the two wrong-case ones.
 
 So `-font` is three clauses and 24 named fixtures: the name **as written** when the platform has a font of
 that name; else the exact table of three; else **Helvetica**, with the size read independently of the name
