@@ -67,6 +67,59 @@ local function framework_headers(sdk, framework)
     return table.join(files, generation_headers(sdk, framework))
 end
 
+-- The overlay entries that carry the nested frameworks of the frameworks read: a framework inside another's
+-- Frameworks folder. clang resolves an include of one from the directory of the header that asks for it and not
+-- from a framework search path (`#import <MPSCore/MPSCore.h>` in MetalPerformanceShaders.h), so a header this
+-- lift stages - written under the output folder, outside the framework it belongs to - is asked for the nested
+-- framework where the SDK keeps it, and there is nothing there: the include fails by name. Measured on
+-- iPhoneOS16.4.sdk, where the whole lift stopped on that one import.
+--
+-- So an overlay over a staged tree carries each nested framework at the path a staged header reaches it by, and
+-- carries every header of it: the staged copy where the lift wrote one (staged names them, so the enumeration
+-- cannot name a copy that was never written) and the SDK's own file where it did not, since a nested framework
+-- is reachable only through the header that asks for it and a file missing from the tree fails the same way.
+-- Only the public Frameworks folder of a framework the lift read is walked: a PrivateFramework is no header a
+-- lifted one imports, and no SDK's Headers reaches one.
+--
+-- staging is the folder the staged tree hangs from (<outputdir>/headers, <outputdir>/expand), staged the files
+-- of it by the SDK path they were read from.
+local function nested_frameworks(sdk, frameworks, staging, staged)
+    local function contents(folder)
+        local files, folders = {}, {}
+        for _, file in ipairs(os.files(path.join(folder, "*"))) do
+            table.insert(files, file)
+        end
+        -- os.filedirs is the one that lists a folder, and it lists files as well, so each of its entries is asked
+        for _, item in ipairs(os.filedirs(path.join(folder, "*"))) do
+            if os.isdir(item) then
+                table.insert(folders, item)
+            end
+        end
+        table.sort(files)
+        table.sort(folders)
+        local entries = {}
+        for _, file in ipairs(files) do
+            table.insert(entries, {type = "file", name = path.filename(file), ["external-contents"] = staged[file] or file})
+        end
+        for _, sub in ipairs(folders) do
+            table.insert(entries, {type = "directory", name = path.filename(sub), contents = contents(sub)})
+        end
+        return entries
+    end
+    local roots = {}
+    for _, framework in ipairs(frameworks) do
+        local nested = path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Frameworks")
+        for _, one in ipairs(os.filedirs(path.join(nested, "*.framework"))) do
+            local headers = path.join(one, "Headers")
+            if os.isdir(one) and os.isdir(headers) then
+                table.insert(roots, {type = "directory", name = path.join(staging, path.relative(headers, sdk)),
+                                     contents = contents(headers)})
+            end
+        end
+    end
+    return roots
+end
+
 -- The public headers of the SDK's usr/include that bring in what charon@apple-compat carries: every file that names a
 -- symbol followed by a paren outside a directive, as a module map reaches it - the file itself where a module map names
 -- it as a header, the umbrella header of its folder where one covers the folder. A header a module map lists that another
@@ -1259,59 +1312,6 @@ local function header_files(sdk, frameworks)
     end
     table.join2(files, os.files(path.join(sdk, "usr", "include", "**.h")))
     return files
-end
-
--- The overlay entries that carry the nested frameworks of the frameworks read: a framework inside another's
--- Frameworks folder. clang resolves an include of one from the directory of the header that asks for it and not
--- from a framework search path (`#import <MPSCore/MPSCore.h>` in MetalPerformanceShaders.h), so a header this
--- lift stages - written under the output folder, outside the framework it belongs to - is asked for the nested
--- framework where the SDK keeps it, and there is nothing there: the include fails by name. Measured on
--- iPhoneOS16.4.sdk, where the whole lift stopped on that one import.
---
--- So an overlay over a staged tree carries each nested framework at the path a staged header reaches it by, and
--- carries every header of it: the staged copy where the lift wrote one (staged names them, so the enumeration
--- cannot name a copy that was never written) and the SDK's own file where it did not, since a nested framework
--- is reachable only through the header that asks for it and a file missing from the tree fails the same way.
--- Only the public Frameworks folder of a framework the lift read is walked: a PrivateFramework is no header a
--- lifted one imports, and no SDK's Headers reaches one.
---
--- staging is the folder the staged tree hangs from (<outputdir>/headers, <outputdir>/expand), staged the files
--- of it by the SDK path they were read from.
-local function nested_frameworks(sdk, frameworks, staging, staged)
-    local function contents(folder)
-        local files, folders = {}, {}
-        for _, file in ipairs(os.files(path.join(folder, "*"))) do
-            table.insert(files, file)
-        end
-        -- os.filedirs is the one that lists a folder, and it lists files as well, so each of its entries is asked
-        for _, item in ipairs(os.filedirs(path.join(folder, "*"))) do
-            if os.isdir(item) then
-                table.insert(folders, item)
-            end
-        end
-        table.sort(files)
-        table.sort(folders)
-        local entries = {}
-        for _, file in ipairs(files) do
-            table.insert(entries, {type = "file", name = path.filename(file), ["external-contents"] = staged[file] or file})
-        end
-        for _, sub in ipairs(folders) do
-            table.insert(entries, {type = "directory", name = path.filename(sub), contents = contents(sub)})
-        end
-        return entries
-    end
-    local roots = {}
-    for _, framework in ipairs(frameworks) do
-        local nested = path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Frameworks")
-        for _, one in ipairs(os.filedirs(path.join(nested, "*.framework"))) do
-            local headers = path.join(one, "Headers")
-            if os.isdir(one) and os.isdir(headers) then
-                table.insert(roots, {type = "directory", name = path.join(staging, path.relative(headers, sdk)),
-                                     contents = contents(headers)})
-            end
-        end
-    end
-    return roots
 end
 
 -- The byte offsets where each line of a text starts.

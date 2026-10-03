@@ -593,24 +593,33 @@ function failures(opt)
         print("skipped: the overlay of a nested framework needs both clang under " .. path.join(store, "l/llvm") ..
               " and swiftc under " .. path.join(store, "s/swift"))
     else
-        -- The macros in a header of their own, as the SDK has them: clang gives a mark the file and the line the
+        -- the macros in a header of their own, as the SDK has them: clang gives a mark the file and the line the
         -- macro is used at only where the macro was spelled somewhere else (the same reason the fixture lift
-        -- overlay test writes Avail.h).
+        -- overlay test writes Avail.h). The last two are a release passed by position, which no lift_macro branch
+        -- rewrites in place: the lift preprocesses the header to expand it, which is the lift's second overlay and
+        -- the other one that has to carry the nested framework.
         local fixture = {"#define ios(version) ios, introduced=version\n" ..
-                         "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n",
+                         "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n" ..
+                         "#define __MAC_10_9 100900\n#define __IPHONE_7_0 70000\n" ..
+                         "#define __OSX_AVAILABLE_STARTING(_mac, _ios)" ..
+                         " __attribute__((availability(macos,introduced=_mac)))" ..
+                         " __attribute__((availability(ios,introduced=_ios)))\n",
                          "@protocol NSObject @end\n@protocol NSCopying @end\n" ..
                          "__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\n",
                          -- the three shapes a nested framework is reached by: its own umbrella, a header of it the
                          -- lift rewrote, a header of it the lift did not (there is no staged copy to find), and one
                          -- in a folder below its Headers (vecLib keeps BNNS, LinearAlgebra, Quadrature, Sparse)
                          "#import <Fix/Avail.h>\n#import <Nested/Nested.h>\n#import <Nested/Other.h>\n" ..
-                         "#import <Nested/Sub/Deep.h>\nvoid FixOwnUse(void) API_AVAILABLE(ios(9.0));\n",
+                         "#import <Nested/Sub/Deep.h>\nvoid FixOwnUse(void) API_AVAILABLE(ios(9.0));\n" ..
+                         "void FixExpanded(void) __OSX_AVAILABLE_STARTING(__MAC_10_9, __IPHONE_7_0);\n",
                          "#import <Fix/Avail.h>\nvoid FixNestedUse(void) API_AVAILABLE(ios(9.0));\n",
                          "void FixNestedOther(void);\n",
                          "void FixNestedDeep(void);\n",
                          '[{"api": "FixOwnUse", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented",' ..
                          ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"},' ..
                          '{"api": "FixNestedUse", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented",' ..
+                         ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"},' ..
+                         '{"api": "FixExpanded", "kind": "function", "introduced": "7.0", "minimum": "6.0", "status": "implemented",' ..
                          ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"}]'}
         local root = path.join(os.tmpdir(), "charon-lift-nested-" .. hash.strhash128(table.concat(fixture, "")))
         os.tryrm(root)
@@ -674,6 +683,19 @@ function failures(opt)
         expect_equal(found, "with the header in it the SDK's own",
                      below and below.contents and below.contents[1] and below.contents[1]["external-contents"],
                      path.join(nested, "Sub", "Deep.h"))
+        -- the expander's own overlay, which preprocesses the same umbrella out of the same staged headers and
+        -- carries the same nested frameworks at the staged tree it reads them from; the fixture stages a header
+        -- through it, so this is the second site and not a reading of the first
+        local expand = os.isfile(path.join(root, "out", "expand.yaml")) and json.decode(io.readfile(path.join(root, "out", "expand.yaml"))) or nil
+        local expanded = {}
+        for _, entry in ipairs((expand or {}).roots or {}) do
+            if entry.name == path.join(root, "out", "expand", "System", "Library", "Frameworks", "Fix.framework",
+                                       "Frameworks", "Nested.framework", "Headers") then
+                expanded = entry
+            end
+        end
+        expect_equal(found, "the expander's overlay carries the nested framework as well",
+                     tostring(expanded.type) .. "/" .. tostring(#(expanded.contents or {})), "directory/3")
         -- and what that overlay is for: the import resolves, which is the wall the whole lift stopped at
         local errors
         try {
