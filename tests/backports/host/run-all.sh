@@ -86,7 +86,10 @@ for name in $wanted; do
     fi
     set -e
     if [ "$status" = timeout ]; then
-        printf '%-24s %s\n' "$name" "alive (still running after ${seconds}s)"
+        # The seconds it actually waited, not the clock it was given: the loop above stops as soon as a
+        # check has been reached, so a test that ran for two seconds and printed its verdict was not
+        # "still running after 90s" and saying so made every such test look like a hang.
+        printf '%-24s %s\n' "$name" "alive (stopped after ${waited}s, past its first check)"
     elif [ "$status" = 0 ]; then
         printf '%-24s %s\n' "$name" "alive, and it passed"
     elif grep -qE "$alive" "$output" 2>/dev/null; then
