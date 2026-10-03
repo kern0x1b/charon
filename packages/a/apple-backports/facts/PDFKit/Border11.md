@@ -8,13 +8,13 @@
 `CGPDFDictionaryGetDictionary`, `CGPDFDictionaryGetArray`, `CGPDFDictionaryGetNumber`,
 `CGPDFArrayGetCount`, `CGPDFArrayGetNumber`, all exported by both bands.
 
-**`PDFBorder.h:28` declares no initializer of its own**, so `-init` is `NSObject`'s — and the object it
+**`PDFBorder.h:28` declares no initializer of its own**, so `-init` is `NSObject`'s - and the object it
 makes is the host's fresh object: style 0, lineWidth 1, a nil pattern and a key-values dictionary of
 `{S = 0, W = 1}`. Measured, and the first version of this page said the opposite ("declares no
 initializer at all", with the corollary that `-[PDFAnnotation border]` is the only path), which the
 coordinator's own measurement on this Mac contradicts: `[[PDFBorder alloc] init]` works and answers
 those values. The class is therefore a **mutable value object**, not a window onto the file, and its
-three setters are implemented — see "The setters" below.
+three setters are implemented - see "The setters" below.
 
 `-[PDFAnnotation border]` is still how a border is reached from a document, and its absent answer is
 still subtype-dependent: it was `inert` on main with the reason "a /Square with no /Border answers a
@@ -134,7 +134,7 @@ sequence that fixes it:
 | `style = Inset` only | `S = 3`, `W = 1`, no `D` |
 | `lineWidth = 7` only | `W = 7`, `S = 0`; and `0` and `-3.5` are both kept, not clamped |
 | `style = Dashed; lineWidth = 5; dashPattern = @[@7, @5]` | reads back `1`, `5`, `(7 5)`, `{D = (7,5); S = 1; W = 5}` |
-| `dashPattern = @[@7, @5]` alone | **`style` becomes 1** — a pattern means a dashed border |
+| `dashPattern = @[@7, @5]` alone | **`style` becomes 1** - a pattern means a dashed border |
 | `dashPattern = @[]` | **`style` becomes 0**, `dashPattern` answers an empty array, `D = ()` |
 | `dashPattern = @[]` on a border whose style was dashed | `style` becomes 0 as well, so the setter SETS the style rather than leaving it |
 | `dashPattern = nil` on a fresh object | the same as `@[]`: `style` 0, `D = ()`, and `-dashPattern` answers an **empty array, not nil** |
@@ -142,13 +142,13 @@ sequence that fixes it:
 
 That last row is worth the detail, because the width was the one thing this page first got wrong: an
 early probe appeared to show `setDashPattern:` resetting the width to 1. It does not. The probe's own
-source had lost its `lineWidth = 5` line, and with it restored the width reads 5 in every arrangement —
+source had lost its `lineWidth = 5` line, and with it restored the width reads 5 in every arrangement -
 four arrangements measured, `W = 5` then a pattern then `nil`; a pattern with no style set then `nil`;
 a style then `W = 5` then a pattern then `nil`; and a style then `W = 5` with no pattern, then a pattern,
 then `nil`. Ten runs of the same sequence in one process and ten across processes agree.
 
-So the object is one dictionary in the header's own key names — `S` and `W` from `-init`, `D` when a
-pattern is set — and `-setDashPattern:` is the only setter that touches more than its own key: it
+So the object is one dictionary in the header's own key names - `S` and `W` from `-init`, `D` when a
+pattern is set - and `-setDashPattern:` is the only setter that touches more than its own key: it
 publishes `D` (an empty array for both `@[]` and `nil`) **and** sets `S` to dashed for a non-empty array
 and to solid for an empty one or nil.
 
@@ -206,11 +206,11 @@ were wrong on main. All three are measured, all three are fixed, and none of the
 ## The run
 
     $ sh tests/backports/host/pdfkit-document/run.sh
-      images differ by construction: host=/System/…/PDFKit.framework/…/PDFKit
-                                      port=…/runs/pdfkit-document/port-side
+      images differ by construction: host=/System/.../PDFKit.framework/.../PDFKit
+                                      port=.../runs/pdfkit-document/port-side
       COMPARED 3632 MISMATCHES 0  (not compared: 73, expected to differ: 219, of which 72 compared from the Catalyst side)
       RED CONTROL ok: the comparison goes red on a mutated port, and names the key:
-        MUTATION planted on 'PDFDocument.hasInitWithURL', …
+        MUTATION planted on 'PDFDocument.hasInitWithURL', ...
       RED CONTROL ok for border-plain.pdf.page0.annotation0.border.lineWidth:
       RED CONTROL ok for border-bs.pdf.page0.annotation0.border.style:
       RED CONTROL ok for border-bs.pdf.page0.annotation0.border.dash.values:
@@ -225,7 +225,7 @@ were wrong on main. All three are measured, all three are fixed, and none of the
 
 The automatic control plants on the first key the two sides agree on, which is a *document* fact and
 would go red even if the border comparison were blind. So the named controls are the ones that say
-something about this family — twenty-four of them now, eleven of them border or appearance keys: each names a border or appearance key, `compare()` refuses any key the two
+something about this family - twenty-four of them now, eleven of them border or appearance keys: each names a border or appearance key, `compare()` refuses any key the two
 sides do not already agree on, and the mutation is written into a **scratch copy of whichever side
 printed that key** - the macOS port side for the border keys, the Catalyst side for the appearance ones
 - because a mutation written into `port.txt` would never be read for a key `port.txt` does not hold.
