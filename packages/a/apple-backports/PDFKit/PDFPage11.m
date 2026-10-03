@@ -257,7 +257,17 @@ static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
     }
     CFRelease(data);
 
-    CGPDFContentStreamRef content = CGPDFContentStreamCreateWithStream(stream, NULL, NULL);
+    // The content stream, from the PAGE and not from the stream with NULL resources.
+    //
+    // CGPDFContentStreamCreateWithStream's second parameter sits inside CF_ASSUME_NONNULL_BEGIN in the
+    // release's own CGPDFContentStream.h, so it is nonnull and passing NULL is a -Wnonnull diagnostic -
+    // and it was one, on origin/main, since the text walk landed.  The page is what this function already
+    // takes, so nothing new is threaded through to reach it.  CGPDFContentStreamCreateWithPage is
+    // the API for exactly this: it takes the page and supplies the /Resources and the content array the
+    // hand-assembled call was leaving out, which the scanner needs to resolve a font name at all.  The
+    // stream above is still read, because the walk's second stop condition is that stream's own
+    // decompressed length and its byte count of show operators.
+    CGPDFContentStreamRef content = CGPDFContentStreamCreateWithPage(page);
     if (content == NULL)
         return nil;
 
