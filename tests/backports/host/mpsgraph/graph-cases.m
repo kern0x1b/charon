@@ -105,6 +105,17 @@ static float rightValues[32] = {
     2.0f + 0x1p-16f, -(2.0f + 0x1p-15f), 1.0f / 3.0f, 7.0f,
 };
 static unsigned char resultBytes[256];
+// The feeds of the reduction family, one per data type and each of eight elements in a 2x4. They are
+// ordinary values rather than the sixteen classes above because a reduction is a question about a set and
+// a set of infinities and denormals answers a sum and a product that are both infinite or both zero, which
+// tells a reader nothing about the axis arithmetic; the sixteen classes are asked of every reduction too,
+// through leftValues in reduction_families below.
+static float rowFeed[8] = { 1.0f, 2.0f, 3.0f, 4.0f, 10.0f, 20.0f, 30.0f, 40.0f };
+static float meanFeed[2] = { 2.5f, 25.0f };
+static float nanFeed[8] = { NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN };
+static int32_t intFeed[8] = { -3, -2, -1, 0, 1, 2, 3, 4 };
+static int32_t intMeanFeed[2] = { -1, 2 };
+static uint16_t halfFeed[8] = { 0x3c00, 0x4000, 0x4200, 0x4400, 0x4500, 0x4600, 0x4700, 0x4800 };
 static float constantValues[4] = {0.25f, -0.25f, 0.5f, 2};
 // The bounds a clamp case is asked over: a pair of ordinary values either side of zero, so that every
 // class of the operand decides which of the two it is clamped to.
@@ -338,6 +349,147 @@ static void ternary_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, 
     put(name, resultBytes, bytes);
 }
 
+// THE REDUCTION FAMILY, and the one thing about it that the arithmetic cases above never had to answer:
+// the result is not the operand's shape. A reduction over an axis of a 2x4 answers a 2x1 or a 1x4 and the
+// feed is still the 2x4, so the case below gives the compile a feed of the operand's own shape and a
+// destination of the result's own shape - run() above uses the target's shape for both, which is right for
+// an elementwise operation and wrong for every one of these.
+static void reduction_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *),
+                           MPSDataType type, const void *values, NSArray<NSNumber *> *shape)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:shape dataType:type name:@"a"];
+    MPSGraphTensor *t = build(one, a);
+    NSUInteger count = 1;
+    for (NSNumber *dimension in t.shape) count *= (NSUInteger)dimension.integerValue;
+    size_t bytes = count * MPSSizeofMPSDataType(t.dataType);
+    id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+    MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer
+                                                                              shape:t.shape
+                                                                            dataType:t.dataType];
+    remember(buffer, resultBytes, bytes);
+    MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:a.shape dataType:type];
+    MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice feeds:@{a: shaped}
+                                              targetTensors:@[t] targetOperations:@[] compilationDescriptor:nil];
+    [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                          inputsArray:@[feed(values, shape, type)]
+                           resultsArray:@[destination] executionDescriptor:nil];
+    put(name, resultBytes, bytes);
+}
+
+// The same over a mean that was computed first, which is the form varianceOfTensor:meanTensor:axes: takes:
+// the mean is a second placeholder of the graph that consumes it and the caller hands over what it has.
+// The mean fed here is the one the framework itself answered for the same feed, read out of a run of the
+// meanOfTensor case - it is an input to the case, not an expectation, and facts/MetalPerformanceShadersGraph/
+// Core.md carries what both sides answer for it.
+static void variance_with_mean_case(const char *name, MPSDataType type, const void *values,
+                                    NSArray<NSNumber *> *shape, NSArray<NSNumber *> *axes,
+                                    const void *meanValues)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:shape dataType:type name:@"a"];
+    MPSGraphTensor *m = [one placeholderWithShape:@[@2, @1] dataType:type name:@"mean"];
+    MPSGraphTensor *t = [one varianceOfTensor:a meanTensor:m axes:axes name:@"variance"];
+    size_t bytes = 2 * MPSSizeofMPSDataType(type);
+    id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+    MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer
+                                                                              shape:@[@2, @1]
+                                                                            dataType:type];
+    remember(buffer, resultBytes, bytes);
+    NSMutableDictionary *shaped = [NSMutableDictionary dictionary];
+    shaped[a] = [[MPSGraphShapedType alloc] initWithShape:shape dataType:type];
+    shaped[m] = [[MPSGraphShapedType alloc] initWithShape:@[@2, @1] dataType:type];
+    MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice feeds:shaped
+                                              targetTensors:@[t] targetOperations:@[] compilationDescriptor:nil];
+    [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                          inputsArray:@[feed(values, shape, type), feed(meanValues, @[@2, @1], type)]
+                           resultsArray:@[destination] executionDescriptor:nil];
+    put(name, resultBytes, bytes);
+}
+
+// The reduction family, over a feed of eight values in a 2x4 and over the sixteen classes of the
+// arithmetic cases, so every reduction is asked of the values that have shown every other difference:
+// a NaN of each sign, both infinities, a denormal, and the ordinary values either side of one.
+static void reduction_families(void)
+{
+    static NSArray<NSNumber *> *shape2x4;
+    char name[64];
+    unsigned i;
+    struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *); } reducing[] = {
+        {"reductionSum", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionSumWithTensor:a axis:1 name:@"sum"]; }},
+        {"reductionProduct", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionProductWithTensor:a axis:1 name:@"prod"]; }},
+        {"reductionMaximum", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionMaximumWithTensor:a axis:1 name:@"max"]; }},
+        {"reductionMinimum", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionMinimumWithTensor:a axis:1 name:@"min"]; }},
+        {"reductionMaximumPropagateNaN", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionMaximumPropagateNaNWithTensor:a axis:1 name:@"maxnan"]; }},
+        {"reductionMinimumPropagateNaN", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionMinimumPropagateNaNWithTensor:a axis:1 name:@"minnan"]; }},
+        {"mean", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g meanOfTensor:a axes:@[@1] name:@"mean"]; }},
+        {"variance", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g varianceOfTensor:a axes:@[@1] name:@"var"]; }},
+    };
+    shape2x4 = @[@2, @4];
+    // The eight over the sixteen classes of the arithmetic family, which is where a NaN, an infinity and
+    // a denormal meet the sum and the product as well as the maximum and the mean.
+    for (i = 0; i < sizeof(reducing) / sizeof(reducing[0]); i++) {
+        snprintf(name, sizeof name, "%s float32", reducing[i].name);
+        reduction_case(name, reducing[i].build, MPSDataTypeFloat32, leftValues, shape2x4);
+    }
+    // The shape questions, each its own case because each is a different rule about the set of axes. The
+    // qualifier is part of the operation's own name and not a word of its own, because run.sh reads a case
+    // line as exactly five fields - the marker, the operation, the data type, the length and the bytes -
+    // and a sixth would move the length out from under it.
+    reduction_case("reductionSum-axis0 float32",
+                   ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionSumWithTensor:a axis:0 name:@"s0"]; },
+                   MPSDataTypeFloat32, rowFeed, shape2x4);
+    reduction_case("reductionSum-axisNeg1 float32",
+                   ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionSumWithTensor:a axis:-1 name:@"sn1"]; },
+                   MPSDataTypeFloat32, rowFeed, shape2x4);
+    reduction_case("reductionSum-axisNeg2 float32",
+                   ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionSumWithTensor:a axis:-2 name:@"sn2"]; },
+                   MPSDataTypeFloat32, rowFeed, shape2x4);
+    reduction_case("reductionSum-axesNil float32",
+                   ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionSumWithTensor:a axes:nil name:@"snil"]; },
+                   MPSDataTypeFloat32, rowFeed, shape2x4);
+    reduction_case("reductionSum-axesEmpty float32",
+                   ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionSumWithTensor:a axes:@[] name:@"sempty"]; },
+                   MPSDataTypeFloat32, rowFeed, shape2x4);
+    reduction_case("reductionSum-axesRepeated float32",
+                   ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionSumWithTensor:a axes:@[@0, @0] name:@"sr"]; },
+                   MPSDataTypeFloat32, rowFeed, shape2x4);
+    reduction_case("reductionSum-axesDescending float32",
+                   ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionSumWithTensor:a axes:@[@1, @0] name:@"sdesc"]; },
+                   MPSDataTypeFloat32, rowFeed, shape2x4);
+    // The other two data types, because a mean and a variance in integers are truncated quotients and a
+    // half is a different accumulator: measured on this host's own MPSGraph, over the int32 feed the mean
+    // of a row of four is the truncated sum over four and the variance the truncated mean of the squared
+    // deviations.
+    for (i = 0; i < sizeof(reducing) / sizeof(reducing[0]); i++) {
+        snprintf(name, sizeof name, "%s int32", reducing[i].name);
+        reduction_case(name, reducing[i].build, MPSDataTypeInt32, intFeed, shape2x4);
+    }
+    for (i = 0; i < sizeof(reducing) / sizeof(reducing[0]); i++) {
+        snprintf(name, sizeof name, "%s float16", reducing[i].name);
+        reduction_case(name, reducing[i].build, MPSDataTypeFloat16, halfFeed, shape2x4);
+    }
+    // The variance of a mean handed in, over the same feed and the mean of it.
+    variance_with_mean_case("varianceOfMean float32", MPSDataTypeFloat32, rowFeed, shape2x4, @[@1],
+                            meanFeed);
+    variance_with_mean_case("varianceOfMean int32", MPSDataTypeInt32, intFeed, shape2x4, @[@1], intMeanFeed);
+    // A reduced set of nothing but NaNs, which is the one answer of the four extremes that the arithmetic
+    // cases cannot reach: every element of the row is a NaN, so what a maximum that skips them and one
+    // that propagates them answer is decided here.
+    reduction_case("reductionMaximum-allNaN float32",
+                   ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionMaximumWithTensor:a axis:1 name:@"mx"]; },
+                   MPSDataTypeFloat32, nanFeed, shape2x4);
+    reduction_case("reductionMaximumPropagateNaN-allNaN float32",
+                   ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionMaximumPropagateNaNWithTensor:a axis:1 name:@"mxn"]; },
+                   MPSDataTypeFloat32, nanFeed, shape2x4);
+    reduction_case("reductionMinimum-allNaN float32",
+                   ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionMinimumWithTensor:a axis:1 name:@"mn"]; },
+                   MPSDataTypeFloat32, nanFeed, shape2x4);
+    reduction_case("reductionMinimumPropagateNaN-allNaN float32",
+                   ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionMinimumPropagateNaNWithTensor:a axis:1 name:@"mnn"]; },
+                   MPSDataTypeFloat32, nanFeed, shape2x4);
+}
+
 static void families(MPSDataType type, const void *left, const void *right, const char *label)
 {
     unsigned i;
@@ -407,6 +559,9 @@ int main(void)
         // answer alike and a case in one of them says nothing about the other.
         families(MPSDataTypeFloat32, &leftValues[0], &rightValues[0], "float32");
         families(MPSDataTypeFloat16, &halfValues[0], &halfRightValues[0], "float16");
+        // The reduction family, which is the first thing in this file whose result is not the operand's
+        // shape, so it is asked of its own feeds and of the sixteen classes above.
+        reduction_families();
         {
             MPSGraph *one = [MPSGraph new];
             MPSGraphTensor *a = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"a"];

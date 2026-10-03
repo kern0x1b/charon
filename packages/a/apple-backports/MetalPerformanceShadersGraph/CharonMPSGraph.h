@@ -130,7 +130,19 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
     CharonMPSGraphOperationKindReLU,
     CharonMPSGraphOperationKindReLUGradient,
     CharonMPSGraphOperationKindSigmoid,
-    CharonMPSGraphOperationKindSigmoidGradient
+    CharonMPSGraphOperationKindSigmoidGradient,
+    // The reduction family, which is walked by its own function rather than element by element: a
+    // reduction writes one element from many, so the loop is over the operand and not over the result.
+    // These eight arrived with the framework in 14.0; the two that arrived in 15.0 and the four that
+    // arrived in 15.3 are in the objects of those releases.
+    CharonMPSGraphOperationKindReductionSum,
+    CharonMPSGraphOperationKindReductionProduct,
+    CharonMPSGraphOperationKindReductionMaximum,
+    CharonMPSGraphOperationKindReductionMinimum,
+    CharonMPSGraphOperationKindReductionMaximumPropagateNaN,
+    CharonMPSGraphOperationKindReductionMinimumPropagateNaN,
+    CharonMPSGraphOperationKindReductionMean,
+    CharonMPSGraphOperationKindReductionVariance
 };
 
 @class MPSGraph;
