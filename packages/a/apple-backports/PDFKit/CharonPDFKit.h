@@ -477,6 +477,10 @@ typedef NS_ENUM(NSInteger, PDFActionNamedName) {
 
 - (NSUInteger)numberOfTextRangesOnPage:(PDFPage *)page;
 - (NSRange)rangeAtIndex:(NSUInteger)index onPage:(PDFPage *)page;
+// The rect over the selection's ranges on ONE page, in that page's own coordinate space, and
+// CGRectNull-shaped (+inf,+inf,0,0) for a page the selection does not cover - both measured.  The
+// geometry is the page's own text layout's: see PDFPageText11.h and facts/PDFKit/Selection11.md.
+- (CGRect)boundsForPage:(PDFPage *)page;
 - (NSArray<PDFSelection *> *)selectionsByLine;
 
 - (void)addSelection:(PDFSelection *)selection;
