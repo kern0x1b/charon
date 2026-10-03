@@ -482,6 +482,35 @@ exactly those four, and each carries SensorKit's own error.
 - a struct-valued property (`CMTimeRange`, a chromaticity) is an `NSValue` over its own bytes, since
   it can be neither cast out of the store the way an object can nor put in a dictionary.
 
+**Eight properties carry a getter of their own, and that is measured, not a naming choice.** Apple's
+`SRAcousticSettings.h` declares them with the property's own name and the `is...` form as the getter -
+lines 65, 75, 91, 115, 132, 145, 195 and 225 - so the selector the release's class carries is not the
+one the property is spelled with:
+
+| property | getter the release declares |
+| --- | --- |
+| `SRAcousticSettings.environmentalSoundMeasurementsEnabled` | `isEnvironmentalSoundMeasurementsEnabled` |
+| `SRAcousticSettingsAccessibility.monoAudioEnabled` | `isMonoAudioEnabled` |
+| `SRAcousticSettingsAccessibilityBackgroundSounds.enabled` | `isEnabled` |
+| `SRAcousticSettingsAccessibilityBackgroundSounds.playWithMediaEnabled` | `isPlayWithMediaEnabled` |
+| `SRAcousticSettingsAccessibilityBackgroundSounds.stopOnLockEnabled` | `isStopOnLockEnabled` |
+| `SRAcousticSettingsAccessibilityHeadphoneAccommodations.enabled` | `isEnabled` |
+| `SRAcousticSettingsMusicEQ.lateNightModeEnabled` | `isLateNightModeEnabled` |
+| `SRAcousticSettingsMusicEQ.soundCheckEnabled` | `isSoundCheckEnabled` |
+
+`CharonSensorKit.h` said none of that, so the port carried `-soundCheckEnabled` and seven more of the
+same shape: a selector the release's class does not have, and none of the eight it does. The header now
+declares each getter, and the accessor is `CHARON_SCALAR_GETTER(Type, name, getter)` - both spellings,
+because the name is what the store is keyed by and what a caller writes, and the getter is the selector
+that goes into the class's own method list. The property rows in `registry/SensorKit/ios14.json` are
+unchanged by this: a property row names the property, and the property kept its name.
+
+Measured on the object this produces, with the repository's own reader
+(`tools/corpus/objc-inventory.lua` over an armv7 build of `SensorKit/SensorKit260.m`): the five classes
+carry `-isEnvironmentalSoundMeasurementsEnabled`, `-isMonoAudioEnabled`, `-isEnabled`,
+`-isPlayWithMediaEnabled`, `-isStopOnLockEnabled`, `-isLateNightModeEnabled` and `-isSoundCheckEnabled`
+between them, and none of the eight property-name selectors.
+
 Six classes the SDK's own headers declare as conforming — `SRDeletionRecord`, `SRDevice`,
 `SRMediaEvent`, `SRSupplementalCategory`, `SRFetchRequest`, `SRFetchResult` — carry the three archiving
 methods and, where the header says `NSCopying`, `-copyWithZone:`. The obligation is in each class's
