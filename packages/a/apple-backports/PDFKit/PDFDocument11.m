@@ -216,16 +216,27 @@
 // what the release's NULL says.  CGPDFDocumentGetPage hands back a page this document OWNS and no
 // reference to it, so nothing is released here: the page holds it as a Get and owns only a reference to
 // this document, and the document keeps the page.
+// The page at an index, and the SAME OBJECT every time - measured on the host: two calls answer two
+// equal pointers, and the differential needs it, because it finds a destination's page by asking the
+// document for each of its pages and seeing which one is that object.  The port built a fresh PDFPage on
+// every call, which is the same defect -[PDFPage annotations] had and is fixed the same way: the pages
+// are built once, on first ask, and kept.  A document with no page at the index answers nil, which is
+// what the release's own NULL says.
 - (nullable PDFPage *)pageAtIndex:(NSUInteger)index
 {
     if (_document == NULL || index >= (NSUInteger)CGPDFDocumentGetNumberOfPages(_document))
         return nil;
+    if (_pages.count > index)
+        return [_pages objectAtIndex:index];
     CGPDFPageRef page = CGPDFDocumentGetPage(_document, (size_t)index + 1);
     if (page == NULL)
         return nil;
     PDFPage *carried = [[PDFPage alloc] initWithCGPDFPage:page document:self index:index];
-    if (carried != nil)
-        [_pages addObject:carried];
+    if (carried == nil)
+        return nil;
+    // The count can only grow one at a time here, because every ask for an index below the count is
+    // answered from the array above, so the array is filled in order and index is its last position.
+    [_pages addObject:carried];
     return carried;
 }
 

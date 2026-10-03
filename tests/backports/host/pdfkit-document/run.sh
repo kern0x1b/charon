@@ -78,6 +78,7 @@ xcrun clang -fobjc-arc -Wall "$here/host.m" -framework Foundation -framework App
 xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation -I "$port" "$here/port.m" \
     "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
     "$port/PDFBorder11.m" "$port/PDFAppearanceCharacteristics11.m" \
+    "$port/PDFDestination11.m" "$port/PDFAction11.m" \
     "$port/PDFKitConstants11.m" \
     -framework Foundation -framework CoreGraphics -o "$build/port-side" 2> "$build/port.log" || {
     echo "BUILD the port side did not compile:"; head -8 "$build/port.log" | sed 's/^/    /'; exit 1; }
@@ -92,6 +93,7 @@ xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation \
     -I "$port" "$here/color.m" \
     "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
     "$port/PDFBorder11.m" "$port/PDFAppearanceCharacteristics11.m" \
+    "$port/PDFDestination11.m" "$port/PDFAction11.m" \
     "$port/PDFKitConstants11.m" \
     -framework Foundation -framework UIKit -framework CoreGraphics \
     -o "$build/port-color-side" 2> "$build/color.log" || {
@@ -389,7 +391,34 @@ for key in \
     border-plain.pdf.page0.border.identity.same \
     border-plain.pdf.page0.border.set.same \
     border-plain.pdf.page0.border.set.mutated \
-    border-plain.pdf.page0.border.set.nil
+    border-plain.pdf.page0.border.set.nil \
+    act-goto-xyz.pdf.page0.annotation0.action.class \
+    act-goto-xyz.pdf.page0.annotation0.actionGoTo.destination.pageIndex \
+    act-goto-xyz.pdf.page0.annotation0.actionGoTo.destination.point.x \
+    act-goto-badpage-xyz.pdf.page0.annotation0.actionGoTo.destination.point.y \
+    act-goto-badpage-xyz.pdf.page0.annotation0.actionGoTo.destination.zoom \
+    act-goto-fit.pdf.page0.annotation0.actionGoTo.destination.page \
+    act-goto-page2.pdf.page0.annotation0.action.pageIndex \
+    act-goto-page2.pdf.page0.annotation0.action.URL \
+    act-goto-shapes.pdf.page0.annotation3.actionGoTo.destination \
+    act-named-all.pdf.page0.annotation1.action.name \
+    act-named-all.pdf.page0.annotation0.action \
+    act-named-all.pdf.page0.annotation2.action \
+    act-uri.pdf.page0.annotation0.action.URL \
+    act-gotor.pdf.page0.annotation0.action.URL \
+    act-reset-flags.pdf.page0.annotation2.action.cleared \
+    act-reset-flags.pdf.page0.annotation3.action.cleared \
+    act-reset-flags.pdf.page0.annotation4.action.cleared \
+    act-reset.pdf.page0.annotation0.action.fields.values \
+    ann-dest-array.pdf.page0.annotation0.destination.point.x \
+    ann-dest-dict.pdf.page0.annotation0.destination \
+    ann-dest-and-a.pdf.page0.annotation0.destination.point.x \
+    init.goto.class \
+    init.named.class \
+    init.named99.name \
+    init.remote.class \
+    init.reset.class \
+    init.destination.made.zoomAfterSet
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then
