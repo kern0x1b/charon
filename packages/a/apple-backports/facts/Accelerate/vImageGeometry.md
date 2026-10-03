@@ -1472,3 +1472,78 @@ The port therefore reads the row out of the caller's filter - a private layout, 
 the measurement above - and `CharonResampleFilterOf` refuses anything whose header does not match it:
 `numTaps` positive, the row width a whole number of int16, the phase count a power of two of at most 64, and
 every row of the Q14 table summing to exactly 16384.
+
+## The layout on the device, nine shapes: measured on iPhone3,1 6.1.3 10B329 (2026-10-04, v-tail-a11)
+
+The section above is a reading of 6.1.3's own instructions; this is the same nine shapes read out of real
+objects on an iPhone3,1 6.1.3 10B329 guest, through `vImageNewResamplingFilter(scale, flags)`, with the probe's
+built and installed binaries compared by LC_UUID first. Three guesses were written down before the run, in
+`.agent-work/PREDICTION-vimguest.md`, and this is which of them held.
+
+    scale  lobes   size  size-w7  numTaps fStr iStr phases log2exp   1.0/double at byte 0   Q14 at   rows
+      1      3    3168        16        6   32   16     64       6                 1          2128   1024
+      2      3    3168        16        6   32   16     64       6                 2          2128   1024
+   0.75      3    3168        16        8   32   16     64       6               0.75          2128   1024
+     0.5      3    2672        16       12   48   32     32       5                 0.5          1632   1024
+    0.25      3    2464        16       24   96   48     16       4                0.25          1680    768
+      1      5    5232        16       10   48   32     64       6                 1          3168   2048
+      2      5    5232        16       10   48   32     64       6                 2          3168   2048
+   0.75      5    6272        16       13   64   32     64       6               0.75          4208   2048
+     0.5      5    4240        16       20   80   48     32       5                 0.5          2688   1536
+
+**Nine of nine on the scale.** `1.0 / *(double *)object` is **1, 2, 0.75, 0.5 and 0.25 exactly**, at every lobe
+count - the field v-tail-a10 could not find is found, and it is found on the release that ships.
+
+**Nine of nine on the phase count**, and it is **64 at a scale of 0.75** on the device as well as on the host.
+The rule is the instruction's: `1 << clamp(133 - exponent(float(1/scale)), 0, 6)`, a power of two.
+
+**Nine of nine on the two strides, `numTaps` and `log2exp`**, each equal to the formula the writer's own
+instructions give. Two of the numbers in the prediction table were my own arithmetic slips and the device
+refuted them: `numTaps` at a scale of 0.75 is **8** (three lobes) and **13** (five), not 6 and 10, because
+`|lobes/scale|` is four and 6.67 there; and the int16 stride at a scale of 0.5 with five lobes is **48** bytes,
+not 40 - `((3 + 2*20) + 12) & ~15` is 48.
+
+**Two things the device says that no instruction reading predicted.**
+
+- **Word 7 is an OFFSET from the object, not a pointer.** The first probe run compared it against a pointer
+  and refused all nine shapes, and that refusal is the measurement: `subs r0, r0, r3; add r0, r1` leaves the
+  distance from the object's own base. It is `phases * int16RowStride`, exactly, at all nine shapes, and the
+  Q14 table begins at **word 8's value** and ends one byte past word 7's offset. Word 9 is `base + 48`.
+- **`vImageGetResamplingFilterSize` is not a function of the header's numbers.** Two runs of the same probe
+  answered **3168** and **3160** for the same shape, because the size is `word7 + 16` measured on the
+  *caller's stack* descriptor and `((sp + 55) & ~15) - sp` is 16 or 8 by that frame's alignment. So the port
+  must not use the size to bound the table; the table's own offset is word 7.
+
+**And the row sum is NOT 16384 on 6.1.3.** Nine of nine shapes have rows that do not sum to 16384 - 49 of 64 at
+a scale of one, 30 of 32 at 0.5, **all sixteen** at 0.25 - while the same shapes on macOS sum to 16384 on every
+row. The row the device answers at phase 32 is `[400, -2226, 10017, 10017, -2226, 400, 0, 0]`, which sums to
+**16382**; macOS answers `[400, -2225, 10017, 10017, -2225, 400]` for the same phase and the same kernel, and
+that sums to 16384. **So the "every row sums to exactly 16384" invariant v-tail-a9 measured, and this page has
+repeated ever since, is a macOS property and not a release property**: 6.1.3 quantises by truncation with no
+correction pass, which is what `vcvt.s32.f32` on its own does, and macOS later added the pass that makes the
+integers come back to the full scale. A refusal rule built on the row sum would refuse the 6.1.3 filter this
+package is for.
+
+`K0 = argmax(row 0) = (numTaps - 2) / 2` holds on all nine shapes on the device as well: 2, 2, 3, 5, 11, 4, 4, 5,
+9. The row widths are the int16 stride halved: 8, 8, 8, 16, 24, 16, 16, 16, 24.
+
+### What the shear scored on the device, and what that says
+
+The same probe ran the release's own `vImageHorizontalShear_ARGB8888` against the model of the section above -
+280 samples per shape, seven translates by forty columns - reading its scale and its Q14 row out of the object:
+
+    scale   3 lobes    5 lobes
+       1      223/280   199/280
+       2        1/280    15/280
+    0.75       51/280    40/280
+     0.5      122/280   112/280
+    0.25      191/280      -
+
+**So the arithmetic is NOT closed on the release that ships**, and the residual is not a rounding: at a scale of
+2 the model reproduces **one sample of 280**. The scale is right - it is the release's own number read from its
+own object - and the Q14 row is the release's own, so what is wrong is the **mapping** from a destination
+coordinate to a row and a base tap. The host measured the same model at 262-273 of 280 on macOS, where the
+filter's rows happen to sum to the full scale; on 6.1.3 they do not, and the shortfall is 40-280 samples.
+That is the next measurement and it is one delta sweep: a source with a single column carrying 255 makes every
+destination answer one row entry divided by the full scale, which names the row and the base tap the release
+used without any reasoning about the kernel.
