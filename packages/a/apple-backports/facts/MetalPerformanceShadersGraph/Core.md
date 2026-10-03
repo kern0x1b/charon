@@ -145,16 +145,54 @@ Four things in it are worth naming, because each one is a rule rather than a val
 * **`log` of a zero is `-inf` and `sign` of a NaN is `0`.** Both are in the table and neither needs a case
   of its own, which is the point of taking them out.
 
-**A half is a different arithmetic, and this host cannot be its oracle.** Measured over the same sixteen
-classes in `MPSDataTypeFloat16`, the release answers the square root of a half `-1.0` with `0000` — a zero
-where IEEE and every float32 column above answer a NaN — the square root of a half `NaN` with `7c00`, an
-infinity, the logarithm of a half `0.0` with `f98c`, which is `-45440` rather than `-inf`, and the sign of a
-half `NaN` with `3c00`. An identity operation that answers an infinity for a NaN is not a copy, so these
-are a different implementation underneath rather than the same arithmetic in a narrower type. **Owed, and
-not attempted here**: the port's half path computes in double and stores through `CharonMPSFloatToHalf`, so
-it answers what the table above calls precise, and matching this host's half kernels means implementing
-them rather than adjusting a threshold. `CharonMPSGraphAsZero` is therefore a float32 answer, and a half
-denormal keeps its value here for the same reason.
+**A half is a different arithmetic on this host, and the port now carries the half of it that is a
+rule.** The case file feeds the same sixteen classes in `MPSDataTypeFloat16` as in float32, and the run
+compares the two families side by side: `tests/backports/host/mpsgraph/run.sh` reports
+`port: same as the system on 17 of the 24 cases with a result buffer; 7 float16 cases differ in 22 of
+their cells, recorded` and `checks=24 failures=0 recorded=7`. Every float32 case is byte-identical and
+170 of the 192 half cells are.
+
+What the release's half path answers where a float32 does not, and what `CharonMPSGraphApply` now
+answers the same way:
+
+| | the release | measured on |
+| --- | --- | --- |
+| a zero result | `0000`, the sign gone | the identity of a half `-0.0` is `0000`, a square root of `-0.0` is `0000`, the reciprocal of `-inf` is `0000` |
+| a NaN to the square, the absolute value | `7c00` | `7c00` for a NaN of either sign |
+| a NaN to the identity, an addition, a subtraction | `7c00` or `fc00`, the NaN's own sign | `identity(0x7e00)` is `7c00` and `identity(0xfe00)` is `fc00`; `add(0x7c00, 0x7e00)` is `7c00` and `add(0xfc00, 0xfe00)` is `fc00` |
+| a NaN to a reciprocal, a reverse square root, a logarithm | `0000` | `reciprocal(0x7e00)` is `0000`, `rsqrt(0x7e00)` is `0000`, `log(0x7e00)` is `0000` |
+| a NaN to a square root | `7c00` for a positive one, `0000` for a negative one | the sign bit, read as a bit: a NaN compares false against everything |
+| a NaN to the sign | `3c00` or `bc00` | the sign bit and not a comparison, so `sign(0xfe00)` is `bc00` |
+| a negative argument to a square root, a reverse square root | `0000` | `sqrt(0xbc00)`, `sqrt(0x8001)` and `rsqrt(0xbc00)` are all `0000` |
+| a zero to a reverse square root | `7c00` for either sign | `rsqrt(0x0000)` and `rsqrt(0x8000)` are both `7c00`, where the reciprocal of a negative zero is a negative infinity |
+| a zero to a logarithm | `f98c`, which is `-45440` | `log(0x0000)` and `log(0x8000)` are both `f98c`, where IEEE answers `-inf` |
+| anything else that is not a positive number, to a logarithm | `0000` | `log(0xbc00)`, `log(0x7c00)`, `log(0xfc00)` and `log(0xfe00)` are all `0000`, where IEEE answers a NaN, an infinity and two NaNs |
+| a denormal | kept | `identity(0x0001)` is `0001` and `abs(0x8001)` is `0001`, where float32 answers `00000000` |
+
+**The 22 cells that are still not the release's, and why no rule reaches them.** Five are the release's
+own approximation and are within one unit in the last place of a half or near it: `log(0x03ff)` and
+`log(0x0400)` are `c8db` where the correctly rounded half of the exact logarithm is `c8da`, `log(0x1400)`
+is `c6ef` against `c6ee`, `log(0x3555)` is `bc66` against `bc65` and `rsqrt(0x3555)` is `3eef` against
+`3eee`; `log(0x3c01)` is `1429` where the exact answer is `13ff`, which is four percent out. Three are
+the narrowing's rounding of a halfway case: the release answers `4201` and `4001` for the two additions
+whose exact sums are exactly halfway between two halves, and `3c01` for a square root of `3c01` whose
+exact value is exactly halfway too, where `CharonMPSFloatToHalf` rounds a halfway case to even. That is
+a rule and it is not applied here because the converter is `../MetalPerformanceShaders/CharonMPS.h`'s,
+shared with the matrix and image families, where no measurement says which way a halfway case rounds.
+**Owed.** Fourteen are the release's half binary arithmetic answering something no operation of the
+specification produces: a zero times an infinity is `0000` where IEEE answers a NaN, an infinity times a
+NaN is `7c00`, a multiply of a positive NaN and a denormal is `1e00` (`0.00585938`), a subtract of `+inf`
+and a NaN is `f800` (`-32768`) and of `-inf` and a NaN is `7800` (`32768`), a division of a NaN is `7c00`
+and of a negative NaN is `fa00` (`-49152`), a division of `-1.0` by `-0.0` is `fc00` where IEEE answers
+a positive infinity, and a multiply or a division with a denormal operand answers the operand's own
+magnitude: `-dn * 0.5` is `8001` and `dn / -0.5` is `8001`, both of which are twice the exact answer.
+A kernel that answers these is not a function of the operations the specification names, and reproducing
+it bit for bit would be a table of its answers rather than an implementation of it, which is what the
+contract forbids. **Owed, and not attempted here.**
+
+The buffer a half case needs is sixteen elements: `MPSNDArray` refuses a shorter one — "buffer is not
+large enough. Must be 32 bytes", `MPSNDArray.mm:893` — so a half tensor in this harness cannot be
+smaller than 32 bytes.
 
 Two of the case file's cases are not counted as agreeing:
 

@@ -46,18 +46,20 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
 {
     // Absolute and identity copy rather than compute, and are the two kinds that keep a denormal: measured
     // on the same host, absolute of 0x00000001 is 0x00000001 and identity of 0x007fffff is 0x007fffff.
-    switch (kind) {
-    case CharonMPSGraphOperationKindAbs:
-        return fabs(a);
-    case CharonMPSGraphOperationKindIdentity:
-        return a;
-    default:
-        break;
+    // The half rules below are a different question and reach both of them.
+    int copying = kind == CharonMPSGraphOperationKindAbs || kind == CharonMPSGraphOperationKindIdentity;
+    if (!copying) {
+        a = CharonMPSGraphAsZero(a, operandType);
+        b = CharonMPSGraphAsZero(b, operandType);
     }
-    a = CharonMPSGraphAsZero(a, operandType);
-    b = CharonMPSGraphAsZero(b, operandType);
     double result;
     switch (kind) {
+    case CharonMPSGraphOperationKindAbs:
+        result = fabs(a);
+        break;
+    case CharonMPSGraphOperationKindIdentity:
+        result = a;
+        break;
     // A division, a reciprocal, a square root and a logarithm are the arithmetic itself and nothing
     // else: what the release answers for a zero, a negative and an infinity is what IEEE answers, so a
     // branch that decided it separately answered a negative zero with the wrong infinity.
@@ -109,6 +111,96 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
     default:
         result = a;
         break;
+    }
+    if (resultType == MPSDataTypeFloat16) {
+        /* A half is a different arithmetic on this host, and this is the half of it that is a rule
+         * rather than an approximation. Measured on macOS 27.0 build 26A428 (M4 Pro, Metal 4) over
+         * the sixteen classes tests/backports/host/mpsgraph/graph-cases.m feeds, against the same
+         * operations on this host's own MPSGraph; facts/MetalPerformanceShadersGraph/Core.md carries
+         * the whole table and what is left of it that no rule reaches.
+         *
+         * A zero leaves the half path without its sign: the identity of a half -0.0 is 0x0000, a
+         * square root of -0.0 is 0x0000, and the reciprocal of -inf is 0x0000 where the reciprocal of
+         * +inf is 0x0000 too. A NaN operand is an infinity of that NaN's own sign for the three kinds
+         * that carry the sign - the identity, an addition and a subtraction - and a positive infinity
+         * for the two that drop it, the square and the absolute value, while the square root answers
+         * an infinity for a positive NaN and a zero for a negative one, the reverse square root and
+         * the logarithm answer a zero for either, and the sign answers the NaN's sign. A negative
+         * argument is a zero to a square root and to a reverse square root, a logarithm of a zero is
+         * -45440 (0xf98c) and of anything else that is not a positive number is a zero.
+         */
+        if (isnan(a) || isnan(b)) {
+            double sign = isnan(a) ? a : b;
+            switch (kind) {
+            case CharonMPSGraphOperationKindSquare:
+            case CharonMPSGraphOperationKindAbs:
+                result = INFINITY;
+                break;
+            case CharonMPSGraphOperationKindReciprocal:
+                // Measured 0x0000 for a NaN of either sign, where the square and the absolute value
+                // answer an infinity and the three that carry a sign answer one of that sign.
+                result = 0.0;
+                break;
+            case CharonMPSGraphOperationKindIdentity:
+            case CharonMPSGraphOperationKindAdd:
+            case CharonMPSGraphOperationKindSubtract:
+                result = copysign(INFINITY, sign);
+                break;
+            case CharonMPSGraphOperationKindSqrt:
+                // The sign bit and not the value: a NaN compares false against everything, so the
+                // sign of a NaN is read from its bit and a positive NaN is 0x7c00 here.
+                result = signbit(sign) ? 0.0 : INFINITY;
+                break;
+            case CharonMPSGraphOperationKindSign:
+                result = copysign(1.0, sign);
+                break;
+            default:
+                result = 0.0;
+                break;
+            }
+        } else {
+            switch (kind) {
+            case CharonMPSGraphOperationKindSqrt:
+                // A negative argument is a zero, measured: the square root of a half -1.0 is 0x0000,
+                // and of -inf and of a negative NaN and of a negative denormal too. A negative zero
+                // is answered by the zero rule below.
+                if (a < 0.0) {
+                    result = 0.0;
+                }
+                break;
+            case CharonMPSGraphOperationKindRsqrt:
+                // The same zero for a negative argument, and a positive infinity for a zero of either
+                // sign, where the reciprocal of one is a negative infinity and this is not: measured,
+                // the reverse square root of a half -0.0 is 0x7c00 and of 0x0000 is 0x7c00.
+                result = a < 0.0 ? 0.0 : (a == 0.0 ? INFINITY : result);
+                break;
+            case CharonMPSGraphOperationKindReciprocal:
+                // A zero of either sign is a positive infinity, where the reciprocal of a negative zero
+                // is a negative infinity in IEEE and 0x7c00 here.
+                result = a == 0.0 ? INFINITY : result;
+                break;
+            case CharonMPSGraphOperationKindLog:
+                // The measured -45440 of a logarithm of a zero, and a zero for everything else that
+                // is not a positive number: -1, an infinity of either sign and a NaN all answer 0x0000.
+                // An infinity is a zero here too, measured: the logarithm of a half +inf is 0x0000.
+                result = a == 0.0 ? -45440.0 : (isinf(a) ? 0.0 : (a > 0.0 ? log(a) : 0.0));
+                break;
+            case CharonMPSGraphOperationKindSign:
+                // The sign of the value and not a comparison of it: a NaN is answered with the sign
+                // bit it carries, which is why the two NaN classes are 0x3c00 and 0xbc00 here and a
+                // zero with either sign is 0x0000.
+                result = a != 0.0 ? copysign(1.0, a) : 0.0;
+                break;
+            default:
+                break;
+            }
+        }
+        if (result == 0.0) {
+            result = 0.0;
+        }
+    }
+    if (copying) {
+        return result;
     }
     return CharonMPSGraphOwnNaN(CharonMPSGraphAsZero(result, resultType));
 }
