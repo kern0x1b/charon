@@ -225,6 +225,7 @@ static void printAnnotationFlagFacts(const char *prefix, PDFAnnotation *annotati
     if (charonFixtureNamesItsWidgets(prefix))
         printf("%s.flags.fieldName=%s\n", prefix,
                [annotation fieldName] ? [[annotation fieldName] UTF8String] : "(nil)");
+    printf("%s.state.onName=%s\n", prefix, [[annotation buttonWidgetStateString] UTF8String]);
 }
 
 // ---- the action family and PDFDestination -------------------------------------------------------

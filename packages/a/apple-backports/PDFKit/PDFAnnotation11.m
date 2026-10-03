@@ -546,6 +546,58 @@ static const CGFloat kTextAnnotationSize = 24.0;
 @dynamic widgetControlType;
 @dynamic activatableTextField;
 @dynamic fieldName;
+@dynamic buttonWidgetStateString;
+
+// The /AP /N walk's context, and the applier itself.  C rather than a block because the release's block
+// form of this call is iOS 12 and neither band carries it - see the note at the call.
+typedef struct { NSString *onState; } CharonOnState;
+
+// The release's applier function returns VOID - only the iOS 12 block form returns bool - so there is
+// no early exit, and the loop stops mattering once a name is found because the guard below does.
+static void charonTakeOnState(const char *key, CGPDFObjectRef value, void *info)
+{
+    CharonOnState *state = (CharonOnState *)info;
+    if (key == NULL || state == NULL || state->onState != nil)
+        return;                     // one is enough: the first non-/Off key names the on state
+    if (strcmp(key, "Off") == 0)
+        return;
+    state->onState = [[NSString alloc] initWithUTF8String:key];
+}
+
+// The NAME of this widget's on-state, which is the /AP /N key that is not /Off and "Yes" when there is
+// no /AP at all.
+//
+// Eighteen fixtures that carry no /AP answer "Yes" - every /Btn and every /Tx shape in the widget
+// fixtures, whatever /AS and /V say - so "Yes" is the DEFAULT and not the answer.  button-ap-states.pdf
+// has five annotations whose /AP /N is keyed on /On, /Yes and /Marked, and it answers those names:
+//
+//   /AS /Off, /N keyed /On      -> "On"
+//   /AS /On,  /N keyed /On      -> "On"
+//   /AS /Yes, /N keyed /Yes     -> "Yes"
+//   /AS /Yes, /N keyed /Marked  -> "Marked"     <- and its STATE is 0, because /AS does not name it
+//   /AS /Marked, /N keyed /Marked -> "Marked"  <- and its STATE is 1
+//
+// So the name is read out of the /AP's own /N keys - the one that is not /Off - and not from /AS and not
+// from /V.  Two of the five are what make it a rule rather than an echo of /AS: an /N keyed /Marked gives
+// "Marked" whatever /AS says.
+- (NSString *)buttonWidgetStateString
+{
+    if (_annotation == NULL)
+        return @"Yes";
+    CGPDFDictionaryRef appearance = NULL;
+    if (!CGPDFDictionaryGetDictionary(_annotation, "AP", &appearance) || appearance == NULL)
+        return @"Yes";
+    CGPDFDictionaryRef normal = NULL;
+    if (!CGPDFDictionaryGetDictionary(appearance, "N", &normal) || normal == NULL)
+        return @"Yes";
+    // The /N keys are walked with CGPDFDictionaryApplyFunction and NOT with
+    // CGPDFDictionaryApplyBlock: the block form is CG_AVAILABLE_STARTING(10.14, 12.0) and this port's
+    // bands are 6.1.3 and 4.3, so a block here would not link.  The function form is
+    // CG_AVAILABLE_STARTING(10.3, 2.0) and carries its context in an `info` pointer.
+    CharonOnState state = {nil};
+    CGPDFDictionaryApplyFunction(normal, charonTakeOnState, &state);
+    return state.onState ?: @"Yes";
+}
 
 // The dictionary the harness reads to decide which keys are comparable - see CharonPDFKit.h.
 - (CGPDFDictionaryRef)charon_CGPDFDictionary

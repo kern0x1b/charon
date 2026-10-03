@@ -155,6 +155,9 @@ static void printAnnotationFlagFacts(const char *prefix, PDFAnnotation *annotati
     printf("%s.flags.activatableTextField=%d\n", prefix, (int)annotation.isActivatableTextField);
     if (charonFixtureNamesItsWidgets(prefix))
         printf("%s.flags.fieldName=%s\n", prefix, annotation.fieldName.UTF8String ?: "(nil)");
+    // -buttonWidgetStateString is compared on EVERY annotation: it is the /AP /N on-state name, or "Yes"
+    // when there is no /AP, and the harness's button-ap-states.pdf is what tells those apart.
+    printf("%s.state.onName=%s\n", prefix, annotation.buttonWidgetStateString.UTF8String ?: "(nil)");
 }
 
 // ---- the action family and PDFDestination -------------------------------------------------------

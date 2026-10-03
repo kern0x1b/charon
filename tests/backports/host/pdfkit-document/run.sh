@@ -526,6 +526,13 @@ for key in \
     widget-t-extra-TU.pdf.page0.annotation0.flags.fieldName \
     widget-t-extra-DAstring.pdf.page0.annotation0.flags.fieldName \
     widget-t-extra-DAstring.pdf.page0.annotations.count \
+    button-ap-states.pdf.page0.annotation0.state.onName \
+    button-ap-states.pdf.page0.annotation1.state.onName \
+    button-ap-states.pdf.page0.annotation2.state.onName \
+    button-ap-states.pdf.page0.annotation3.state.onName \
+    button-ap-states.pdf.page0.annotation4.state.onName \
+    button-as-alone.pdf.page0.annotation0.state.onName \
+    widget-flags.pdf.page0.annotation0.state.onName \
     cgfixture-lines2.pdf.page0.string \
     cgfixture-lines2.pdf.page0.numberOfCharacters \
     cgfixture-words.pdf.page0.string \

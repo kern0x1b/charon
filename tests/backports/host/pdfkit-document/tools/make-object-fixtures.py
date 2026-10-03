@@ -406,6 +406,60 @@ SYNTH_COUNT_LINK_FIRST = [annot(b"Link", [(b"Rect", b"[20 700 60 720]"), (b"F", 
 SYNTH_COUNT_LINK_MIDDLE = [widget([]), annot(b"Link", [(b"Rect", b"[20 700 60 720]"), (b"F", b"4")]),
                            widget([])]
 
+# -buttonWidgetState's matrix.  The format splits a check box in two: the FIELD carries /V, the value, and
+# the WIDGET carries /AS, the appearance state (Table 8.69), and PDFKit's member could read either or
+# both.  So the fixtures are: a /Btn with /AS alone, a /Btn with /AS and /V on the same dictionary, and the
+# MERGED shape with /V on the field and /AS on the widget - four states each, because /Off, /On and /Yes
+# are the names the format uses and "absent" is the case that says which one the member defaults to.
+BTN_STATES = (None, b"/Off", b"/On", b"/Yes")
+
+def _as_pairs(state, key=b"AS"):
+    """the (key, value) pairs for one state key, as the annotation helpers take them"""
+    return [] if state is None else [(key, state)]
+
+
+def _as_bytes(state, key=b"AS"):
+    """the same one state key, as the merged writer's bytes - it builds a dictionary itself rather than
+    going through annot(), so it wants " /AS /On" and not a pair.  The two spellings of the same thing in
+    one file is fixture bug fourteen, and it raised on the first call rather than writing a bad file."""
+    return b"" if state is None else b" /" + key + b" " + state
+
+
+BUTTON_AS_ALONE = [widget(_as_pairs(state), field=b"/Btn") for state in BTN_STATES]
+BUTTON_AS_AND_V = [widget(_as_pairs(state) + _as_pairs(state, b"V"), field=b"/Btn")
+                   for state in BTN_STATES]
+# and a /Tx beside them, because a text widget answered -1 on every /AS measured and that has to be a
+# rule rather than an accident of the shape
+TEXT_AS = [widget(_as_pairs(state)) for state in BTN_STATES]
+
+# Two gaps the first /AS round left.  (a) Is /AS /Yes the on-state or is /V /On?  button-as-alone has /AS
+# /On with no /V and answers 0; button-as-and-v has both equal and /On answers 1 - so one of the two keys
+# carries it and that pair cannot say which.  Four fixtures, /AS and /V varied INDEPENDENTLY.
+# (b) Is -buttonWidgetStateString ever anything but "Yes"?  It answered "Yes" on eighteen fixtures so far,
+# including -1 answers and /Off answers, which reads as a constant - and the format names a check box's on
+# state in the /AP dictionary's /N keys, so an /AP whose /N is keyed on something else is the case that
+# would move it.
+BUTTON_V_ONLY = [widget(_as_pairs(state, b"V"), field=b"/Btn") for state in BTN_STATES]
+BUTTON_AS_YES_V_OFF = [widget(_as_pairs(b"/Yes") + _as_pairs(state, b"V"), field=b"/Btn")
+                       for state in BTN_STATES]
+BUTTON_AP_STATES = [
+    widget([(b"AS", b"/Off"), (b"AP", b"<< /N << /On << >> /Off << >> >> >>")], field=b"/Btn"),
+    widget([(b"AS", b"/On"), (b"AP", b"<< /N << /On << >> /Off << >> >> >>")], field=b"/Btn"),
+    widget([(b"AS", b"/Yes"), (b"AP", b"<< /N << /Yes << >> /Off << >> >> >>")], field=b"/Btn"),
+    widget([(b"AS", b"/Yes"), (b"AP", b"<< /N << /Marked << >> /Off << >> >> >>")], field=b"/Btn"),
+    widget([(b"AS", b"/Marked"), (b"AP", b"<< /N << /Marked << >> /Off << >> >> >>")], field=b"/Btn"),
+]
+
+# The one combination the first two rounds did not derive: button-as-alone answers 0 for /AS /On with no
+# /V, and button-as-and-v answers 1 for /AS /On WITH /V /On.  Two fixtures cross it - /AS /Off with /V /On
+# and /AS /On with /V /Off - so a disjunction and a conjunction are told apart from one another.
+BUTTON_AS_OFF_V_ON = [
+    widget([(b"AS", b"/Off"), (b"V", b"/On")], field=b"/Btn"),
+    widget([(b"AS", b"/On"), (b"V", b"/Off")], field=b"/Btn"),
+    widget([(b"AS", b"/Yes"), (b"V", b"/On")], field=b"/Btn"),
+    widget([(b"AS", b"/On"), (b"V", b"/Yes")], field=b"/Btn"),
+]
+
 # /T, spelled four ways, because -[PDFAnnotation fieldName] answers a SYNTHESISED name on the first
 # version of the widget fixtures and the coordinator's challenge is right that this fits the
 # fixture-defect pattern rather than a host behaviour: a widget that DOES carry /T must be read first,
@@ -425,7 +479,8 @@ def merged_field_child(field_extra, child_extra):
     return widget_body, field_extra
 
 
-def build_merged_field(directory, name, child_extra, field_extra=b"/T (parent field)"):
+def build_merged_field(directory, name, child_extra, field_extra=b"/T (parent field)",
+                       field_type=b"/Tx", child_type=None):
     """One page whose /Annots holds a WIDGET whose /Parent is a FIELD dictionary, the merged shape.
 
     Laid out by hand because the two dictionaries reference each other: the field is object 7 and the
@@ -443,9 +498,10 @@ def build_merged_field(directory, name, child_extra, field_extra=b"/T (parent fi
         font,
         b"",                       # the field, filled in below
     ]
-    objects[4] = (b"<< /Type /Annot /Subtype /Widget /Rect [40 40 240 70] /F 4 /FT /Tx /Parent 7 0 R "
+    objects[4] = (b"<< /Type /Annot /Subtype /Widget /Rect [40 40 240 70] /F 4 /Parent 7 0 R "
+                  + (b"/FT " + child_type if child_type else b"")
                   + child_extra + b" >>")
-    objects[6] = (b"<< /FT /T " + field_extra + b" /Kids [5 0 R] >>")
+    objects[6] = (b"<< /FT " + field_type + b" /T " + field_extra + b" /Kids [5 0 R] >>")
     objects[2] = (b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Annots [5 0 R] "
                   b"/Resources << /Font << /F1 6 0 R >> >> /Contents 4 0 R >>")
     out = bytearray(b"%PDF-1.4\n")
@@ -882,6 +938,23 @@ def main():
         ("mk-rot-real.pdf", [MK_ROT_REAL]),
         ("mk-r-zero.pdf", [MK_R_ZERO]),
     ]
+    for name, annotations in (("button-asoff-von.pdf", BUTTON_AS_OFF_V_ON),
+                              ("button-v-only.pdf", BUTTON_V_ONLY),
+                              ("button-asyes-voff.pdf", BUTTON_AS_YES_V_OFF),
+                              ("button-ap-states.pdf", BUTTON_AP_STATES),
+                              ("button-as-alone.pdf", BUTTON_AS_ALONE),
+                              ("button-as-and-v.pdf", BUTTON_AS_AND_V),
+                              ("text-as.pdf", TEXT_AS)):
+        count, _ = build(os.path.join(directory, name), annotations)
+        print("  wrote %-20s %d objects, %d annotations" % (name, count, len(annotations)))
+    for value in (b"/Yes", b"/Off"):
+        for state in (b"/Off", b"/On", b"/Yes"):
+            name = "button-merged-v%s-as%s.pdf" % (value.decode().strip("/").lower(),
+                                                  state.decode().strip("/").lower())
+            count = build_merged_field(directory, name, _as_bytes(state),
+                                       field_extra=b"/V " + value, field_type=b"/Btn")
+            print("  wrote %-20s %d objects, a /Btn field /V %s and a widget /AS %s"
+                  % (name, count, value.decode(), state.decode()))
     for index, annotations in enumerate(T_WITH_ONE_MORE):
         name = "widget-t-extra-%s.pdf" % T_WITH_ONE_MORE_NAMES[index]
         count, _ = build(os.path.join(directory, name), annotations)
@@ -892,7 +965,7 @@ def main():
         count, _ = build(os.path.join(directory, name), annotations)
         print("  wrote %-20s %d objects, %d annotations" % (name, count, len(annotations)))
     for name, child_extra in (("widget-t-merged.pdf", b""),
-                              ("widget-t-mergedname.pdf", b"/T (child too)")):
+                              ("widget-t-mergedname.pdf", b" /T (child too)")):
         count = build_merged_field(directory, name, child_extra)
         print("  wrote %-20s %d objects, a widget whose /Parent is a field" % (name, count))
     for name, annotations in (("widget-flags.pdf", WIDGET_FLAGS),

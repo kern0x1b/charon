@@ -153,11 +153,67 @@ list is spelled out in `host.m` rather than being a prefix test. A prefix test s
 `widget-t-name.pdf`, whose `/T` is a NAME and so names nothing, and the differential caught it - the same
 way it catches everything else here.
 
+## The /AS matrix: the on-state NAME is readable, the state is not
+
+`-buttonWidgetStateString` is **implemented** and `-buttonWidgetState` is **inert**, and the difference
+between them is the whole of this section.
+
+**The string is the /AP /N on-state name.** Eighteen fixtures that carry no `/AP` answer `"Yes"` -
+every `/Btn` and every `/Tx` shape in the widget fixtures, whatever `/AS` and `/V` say - so `"Yes"` is the
+DEFAULT and not the answer. `button-ap-states.pdf` has five annotations whose `/AP` `/N` is keyed on
+`/On`, `/Yes` and `/Marked`, and it answers those names:
+
+| `/AS` | `/AP /N` keys | answered |
+| --- | --- | --- |
+| `/Off` | `/On`, `/Off` | `On` |
+| `/On` | `/On`, `/Off` | `On` |
+| `/Yes` | `/Yes`, `/Off` | `Yes` |
+| `/Yes` | `/Marked`, `/Off` | **`Marked`** |
+| `/Marked` | `/Marked`, `/Off` | **`Marked`** |
+
+The last two are what make it a rule and not an echo of `/AS`: an `/N` keyed `/Marked` answers `"Marked"`
+beside an `/AS` `/Yes` AND beside an `/AS` `/Marked`. The `/N` keys are walked with
+`CGPDFDictionaryApplyFunction` and **not** with `CGPDFDictionaryApplyBlock`, which is
+`CG_AVAILABLE_STARTING(10.14, 12.0)` and in neither band of this port - the first version of this used
+the block form and would not have linked on 6.1.3.
+
+**The state is 1 when `/AS` or `/V` names that on-state, and one combination does not derive.** Measured
+over twenty-two fixtures, and the part that IS a rule:
+
+| fixture | `/AS` | `/V` | `/AP /N` | state |
+| --- | --- | --- | --- | --- |
+| `button-as-alone` | absent | - | "Yes" | 0 |
+| `button-as-alone` | `/Off` | - | "Yes" | 0 |
+| `button-as-alone` | `/On` | - | "Yes" | 0 |
+| `button-as-alone` | `/Yes` | - | "Yes" | **1** |
+| `button-v-only` | - | `/Off` | "Yes" | 0 |
+| `button-v-only` | - | `/On` | "Yes" | 0 |
+| `button-v-only` | - | `/Yes` | "Yes" | **1** |
+| `button-as-and-v` | `/On` | `/On` | "Yes" | **1** |
+| `button-asoff-von` | `/Off` | `/On` | "Yes" | 0 |
+| `button-asoff-von` | `/On` | `/Off` | "Yes" | 0 |
+| `button-asoff-von` | `/Yes` | `/On` | "Yes" | **1** |
+| `button-asoff-von` | `/On` | `/Yes` | "Yes" | **1** |
+| `text-as` (a `/Tx`) | all four | - | - | **-1** |
+| `button-merged-*` (a `/Btn` FIELD with a widget that has no `/FT` of its own) | all three | on the field | - | **-1** |
+
+So `/AS` or `/V` naming the on-state gives 1, and a `/Tx` answers -1 whatever it carries. And **the field
+type has to be on the WIDGET**: the six `button-merged-*` fixtures put `/FT /Btn` on the *field* and have
+the widget reach it through `/Parent`, and all six answer **-1** - which is also what makes the merged
+shape useless for the other half of this member.
+
+**The row stays inert on one line of that table.** `/AS /On` beside `/V /On` with no `/AP` answers **1**,
+while `/AS /On` alone answers 0 and `/AS /On` beside `/V /Off` answers 0. So `/V /On` counts only when
+`/AS` is already `/On`, and neither a disjunction nor a conjunction of the two keys produces that. The
+row's reason carries the whole table and names this line as the open question, rather than the
+implementation carrying a special case for one combination.
+
 ## The 27 rows that are not implemented, and why each one waits
 
 Each of the 27 carries the host's measured answer in its `reason` in
 `registry/PDFKit/annotation11.json`. Grouped:
 
+* **`buttonWidgetState`**, above - the /AS matrix is measured and one combination does not derive.
 * **the `/V` and `/DV` pair.** `widget-values.pdf`'s first annotation carries `/V (typed)` and `/DV
   (preset)`; the host answers **nil** for the string value and an **empty string** for the default. One
   fixture, two different shapes, neither of them a reading of the key - so these wait for a measurement
@@ -185,7 +241,7 @@ Each of the 27 carries the host's measured answer in its `reason` in
     $ sh tests/backports/host/pdfkit-document/run.sh
       images differ by construction: host=/System/.../PDFKit.framework/.../PDFKit
                                       port=.../runs/pdfkit-document/port-side
-      COMPARED 11511 MISMATCHES 0  (not compared: 152, expected to differ: 456, of which 72 compared from the Catalyst side)
+      COMPARED 13273 MISMATCHES 0  (not compared: 175, expected to differ: 525, of which 72 compared from the Catalyst side)
       RED CONTROL ok: the comparison goes red on a mutated port, and names the key
 
 133 fixtures. **Twenty-three named red controls name a flag or skip key**, among them one per member over

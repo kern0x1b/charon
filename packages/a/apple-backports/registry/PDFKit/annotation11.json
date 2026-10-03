@@ -131,7 +131,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "not implemented",
-   "reason": "needs its own /AS matrix before it can be written.  Measured so far: /AS /Yes on a /Btn answers 1, /AS /Off answers 0, /AS /On answers 0, and a /Tx widget with /AS /Yes answers -1 - so the mapping is not the format's off/on pair and needs fixtures per (/FT, /AS) combination before it is a rule",
+   "reason": "the /AS MATRIX is measured and one combination does not derive, so the row is inert rather than implemented.  Measured over twenty-two fixtures: a /Btn widget answers 1 when /AS or /V names the ON-STATE - the /AP /N key that is not /Off, or \"Yes\" when there is no /AP - and 0 otherwise, which covers /AS /Yes alone (1), /AS /On alone (0), /AS /Off (0), /AS absent (0), /V /Yes alone (1), /V /On alone (0), and the five /AP-keyed shapes.  A /Tx widget answers -1 on every /AS, and so does a /Btn widget with no /FT of its own - the six button-merged-* fixtures, whose /Btn FIELD carries the /FT and whose widget points at it through /Parent, all answer -1 - so the field type has to be on the WIDGET.  The combination that does not derive: /AS /On beside /V /On with no /AP answers 1, while /AS /On alone and /AS /On beside /V /Off both answer 0.  So /V /On counts only when /AS is already /On, and no disjunction or conjunction of the two keys produces that.  -buttonWidgetStateString, which IS derivable, is implemented beside it",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
   },
@@ -140,9 +140,8 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "not implemented",
-   "reason": "the string form of -buttonWidgetState and it answers \"Yes\" for every /AS measured - /Yes, /Off and /On alike - which is not a value the document carries.  It waits with -buttonWidgetState, whose enum it would follow",
+   "status": "implemented",
+   "effect": "the NAME of this widget's on-state: the /AP /N key that is not /Off, and \"Yes\" when there is no /AP at all.  Measured on eighteen fixtures that carry no /AP and answer \"Yes\" - every /Btn and every /Tx shape in the widget fixtures, whatever /AS and /V say - so \"Yes\" is the DEFAULT and not the answer.  button-ap-states.pdf has five annotations whose /AP /N is keyed /On, /Yes and /Marked and it answers those names, and two of the five make it a rule rather than an echo of /AS: an /N keyed /Marked answers \"Marked\" beside an /AS /Yes AND beside an /AS /Marked, and an /N keyed /On answers \"On\" beside an /AS /Off.  The /N keys are walked with CGPDFDictionaryApplyFunction and NOT with CGPDFDictionaryApplyBlock, which is CG_AVAILABLE_STARTING(10.14, 12.0) and in neither band of this port",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
   },

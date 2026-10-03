@@ -339,6 +339,14 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 // when both name something, and read as PDF STRINGS only.  A widget that NAMES nothing is not answered
 // here, and the row says why.
 @property (nonatomic, readonly, copy, nullable) NSString *fieldName;
+
+// The NAME of this widget's on-state: the /AP /N key that is not /Off, and "Yes" when there is no /AP at
+// all.  Measured on eighteen fixtures that carry no /AP and answer "Yes", and on button-ap-states.pdf,
+// whose five annotations have /AP /N keyed /On, /Yes and /Marked and answer those names - including the
+// two that make it a rule and not an echo of /AS: an /N keyed /Marked answers "Marked" beside an /AS /Yes
+// and beside an /AS /Marked, and an /N keyed /On answers "On" beside an /AS /Off.  So this is the /AP's
+// own key, and the "Yes" of the nameless fixtures is the DEFAULT rather than the answer.
+@property (nonatomic, readonly, copy) NSString *buttonWidgetStateString;
 @end
 
 // ---- PDFDestination, and the action family --------------------------------------------------
