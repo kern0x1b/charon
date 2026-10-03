@@ -7,6 +7,11 @@
 
 @implementation HMAccessControl
 
+// -init, as the release's own class answers it: the body read out of the arm64e cache of iOS 16.0
+// raises NSInternalInconsistencyException whose reason is Apple's own sentence for the selector, and
+// facts/HomeKit/HMAccessoryProfile.md carries the body, the literal and the names out of it.
+CHARON_HOMEKIT_UNAVAILABLE_INIT
+
 // The release marks -init and +new unavailable, so the class is made through the port's own
 // construction; see CharonHomeKitConstruction.h for why the method family attribute is what lets it
 // assign self.

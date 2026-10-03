@@ -10,14 +10,26 @@
 @implementation HMHome
 @synthesize charon_identifier = _charon_identifier, charon_homeIdentifier = _charon_homeIdentifier, charon_delegate = _charon_delegate;
 
-// -init is NS_UNAVAILABLE in the release's own header, so the port makes the home the way
-// the release makes the objects it has no initialiser for: through +new.
-+ (instancetype)new
+// -init, as the release's own class answers it: the body read out of the arm64e cache of iOS 16.0
+// releases the receiver and answers nil, which the macro below carries. A home is made through the
+// port's own -charon_initWithStore:identifier: below, which is what CharonHomeKitHome() calls, and +new
+// is not defined here for the reason its comment in HMHomeManager gives.
+CHARON_HOMEKIT_NIL_INIT
+
+// The port's own designated initializer, and where a home's identity comes from: see
+// CharonHomeKitConstruction.h for why this is not -init and what the method-family attribute is for.
+// Every model call in this file and in HMHomeGraph8_0.m reaches a home through it - CharonHomeKitHome
+// and -addHomeWithName:completionHandler: among them - so it is here rather than in a +new the release
+// has no use for.
+- (instancetype)charon_initWithStore:(CharonHomeKitStore *)store identifier:(NSUUID *)identifier __attribute__((objc_method_family(init)))
 {
-    HMHome *object = [super new];
-    object.charon_identifier = [CharonHomeKitNewIdentifier() copy];
-    CharonHomeKitRecord(@"homes", object.charon_identifier);
-    return object;
+    self = [super init];
+    if (self) {
+        _charon_identifier = identifier ? [CharonHomeKitUUIDString(identifier) copy]
+                                        : [CharonHomeKitNewIdentifier() copy];
+        CharonHomeKitRecord(@"homes", _charon_identifier);
+    }
+    return self;
 }
 
 - (NSUUID *)uniqueIdentifier
@@ -603,11 +615,21 @@ HMHome *CharonHomeKitHome(NSString *identifier)
 @implementation HMHomeManager
 @synthesize charon_delegate = _charon_delegate;
 
-// -init is NS_UNAVAILABLE in the release's own header: the manager is a shared object there, and here
-// it is the one place the set of homes is read and written, made the same way.
-+ (instancetype)new
+// -init, as the release's own class answers it: the body read out of the arm64e cache of iOS 16.0 is
+// `[self initWithHomeMangerConfiguration:[HMHomeManagerConfiguration defaultConfiguration]]`, so the
+// manager comes up on its default configuration rather than bare, and it is not a raise. What the
+// configuration holds on a device is the daemon's settings; the port's manager reads and writes the
+// shared store, which is the same role, and its accessors already read it - so the default
+// configuration is what this object already answers from and there is nothing else to store.
+// facts/HomeKit/HMAccessoryProfile.md carries the body and the names out of it.
+//
+// +new is not defined here: the metaclass of this class carries no +new of its own in the cache of
+// iOS 16.0, so the class inherits NSObject's, which is [[self alloc] init] and reaches the -init
+// above. A definition here would put the selector in the port's metadata where the release's has none
+// and would answer a caller what -init answers.
+- (instancetype)init
 {
-    return [super new];
+    return [super init];
 }
 
 - (id<HMHomeManagerDelegate>)delegate
