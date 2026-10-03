@@ -288,6 +288,17 @@ static double clampChannel(double value, int isSigned, int bytes)
     return value < 0.0 ? 0.0 : (value > 65535.0 ? 65535.0 : value);
 }
 
+// **The store rounds to nearest, half UP.** The release's own Q14 weights summed as integers and rounded this
+// way reproduce the host's stored value on 14400 of 14400 samples over both axes, six translates, four slopes
+// and both edging modes, where rounding half away from zero does not; and the cast toward zero this harness
+// used to do is what left the 109 samples "off by exactly 255" - on `ARGB16S` the backColor is `(int16_t)(-1.0)`
+// = `0xFFFF` for channels 2 and 3, a wholly-outside sample's sum is `-1` to within an ulp, and the cast answers
+// `0x0000`. This is the harness's own third opinion, so it carries the same rule as the port and not the port's.
+static double roundHalfUp(double value)
+{
+    return value >= 0.0 ? floor(value + 0.5) : ceil(value - 0.5);
+}
+
 static void storeChannel(void *pixel, unsigned channel, double value, const Shear *shear)
 {
     if (shear->isHalf) {
@@ -295,15 +306,17 @@ static void storeChannel(void *pixel, unsigned channel, double value, const Shea
         return;
     }
     switch (shear->bytes) {
-    case 1: ((uint8_t *)pixel)[channel] = (uint8_t)clampChannel(value, 0, 1); return;
+    case 1: ((uint8_t *)pixel)[channel] = (uint8_t)roundHalfUp(clampChannel(value, 0, 1)); return;
     case 2:
-        if (shear->isSigned) ((int16_t *)pixel)[channel] = (int16_t)clampChannel(value, 1, 2);
-        else ((uint16_t *)pixel)[channel] = (uint16_t)clampChannel(value, 0, 2);
+        if (shear->isSigned) ((int16_t *)pixel)[channel] = (int16_t)roundHalfUp(clampChannel(value, 1, 2));
+        else ((uint16_t *)pixel)[channel] = (uint16_t)roundHalfUp(clampChannel(value, 0, 2));
         return;
     default: break;
     }
     uint32_t word = *(uint32_t *)pixel, shift = channel * 10;
-    word = (word & ~(0x3FFu << shift)) | (((uint32_t)clampChannel(value, 0, 2) & 0x3FFu) << shift);
+    // The ten-bit field is masked AFTER the round, as the store does: 1023.9 becomes 1024 and wraps, where a
+    // truncating cast before the mask would have kept 1023.
+    word = (word & ~(0x3FFu << shift)) | (((uint32_t)roundHalfUp(clampChannel(value, 0, 2)) & 0x3FFu) << shift);
     *(uint32_t *)pixel = word;
 }
 
@@ -680,7 +693,18 @@ int main(void)
     @autoreleasepool {
         if (getenv("SURVEY")) { surveyFlags(); return 0; }
         float scales[] = { 1.0f, 2.0f, 0.5f, 0.25f };
-        double translates[] = { 0.0, 1.0, -1.0, 0.5, -0.5, 2.5 };
+        // **The last translate is 1/128 and it is there because of the release's phase grid.** The release's
+        // filter quantises the mapped position to `1 / (64 * min(1, scale))` of a pixel - 1/64 at a scale of one
+        // and two, 1/32 at 0.5, 1/16 at 0.25 (facts/Accelerate/vImageGeometry.md) - and the release's own
+        // weight table has one row per phase of that grid. The first six translates and the four slopes make
+        // every mapped position a multiple of a QUARTER at a scale of one and two, a half at 0.5 and a quarter
+        // at 0.25, which are all multiples of the grid at every scale: **the sweep therefore landed on the grid
+        // on every case and could not see the quantisation at all**, which is measured - quantising the mapped
+        // position to the grid in `CharonResampleWeights` leaves the failure count at 8748 checks / 9230
+        // failures, unchanged. One translate of 1/128 puts every mapped position off the grid at every scale
+        // (1/128 itself, and divided by the scale 1/256, 1/64 and 1/32, none of which is a multiple of the
+        // grid), so a fix that only quantises the phase is visible here.
+        double translates[] = { 0.0, 1.0, -1.0, 0.5, -0.5, 2.5, 0.0078125 };
         double slopes[] = { 0.0, 1.0, -0.5, 2.0 };
         vImage_Flags modes[] = { kvImageBackgroundColorFill, kvImageEdgeExtend };
         // The shapes: the destination the same size, wider, narrower, taller, shorter, and the destination
@@ -693,7 +717,7 @@ int main(void)
             const Shear *shear = &shears[s];
             for (int m = 0; m < 2; m++)
                 for (unsigned sc = 0; sc < 4; sc++)
-                    for (unsigned t = 0; t < 6; t++)
+                    for (unsigned t = 0; t < sizeof translates / sizeof *translates; t++)
                         for (unsigned sl = 0; sl < 4; sl++)
                             one(shear, 9, 5, 9, 5, 0, 0, translates[t], slopes[sl], scales[sc],
                                 modes[m] | (sc == 3 ? kvImageHighQualityResampling : kvImageNoFlags),
