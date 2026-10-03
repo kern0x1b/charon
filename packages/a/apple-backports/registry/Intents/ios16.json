@@ -2353,7 +2353,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INListCarsIntent, which answers it with a body written by hand in the generator's EXTRA_METHODS",
+      "reason": "a member of INListCarsIntent, which the class's own generated implementation answers",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and this header declares the member AVAILABLE rather than marking it unavailable - INListCarsIntent.h:17 reads `- (instancetype)init NS_DESIGNATED_INITIALIZER;` - so what it needed was not the measurement below but a body, and the body's own measurement is in facts/Intents/Intents.md: the release's own class declares this selector itself and [[INListCarsIntent alloc] init] returns an object with no exception"
     },
     {

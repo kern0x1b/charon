@@ -665,41 +665,6 @@ EXTRA_METHODS = {
         "    }",
         "}",
     ],
-    # The bare -init of a class whose header declares it AVAILABLE, which the loop above never
-    # reaches: it only visits selectors spelled initWith...:, so an initialiser with no argument
-    # fell through to the group's reason and its row was written as absent with the reason for a
-    # header that marks a member unavailable. This header does not - INListCarsIntent.h:17 reads
-    # `- (instancetype)init NS_DESIGNATED_INITIALIZER;` - and the release answers it: measured on
-    # the host's own Intents, -[INListCarsIntent init] is declared by INListCarsIntent itself and
-    # [[INListCarsIntent alloc] init] returns an object (tools/intents/probe-host-absent.sh against
-    # registry/Intents/ios16.json).
-    ("INListCarsIntent", "init"): [
-        "- (instancetype)init",
-        "{",
-        "    // The header's own declaration is this class's designated initialiser and the class",
-        "    // declares no property, so the whole of it is the superclass's own -init. INIntent",
-        "    // declares none of its own, so this reaches NSObject's, which nothing in the chain",
-        "    // marks unavailable - the selector can be spelled here, and no IMP is needed.",
-        "    return [super init];",
-        "}",
-    ],
-    # The second class of the same kind, and the reason the first entry is here at all rather than a
-    # rule in the loop above. INGetRideStatusIntent.h:17 reads `- (instancetype)init
-    # NS_DESIGNATED_INITIALIZER;` - declared, not marked unavailable - so its row was written as
-    # absent with "the header marks the initialiser unavailable, so a port cannot call it", which is
-    # false of this header. Its superclass is INIntent, which declares no -init of its own, so the
-    # answer is the same chain and the body is the same body.
-    ("INGetRideStatusIntent", "init"): [
-        "- (instancetype)init",
-        "{",
-        "    // INGetRideStatusIntent.h:17 declares this the class's designated initialiser and marks",
-        "    // nothing unavailable, so it is part of the class's API and not a marker on the way to",
-        "    // the superclass's. The class declares no property, so the whole of it is INIntent's",
-        "    // own -init, and INIntent declares none, so this reaches NSObject's - which nothing in",
-        "    // the chain marks unavailable, so the selector can be spelled here and no IMP is needed.",
-        "    return [super init];",
-        "}",
-    ],
     # INMediaDestination's two properties are readonly and its -init is NS_UNAVAILABLE, so the two
     # class methods below are the only way to make one and they fill these.
     "INMediaDestination": [
@@ -1193,6 +1158,32 @@ def initialiser(interface, method, states, spellings, interfaces):
     return lines
 
 
+def init_shape_of(interface, interfaces):
+    """Which of the two shapes a header has for -init this class is, or None for no -init at all.
+
+    "unavailable" is a class whose chain marks the selector NS_UNAVAILABLE: the marker is a
+    compile-time attribute, the system still answers the selector, and the body has to reach the
+    superclass's own -init through its IMP because naming the selector is what the marker forbids.
+    "designated" is a class whose own header DECLARES -init and does not mark it unavailable -
+    INGetRideStatusIntent and INListCarsIntent are the two in this delivery, each marking it
+    NS_DESIGNATED_INITIALIZER - where nothing forbids the selector and [super init] is the ordinary
+    body.
+
+    The two are told apart here, from the header, in one place. That is the point: the alternative
+    the tree had was a list of class names in EXTRA_METHODS saying which is which, and a class whose
+    header DECLARES -init and is not in the list gets no -init at all and its row is written absent
+    with the reason for the other shape - which is what happened to -[INGetRideStatusIntent init]
+    until this function existed.
+    """
+    if own_init_unavailable(interface, interfaces) and \
+            (interface.method("init") is not None or own_init_blocked_here(interface, interfaces)):
+        return "unavailable"
+    declared = interface.method("init")
+    if declared is not None and not has_attr(declared, "UnavailableAttr"):
+        return "designated"
+    return None
+
+
 def own_init_blocked_here(interface, interfaces):
     """Whether the -init a bare -init would chain to is the marked one, and not this class's own.
 
@@ -1406,8 +1397,15 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
                        % (name, CAUSE_LABELS.get(cause, cause)))
 
     if interface.name in HAND_WRITTEN:
+        # A class this package writes by hand: this file emits no method of it, so the shape of an
+        # -init it answers is the shape ITS HEADER has, which is what init_shape_of reads here and
+        # not the hand-written file's own statement about itself. Nothing is rendered for it - the
+        # file that answers its methods is the hand-written one, and the registry reads that file
+        # for what it defines - but the registry gets the shape in the same place it gets every
+        # other class's.
         return out + ["", "@end", ""], {"properties": [], "dynamic": [], "methods": [],
-                                        "causes": {}}
+                                        "causes": {},
+                                        "init_shape": init_shape_of(interface, interfaces) or "absent"}
 
     out.append("")
     deferred_names = {name for name, _, _ in dynamic}
@@ -1441,8 +1439,29 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
     # the marker is a compile-time marker, and refusing to define the method leaves a caller that
     # sends it reaching a NULL IMP.  The superclass's own -init is called through its IMP rather
     # than by name, for the same reason the marker exists.
-    own_init = own_init_unavailable(interface, interfaces)
-    if own_init and (interface.method("init") is not None or own_init_blocked_here(interface, interfaces)):
+    init_shape = init_shape_of(interface, interfaces)
+    if init_shape == "designated":
+        # The second shape the header has, and the one this port had read as the first's absence.
+        # INGetRideStatusIntent does not mark -init unavailable: it declares it, and marks it
+        # NS_DESIGNATED_INITIALIZER, which is the header saying this class's own initialiser is this
+        # one. So nothing forbids the selector here and the ordinary body is the right one - the
+        # superclass's -init, which for this class is INIntent's, and the identifier INIntent's init
+        # makes is what an interaction donated with this intent is keyed by. The rule above used to
+        # ask only whether some class in the chain marks -init unavailable, and INIntent does not, so
+        # this class got no -init at all and its row was written absent with a reason that said the
+        # header marks it unavailable. The header says the opposite; INIntent.h declares no -init
+        # and INGetRideStatusIntent.h:17 reads `- (instancetype)init NS_DESIGNATED_INITIALIZER;`.
+        # Measured on the host's own Intents by tests/backports/host/intents-init/run.sh, which
+        # reads class_getInstanceMethod and calls [[Cls alloc] init] through that IMP: the golden
+        # line for this class says the class DECLARES -init and the call answers an object.
+        out += ["- (instancetype)init", "{",
+                "    // The header declares this -init as the class's designated initialiser, and nothing",
+                "    // in its chain marks the selector unavailable, so the superclass's own -init is",
+                "    // called by name.  On this class that is INIntent's, which is what makes the",
+                "    // identifier an interaction donated with this intent is keyed by.",
+                "    return [super init];",
+                "}", ""]
+    elif init_shape == "unavailable":
         out += ["- (instancetype)init", "{",
                 "    // The header marks this class's -init unavailable.  The system still answers one:",
                 "    // measured, [[%s alloc] init] returns an object with every property nil.  So the"
@@ -1620,6 +1639,11 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
                   for entry in report["methods"] if entry.startswith("+["))
     report["class_properties"] = sorted(name for name in class_properties
                                         if name in written)
+    # WHICH shape of -init the header has for this class, and "absent" for a class that got no
+    # -init at all. The registry's own source for the row is a different measurement for each shape,
+    # so this is the generator saying which one it wrote - read out of the header - rather than a
+    # list of class names that could drift from the headers this report was read out of.
+    report["init_shape"] = init_shape or "absent"
     return out, report
 
 

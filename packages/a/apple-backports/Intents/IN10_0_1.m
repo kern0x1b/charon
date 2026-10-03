@@ -1270,11 +1270,10 @@
 
 - (instancetype)init
 {
-    // INGetRideStatusIntent.h:17 declares this the class's designated initialiser and marks
-    // nothing unavailable, so it is part of the class's API and not a marker on the way to
-    // the superclass's. The class declares no property, so the whole of it is INIntent's
-    // own -init, and INIntent declares none, so this reaches NSObject's - which nothing in
-    // the chain marks unavailable, so the selector can be spelled here and no IMP is needed.
+    // The header declares this -init as the class's designated initialiser, and nothing
+    // in its chain marks the selector unavailable, so the superclass's own -init is
+    // called by name.  On this class that is INIntent's, which is what makes the
+    // identifier an interaction donated with this intent is keyed by.
     return [super init];
 }
 
