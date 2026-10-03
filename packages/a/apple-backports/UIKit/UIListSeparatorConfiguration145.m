@@ -107,9 +107,9 @@ static UIColor *charon_multiple_selection_separator_colour(void)
 //
 // Every value is the zero of its type - the two visibilities' zero happens to be Automatic - and in
 // particular the insets are ZERO where the initialiser gives the automatic ones, and both colours are nil.
-// The port answers exactly that, which is why -initCharonWithDefaults: below exists: it is [super init]
-// with nothing else, and it is stated as a separate method so the difference between the two paths is in
-// the code rather than in a comment.
+// The port answers exactly that.  The difference between the two paths is in the code and not in this
+// comment: -initWithListAppearance: above writes every field, and -init below writes none of them, so
+// [super init] is the whole of it and an object built this way reads back every zero.
 - (instancetype)init
 {
     return [super init];

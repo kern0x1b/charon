@@ -62,9 +62,16 @@ its type:
 | `multipleSelectionColor` | nil | nil |
 
 So the insets are **zero** where `-initWithListAppearance:` gives the automatic ones, and both colours are nil
-where the initialiser gives the separator colour. That difference is in the code and not in a comment:
-`-initCharonWithDefaults:` is the initialiser's body and `-init` is `[super init]` and nothing else, and the
-case asks both shapes on both sides.
+where the initialiser gives the separator colour. That difference is in the code and not in this comment:
+`-initWithListAppearance:` writes every field and `-init` writes none of them, so `[super init]` is the whole of
+it, and the case asks both shapes on both sides.
+
+A first version of this file, and of the row beside it, said the port had a `-initCharonWithDefaults:` method
+"stated as a separate method so the difference between the two paths is in the code rather than in a comment".
+**There is no such method** and there never was: `-init` is `[super init]` and the initialiser writes its
+defaults inline. The registry check's coherence pass is what found it - it named the selector as one the row
+cites and the file the row names does not define. A comment that describes a method which is not there is the
+same defect as a row that describes one, so both were corrected forward.
 
 ## What this port does not do
 
