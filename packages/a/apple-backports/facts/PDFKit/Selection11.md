@@ -151,35 +151,124 @@ selection"), so the two sides differ from the second add onwards and the rows sa
 compares ONE add per selection for that reason and the reason is written next to the comparison, not left
 for a reader to infer.
 
-## `-[PDFSelection boundsForPage:]`: what is already accounted for, and the one number that is not
+## `-[PDFSelection boundsForPage:]`: the rule, and the three fixtures that fixed it
 
-The row is still `missing` and is NOT registered. These are the measurements the next piece of work starts
-from, all of them arithmetic over the FILE rather than over a table.
+The row is `implemented`. What follows is what the host answers and where each part of the answer comes
+from; the run output is `.agent-work/runs/v-pdfsel2/bounds-measurement.txt` and the predictions written
+BEFORE each round asked the host are `.agent-work/runs/v-pdfsel2/bounds-predictions.md` and
+`bounds-predictions-2.md`, in the branch that measured them.
 
-The host's answer for `page 1` on cgfixture-1.pdf is `20.0000,357.2400,36.7080,12.0000`, and that fixture's
-font dictionary carries everything needed to reproduce three of the four numbers exactly:
+### /Widths is what is read, and the two things that are not
 
-    /Subtype /TrueType /BaseFont /AAAAAB+Helvetica /FirstChar 32 /LastChar 112
-    /Widths [ 278 0 ... 556 ... ]   and   /FontDescriptor << /Ascent 770 /Descent -230 /CapHeight 717 ... >>
+The starting point was one number that no arithmetic over the file reproduced: cgfixture-1.pdf's `/Widths`
+sum to 3058 per 1000 em (36.6960pt at 12pt), its embedded `/FontFile2` program's own advances sum to 6264
+units per 2048 em (36.7031pt), and the host answered **36.7080** - a third number. Two candidates 0.0071pt
+apart cannot say which is read, because a rounding step in either explains the gap.
 
-  **the height is the font size**, 12, which is `Tf`'s own operand.
-  **the y is the baseline plus the font's own DESCENT**: the text matrix puts the baseline at 360 and
-  `/Descent -230` gives 360 - 230 * 12 / 1000 = 357.24, the host's answer to every digit.  It is not the
-  ascent (that would be 350.76), not the cap height (351.40), not the x-height and not the font bounding box
-  (346.54), which is what makes it worth writing down: the rect runs from the DESCENDER line up by the size.
-  **the x is the text matrix's translation**, 20, which is the run's own pen position.
-  **the width is the sum of the /Widths**, 556 + 556 + 556 + 556 + 278 + 556 = 3058 per 1000 em, which at
-  12pt is 36.696 - and the host answers **36.7080**, which is one unit per 1000 em more.
+So the disagreement was made enormous instead of delicate, in three fixtures built by
+`tools/make-font-fixtures.py`, which lifts the REAL font program verbatim out of the `/FontFile2` stream of
+a fixture the conforming writer wrote and writes the `/Widths` beside it:
 
-That last 0.012pt is the open measurement, and it is a real difference rather than arithmetic: the
-descriptor carries `/FontFile2`, an EMBEDDED TrueType program, and a font's own `hmtx` advances and the
-`/Widths` a writer computed from them differ by a unit now and then. So the width may come from the embedded
-program rather than from `/Widths`, and the release has both readers: `CGFontCreateWithDataProvider` over
-`/FontFile2` and `CGFontCreateWithFontName` for a font with no program of its own, then
-`CGFontGetGlyphAdvances` and `CGFontGetUnitsPerEm` (`CGFont.h`, iOS 2.0). Which of the two the host reads is
-what the next session measures, with a fixture whose `/Widths` and embedded program disagree by more than one
-unit - the current one differs by one, which is a poor instrument.
+| fixture | `/Widths` on the six | the program says | **the host answers** | so |
+| --- | --- | --- | --- | --- |
+| `widths-vs-program-wide` | 1000 each (72.0000pt) | 36.7031 | **72.0000, 717.2400, 12.0000** | `/Widths` |
+| `widths-vs-program-narrow` | 250 each (18.0000pt) | 36.7031 | **18.0000, 717.2400, 12.0000** | `/Widths` |
+| `no-font-program` | 1000 each, NO `/FontFile2` | - | **72.0000, 717.2400, 12.0000** | `/Widths` |
+| `broken-font-program` | 1000 each, program unreadable | - | **72.0000, 717.2400, 12.0000** | `/Widths` |
 
-NOT measured and not claimed: the horizontal scaling (`Tz`), a CID font's `/W`, an ascent-bearing
-descriptor where `/Descent` is absent, and what the host answers for a selection over a page it does not
-cover beyond the `+inf,+inf,0,0` already in the table above.
+Three fixtures, both directions, and the third question of the hand-over map - does the host fall back to
+the font by NAME - answered: it does not. The two `CGFont` readers the map named are therefore **not
+used**, and the map's list of them was written before the measurement that removed them:
+
+- `CGFontCreateWithDataProvider` + `CGFontGetGlyphAdvances` over `/FontFile2` answers 36.7031 where the
+  host answers the `/Widths`, and the last fixture is the same one with the program zeroed: the host does
+  not notice.
+- `CGFontCreateWithFontName` over `/BaseFont` answers **43.2070** for "page 1" in Courier where the host
+  answers **43.2000**, so it is not a substitute for the standard metrics either.
+
+`/FirstChar` is read with them: a code outside the `/Widths` span has no width, and that is what
+`/LastChar` does without being read.
+
+### The base fourteen, which is the one case /Widths cannot answer
+
+A document relying on one of the standard fourteen carries NO `/Widths`, and the metrics that answer it are
+normative data of PDF 1.7 Annex F - which no API on this release hands over (the `CGFont` answer above is
+the proof). So they are **measured**, one character at a time, and generated into
+`packages/a/apple-backports/PDFKit/Base14Widths11.m` by `tools/make-base14-table.py` from a run of
+`tools/host-base14.m`; `--check` says whether the file still matches the measurement. Both halves:
+
+- **the advances**, codes 32..126 of all fourteen, in thousandths of an em. Measured over two fixtures per
+  face plus a third, because the host STOPS at 83 characters in one show operator - all 95 codes in one
+  give a `-string` of 83 ending at 's' - and because the space is a leading character that the line rule
+  trims, so its width is derived as `whole - 2 * w(A)` over two numbers already measured. Every code is
+  measured; none is transcribed. The measurement reproduces Helvetica's and Courier's published widths
+  exactly, and it CORRECTED one of them: Times-Roman's `t` is 278 here, where a published table says 333.
+- **the descent** per face, which is what puts the bottom of a rect when there is no `/FontDescriptor` to
+  read one from - every fixture `make-object-fixtures.py` writes has none, and the host answers 717.2402 for
+  a line drawn at 720 where a descent of 0 would answer 720.0000. Measured per face, and the measurement
+  is again not what a published table says: Courier answers **-246** where the AFM says -157.
+
+Symbol and ZapfDingbats read ZERO for almost every code, and that is measured rather than a gap: their
+built-in encodings are not WinAnsiEncoding, so a code written for another face resolves to no glyph in
+them. Code 32 is the exception - 250 and 278 - because the space resolves in every one of the fourteen.
+
+### The other three numbers, each measured
+
+| number | what it is | measured |
+| --- | --- | --- |
+| the x | the text matrix's translation | 20, 72, 360 - every fixture |
+| the y | the baseline plus the font's `/Descent` x size / 1000 | 360 - 230 x 12 / 1000 = 357.24, exact, and 717.24 for the base fourteen |
+| the height | the EFFECTIVE size, which is `Tf`'s operand TIMES the text matrix's scale | `12 0 0 12 ... Tm` with `/F1 1 Tf` answers the same as an identity matrix with `/F1 12 Tf` - 36.6960 by 12.0000 on `cgfixture-text-matrix-scale.pdf` |
+
+**The effective size is not `Tf`'s operand**, and that was wrong in the first round's model: the text
+rendering matrix of Section 9.4.4 multiplies it by the text matrix's scale. The walk therefore reads `Tm`'s
+`a` and `d` as well as its translation, and `Td`, `TD`, `T*`, `TL` and `BT` besides - `72 720 Td` is what
+every conforming-writer fixture positions its text with, and a walk without `Td` laid all of them out at
+the origin.
+
+### The union, and the two shapes that break a naive implementation
+
+- **over two lines**: the union of the per-character rects, and because every rect runs from its own
+  baseline's descent up by the size, the rect starts at the LOWER line's descent and ends at the UPPER
+  line's top. Measured already and reproduced: "two\nthree" on cgfixture-lines2 answers **42.0384 by
+  32.0**, and 32 = 20 + 12 exactly.
+- **a page the selection does not cover**: `+inf,+inf,0,0`, which is `CGRectNull`, measured and unchanged.
+- **a run whose text the line rule changed**: see the boundaries below.
+
+### The character spacing, measured and not reproduced
+
+`Tc` is the last text-state operator this row carries, because CGPDFContext - the conforming writer every
+text fixture here is drawn by - writes `0.0002 Tc` into them. The host's answer then carries a term this
+row has measured and **not** reproduced:
+
+- it is non-zero: on the same six glyphs with `/Widths` 556 and 278 at 12pt, `0.0002 Tc` answers 36.6970
+  and `0.002 Tc` answers 36.7060, against 36.6960 for no `Tc`;
+- it is exactly LINEAR in `Tc` - 0.0010 and 0.0100, five and fifty times 0.0002, and 60 x Tc and 600 x Tc
+  under a `12 0 0 12` matrix;
+- its per-glyph distribution over "page 1" is 0.0001, 0.0002, 0.0002, 0.0001, 0.0004 and 0.0000, which is
+  0.5, 1, 1, 0.5, 2 and 0 multiples of `Tc` - summing to five, which is n - 1 - and the same ratios at ten
+  times `Tc`. **The distribution is not explained**, so it is not fitted.
+
+The port applies the format's own rule instead: `Tc` after every glyph but the last, since the spacing after
+the final glyph moves the pen on and the pen past the last glyph is not inside any of its rects. That makes
+the TOTAL exact and each glyph exact to within one `Tc`, 0.0002pt.
+
+### A TJ array's numbers, which the STRING rule and the GEOMETRY rule disagree about
+
+A number in a `TJ` array is not a character - the host's `-string` does not turn one into a space, which is
+why "page 1" does not become "page  1" - but it IS a movement of the pen, and Section 9.3.3 subtracts it in
+thousandths of a text-space unit. CGPDFContext writes a `TJ` array rather than a plain show whenever a
+string is long enough, and "zero alpha bravo charlie alpha alpha" arrives as one. A geometry that ignored
+the adjustments put every element of the array at one x: measured on cgfixture-words.pdf, where the host
+answers **23.3424** for "zero" and the `/Widths` come to 23.3400. The walk now reads them.
+
+### The boundaries, each named where the differential accounts for it
+
+| boundary | what | where |
+| --- | --- | --- |
+| a `/BaseFont` outside the fourteen with no `/Widths` | no advances this port can reach; the fourteen's own are carried | `run.sh`'s stated boundary, second reason |
+| a character spacing | the term above, bounded and named, not fitted | `run.sh`'s stated boundary, first reason, list computed over the fixtures |
+| a run the line rule changed | a trimmed leading space, collapsed spaces, or a control byte: the rule is measured for the STRING and only in part for the PEN. Worst deviation 10.0152pt on cgfixture-lead (one space and its rounding), the rest 0.0012 and under | `run.sh`'s stated boundary, third reason |
+| a composite (Type0) font | NOT MEASURED and not claimed. The fixture for it is written by `make-font-fixtures.py` and switched off: with `/Identity-H`, a `/CIDFontType2` descendant, `/W` and `/CIDToGIDMap /Identity`, the HOST's own page text is "page" for one of them and "pag" for the other where the stream draws "page 1", so there is no selection over those glyphs to ask. `/W` and `/CIDToGIDMap` are therefore not read | `make-font-fixtures.py`, the comment above the switched-off `build_cid` |
+| `Tz`, `Ts`, and a `Tm` that is not the first operator in a `BT` | not measured and not claimed | - |
+| a code at 0x80 or above | MEASURED, partly: `cgfixture-high-byte.pdf` draws `caf\351` and the host's `-string` keeps the byte as `caf<E9>` of length 4, and the widths still come from `/Widths` - 'a' sits at 78.0000 with width 6.6720, which is 500 + 556 over 12pt. What the CHARACTER is, and what a code outside the `/Widths` span answers, are not measured | - |
