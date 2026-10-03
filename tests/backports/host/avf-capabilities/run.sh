@@ -36,93 +36,115 @@ build=${AVF_CAPS_BUILD:-$root/.agent-work/avf-capabilities-build}
 rm -rf "$build"
 mkdir -p "$build/src" "$build/o"
 
-for source in AVCaptureDeviceReactions17.m AVCaptureDeviceFormatDepthZoom17.m; do
+for source in AVCaptureDeviceReactions17.m AVCaptureDeviceFormatDepthZoom17.m AVCaptureDeviceCapabilities18.m; do
     [ -f "$avf/$source" ] || {
         echo "FAIL: $avf/$source does not exist, so the surface this run checks for is not there"
         exit 1
     }
 done
-[ -f "$avf/CharonAVCaptureDeviceReactions17.h" ] || {
-    echo "FAIL: $avf/CharonAVCaptureDeviceReactions17.h does not exist, so these members are declared nowhere"
-    exit 1
-}
+for header in CharonAVCaptureDeviceReactions17.h CharonAVCaptureDeviceCapabilities18.h; do
+    [ -f "$avf/$header" ] || {
+        echo "FAIL: $avf/$header does not exist, so these members are declared nowhere"
+        exit 1
+    }
+done
 
-# THE LIST IS BUILT FROM THE REGISTRY and the port's own header, never typed here. For a property the
+# THE LIST IS BUILT FROM THE REGISTRY and the port's own headers, never typed here. For a property the
 # SELECTOR THE HEADER DECLARES is asked for, so a row whose getter= is something other than the property's
 # name asks a selector both sides have. A property the header does not declare is reported, not guessed at.
-python3 - "$avf/CharonAVCaptureDeviceReactions17.h" "$root/packages/a/apple-backports/registry/AVFoundation" \
+#
+# One header and one registry prefix per argument pair, because the two slices of this family are two
+# releases' API in two headers and two registry files (AVCaptureDeviceReactions17.h + reactions*.json carry
+# the 17.0 and 17.2 rows, CharonAVCaptureDeviceCapabilities18.h + capabilities18.json the 18.0 ones), and a
+# row is asked for through the header that declares it.
+python3 - "$avf/CharonAVCaptureDeviceReactions17.h:reactions" \
+        "$avf/CharonAVCaptureDeviceCapabilities18.h:capabilities18" \
+        "$root/packages/a/apple-backports/registry/AVFoundation" \
         "$build/members.tsv" <<'MEMBERS'
 import json, os, re, sys
-header, registry, out = sys.argv[1], sys.argv[2], sys.argv[3]
-text = open(header).read()
-# every property and method the header declares, with its owner, its accessor and whether it is a class member
-current = None
+registry, out = sys.argv[-2], sys.argv[-1]
+pairs = sys.argv[1:-2]
+# every property and method the headers declare, with its owner, its accessor and whether it is a class
+# member
 declared = {}
-for line in text.split("\n"):
-    owner = re.match(r"@interface\s+(\w+)\s+\((\w+)\)", line.strip())
-    if owner:
-        current = (owner.group(1), owner.group(2))
-        continue
-    if current is None:
-        continue
-    attributes = line.split("@property", 1)[1] if "@property" in line else None
-    if attributes:
-        getter = re.search(r"getter=(\w+)", attributes)
-        rest = attributes[attributes.index(")") + 1:] if "(" in attributes else attributes
-        rest = rest.split("API_AVAILABLE")[0].split("API_UNAVAILABLE")[0]
-        rest = re.sub(r"<[^<>]*>", " ", rest)
-        tokens = re.findall(r"\b([A-Za-z_]\w*)\b", rest)
-        if not tokens:
-            raise SystemExit("cannot tell the property name on this line, so this run must not guess: " + line)
-        # `class` is in the attribute list, which is AFTER "@property": `@property(class, readonly) BOOL x`.
-        isClass = line.split("@property", 1)[1].lstrip().startswith("(class")
-        declared.setdefault((current[0], tokens[-1]), (getter.group(1) if getter else tokens[-1],
-                                                      "class" if isClass else "instance"))
-        continue
-    method = re.match(r"^[-+] \([^)]*\)\s*(\w+)\s*:?\s*$|API_AVAILABLE|NS_SWIFT_NAME", line.strip())
-    signature = re.match(r"^[-+] \(([^)]*)\)\s*(\w+)\s*(:|;)", line.strip())
-    if signature:
-        declared.setdefault((current[0], signature.group(2)),
-                            (signature.group(2), "class" if signature.group(1).startswith("instancetype") is False
-                             and signature.group(0).startswith("+") else "instance"))
 rows, unnamed, refusals = [], [], []
-for name in sorted(os.listdir(registry)):
-    if not name.startswith("reactions") or not name.endswith(".json"):
-        continue
-    for entry in json.load(open(os.path.join(registry, name))).get("entries", []):
-        api = entry["api"]
-        if entry["kind"] == "method":
-            match = re.match(r"^-\[(\w+) (\w+)\]$", api)
-            if not match:
+for pair in pairs:
+    header, prefix = pair.rsplit(":", 1)
+    text = open(header).read()
+    current = None
+    for line in text.split("\n"):
+        owner = re.match(r"@interface\s+(\w+)\s+\((\w+)\)", line.strip())
+        if owner:
+            current = (owner.group(1), owner.group(2))
+            continue
+        if current is None:
+            continue
+        attributes = line.split("@property", 1)[1] if "@property" in line else None
+        if attributes:
+            getter = re.search(r"getter=(\w+)", attributes)
+            rest = attributes[attributes.index(")") + 1:] if "(" in attributes else attributes
+            rest = rest.split("API_AVAILABLE")[0].split("API_UNAVAILABLE")[0]
+            rest = re.sub(r"<[^<>]*>", " ", rest)
+            tokens = re.findall(r"\b([A-Za-z_]\w*)\b", rest)
+            if not tokens:
+                raise SystemExit("cannot tell the property name on this line, so this run must not guess: " + line)
+            # `class` is in the attribute list, which is AFTER "@property": `@property(class, readonly) BOOL x`.
+            isClass = line.split("@property", 1)[1].lstrip().startswith("(class")
+            declared.setdefault((current[0], tokens[-1]), (getter.group(1) if getter else tokens[-1],
+                                                      "class" if isClass else "instance"))
+            continue
+        signature = re.match(r"^[-+] \(([^)]*)\)\s*(\w+)\s*(:|;)", line.strip())
+        if signature:
+            declared.setdefault((current[0], signature.group(2)),
+                                (signature.group(2), "class" if signature.group(1).startswith("instancetype") is False
+                                 and signature.group(0).startswith("+") else "instance"))
+    # and the rows of this header's own registry file(s), which is what the prefix names
+    for name in sorted(os.listdir(registry)):
+        if not name.startswith(prefix) or not name.endswith(".json"):
+            continue
+        for entry in json.load(open(os.path.join(registry, name))).get("entries", []):
+            api = entry["api"]
+            if entry["kind"] == "method":
+                # The member of a method row ends in a colon when it takes an argument, and `\w` does not match
+                # one: the selector that missed this was every method row of this family, which is all of them
+                # except the ones with no argument. The list printed "0 refusal(s) of its own" for four runs
+                # running until this was read.
+                match = re.match(r"^-\[(\w+) ([\w:]+)\]$", api)
+                if not match:
+                    continue
+                # and the member is the BARE name the header's own declaration carries, which is what the
+                # signature line above recorded: a selector with an argument ends in a colon and the
+                # declaration does not.
+                owner, member, sign = match.group(1), match.group(2).rstrip(":"), "-"
+            elif entry["kind"] == "property":
+                owner, member = api.split(".", 1)
+                sign = ""
+            else:
                 continue
-            owner, member = match.group(1), match.group(2)
-            sign = "-"
-        elif entry["kind"] == "property":
-            owner, member = api.split(".", 1)
-            sign = ""
-        else:
-            continue
-        if (owner, member) not in declared:
-            unnamed.append(api)
-            continue
-        accessor, kind = declared[(owner, member)]
-        # The one method row, -performEffectForReaction:, is asked by its own phase below: its answer is a
-        # refusal and not a value, so asking it here through the value path would ask the wrong question.
-        if entry["kind"] == "method":
-            refusals.append(api)
-            continue
-        rows.append((api, owner, sign + accessor, kind))
+            if (owner, member) not in declared:
+                unnamed.append(api)
+                continue
+            accessor, kind = declared[(owner, member)]
+            # A METHOD row is not in the table below: its answer is either a refusal or a value that takes
+            # an argument, and the member table asks members with no argument. Those two are asked by the
+            # probe's own phases and compared through this same expectations.tsv, and both are listed here so
+            # a registry file that grows one is reported rather than dropped.
+            if entry["kind"] == "method":
+                refusals.append(api)
+                continue
+            rows.append((api, owner, sign + accessor, kind))
 if unnamed:
-    raise SystemExit("no declaration in %s for %s, so this run would ask a selector neither side has"
-                     % (header, " ".join(unnamed)))
+    raise SystemExit("no declaration in any of the port's headers for %s, so this run would ask a selector"
+                     " neither side has" % " ".join(unnamed))
 with open(out, "w") as handle:
     for row in rows:
         handle.write("%s\t%s\t%s\t%s\n" % row)
-print("the probe is asked about %d member(s) with a value, and %d refusal(s) of its own: %s"
-      % (len(rows), len(refusals), " ".join(refusals)))
+print("the probe is asked about %d member(s) with a value, and %d of the registry's own method rows are asked"
+      % (len(rows), len(refusals)))
+print("  by their own phases instead: %s" % " ".join(refusals))
 MEMBERS
 
-# THE PROLOGUE: the two stand-ins with the same categories the port's sources implement, and nothing else. The
+# THE PROLOGUE: the stand-ins with the same categories the port's sources implement, and nothing else. The
 # port's OWN members are NOT declared here: what the port's copy carries is asked of the port's copy through the
 # runtime, and a prologue that declared them would answer that question itself.
 #
@@ -132,28 +154,41 @@ MEMBERS
 # port calls them instead of naming a position), and here they are modelled over a list this build hands them -
 # which is what makes "the most recent camera is gone" askable at all.
 #
-# The two macros at the end are what route the port's OWN call sites to the stand-in: they rename the class name
+# The stand-in device carries an activeFormat too, because -setAutoVideoFrameRateEnabled: asks the release's own
+# -activeFormat and then this port's AVCaptureDeviceFormat category before it accepts or refuses a value, and a
+# device with no format could not answer that at all: the refusal would be the probe's crash rather than the
+# header's rule.
+#
+# The three macros at the end are what route the port's OWN call sites to the stand-in: they rename the class name
 # everywhere in the copied source, in a method body as well as at an @implementation line, so the port's code
 # asks the stand-in and not Apple's camera. The control that this is happening, and not the probe talking to the
 # stand-in behind the port's back, is the preferred-camera phase: its steps change with the list this run hands
 # the stand-in, which only the port's own code can do.
-python3 - "$avf/CharonAVCaptureDeviceReactions17.h" "$build/src/prologue.h" <<'PROLOGUE'
+python3 - "$avf/CharonAVCaptureDeviceReactions17.h" "$avf/CharonAVCaptureDeviceCapabilities18.h" \
+        "$build/src/prologue.h" <<'PROLOGUE'
 import re, sys
-header, out = sys.argv[1], sys.argv[2]
-text = open(header).read()
+out = sys.argv[-1]
+headers = sys.argv[1:-1]
+text = "".join(open(header).read() for header in headers)
 categories = re.findall(r"@interface\s+(\w+)\s+\((\w+)\)", text)
-if len(categories) != 3:
-    raise SystemExit("expected the three categories this header declares and found %d: %s"
+if len(categories) != 6:
+    raise SystemExit("expected the six categories these two headers declare (three each) and found %d: %s"
                      % (len(categories), categories))
-lines = ["// Generated by tests/backports/host/avf-capabilities/run.sh from " + header + ": stand-in owners for",
-         "// the port's two categories, because AVCaptureDevice and AVCaptureDeviceFormat are Apple's classes on",
-         "// this host and a copy compiled here unchanged would replace their own methods in this process.",
+owners = sorted(set(owner for owner, _ in categories))
+if owners != ["AVCaptureDevice", "AVCaptureDeviceFormat", "AVCaptureDeviceInput"]:
+    raise SystemExit("expected the three owners these categories sit on and found %s" % owners)
+lines = ["// Generated by tests/backports/host/avf-capabilities/run.sh from " + " ".join(headers) + ": stand-in",
+         "// owners for the port's categories, because those classes are Apple's classes on this host and a copy",
+         "// compiled here unchanged would replace their own methods in this process.",
          "#import <Foundation/Foundation.h>",
          "#import <AVFoundation/AVFoundation.h>",
          "",
          "// The stand-in device list. +devicesWithMediaType: and +defaultDeviceWithMediaType: are the release's own",
          "// functions on a real target and are implemented over this list in standins.rn; -uniqueID is how the port",
          "// names a device across a launch, so it is the one member the list carries.",
+         "// The format is named before the device because the device holds one (activeFormat, below).",
+         "@class charon_host_AVCaptureDeviceFormat;",
+         "",
          "@interface charon_host_AVCaptureDevice : NSObject",
          "+ (void)charon_host_setPresentDevices:(NSArray *)devices;",
          "+ (NSArray *)devicesWithMediaType:(NSString *)mediaType;",
@@ -162,9 +197,15 @@ lines = ["// Generated by tests/backports/host/avf-capabilities/run.sh from " + 
          "@property(nonatomic, copy) NSString *localizedName;",
          "@property(nonatomic) long position;",
          "@property(nonatomic) BOOL connected;",
+         "// What -setAutoVideoFrameRateEnabled: asks before it accepts or refuses a value, so the stand-in is",
+         "// given one here rather than having the probe answer for it.",
+         "@property(nonatomic, strong) charon_host_AVCaptureDeviceFormat *activeFormat;",
          "@end",
          "",
          "@interface charon_host_AVCaptureDeviceFormat : NSObject",
+         "@end",
+         "",
+         "@interface charon_host_AVCaptureDeviceInput : NSObject",
          "@end",
          ""]
 for owner, category in categories:
@@ -172,10 +213,11 @@ for owner, category in categories:
 lines += ["// The rename. Defined after every declaration above, which already carry the stand-in names.",
           "#define AVCaptureDevice charon_host_AVCaptureDevice",
           "#define AVCaptureDeviceFormat charon_host_AVCaptureDeviceFormat",
+          "#define AVCaptureDeviceInput charon_host_AVCaptureDeviceInput",
           ""]
 open(out, "w").write("\n".join(lines) + "\n")
-print("the host build's prologue declares %d stand-in categories over 2 stand-in owners, and renames the two"
-      % len(categories))
+print("the host build's prologue declares %d stand-in categories over %d stand-in owners, and renames their"
+      % (len(categories), len(owners)))
 print("  owner names in the port's sources, in a method body as well as at an @implementation line")
 PROLOGUE
 # The stand-ins' own OBJECTS, in a source of their own and not in the prologue: the prologue is prepended to
@@ -223,46 +265,71 @@ static NSArray *charon_host_present_devices;
 @implementation charon_host_AVCaptureDeviceFormat
 
 @end
+
+// The input the 18.0 slice's three members are asked of. It carries nothing of its own: the port's code reads
+// no member of the release's input except the values it keeps itself, and every answer below is the port's own
+// category's, which is what the rename is for.
+@implementation charon_host_AVCaptureDeviceInput
+
+@end
 STANDINS
 } > "$build/src/standins.rn"
 
 # THE COPIES: the port's own header import is dropped, because on this host its @interface AVCaptureDeviceFormat
 # category would collide with the macOS SDK's own declarations and its forward declarations are Apple's business.
-# The class name is NOT rewritten here: the prologue's two macros do it, in a method body as well as at an
+# The class name is NOT rewritten here: the prologue's macros do it, in a method body as well as at an
 # @implementation line, so the port's own `[AVCaptureDevice devicesWithMediaType:]` reaches the stand-in. Each
 # copy is asserted to carry the owner lines this harness was written against, as WHOLE WORDS - a count of
-# substrings would also match the port's CharonAVCaptureDeviceReactions17.h import and prove nothing.
+# substrings would also match the port's own header import and prove nothing. The third field is that header's
+# own file, and its import is asserted to occur exactly once before it is dropped: Python's str.replace on a
+# missing needle is a silent no-op, and a "copied" run over a copy that lost its import would then be asked a
+# question about a file that no longer is the one this harness was written against.
 # The fourth field is how many bodies of the copy are expected to send a message to a renamed class, so the
 # "the macros have something to rename" assertion is not applied to the format-only object, which has none.
-for triple in "AVCaptureDeviceReactions17.m:reactions17.rn:2:4" "AVCaptureDeviceFormatDepthZoom17.m:depthzoom17.rn:1:0"; do
+for triple in "AVCaptureDeviceReactions17.m:CharonAVCaptureDeviceReactions17.h:reactions17.rn:2:4" \
+             "AVCaptureDeviceFormatDepthZoom17.m:CharonAVCaptureDeviceReactions17.h:depthzoom17.rn:1:0" \
+             "AVCaptureDeviceCapabilities18.m:CharonAVCaptureDeviceCapabilities18.h:capabilities18.rn:3:0"; do
     src=$(printf '%s\n' "$triple" | cut -d: -f1)
-    python3 - "$avf/$src" "$build/src/prologue.h" "$build/src/$(printf '%s\n' "$triple" | cut -d: -f2)" \
-            "$(printf '%s\n' "$triple" | cut -d: -f3)" "$(printf '%s\n' "$triple" | cut -d: -f4)" <<'COPY'
+    header=$(printf '%s\n' "$triple" | cut -d: -f2)
+    python3 - "$avf/$src" "$header" "$build/src/prologue.h" \
+            "$build/src/$(printf '%s\n' "$triple" | cut -d: -f3)" \
+            "$(printf '%s\n' "$triple" | cut -d: -f4)" "$(printf '%s\n' "$triple" | cut -d: -f5)" <<'COPY'
 import re, sys
-source, prologue, out, expected, bodies = (sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4]),
-                                          int(sys.argv[5]))
+source, header, prologue, out, expected, bodies = (sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
+                                                  int(sys.argv[5]), int(sys.argv[6]))
 text = open(source).read()
-drop = '#import "CharonAVCaptureDeviceReactions17.h"\n'
+drop = '#import "%s"\n' % header
 if text.count(drop) != 1:
-    raise SystemExit("%s imports the Charon header %d time(s), so this copy is not the one the harness was "
-                     "written against" % (source, text.count(drop)))
+    raise SystemExit("%s imports its own header %s %d time(s), so this copy is not the one the harness was "
+                     "written against" % (source, header, text.count(drop)))
 text = text.replace(drop, "")
-owners = re.findall(r"^@(?:implementation|interface)\s+(AVCaptureDevice|AVCaptureDeviceFormat)\b", text, re.M)
+owners = re.findall(r"^@(?:implementation|interface)\s+(AVCaptureDevice|AVCaptureDeviceFormat|AVCaptureDeviceInput)\b",
+                    text, re.M)
 if len(owners) != expected:
     raise SystemExit("%s names %d owner line(s) at an @implementation/@interface and this copy is written for "
                      "%d: %s" % (source, len(owners), expected, owners))
-# Not vacuous: the owner names also have to appear in the bodies, where the macros do their work.
-found = len(re.findall(r"\[AVCaptureDevice(?:Format)?\b", text))
+# Not vacuous: the owner names have to appear where the macros do their work, which is CODE. Comments and
+# string literals are removed first, and that is not tidiness: the port's two refusal messages spell Apple's
+# own selector inside a string literal on purpose, so that the reason a caller reads names AVCaptureDevice
+# rather than the stand-in - and a count taken over the whole file would be counting those strings and the
+# prose about them instead of the sends. A comment above a refusal that names the class is one more place the
+# name occurs (the same trap the reactions plant walked into on 2026-10-03).
+code = re.sub(r"/\*.*?\*/", " ", text, flags=re.S)
+code = re.sub(r"//[^\n]*", " ", code)
+code = re.sub(r'"(\\.|[^"\\])*"', '""', code)
+found = len(re.findall(r"\[AVCaptureDevice(?:Format|Input)?\b", code))
 if found != bodies:
-    raise SystemExit("%s sends %d message(s) to a renamed class in a body and this copy is written for %d, so"
-                     " the two macros would rename a different number of places than this harness was written"
+    raise SystemExit("%s sends %d message(s) to a renamed class in code and this copy is written for %d, so"
+                     " the macros would rename a different number of places than this harness was written"
                      " against" % (source, found, bodies))
 open(out, "w").write(open(prologue).read() + text)
-print("the copy of %s carries the prologue and names %d owner line(s) the macros will rename" % (source, len(owners)))
+print("the copy of %s carries the prologue and names %d owner line(s) the macros will rename"
+      % (source, len(owners)))
 COPY
 done
 objects=""
-for pair in "reactions17.rn:reactions17.o" "depthzoom17.rn:depthzoom17.o" "standins.rn:standins.o"; do
+for pair in "reactions17.rn:reactions17.o" "depthzoom17.rn:depthzoom17.o" \
+            "capabilities18.rn:capabilities18.o" "standins.rn:standins.o"; do
     src=${pair%%:*}; obj=${pair##*:}
     if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$src" \
             -o "$build/o/$obj" > "$build/o/$obj.log" 2>&1; then
@@ -277,13 +344,18 @@ done
 # plant applied before it leaves the object identical to its own recompile, and the guard then refuses a
 # mutation that did happen.
 if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
+    # Each plant names the copy it applies to, because the two slices of this family are two files and a
+    # needle that is not in the file it is aimed at is refused below rather than silently reported as applied.
     case "$mutant" in
-    1|reactions) plant=reactions ;;
-    prefcam)     plant=prefcam ;;
-    *) echo "FAIL: AVFCAPSMUTANT=$mutant is not a plant this harness writes; run it as 1 or as prefcam"
+    1|reactions)  plant=reactions;   target=reactions17 ;;
+    prefcam)      plant=prefcam;     target=reactions17 ;;
+    capabilities) plant=capabilities; target=capabilities18 ;;
+    multichannel) plant=multichannel; target=capabilities18 ;;
+    *) echo "FAIL: AVFCAPSMUTANT=$mutant is not a plant this harness writes; run it as 1, as prefcam, as"
+       echo "      capabilities or as multichannel"
        exit 1 ;;
     esac
-    python3 - "$build/src/reactions17.rn" "$plant" <<'PERTURB'
+    python3 - "$build/src/$target.rn" "$plant" <<'PERTURB'
 import sys
 path, plant = sys.argv[1], sys.argv[2]
 text = open(path).read()
@@ -302,6 +374,20 @@ plants = {
                                               forKey:CHARON_CAPTURE_USER_PREFERRED_HISTORY_KEY];""",
                  """    /* PLANTED: the choice is not persisted, so the next launch forgets it. */
     (void)[history copy];"""),
+    # The 18.0 slice's first plant. A format that claims the auto video frame rate makes two rows differ at
+    # once: the format's own answer, and -setAutoVideoFrameRateEnabled:, which refuses on this port only
+    # because that answer is NO. So the plant cannot be seen by one row and missed by the other.
+    "capabilities": ("""- (BOOL)isAutoVideoFrameRateSupported
+{
+    return NO;
+}""", """- (BOOL)isAutoVideoFrameRateSupported
+{
+    return YES; /* PLANTED */
+}"""),
+    # And its second: an input that supports every multichannel audio mode makes the three support rows and
+    # the two setter refusals differ, which is the whole of the rule -isMultichannelAudioModeSupported: is for.
+    "multichannel": ("""    return multichannelAudioMode == AVCaptureMultichannelAudioModeNone;""",
+                     """    return YES; /* PLANTED */"""),
 }
 before, after = plants[plant]
 if text.count(before) != 1:
@@ -313,27 +399,31 @@ if out.count(before) != 0 or out.count(after) != 1:
 open(path, "w").write(out)
 print("# the mutation applied: " + {"reactions": "-canPerformReactionEffects answers YES for a camera with no"
                                          " reactions",
-                                     "prefcam": "+setUserPreferredCamera: no longer persists the choice"}[plant])
+                                     "prefcam": "+setUserPreferredCamera: no longer persists the choice",
+                                     "capabilities": "every format claims auto video frame rate support, so"
+                                                     " -setAutoVideoFrameRateEnabled: accepts a value too",
+                                     "multichannel": "-isMultichannelAudioModeSupported: answers YES for every"
+                                                     " mode, so the setter accepts Stereo and ambisonics too"}[plant])
 PERTURB
 fi
 if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
     # The plant is applied AFTER the first compile, the only order in which the guard below can see it: a
     # plant applied before it leaves the object identical to its own recompile and the guard then refuses a
     # mutation that did happen.
-    before=$(shasum -a 256 "$build/o/reactions17.o" | cut -d' ' -f1)
-    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/reactions17.rn" \
-            -o "$build/o/reactions17.o" > "$build/o/reactions17.rebuild.log" 2>&1; then
-        echo "RUN FAILED: the port's reactions17.rn did not build after the mutation"
-        head -6 "$build/o/reactions17.rebuild.log"
+    before=$(shasum -a 256 "$build/o/$target.o" | cut -d' ' -f1)
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$target.rn" \
+            -o "$build/o/$target.o" > "$build/o/$target.rebuild.log" 2>&1; then
+        echo "RUN FAILED: the port's $target.rn did not build after the mutation"
+        head -6 "$build/o/$target.rebuild.log"
         exit 1
     fi
-    after=$(shasum -a 256 "$build/o/reactions17.o" | cut -d' ' -f1)
+    after=$(shasum -a 256 "$build/o/$target.o" | cut -d' ' -f1)
     [ "$before" != "$after" ] || {
-        echo "FAIL: reactions17.o is byte-for-byte what it was before the mutation, so the probe links the same"
+        echo "FAIL: $target.o is byte-for-byte what it was before the mutation, so the probe links the same"
         echo "      object and this mutation can never be noticed"
         exit 1
     }
-    echo "rebuilt reactions17.o after the mutation, and it differs: ${before%????????????????????????????????????????????????} -> ${after%????????????????????????????????????????????????}"
+    echo "rebuilt $target.o after the mutation, and it differs: ${before%????????????????????????????????????????????????} -> ${after%????????????????????????????????????????????????}"
 fi
 if ! xcrun clang -fobjc-arc -w -I"$avf" "$here/probe.m" $objects -framework Foundation -framework AVFoundation \
         -framework CoreMedia -o "$build/probe" > "$build/probe.log" 2>&1; then
@@ -357,6 +447,21 @@ check_control AVCaptureDevice HAS
 check_control AVCaptureDeviceFormat HAS
 check_control charon_host_AVCaptureDevice HAS
 check_control charon_host_AVCaptureDeviceFormat HAS
+check_control charon_host_AVCaptureDeviceInput HAS
+# The host's own microphone input, which the 18.0 slice's AVCaptureDeviceInput rows are asked of. Checked
+# separately because this control prints a fourth field: a microphone and an input of its own are what make
+# the host's column of those three rows a measurement and not an absence.
+input_control=$(grep "^CONTROL	AVCaptureDeviceInput	" "$build/table" | cut -f3,4 || true)
+[ "${input_control%%	*}" = "HAS" ] || {
+    echo "FAIL: the host has no AVCaptureDeviceInput, so the input rows would have no host column"
+    exit 1
+}
+case "${input_control#*	}" in
+    *"microphone=one input=one") echo "ok  control AVCaptureDeviceInput = $input_control" ;;
+    *) echo "FAIL: the host's input control reads [$input_control], and the input rows need a microphone and an"
+       echo "      input of its own on this side too"
+       exit 1 ;;
+esac
 
 # 2. every member both sides are asked about must be answered by both
 members=$(grep -c '^RESPONDS	' "$build/table" || true)
@@ -375,10 +480,18 @@ echo "ok  $members members are answered by both sides"
 
 # 3. the answers, each against the table. BOTH columns: the host's is measured here and the port's is the
 #    answer for the port's own devices, and where they differ the table says why.
+# ONE LOOKUP, and it matches whole fields rather than a pattern. A row's name is a member selector, and a
+# selector written -[AVCaptureDeviceInput isMultichannelAudioModeSupported:] has both a [ and a ] in it: in a
+# basic regular expression that pair is a bracket expression, so "grep "^ANSWER\t$api\t"" never matched the
+# method rows of this family and the run reported no row for a row the probe had printed. awk compares the
+# field with the string and cannot read a pattern into it.
+answer_row() {
+    awk -F'\t' -v wanted="$1" '$1 == "ANSWER" && $2 == wanted { print; exit }' "$build/table"
+}
 compared=0; wrong=0; : > "$build/wrong.log"
 while IFS=$(printf '\t') read -r api host port why; do
     case "$api" in ''|\#*) continue ;; esac
-    line=$(grep "^ANSWER	$api	" "$build/table" | head -1)
+    line=$(answer_row "$api")
     [ -n "$line" ] || { echo "FAIL: the probe printed no ANSWER row for $api"; exit 1; }
     got_host=$(printf '%s\n' "$line" | cut -f3)
     got_port=$(printf '%s\n' "$line" | cut -f4)
