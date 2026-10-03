@@ -103,6 +103,35 @@ The seven mutations are one per thing the port decides that a header does not st
   the slot is empty again, so the getter answers a fresh descriptor and the format is the default on
   both sides.
 
+## The Metal 4 render pass descriptor, and THREE bounds its sample positions have
+
+18 rows, and every measured default is a zero, a nil or one NO - which is worth measuring anyway,
+because it is the answer a reader would guess. The three attachment OBJECTS on a fresh pass are the
+ones a nil getter would get wrong, and the colour attachment array is the same eight-slot array
+MTLRenderPassDescriptor's own uses.
+
+**The two sample-position methods are the only members here that are an array rather than a number,
+and three of their bounds came out of Apple's own assertions rather than out of the header:**
+
+| bound | Apple's own words | where it is enforced |
+|---|---|---|
+| the count must be a valid sample count | "count must be 0, 2, 4 or 8" | the port refuses any other count, naming the four |
+| both coordinates lie in [0, 1) | "Provided sample position y-coodinate (-0.500000) at index 0 is not within the range [0,1)" | Metal's own; the port stores what it is given |
+| a read's count must MATCH what is programmed | "Non-zero count (8) does not match the number of programmed custom sample positions (4)" | Metal's own; the port answers what is programmed |
+
+**AND THE TWO DISABLE SPELLINGS DIFFER, which is the one a reader would get wrong.** With two
+positions programmed, `setSamplePositions:NULL count:0` leaves the object holding **TWO** - a NULL
+pointer stores nothing - while the same call with a non-NULL pointer and a count of 0 leaves it holding
+**NONE**, which is what `MTL4RenderPass.h:107` means by "or 0 to disable custom sample positions". Both
+are measured, both are in the differential, and the port does what Apple's object does.
+
+**What its equality does and does not compare** is measured too, and it is the same shape as the tile
+pipeline's array: the DEPTH and STENCIL attachments are compared member by member - neither class
+carries an `-isEqual:` of its own, yet two fresh ones are equal on Apple's side and changing one's
+`clearDepth` makes them differ - while the COLOUR attachments are not compared at all, because
+`MTLRenderPassColorAttachmentDescriptorArray` carries no `-isEqual:` either, two fresh arrays are NOT
+equal, and two fresh render passes ARE.
+
 ## The acceleration structure geometry descriptors, and the four defaults a guess gets wrong
 
 Seven more classes, 64 rows, and the same kind of thing: a geometry descriptor says which buffers hold
@@ -146,7 +175,7 @@ sh tests/backports/host/metal-census/descriptors26.sh
 
 ```
 Apple's own answers to the value-equality questions, in a binary of their own:
-  the port's value equality IS Apple's own, member for member: 72 answers agree
+  the port's value equality IS Apple's own, member for member: 75 answers agree
     MTL4PipelineOptions fresh-equal yes
     MTL4PipelineOptions fresh-hash-same yes
     MTL4PipelineOptions copy-equal yes

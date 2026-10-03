@@ -411,6 +411,39 @@ API_AVAILABLE(ios(26.0))
 @property (nonatomic) MTLCurveEndCaps curveEndCaps;
 @end
 
+
+// ONE MORE ENUMERATION, Metal 4's own and not in the SDK of 16.4: whether a pass resets the visibility
+// result data or accumulates it across passes. The two cases are the 26.2 header's.
+API_AVAILABLE(ios(26.0))
+typedef NS_ENUM(NSInteger, MTLVisibilityResultType) {
+    MTLVisibilityResultTypeReset     = 0,
+    MTLVisibilityResultTypeAccumulate = 1,
+};
+
+// THE METAL 4 RENDER PASS DESCRIPTOR. Every member is a 16.4 type this package already carries - the
+// three attachment classes and the eight-slot colour array are MTLRenderPassDescriptor8.m's own - so
+// this is a declaration and nothing else: the SDK of 16.4 does not declare the class at all.
+API_AVAILABLE(ios(26.0))
+@interface MTL4RenderPassDescriptor : NSObject <NSCopying>
+@property (readonly) MTLRenderPassColorAttachmentDescriptorArray *colorAttachments;
+@property (copy, nonatomic, null_resettable) MTLRenderPassDepthAttachmentDescriptor *depthAttachment;
+@property (copy, nonatomic, null_resettable) MTLRenderPassStencilAttachmentDescriptor *stencilAttachment;
+@property (nonatomic) NSUInteger renderTargetArrayLength;
+@property (nonatomic) NSUInteger imageblockSampleLength;
+@property (nonatomic) NSUInteger threadgroupMemoryLength;
+@property (nonatomic) NSUInteger tileWidth;
+@property (nonatomic) NSUInteger tileHeight;
+@property (nonatomic) NSUInteger defaultRasterSampleCount;
+@property (nonatomic) NSUInteger renderTargetWidth;
+@property (nonatomic) NSUInteger renderTargetHeight;
+@property (nullable, nonatomic, strong) id<MTLRasterizationRateMap> rasterizationRateMap;
+@property (nullable, nonatomic, strong) id<MTLBuffer> visibilityResultBuffer;
+@property (nonatomic) MTLVisibilityResultType visibilityResultType;
+- (void)setSamplePositions:(const MTLSamplePosition * _Nullable)positions count:(NSUInteger)count;
+- (NSUInteger)getSamplePositions:(MTLSamplePosition * _Nullable)positions count:(NSUInteger)count;
+@property (nonatomic) BOOL supportColorAttachmentMapping;
+@end
+
 #endif
 
 NS_ASSUME_NONNULL_END

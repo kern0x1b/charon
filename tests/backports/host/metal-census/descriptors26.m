@@ -18,6 +18,25 @@
 #import <Metal/Metal.h>
 
 /* The port's classes, under the names the harness compiles them with. */
+@interface charonHost_MTL4RenderPassDescriptor : NSObject <NSCopying>
+@property (readonly) MTLRenderPassColorAttachmentDescriptorArray *colorAttachments;
+@property (nonatomic, copy) MTLRenderPassDepthAttachmentDescriptor *depthAttachment;
+@property (nonatomic, copy) MTLRenderPassStencilAttachmentDescriptor *stencilAttachment;
+@property (nonatomic) NSUInteger renderTargetArrayLength;
+@property (nonatomic) NSUInteger tileWidth;
+@property (nonatomic) NSUInteger tileHeight;
+@property (nonatomic) NSUInteger imageblockSampleLength;
+@property (nonatomic) NSUInteger threadgroupMemoryLength;
+@property (nonatomic) NSUInteger defaultRasterSampleCount;
+@property (nonatomic) NSUInteger renderTargetWidth;
+@property (nonatomic) NSUInteger renderTargetHeight;
+@property (nonatomic, strong) id rasterizationRateMap;
+@property (nonatomic, strong) id visibilityResultBuffer;
+@property (nonatomic) MTLVisibilityResultType visibilityResultType;
+@property (nonatomic) BOOL supportColorAttachmentMapping;
+- (void)setSamplePositions:(const MTLSamplePosition *)positions count:(NSUInteger)count;
+- (NSUInteger)getSamplePositions:(MTLSamplePosition *)positions count:(NSUInteger)count;
+@end
 @interface charonHost_MTL4AccelerationStructureGeometryDescriptor : NSObject <NSCopying>
 @property (nonatomic) NSUInteger intersectionFunctionTableOffset;
 @property (nonatomic) BOOL opaque;
@@ -585,6 +604,98 @@ int main(void)
             charonHost_MTL4AccelerationStructureMotionCurveGeometryDescriptor *port = [[charonHost_MTL4AccelerationStructureMotionCurveGeometryDescriptor alloc] init];
             same_l((long)port.controlPointFormat, (long)host.controlPointFormat, @"fresh motion curve: controlPointFormat");
             same_l((long)port.radiusFormat, (long)host.radiusFormat, @"fresh motion curve: radiusFormat");
+        }
+
+        /* THE METAL 4 RENDER PASS DESCRIPTOR, where every measured default is a zero, a nil or one NO -
+         * and the three attachment OBJECTS on a fresh pass are the ones a getter that answered nil would
+         * get wrong. */
+        printf("MTL4RenderPassDescriptor\n");
+        {
+            MTL4RenderPassDescriptor *host = [[MTL4RenderPassDescriptor alloc] init];
+            charonHost_MTL4RenderPassDescriptor *port = [[charonHost_MTL4RenderPassDescriptor alloc] init];
+            check(host.colorAttachments != nil && port.colorAttachments != nil, @"fresh: colorAttachments is an object on both sides");
+            for (NSUInteger index = 0; index < 8; index++)
+                check([host.colorAttachments objectAtIndexedSubscript:index] != nil &&
+                      [port.colorAttachments objectAtIndexedSubscript:index] != nil,
+                      ([NSString stringWithFormat:@"fresh: colour attachment %lu answers on both sides", (unsigned long)index]));
+            check(host.depthAttachment != nil && port.depthAttachment != nil, @"fresh: depthAttachment is an object on both sides");
+            check(host.stencilAttachment != nil && port.stencilAttachment != nil, @"fresh: stencilAttachment is an object on both sides");
+            same_u((unsigned long)port.renderTargetArrayLength, (unsigned long)host.renderTargetArrayLength, @"fresh: renderTargetArrayLength");
+            same_u((unsigned long)port.imageblockSampleLength, (unsigned long)host.imageblockSampleLength, @"fresh: imageblockSampleLength");
+            same_u((unsigned long)port.threadgroupMemoryLength, (unsigned long)host.threadgroupMemoryLength, @"fresh: threadgroupMemoryLength");
+            same_u((unsigned long)port.tileWidth, (unsigned long)host.tileWidth, @"fresh: tileWidth");
+            same_u((unsigned long)port.tileHeight, (unsigned long)host.tileHeight, @"fresh: tileHeight");
+            same_u((unsigned long)port.defaultRasterSampleCount, (unsigned long)host.defaultRasterSampleCount, @"fresh: defaultRasterSampleCount");
+            same_u((unsigned long)port.renderTargetWidth, (unsigned long)host.renderTargetWidth, @"fresh: renderTargetWidth");
+            same_u((unsigned long)port.renderTargetHeight, (unsigned long)host.renderTargetHeight, @"fresh: renderTargetHeight");
+            check(host.rasterizationRateMap == nil && port.rasterizationRateMap == nil, @"fresh: rasterizationRateMap is nil on both sides");
+            check(host.visibilityResultBuffer == nil && port.visibilityResultBuffer == nil, @"fresh: visibilityResultBuffer is nil on both sides");
+            same_l((long)port.visibilityResultType, (long)host.visibilityResultType, @"fresh: visibilityResultType");
+            check(host.supportColorAttachmentMapping == port.supportColorAttachmentMapping &&
+                  !host.supportColorAttachmentMapping, @"fresh: supportColorAttachmentMapping is NO on both sides");
+            /* THE TWO SAMPLE-POSITION METHODS, which are this class's only methods and the one member here
+             * that is an array: a write of three positions, a read back into a buffer big enough, a read
+             * into one that is not - which the header says must leave the buffer alone - and a count of 0,
+             * which the header says disables custom positions. */
+            /* TWO AND FOUR, and not three: the header says the count "needs to be a valid sample
+             * count", and Apple's own assertion names the set - measured, from the framework's own
+             * words: "count must be 0, 2, 4 or 8". A case that wrote three would be asking a question
+             * Metal refuses to answer. */
+            MTLSamplePosition written[4];
+            // BOTH COORDINATES INSIDE [0, 1), which is a second bound measured off Apple's own assertion:
+            // "Provided sample position y-coodificate (-0.500000) at index 0 is not within the range
+            // [0,1)" - the framework's own words. A negative y is what the first fixture used.
+            for (unsigned i = 0; i < 4; i++) { written[i].x = 0.125f * (i + 1); written[i].y = 0.0625f * (i + 1); }
+            [host setSamplePositions:written count:4];
+            [port setSamplePositions:written count:4];
+            /* THE COUNT MUST MATCH THE NUMBER PROGRAMMED, and that is a third bound measured off
+             * Apple's own assertion rather than read off the header: a get with a count of 8 when four
+             * are programmed asserts "Non-zero count (8) does not match the number of programmed custom
+             * sample positions (4)". So the reads below all pass the count that was written, and the
+             * mismatched ones are NOT asked here: an assertion stops the process, which is why the
+             * eight-slot array bounds are measured out of process too. */
+            MTLSamplePosition readBack[8];
+            memset(readBack, 0, sizeof(readBack));
+            same_u((unsigned long)[host getSamplePositions:readBack count:4],
+                   (unsigned long)[port getSamplePositions:readBack count:4],
+                   @"after four positions: how many getSamplePositions:count: answers");
+            check(memcmp(readBack, written, sizeof(written)) == 0,
+                  @"after four positions: the four positions come back unchanged");
+            /* AND THE COUNT METAL REFUSES, which is a measurement and not a rule this port invented:
+             * Apple's own assertion names 0, 2, 4 and 8 - the framework's own words, and an ASSERTION,
+             * which stops the process rather than raising, so Apple's side of it cannot be asked from
+             * in here. The port's side is asked, and the bound it refuses with is Apple's. */
+            @try { [port setSamplePositions:written count:3]; check(NO, @"a count of 3 must be refused"); }
+            @catch (NSException *why) {
+                check([[why reason] rangeOfString:@"0, 2, 4 or 8"].location != NSNotFound,
+                      @"a count of 3 is refused, and the message names the counts Metal accepts");
+            }
+            same_u((unsigned long)[port getSamplePositions:readBack count:4],
+                   (unsigned long)4, @"and the positions programmed before it are still there");
+            /* AND TWO, the other count Metal takes, then the count of zero that disables them. */
+            [host setSamplePositions:written count:2];
+            [port setSamplePositions:written count:2];
+            memset(readBack, 0, sizeof(readBack));
+            same_u((unsigned long)[host getSamplePositions:readBack count:2],
+                   (unsigned long)[port getSamplePositions:readBack count:2],
+                   @"after two positions: how many getSamplePositions:count: answers");
+            check(memcmp(readBack, written, 2 * sizeof(MTLSamplePosition)) == 0,
+                  @"after two positions: the two positions come back unchanged");
+            /* TWO DISABLE SPELLINGS AND THEY DIFFER, which three runs of Apple's own object measured:
+             * with two positions programmed, a set with a NULL pointer and a count of 0 leaves the
+             * object holding TWO - a NULL pointer stores nothing - while the same call with a non-NULL
+             * pointer and a count of 0 leaves it holding NONE, which is what MTL4RenderPass.h:107 means
+             * by "or 0 to disable custom sample positions". */
+            [host setSamplePositions:NULL count:0];
+            [port setSamplePositions:NULL count:0];
+            same_u((unsigned long)[host getSamplePositions:readBack count:0],
+                   (unsigned long)[port getSamplePositions:readBack count:0],
+                   @"after a NULL pointer with a count of zero: the two positions are STILL there");
+            [host setSamplePositions:written count:0];
+            [port setSamplePositions:written count:0];
+            same_u((unsigned long)[host getSamplePositions:readBack count:0],
+                   (unsigned long)[port getSamplePositions:readBack count:0],
+                   @"after a non-NULL pointer with a count of zero: none are left");
         }
 
         printf("%d checks, each one against Apple's own object\n", checks);

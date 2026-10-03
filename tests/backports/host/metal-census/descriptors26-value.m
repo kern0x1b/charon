@@ -69,6 +69,8 @@
 @end
 @interface charonHost_MTL4LibraryFunctionDescriptor : NSObject
 @end
+@interface charonHost_MTL4RenderPassDescriptor : NSObject <NSCopying>
+@end
 @interface charonHost_MTL4AccelerationStructureGeometryDescriptor : NSObject <NSCopying>
 @end
 @interface charonHost_MTL4AccelerationStructureTriangleGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
@@ -138,6 +140,7 @@ int main(void)
         same_value(@"MTL4SpecializedFunctionDescriptor", (id)[[charonHost_MTL4SpecializedFunctionDescriptor alloc] init], (id)[[charonHost_MTL4SpecializedFunctionDescriptor alloc] init]);
         same_value(@"MTL4StitchedFunctionDescriptor", (id)[[charonHost_MTL4StitchedFunctionDescriptor alloc] init], (id)[[charonHost_MTL4StitchedFunctionDescriptor alloc] init]);
         same_value(@"MTL4LibraryFunctionDescriptor", (id)[[charonHost_MTL4LibraryFunctionDescriptor alloc] init], (id)[[charonHost_MTL4LibraryFunctionDescriptor alloc] init]);
+        same_value(@"MTL4RenderPassDescriptor", (id)[[charonHost_MTL4RenderPassDescriptor alloc] init], (id)[[charonHost_MTL4RenderPassDescriptor alloc] init]);
         /* ONE NAMED MEMBER PER CLASS, and the two sides of each answer are printed so a reader can see
          * what the port said and the script can hold it to the member list. */
         {
