@@ -113,6 +113,61 @@ That is a row with a measurement behind it rather than an empty function, and it
 have to be read next to: a `VTIsHardwareDecodeSupported` that answered from a table would disagree with the
 release after this call.
 
+## The emulator run at 6.1.3: the hardware-requirement route does NOT answer the question
+
+The route above is a SPECIFICATION rather than a query, and it was worth asking the release rather than
+assuming. Asked, on the 6.1.3 armv7 release itself, through `xmake emulate -d iPhone3,1 -r 6.1.3`
+(`tools/../work-2026-10-03/tools/` heavy lane, verdict `pass` in 6.2 host s), per codec, with and without
+`kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder`:
+
+```
+vtdecodeprobe: the release answers
+  kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder = RequireHardwareAcceleratedVideoDecoder
+CREATE-WITH-AND-WITHOUT
+  H264     format=0  noKey=-12906  withKey=-12906
+  MPEG4    format=0  noKey=-12906  withKey=-12906
+  JPEG     format=0  noKey=0       withKey=-12906
+  HEVC     format=0  noKey=-12906  withKey=-12906
+  ProRes   format=0  noKey=-12906  withKey=-12906
+ENCODER-ID
+  H264     compressionSession=-12902
+  MPEG4    compressionSession=-12902
+```
+
+**`-12906` is `kVTVideoDecoderMalfunctionErr`** (VTErrors.h), and it is what the release answers for a
+synthetic format description carrying no parameter sets - `CMVideoFormatDescriptionCreate` makes one, but a
+real H264 or HEVC session needs an SPS and a PPS. So four of the five codecs never got as far as the
+question. The one that did is the answer: **JPEG creates with `noErr` and FAILS with the key.** The key does
+not open anything this release can do; it only removes what it could do.
+
+So the create status is NOT the release's answer to "can this codec be hardware-decoded", and
+`VTIsHardwareDecodeSupported` **stays owed** - which is the outcome the coordinator named for exactly this
+case, reached by measurement rather than by waiting for it. The honest position is that this release offers
+no query for it at all: `_VTIsHardwareDecodeSupported` arrived with iOS 11 and
+`_VTDecompressionSessionCopySupportedPropertyDictionaryForDecoder` does not exist at any band this port
+builds, so there is nothing left to ask.
+
+Two further numbers from that run, both of which settle something else:
+
+- **`VTSessionCopyProperty(kVTCompressionPropertyKey_EncoderID)` cannot be the route at either band**: the
+  key is a NULL POINTER there. `dump-cache.lua` finds no `_kVTCompressionPropertyKey_EncoderID` in the 4.3
+  or the 6.1.3 cache, and the probe's own build says the same thing in the gate's words - "weakly imports 1
+  symbol the armv7 release it is checked against does not export, each of which is NULL there and must be
+  called only behind a check for it" - which is why the image needed `charon.waive.weak-imports` and a
+  reason. The probe prints `EncoderIDkey=NULL` and takes the other branch. So an encoder ID, which is an
+  iOS 11 idea, does not exist on this port's floor at all.
+- **`VTCompressionSessionCreate` answers `-12902` for a NULL encoder specification** at 6.1.3, measured for
+  H264 and MPEG4. The 16.4 SDK's signature takes the specification dictionary in that position and the
+  header calls it optional, but the release refuses NULL there, so a caller who passes NULL gets an error
+  and not a session - which is the case `VTCopySupportedPropertyDictionaryForEncoder` has to answer.
+
+The arity question, which the coordinator asked to settle from the 4.3 and 6.1.3 armv7 code, is settled by the
+run's own output and in the coordinator's direction: `DecodeFrame(NULL sample)=-12902 infoFlags=0x5a5a5a5a`
+- the word handed in as the fifth argument came back UNCHANGED, and in any case an EXTRA argument is
+harmless on ARM while a MISSING one is not, so calling the 16.4 SDK's five-parameter form at 4.3 is safe and
+my earlier claim that it "calls a four-argument function with five arguments at 4.3" was backwards. It is
+retracted; the two options variants are no longer blocked by the arity.
+
 ## Source
 
 - `coordination/corpus/caches/*.tsv` and the 4.3 and 6.1.3 caches, read-only, for the ladder.
