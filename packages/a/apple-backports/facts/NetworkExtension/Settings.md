@@ -89,8 +89,22 @@ exit=0  errors=0  warnings=1
 `NEDNSSettingsManager` and the other manager classes are the half of NetworkExtension that talks to the
 system's preference daemon, and they are a different job: they answer as Apple does without an
 entitlement, with the documented error domain and codes, measured on the host. The four classes
-`NEProxySettings`, `NEProxyServer`, `NEIPv4Settings` and `NEIPv4Route` are settings objects like this
-one, and their header and object are written.
+`NEProxySettings`, `NEProxyServer`, `NEIPv4Settings`, `NEIPv4Route`, `NEIPv6Settings` and `NEIPv6Route`
+are settings objects like this one, and their header and object are written.
+
+**The IPv6 pair** (`NetworkExtension/NEIPv6Settings.m`, one object and one release, the 9.0 both get from
+the 26.2 header) is state over its IPv4 counterparts, and its one answer that is not a copy is
+`+[NEIPv6Route defaultRoute]`: the route whose destination is the unspecified address with a prefix
+length of zero. The header only says "the route that matches everything", so the value came from the
+host's own class - `tests/backports/host/netext-proxy/run.sh` compares it name by name and both sides
+answer an object whose destination and prefix are those, which is what makes the port's answer measured
+rather than asserted.
+
+The two class methods `+settingsWithAutomaticAddressing` and `+settingsWithLinkLocalAddressing` are
+marked `API_UNAVAILABLE` on every platform in the 26.2 header, so Apple's own class does not carry them
+and a host comparison cannot be their oracle. They are carried, because the header's own text declares
+them and a caller that reads them compiles against this package's header; the run checks each name
+against that header, which is the oracle `registry/README.md` names for a name no host carries.
 
 **The capitalised names, corrected.** An earlier version of this paragraph said the ledger spells two of
 `NEProxySettings`'s properties in lowercase. It does not: `NEProxySettings.HTTPEnabled`,
