@@ -91,7 +91,8 @@ try:
             [sys.executable, TOOL, "--out", out, "--sdk", sdk, "--vfs", vfs, "--digester", stub,
              "--module-dirs", "selftest=%s" % modules, "--cache-dir", os.path.join(root, "cache"),
              "--shims-modulemap", os.path.join(root, "no-such-modulemap")],
-            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace", env=env)
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace", env=env,
+            cwd=root)
         with open(os.path.join(out, "swift-modules.json"), encoding="utf-8") as f:
             return result, json.load(f)
 
@@ -130,7 +131,7 @@ try:
         [sys.executable, TOOL, "--out", fail_out, "--sdk", sdk, "--vfs", vfs, "--digester", broken,
          "--module-dirs", "selftest=%s" % modules, "--cache-dir", os.path.join(root, "cache2"),
          "--shims-modulemap", os.path.join(root, "no-such-modulemap")],
-        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace")
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace", cwd=root)
     check("a digester that fails does not take the run down", result.returncode, 0)
     check("and no traceback reaches the log", "Traceback" in result.stdout, False)
     written = os.path.join(fail_out, "swift-modules.json")
