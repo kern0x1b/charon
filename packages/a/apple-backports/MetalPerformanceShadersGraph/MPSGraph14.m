@@ -661,6 +661,75 @@ typedef enum {
                                 name:name];
 }
 
+#pragma mark - the cumulative family, whose seam every release's scan factory goes through
+
+// The axis of a scan is the caller's and is normalised the way the reduction family's is: a negative axis
+// is counted from the end of the rank, and an axis outside it is refused when the graph is built rather
+// than left to be discovered as a wrong number. Measured on this host's own MPSGraph, an axis outside the
+// rank is refused by the release too and by a form no caller can catch: MPSGraphNDArrayScan.mm:253 writes
+// "Axis = ... This class only supports axis = 0, 1, 2, 3" and takes the process down with it, so there is
+// no answer to record and a tensor for it would be an answer the release never gives.
+- (NSInteger)charon_mps_scanAxis:(NSInteger)axis ofRank:(NSUInteger)rank named:(NSString *)name
+{
+    NSInteger normalised = axis;
+    if (normalised < 0)
+        normalised += (NSInteger)rank;
+    if (normalised < 0 || normalised >= (NSInteger)rank) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked to scan axis %ld of a rank-%lu tensor, and axis 0 to "
+                           @"%lu is all it has",
+                            name, (long)axis, (unsigned long)rank, (unsigned long)rank];
+    }
+    return normalised;
+}
+
+- (MPSGraphTensor *)charon_mps_scan:(CharonMPSGraphOperationKind)kind
+                               axis:(NSInteger)axis
+                             tensor:(MPSGraphTensor *)tensor
+                        combination:(NSString *)combination
+                           exclusive:(BOOL)exclusive
+                             reverse:(BOOL)reverse
+                                name:(NSString *)name
+{
+    NSUInteger rank = tensor.shape.count;
+    NSInteger normalised = [self charon_mps_scanAxis:axis ofRank:rank named:name];
+    return [self charon_mps_operation:kind
+                               inputs:@[tensor]
+                           parameters:@{@"scanCombination": combination, @"scanAxis": @(normalised),
+                                        @"scanExclusive": @(exclusive), @"scanReverse": @(reverse)}
+                                  name:name];
+}
+
+- (MPSGraphTensor *)charon_mps_scan:(CharonMPSGraphOperationKind)kind
+                         axisTensor:(MPSGraphTensor *)axisTensor
+                             tensor:(MPSGraphTensor *)tensor
+                        combination:(NSString *)combination
+                           exclusive:(BOOL)exclusive
+                             reverse:(BOOL)reverse
+                                name:(NSString *)name
+{
+    // The axis is data here, so there is no axis to normalise at build time: the walk reads it when the
+    // graph runs and refuses it there, the way the reduction family refuses an axis outside the rank.
+    // What can be asked now is the axis tensor's own type, and a floating point one is refused now for
+    // the reason in the header: the release cannot build the graph over one at all.
+    MPSDataType axisType = axisTensor.dataType;
+    if (axisType != MPSDataTypeInt32 && axisType != MPSDataTypeInt64 && axisType != MPSDataTypeUInt32 &&
+        axisType != MPSDataTypeUInt64 && axisType != MPSDataTypeInt16 && axisType != MPSDataTypeUInt16 &&
+        axisType != MPSDataTypeInt8 && axisType != MPSDataTypeUInt8) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked to scan along an axis tensor of data type 0x%x, and an "
+                           @"axis is an index: measured, the release's own compiler refuses the operand "
+                           @"('mps.cumulative_sum' op operand #1 must be 0D tensor of mps index type values "
+                           @"or ... shape equal to [1]) and the process goes down with it",
+                            name, (unsigned)axisType];
+    }
+    return [self charon_mps_operation:kind
+                               inputs:@[tensor, axisTensor]
+                           parameters:@{@"scanCombination": combination, @"scanAxisTensor": @YES,
+                                        @"scanExclusive": @(exclusive), @"scanReverse": @(reverse)}
+                                  name:name];
+}
+
 - (MPSGraphTensor *)reductionSumWithTensor:(MPSGraphTensor *)tensor
                                        axis:(NSInteger)axis
                                        name:(NSString *)name

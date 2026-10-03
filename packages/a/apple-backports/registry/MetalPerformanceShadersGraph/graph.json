@@ -1294,5 +1294,197 @@
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
     }
+,
+{
+      "api": "-[MPSGraph cumulativeSumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeSumWithTensor:axis:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeSumWithTensor:axisTensor:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeSumWithTensor:axisTensor:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeProductWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeProductWithTensor:axis:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeProductWithTensor:axisTensor:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeProductWithTensor:axisTensor:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMaximumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMaximumWithTensor:axis:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMaximumWithTensor:axisTensor:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMaximumWithTensor:axisTensor:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMinimumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMinimumWithTensor:axis:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMinimumWithTensor:axisTensor:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMinimumWithTensor:axisTensor:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    }
+,
+{
+      "api": "-[MPSGraph charon_mps_scanAxis:ofRank:named:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the normalisation of a cumulative operation's axis, which the reduction family's seam also does by hand - a negative axis counted from the end and an axis outside the rank refused when the graph is built - and which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraph charon_mps_scan:axis:tensor:combination:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the one seam 16.0's sixteen cumulative factories go through, which takes the axis and the fold and the two flags; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraph charon_mps_scan:axisTensor:tensor:combination:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the same seam over an axis the caller feeds at run time, which refuses a floating point axis tensor because the release cannot build the graph over one; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    }
   ]
 }

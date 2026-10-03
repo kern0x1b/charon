@@ -708,6 +708,51 @@ static long CharonMPSGraphCoordinate(NSArray<NSNumber *> *shape, NSUInteger axis
     return 0;
 }
 
+// One step of a fold: the held answer and the value that has just been read, and the answer after it. It
+// is one function because the reduction walk and the cumulative walk fold with the same four steps and the
+// same seeds, and a second copy of these rules would be a second thing to keep measured - the NaN that
+// loses a comparison and therefore skips, the truth fold's test against zero, and the arithmetic's own NaN
+// for the sum and the product.
+// `propagates` and `tiesToValue` are the two rules that belong to a kernel rather than to a fold, and both
+// are measured: the two propagating reductions of 14.0 latch a NaN and every other fold skips one, and the
+// reduction family's comparison is strict - a row of (0, -0, 0, -0) answers 0 for a maximum, the first of
+// the equal elements - where a scan's is not: over the same row scanned in reverse, the release answers a
+// NEGATIVE zero where a strict comparison keeps the zero it already held, and answers a positive zero where
+// a strict comparison would take the negative one it was handed. So the reduction passes (1, 0) here and
+// the scan (0, 1).
+static double CharonMPSGraphFoldStep(const CharonMPSGraphFold *fold, double held, double value, int propagates,
+                                     int tiesToValue)
+{
+    if (fold->isExtreme) {
+        // One comparison, and every rule of the four extremes is in it. A NaN loses the comparison against
+        // anything including another NaN, so it is skipped - which is how a maximum that does not propagate
+        // ignores one, and which is every cumulative extreme (measured: a NaN in a scan of either extreme is
+        // skipped in both directions). The propagating variant latches instead: a NaN that has reached this
+        // element is its answer, a NaN that arrives puts it there, and nothing after it can move it, because
+        // a comparison against a NaN also loses. Only the two reductions of 14.0 latch.
+        if (isnan(value))
+            return propagates ? CharonMPSGraphOwnNaN(NAN) : held;
+        if (propagates && isnan(held))
+            return held;
+        if (fold->isLesser)
+            return tiesToValue ? (value <= held ? value : held) : (value < held ? value : held);
+        return tiesToValue ? (value >= held ? value : held) : (value > held ? value : held);
+    }
+    if (fold->isTruth) {
+        // The two truth folds, which are a question about every element rather than an arithmetic over it,
+        // and the answer is written in the operand's own type: measured, an "and" of a row holding a zero
+        // answers 0 and of a row of nothing but NaNs answers 1, so the test is against zero and a NaN is a
+        // nonzero like any other value. The held answer is the one or the zero the buffer holds.
+        int truth = value != 0.0;
+        int was = held != 0.0;
+        return (fold->isOr ? (truth || was) : (truth && was)) ? 1.0 : 0.0;
+    }
+    // A NaN that leaves the sum or the product is the arithmetic's own NaN and not the one it was handed,
+    // as everywhere else in this interpreter: measured, the product of a row of (infinity, -infinity, NaN,
+    // -NaN) is 0x7fc00000 on this host and was a negative NaN here until the fold was put through this rule.
+    return CharonMPSGraphOwnNaN(fold->multiplies ? held * value : held + value);
+}
+
 static void CharonMPSGraphReduce(MPSGraphOperation *operation, MPSGraphTensorData *source,
                                   MPSGraphTensorData *meanGiven, MPSGraphTensorData *result)
 {
@@ -834,48 +879,8 @@ static void CharonMPSGraphReduce(MPSGraphOperation *operation, MPSGraphTensorDat
         if (index >= resultCount)
             continue;
         double value = CharonMPSLoad(in, type, i);
-        if (fold->isExtreme) {
-            // One comparison, and every rule of the four extremes is in it. A NaN loses the comparison
-            // against anything including another NaN, so it is skipped - which is how a maximum that does
-            // not propagate ignores one. The propagating variant latches instead: a NaN that has reached
-            // this element is its answer, and a NaN that arrives puts it there, and nothing after it can
-            // move it, because a comparison against a NaN also loses.
-            double held = CharonMPSLoad(out, resultType, index);
-            if (isnan(value)) {
-                if (propagates)
-                    CharonMPSStoreRounded(out, resultType, index, CharonMPSGraphOwnNaN(NAN), 1);
-                continue;
-            }
-            if (propagates && isnan(held))
-                continue;
-            CharonMPSStoreRounded(out, resultType, index,
-                                  fold->isLesser ? (value < held ? value : held) : (value > held ? value : held), 1);
-            continue;
-        }
-        if (fold->isTruth) {
-            // The two truth folds, which are a question about every element of the reduced set rather
-            // than an arithmetic over it, and the answer is written in the operand's own type: measured
-            // on this host's own MPSGraph, an "and" of a row holding a zero answers 0 and of a row of
-            // nothing but NaNs answers 1, so the test is against zero and a NaN is a nonzero like any
-            // other value. An "or" of the same row answers 1.
-            //
-            // A reduced set of no elements at all is the identity rather than the seed of the fold, and
-            // that is what axes:@[] measures over both of them - see the empty-axis case above - so the
-            // two never reach here with nothing to fold.
-            int truth = value != 0.0;
-            int held = CharonMPSLoad(out, resultType, index) != 0.0;
-            CharonMPSStoreRounded(out, resultType, index,
-                                  (fold->isOr ? (truth || held) : (truth && held)) ? 1.0 : 0.0, 1);
-            continue;
-        }
-        // The held answer is read back out of the result, so every fold is a store and a load of the
-        // value the type can hold. A NaN that leaves this arithmetic is the arithmetic's own and not the
-        // one it was handed, as everywhere else in this interpreter: measured, the product of a row of
-        // (infinity, -infinity, NaN, -NaN) is 0x7fc00000 on this host and was a negative NaN here until
-        // the fold was put through the same rule the arithmetic family uses.
         double held = CharonMPSLoad(out, resultType, index);
-        CharonMPSStoreRounded(out, resultType, index,
-                              CharonMPSGraphOwnNaN(fold->multiplies ? held * value : held + value), 1);
+        CharonMPSStoreRounded(out, resultType, index, CharonMPSGraphFoldStep(fold, held, value, propagates, 0), 1);
     }
     if (fold->divides) {
         // The mean of the reduced set. Where it came from is the only difference between the two
@@ -925,6 +930,167 @@ static void CharonMPSGraphReduce(MPSGraphOperation *operation, MPSGraphTensorDat
     free(dropped);
 }
 
+// THE CUMULATIVE FAMILY, which is the fold above walked along an axis instead of across a set: the result
+// is the operand's own shape, and each element holds a fold of the elements on one side of it. Everything
+// the walk needs is in the operation's parameters - which fold, which axis, which way, and whether an
+// element is in its own answer - so 16.0's sixteen methods share this one walk and name none of it.
+//
+// The rule is one sentence and every part of it is measured on this host's own MPSGraph over rows of
+// ordinary values, over rows chosen for their ties, over the sixteen classes and over a row of nothing but
+// NaNs, in float32, int32 and float16 alike:
+//
+//   the accumulator is the result buffer and starts at the fold's own seed, the walk goes along the axis in
+//   the direction the flag says, and at each position the element is folded into the answer BEFORE that
+//   answer is written - unless the answer is exclusive, in which case the answer is written first and the
+//   element is folded into the position after it.
+//
+// Measured over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40), axis 1: a cumulative sum answers
+// (1, 3, 6, 10 | 10, 30, 60, 100), a reverse one (10, 9, 7, 4 | 100, 90, 70, 40) and an exclusive reverse one
+// (9, 7, 4, 0 | 90, 70, 40, 0); a cumulative product answers (1, 2, 6, 24 | 10, 200, 6000, 240000) and a
+// reverse one (24, 24, 12, 4 | 240000, 24000, 1200, 40), which is the same rule and not a second one; a
+// cumulative maximum is the row itself, (1, 2, 3, 4 | 10, 20, 30, 40), and an exclusive reverse maximum is
+// (4, 4, 4, -inf | 40, 40, 40, -inf) - the seed where the walk starts, and the mirror of a forward
+// exclusive maximum's (-inf, 1, 2, 3). A negative axis is the axis counted from the end, measured: axis:-1
+// answers what axis:1 answers.
+//
+// A NaN loses every comparison and is skipped, as in the reduction family, so the position whose whole side
+// of the walk is NaN answers the seed: measured over a row of (1, 2, 3, NaN), a reverse exclusive maximum
+// answers (3, 3, -inf, -inf) and a reverse exclusive minimum (2, 3, +inf, +inf), and a forward exclusive
+// maximum over the same row answers (-inf, 1, 2, 3). The accumulator is the result's own storage, so every
+// partial answer is the value that type can hold: measured, the cumulative sum of (1, 2, 3, 4) in float16
+// is 0x4900 = 10 and the cumulative product of four halves of 65504 is an infinity from the second step.
+// The seed a scan of the two extremes starts from, and it is NOT the reduction family's infinity: measured,
+// an exclusive cumulative maximum of a 2x4 answers 0xff7fffff at the position the walk starts and an
+// exclusive cumulative minimum answers 0x7f7fffff there, in float32; in float16 they are 0xfbff and 0x7bff,
+// the largest finite half of each sign, and in int32 they are INT32_MIN and INT32_MAX. So the seed is the
+// type's own extreme FINITE value - the identity of a comparison over the values that type can hold - while
+// the reduction family of 14.0 seeds an infinity, which is a different kernel and a different measurement and
+// is left as it is. A sum's seed is the zero of the type and a product's its one, in every type measured.
+static double CharonMPSGraphScanSeed(const CharonMPSGraphFold *fold, MPSDataType type)
+{
+    if (!fold->isExtreme)
+        return fold->seed;
+    double magnitude = 0.0;
+    switch (type) {
+    case MPSDataTypeFloat32:
+        magnitude = (double)FLT_MAX;
+        break;
+    case MPSDataTypeFloat16:
+        magnitude = 65504.0;          // 0x7bff, the largest finite half
+        break;
+    case MPSDataTypeInt8:
+        magnitude = fold->isLesser ? 127.0 : 128.0;
+        break;
+    case MPSDataTypeInt16:
+        magnitude = fold->isLesser ? 32767.0 : 32768.0;
+        break;
+    case MPSDataTypeInt32:
+        magnitude = fold->isLesser ? 2147483647.0 : 2147483648.0;
+        break;
+    case MPSDataTypeInt64:
+        magnitude = fold->isLesser ? 9223372036854775807.0 : 9223372036854775808.0;
+        break;
+    case MPSDataTypeUInt8:
+        magnitude = 255.0;
+        break;
+    case MPSDataTypeUInt16:
+        magnitude = 65535.0;
+        break;
+    case MPSDataTypeUInt32:
+        magnitude = 4294967295.0;
+        break;
+    case MPSDataTypeUInt64:
+        magnitude = 18446744073709551615.0;
+        break;
+    default:
+        // A boolean has no ordering to seed: it is the same answer whatever the walk starts from, and the
+        // zero is the false that a fold of nothing over it is.
+        magnitude = 1.0;
+        break;
+    }
+    return fold->isLesser ? magnitude : -magnitude;
+}
+
+static void CharonMPSGraphScan(MPSGraphOperation *operation, MPSGraphTensorData *source,
+                               MPSGraphTensorData *axisData, MPSGraphTensorData *result)
+{
+    NSDictionary *parameters = operation.charon_mps_parameters;
+    const CharonMPSGraphFold *fold = CharonMPSGraphFoldNamed([parameters[@"scanCombination"] UTF8String]);
+    NSArray<NSNumber *> *shape = source.shape;
+    NSUInteger rank = shape.count;
+    NSUInteger count = rank ? [source charon_mps_elementCount] : 0;
+    if (fold == NULL || count == 0)
+        return;
+    MPSDataType type = source.dataType;
+    MPSDataType resultType = result.dataType;
+    void *in = [source charon_mps_bytes];
+    void *out = [result charon_mps_bytes];
+
+    // The axis is the caller's or the feed's, and both go through the same normalisation: negative counted
+    // from the end, and an axis outside the rank refused. The refusal is the same one the reduction family
+    // raises when its graph is built - the release destroys the process over one (MPSGraphNDArrayScan.mm:253
+    // asserts "This class only supports axis = 0, 1, 2, 3" and the process is gone), so this is the one form
+    // of "this graph cannot run" a caller can handle. A fed axis is only known here, at run time.
+    NSInteger axis;
+    if (parameters[@"scanAxisTensor"]) {
+        if (axisData == nil || ![axisData isKindOfClass:[MPSGraphTensorData class]]) {
+            CharonMPSGraphRefuse(@"MPSGraph: the cumulative operation named %@ was fed no value for its "
+                                 @"axis, so nothing was written to its output", [operation name]);
+            return;
+        }
+        NSInteger fed = (NSInteger)CharonMPSLoad([axisData charon_mps_bytes], axisData.dataType, 0);
+        axis = fed < 0 ? fed + (NSInteger)rank : fed;
+        if (axis < 0 || axis >= (NSInteger)rank) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was fed an axis of %ld for a rank-%lu tensor, and axis 0 to "
+                               @"%lu is all it has",
+                                [operation name], (long)fed, (unsigned long)rank, (unsigned long)rank];
+        }
+    } else {
+        axis = [parameters[@"scanAxis"] integerValue];
+    }
+    int exclusive = [parameters[@"scanExclusive"] boolValue];
+    int reverse = [parameters[@"scanReverse"] boolValue];
+
+    // Each axis's own stride in the operand's layout, which is the result's layout too, and the extent of
+    // the one being walked. A position of the scan axis is a whole run of the other axes, so the walk is
+    // over the positions and each position owns one element per run - a lane - and the lanes are walked one
+    // after another, which is what makes the whole of this O(elements) rather than O(elements * positions).
+    unsigned long long *stride = calloc(rank, sizeof(unsigned long long));
+    unsigned long long extent = 1;
+    {
+        unsigned long long running = 1;
+        for (NSUInteger i = rank; i-- > 0;) {
+            stride[i] = running;
+            running *= (unsigned long long)shape[i].unsignedIntegerValue;
+            if ((NSInteger)i == axis)
+                extent = (unsigned long long)shape[i].unsignedIntegerValue;
+        }
+    }
+    unsigned long long laneStride = stride[axis];
+    double seed = CharonMPSGraphScanSeed(fold, type);
+    for (NSUInteger base = 0; base < count; base++) {
+        if (CharonMPSGraphCoordinate(shape, (NSUInteger)axis, base) != 0)
+            continue;                       // one lane: the elements whose axis coordinate is zero
+        double accumulator = seed;
+        for (unsigned long long step = 0; step < extent; step++) {
+            unsigned long long at = reverse ? extent - 1 - step : step;
+            NSUInteger here = base + (NSUInteger)(at * laneStride);
+            double value = CharonMPSLoad(in, type, here);
+            // The element at this position joins the answer before the answer is written, unless the answer
+            // is exclusive - and either way the answer goes out through the result's own type and is read
+            // back from it, so the accumulator is that type and not a wider one.
+            if (!exclusive)
+                accumulator = CharonMPSGraphFoldStep(fold, accumulator, value, 0, 1);
+            CharonMPSStoreRounded(out, resultType, here, accumulator, 1);
+            accumulator = CharonMPSLoad(out, resultType, here);
+            if (exclusive)
+                accumulator = CharonMPSGraphFoldStep(fold, accumulator, value, 0, 1);
+        }
+    }
+    free(stride);
+}
+
 @implementation MPSGraph (CharonMPSGraphInterpreter)
 
 - (void)charon_mps_runOperation:(MPSGraphOperation *)operation values:(NSMutableDictionary *)values
@@ -948,6 +1114,27 @@ static void CharonMPSGraphReduce(MPSGraphOperation *operation, MPSGraphTensorDat
     // read out of its own parameters and not out of its kind, because a kind names the release the
     // operation came from and the walk here is one walk for every release: a reduction says which fold it
     // is in @"combination", and nothing else in this interpreter knows that a fold exists by its name.
+    if (operation.charon_mps_parameters[@"scanCombination"]) {
+        // The cumulative family, which is the reduction family's fold walked along an axis: the result is the
+        // operand's own shape, so this cannot be the elementwise loop below either, and it is asked for the
+        // same reason. Which fold, which axis, which way and whether an element is in its own answer are all
+        // in the operation's parameters, so nothing here names 16.0 - see CharonMPSGraphScan.
+        MPSGraphTensorData *source = values[inputs.firstObject];
+        if (![source isKindOfClass:[MPSGraphTensorData class]]) {
+            CharonMPSGraphRefuse(@"MPSGraph: a cumulative operation named %@ has no value for its first "
+                                 @"input, so nothing was written to its output", [operation name]);
+            return;
+        }
+        MPSGraphTensorData *axisData = inputs.count > 1 ? values[inputs[1]] : nil;
+        MPSGraphTensorData *scanned = [[MPSGraphTensorData alloc] initWithDevice:source.device
+                                                                     elementCount:count
+                                                                            shape:output.shape
+                                                                         dataType:dataType];
+        [scanned charon_mps_bytes];
+        CharonMPSGraphScan(operation, source, axisData, scanned);
+        values[output] = scanned;
+        return;
+    }
     if (operation.charon_mps_parameters[@"combination"]) {
         MPSGraphTensorData *source = values[inputs.firstObject];
         MPSGraphTensor *meanTensor = operation.charon_mps_parameters[@"mean"];

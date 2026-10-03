@@ -671,9 +671,91 @@ everywhere. The walk therefore answers a reduction over no axis with the operand
 the walk rather than in the two folds because a sum and a product of the identity are the identity either way:
 only a fold whose answer is not the element's own can tell the two apart.
 
+## The cumulative family of 16.0
+
+Sixteen rows in one object (`MPSGraphCumulativeOps160.m`): `cumulativeSum`, `cumulativeProduct`,
+`cumulativeMaximum` and `cumulativeMinimum`, each in four forms - an axis written down with and without the
+`exclusive:` and `reverse:` flags, and an axis fed at run time with and without them.
+
+**The walk is the reduction family's fold along an axis**, and it shares the fold table and the step with
+it: `CharonMPSGraphFoldStep` is one function both walks call, so the seeds, the NaN rule and the four steps
+are measured once. What the scan adds is a direction, an axis and a flag, all three read out of the
+operation's parameters (`@scanCombination`, `@scanAxis`/`@scanAxisTensor`, `@scanExclusive`, `@scanReverse`),
+so the 16.0 object names its sixteen methods and nothing of any other release.
+
+### The rule, and what is measured
+
+The accumulator is the result buffer and starts at the fold's seed, the walk goes along the axis in the
+direction the flag says, and at each position the element joins the answer BEFORE that answer is written -
+unless the answer is `exclusive`, which writes it first and folds the element in afterwards, so the position
+the walk starts at holds the seed.
+
+Over the case file's 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40), axis 1, every one of these byte-identical between
+the release and the port in float32, int32 and float16:
+
+| operation | inclusive | reverse | exclusive reverse |
+| --- | --- | --- | --- |
+| `cumulativeSum` | (1, 3, 6, 10 \| 10, 30, 60, 100) | (10, 9, 7, 4 \| 100, 90, 70, 40) | (9, 7, 4, 0 \| 90, 70, 40, 0) |
+| `cumulativeProduct` | (1, 2, 6, 24 \| 10, 200, 6000, 240000) | (24, 24, 12, 4 \| 240000, 24000, 1200, 40) | (24, 12, 4, 1 \| 24000, 1200, 40, 1) |
+| `cumulativeMaximum` | (1, 2, 3, 4 \| 10, 20, 30, 40) | (4, 4, 4, 4 \| 40, 40, 40, 40) | (4, 4, 4, -inf \| 40, 40, 40, -inf) |
+| `cumulativeMinimum` | (1, 1, 1, 1 \| 10, 10, 10, 10) | (1, 2, 3, 4 \| 10, 20, 30, 40) | (2, 3, 4, +inf \| 20, 30, 40, +inf) |
+
+(the exclusive columns' seeds are the type's extreme finite value, which is the next table, and the reverse
+minimum and maximum over an increasing row are each the row itself read from the other end).
+
+**The seed of the two extremes is the type's own extreme FINITE value, not an infinity.** Measured over one
+exclusive scan of each, in each of the three data types the family is asked in:
+
+| type | the maximum's seed | the minimum's seed |
+| --- | --- | --- |
+| `MPSDataTypeFloat32` | `ff7fffff` = -FLT_MAX | `7f7fffff` = +FLT_MAX |
+| `MPSDataTypeFloat16` | `fbff` = -65504, the largest finite half | `7bff` = +65504 |
+| `MPSDataTypeInt32` | -2147483648 | 2147483647 |
+
+which is the identity of a comparison over the values that type can hold. The reduction family of 14.0 seeds
+an **infinity** instead - measured, `reductionMaximumWithTensor:axis:1` over a row of nothing but NaNs
+answers `0xff800000` - and that is a different kernel with a different measurement, and it is left as it is.
+A sum's seed is the zero of the type and a product's its one, in every type measured.
+
+**A scan's comparison is not strict where a reduction's is**, and that is measured rather than guessed: over
+the sixteen classes, whose first row is (1, -1, -0.0, +0.0), a *reverse* cumulative maximum answers a NEGATIVE
+zero at positions 1 and 2 where a strict comparison keeps the zero it already held, and an exclusive reverse
+maximum answers a negative zero at positions 0 and 1 where a strict comparison would take the positive one it
+was handed. So `CharonMPSGraphFoldStep` takes both rules as arguments: the two reductions pass
+"propagate a NaN, break a tie towards the held answer" and a scan passes "skip a NaN, break a tie towards the
+new value", and the reduction family's own cases (a row of (0, -0, 0, -0) answers 0, the first of the equal
+elements) are what pin its half of that.
+
+**A NaN is skipped in a scan, as in a reduction**: over a row of (1, 2, 3, NaN) an exclusive reverse maximum
+answers (3, 3, -FLT_MAX, -FLT_MAX) and an exclusive reverse minimum (2, 3, +FLT_MAX, +FLT_MAX), and over a row
+of nothing but NaNs both answer the seed at every position. Nothing in this family latches a NaN - the two
+propagating reductions of 14.0 are the only two that do, and they are in a different object.
+
+**The other three questions the family asks.** A negative axis is counted from the end, measured (`axis:-1`
+answers what `axis:1` answers). The result is the operand's own shape and data type, measured in all three
+types - which is why this family needs no case helper of its own, unlike the reduction family whose result is
+a different shape. And the accumulator is the result's own storage: measured, the cumulative sum of
+(1, 2, 3, 4) in float16 is `4900` = 10, and the cumulative product of four halves of 65504 is an infinity from
+the second step.
+
+### The two refusals, both named in the row of every method
+
+* **An axis outside the rank.** The release asserts and dies: `MPSGraphNDArrayScan.mm:253` writes
+  `Axis = ... This class only supports axis = 0, 1, 2, 3` and takes the process with it. The port raises
+  `NSInvalidArgumentException` - when the axis is written down, when the graph is built; when it is fed, when
+  the graph runs, because then it is data and there is nothing earlier to refuse.
+* **An axis fed as a floating point tensor.** The release cannot build the graph at all: its own compiler
+  refuses the operand (`'mps.cumulative_sum' op operand #1 must be 0D tensor of mps index type values or
+  static-shape defined tensor with shape equal to [1] ... but got 'tensor<1xf32>'`) and the process goes down
+  with `failed assertion`, `MPSGraphExecutable.mm:4419`. The port raises `NSInvalidArgumentException` when the
+  graph is built. An int32 and an int64 axis of shape [1] both answer, measured.
+
+Neither is in the differential, and that is deliberate in both cases: the release's own answer is a process
+that is gone, so there is nothing to compare a line against. Both are measurements in the rows instead.
+
 ### What is not measured here
 
-The cumulative family (16.0) and the shape family (`reshape`, `squeeze`, `expandDims`, `transpose`, `slice`,
+The shape family (`reshape`, `squeeze`, `expandDims`, `transpose`, `slice`,
 `concat`, `stack`, `split`, `pad`, `tile`, `reverse`, `broadcast`, `flatten2D`, `spaceToDepth`, `depthToSpace`,
 `spaceToBatch`, `batchToSpace`, `coordinateAlongAxis`, `nonZeroIndices`, the `gather*` and `scatter*` forms
 and the `topK`/`bottomK` pair) are not in this page and not in the tree: they are the rows the ledger still
