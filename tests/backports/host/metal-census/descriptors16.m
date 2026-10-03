@@ -1,8 +1,10 @@
 /* The 16.0 descriptors, compared PROPERTY BY PROPERTY against Apple's own objects.
  *
- * NO DEVICE IS EVER CREATED. A descriptor asks a device nothing - both sides are [[X alloc] init - so
- * nothing here calls one, and nothing in this file needs it: a
- * descriptor is `[[X alloc] init]` on both sides. The host object is APPLE'S, made by Apple's class,
+ * THE DESCRIPTOR HALF CREATES NO DEVICE, and the reason is that a descriptor asks a device nothing -
+ * both sides are [[X alloc] init - which facts/Metal/DeviceOnThisMachine.md measures. THE LAST
+ * SECTION DOES CREATE ONE, because the sample buffer an attachment carries is a device-made object
+ * and a round trip with a real one is now measurable; that section is what settles the row this file
+ * used to leave open. The host object is APPLE'S, made by Apple's class,
  * and it is the oracle: the port's value is compared against what Apple's own object answers for the
  * same property after the same write. A round trip of the port's object against ITSELF would prove
  * only that the port agrees with the port, and that is the round trip that let three reviews
@@ -106,7 +108,7 @@ int main(void)
             charonHost_MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *port =
                 [[charonHost_MTLAccelerationStructurePassSampleBufferAttachmentDescriptor alloc] init];
             check(host.sampleBuffer == nil && port.sampleBuffer == nil,
-                  @"fresh: sampleBuffer is nil on both sides - and it is NOT measured, for the reason in the facts file");
+                  @"fresh: sampleBuffer is nil on both sides - the device-backed section below is what measures it");
             same_u(port.startOfEncoderSampleIndex, host.startOfEncoderSampleIndex,
                    @"fresh: startOfEncoderSampleIndex");
             same_u(port.endOfEncoderSampleIndex, host.endOfEncoderSampleIndex,
@@ -294,7 +296,93 @@ int main(void)
                   @"Apple's own -copyWithZone: does not carry maxCommandsInFlight, and the port matches that");
         }
 
-        printf("no device was created: %d checks, each one against Apple's own object\n", checks);
+        /* THE SAMPLE BUFFER, WITH A DEVICE. The comparison above could not settle this row: the
+         * attachment's sampleBuffer is a DEVICE-MADE OBJECT, and a no-device comparison can only say
+         * that a fresh attachment reads nil on both sides. This machine has a device -
+         * facts/Metal/DeviceOnThisMachine.md is the measurement - so the round trip is measured here:
+         * a real MTLCounterSampleBuffer made by Apple's own device, given to both sides, read back on
+         * both, carried by a copy on both, and reset by a nil on both.
+         *
+         * IDENTITY IS ONLY EVER COMPARED WITHIN ONE SIDE. The two sides hold different objects and two
+         * objects have no address in common; what is asked is whether each side returns the object IT
+         * was given, which is a property of that side. */
+        printf("the sample buffer, with a real MTLCounterSampleBuffer on both sides\n");
+        id<MTLDevice> device = MTLCreateSystemDefaultDevice();
+        check(device != nil, @"there is a Metal device, which is what this section needs and the one above did not");
+        if (device) {
+            /* The simplest buffer the header allows: the timestamp counter set (MTLCounters.h:65
+             * names it), no sample counters of its own and one sample. The names are MTLCommonCounterSet
+             * and its Timestamp member, not MTLCommonSet - the header's spelling. */
+            id<MTLCounterSet> timestampSet = nil;
+            for (id<MTLCounterSet> set in device.counterSets)
+                if ([set.name isEqualToString:MTLCommonCounterSetTimestamp]) { timestampSet = set; break; }
+            check(timestampSet != nil, @"Apple's own device has the timestamp counter set the header names");
+            MTLCounterSampleBufferDescriptor *counterDescriptor = [[MTLCounterSampleBufferDescriptor alloc] init];
+            counterDescriptor.counterSet = timestampSet;
+            counterDescriptor.sampleCount = 1;
+            NSError *counterError = nil;
+            id<MTLCounterSampleBuffer> buffer = [device newCounterSampleBufferWithDescriptor:counterDescriptor error:&counterError];
+            check(buffer != nil, ([NSString stringWithFormat:@"Apple's own device makes a counter sample buffer, which is what the port is handed%@",
+                                   buffer ? @"" : [@": " stringByAppendingString:[counterError localizedDescription]]]));
+            if (buffer) {
+                MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *hostAttachment =
+                    [[MTLAccelerationStructurePassSampleBufferAttachmentDescriptor alloc] init];
+                charonHost_MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *portAttachment =
+                    [[charonHost_MTLAccelerationStructurePassSampleBufferAttachmentDescriptor alloc] init];
+                check(hostAttachment.sampleBuffer == nil && portAttachment.sampleBuffer == nil,
+                      @"fresh: sampleBuffer is nil on both sides");
+                [hostAttachment setSampleBuffer:buffer];
+                [portAttachment setSampleBuffer:buffer];
+                check(hostAttachment.sampleBuffer == buffer,
+                      @"after a set: APPLE's own attachment returns the very object it was given");
+                check(portAttachment.sampleBuffer == buffer,
+                      @"after a set: the PORT's attachment returns the very object it was given - identity within its own side");
+
+                MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *hostAttachmentCopy = [hostAttachment copy];
+                charonHost_MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *portAttachmentCopy = [portAttachment copy];
+                check(hostAttachmentCopy.sampleBuffer == buffer,
+                      @"a copy: APPLE's own copy carries the sample buffer");
+                check(portAttachmentCopy.sampleBuffer == buffer,
+                      @"a copy: the PORT's copy carries the sample buffer");
+
+                /* THROUGH THE ARRAY, which is where an application puts it, and the header says a nil
+                 * at a legal index resets that attachment's state to its defaults. */
+                MTLAccelerationStructurePassDescriptor *hostPass = [[MTLAccelerationStructurePassDescriptor alloc] init];
+                charonHost_MTLAccelerationStructurePassDescriptor *portPass = [[charonHost_MTLAccelerationStructurePassDescriptor alloc] init];
+                [hostPass.sampleBufferAttachments setObject:hostAttachment atIndexedSubscript:0];
+                [portPass.sampleBufferAttachments setObject:portAttachment atIndexedSubscript:0];
+                check(hostSlot(hostPass.sampleBufferAttachments, 0) != nil,
+                      @"through the array: APPLE's own pass descriptor holds the attachment at index 0");
+                check(portSlot(portPass.sampleBufferAttachments, 0) != nil,
+                      @"through the array: the PORT's pass descriptor holds the attachment at index 0");
+                check(((MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *)
+                          hostSlot(hostPass.sampleBufferAttachments, 0)).sampleBuffer == buffer,
+                      @"through the array: APPLE's own attachment still holds the real sample buffer");
+                check(((charonHost_MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *)
+                          portSlot(portPass.sampleBufferAttachments, 0)).sampleBuffer == buffer,
+                      @"through the array: the PORT's attachment still holds the real sample buffer");
+
+                /* THE RESET: a nil at a legal index, which MTLAccelerationStructurePassSampleBuffer
+                 * AttachmentDescriptor.h says resets that descriptor's state to its default values. */
+                [hostPass.sampleBufferAttachments setObject:nil atIndexedSubscript:0];
+                [portPass.sampleBufferAttachments setObject:nil atIndexedSubscript:0];
+                /* The array's getter answers id here, so both sides are asked through their own
+                 * class: a cast of one side's object to the other side's class would be a question
+                 * about the cast. */
+                same_u(((charonHost_MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *)
+                         portSlot(portPass.sampleBufferAttachments, 0)).startOfEncoderSampleIndex,
+                       ((MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *)
+                         hostSlot(hostPass.sampleBufferAttachments, 0)).startOfEncoderSampleIndex,
+                       @"after a nil at index 0: startOfEncoderSampleIndex is back to the default on both sides");
+                check(((MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *)
+                          hostSlot(hostPass.sampleBufferAttachments, 0)).sampleBuffer == nil &&
+                      ((charonHost_MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *)
+                          portSlot(portPass.sampleBufferAttachments, 0)).sampleBuffer == nil,
+                      @"after a nil at index 0: both sides' attachment has no sample buffer again");
+            }
+        }
+
+        printf("%d checks, each one against Apple's own object; the descriptor ones need no device and the sample buffer one does\n", checks);
     }
     if (failures) { printf("%d failure(s)\n", failures); return 1; }
     printf("all checks passed\n");
