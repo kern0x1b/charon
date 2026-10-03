@@ -1,32 +1,38 @@
 # NSPredicateValidating and -allowEvaluationWithValidator:error:, iOS 26.4
 
 Two rows of `registry/Foundation/ios26.json` that cannot be written yet, and the measurement that says why.
-**Neither name is declared by the only iPhoneOS SDK on this machine**, so the contract is not readable:
+**Neither name is declared by either SDK this package can read**, so the contract is not readable. There
+are two, not one: the build SDK, and the 26.2 copy `tools/intents/generate.sh` calls `SDK_262` - which the
+coordinator keeps unpacked under `charon/.agent-work/sdk-26.2`, a scratch directory a worktree sweep
+deletes, so it is named by that variable and not by a path that will not be there.
 
-    $ SDK=~/.xmake/packages/i/iphoneos-sdk/16.4/*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk
-    $ grep -rl "NSPredicateValidating" "$SDK" | wc -l
-    0
-    $ grep -rl "allowEvaluationWithValidator" "$SDK" | wc -l
-    0
-    $ grep -rl "NSPredicate" "$SDK" | wc -l          # the control: the search does find headers
-    95
+    $ SDK164=~/.xmake/packages/i/iphoneos-sdk/16.4/*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk
+    $ SDK262=$HOME/Git/projects/ios/charon/.agent-work/sdk-26.2/iPhoneOS26.2.sdk
+    $ for sdk in "$SDK164" "$SDK262"; do
+        echo "$(basename "$sdk") $(grep -rl NSPredicateValidating "$sdk" | wc -l) $(grep -rl allowEvaluationWithValidator "$sdk" | wc -l) $(grep -rl NSPredicate "$sdk" | wc -l)"
+      done
+    iPhoneOS16.4.sdk 0 0 95
+    iPhoneOS26.2.sdk 0 0 88
 
-and two more measurements, which say why no *newer* header can be read here either:
+The third number is the control that says the search does find headers at all: **0, 0 and 95** for the
+build SDK, **0, 0 and 88** for the 26.2. The two counts differ because the SDKs differ - 26.2's
+Foundation carries 129 header files to 16.4's 126 - which is why the control is a count and not a bare
+zero.
 
-    $ ls ~/.xmake/packages/i/iphoneos-sdk/
-    16.4
-    $ xcrun --sdk iphoneos --show-sdk-version
-    xcrun: error: SDK "iphoneos" cannot be located       # CommandLineTools only, no Xcode on this machine
+So 16.4 declares neither name and 26.2, which is a newer header, declares neither name either. The rows'
+own `introduced` is **26.4**, which no SDK here reaches - it comes from
+`coordination/corpus/registry-last.tsv`, a registry-derived snapshot, so it is the corpus's number and not
+a header read either. The held release ladder stops at 18.0, older than the pair, so the release's own
+metadata cannot settle it:
+
     $ python3 tools/cache-index/first-rung.py --self-test | grep "rung in the table"
     ok   every rung in the table is held (53 rungs)
     $ ls ~/.charon/dyld | tail -1
     18.0
 
-So: 16.4 declares neither name, 16.4 is the newest iPhoneOS SDK here, and the held release ladder stops at
-18.0 - older than this pair, so the release's own metadata cannot say what either name declares either. The
-rows' own `source` field read `SDK 26.5, Mac Catalyst, Foundation`, and neither half of that can be
-checked from here: there is no 26.5 SDK on this machine, and this package carries iOS releases, so
-nothing here could read a Catalyst annotation even if one SDK had it.
+The rows' old `source` field read `SDK 26.5, Mac Catalyst, Foundation`, and both halves of it are wrong on
+what is measurable here: there is no 26.5 SDK on this machine at all, and this package carries iOS
+releases, so nothing here could read a Catalyst annotation even if a SDK had one.
 
 What that costs the port:
 

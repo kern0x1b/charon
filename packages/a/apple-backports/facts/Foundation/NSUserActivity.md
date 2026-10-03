@@ -71,30 +71,40 @@ Three rows in this family are not answered by code, each for a measured reason:
   available, `API_AVAILABLE(macos(10.13), ios(11.0)) API_UNAVAILABLE(watchos, tvos)`. The other 17
   carry none. The method this row is about is not in that header either -
   `grep -c accommodatePresentedItemEvictionWithCompletionHandler NSFilePresenter.h` is 0.
-  **What would settle its platform:** a newer SDK's `NSFilePresenter.h`. The 26.2 one reads
-  `API_AVAILABLE(macos(14.4), ios(17.4))` at `:74`, and that line is the record of the 2026-09-28 review
-  of this family (`coordination/reviews/live/foundation.md`, chunk `6e4309e7c2`, which read it out of a
-  26.2 tree this machine no longer has) - it is quoted here as that reading, not re-measured, because
-  the 16.4 build SDK is the newest iPhoneOS SDK on this machine. What decides the row either way is
-  measured and older than both: the 16.4 headers declare no class of that name to hang a category on,
-  and `Foundation17ReleaseAbsences.md` read the 6.1.3 armv7 rung's own class census - 11,378 classes,
-  188,523 instance selectors - and found `class NSFilePresenter ABSENT` with `NSAttributedString` present
-  as the control. So the row is `absent` for the ordinary reason on the bands it is in. **The owner
-  decision this paragraph asked for is withdrawn**, because the question it rested on ("macOS surface or
-  iOS surface?") is not what the header says. What remains open is a different one, and it is the
-  review's: 17.4 is below the ladder's newest rung, 18.0, so whether an 18.0 band *owes* this method is
-  a question about the port's band coverage, not about which platform declares it. Implementing it
-  would take a whole `NSFilePresenter` - a presentation coordinator an application registers items
-  with - which is a family of its own and not one method.
+  **What settles its platform, and it settles it against the old sentence.** The 26.2 SDK
+  `tools/intents/generate.sh` calls `SDK_262` (the coordinator's unpacked copy under
+  `charon/.agent-work/sdk-26.2`) reads, at `NSFilePresenter.h:74`:
+
+      - (void)accommodatePresentedItemEvictionWithCompletionHandler:(void (NS_SWIFT_SENDABLE ^)(NSError * _Nullable errorOrNil))completionHandler API_AVAILABLE(macos(14.4), ios(17.4)) API_UNAVAILABLE(watchos, tvos);
+
+  **`ios(17.4)`, not a Catalyst annotation** - so the method **is** an iOS 17.4 API, and the sentence
+  this paragraph used to carry ("a Mac Catalyst API, which is what this row's own `source` says", "it is
+  a macOS surface, not one of the iOS releases the port carries") does not match the header it cites.
+  The 2026-09-28 review of this family (`coordination/reviews/live/foundation.md`) found this first; the
+  line above is that finding re-measured on the copy that is here now. The same 26.2 header declares
+  `@protocol NSFilePresenter<NSObject>` at `:20` and no `@interface`, exactly as 16.4 does, so **neither
+  iOS SDK has a class to hang a category on** - which is the real blocker and was true all along.
+  What decides the row is older than both: `Foundation17ReleaseAbsences.md` read the 6.1.3 armv7 rung's
+  own class census - 11,378 classes, 188,523 instance selectors - and found `class NSFilePresenter
+  ABSENT` with `NSAttributedString` present as the control. So on the bands the row is in it is
+  `absent` for the ordinary reason. **The owner decision this paragraph asked for is withdrawn**,
+  because the question it rested on ("macOS surface or iOS surface?") is answered: iOS. What remains
+  open is the review's other question, and it is a different one: 17.4 is below the ladder's newest rung,
+  18.0, so whether an 18.0 band *owes* this method is a question about the port's band coverage, not
+  about which platform declares it. Implementing it would take a whole `NSFilePresenter` - a
+  presentation coordinator an application registers items with - which is a family of its own and not
+  one method.
 - `NSPredicateValidating` and `-[NSPredicate allowEvaluationWithValidator:error:]` (both 26.4). Their
   declarations are on **no SDK on this machine**: 0 files of the whole 16.4 build SDK name
   `NSPredicateValidating` and 0 name `allowEvaluationWithValidator`, where the same search returns 95
-  files for `NSPredicate`; and 16.4 is the newest iPhoneOS SDK here, so no newer header can be read.
-  The row's own `source` said `SDK 26.5`, which is not on this machine either, and 26.4 is above the
-  held ladder's newest rung (18.0), so the release's own metadata cannot settle it. Without the
-  declaration the validator's required selector and the method's return are unreadable, and writing
-  them from the name would be a guess about a contract. They owe one SDK that declares them, which is a
-  fetch and not an implementation. The measurements and the commands are in
+  files for `NSPredicate`, and 0 files of the 26.2 SDK name either either (88 there for `NSPredicate`,
+  and 26.2 carries 129 Foundation header files to 16.4's 126). So the newer header does not have them
+  either, and
+  the pair's own `introduced` is **26.4** - above the newest SDK here and above the held ladder's newest
+  rung (18.0), so the release's own metadata cannot settle it either. The old `source` said
+  `SDK 26.5`, which is not on this machine at all. Without the declaration the validator's required
+  selector and the method's return are unreadable, and writing them from the name would be a guess
+  about a contract. They owe one SDK that declares them, which is a fetch and not an implementation. The measurements and the commands are in
   `facts/Foundation/NSPredicateValidating.md`, which is the page their rows name.
 
 ## The two continuation members, and how "nothing calls it" was measured
