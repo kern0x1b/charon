@@ -16,8 +16,11 @@
 #   CORPUS    the SDK 26.2 surface after iOS 6.1, one row per API, which the registry is written
 #             from: $HOME/Git/projects/ios/coordination/corpus/sdk-26.2-surface.tsv.
 #
-# A run also restores the 83 extern constant rows from registry/Intents/constants.json and exits
-# non-zero if any of them is missing, so a regeneration cannot quietly drop them again.
+# A run also restores the 83 extern constant rows from the manifest beside this script,
+# tools/intents/constants.json, and exits non-zero if any of them is missing, so a regeneration cannot
+# quietly drop them again. The manifest is a generator input and not a row list, so it does not live under
+# registry/: it was there once, and a registry reader that walked it saw 0 of its 83 rows (measured with
+# `xmake l`: ipairs(held.entries or held) makes 0 iterations on a document whose array length is 0).
 #
 # The six groups are the releases the release caches measure the class symbols first exported in
 # (tools/intents/measure-intents.sh, and measure-group.lua for the one class that had to be an
@@ -34,6 +37,9 @@ SDK_262=${SDK_262:-$HOME/Git/projects/ios/charon/.agent-work/sdk-26.2/iPhoneOS26
 CORPUS=${CORPUS:-$HOME/Git/projects/ios/coordination/corpus/sdk-26.2-surface.tsv}
 classes=$root/packages/a/apple-backports/Intents
 registry=${REGISTRY_OUT:-$root/packages/a/apple-backports/registry/Intents}
+# The manifest is this script's own input, so it is named here and not out of the registry it regenerates:
+# a check run sends REGISTRY_OUT at a scratch and must still read the committed manifest.
+manifest=${MANIFEST:-$here/constants.json}
 groups=$here/groups
 facts=facts/Intents/Intents.md
 mkdir -p "$work" "$registry"
@@ -130,25 +136,25 @@ done
 # wrote the manifest is asked again to add only those rows, bucketed by the band that exports
 # them: 18_0 writes ios18.json and everything earlier writes ios10.json. Measured: the gate on the
 # stack failed with "built, but no entry in registry/:" for all 83, because this pass was missing.
-[ -f "$registry/constants.json" ] || {
-    echo "no $registry/constants.json; run tools/intents/emit-intents-constants.py first" >&2
+[ -f "$manifest" ] || {
+    echo "no $manifest; run tools/intents/emit-intents-constants.py first" >&2
     exit 1
 }
 for file in ios10.json ios18.json; do
     release=10.0.1
     [ "$file" = ios18.json ] && release=18.0
     python3 "$here/gen-registry.py" --corpus "$CORPUS" --merge-into "$registry/$file" \
-        --constants "$registry/constants.json" --out "$registry/$file" --facts "$facts" \
+        --constants "$manifest" --out "$registry/$file" --facts "$facts" \
         --release "$release"
 done
 
 # And the run fails if any of them is still missing, because a run that loses rows and exits zero
 # is the defect this is here to close. The names are the manifest's, so the check asks the same
 # question the gate asks: is every constant the emitter compiled given an entry?
-python3 - "$registry" <<'PY' || exit 1
+python3 - "$registry" "$manifest" <<'PY' || exit 1
 import json, os, sys
-registry = sys.argv[1]
-manifest = json.load(open(os.path.join(registry, "constants.json"), encoding="utf-8"))["constants"]
+registry, manifest_path = sys.argv[1], sys.argv[2]
+manifest = json.load(open(manifest_path, encoding="utf-8"))["constants"]
 held = {}
 for name in sorted(os.listdir(registry)):
     if not name.startswith("ios") or not name.endswith(".json"):

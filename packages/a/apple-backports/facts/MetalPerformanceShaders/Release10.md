@@ -53,11 +53,14 @@ which this clang does not have.
 
 **The registry file gained no rows and lost none.** The `api` list at `origin/main` and in this
 revision are the same 327 names in the same order, and no object carries a key twice. Only the two
-rows above differ. (Note for the next reader: `python3 tools/registry-shape.py --against <ref>`
-cannot answer this in the whole tree today - it walks every registry file and dies with `KeyError:
-'entries'` on `registry/Intents/constants.json`, whose schema is `constants`/`note`/`source`. That is
-a pre-existing fault on `main`, not one of this landing, and it was measured by reading that file's
-top-level keys.)
+rows above differ. (Note for the next reader: this paragraph used to carry a warning that
+`python3 tools/registry-shape.py --against <ref>` could not answer in the whole tree, because it walked
+every registry file and died with `KeyError: 'entries'` on `registry/Intents/constants.json`, whose schema
+was `constants`/`note`/`source`. Both halves of that are gone: the tools read every registry document
+through `tools/registry_rows.py`, which refuses that shape **by name** and says where it lives, and the
+manifest itself moved out of the registry to `tools/intents/constants.json` on 2026-10-03, because it was a
+generator input and not a row list - a document with no array part, on which `ipairs(held.entries or held)`
+makes 0 iterations, so the gate had never seen any of its 83 rows.)
 
 ## WHAT WAS NOT RUN, AND IS NOT CLAIMED
 

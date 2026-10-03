@@ -110,9 +110,11 @@ def main():
     # row and the names that got compiled are the same set by construction and cannot drift.
     manifest = {row["api"]: {"introduced": row["introduced"], "rung": ".".join(str(p) for p in rung_of(row["introduced"]))}
                 for row in wanted}
-    # outdir is packages/a/apple-backports/Intents, so the registry is ONE level up from it - and the
-    # directory is created rather than assumed, because a run into a fresh tree has no registry/Intents.
-    manifest_dir = os.path.normpath(os.path.join(outdir, "..", "registry", "Intents"))
+    # The manifest is this script's own output and sits beside it. It was written one level above OUTDIR,
+    # into registry/Intents, where a registry reader walked it and saw 0 of its rows: the document has no
+    # array part, so ipairs(held.entries or held) at modules/apple/backports.lua:1609 makes 0 iterations.
+    # OUTDIR is where the .m go and nothing here depends on it any more.
+    manifest_dir = os.path.dirname(os.path.abspath(__file__))
     os.makedirs(manifest_dir, exist_ok=True)
     manifest_path = os.path.join(manifest_dir, "constants.json")
     with open(manifest_path, "w", encoding="utf-8") as handle:

@@ -36,10 +36,14 @@ def main():
                 continue
             with open(os.path.join(folder, name)) as handle:
                 document = json.load(handle)
-            # A registry file holds {"framework": ..., "entries": [...]} in this tree, and one of
-            # them (Intents/constants.json) holds a "constants" list under its own key. A shape this
+            # A registry file holds {"framework": ..., "entries": [...]} in this tree. A shape this
             # script does not know is named and skipped, never read as "no entry": that would put
-            # every class of that file into every band.
+            # every class of that file into every band. The one that was here is gone: the Intents
+            # manifest (Intents/constants.json, a "constants" object under its own key and a
+            # generator input rather than a row list) is at tools/intents/constants.json since the
+            # coordinator's ruling of 2026-10-03, because a reader that walked it under registry/
+            # saw none of its 83 rows. Nothing under registry/ holds that shape now, and this
+            # script's skip is the backstop if one ever does.
             if isinstance(document, dict) and "entries" not in document:
                 keys = [key for key in document if isinstance(document[key], list)]
                 if len(keys) != 1:

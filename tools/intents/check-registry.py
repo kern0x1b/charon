@@ -63,13 +63,12 @@ def main():
         shutil.rmtree(scratch)
     os.makedirs(scratch)
     # The committed files, kept beside the regenerated ones so the two are compared entry by entry.
-    # The manifest is copied under its own name and not with a .committed suffix: the run restores
-    # the constant rows from it, so a scratch without it is a run that cannot restore them and
-    # reports a difference that is the scratch's, not the generator's.
+    # The manifest is not copied: it is not under the registry any more (tools/intents/constants.json,
+    # a generator input and not a row list), and generate.sh reads it from beside itself, so a scratch
+    # without one is a run that still restores the 83 constant rows - which the last line proves.
     for name in os.listdir(committed):
         if name.endswith(".json"):
             shutil.copy(os.path.join(committed, name), os.path.join(scratch, name + ".committed"))
-    shutil.copy(os.path.join(committed, "constants.json"), os.path.join(scratch, "constants.json"))
     result = subprocess.run(
         ["sh", os.path.join(here, "generate.sh")],
         env=dict(os.environ, WORK=options.work, REGISTRY_OUT=scratch),

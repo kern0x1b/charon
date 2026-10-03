@@ -4,27 +4,28 @@ read and on the shape it must refuse.
 
     tools/selftest-registry-rows.py            exit 0 and a line per case, or exit 1 and the failures
 
-The reason this exists, measured: `registry/Intents/constants.json` is
-`{constants: {NAME: {introduced, rung}}, note, source}` and not a row list, and four tools that walk
-the registry read it as one - two with `document["entries"]` (KeyError) and two with a conditional
+The reason this exists, measured: `registry/Intents/constants.json` was
+`{constants: {NAME: {introduced, rung}}, note, source}` and not a row list, and seven tools that walk
+the registry read it as one - five with `document["entries"]` (KeyError) and two with a conditional
 that left `entries` as None (TypeError). A reader that skips a file it cannot parse and a reader that
 crashes on it cost the same thing, which is the 83 rows in it, and the duplicate it was written to
 find: all 83 names are also rows of `Intents/ios10.json` or `Intents/ios18.json`, which nothing
-reported while the file was unreadable.
+reported while the file was unreadable. The coordinator's ruling of 2026-10-03 moved the manifest out
+of the registry to `tools/intents/constants.json`, and this reader now refuses that shape by name.
 
-So the cases are the three shapes and the two refusals, and each is asked of the reader and of a tool
-that uses it:
+So the cases are the two shapes that remain, the two refusals, and the one refusal that carries a
+reason:
 
-  1. `{"entries": [...]}`: the rows as they are, `api` read from the row;
+  1. `{"entries": [...]}`: the rows as they are, `api` read from the row, and the list handed back
+     itself rather than a copy;
   2. `[...]`: a bare list, the same;
-  3. `{"constants": {NAME: {...}}}`: every constant is a row, its `api` the key it is filed under, and
-     the row is a copy, so the document read is not changed;
-  4. a document holding no row member, and one holding both: refused with the keys named, because a
-     shape this reader does not know is a file whose rows go uncounted, and an uncounted row cannot be
-     told from a row that is not there;
-  5. `tools/registry-duplicate-api.py` over a scratch registry that holds one constants document and
-     one entries document naming the same api: it must name the duplicate. That is the finding the
-     crash was hiding, so the reader is only any use if a tool can still report it.
+  3. a document holding no row member, and one holding both members the reader knows: refused with the
+     keys named, because a shape this reader does not know is a file whose rows go uncounted, and an
+     uncounted row cannot be told from a row that is not there;
+  4. a document holding `constants`: refused, and the message names where that shape lives. This is the
+     shape the Intents manifest had, so the refusal is what stops it being taught a second time;
+  5. `tools/registry-duplicate-api.py` over a scratch registry holding two files that name one api: it
+     must name the duplicate, and with the second file gone the duplicate is gone.
 
 Each case builds its registry in a scratch directory of its own and never in the tree.
 """
@@ -36,7 +37,7 @@ import sys
 import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from registry_rows import ShapeError, apis, documents, rows  # noqa: E402
+from registry_rows import ShapeError, documents, rows  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOOLS = os.path.join(ROOT, "tools")
@@ -72,26 +73,21 @@ def case_shapes():
     bare = [{"api": "A"}, {"api": "B"}]
     check("a bare list is a row list", rows(bare) is bare)
 
-    constants = {"constants": {"SecondOne": {"introduced": "16.2"}, "FirstOne": {"introduced": "10.0"}},
-                 "note": "prose", "source": "tools/x.py"}
-    got = rows(constants)
-    check("the constants shape yields a row per constant", len(got) == 2, str(got))
-    check("a constant's api is the key it is filed under",
-          apis(constants) == ["FirstOne", "SecondOne"], str(apis(constants)))
-    check("a constant's own fields are kept", got[0].get("introduced") == "10.0", str(got[0]))
-    check("the constants shape does not write api back into the document",
-          "api" not in constants["constants"]["FirstOne"], str(constants["constants"]))
-    check("the note and the source are not rows: only the constants are",
-          [row.get("api") for row in rows(constants)] == ["FirstOne", "SecondOne"]
-          and not any(row.get("api") in ("note", "source") for row in rows(constants)),
-          str(rows(constants)))
+    # The manifest's own shape, refused rather than read: its array length is 0, so a reader that walked
+    # it saw none of its rows (measured with `xmake l` against modules/apple/backports.lua:1609).
+    manifest = {"constants": {"SecondOne": {"introduced": "16.2"}, "FirstOne": {"introduced": "10.0"}},
+                "note": "prose", "source": "tools/x.py"}
+    refused_ok, message = refused(manifest)
+    check("the manifest shape is refused, not read", refused_ok, message)
+    check("the refusal says where that shape lives",
+          refused_ok and "tools/intents/constants.json" in message, message)
 
 
 def case_refusals():
     # Each case is the document, what is wrong with it, and a word of its own the message must carry,
     # so a refusal that says only "unknown shape" - which names nothing a fixer can use - fails here.
     for document, why, named in (({"note": "prose", "source": "tools/x.py"}, "an object with no row member", "note"),
-                                 ({"entries": [], "constants": {}}, "an object holding both row members", "constants"),
+                                 ({"entries": "not a list"}, "an object whose entries is not a list", "entries"),
                                  ("a string", "a document that is not an object or a list", "str")):
         refused_ok, message = refused(document)
         check("refused: %s" % why, refused_ok, message)
@@ -104,19 +100,20 @@ def case_tool_sees_the_duplicate():
     try:
         registry = os.path.join(scratch, "registry", "Thing")
         os.makedirs(registry)
-        with open(os.path.join(registry, "constants.json"), "w") as handle:
-            json.dump({"constants": {"Shared": {"introduced": "16.2"}}, "note": "n", "source": "s"}, handle)
         with open(os.path.join(registry, "ios16.json"), "w") as handle:
+            json.dump({"framework": "Thing", "entries": [{"api": "Shared", "kind": "constant",
+                                                          "status": "implemented"}]}, handle)
+        with open(os.path.join(registry, "ios18.json"), "w") as handle:
             json.dump({"framework": "Thing", "entries": [{"api": "Shared", "kind": "constant",
                                                           "status": "implemented"}]}, handle)
         found = subprocess.run([sys.executable, os.path.join(TOOLS, "registry-duplicate-api.py"),
                                 os.path.join(scratch, "registry")], capture_output=True, text=True)
-        check("a duplicate between a constants document and an entries document is named",
+        check("a duplicate named by two files of one framework is named",
               found.returncode == 1 and "Shared" in found.stdout, found.stdout.strip()[:120])
         check("the reader counted both rows",
               "2 rows, 1 distinct api, 1 duplicated" in found.stdout, found.stdout.strip()[-80:])
-        # The same tree without the constants document: the duplicate is gone, so the count is honest.
-        os.remove(os.path.join(registry, "constants.json"))
+        # The same tree with one file removed: the duplicate is gone, so the count is honest.
+        os.remove(os.path.join(registry, "ios18.json"))
         found = subprocess.run([sys.executable, os.path.join(TOOLS, "registry-duplicate-api.py"),
                                 os.path.join(scratch, "registry")], capture_output=True, text=True)
         check("with the constants document gone the duplicate is gone",
@@ -134,18 +131,49 @@ def case_tool_sees_the_duplicate():
         shutil.rmtree(scratch, ignore_errors=True)
 
 
+def case_documents_refuses_by_path():
+    """A whole-tree walk meets the manifest and stops by name, not with a traceback naming neither."""
+    scratch = tempfile.mkdtemp(prefix="selftest-registry-rows-")
+    try:
+        registry = os.path.join(scratch, "registry")
+        os.makedirs(os.path.join(registry, "Thing"))
+        with open(os.path.join(registry, "Thing", "ios16.json"), "w") as handle:
+            json.dump({"entries": [{"api": "A"}]}, handle)
+        found = subprocess.run([sys.executable, os.path.join(TOOLS, "registry-duplicate-api.py"), registry],
+                               capture_output=True, text=True)
+        check("a walk over a clean registry claims its rows",
+              found.returncode == 0 and "1 rows, 1 distinct api, 0 duplicated" in found.stdout,
+              found.stdout.strip()[-80:])
+        # Now the manifest is put back where it used to live, and every tool must name it and claim nothing.
+        import shutil as _shutil
+        _shutil.copyfile(os.path.join(ROOT, "tools", "intents", "constants.json"),
+                         os.path.join(registry, "Thing", "constants.json"))
+        found = subprocess.run([sys.executable, os.path.join(TOOLS, "registry-duplicate-api.py"), registry],
+                               capture_output=True, text=True)
+        check("the manifest under the registry is refused by one line, with no traceback",
+              found.returncode == 1 and "Traceback" not in found.stderr and "refuses by name" in found.stderr,
+              found.stderr.strip()[-120:])
+        check("the refusal names the file it stopped on",
+              "Thing" + os.sep + "constants.json" in found.stderr, found.stderr.strip()[-120:])
+        check("the refusal says where that shape lives",
+              "tools/intents/constants.json" in found.stderr, found.stderr.strip()[-120:])
+        check("the refusal claims nothing about the tree",
+              "nothing under" in found.stderr and "0 rows" not in found.stdout, found.stdout.strip()[-80:])
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
+
+
 def case_documents_walk():
     scratch = tempfile.mkdtemp(prefix="selftest-registry-rows-")
     try:
         os.makedirs(os.path.join(scratch, "Thing"))
-        for relative in ("Thing/ios16.json", "Thing/constants.json", "top.json"):
+        for relative in ("Thing/ios16.json", "Thing/ios18.json", "top.json"):
             with open(os.path.join(scratch, relative), "w") as handle:
-                json.dump({"entries": [{"api": relative}]} if relative != "Thing/constants.json"
-                          else {"constants": {relative: {"introduced": "1.0"}}}, handle)
+                json.dump({"entries": [{"api": relative}]}, handle)
         found = documents(scratch)
         check("the walk reads every registry file under the root, at every depth",
               [os.path.relpath(path, scratch) for path, _ in found] ==
-              ["Thing/constants.json", "Thing/ios16.json", "top.json"],
+              ["Thing/ios16.json", "Thing/ios18.json", "top.json"],
               str([os.path.relpath(path, scratch) for path, _ in found]))
         check("the walk reads each file's rows through the one reader",
               sum(len(rows(document)) for _, document in found) == 3,
@@ -154,7 +182,8 @@ def case_documents_walk():
         shutil.rmtree(scratch, ignore_errors=True)
 
 
-for case in (case_shapes, case_refusals, case_tool_sees_the_duplicate, case_documents_walk):
+for case in (case_shapes, case_refusals, case_tool_sees_the_duplicate,
+             case_documents_refuses_by_path, case_documents_walk):
     case()
 
 print("%d checks, %d failures" % (len(checks), len(failures)))
