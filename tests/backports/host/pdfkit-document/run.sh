@@ -50,6 +50,12 @@ xcrun clang -fobjc-arc -Wall "$here/make-text-fixture.m" -framework Foundation -
 # /FontFile2 stream of a fixture the conforming writer wrote (make-text-fixture.m has just written it) and
 # the /Widths are written from a spec beside it, disagreeing on purpose and by a wide margin.
 python3 "$here/tools/make-font-fixtures.py" "$build/fixtures/cgfixture-1.pdf" "$build/fixtures" > /dev/null
+# and the standard fourteen's TABLE, which is GENERATED from a measurement rather than typed, is checked
+# against that measurement here so a hand edit to it cannot pass unnoticed.  The measurement is committed
+# beside the generator for exactly this reason: a check that only runs in the session that measured is not
+# a check.  It is a no-op that must be silent on a clean checkout, so its verdict is printed as a line.
+python3 "$here/tools/make-base14-table.py" "$port/Base14Widths11.m" --check || {
+    echo "the standard fourteen's table is not what the committed measurement produces:"; exit 1; }
 
 
 # The fixture must carry text, checked by reading the stream back through CGPDFStreamCopyData, which

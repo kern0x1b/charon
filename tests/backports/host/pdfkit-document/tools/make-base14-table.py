@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Generate the standard fourteen's advances, FROM A MEASUREMENT, into a C table.
 
-    make-base14-table.py <host-base14 output> <out.c>
+    make-base14-table.py [<host-base14 output>] <out.c> [--check]
+
+With no measurement argument it reads `base14-measurement.txt` beside this file, which is the run output
+committed next to it - so `--check` runs from a clean checkout, which is the only way a check is a check.
 
 The table in the port is the standard metrics of PDF 1.7 Annex F, and it is generated from a run of
 `tools/host-base14.m` over `tools/make-font-fixtures.py`'s base-fourteen fixtures rather than typed by
@@ -18,6 +21,8 @@ trims that, so its width is derived as whole - 2 * w(A) over two numbers already
 The unit is THOUSANDTHS OF AN EM, which is what /Widths itself is written in (PDF 1.7 Table 8.27), so a
 width enters the geometry as value * size / 1000 with no conversion anywhere else.
 """
+import os
+import pathlib
 import re
 import sys
 
@@ -166,29 +171,41 @@ def emit(widths, spaces, descents):
 
 
 def main():
-    if len(sys.argv) not in (3, 4):
-        raise SystemExit("usage: make-base14-table.py <host-base14 output> <out.c> [--check]")
-    table = emit(read(sys.argv[1]), read_spaces(sys.argv[1]), read_descents(sys.argv[1]))
-    if len(sys.argv) == 4 and sys.argv[3] == "--check":
+    # The measurement argument is OPTIONAL and defaults to the copy committed beside this file, which is
+    # what makes `--check` runnable from a clean checkout rather than only from the session that measured.
+    args = [a for a in sys.argv[1:] if a != "--check"]
+    check = "--check" in sys.argv[1:]
+    # ONE argument is the out.c alone, and the measurement defaults; TWO are the measurement and the
+    # out.c.  Anything else is a mistake worth naming rather than guessing at.
+    if len(args) == 1:
+        args.insert(0, str(pathlib.Path(__file__).with_name("base14-measurement.txt")))
+    if len(args) != 2:
+        raise SystemExit("usage: make-base14-table.py [<host-base14 output>] <out.c> [--check]")
+    if not os.path.exists(args[0]):
+        raise SystemExit("no measurement at %s; it is committed beside this tool, and the command that"
+                         " produces it is in the header of that file" % args[0])
+    table = emit(read(args[0]), read_spaces(args[0]), read_descents(args[0]))
+    if check:
         # The GENERATED SECTION of the file, not the whole of it: the file has a hand-written header above
         # the GENERATED marker and the two class methods below it, and comparing the whole file against the
         # generated text reported DIFFER for a file that was exactly what the measurement produces.
-        written = open(sys.argv[2]).read()
+        written = open(args[1]).read()
         start = written.find(GENERATED_MARKER)
         end = written.find(FOOTER_MARKER)
         if start < 0 or end < 0 or end < start:
-            print(f"DIFFER: {sys.argv[2]} carries neither the {GENERATED_MARKER!r} marker nor the"
+            print(f"DIFFER: {args[1]} carries neither the {GENERATED_MARKER!r} marker nor the"
                   f" {FOOTER_MARKER!r} one, so the generated section cannot be located in it")
             sys.exit(1)
         section = written[start:end].rstrip("\n")
         if section != table.rstrip("\n"):
-            print(f"DIFFER: the generated section of {sys.argv[2]} is not what this measurement produces")
+            print(f"DIFFER: the generated section of {args[1]} is not what this measurement produces,"
+                  f" and it was read from {args[0]}")
             sys.exit(1)
-        print(f"holds: the generated section of {sys.argv[2]} is exactly what this measurement produces")
+        print(f"holds: the generated section of {args[1]} is exactly what {args[0]} produces")
         return
-    with open(sys.argv[2], "w") as handle:
+    with open(args[1], "w") as handle:
         handle.write(table)
-    print("wrote %s" % sys.argv[2])
+    print("wrote %s from %s" % (args[1], args[0]))
 
 
 if __name__ == "__main__":
