@@ -239,6 +239,98 @@ equality, or a placeholder's `dataType`, takes the release down** — it calls
 `-[MPSGraphTensor tensorDataType]`, a selector its own `MPSGraphTensor` does not declare. So those
 answers are not comparable on this host and the case file does not ask for them.
 
+## The elementary family of 14.0, and what the release's own kernels do
+
+Fifty-three methods of the 14.0 arithmetic, rounding, comparison, logical and activation surface are
+written, in `MPSGraph14.m` and in the interpreter beside it: the transcendentals, the two roundings, the
+six comparisons and the six logicals, the three questions about a value, the two remainders, a minimum, a
+maximum, a division that answers no NaN, the select, the clamp, a ReLU and a sigmoid with their gradients.
+Every one of them is asked over the case file's sixteen input classes in `MPSDataTypeFloat32` and in
+`MPSDataTypeFloat16`, and **18 of the 53 come back with every cell byte-identical to the release in both
+types** - the row of each is in the registry, and the run's verdict line is
+`port: same as the system on 1852 of the 2048 cells with a result buffer; 196 recorded` with
+`checks=128 failures=0`.
+
+**A predicate's result is a boolean and the logical family's is not.** Measured on this host's own
+MPSGraph over a rank-3 float32 operand: `isNaN`, `isFinite`, `isInfinite`, `equal`, `notEqual`,
+`lessThan`, `lessThanOrEqualTo`, `greaterThan` and `greaterThanOrEqualTo` answer `MPSDataTypeBool`, which
+is `MPSDataTypeAlternateEncodingBit | 8` (MPSCoreTypes.h:260) and **one byte** an element
+(`MPSSizeofMPSDataType(MPSDataTypeBool)` is 1, measured), while `logicalAND`, `logicalOR`, `logicalNAND`,
+`logicalNOR`, `logicalXOR`, `logicalXNOR`, `not` and `signbit` answer the operand's own type. The port
+therefore has two builders - `charon_mps_arithmetic:operands:name:` and
+`charon_mps_predicate:operands:name:` - and `CharonMPSLoad` and `CharonMPSStoreRounded` in
+`../MetalPerformanceShaders/CharonMPS.h` carry the one-byte type.
+
+**A minimum and a maximum are `fmin` and `fmax`, not an operator.** Measured: a minimum of `+inf` and a
+NaN is `0x7f800000`, of `-inf` and a NaN is `0xff800000` and of a NaN and `0x00000001` is `0x00000001`,
+where a comparison would answer a NaN for each.
+
+**Eleven kinds read an operand as it is stored and do not see a denormal as a zero**, and the other kinds
+do: `absolute`, `identity`, `signbit`, `negation`, `round`, both remainders, `minimum`, `maximum`,
+`select` and `clamp`. Measured for each: the negation of `0x00000001` is `0x80000001`, a modulo of
+`0x00000001` by `-2.0` is `0x00000001`, a minimum of `0x00000001` and `0x7e00` is `0x00000001`, and a
+select whose predicate is a NaN takes the branch it takes for any other non-zero. A ReLU is not among
+them: it answers `0x00000000` for a denormal, measured.
+
+**Seven kinds answer the NaN they were given and the rest answer the arithmetic's own.** The negation of
+`0x7fc00000` is `0xffc00000`, which is what a sign-bit flip answers; `round`, `arcsin`, `arctangent`, the
+hyperbolic arc-sine, the hyperbolic arc-tangent and `select` each keep the sign too, and `identity` copies
+the NaN's bits outright. Every other kind that computes answers `0x7fc00000` for either sign.
+
+**A round that lands on zero is a positive zero** (measured for `-0.0`, `-0x1p-126` and `-0x1p-20`, each
+`0x00000000`, where C's `round(-0.0)` is `-0.0`).
+
+**A sigmoid's gradient reads the source as the value that was activated, not as its answer.** Measured:
+a `sigmoidGradient` of an incoming gradient of `1.0` over a source of `0.0` is `0x3e800000`, which is
+`1.0` times the sigmoid of `0.0` times one minus the sigmoid of `0.0`.
+
+**`divisionNoNaN` decides on the divisor and a NaN divisor is not one of them.** Measured: a zero divisor
+answers `0x00000000` for every numerator, and a NaN divisor answers the arithmetic's NaN - `+inf` over
+`0x7e00` is `0x7fc00000`, and `0xfe00` over `2.0` is `0x7fc00000`.
+
+### The 196 recorded cells, grouped
+
+`tests/backports/host/mpsgraph/recorded-cells.txt` names each one with the two runs' bytes. They are of
+four kinds and none of them is a tolerance:
+
+* **58 float32 cells, all in the transcendental family and in the two sigmoid gradients.** The release's
+  transcendentals are not the C library's: measured cell by cell over the sixteen classes, `sin`, `tan`,
+  `sinh`, `asinh`, `atanh`, `logBase10`, `expBase10`, `atan2` and `power` agree with the *float32*
+  function where the port computes in double and rounds once (`sin` of `1.0` is `0x3f576aa5` where
+  `sin` in double rounded to float is `0x3f576aa4`), while `asin`, `acos` and `atan` agree with the double
+  one, and `cosh`, `erf`, `tanh` and `sigmoid` agree with neither by one unit in the last place. Choosing
+  per operation between the float32 and the double spelling would make most of these cells agree, and is
+  not done: it fits twenty measurements rather than stating a rule, and the release's kernels are Metal's
+  own approximations, whose coefficients are not derivable from the specification.
+* **140 float16 cells.** The same four kinds in `MPSDataTypeFloat16`, where the release's half kernels
+  answer the special classes by rules of their own - the ones already measured for the arithmetic family
+  are the table above - and where a per-operation half rule has not been derived yet. The families with
+  the fewest are `expBase10` and `acosh` and `acos` and `rint` (none), `signbit` and `reLU` and `minimum`
+  and `atanh` and `asinh` and `ceil` (one to three) and the ones with the most are `sigmoidGradient`
+  (fourteen) and `tanh` (seven) and `erf` (seven).
+* **8 boolean cells**, all of them a comparison whose float16 operand is a NaN: `lessThan` and
+  `lessThanOrEqualTo` answer `true` for `+inf` against `0x7e00` and for `-NaN` against `2.0`, and
+  `greaterThan` and `greaterThanOrEqualTo` answer `true` for `-inf` against `0xfe00` and for `0x7e00`
+  against `0x0001`, where every other comparison of the same case answers what IEEE answers. The release's
+  own diagnostic names the kernel: `ConvertBinaryCompareToZero expects the second operand to be zero`
+  (MPSGraphUtilities.mm:254).
+* **Cells of the pre-existing arithmetic family**, which the record already carried and which the same
+  per-cell comparison re-checks.
+
+**One thing the harness had to be taught.** The framework writes its own diagnostics to the same standard
+output the cases go to, and with a block-buffered stream one of them landed in the middle of a case line: a
+flush boundary split the sixteen halves of `subtract float16` and the line carried the tail of a warning
+instead of its last four bytes. The case file now sets `setvbuf(stdout, NULL, _IOLBF, 0)`, so a case is one
+line or nothing, and `run.sh` compares only the lines the case file marks `#case`, so the framework's
+diagnostics are not cases. The size of the result table went from sixty-four to five hundred and twelve for
+the same reason: it held one entry per case and there are a hundred and thirty now, so a hundred and
+twenty-ninth case wrote past its own end.
+
+Not written of this family: the soft-max pair, which is an axis reduction and wants the reduction
+machinery first. The rest of the 14.0 surface - reductions, matmul, convolution, pooling, normalization,
+the shape operations, control flow, random, the optimizers - is not written either, and each is a family
+of the same shape.
+
 ## The arithmetic family, and the rest
 
 Addition, subtraction, multiplication, division, and the unary operations negation, square,

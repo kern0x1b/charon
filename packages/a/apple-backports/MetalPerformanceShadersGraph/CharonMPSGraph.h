@@ -64,7 +64,73 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
     CharonMPSGraphOperationKindMinimum,
     CharonMPSGraphOperationKindMaximum,
     CharonMPSGraphOperationKindClamp,
-    CharonMPSGraphOperationKindIdentity
+    CharonMPSGraphOperationKindIdentity,
+    // The transcendentals and the rounding of the 14.0 arithmetic family. Each is the C function of
+    // that name and nothing else: what the release answers for a zero, a negative and an infinity is
+    // measured per case in tests/backports/host/mpsgraph, and what it answers that IEEE does not is in
+    // facts/MetalPerformanceShadersGraph/Core.md.
+    CharonMPSGraphOperationKindExpBase2,
+    CharonMPSGraphOperationKindExpBase10,
+    CharonMPSGraphOperationKindLogBase2,
+    CharonMPSGraphOperationKindLogBase10,
+    CharonMPSGraphOperationKindSin,
+    CharonMPSGraphOperationKindCos,
+    CharonMPSGraphOperationKindTan,
+    CharonMPSGraphOperationKindSinh,
+    CharonMPSGraphOperationKindCosh,
+    CharonMPSGraphOperationKindTanh,
+    CharonMPSGraphOperationKindAsin,
+    CharonMPSGraphOperationKindAcos,
+    CharonMPSGraphOperationKindAtan,
+    CharonMPSGraphOperationKindAsinh,
+    CharonMPSGraphOperationKindAcosh,
+    CharonMPSGraphOperationKindAtanh,
+    CharonMPSGraphOperationKindErf,
+    CharonMPSGraphOperationKindSignBit,
+    CharonMPSGraphOperationKindFloor,
+    CharonMPSGraphOperationKindCeil,
+    CharonMPSGraphOperationKindRound,
+    CharonMPSGraphOperationKindRint,
+    // The three questions about a value that are not arithmetic, and the three that are a predicate:
+    // isNaN, isFinite and isInfinite are the three of them, and they are the three whose result is a
+    // boolean rather than a number. Measured on this host's own MPSGraph over a rank-3 float32
+    // operand: a comparison, a less-than and isNaN answer MPSDataTypeBool (0x80000008, one byte an
+    // element), and logicalAND, not and signbit answer the operand's own type. Both are in
+    // facts/MetalPerformanceShadersGraph/Core.md.
+    CharonMPSGraphOperationKindIsNaN,
+    CharonMPSGraphOperationKindIsFinite,
+    CharonMPSGraphOperationKindIsInfinite,
+    CharonMPSGraphOperationKindLogicalNot,
+    // The predicates over two operands. The same measurement as the three above: all six are a
+    // boolean.
+    CharonMPSGraphOperationKindEqual,
+    CharonMPSGraphOperationKindNotEqual,
+    CharonMPSGraphOperationKindLessThan,
+    CharonMPSGraphOperationKindLessThanOrEqualTo,
+    CharonMPSGraphOperationKindGreaterThan,
+    CharonMPSGraphOperationKindGreaterThanOrEqualTo,
+    // The logical family over two operands, which answers the operand's own type and not a boolean -
+    // the same measurement as logicalAND above.
+    CharonMPSGraphOperationKindLogicalAnd,
+    CharonMPSGraphOperationKindLogicalOr,
+    CharonMPSGraphOperationKindLogicalNand,
+    CharonMPSGraphOperationKindLogicalNor,
+    CharonMPSGraphOperationKindLogicalXor,
+    CharonMPSGraphOperationKindLogicalXnor,
+    // The two arithmetic operations that are not IEEE, and the three that take a third operand.
+    CharonMPSGraphOperationKindModulo,
+    CharonMPSGraphOperationKindFloorModulo,
+    CharonMPSGraphOperationKindPower,
+    CharonMPSGraphOperationKindAtan2,
+    CharonMPSGraphOperationKindDivisionNoNaN,
+    CharonMPSGraphOperationKindSelect,
+    CharonMPSGraphOperationKindClamp3,
+    // The activations, and the two of the four that are their own gradient: a ReLU gradient reads the
+    // source as well as the incoming gradient, and so does a sigmoid's.
+    CharonMPSGraphOperationKindReLU,
+    CharonMPSGraphOperationKindReLUGradient,
+    CharonMPSGraphOperationKindSigmoid,
+    CharonMPSGraphOperationKindSigmoidGradient
 };
 
 @class MPSGraph;
