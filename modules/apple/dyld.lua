@@ -1441,6 +1441,69 @@ local function local_symbols(cache, address, wide)
     return found
 end
 
+-- Which image of a held cache holds an address, and under what install name. The __LINKEDIT of an image
+-- is skipped: it holds no code and no address a caller would ask about, and its vmaddr range would
+-- otherwise answer for a code address that sits below it.
+function image_at(cache, address)
+    for _, loaded in ipairs(cache.images) do
+        for _, segment in ipairs(loaded.image.segments) do
+            if segment.name ~= "__LINKEDIT" and address >= segment.vmaddr
+                and address < segment.vmaddr + segment.vmsize then
+                return loaded
+            end
+        end
+    end
+    return nil
+end
+
+-- The name of the symbol at an address in a held cache, and the image that holds it: the image's own
+-- export trie first, which is the only answer for an address in another image, then the local symbols
+-- of the cache's symbol file for the static helpers a release calls inside its own image - which is
+-- where a method body usually points, and which no export trie carries.
+--
+-- nil when no image of the cache holds the address at all. A local symbol is the one at or below the
+-- address (`at` says which), because a body rarely begins on the exact byte a name sits on; a name
+-- further below than the instruction the caller asked about is not that call's target, and `at` is
+-- what lets the caller say so.
+--
+-- The local half is empty for some of the caches this tree holds and is not for others, and a caller
+-- cannot tell which without asking: the arm64e cache of iOS 16.0 carries no local symbol table at all
+-- (measured: the localSymbolsOffset and localSymbolsSize of its header are 0 and no .symbols file sits
+-- beside it), so for that cache the export trie is the whole answer and every address inside HomeKit's
+-- own text that the ten -init bodies call is anonymous - which is why a caller that needs those bodies
+-- read has to reach past the name and look at the code (tools/objc-method-imps.lua).
+function symbol_at(cache, address)
+    local loaded = image_at(cache, address)
+    if not loaded then
+        return nil
+    end
+    cache.named = cache.named or {}
+    local names = cache.named[loaded.address]
+    if not names then
+        names = {}
+        -- image_symbols hands its exports back as {address, name} pairs, which tools/cicontext-bounds.lua
+        -- reads the other way round; here the address is the key, because the question is an address.
+        for _, entry in ipairs(image_symbols(cache, loaded).exports) do
+            names[entry[1]] = names[entry[1]] or {}
+            table.insert(names[entry[1]], entry[2])
+        end
+        cache.named[loaded.address] = names
+    end
+    if names[address] then
+        return {name = table.concat(names[address], " | "), image = loaded.install, at = address, kind = "export"}
+    end
+    local below
+    for _, entry in ipairs(local_symbols(cache, loaded.address, loaded.image.wide)) do
+        if entry.value <= address and entry.value > 0 and (not below or entry.value > below.value) then
+            below = entry
+        end
+    end
+    if below then
+        return {name = below.name, image = loaded.install, at = below.value, kind = "local"}
+    end
+    return {name = nil, image = loaded.install}
+end
+
 local function symbol_table(cache, linkedit, symoff, nsyms, stroff, locals, wide)
     local entry_size = wide and 16 or 12
     local at = function (offset, size)
