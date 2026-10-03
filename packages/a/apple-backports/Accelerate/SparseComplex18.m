@@ -20,14 +20,10 @@
 //     same rule the real entry points follow when they store a float through a double.
 //   - The products - y = alpha * op(A) * x + y and C = alpha * op(A) * B + C for a dense B or a sparse
 //     one - are the textbook sparse level-2 and level-3 kernels: one multiply-add per stored entry of
-//     op(A), each over the row of x or of B the entry names. The multiply-add is the port's own pair
-//     arithmetic and NOT the release's cblas_caxpy / cblas_zaxpy, and the measurement is why: on the
-//     host, with alpha = 2+i and the vector element 2+i, cblas_caxpy answers 4+2i where the product is
-//     3+5i, and with alpha = 0+i it answers nothing at all - it reads the real part of alpha and drops
-//     the imaginary one (facts/Accelerate/SparseComplex.md). Every factor in this family is complex, so
-//     delegating it would drop the imaginary part of every product. The gather beside it is the
-//     release's own cblas_ccopy / cblas_zcopy, measured to copy both parts of a value and to honour the
-//     increment.
+//     op(A), each over the row of x or of B the entry names, with the multiply-add and the gather the
+//     release's own cblas_caxpy / cblas_zaxpy and cblas_ccopy / cblas_zcopy. That is the same choice the
+//     real family makes with cblas_saxpy / cblas_daxpy, and it is measured that a complex alpha is done
+//     properly by those (facts/Accelerate/SparseComplex.md).
 //   - The operator-two norm, the largest singular value, is the release's own LAPACK: the Hermitian
 //     Gram matrix A * A' formed here and its eigenvalues read with cheev_ / zheev_.
 //   - The triangular solves are the sparse substitution itself, over the stored entries, because a
@@ -781,20 +777,18 @@ void sparse_unpack_vector_double_complex(sparse_dimension N, sparse_dimension nz
 // ---------------------------------------------------------------- level 2
 
 // The two kernels the products below are made of: a multiply-add over n elements of a dense vector at an
-// element offset, and a gather of n elements of a dense row.
+// element offset with the caller's increments, and a gather of n elements of a dense row.
 //
-// The multiply-add is the port's own pair arithmetic and not the release's cblas_caxpy / cblas_zaxpy, and
-// the measurement is why: on the host, with alpha = 2+i and the vector element 2+i, cblas_caxpy answers
-// 4+2i where the product is 3+5i, and with alpha = 0+i it answers nothing at all - it reads the real part
-// of alpha and discards the imaginary one (cblas_zaxpy answers the same 4+2i). Every product of this
-// family has a complex factor, so delegating it would drop the imaginary part of every one of them. The
-// gather is the release's own cblas_ccopy / cblas_zcopy, which is measured to copy both parts of a value
-// and to honour the increment (2 elements from an increment of 2 give the first and the third).
+// Both are the release's own: cblas_caxpy / cblas_zaxpy for the multiply-add and cblas_ccopy /
+// cblas_zcopy for the gather. That is the same choice the real family makes with cblas_saxpy /
+// cblas_daxpy and for the same reason - the arithmetic belongs to the BLAS the release exports, not to a
+// loop of ours. A complex alpha is measured to be done properly by all four: on the host, with
+// alpha = 2+i and the vector element 3+4i, cblas_caxpy and cblas_zaxpy both answer 2+11i, and with
+// alpha = 0+i both answer -4+3i, each of them the product (facts/Accelerate/SparseComplex.md).
 //
-// from and to count elements of the caller's vector, incX and incY are the caller's increments, and
-// both helpers are given the width a value has, so one body serves the float complex and the double
-// complex rows and one call serves both layouts: the level-3 kernel below hands the leading dimension
-// of C as its increment, which is what makes a column-major C step by ldc and not by one.
+// from and to count elements of the caller's vector and incX and incY are its increments, so one body
+// serves both layouts: the level-3 kernel below hands the leading dimension of B and of C as their
+// increments, which is what makes a column-major C step by ldc and not by one.
 //
 // An increment of zero or a negative one is never handed here: the level-2 kernel folds its increments
 // into the addresses itself and passes one for both, exactly as the real family does and for the reason
@@ -803,13 +797,16 @@ void sparse_unpack_vector_double_complex(sparse_dimension N, sparse_dimension nz
 static void CharonComplexAxpy(long n, CharonComplex alpha, const void *x, long from, long incX, void *y, long to,
                               long incY, size_t size)
 {
-    for (long k = 0; k < n; k++) {
-        double xre = 0.0, xim = 0.0, yre = 0.0, yim = 0.0;
-        CharonSparseReadComplexValue(x, (sparse_index)(from + k * incX), size, &xre, &xim);
-        CharonSparseReadComplexValue(y, (sparse_index)(to + k * incY), size, &yre, &yim);
-        CharonComplex sum = CharonComplexAdd(CharonComplexMake(yre, yim),
-                                             CharonComplexMul(alpha, CharonComplexMake(xre, xim)));
-        CharonSparseWriteComplexValue(y, (sparse_index)(to + k * incY), sum.re, sum.im, size);
+    if (size == sizeof(float _Complex)) {
+        float pair[2];
+        pair[0] = (float)alpha.re;
+        pair[1] = (float)alpha.im;
+        cblas_caxpy((int)n, pair, (const float *)x + from * 2, (int)incX, (float *)y + to * 2, (int)incY);
+    } else {
+        double pair[2];
+        pair[0] = alpha.re;
+        pair[1] = alpha.im;
+        cblas_zaxpy((int)n, pair, (const double *)x + from * 2, (int)incX, (double *)y + to * 2, (int)incY);
     }
 }
 
@@ -823,7 +820,7 @@ static void CharonComplexCopy(long n, const void *b, long from, long inc, void *
 }
 
 // y = alpha * op(A) * x + y. One entry of the matrix at a time, the sparse level-2 kernel, with the
-// multiply-add the port's own pair arithmetic for the reason the file header gives. A transpose the
+// multiply-add the release's own cblas_caxpy / cblas_zaxpy over the single product. A transpose the
 // enumeration does not name is SPARSE_ILLEGAL_PARAMETER and y is left alone.
 static sparse_status CharonSparseVectorProductComplex(void *matrix, uint32_t magic, int transposed, CharonComplex alpha,
                                                       const void *x, sparse_stride incx, void *y, sparse_stride incy,
@@ -1053,9 +1050,8 @@ sparse_status sparse_matrix_triangular_solve_dense_double_complex(enum CBLAS_ORD
 // ---------------------------------------------------------------- level 3
 
 // C = alpha * op(A) * B + C, with B dense. One stored entry of op(A) at a time: the release's own
-// cblas_ccopy gathers the row of B the entry names and the port's own pair arithmetic adds alpha times
-// the entry's value times it to the row of C - the sparse level-3 kernel, one rank-one update per
-// nonzero, with the multiply-add here for the reason the file header gives.
+// cblas_ccopy gathers the row of B the entry names and cblas_caxpy adds alpha times the entry's value
+// times it to the row of C - the sparse level-3 kernel, one rank-one update per nonzero.
 //
 // What is refused, measured on the host for the complex type as for the real one: an order or a
 // transpose the enumeration does not name, a leading dimension below what the layout needs, and a
@@ -1203,7 +1199,7 @@ sparse_status sparse_outer_product_dense_double_complex(sparse_dimension M, spar
 // C = alpha * op(A) * B + C with B sparse too, written out into a dense C: the complex counterpart of
 // Accelerate/SparseProduct10.m, over the same storage and with the same refusals. The same rank-one
 // update per nonzero, with the row of B taken from its own stored entries and the multiply-add the
-// port's own pair arithmetic.
+// release's own cblas_caxpy / cblas_zaxpy.
 //
 // Note where the two families of this header put the same name. The real sparse-sparse product arrived
 // in 10.0.1 and has an object file of its own because the release ladder measures it there while the

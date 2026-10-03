@@ -1096,22 +1096,26 @@ static void outer_and_sparse_product_cases(void)
     const sparse_index indy[3] = {0, 2};
     float _Complex y[2] = {5.0f + 1.0fi, -6.0f + 2.0fi};
 
-    // C = alpha * x * y' with x = {1, 2+i, -1}, y = {5+i, -6+2i} at the columns indy = {0, 2} and
-    // alpha = 2+i, so C[i][0] = (2+i)*1*(5+i) = 9+7i and C[i][2] = (2+i)*(2+i)*(-6+2i) = -26-18i for every
-    // row i, and nothing anywhere else.
+    // C = alpha * x * y' with x = {1, 2+i, -1}, y = {5+i, -6+2i} at the columns indy = {0, 2}, so
+    // C[i][0] = (2+i)*1*(5+i) = 9+7i and C[i][2] = (2+i)*(2+i)*(-6+2i) = -26-18i for every row i, and
+    // nothing anywhere else.
     //
-    // The oracle is those two products written out here and not the host: the host's own cblas_caxpy drops
-    // the imaginary part of a complex alpha (measured, facts/Accelerate/SparseComplex.md), so for a
-    // complex alpha it cannot answer. The same case with a real alpha is compared against the host below.
+    // The oracle is those two products written out here and not the host, because the host's own outer
+    // product ignores x: measured for the complex type at alpha = 1 with x = {1, 2, 3} and y = {5, -6} it
+    // answers C[0][2] = -6, which is y[1] with no factor of x[1] at all, where the header's C = alpha * x *
+    // y' gives -12. The real type does the same (measured: the same -6), and the real family's differential
+    // cannot see it because every one of its outer-product cases passes x = {1, 1}. facts/
+    // Accelerate/SparseComplex.md has the numbers and the coordinator has the finding.
     const float _Complex wantFirst = (2.0f + 1.0fi) * (1.0f + 0.0fi) * (5.0f + 1.0fi);
     const float _Complex wantThird = (2.0f + 1.0fi) * (2.0f + 1.0fi) * (-6.0f + 2.0fi);
     sparse_matrix_float_complex hostC = NULL, portC = NULL;
     sparse_status hostS = SPARSE_SUCCESS, portS = SPARSE_SUCCESS;
     portS = RENAME(sparse_outer_product_dense_float_complex)(3, 3, 2, 2.0f + 1.0fi, x, 1, y, indy, &portC);
-    int ok = portS == SPARSE_SUCCESS && portC != NULL;
+    int ok = portS == SPARSE_SUCCESS && portC != NULL && RENAME(sparse_get_matrix_nonzero_count)(portC) == 6;
+
     for (sparse_index r = 0; r < 3 && ok; r++) {
-        // The whole row: two entries, at columns 0 and 2, and nothing at column 1 - which is checked by the
-        // count being two and the indices naming those columns, not by asking for the empty column.
+        // The whole row: two entries, at columns 0 and 2, and nothing at column 1 - which the count of two
+        // and the indices naming those columns show, without asking for the empty column.
         sparse_index portEnd = 0;
         float _Complex portValues[4];
         sparse_index portIndices[4];
@@ -1123,26 +1127,17 @@ static void outer_and_sparse_product_cases(void)
     report(ok, "an outer product into a new matrix (header)", detail);
     if (portC) RENAME(sparse_matrix_destroy)(portC);
 
-    // With a real alpha the host answers -6+2i for the third column, which is y[1] on its own: it drops x's
-    // imaginary part too, so the host cannot be the oracle for this family at all and the same two products
-    // written out above are the oracle for a real alpha as well - (2+i) becomes 1 and C[i][0] = 5+i.
+    // The shape and the count, which the host does answer.
+    hostC = NULL;
     portC = NULL;
-    portS = RENAME(sparse_outer_product_dense_float_complex)(3, 3, 2, 1.0f + 0.0fi, x, 1, y, indy, &portC);
-    const float _Complex wantFirstReal = (5.0f + 1.0fi);
-    const float _Complex wantThirdReal = (2.0f + 1.0fi) * (-6.0f + 2.0fi);
-    ok = portS == SPARSE_SUCCESS && portC != NULL &&
-         RENAME(sparse_get_matrix_nonzero_count)(portC) == 6;
-    for (sparse_index r = 0; r < 3 && ok; r++) {
-        sparse_index portEnd = 0;
-        float _Complex portValues[4];
-        sparse_index portIndices[4];
-        portS = RENAME(sparse_extract_sparse_row_float_complex)(portC, r, 0, &portEnd, 4, portValues, portIndices);
-        ok = portS == (long)2 && REAL_OF(portValues[0]) == REAL_OF(wantFirstReal) &&
-             IMAG_OF(portValues[0]) == IMAG_OF(wantFirstReal) && portIndices[0] == 0 &&
-             REAL_OF(portValues[1]) == REAL_OF(wantThirdReal) && IMAG_OF(portValues[1]) == IMAG_OF(wantThirdReal) &&
-             portIndices[1] == 2;
-    }
-    report(ok, "an outer product into a new matrix, a real alpha (header)", detail);
+    hostS = sparse_outer_product_dense_float_complex(3, 3, 2, 2.0f + 1.0fi, x, 1, y, indy, &hostC);
+    portS = RENAME(sparse_outer_product_dense_float_complex)(3, 3, 2, 2.0f + 1.0fi, x, 1, y, indy, &portC);
+    report(hostS == portS && hostS == SPARSE_SUCCESS && hostC != NULL && portC != NULL &&
+               sparse_get_matrix_number_of_rows(hostC) == RENAME(sparse_get_matrix_number_of_rows)(portC) &&
+               sparse_get_matrix_number_of_columns(hostC) == RENAME(sparse_get_matrix_number_of_columns)(portC) &&
+               sparse_get_matrix_nonzero_count(hostC) == RENAME(sparse_get_matrix_nonzero_count)(portC),
+           "an outer product: the shape and the nonzero count", "the statuses or the counts differ");
+    if (hostC) sparse_matrix_destroy(hostC);
     if (portC) RENAME(sparse_matrix_destroy)(portC);
 
     // More nonzeros than N is refused, and the caller's pointer is left alone.
