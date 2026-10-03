@@ -1,0 +1,16 @@
+{
+  "framework": "ImageIO",
+  "entries": [
+    {
+      "api": "CharonImageAnimation",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own under a name no SDK header declares, defined at packages/a/apple-backports/Graphics/ImageIOAnimation16.m. It holds the source, the block, the frame index and the timer of one animation, and it is what the two CGAnimateImage...WithBlock functions are written over. The name begins with Charon because the class is the port's machinery and not API: no SDK header declares it, so nothing is claimed about SDK behaviour with it",
+      "effect": "nothing is claimed about SDK behaviour: the ledger records no row for CharonImageAnimation, because the ledger is an SDK ledger and this is not an SDK name. What a caller sees is the two functions this object exports, whose rows are in absent_ImageIO.json",
+      "source": "no SDK header declares this name; the date is this port's own, the release whose object carries it, and the two functions it carries are first exported by the 16.0 caches (tools/cache-index/first-rung.py over the 50 held rungs)",
+      "facts": "facts/ImageIO/Animation.md"
+    }
+  ]
+}
