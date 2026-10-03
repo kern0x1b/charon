@@ -933,6 +933,77 @@ static void zero_sections(void)
     if (multi_zero_channels) vDSP_biquadm_DestroySetup(multi_zero_channels);
 }
 
+// Which delay slot does each of the five coefficients multiply, and with what sign? The header's
+// pseudocode says Delay[2s] holds x[s][N-2], Delay[2s+1] holds x[s][N-1] and section s's own y[n-1] and
+// y[n-2] sit at Delay[2s] and Delay[2s+1] one row on - but a header is not a measurement, and this file's
+// other cases cannot see it: with a whole filter running, every term is non-zero and a swapped pair shows
+// only as a few ULPs of difference, which is the thing this file can no longer hold the host to.
+//
+// So it is asked directly: **one coefficient at a time and one delay slot at a time**, which makes y[0]
+// exactly one product on both sides whatever happens at the later samples. Each of the four slots gets its
+// own number so the answer identifies itself, and the two A coefficients come out negative because the
+// recurrence subtracts them. This gates, and it is the strongest check of the port's structure this host can
+// carry.
+//
+// **Two samples, not one, and the reason is the port's own rule**: it answers nothing for a call of a single
+// sample - `vDSP_biquad`'s `N < 2` guard, which the facts page records as measured against the 6.1.3
+// release - while this host does write y[0] for one. So a one-sample call is not a case the two can be
+// compared on at all, and a first version of this case used one and reported a disagreement on every cell.
+// Only y[0] is read, so the second sample, whose answer depends on the first, changes nothing here.
+static void delay_layout(void)
+{
+    static const float slot[4] = {2.0f, 3.0f, 5.0f, 7.0f};
+    static const char *coefficient[5] = {"b0 * x", "b1", "b2", "a1", "a2"};
+    /* the input's second sample only has to exist: nothing of it is read */
+    int agree = 1;
+    for (int which = 0; which < 2; which++) {
+        printf("  %s, one coefficient and one delay slot at a time, the input 1:\n",
+               which ? "the double form" : "the float form");
+        printf("     %-8s", "coef\\slot");
+        for (int s = 0; s < 4; s++) printf(" D[%d]=%-6g", s, (double)slot[s]);
+        printf("\n");
+        for (int coeff = 0; coeff < 5; coeff++) {
+            double one[5] = {0, 0, 0, 0, 0};
+            one[coeff] = 1.0;
+            printf("     %-8s", coefficient[coeff]);
+            for (int s = 0; s < 4; s++) {
+                /* A delay buffer per call: **both forms write Delay back**, so handing the host's own
+                 * buffer to the port would measure what the host left in it. That is what the first version
+                 * of this case did and it is why it reported a disagreement on every cell. */
+                float dh[4] = {0, 0, 0, 0}, dp[4] = {0, 0, 0, 0}, x[2] = {1.0f, 1.0f}, mine[2] = {0, 0},
+                      theirs[2] = {0, 0};
+                double ddh[4] = {0, 0, 0, 0}, ddp[4] = {0, 0, 0, 0}, dx[2] = {1.0, 1.0}, mine_d[2] = {0, 0},
+                       theirs_d[2] = {0, 0};
+                dh[s] = dp[s] = slot[s];
+                ddh[s] = ddp[s] = (double)slot[s];
+                vDSP_biquad_Setup host = vDSP_biquad_CreateSetup(one, 1);
+                vDSP_biquad((const struct vDSP_biquad_SetupStruct *)host, dh, x, 1, theirs, 1, 2);
+                vDSP_biquad_DestroySetup(host);
+                vDSP_biquad_Setup port = charon_host_vDSP_biquad_CreateSetup(one, 1);
+                charon_host_vDSP_biquad((const struct vDSP_biquad_SetupStruct *)port, dp, x, 1, mine, 1, 2);
+                charon_host_vDSP_biquad_DestroySetup(port);
+                vDSP_biquad_SetupD host_d = vDSP_biquad_CreateSetupD(one, 1);
+                vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)host_d, ddh, dx, 1, theirs_d, 1, 2);
+                vDSP_biquad_DestroySetupD(host_d);
+                vDSP_biquad_SetupD port_d = charon_host_vDSP_biquad_CreateSetupD(one, 1);
+                charon_host_vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)port_d, ddp, dx, 1, mine_d, 1, 2);
+                charon_host_vDSP_biquad_DestroySetupD(port_d);
+                int same = mine[0] == theirs[0] && mine_d[0] == theirs_d[0];
+                if (!same) agree = 0;
+                printf(" %11.9g%s", (double)theirs[0], same ? "" : " (the port differs)");
+            }
+            printf("\n");
+        }
+    }
+    checks += 1;
+    if (agree)
+        printf("ok each coefficient multiplies the delay slot both sides use, with the sign both sides use\n");
+    else {
+        failures++;
+        printf("FAIL the two sides read the delay differently, and the grid above says where\n");
+    }
+}
+
 int main(void)
 {
     setbuf(stdout, NULL);
@@ -952,6 +1023,8 @@ int main(void)
         run_float("vDSP_biquad over four sections, two calls, UNSTABLE (pole -1.733)", 4, kUnstable, 0);
         run_double("vDSP_biquadD over one section, two calls, UNSTABLE (pole -1.733)", 1, kUnstable, 0);
         run_double("vDSP_biquadD over three sections, two calls, UNSTABLE (pole -1.733)", 3, kUnstable, 0);
+        printf("   (which delay slot does each coefficient multiply?)\n");
+        delay_layout();
         printf("   (is the host's answer a function of its inputs?)\n");
         alignment_survey();
         printf("   (the initial state)\n");
