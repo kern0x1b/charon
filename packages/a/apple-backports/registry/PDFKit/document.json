@@ -514,11 +514,10 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "not implemented",
-   "reason": "the absent answer is subtype-dependent here too: a /Square with no /Border answers a DEFAULT border (solid, lineWidth 1.0) and a /Link with none answers nil.  PDFBorder is a class of its own with four more rows of its own, and reading the /Border array into it is that family's work rather than this one's",
+   "status": "implemented",
+   "effect": "the border of this annotation, a PDFBorder of its own over the dictionary this annotation was built from: a /Border array or a /BS dictionary in the dictionary answers one for EVERY subtype - measured on border-on-nontype, where /Highlight, /Text, /Link, /Stamp and /Popup, the five that answer nil without one, all answer W 6 when the file names a /Border - and with neither, a DEFAULT border (solid, lineWidth 1) is answered for the geometry subtypes /Circle /FreeText /Ink /Line /Square and for a /Widget whose /MK names a border colour the format's four component counts allow, and nil for every other subtype",
    "facts": "facts/PDFKit/Document11.md",
-   "source": "the host's own PDFKit under macOS in a process containing no port object, against the port's objects in a process containing no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 586 MISMATCHES 0, which includes every annotation key below; two red controls confirm the differential is live - the Print bit read as the Hidden bit makes six annotations DIFFER, and dropping the /Text note rule makes three",
+   "source": "the host's own PDFKit under macOS in a process that contains no port object, against the port's objects in a process that contains no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, three binaries, dladdr proving each side's class comes from where it should: COMPARED 3632 MISMATCHES 0, of which 219 are the border facts across 39 fixtures, and ten red controls name a border or appearance key",
    "ledger": "?"
   },
   {

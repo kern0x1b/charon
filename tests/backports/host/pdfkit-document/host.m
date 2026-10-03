@@ -24,6 +24,57 @@ static const struct { CGPDFBox box; const char *name; } kinds[] = {
     { kCGPDFBleedBox, "bleedBox" }, { kCGPDFTrimBox, "trimBox" }, { kCGPDFArtBox, "artBox" },
 };
 
+// A colour, by its components, or "(nil)".
+static void printAppearanceColour(const char *label, const char *member, id colour)
+{
+    if (colour == nil) {
+        printf("appearance.%s.%s=(nil)\n", label, member);
+        return;
+    }
+    CGFloat r = 0, g = 0, b = 0, a = 0;
+    [(id)colour getRed:&r green:&g blue:&b alpha:&a];
+    printf("appearance.%s.%s=%.6f,%.6f,%.6f,%.6f\n", label, member, (double)r, (double)g, (double)b,
+           (double)a);
+}
+
+// One appearance-characters object, printed under one label, so the two sides' blocks are the same
+// shape and the comparison needs no knowledge of which is which.
+static void printAppearanceCharacteristics(const char *label,
+                                           PDFAppearanceCharacteristics *characteristics)
+{
+    printf("appearance.%s.controlType=%ld\n", label, (long)characteristics.controlType);
+    printf("appearance.%s.rotation=%ld\n", label, (long)characteristics.rotation);
+    printAppearanceColour(label, "backgroundColor", characteristics.backgroundColor);
+    printAppearanceColour(label, "borderColor", characteristics.borderColor);
+    printf("appearance.%s.caption=%s\n", label,
+           characteristics.caption ? characteristics.caption.UTF8String : "(nil)");
+    printf("appearance.%s.rolloverCaption=%s\n", label,
+           characteristics.rolloverCaption ? characteristics.rolloverCaption.UTF8String : "(nil)");
+    printf("appearance.%s.downCaption=%s\n", label,
+           characteristics.downCaption ? characteristics.downCaption.UTF8String : "(nil)");
+    NSDictionary *keys = characteristics.appearanceCharacteristicsKeyValues;
+    NSMutableArray *sorted = [[keys allKeys] mutableCopy];
+    [sorted sortUsingSelector:@selector(compare:)];
+    printf("appearance.%s.keys=%lu\n", label, (unsigned long)sorted.count);
+    for (NSString *key in sorted) {
+        id value = keys[key];
+        if ([value isKindOfClass:[NSString class]]) {
+            printf("appearance.%s.key.%s=%s\n", label, [key UTF8String],
+                   [(NSString *)value UTF8String]);
+        } else if ([value respondsToSelector:@selector(getRed:green:blue:alpha:)]) {
+            // a colour, compared by its four components: the host's is an NSColor and the port's is a
+            // UIColor, and their -description strings are not the same string, so the components are
+            // what both sides can answer
+            CGFloat r = 0, g = 0, b = 0, a = 0;
+            [(id)value getRed:&r green:&g blue:&b alpha:&a];
+            printf("appearance.%s.key.%s=%.6f,%.6f,%.6f,%.6f\n", label, [key UTF8String], (double)r,
+                   (double)g, (double)b, (double)a);
+        } else {
+            printf("appearance.%s.key.%s=%.6f\n", label, [key UTF8String], (double)[value doubleValue]);
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
     setvbuf(stdout, NULL, _IOLBF, 0);
@@ -113,6 +164,52 @@ int main(int argc, char **argv)
                 printf("%s.page0.numberOfCharacters=%ld\n", name, (long)first.numberOfCharacters);
                 printf("%s.page0.string=%s\n", name, first.string ? first.string.UTF8String : "(nil)");
                 printf("%s.page0.annotations.count=%lu\n", name, (unsigned long)first.annotations.count);
+                // The BORDER, whose own members are a family of their own: PDFBorder11.m carries the
+                // rules and the fixtures that fix them.  A nil border is printed as nil and is NOT
+                // compared against the port's nil by accident - it is compared like anything else, and
+                // the subtypes that answer one where the port does not would show up here.
+                for (unsigned a = 0; a < first.annotations.count; a++) {
+                    PDFBorder *border = first.annotations[a].border;
+                    if (border == nil) {
+                        printf("%s.page0.annotation%u.border=nil\n", name, a);
+                        continue;
+                    }
+                    printf("%s.page0.annotation%u.border.style=%ld\n", name, a, (long)border.style);
+                    printf("%s.page0.annotation%u.border.lineWidth=%.6f\n", name, a,
+                           (double)border.lineWidth);
+                    printf("%s.page0.annotation%u.border.dash=%s\n", name, a,
+                           border.dashPattern ? "an-array" : "(nil)");
+                    if (border.dashPattern) {
+                        NSMutableArray *parts = [NSMutableArray array];
+                        for (id value in border.dashPattern)
+                            [parts addObject:[NSString stringWithFormat:@"%.6f",
+                                               (double)[value doubleValue]]];
+                        printf("%s.page0.annotation%u.border.dash.values=%s\n", name, a,
+                               [[parts componentsJoinedByString:@","] UTF8String]);
+                    }
+                    NSDictionary *keys = border.borderKeyValues;
+                    NSMutableArray *sorted = [[keys allKeys] mutableCopy];
+                    [sorted sortUsingSelector:@selector(compare:)];
+                    printf("%s.page0.annotation%u.border.keys=%lu\n", name, a,
+                           (unsigned long)sorted.count);
+                    for (NSString *key in sorted) {
+                        id value = keys[key];
+                        if ([value isKindOfClass:[NSString class]]) {
+                            printf("%s.page0.annotation%u.border.key.%s=%s\n", name, a,
+                                   [key UTF8String], [(NSString *)value UTF8String]);
+                        } else if ([value isKindOfClass:[NSArray class]]) {
+                            NSMutableArray *parts = [NSMutableArray array];
+                            for (id element in value)
+                                [parts addObject:[NSString stringWithFormat:@"%.6f",
+                                                   (double)[element doubleValue]]];
+                            printf("%s.page0.annotation%u.border.key.%s=%s\n", name, a,
+                                   [key UTF8String], [[parts componentsJoinedByString:@","] UTF8String]);
+                        } else {
+                            printf("%s.page0.annotation%u.border.key.%s=%.6f\n", name, a,
+                                   [key UTF8String], (double)[value doubleValue]);
+                        }
+                    }
+                }
                 for (unsigned a = 0; a < first.annotations.count; a++) {
                     PDFAnnotation *an = first.annotations[a];
                     CGRect r = an.bounds;
@@ -151,6 +248,46 @@ int main(int argc, char **argv)
                           ? ((id (*)(id, SEL, NSUInteger))objc_msgSend)(document, pageAt, document.pageCount)
                           : nil;
             printf("%s.pageAtIndex.one-past-the-end=%s\n", name, past ? "an-object" : "nil");
+        }
+        // PDFAppearanceCharacteristics, which no annotation hands out in the 26.2 SDK, so it is its
+        // own object on this side too and the comparison is object against object.  Every member is
+        // read on a fresh one, then every member is set and read again, and the key values are read
+        // at each step: the second reading is what shows a setter that drops its value.
+        printAppearanceCharacteristics("fresh", [[PDFAppearanceCharacteristics alloc] init]);
+        {
+            PDFAppearanceCharacteristics *only = [[PDFAppearanceCharacteristics alloc] init];
+            only.caption = @"cap";
+            printAppearanceCharacteristics("captionOnly", only);
+            PDFAppearanceCharacteristics *cleared = [[PDFAppearanceCharacteristics alloc] init];
+            cleared.caption = @"cap";
+            cleared.backgroundColor = [NSColor redColor];
+            cleared.caption = nil;
+            cleared.backgroundColor = nil;
+            printAppearanceCharacteristics("cleared", cleared);
+            PDFAppearanceCharacteristics *empty = [[PDFAppearanceCharacteristics alloc] init];
+            empty.caption = @"";
+            empty.downCaption = @"";
+            printAppearanceCharacteristics("empty", empty);
+            PDFAppearanceCharacteristics *negative = [[PDFAppearanceCharacteristics alloc] init];
+            negative.rotation = -90;
+            printAppearanceCharacteristics("negative", negative);
+            for (long control = -1; control <= 3; control++) {
+                PDFAppearanceCharacteristics *probe =
+                    [[PDFAppearanceCharacteristics alloc] init];
+                probe.controlType = (PDFWidgetControlType)control;
+                printf("appearance.controlType%ld.read=%ld\n", control, (long)probe.controlType);
+                printf("appearance.controlType%ld.keys=%lu\n", control,
+                       (unsigned long)probe.appearanceCharacteristicsKeyValues.count);
+            }
+            PDFAppearanceCharacteristics *full = [[PDFAppearanceCharacteristics alloc] init];
+            full.controlType = kPDFWidgetCheckBoxControl;
+            full.backgroundColor = [NSColor redColor];
+            full.borderColor = [NSColor blueColor];
+            full.rotation = 90;
+            full.caption = @"cap";
+            full.rolloverCaption = @"roll";
+            full.downCaption = @"down";
+            printAppearanceCharacteristics("full", full);
         }
     }
     return 0;

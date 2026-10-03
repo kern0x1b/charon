@@ -335,6 +335,24 @@ static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
 // The page's ANNOTATIONS, built over the page's own /Annots array: each element is a dictionary
 // CoreGraphics already parsed, and each becomes a PDFAnnotation over that dictionary.  The order is the
 // array's own, which is the order the host hands them back in.
+//
+// AN ANNOTATION THE HOST DOES NOT SURFACE IS NOT IN THE ARRAY, which is a measured skip and not a
+// tolerance: the /Annots array of a fixture with thirteen annotations in it holds eleven that the host
+// never hands back, and this port used to hand back all thirteen.  Two shapes are skipped, and both
+// are measured over every subtype tried rather than over one:
+//
+//   no /Rect   a /Line, /Square, /Text, /Popup, /Ink, /Circle, /FreeText, /Stamp and /Link, each
+//              written with a /Contents and nothing else, is dropped - all nine, on one fixture.  /Rect
+//              is what PDF 1.7 Table 164 makes required of every annotation, so this is the format's
+//              own requirement and the host enforcing it.
+//   a /Line with no /L   the same fixture's /Line with a /Rect and no /L is dropped while a /Line with
+//              both is kept, so the line's own endpoints are as required for a /Line as the rectangle
+//              is for everything.
+//
+// A /Widget with no /FT is KEPT (the same fixture, one annotation), which is what stops the rule from
+// being "an annotation missing a required key is dropped": /FT is required of a widget by Table 8.39
+// and the host does not enforce it.  So the two shapes above are the measured rule and not the
+// format's.
 - (NSArray *)annotations
 {
     if (_page == NULL)
@@ -351,6 +369,18 @@ static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
         CGPDFDictionaryRef annotation = NULL;
         if (!CGPDFArrayGetDictionary(annots, i, &annotation) || annotation == NULL)
             continue;
+        CGPDFArrayRef rect = NULL;
+        if (!CGPDFDictionaryGetArray(annotation, "Rect", &rect) || rect == NULL)
+            continue;
+        // a /Line whose endpoints are missing is skipped as well, and the /Subtype is read as the
+        // name the dictionary spells it with - the same spelling -type answers.
+        const char *subtype = NULL;
+        if (CGPDFDictionaryGetName(annotation, "Subtype", &subtype) && subtype != NULL
+            && strcmp(subtype, "Line") == 0) {
+            CGPDFArrayRef endpoints = NULL;
+            if (!CGPDFDictionaryGetArray(annotation, "L", &endpoints) || endpoints == NULL)
+                continue;
+        }
         PDFAnnotation *built = [[PDFAnnotation alloc] initWithCharonDictionary:annotation onPage:self];
         if (built != nil)
             [answer addObject:built];

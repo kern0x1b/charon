@@ -123,6 +123,51 @@ int main(int argc, char **argv)
                 printf("%s.page0.numberOfCharacters=%ld\n", name, (long)[first numberOfCharacters]);
                 printf("%s.page0.string=%s\n", name, [first string] ? [first string].UTF8String : "(nil)");
                 printf("%s.page0.annotations.count=%lu\n", name, (unsigned long)first.annotations.count);
+                // the BORDER, over PDFBorder11.m, printed in the same keys and the same order as
+                // host.m prints it
+                for (unsigned a = 0; a < first.annotations.count; a++) {
+                    PDFAnnotation *annotation = first.annotations[a];
+                    PDFBorder *border = annotation.border;
+                    if (border == nil) {
+                        printf("%s.page0.annotation%u.border=nil\n", name, a);
+                        continue;
+                    }
+                    printf("%s.page0.annotation%u.border.style=%ld\n", name, a, (long)[border style]);
+                    printf("%s.page0.annotation%u.border.lineWidth=%.6f\n", name, a,
+                           (double)[border lineWidth]);
+                    printf("%s.page0.annotation%u.border.dash=%s\n", name, a,
+                           [border dashPattern] ? "an-array" : "(nil)");
+                    if ([border dashPattern]) {
+                        NSMutableArray *parts = [NSMutableArray array];
+                        for (id value in [border dashPattern])
+                            [parts addObject:[NSString stringWithFormat:@"%.6f",
+                                               (double)[value doubleValue]]];
+                        printf("%s.page0.annotation%u.border.dash.values=%s\n", name, a,
+                               [[parts componentsJoinedByString:@","] UTF8String]);
+                    }
+                    NSDictionary *keys = [border borderKeyValues];
+                    NSMutableArray *sorted = [[keys allKeys] mutableCopy];
+                    [sorted sortUsingSelector:@selector(compare:)];
+                    printf("%s.page0.annotation%u.border.keys=%lu\n", name, a,
+                           (unsigned long)sorted.count);
+                    for (NSString *key in sorted) {
+                        id value = keys[key];
+                        if ([value isKindOfClass:[NSString class]]) {
+                            printf("%s.page0.annotation%u.border.key.%s=%s\n", name, a,
+                                   [key UTF8String], [(NSString *)value UTF8String]);
+                        } else if ([value isKindOfClass:[NSArray class]]) {
+                            NSMutableArray *parts = [NSMutableArray array];
+                            for (id element in value)
+                                [parts addObject:[NSString stringWithFormat:@"%.6f",
+                                                   (double)[element doubleValue]]];
+                            printf("%s.page0.annotation%u.border.key.%s=%s\n", name, a,
+                                   [key UTF8String], [[parts componentsJoinedByString:@","] UTF8String]);
+                        } else {
+                            printf("%s.page0.annotation%u.border.key.%s=%.6f\n", name, a,
+                                   [key UTF8String], (double)[value doubleValue]);
+                        }
+                    }
+                }
                 for (unsigned a = 0; a < first.annotations.count; a++) {
                     PDFAnnotation *an = first.annotations[a];
                     CGRect r = an.bounds;
