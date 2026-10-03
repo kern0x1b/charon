@@ -288,6 +288,17 @@
    "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
+   "api": "MPMediaPlaylistPropertySeedItems",
+   "kind": "constant",
+   "introduced": "3.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the release does not carry it at all, and this row says so from its own measurement rather than from the three rows beside it: the MediaPlayer image of the armv7 cache of 6.1.3, extracted with modules/apple/dyld.lua extract(), carries NONE of the 32 constants this port defines - the 32 symbol names were compared against every string of that image and 0 of them are there, _MPErrorDomain and _MPMediaPlaylistPropertyCloudGlobalID as absent as this one. introduced: 3.0, MEASURED - tools/cache-index/first-rung.py _MPMediaPlaylistPropertySeedItems answers 3.0, the oldest HELD rung that carries the name, which is the release a port of it must support. THE HEADER PUTS IT NOWHERE AND THE LADDER PUTS IT AT 3.0, and the ladder is what this row follows: MPMediaPlaylist.h declares this extern with NO MP_API annotation at all while -seedItems is MP_API(ios(8.0)) and the two 9.3 keys beside it carry MP_API(ios(9.3)), and an unannotated extern is unversioned - so no release introduced the name and there is no header band to believe. That is also why MediaPlayerConstants30.m holds this key alone: release-split refused the object that carried it beside the 8.0 key as MIXED-RELEASES 3.0,8.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is plain data - a caller compares or passes a string - so the port answers it itself and the release is never asked. The value is 'seedItems', the name of the -seedItems property whose accessor key this is, and that the port's own convention of spelling the value from the key's name holds for THIS key is a fact about this key and not a rule: MPMediaPlaylistPropertyAuthorDisplayName holds 'externalVendorDisplayName' and MPMediaPlaylistPropertyDescriptionText holds 'descriptionInfo', neither of which is the name of its constant",
+   "source": "the value, MEASURED against the port and not read out of it: tests/backports/host/mediaplayer-constants compiles the port's own objects with every constant name renamed to charonHost_*, has this Mac's MediaPlayer answer for the unrenamed name in the same process, and diffs the two tables; it reads OK MPMediaPlaylistPropertySeedItems seedItems, the 8 bytes 736565644974656d73. The release's own exports, by dyld.lua extract() of /System/Library/Frameworks/MediaPlayer.framework/MediaPlayer out of ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and a comparison of the 32 symbol names against every string of the extracted image, 0 found. introduced, by tools/cache-index/first-rung.py _MPMediaPlaylistPropertySeedItems. The property this key is the accessor key of is the MPMediaPlaylist.seedItems row in registry/MediaPlayer/mpplaylistvalueholders.json, which records the same read of -valueForProperty:",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
+  },
+  {
    "api": "MPNowPlayingInfoCollectionIdentifier",
    "kind": "constant",
    "introduced": "10.0.1",
