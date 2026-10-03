@@ -258,3 +258,43 @@ spellings meet: the C surface declares them as pointers and the Swift surface, w
 refines, as arrays. A plane that has only been **detected** has no mesh, so the C answer is a null
 pointer with a count of zero and the Swift answer an empty array, and both are the truth rather than
 a fabricated mesh.
+
+## The fifty-six `-init` and `+new` rows that are absent, and why that is not a gap
+
+Fifty-six of the ledger's `missing` rows are `-[X init]` or `+[X new]` on a class whose **own**
+`@interface` block in the iPhoneOS16.4 SDK marks that declaration `NS_UNAVAILABLE`. Examples, each
+read out of the header and not out of a pattern:
+
+| class | header | what it says |
+| --- | --- | --- |
+| `ARConfiguration` | `ARConfiguration.h:211-212` | `- (instancetype)init NS_UNAVAILABLE;` and `+ (instancetype)new NS_UNAVAILABLE;` |
+| `ARVideoFormat` | `ARVideoFormat.h:34-35` | the same two lines |
+| `ARAnchor` | `ARAnchor.h` | `- (instancetype)init NS_UNAVAILABLE;` |
+| `ARSkeletonDefinition` | `ARSkeletonDefinition.h:87-88` | the same two lines |
+| `ARRaycastQuery`, `ARRaycastResult`, `ARTrackedRaycast` | `ARRaycastQuery.h`, `ARRaycastResult.h`, `ARTrackedRaycast.h` | `- (instancetype)init NS_UNAVAILABLE;` and `+new` |
+
+Apple is saying the caller must not build one of these directly. The port therefore defines none,
+and **that is the decision, not an omission**: defining `-init` only to put the selector in the
+class's own list would make the port's Objective-C metadata differ from Apple's - Apple's class has
+no `-init` of its own, so an unchecked `respondsToSelector:` on a real release answers NO there and
+would answer YES here - while changing no behaviour at all, since `alloc` reaches the `-init`
+`NSObject` inherits either way. A row like that moves a status and buys nothing.
+
+The rows are `absent`, which is the registry's word for "measured, and not carried".
+
+**The twelve that are NOT in this set** are the six configuration *subclasses*, and they are the
+opposite case, which is why they are worth naming: `ARWorldTrackingConfiguration.h` re-declares
+both, without the mark, at `ARConfiguration.h:114-115`:
+
+```objc
+- (instancetype)init;
++ (instancetype)new NS_SWIFT_UNAVAILABLE("Use init() instead");
+```
+
+A subclass that re-enables what its base forbade is exactly the class a caller is meant to build, so
+those twelve are code, not decisions: `-[ARWorldTrackingConfiguration init]` and its five siblings.
+
+Nothing here rests on the hardware. The release carries no ARKit at all - 0 of the 11378 class names
+of the 6.1.3 armv7 cache begin `AR`, measured with `modules/apple/objc.lua`'s inventory, as this
+file's `ARDepthData` row already records - so the question these fifty-six rows answer is the port's
+own metadata against Apple's, and Apple's answer is in its own header.
