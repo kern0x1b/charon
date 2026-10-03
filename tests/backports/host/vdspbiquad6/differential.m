@@ -995,12 +995,68 @@ static void delay_layout(void)
             printf("\n");
         }
     }
+    // The same grid with the caller's own doubles instead of a lone 1.0, so the width each coefficient is
+    // held at is measured rather than assumed: one coefficient and one slot, and y[0] is one product, so
+    // the two sides have to agree with the same product computed here - (float)coeff * slot for the float
+    // form and coeff * slot for the double one. A coefficient read at the wrong width, or a slot given the
+    // wrong value, moves the answer and cannot hide behind a rounding.
+    double stable[5] = {0.0674551234, 0.1349102468, 0.0674551234, -1.1429805025, 0.4128015981};
+    printf("  the caller's own coefficients, one at a time, and the product this program computes for it:\n");
+    for (int which = 0; which < 2; which++) {
+        printf("     %-8s", which ? "double" : "float");
+        for (int s = 0; s < 4; s++) printf(" D[%d]=%-6g", s, (double)slot[s]);
+        printf("\n");
+        for (int coeff = 0; coeff < 5; coeff++) {
+            double one[5] = {0, 0, 0, 0, 0};
+            one[coeff] = stable[coeff];
+            printf("     %-8s", coefficient[coeff]);
+            for (int s = 0; s < 4; s++) {
+                float dh[4] = {0, 0, 0, 0}, dp[4] = {0, 0, 0, 0}, x[2] = {1.0f, 1.0f}, mine[2] = {0, 0},
+                      theirs[2] = {0, 0};
+                double ddh[4] = {0, 0, 0, 0}, ddp[4] = {0, 0, 0, 0}, dx[2] = {1.0, 1.0}, mine_d[2] = {0, 0},
+                       theirs_d[2] = {0, 0};
+                dh[s] = dp[s] = slot[s];
+                ddh[s] = ddp[s] = (double)slot[s];
+                vDSP_biquad_Setup host = vDSP_biquad_CreateSetup(one, 1);
+                vDSP_biquad((const struct vDSP_biquad_SetupStruct *)host, dh, x, 1, theirs, 1, 2);
+                vDSP_biquad_DestroySetup(host);
+                vDSP_biquad_Setup port = charon_host_vDSP_biquad_CreateSetup(one, 1);
+                charon_host_vDSP_biquad((const struct vDSP_biquad_SetupStruct *)port, dp, x, 1, mine, 1, 2);
+                charon_host_vDSP_biquad_DestroySetup(port);
+                vDSP_biquad_SetupD host_d = vDSP_biquad_CreateSetupD(one, 1);
+                vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)host_d, ddh, dx, 1, theirs_d, 1, 2);
+                vDSP_biquad_DestroySetupD(host_d);
+                vDSP_biquad_SetupD port_d = charon_host_vDSP_biquad_CreateSetupD(one, 1);
+                charon_host_vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)port_d, ddp, dx, 1, mine_d, 1, 2);
+                charon_host_vDSP_biquad_DestroySetupD(port_d);
+                /* only the cell where this coefficient actually lands has a product to compare against;
+                 * the other three are zero on both sides and are checked for being zero, not for a value */
+                static const int lands[5] = {-1, 1, 0, 3, 2};   /* -1 is the input, not the delay */
+                int here = lands[coeff] < 0 || lands[coeff] == s;   /* b0 lands on the input, always */
+                float want_f = here ? (float)stable[coeff] * (lands[coeff] < 0 ? 1.0f : slot[s]) : 0.0f;
+                double want_d = here ? stable[coeff] * (lands[coeff] < 0 ? 1.0 : (double)slot[s]) : 0.0;
+                /* the A terms come out of the recurrence subtracted, so the product carries that sign */
+                if (coeff >= 3) {
+                    want_f = -want_f;
+                    want_d = -want_d;
+                }
+                int same = mine[0] == theirs[0] && theirs[0] == want_f && mine_d[0] == theirs_d[0] &&
+                           theirs_d[0] == want_d;
+                if (!same) agree = 0;
+                printf(" %11.9g%s", (double)theirs[0], same ? "" : " (differs, or not the product above)");
+            }
+            printf("\n");
+        }
+    }
+
     checks += 1;
     if (agree)
-        printf("ok each coefficient multiplies the delay slot both sides use, with the sign both sides use\n");
+        printf("ok each coefficient multiplies the delay slot both sides use, at the width both sides use,"
+               " with the sign both sides use\n");
     else {
         failures++;
-        printf("FAIL the two sides read the delay differently, and the grid above says where\n");
+        printf("FAIL the two sides read the delay differently, or read a coefficient at another width;"
+               " the grids above say where\n");
     }
 }
 
