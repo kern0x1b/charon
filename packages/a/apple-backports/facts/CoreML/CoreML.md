@@ -120,19 +120,36 @@ Each of these is refused with a line naming the layer, not approximated:
 
 Two more, and both are about what the build measures rather than what it carries:
 
-- **`vision_image` is written, and the release will not load it.** `tools/coreml/make-models.py`
-  emits it and reports it as `no host input`. Measured on macOS 27.0 build 26A428: asked to compile
-  the container, this host's own `+[MLModel compileModelAtURL:error:]` answers `com.apple.CoreML`,
-  code 0, **"compiler error: Invalid height and width for the image input."** — the input's declared
-  `imageSizeRange` of 16 to 256 on both axes is what it refuses. So the release has no description,
-  no prediction and no answer of any kind for that container: `tests/backports/host/coreml/run.sh`
-  reads which containers the release refused out of its own record (a container it refused has a
-  `model/<name>/error` key and one it loaded has none), prints the 48 keys the port answers for
-  `vision_image` by name with the refusal beside each, and passes on the nine containers it did
-  load: `compared 770 keys, 0 differ, 0 missing, 0 recorded divergences, 48 for a container the
-  release refused`. `tests/backports/host/vision/run.sh` measures the same container through
-  Vision, which is the framework that runs an image model, and expects exactly this compile
-  failure. The image constructors this port DOES carry are measured a different way -- against Core
+- **`vision_image` carried a size the release would not accept, and did not load until 2026-10-03.**
+  `tools/coreml/make-models.py` still reports it as `no host input`, because coremltools 9.0's Python
+  runtime gives no prediction for a network whose input is a picture; that is the only thing left of
+  the old claim. The release refused the container itself, and the reason was in the container:
+  `build_vision_image` declared both of its picture features as an `imageSizeRange` of 16 to 256,
+  and asked to compile it this host's own `+[MLModel compileModelAtURL:error:]` answered
+  `com.apple.CoreML`, code 0, **"compiler error: Invalid height and width for the image input."** A
+  ranged image input needs a network whose blob shapes are flexible, and this one has fixed shapes.
+  Measured on this host (an M4 Pro, macOS, Core ML and Vision both present, coremltools 9.0) over
+  five shapes of the same network: ranged input 16..256 refused with that text, ranged input with
+  32..32 refused the same way, and `ImageFeatureType.width`/`.height` = 32 on both ends compiles,
+  loads and predicts. There is no `Exact` case in the enumeration the SDKs here carry (0
+  unspecified, 2 enumerated, 3 range), so a fixed size is spelled as the enumerated kind holding one
+  size, and that is what the release answers: `sizeConstraint` 2, `pixelsWideRange` 32+1,
+  `pixelsHighRange` 32+1, `enumeratedImageSizes` 32x32.
+
+  Fixing the container uncovered three answers this port did not have, all of them about a FIXED
+  size and all of them measured against the release rather than argued. The reader left its range
+  fields at `CHARON_ML_FLEXIBLE` when no range node was present, so a fixed size took the range
+  branch and answered `NSRange(NSUIntegerMax, 0)` for both dimensions; it now reads a fixed size as
+  no range at all (`CharonMLModel.c`). `charon_ml_image_size_constraint_of` then answers the
+  enumerated kind with the one size and a length-one range per dimension
+  (`CharonMLConstraints.h`). And a required feature the caller left out now says what the release
+  says, `Feature image is required but not specified.` (`MLModel.m`), instead of a sentence of the
+  port's own that named the feature's type.
+
+  `tests/backports/host/vision/run.sh` measures the same container through Vision, which is the
+  framework that runs an image model, and expects the compile failure -- that expectation was
+  written for the ranged form and is what made the container's own fault invisible, so it is named
+  there too. The image constructors this port DOES carry are measured a different way -- against Core
   ML's own image constructor, by pixels, in `tests/backports/host/vision/run-crop.sh` -- and that
   measurement is red for the crop-and-scale rules; `registry/CoreML/absent_CoreML.json` states
   which cells differ. What is unmeasured is the container, not the conversion.
@@ -228,15 +245,13 @@ nothing was blocking them.
 `tests/backports/host/coreml` records what a real Core ML answers for the same containers -- every
 description, every constraint, `-isAllowedValue:` over a battery of values, the providers, the keys,
 the options, the constants and a prediction per model -- and holds the port's own classes, compiled
-under names of their own, to that record: **722 keys compared, none differing, five recorded
-divergences**, over **eighteen mutants of the port, every one of them caught** -- on **nine of the ten
-containers `tools/coreml/make-models.py` writes**, and which nine decides the verdict. The tenth is
-`vision_image`, the one `make-models.py` itself reports as `no host input`: this host's Core ML does
-not run that container, so the 48 description keys it would answer are in the host's record and not in
-the port's. On all ten the same command prints `compared 770 keys, 0 differ, 48 missing` and
-`port: DIFFERS`, every one of the 48 under `vision_image/`, so this number belongs to the nine and not
-to the ten. The run names the corpus it was given, on its own first line, and says which of the two
-it is. -- the run prints
+under names of their own, to that record: **769 keys compared, none differing, none missing, five
+recorded divergences**, over **eighteen mutants of the port, every one of them caught** -- on **all
+ten containers `tools/coreml/make-models.py` writes**, since 2026-10-03. It was nine of the ten: the
+tenth, `vision_image`, was a container the release refused to compile, so its 48 description keys
+were in the host's record and not in the port's, and the run passed on the other nine while printing
+`compared 770 keys, 0 differ, 48 missing` on all ten. The container's own fault is fixed and named
+under `vision_image` above; the run names the corpus it was given on its own first line. -- the run prints
 `mutants: 18 run, 0 surviving`, so a harness that silently compiled none of them cannot report a
 clean line, and a mutant is judged against the **port's own record** rather than the framework's,
 which is what makes "a mutant changed nothing" a thing the run can see. Nine things the obvious
@@ -535,3 +550,38 @@ finds 245 `ML*` classes and 23 `ML*` protocols in 12.0's arm64 cache, among them
 reader's. `MLTask`, `MLUpdateTask`, `MLUpdateContext`, `MLUpdateProgressHandlers`, `MLWritable`,
 `MLKey`, `MLMetricKey` and `MLParameterKey` all read 16.0 from `tools/cache-index/first-rung.py`:
 the held ladder has a hole between 12.0 and 16.0, so a 13.0 name's first held rung is 16.0.
+
+## Which translation units emit a protocol's metadata object, and what that means for the duplicate
+
+The open crutch entry "Core ML's `MLFeatureProvider` protocol object is defined by two objects" names its
+native fix as taking this whole folder off Apple's umbrella, because `MLFeatureProvider.m` "must see
+Apple's definition, so it must import `<CoreML/CoreML.h>`". **Measured, that premise does not hold**: what
+makes a translation unit emit `__OBJC_PROTOCOL_$_<name>` is not what it imports but whether it *conforms to*
+the protocol or names it in `@protocol()`. Three objects compiled for armv7-apple-ios6.0 against the SDK of
+iOS 16.4, each reading `#import <CoreML/MLFeatureProvider.h>` and nothing else, and each `nm -g`-ed:
+
+| the object | `__OBJC_PROTOCOL_$_MLFeatureProvider` |
+| --- | --- |
+| imports the header and declares nothing that uses the protocol | **0** symbols |
+| imports the header and uses `id<MLFeatureProvider>` and `@protocol(MLFeatureProvider)` | **0** symbols |
+| imports the header and declares `@interface MyProvider : NSObject <MLFeatureProvider>` | **1** symbol |
+
+So Core ML's headers being modular or not is beside the point: `MLFeatureProvider.m` emits the object
+because `MLDictionaryFeatureProvider` **conforms** to `MLFeatureProvider`, and it would emit it from
+`<CoreML/MLFeatureProvider.h>` exactly as it does from `<CoreML/CoreML.h>`. Taking the folder off the
+umbrella therefore leaves the duplicate in place, and the seven files that use `MLFeatureType` would still
+need that enum from one place or the other - which is the AppIntents entry's "two spellings of one type"
+again.
+
+The other definer is deliberate and is in the build, not in this folder. `protocol_sources()` in
+`modules/apple/backports.lua` writes, for each `implemented` protocol row, a generated
+`<Library>Protocols<release>.m` whose whole body is `(void)@protocol(Name);` inside a function marked
+`used`, so that clang emits the object into that object - which is what makes `objc_getProtocol` and
+`conformsToProtocol:` answer for a protocol no release's own dylib carries. `MLFeatureProvider` has such a
+row (`registry/CoreML/ios11.json`, `implemented`, `11.0`) and `MLBatchProvider` has one too
+(`registry/CoreML/absent_CoreML.json`, `implemented`, `12.0`), which is the same pair of definers the entry
+describes for the second protocol.
+
+**What would remove the duplicate, then, is in `protocol_sources()` and not in this folder**: force the
+object only for a protocol no other object of the same library already defines. That is the build module's
+own change and not this directory's, and it is the coordinator's to make.

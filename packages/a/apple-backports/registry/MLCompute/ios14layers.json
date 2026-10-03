@@ -2180,6 +2180,203 @@
    "effect": "the class is carried, and its initialiser and every member it declares are measured and held case by case; see the file of facts this row names",
    "facts": "facts/MLCompute/Layers.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
-  }
- ]
+  },
+    {
+      "api": "MLCGraph",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "+[MLCGraph graph]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "MLCGraph.device",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "MLCGraph.layers",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "MLCGraph.summarizedDOTDescription",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph nodeWithLayer:source:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph nodeWithLayer:sources:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph nodeWithLayer:sources:disableUpdate:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph nodeWithLayer:sources:lossLabels:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph splitWithSource:splitCount:dimension:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph splitWithSource:splitSectionLengths:dimension:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph concatenateWithSources:dimension:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph reshapeWithShape:source:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph transposeWithDimensions:source:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph bindAndWriteData:forInputs:toDevice:batchSize:synchronous:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph bindAndWriteData:forInputs:toDevice:synchronous:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph sourceTensorsForLayer:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "-[MLCGraph resultTensorsForLayer:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    }
+  ]
 }

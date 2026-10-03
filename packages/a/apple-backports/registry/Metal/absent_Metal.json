@@ -238,26 +238,6 @@
       "facts": "facts/Metal/TypeTree.md"
     },
     {
-      "api": "MTLTileRenderPipelineColorAttachmentDescriptor",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLTileRenderPipelineColorAttachmentDescriptorArray",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
       "api": "MTLTileRenderPipelineDescriptor",
       "kind": "class",
       "introduced": "11.0",

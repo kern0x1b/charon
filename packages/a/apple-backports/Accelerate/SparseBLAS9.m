@@ -33,71 +33,11 @@
 #import <Accelerate/Accelerate.h>
 #include "CharonSparseBLAS.h"
 
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-#pragma clang diagnostic ignored "-Wunguarded-availability"
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 typedef struct sparse_m_float CharonSparseFloatMatrix;
 typedef struct sparse_m_double CharonSparseDoubleMatrix;
 
 // ---------------------------------------------------------------- shape of a matrix
-
-// A matrix with rows and columns, and with either no block sizes at all (a point-wise one) or one per
-// block row and block column. Every dimension of zero is accepted, as the host accepts it: measured,
-// sparse_matrix_create_float(0, 5), (5, 0) and (0, 0) all answer a matrix, and so do
-// sparse_matrix_block_create_float(0, 3, 2, 2) and sparse_matrix_block_create_float(3, 3, 0, 2).
-static sparse_status CharonSparseMake(void **out, uint32_t magic, size_t size, sparse_dimension rows,
-                                      sparse_dimension columns, sparse_index blockRows, sparse_index blockColumns,
-                                      const sparse_dimension *heights, const sparse_dimension *widths)
-{
-    // A point-wise matrix is the shape it was asked for; a block one is the sum of its block sizes,
-    // which is what makes its row and column counts read in elements (measured: block(3,3,2,2) is 6x6).
-    sparse_dimension totalRows = rows, totalColumns = columns;
-    sparse_dimension *height = NULL, *width = NULL;
-    if (blockRows > 0 && blockColumns > 0) {
-        height = (sparse_dimension *)calloc(blockRows, sizeof(sparse_dimension));
-        width = (sparse_dimension *)calloc(blockColumns, sizeof(sparse_dimension));
-        if (!height || !width) {
-            free(height);
-            free(width);
-            return SPARSE_SYSTEM_ERROR;
-        }
-        for (sparse_index i = 0; i < blockRows; i++) {
-            height[i] = heights ? heights[i] : 0;
-            totalRows += height[i];
-        }
-        for (sparse_index j = 0; j < blockColumns; j++) {
-            width[j] = widths ? widths[j] : 0;
-            totalColumns += width[j];
-        }
-    }
-    void *matrix = calloc(1, size);
-    if (!matrix) {
-        free(height);
-        free(width);
-        return SPARSE_SYSTEM_ERROR;
-    }
-    struct sparse_m_float *asFloat = (struct sparse_m_float *)matrix;
-    asFloat->magic = magic;
-    asFloat->rows = totalRows;
-    asFloat->columns = totalColumns;
-    asFloat->blockRows = blockRows;
-    asFloat->blockColumns = blockColumns;
-    asFloat->blockHeight = height;
-    asFloat->blockWidth = width;
-    asFloat->property = 0;
-    asFloat->inserted = 0;
-    asFloat->nonzero = 0;
-    asFloat->row = totalRows > 0 ? (CharonSparseRow *)calloc((size_t)totalRows, sizeof(CharonSparseRow)) : NULL;
-    if (totalRows > 0 && !asFloat->row) {
-        free(matrix);
-        free(height);
-        free(width);
-        return SPARSE_SYSTEM_ERROR;
-    }
-    *out = matrix;
-    return SPARSE_SUCCESS;
-}
 
 sparse_matrix_float sparse_matrix_create_float(sparse_dimension M, sparse_dimension N)
 {
@@ -120,15 +60,9 @@ sparse_matrix_double sparse_matrix_create_double(sparse_dimension M, sparse_dime
 }
 
 // A fixed block matrix is the variable-block one with k for every block row and l for every block
-// column, which is what makes sparse_get_block_dimension_for_row answer k for every element row.
-static sparse_dimension *CharonSparseRepeated(sparse_dimension value, sparse_index count)
-{
-    sparse_dimension *sizes = (sparse_dimension *)calloc(count ? (size_t)count : 1, sizeof(sparse_dimension));
-    for (sparse_index i = 0; sizes && i < count; i++) {
-        sizes[i] = value;
-    }
-    return sizes;
-}
+// column, which is what makes sparse_get_block_dimension_for_row answer k for every element row. Both
+// this and CharonSparseMake are in CharonSparseBLAS.h, because SparseComplex18.m needs them too and a
+// function defined in a file that exports an API symbol is left out of a band the release already has.
 
 sparse_matrix_float sparse_matrix_block_create_float(sparse_dimension Mb, sparse_dimension Nb, sparse_dimension k,
                                                     sparse_dimension l)
@@ -181,43 +115,10 @@ sparse_matrix_double sparse_matrix_variable_block_create_double(sparse_dimension
 }
 
 // A point-wise matrix is the only kind a scalar entry belongs to and a block is the only kind a block
-// entry belongs to: measured on the host, sparse_insert_entry_float into a matrix built by
-// sparse_matrix_block_create_float and sparse_insert_block_float into one built by
-// sparse_matrix_create_float both answer SPARSE_ILLEGAL_PARAMETER and change nothing.
-static sparse_status CharonSparseWritable(const void *matrix, uint32_t magic, int wantBlock, size_t size,
-                                          struct sparse_m_float **out)
-{
-    if (!CharonSparseIsMatrix(matrix, magic)) {
-        return SPARSE_ILLEGAL_PARAMETER;
-    }
-    struct sparse_m_float *asFloat = (struct sparse_m_float *)matrix;
-    if (wantBlock ? asFloat->blockRows <= 0 : asFloat->blockRows > 0) {
-        return SPARSE_ILLEGAL_PARAMETER;
-    }
-    (void)size;
-    *out = asFloat;
-    return SPARSE_SUCCESS;
-}
-
-static sparse_status CharonSparsePutEntry(void *matrix, uint32_t magic, double value, sparse_index i, sparse_index j,
-                                          size_t size)
-{
-    struct sparse_m_float *asFloat = NULL;
-    sparse_status ready = CharonSparseWritable(matrix, magic, 0, size, &asFloat);
-    if (ready != SPARSE_SUCCESS) {
-        return ready;
-    }
-    if (i >= (sparse_index)asFloat->rows || j >= (sparse_index)asFloat->columns) {
-        return SPARSE_ILLEGAL_PARAMETER;
-    }
-    sparse_index before = asFloat->row[i].count;
-    sparse_status put = CharonSparsePut(&asFloat->row[i], j, value, size);
-    if (put == SPARSE_SUCCESS) {
-        asFloat->nonzero += (long)asFloat->row[i].count - (long)before;
-        asFloat->inserted = 1;
-    }
-    return put;
-}
+// entry belongs to, and both this file's entry helper and CharonSparseMake and CharonSparseRepeated
+// are in CharonSparseBLAS.h: SparseComplex18.m needs all three, and a function defined in a file that
+// exports an API symbol is left out of a band the release already has, which is how a shared C
+// function becomes an undefined symbol in a later band.
 
 sparse_status sparse_insert_entry_float(sparse_matrix_float A, float val, sparse_index i, sparse_index j)
 {
@@ -329,7 +230,7 @@ static sparse_status CharonSparsePutBlock(void *matrix, uint32_t magic, const vo
                                           sparse_dimension colStride, sparse_index bi, sparse_index bj, size_t size)
 {
     struct sparse_m_float *asFloat = NULL;
-    sparse_status ready = CharonSparseWritable(matrix, magic, 1, size, &asFloat);
+    sparse_status ready = CharonSparseWritable(matrix, magic, 1, &asFloat);
     if (ready != SPARSE_SUCCESS) {
         return ready;
     }
@@ -511,7 +412,7 @@ static sparse_status CharonSparseExtractBlock(void *matrix, uint32_t magic, spar
                                               size_t size)
 {
     struct sparse_m_float *asFloat = NULL;
-    sparse_status ready = CharonSparseWritable(matrix, magic, 1, size, &asFloat);
+    sparse_status ready = CharonSparseWritable(matrix, magic, 1, &asFloat);
     if (ready != SPARSE_SUCCESS) {
         return ready;
     }
@@ -1231,6 +1132,15 @@ sparse_status sparse_matrix_triangular_solve_dense_double(enum CBLAS_ORDER order
 // C = alpha * x * y' for a dense x and a sparse y, as a new matrix. A count of nonzeros above N is
 // SPARSE_ILLEGAL_PARAMETER and the caller's matrix pointer is left alone, measured; a count of zero and
 // an alpha of zero both answer a matrix of the right shape with nothing in it, also measured.
+//
+// **x is indexed by the row and y by the column**, because C[i, j] = alpha * x[i] * y[k] for the k whose
+// indy[k] is j: the outer product is a column of x scaled into a row. An earlier version read x at k and
+// wrote the same value into every row, which is C[i, j] = alpha * x[k] * y[k] and answers the right
+// number only where x is constant down its length - which is why the differential, whose cases all pass
+// x = {1, 1}, could not see it. Measured on the host, and the case that sees it is in
+// tests/backports/host/sparseblas/differential.m together with a mutant that drops x: for M = 3, N = 3,
+// nz = 2, alpha = 1, x = {1, 2, 3} and y = {5, -6} at the columns {0, 2} the host answers
+// C[0] = (5, -6), C[1] = (10, -12), C[2] = (15, -18).
 static sparse_status CharonSparseOuter(sparse_dimension M, sparse_dimension N, sparse_dimension nz, double alpha,
                                        const void *x, sparse_stride incx, const void *y, const sparse_index *indy,
                                        void **C, uint32_t magic, size_t size, size_t matrixSize)
@@ -1244,16 +1154,19 @@ static sparse_status CharonSparseOuter(sparse_dimension M, sparse_dimension N, s
     }
     struct sparse_m_float *asFloat = (struct sparse_m_float *)matrix;
     for (sparse_dimension k = 0; k < nz; k++) {
-        double left = size == sizeof(float) ? (double)((const float *)x)[(long)(k * incx)]
-                                            : ((const double *)x)[(long)(k * incx)];
-        double value = alpha * left;
-        if (value == 0.0) {
+        double right = size == sizeof(float) ? (double)((const float *)y)[k] : ((const double *)y)[k];
+        if (alpha == 0.0 || right == 0.0) {
             continue;
         }
-        double right = size == sizeof(float) ? (double)((const float *)y)[k] : ((const double *)y)[k];
         for (sparse_dimension i = 0; i < M; i++) {
+            double left = size == sizeof(float) ? (double)((const float *)x)[(long)(i * incx)]
+                                                : ((const double *)x)[(long)(i * incx)];
+            double value = alpha * left * right;
+            if (value == 0.0) {
+                continue;
+            }
             sparse_index before = asFloat->row[i].count;
-            CharonSparsePut(&asFloat->row[i], indy[k], value * right, size);
+            CharonSparsePut(&asFloat->row[i], indy[k], value, size);
             asFloat->nonzero += (long)asFloat->row[i].count - (long)before;
         }
     }
@@ -1279,51 +1192,9 @@ sparse_status sparse_outer_product_dense_double(sparse_dimension M, sparse_dimen
                              sizeof(struct sparse_m_double));
 }
 
-// The permutations of Sparse/BLAS.h are the swap loop the header writes out, run over every row in
-// order: for each i, swap the row i with the row the permutation names. It is not a gather, and the
-// two are not the same function - measured on the host on [[1,2,3],[4,5,6]], the permutations
-// {1,0} and {0,1} leave the rows where they are, {0,0} and {1,1} swap them, and for the columns
-// {1,0,0} and {0,1,0} reverse them, {2,0,1} gives [[2,1,3],[5,4,6]] and {0,2,1} and {2,1,0} and {0,1,2}
-// leave them where they are. The port runs the loop.
-static void CharonSparsePermuteRows(struct sparse_m_float *asFloat, const sparse_index *perm)
-{
-    for (sparse_dimension i = 0; i < asFloat->rows; i++) {
-        sparse_index target = perm[i];
-        if (target < 0 || target >= (sparse_index)asFloat->rows || target == (sparse_index)i) {
-            continue;
-        }
-        CharonSparseRow held = asFloat->row[i];
-        asFloat->row[i] = asFloat->row[target];
-        asFloat->row[target] = held;
-    }
-}
-
-static void CharonSparsePermuteColumns(struct sparse_m_float *asFloat, const sparse_index *perm, size_t size)
-{
-    for (sparse_dimension j = 0; j < asFloat->columns; j++) {
-        sparse_index target = perm[j];
-        if (target < 0 || target >= (sparse_index)asFloat->columns || target == (sparse_index)j) {
-            continue;
-        }
-        for (sparse_dimension i = 0; i < asFloat->rows; i++) {
-            double here = CharonSparseElementAt(&asFloat->row[i], j, size);
-            double there = CharonSparseElementAt(&asFloat->row[i], target, size);
-            // A swap of a stored entry with an empty one leaves the count where it was, and a swap of
-            // two stored entries leaves it where it is too, so only the changes are counted.
-            sparse_index atJ = CharonSparseSearch(&asFloat->row[i], j);
-            sparse_index atT = CharonSparseSearch(&asFloat->row[i], target);
-            int hadJ = atJ < asFloat->row[i].count && asFloat->row[i].column[atJ] == j;
-            int hadT = atT < asFloat->row[i].count && asFloat->row[i].column[atT] == target;
-            CharonSparsePut(&asFloat->row[i], j, there, size);
-            CharonSparsePut(&asFloat->row[i], target, here, size);
-            atJ = CharonSparseSearch(&asFloat->row[i], j);
-            atT = CharonSparseSearch(&asFloat->row[i], target);
-            int hasJ = atJ < asFloat->row[i].count && asFloat->row[i].column[atJ] == j;
-            int hasT = atT < asFloat->row[i].count && asFloat->row[i].column[atT] == target;
-            asFloat->nonzero += (hasJ + hasT) - (hadJ + hadT);
-        }
-    }
-}
+// Both permutations below are in CharonSparseBLAS.h, because SparseComplex18.m runs the same two over
+// the same storage, and a function defined in a file that exports an API symbol is left out of a
+// band the release already has.
 
 sparse_status sparse_permute_rows_float(sparse_matrix_float A, const sparse_index *__restrict perm)
 {

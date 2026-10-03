@@ -1,4 +1,26 @@
-# MPMediaItem: what this Mac's own MediaPlayer answers
+# MPMediaItem and the command events: the port's own contract, and what this Mac's MediaPlayer answers
+
+`run.sh` runs four things, in this order: `probe.m` (below -- what the **host's** MediaPlayer answers for
+the 22 absent properties), and then the four contract checks -- `contract.m`,
+`mpratingcommandeventcheck.m`, `mpskipintervalcommandeventcheck.m` and `mpseekcommandeventcheck.m` -- which
+measure the **port's** code. They compile against `packages/a/apple-backports/MediaPlayer` and this
+directory's `standin/`, never against this Mac's MediaPlayer, which declares several of these already and
+would make a category look like a clobber. Before 2026-10-03 the four checks were in this directory and
+named by no runner; `coordination/crutches.md` recorded that, and it is closed.
+
+## The seek check's mutation, and why `mutate.py` cannot make it
+
+`MPSeekCommandEvent`'s `type` is `@synthesize`d onto its own ivar and has no written getter, so there is
+no `return _type;` for `mutate.py` to substitute -- it prints
+`does not contain 'return _type;', so this is not a mutation of the port's code`, which is the tool
+refusing correctly. The mutant used instead replaces `@synthesize type = _type;` in a scratch copy with
+that line plus an explicit `-type` answering `MPSeekCommandEventTypeEndSeeking`. That changes the bytes
+*and* the behaviour, and the check's verdict moves:
+
+    ok   type reads back EndSeeking: EndSeeking
+    RED  type reads back BeginSeeking: EndSeeking
+    RED  an event nothing set answers the type's zero: EndSeeking
+    mpseekcommandevent: 2 RED
 
 The 22 properties the registry declares absent, asked of the host's own framework, with the getter names
 read out of the **iOS** SDK header, which is the authority for what exists. Five of them are declared with a

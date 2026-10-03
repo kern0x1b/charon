@@ -51,13 +51,15 @@ DIVERGENCES = {}
 SPEC_11_2, SPEC_12_0, SPEC_12_2, SPEC_13_0 = 3, 4, 5, 6
 
 # A host input per model. None records that the container is written and referenced but there
-# is no host input for it -- the image model wants a PIL image, and this host has none.
+# is no host input for it through coremltools -- the image model's input is a picture.
 # Each sample matches the shape the model declares: the dense classifier's input is a vector
 # of three, not a batch of them, and the pipeline's scaler takes one double at a time.
 SAMPLES = {
-    # The image model is declared as a picture, and coremltools 9.0's runtime will not run a
-    # network whose input is one -- measured -- so there is no host input for it here. The
-    # framework that does run it is Apple's Core ML, through the Vision host differential.
+    # The image model is declared as a picture, and coremltools 9.0's runtime gives no prediction
+    # for one -- measured -- so there is no host input for it here. That is not the same as this
+    # host being unable to run it: Apple's own Core ML compiles and loads this container (measured,
+    # and tests/backports/host/coreml/run.sh compares it), and Vision runs it through
+    # tests/backports/host/vision/run.sh.
     "vision_image": None,
     "glm": {"x": [-1.5, 0.0]},
     "glm_classifier": {"x": [0.5, -0.5]},
@@ -548,10 +550,25 @@ def build_vision_image():
     The input is declared as the specification's own `imageType`, and not as the array of three
     channels the convolutional model beside it uses, because the two are different features to a
     model: an image input is a picture with a colour space and a size, and it is the only kind a
-    `VNCoreMLRequest` will hand a picture to. coremltools 9.0's runtime refuses to *run* a network
-    with an image input -- measured, and recorded as `prediction: null` below, which is the
-    manifest's way of saying "this container is for a framework that runs it" -- while Apple's own
-    Core ML and Vision, which are what the Vision host differential runs, run it exactly.
+    `VNCoreMLRequest` will hand a picture to.
+
+    Both ends declare a FIXED 32 by 32 (`ImageFeatureType.width`/`.height`), which is what Core ML's
+    own compiler accepts here. Measured 2026-10-03 on this host (an M4 Pro, Core ML and Vision both
+    present, coremltools 9.0): an image input declared as an `imageSizeRange` of 16..256 is refused
+    outright -- `compiler error: Invalid height and width for the image input.` -- while the same
+    network with a fixed size compiles and predicts. The refusal is about the container, not about
+    this host running image models, which is the opposite of what this builder's comment claimed
+    until then: a ranged image input needs a network with flexible blob shapes, and this one has
+    fixed shapes.
+
+    The range was believed to be what Vision's crop-and-scale is for. It is not: a
+    `VNCoreMLRequest` brings the handler's picture to whatever size the model declares, fixed or
+    ranged, so the request path this container exists to measure is unchanged by fixing the size.
+
+    coremltools 9.0's own Python runtime still gives no prediction for it -- recorded as
+    `prediction: null` below, which is the manifest's way of saying "this container is for a
+    framework that runs it" -- while Apple's Core ML, which the host differential runs, compiles and
+    loads it: tests/backports/host/coreml/run.sh compares all ten containers.
     """
     builder = ct.models.neural_network.NeuralNetworkBuilder(
         input_features=[("image", datatypes.Array(3, 32, 32))], output_features=[("out", datatypes.Array(1, 32, 32))])
@@ -568,14 +585,8 @@ def build_vision_image():
     described = Model_pb2.FeatureDescription(name="image")
     picture = described.type.imageType
     picture.colorSpace = 20          # 20 is the specification's own "RGB"
-    # A range rather than a size, which is what Vision's own crop-and-scale is for: the model will
-    # take a picture of any size inside the range, and the request path is what brings the
-    # handler's picture inside it. A model that fixes its size has nothing for that to do.
-    size = picture.imageSizeRange
-    size.widthRange.lowerBound = 16
-    size.widthRange.upperBound = 256
-    size.heightRange.lowerBound = 16
-    size.heightRange.upperBound = 256
+    picture.width = 32
+    picture.height = 32
     spec.description.input[0].CopyFrom(described)
     # The preprocessing: the scale and bias a picture's bytes are put through before a layer sees
     # them, which is what Core ML's own compiler writes into a model with an image input and what
@@ -587,18 +598,14 @@ def build_vision_image():
     preprocessing.scaler.redBias = -1.0
     preprocessing.scaler.greenBias = -1.0
     preprocessing.scaler.blueBias = -1.0
-    # The answer is a picture too, and of a *range* like the input: a model whose two ends disagree
-    # about whether their size is fixed is a model Vision's transform cannot build, which is measured
-    # -- the wrapper refuses a ranged input with a fixed output outright -- and the range is what the
-    # request path is for: a picture of any size inside it, brought to a size the model accepts.
+    # The answer is a picture too, and of the same fixed size as the input: a model whose two ends
+    # disagree about whether their size is fixed is a model Vision's transform cannot build, which
+    # is measured -- the wrapper refuses a ranged input with a fixed output outright.
     answer = Model_pb2.FeatureDescription(name="out")
     out_picture = answer.type.imageType
     out_picture.colorSpace = 20
-    out_size = out_picture.imageSizeRange
-    out_size.widthRange.lowerBound = 16
-    out_size.widthRange.upperBound = 256
-    out_size.heightRange.lowerBound = 16
-    out_size.heightRange.upperBound = 256
+    out_picture.width = 32
+    out_picture.height = 32
     spec.description.output[0].CopyFrom(answer)
     spec.specificationVersion = SPEC_12_2
     return spec

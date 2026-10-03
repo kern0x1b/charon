@@ -42,8 +42,9 @@
 
    What the port does not carry, measured and named rather than faked: NSListItemDelimiterAttributeName,
    which the system puts on a list item's run and which the SDK this port builds against (iPhoneOS16.5)
-   does not declare, so the item's run carries its intent and not the delimiter; and a
-   NSAttributedStringMarkdownSourcePosition, which is 16.0 and not this release's. The block kinds and
+   does not declare, so the item's run carries its intent and not the delimiter. A
+   NSAttributedStringMarkdownSourcePosition, which is 16.0 and not this release's, is carried in
+   Foundation/NSAttributedStringMarkdownSourcePosition.m. The block kinds and
    the span spans above are what facts/Foundation/AttributedStrings15.md and the differential's own
    cases cover. */
 

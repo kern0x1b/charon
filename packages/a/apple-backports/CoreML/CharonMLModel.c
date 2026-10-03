@@ -195,6 +195,16 @@ static void read_feature(charon_ml_feature *feature, const charon_ml_node *descr
             feature->image_width = charon_ml_int(charon_ml_get(body, "width"), 0);
             feature->image_height = charon_ml_int(charon_ml_get(body, "height"), 0);
             feature->image_color_space = charon_ml_int(charon_ml_get(body, "colorSpace"), CHARON_ML_COLOR_INVALID);
+            if (range == NULL && feature->image_width > 0 && feature->image_height > 0) {
+                /* A FIXED size, which the specification writes as ImageFeatureType.width/.height
+                 * and beside no range. The ranges stay FLEXIBLE above, which is right for a
+                 * dimension with no upper bound and wrong here: a size that is fixed has no range at
+                 * all, and leaving FLEXIBLE in made every fixed-size image look like a range whose
+                 * lower bound is -1. Measured against this host's own Core ML, which reports such a
+                 * feature as the enumerated kind with the one size in it (facts/CoreML/CoreML.md). */
+                feature->image_width_range = 0;
+                feature->image_height_range = 0;
+            }
             if (range != NULL) {
                 const charon_ml_node *width = charon_ml_get(range, "widthRange");
                 const charon_ml_node *height = charon_ml_get(range, "heightRange");

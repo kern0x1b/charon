@@ -251,4 +251,24 @@ static inline BOOL CharonValueDecode(id value, NSCoder *coder, NSSet<Class> *all
 #define CHARON_DOUBLE_PROPERTY(Type, name)                                                  \
     -(Type)name { return (Type)[[self charon_valueForKey:@ #name] doubleValue]; }
 
+// The door a value class keeps for itself when its public -init refuses, which is what a class whose
+// own framework raises for -init does (see SensorKit's CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT):
+// -copyWithZone: must hand back a NEW object holding the same values, and the only way to make one
+// of these is through a door the class owns. `values` is another object's store, so the copy holds
+// the same names and each held value that conforms to NSCopying is copied too - which is what a copy
+// means, and the same rule the -copyWithZone: bodies of this package already apply to the classes
+// whose -init does not refuse.
+#define CHARON_VALUE_COPY_INITIALISER                                                       \
+    -(instancetype)initWithCharonValues:(NSDictionary *)values {                           \
+        self = [super init];                                                                \
+        if (self) {                                                                         \
+            for (NSString *key in [values.allKeys sortedArrayUsingSelector:@selector(compare:)]) { \
+                id held = values[key];                                                       \
+                [self charon_setValue:[held conformsToProtocol:@protocol(NSCopying)] ? [held copy] : held \
+                         forKey:key];                                                        \
+            }                                                                                \
+        }                                                                                    \
+        return self;                                                                         \
+    }
+
 #endif

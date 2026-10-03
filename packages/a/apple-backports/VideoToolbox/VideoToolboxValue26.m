@@ -45,9 +45,16 @@
 + (BOOL)isSupported
 {
     // `supported` is a CLASS property in the protocol (class, nonatomic, readonly, getter=isSupported),
-    // so the accessor belongs to the class and the value sits on the class's store. An instance method
-    // of that name is not this property's accessor, and the compiler says so.
-    return (BOOL)[CharonValueStoreOfClass([self class])[@"supported"] longLongValue];
+    // so the accessor belongs to the class and this is a class method rather than an instance one.
+    //
+    // The answer is NO, and it is the answer rather than a default: SDK 26.2 documents this property as
+    // "whether the SYSTEM SUPPORTS this processor", and objc-inventory.lua over the armv7 6.1.3 dyld
+    // cache finds no VTFrameProcessor class and no VTFrameProcessor* symbol there - the seventeen
+    // configuration and parameter classes arrived with iOS 26.0 and the ladder this package builds for
+    // ends at 10.3.4. The effects are motion estimation, interpolation, super resolution and temporal
+    // noise filtering, which need the Neural Engine no armv7 device has. So this is a hardware answer,
+    // and a store nothing writes would be NO by accident rather than by measurement.
+    return NO;
 }
 
 - (NSArray<NSNumber *> *)frameSupportedPixelFormats

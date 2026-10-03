@@ -19,6 +19,8 @@
 //   MDLLightProbeIrradianceDataSource  MDLAsset.h:298           none: the SDK annotates nothing on it
 //   MDLMeshBuffer                      MDLMeshBuffer.h:61       ios(9.0)
 //   MDLMeshBufferAllocator             MDLMeshBuffer.h:181      ios(9.0)
+//   MDLMeshBufferZone                  MDLMeshBuffer.h:155      ios(9.0)
+//   MDLNamed                           MDLTypes.h:68            ios(9.0)
 //   MDLObjectContainerComponent        MDLTypes.h:82            ios(9.0)
 //   MDLTransformComponent              MDLTransform.h:27        ios(9.0)
 //   MDLTransformOp                     MDLTransformStack.h:26   ios(11.0)
@@ -35,6 +37,10 @@
 @protocol MDLMeshBuffer;
 
 @protocol MDLMeshBufferAllocator;
+
+@protocol MDLMeshBufferZone;
+
+@protocol MDLNamed;
 
 @protocol MDLObjectContainerComponent;
 

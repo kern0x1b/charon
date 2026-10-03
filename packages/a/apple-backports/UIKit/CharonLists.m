@@ -37,21 +37,9 @@ NSString *charon_elided_text(NSString *text)
     return [NSString stringWithFormat:@"'%@...%@' (length = %lu)", [text substringToIndex:1], [text substringFromIndex:length - 1], (unsigned long)length];
 }
 
-CGFloat charon_screen_scale(void)
-{
-    CGFloat scale = [UIScreen mainScreen].scale;
-    return scale > 0 ? scale : 1;
-}
-
-CGFloat charon_pixel_ceil(CGFloat value, CGFloat scale)
-{
-    return ceil(value * scale - 0.0001) / scale;
-}
-
-CGFloat charon_pixel_round(CGFloat value, CGFloat scale)
-{
-    return round(value * scale) / scale;
-}
+// charon_screen_scale, charon_pixel_ceil and charon_pixel_round used to be defined here and are now
+// `static inline` in CharonLists.h, with the bodies unchanged: see the comment there for why a C function
+// a class file calls is a cross-file symbol at all.
 
 UIFont *charon_medium_font(CGFloat pointSize)
 {

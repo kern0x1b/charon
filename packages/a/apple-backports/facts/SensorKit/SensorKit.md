@@ -9,11 +9,12 @@ store a payload could be read out of. Everything below is that one fact and what
 
 **Every row of this family ends its `effect` with the same short clause** — *"Not a device measurement; no
 device has been asked and the guest run is owed"* — and that is said once here rather than argued once per
-row. It is true of all 390 implemented rows and of the one `absent` row: what is measured anywhere in
-this framework is the HOST's own SensorKit and the port's own compiled objects, and not one device has
-been asked anything.
+row. It is true of every row of this file: what is measured anywhere in this framework is the HOST's own
+SensorKit, the port's own compiled objects and the caches of real releases, and not one device has been
+asked anything. The registry held one `absent` row when this page was written and holds none now - the
+measurement below is what changed it.
 
-Seven paths, and every count below is one of their outputs. A number on this page that names none of
+Eight paths, and every count below is one of their outputs. A number on this page that names none of
 them is not evidence, and this page used to carry several.
 
 | what it answers | the path | what a run of it prints |
@@ -23,6 +24,7 @@ them is not evidence, and this page used to carry several.
 | which of the delegate's ten the reader sends, what the emitted protocol holds, and both read out of the armv7 object | `tests/backports/host/sensorkit-reader/run.sh` | `4 of 10 protocol methods sent`, `4 of 10 protocol selectors in the object`, `present, 10 optional, 0 required`, 6 plants |
 | the deletion-record sensor name, the port's category against the host's | `tests/backports/host/sensorkit-tombstones/run.sh` | `58 inputs compared, 0 differing`, three mutations, the empty control |
 | what the host answers for the five value members, and what the port's objects carry | `tests/backports/host/sensorkit-value/run.sh` | the three HOST lines, `5 of 5 accessors`, 5 plants |
+| what the host's own eighteen classes do about the `-init`/`+new` pair they close, and what the port's objects carry | `tests/backports/host/unavailable-init/run.sh` | `18 of 18 classes as the table says`, `18 of 18 classes the host's answer`, 4 plants and the control |
 | what one cache of one release carries, and what one image of it exports | `modules/apple/objc.lua`, `binary_inventory` at `:395` | the class and symbol inventory of a cache or an image |
 | one symbol's release of first appearance, over the held ladder | `tools/cache-index/first-rung.py` | one TSV line per name, or `NONE` |
 | what release the SDK declares a name arrived in | `coordination/corpus/sdk-26.2-surface.tsv`, the `api` and `introduced` columns | 530 SensorKit rows; every one of this family's 35 matches |
@@ -280,14 +282,78 @@ have no sensor of that kind at all. The port carries it anyway, as `id`, because
 declared property list — a property this package does not declare cannot be read back, and an archived
 reading would silently lose the field that ties a face reading to the camera frame it came from.
 
-## `-[SRSensorReader init]`: absent, and why it is not simply implemented
+## The pair every class closes: `-init` and `+new`, and what the framework does about them
 
-The host's own answer is worth having on record because it is Apple's own text:
-`NSInternalInconsistencyException`, **`Use initWithSensor:`**. The row stays `absent` anyway, and the
-reason is a row this series is not touching: `+[SRSensorReader new]` is already an `implemented` entry in
-this same file, and `+new` calls `-init`, so implementing `-init` to raise would change what that row
-answers. That is a decision about `+new` and it belongs with its owner, not here. The body is one line
-and it is owed.
+Eighteen of this framework's classes declare the pair unavailable in their own SDK 26.2 header, each in
+the last two lines before its `@end` — `SRSensorReader.h:98` and `:99` for the reader,
+`SRDeviceUsageCategories.h:67` and `:68` for SRSupplementalCategory, and the same two lines in each of
+the other sixteen. `NS_UNAVAILABLE` is a promise about **source**: it is `__attribute__((unavailable))`,
+a compile-time diagnostic that adds nothing to behaviour. So what a caller reaches at run time is a
+separate question, and the corpus row is a third one — whether the selector is in **the class's own**
+method list, which an inherited selector is in no class's.
+
+All three were measured on the host's own `SensorKit.framework`, over all eighteen classes, by
+`tests/backports/host/unavailable-init/`. Its `expectations.tsv` is the transcription and its own lines:
+
+```
+sensorkit-init-host: 18 of 18 classes as the table says, 0 failures
+sensorkit-init-port: 18 of 18 classes the host's answer, in the source and in the object, 0 failures
+sensorkit-init: OK - 18 classes against the host's answer, 4 plants noticed, the control red
+```
+
+**Fourteen of the eighteen classes implement both and both raise `NSInternalInconsistencyException`**,
+and the reason string is per class and is Apple's own: `"Not available"` for the four that have no other
+door (SRFaceMetrics, SRFaceMetricsExpression, SRFetchResult, SRSupplementalCategory), `"Use
+initWithSensor:"` for SRSensorReader, which has one, and **a reason of zero length** for the other nine.
+`+new` is `+alloc`/`-init`, so one raise answers both rows.
+
+**Four implement neither** — SRAcousticSettings, SRSleepSession, and the two photoplethysmogram samples
+that are channels of the sample their parent already guards — so a caller that reaches the pair reaches
+NSObject's and gets a new empty value object. **The port gives those four no definition at all**, and
+that is the rule the coordinator settled on the same day for the classes that only inherit
+(`coordination/wave-2026-10-03/QUEUE.md`, the answer to v-audio): a definition would put the selector in
+the port's class metadata where Apple's has neither, which changes what the class IS and answers the
+caller exactly what NSObject's already answers. Their eight registry rows are `absent` with this
+measurement as the reason, the way v-metal's five MetalKit rows are.
+
+**What iOS itself holds, measured over the arm64e cache of iOS 16.0** with
+`tools/corpus/objc-inventory.lua` — the newest held cache that still carries SensorKit's classes as
+exports (`_OBJC_CLASS_$_SRSensorReader` and `_OBJC_CLASS_$_SRFetchResult` are both in it, and neither is
+in the cache of 18.0, where SensorKit's public classes are no longer exported at all):
+
+| class | iOS 16.0's own lists | the host's own lists | at run time |
+| --- | --- | --- | --- |
+| `SRSensorReader` | `-init` and `+new` | both | raises, `"Use initWithSensor:"` |
+| `SRFetchResult` | `-init`, and `+new` inherited | both | raises, `"Not available"` |
+
+That table is also why the rule is per selector and not per class: Apple's SensorKit classes define both
+selectors and Apple's HealthKit classes define `-init` while inheriting `+new`, so one rule for "the
+class" would answer one framework right and the other wrong.
+
+That is the one place the two disagree, and it is a difference about **where** the implementation sits,
+not about what a caller sees: an inherited `+new` is `+alloc`/`-init`, so on iOS 16.0 `+[SRFetchResult
+new]` reaches the same `-init` and raises the same exception. The port carries both selectors, so both
+its rows are answered by the class's own list, and both raise what iOS raises.
+
+**The two copies that could not go through `-init`.** `SRFetchResult` and `SRSupplementalCategory` are
+the two of the fourteen the port gives a `-copyWithZone:`, and a copy is a new object, so it cannot be
+made by a `-init` that raises. Both take a door the class keeps for itself,
+`-initWithCharonValues:` — a name no SDK header declares, registered as the `charon_` row the shape
+`registry/MetalPerformanceShadersGraph/graph.json` uses, and written once in `CharonValueStore.h`'s
+`CHARON_VALUE_COPY_INITIALISER` so that there is one spelling of the copy rule in the package.
+
+**`-[SRSensorReader init]` was `absent` until this measurement, and the reason it gives for staying that
+way is now answered.** It said: *"`+[SRSensorReader new]` is already an `implemented` entry in this same
+file, and `+new` calls `-init`, so implementing `-init` to raise would change what that row answers."* That
+is right about the consequence and wrong about the conclusion: the host says `+new` raises too, so the
+change makes both rows answer what the framework answers. It is `implemented` now, with the host's own
+exception and the host's own reason string.
+
+**What this is not.** The host is not a measurement of iOS: the two caches above cover two of the
+eighteen classes, and the framework is the same family rather than the same binary — under Mac Catalyst
+`SRSensorReader` is declared and implements nothing at all, which `SRSensorReader.m`'s own header
+comment records. A device run would be the iOS measurement proper, and it is the one thing this harness
+cannot do: the port's own configuration is a cross-compile for `armv7-apple-ios6.1.3`.
 
 ## What the delegate's ten methods are, and which four the port reaches
 

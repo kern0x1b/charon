@@ -121,3 +121,58 @@ attempt used `nm`, which is wrong: Objective-C methods are not `nm` symbols, onl
 whose output my pattern matched not at all, so it printed `BUILT WITHOUT A ROW: 0` over a comparison that
 had examined nothing. Neither number means anything and neither is claimed. The coordinator's gate closes
 the rest in one round.
+
+## The twenty-four member rows whose owner is a protocol, and the nine that are not
+
+The 6.1.3 armv7 cache and every release below 9.0 carry no ModelIO at all, so nothing here is a case
+of "the release has it and we do not". What the twenty-four needed was a **row**, and the reason each
+one wants one is a line of `check_registry`:
+
+```lua
+local declared = entry.kind == "protocol" and (...) or
+    (owner and listed[owner] and listed[owner].kind == "protocol" and
+     protocol_declared(root, owner, inventory, sdkdir)) or
+    (owner and inventory and inventory.protocols and inventory.protocols[owner] ~= nil) or false
+```
+
+A member is answered by the **declaration of its owner** when that owner is a protocol, so the row for
+`MDLMeshBuffer.length` needs a `kind: protocol` row for `MDLMeshBuffer` to lean on. Seven owners already
+had one and are listed in the table above; two did not and now do:
+
+| owner | where 16.4 declares it | version | implemented by |
+| --- | --- | --- | --- |
+| `MDLNamed` | `MDLTypes.h:68` | 9.0 | `MDLObject`, which `@synthesize name = _name` at `MDLObject9.m:40`, and `MDLSubmesh` and `MDLMaterialProperty`, which declare the same conformance |
+| `MDLMeshBufferZone` | `MDLMeshBuffer.h:155` | 9.0 | `MDLMeshBufferZoneDefault`, which carries `capacity` and `allocator` |
+
+The other nine are **not** protocol members in the SDK this package compiles against:
+`MDLVertexBufferLayout`, `MDLVertexAttribute` and `MDLVertexDescriptor` are `@interface` **classes** at
+`MDLVertexDescriptor.h:172`, `:198` and `:273` of the 16.4 SDK, and only became `@protocol`s by the 26.2
+one. Their accessors exist and are not missing - clang synthesizes each SDK property into
+`MetalKit/MDLVertexDescriptor9.m`'s `@implementation` - but that object is in **MetalKit's** library,
+because ModelIOBackports links MetalKitBackports and not the other way round: the three classes a vertex
+descriptor is made of live in the library the ModelIO library needs, beside the MTKMesh bridge that asks
+for them. So those nine rows name that file, and the reason says why it is not ModelIO's own object.
+
+## MDLMatrix4x4Array, built instead of carried
+
+Six rows in this file named an `MDLMatrix4x4Array` member and their effect read "the member implemented in
+the band object the generator wrote from the AST; an object answer is nil". Two of them were true and one
+was not: the generator had carried `setDouble4x4Array:count:` and, because a row already named it, skipped
+`setFloat4x4Array:count:` - so the one the ledger still measured as missing was the one with nothing
+behind it, and its row claimed an implementation that was not there.
+
+`ModelIO/MDLMatrix4x4Array11.m` builds the class instead, and `MDIO110.m` no longer holds the empty
+`@implementation MDLMatrix4x4Array` and the two categories that answered `nil`. It is a **flat array**, not
+an animated value - the 16.4 header declares it over `NSObject<NSCopying>` with `elementCount` and no time
+at all - so the storage is the matrices, in the precision the last setter named:
+
+| selector | what it does |
+| --- | --- |
+| `initWithElementCount:` | `elementCount` matrices of zeros, float precision |
+| `setFloat4x4Array:count:` / `setDouble4x4Array:count:` | replace the contents with the `count` matrices given, which is what moves `elementCount` |
+| `getFloat4x4Array:maxCount:` / `getDouble4x4Array:maxCount:` | copy at most `maxCount` out and answer how many were copied |
+| `precision` | the precision the last setter named |
+| `clear` | `elementCount` 0 |
+
+`xcrun otool -ov` over the built object names all nine accessors plus the three ivars
+`_elementCount`, `_storage`, `_doublePrecision`.

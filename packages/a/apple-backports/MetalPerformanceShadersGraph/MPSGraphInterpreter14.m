@@ -38,26 +38,192 @@ static double CharonMPSGraphOwnNaN(double value)
     return isnan(value) ? NAN : value;
 }
 
+// The kinds that read an operand as it is stored rather than as the release's float32 arithmetic reads
+// it. Measured on this host's own MPSGraph over the sixteen classes the case file feeds, and each of
+// these answers a denormal as itself: absolute of 0x00000001 is 0x00000001 and identity of 0x007fffff
+// is 0x007fffff, the sign of an operand is its sign bit, the negation of 0x00000001 is 0x80000001,
+// round of 0x00000001 is 0x00000000 and the sign of a zero result is dropped, modulo of 0x00000001 by
+// -2.0 is 0x00000001, a minimum and a maximum of 0x00000001 and 0x7e00 is 0x00000001, a select whose
+// predicate is a NaN takes the branch it takes for any other non-zero, and a clamp of a NaN is its
+// bounds. Every other kind reads a denormal as a zero of the same sign, which is CharonMPSGraphAsZero.
+static int CharonMPSGraphReadsOperandAsStored(CharonMPSGraphOperationKind kind)
+{
+    switch (kind) {
+    case CharonMPSGraphOperationKindAbs:
+    case CharonMPSGraphOperationKindIdentity:
+    case CharonMPSGraphOperationKindSignBit:
+    case CharonMPSGraphOperationKindNegate:
+    case CharonMPSGraphOperationKindRound:
+    case CharonMPSGraphOperationKindModulo:
+    case CharonMPSGraphOperationKindFloorModulo:
+    case CharonMPSGraphOperationKindMinimum:
+    case CharonMPSGraphOperationKindMaximum:
+    case CharonMPSGraphOperationKindSelect:
+    case CharonMPSGraphOperationKindClamp3:
+    // Five more, all measured the same way and all of them the same kind of case: the release answers a
+    // denormal with the denormal, because for these five its own answer for a tiny argument is the
+    // argument. sin, sinh, arcsine, asinh and the hyperbolic arc-tangent of 0x00000001 are 0x00000001 and
+    // of 0x80000001 are 0x80000001, where a kernel that read the operand as a zero would answer a zero.
+    // arctangent, the hyperbolic tangent and erf do not: measured, each of the three answers 0x00000000
+    // for 0x00000001 and 0x80000001 for 0x80000001, and they are left out of this list for that reason.
+    case CharonMPSGraphOperationKindSin:
+    case CharonMPSGraphOperationKindSinh:
+    case CharonMPSGraphOperationKindAsin:
+    case CharonMPSGraphOperationKindAsinh:
+    case CharonMPSGraphOperationKindAtanh:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+// The three kinds that copy an operand's bits and therefore answer the NaN they were given: measured,
+// the identity of 0xffc00000 is 0xffc00000 where the square of it is 0x7fc00000.
+static int CharonMPSGraphCopiesTheOperand(CharonMPSGraphOperationKind kind)
+{
+    return kind == CharonMPSGraphOperationKindAbs || kind == CharonMPSGraphOperationKindIdentity ||
+           kind == CharonMPSGraphOperationKindSignBit;
+}
+
+// The kinds that answer the NaN they were given rather than the arithmetic's own. Measured on the same
+// host and the same classes: the negation of 0x7fc00000 is 0xffc00000 and of 0xffc00000 is 0x7fc00000,
+// which is what a sign-bit flip answers; round, arcsine, arctangent, the hyperbolic arc-sine and the
+// hyperbolic arc-tangent each answer a negative NaN with a negative NaN; and a select whose chosen
+// operand is a NaN answers that NaN, so a select over a source of 0xffc00000 is 0xffc00000. Every other
+// kind that computes answers 0x7fc00000 for either sign, which is CharonMPSGraphOwnNaN.
+static int CharonMPSGraphKeepsTheNaNItWasGiven(CharonMPSGraphOperationKind kind)
+{
+    switch (kind) {
+    case CharonMPSGraphOperationKindNegate:
+    case CharonMPSGraphOperationKindRound:
+    case CharonMPSGraphOperationKindSelect:
+    case CharonMPSGraphOperationKindAsin:
+    case CharonMPSGraphOperationKindAtan:
+    case CharonMPSGraphOperationKindAsinh:
+    case CharonMPSGraphOperationKindAtanh:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+// The kinds whose half answer this host gives itself rather than IEEE's. Measured over the sixteen
+// classes in MPSDataTypeFloat16, and each of them is in the table in
+// facts/MetalPerformanceShadersGraph/Core.md: a zero leaves the half path without its sign, a NaN is an
+// infinity or a zero by kind, a negative argument to a square root or a reverse square root is a zero, a
+// zero to a logarithm is -45440, and so on. A kind that is not in this list has no measured half rule of
+// its own, so its result is the arithmetic's and the store narrows it - which is what the differential
+// then measures, and what recorded-cells.txt records where the two still differ.
+// What a kind's answer is in MPSDataTypeFloat16 when an operand is a NaN, measured for each of them over
+// the case file's thirty-two classes and written down in facts/MetalPerformanceShadersGraph/Core.md. The
+// release's half kernels do not agree with each other here, which is the whole of what this table is: the
+// arithmetic family answers an infinity of the NaN's own sign, the sine and the cosine answer a zero, the
+// inverse hyperbolics answer the canonical positive NaN, the error function and the hyperbolic tangent
+// saturate at the sign of the NaN, a power saturates at one whatever the sign, and a sigmoid answers one
+// for a positive NaN and a zero for a negative one.
+typedef NS_ENUM(NSInteger, CharonMPSGraphHalfNaN) {
+    CharonMPSGraphHalfNaNNone = 0,
+    // An infinity of the NaN's own sign: the arithmetic family's own rule, and the one `ceil`, `floor`,
+    // `round`, `select` and a ReLU's gradient follow. Measured: each of 0x7e00 and 0xfe00 answers an
+    // infinity of that sign, 0x7c00 and 0xfc00.
+    CharonMPSGraphHalfNaNInfinityOfSign,
+    // The same with the sign of the operand turned over first, which is what a negation does to a NaN
+    // before it becomes an infinity: measured, the negation of 0x7e00 is 0xfc00 and of 0xfe00 is 0x7c00.
+    CharonMPSGraphHalfNaNInfinityOfFlippedSign,
+    // A zero. Measured: the sine and the cosine of 0x7e00 and of 0xfe00 are each 0x0000, and so is each
+    // of them of an infinity of either sign.
+    CharonMPSGraphHalfNaNZero,
+    // The canonical positive NaN, 0x7e00, whichever sign the operand carried: measured, the arcsine, the
+    // hyperbolic arc-sine and the hyperbolic arc-tangent of 0xfe00 are 0x7e00.
+    CharonMPSGraphHalfNaNCanonical,
+    // A saturation at the sign of the NaN: the error function and the hyperbolic tangent answer 0x3c00
+    // for 0x7e00 and 0xbc00 for 0xfe00.
+    CharonMPSGraphHalfNaNSaturates,
+    // A saturation at one whatever the sign: a power of an infinity, a NaN or a negative number is
+    // 0x3c00, measured, and so is a power of a negative ordinary value.
+    CharonMPSGraphHalfNaNSaturatesAtOne,
+    // One for a positive NaN and a zero for a negative one: measured, that is what a sigmoid answers.
+    CharonMPSGraphHalfNaNSigmoid
+};
+
+static CharonMPSGraphHalfNaN CharonMPSGraphHalfNaNOf(CharonMPSGraphOperationKind kind)
+{
+    switch (kind) {
+    case CharonMPSGraphOperationKindAbs:
+    case CharonMPSGraphOperationKindIdentity:
+    case CharonMPSGraphOperationKindAdd:
+    case CharonMPSGraphOperationKindSubtract:
+    case CharonMPSGraphOperationKindSquare:
+    case CharonMPSGraphOperationKindReciprocal:
+    case CharonMPSGraphOperationKindSqrt:
+    case CharonMPSGraphOperationKindRsqrt:
+    case CharonMPSGraphOperationKindLog:
+    case CharonMPSGraphOperationKindSign:
+    case CharonMPSGraphOperationKindCeil:
+    case CharonMPSGraphOperationKindFloor:
+    case CharonMPSGraphOperationKindRound:
+    case CharonMPSGraphOperationKindSelect:
+    case CharonMPSGraphOperationKindReLUGradient:
+        return CharonMPSGraphHalfNaNInfinityOfSign;
+    case CharonMPSGraphOperationKindNegate:
+        return CharonMPSGraphHalfNaNInfinityOfFlippedSign;
+    case CharonMPSGraphOperationKindSin:
+    case CharonMPSGraphOperationKindCos:
+    case CharonMPSGraphOperationKindLogBase2:
+        return CharonMPSGraphHalfNaNZero;
+    case CharonMPSGraphOperationKindAsin:
+    case CharonMPSGraphOperationKindAcos:
+    case CharonMPSGraphOperationKindAsinh:
+    case CharonMPSGraphOperationKindAcosh:
+    case CharonMPSGraphOperationKindAtanh:
+        return CharonMPSGraphHalfNaNCanonical;
+    case CharonMPSGraphOperationKindErf:
+    case CharonMPSGraphOperationKindTanh:
+        return CharonMPSGraphHalfNaNSaturates;
+    case CharonMPSGraphOperationKindPower:
+        return CharonMPSGraphHalfNaNSaturatesAtOne;
+    case CharonMPSGraphOperationKindSigmoid:
+        return CharonMPSGraphHalfNaNSigmoid;
+    case CharonMPSGraphOperationKindReLU:
+        // Measured, and it is neither of the two above: a ReLU of 0x7e00 is 0x7c00 and of 0xfe00 is
+        // 0x0000, so a positive NaN is a positive infinity and a negative one is a zero.
+        return CharonMPSGraphHalfNaNInfinityOfSign;
+    default:
+        return CharonMPSGraphHalfNaNNone;
+    }
+}
+
+static int CharonMPSGraphHalfRule(CharonMPSGraphOperationKind kind)
+{
+    return CharonMPSGraphHalfNaNOf(kind) != CharonMPSGraphHalfNaNNone;
+}
+
 // One element of an arithmetic operation. The data type of the operands decides the arithmetic, as it
 // does everywhere else in this framework: an integer type rounds on store and a floating point one
 // rounds on store too, through the same store both families use. The store is asked for the release's
 // own rounding of a halfway half - CharonMPSStoreRounded with the last argument set - which is this
 // family's measured behaviour and no other family's: see CharonMPSFloatToHalfRounded.
-static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, double b,
+//
+// The third operand is 0.0 for a kind that takes fewer than three: a select and a clamp are the only
+// kinds that read it, and passing a zero for the rest keeps one signature for the whole family.
+static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, double b, double c,
                                   MPSDataType operandType, MPSDataType resultType)
 {
-    // Absolute and identity copy rather than compute, and are the two kinds that keep a denormal: measured
-    // on the same host, absolute of 0x00000001 is 0x00000001 and identity of 0x007fffff is 0x007fffff.
-    // The half rules below are a different question and reach both of them.
-    int copying = kind == CharonMPSGraphOperationKindAbs || kind == CharonMPSGraphOperationKindIdentity;
-    if (!copying) {
+    int stored = CharonMPSGraphReadsOperandAsStored(kind);
+    if (!stored) {
         a = CharonMPSGraphAsZero(a, operandType);
         b = CharonMPSGraphAsZero(b, operandType);
+        c = CharonMPSGraphAsZero(c, operandType);
     }
+    // An integer type has no infinity and no NaN, so the three questions about a value are asked of the
+    // integer as it is: an integer is finite, is not infinite and is not a NaN. Measured on this host's
+    // own MPSGraph with an int32 operand, where isNaN answers false for every element including the
+    // largest negative one.
+    int integral = operandType != MPSDataTypeFloat32 && operandType != MPSDataTypeFloat16;
     double result;
     switch (kind) {
     case CharonMPSGraphOperationKindAbs:
-        result = fabs(a);
+        result = integral ? a : fabs(a);
         break;
     case CharonMPSGraphOperationKindIdentity:
         result = a;
@@ -105,16 +271,204 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
         result = a > 0.0 ? 1.0 : (a < 0.0 ? -1.0 : 0.0);
         break;
     case CharonMPSGraphOperationKindMinimum:
-        result = a < b ? a : b;
+        // fmin and fmax, which answer the operand that is not a NaN: measured on this host's own MPSGraph,
+        // a minimum of +inf and a NaN is +inf and of a NaN and 0x00000001 is 0x00000001, where an operator
+        // that only compares would answer a NaN for both.
+        result = fmin(a, b);
         break;
     case CharonMPSGraphOperationKindMaximum:
-        result = a > b ? a : b;
+        result = fmax(a, b);
         break;
+    case CharonMPSGraphOperationKindClamp:
+        result = a < b ? a : b;
+        break;
+    case CharonMPSGraphOperationKindExpBase2:
+        result = exp2(a);
+        break;
+    case CharonMPSGraphOperationKindExpBase10:
+        // pow(10, x) and not exp10(x): the C library declares no exp10 for this target (a syntax check
+        // with -target armv7-apple-ios6.0 answers "call to undeclared function 'exp10'"), and pow is the
+        // spelling every one of them agrees with. The differential measures whether it agrees to the
+        // byte over the sixteen classes.
+        result = pow(10.0, a);
+        break;
+    case CharonMPSGraphOperationKindLogBase2:
+        result = log2(a);
+        break;
+    case CharonMPSGraphOperationKindLogBase10:
+        result = log10(a);
+        break;
+    case CharonMPSGraphOperationKindSin:
+        result = sin(a);
+        break;
+    case CharonMPSGraphOperationKindCos:
+        result = cos(a);
+        break;
+    case CharonMPSGraphOperationKindTan:
+        result = tan(a);
+        break;
+    case CharonMPSGraphOperationKindSinh:
+        result = sinh(a);
+        break;
+    case CharonMPSGraphOperationKindCosh:
+        result = cosh(a);
+        break;
+    case CharonMPSGraphOperationKindTanh:
+        result = tanh(a);
+        break;
+    case CharonMPSGraphOperationKindAsin:
+        result = asin(a);
+        break;
+    case CharonMPSGraphOperationKindAcos:
+        result = acos(a);
+        break;
+    case CharonMPSGraphOperationKindAtan:
+        result = atan(a);
+        break;
+    case CharonMPSGraphOperationKindAsinh:
+        result = asinh(a);
+        break;
+    case CharonMPSGraphOperationKindAcosh:
+        result = acosh(a);
+        break;
+    case CharonMPSGraphOperationKindAtanh:
+        result = atanh(a);
+        break;
+    case CharonMPSGraphOperationKindErf:
+        result = erf(a);
+        break;
+    // The sign bit, read as a bit: a NaN compares false against everything, so a comparison would answer
+    // a NaN's sign as neither, and the release answers the bit it carries.
+    case CharonMPSGraphOperationKindSignBit:
+        result = signbit(a) ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindFloor:
+        result = integral ? a : floor(a);
+        break;
+    case CharonMPSGraphOperationKindCeil:
+        result = integral ? a : ceil(a);
+        break;
+    // The two roundings the header separates: round is the half away from zero and rint is the one the
+    // C library rounds to even with, which is what the two names in MPSGraphArithmeticOps.h mean.
+    case CharonMPSGraphOperationKindRound:
+        result = integral ? a : round(a);
+        // A round that lands on zero is a positive zero: measured, round of -0.0, of -0x1p-126 and of
+        // -0x1p-20 are each 0x00000000 where round(-0.0) in C is -0.0.
+        if (result == 0.0)
+            result = 0.0;
+        break;
+    case CharonMPSGraphOperationKindRint:
+        result = integral ? a : rint(a);
+        break;
+    case CharonMPSGraphOperationKindIsNaN:
+        result = integral ? 0.0 : (isnan(a) ? 1.0 : 0.0);
+        break;
+    case CharonMPSGraphOperationKindIsFinite:
+        result = integral ? 1.0 : (isfinite(a) ? 1.0 : 0.0);
+        break;
+    case CharonMPSGraphOperationKindIsInfinite:
+        result = integral ? 0.0 : (isinf(a) ? 1.0 : 0.0);
+        break;
+    case CharonMPSGraphOperationKindLogicalNot:
+        result = a == 0.0 ? 1.0 : 0.0;
+        break;
+    // A comparison against a NaN is false and a comparison against something equal is true: that is what
+    // the operators are, and the release's six predicates over the sixteen classes agree with it cell by
+    // cell, so no branch of its own is written for them.
+    case CharonMPSGraphOperationKindEqual:
+        result = a == b ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindNotEqual:
+        result = a != b ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindLessThan:
+        result = a < b ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindLessThanOrEqualTo:
+        result = a <= b ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindGreaterThan:
+        result = a > b ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindGreaterThanOrEqualTo:
+        result = a >= b ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindLogicalAnd:
+        result = (a != 0.0 && b != 0.0) ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindLogicalOr:
+        result = (a != 0.0 || b != 0.0) ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindLogicalNand:
+        result = !(a != 0.0 && b != 0.0) ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindLogicalNor:
+        result = !(a != 0.0 || b != 0.0) ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindLogicalXor:
+        result = (a != 0.0) != (b != 0.0) ? 1.0 : 0.0;
+        break;
+    case CharonMPSGraphOperationKindLogicalXnor:
+        result = (a != 0.0) == (b != 0.0) ? 1.0 : 0.0;
+        break;
+    // C's two remainders: fmod truncates towards zero and the floor modulo answers the remainder of
+    // the same sign as the divisor, which is what "floor" in the name means.
+    case CharonMPSGraphOperationKindModulo:
+        result = fmod(a, b);
+        break;
+    case CharonMPSGraphOperationKindFloorModulo:
+        result = fmod(fmod(a, b) + b, b);
+        break;
+    case CharonMPSGraphOperationKindPower:
+        result = pow(a, b);
+        break;
+    case CharonMPSGraphOperationKindAtan2:
+        result = atan2(a, b);
+        break;
+    // A division that answers a zero where IEEE would answer a NaN, which is what the "NoNaN" in its own
+    // name says. It is the divisor that decides, and a NaN divisor is not one of them: measured over the
+    // sixteen classes on this host's own MPSGraph, a zero divisor answers 0x00000000 for every numerator
+    // while a NaN divisor answers the arithmetic's NaN - an infinity over a NaN is 0x7fc00000 and a NaN
+    // over 2.0 is 0x7fc00000 - and a NaN numerator over an ordinary divisor is that NaN.
+    case CharonMPSGraphOperationKindDivisionNoNaN:
+        result = b == 0.0 ? 0.0 : a / b;
+        break;
+    case CharonMPSGraphOperationKindSelect:
+        result = a != 0.0 ? b : c;
+        break;
+    // fmin(fmax(a, lo), hi), which is what answers a NaN with a bound rather than with a NaN: measured,
+    // a clamp of a NaN between two equal bounds is that bound.
+    case CharonMPSGraphOperationKindClamp3:
+        result = fmin(fmax(a, b), c);
+        break;
+    case CharonMPSGraphOperationKindReLU:
+        result = a > 0.0 ? a : 0.0;
+        break;
+    // A gradient passes the incoming gradient through where the source is on the other side of the
+    // activation's own branch and answers the gradient itself times a zero of the same sign where it is
+    // not, which is what the two gradient operations are. Measured over the sixteen classes: a ReLU
+    // gradient of an incoming gradient of 1.0 over a source of -0.0 is 0x80000000, so the sign is the
+    // incoming gradient's and not a positive zero, and a source that is a NaN is a NaN rather than the
+    // gradient - an infinity over a NaN is 0x7fc00000 where the gradient itself would be 0x7f800000.
+    case CharonMPSGraphOperationKindReLUGradient:
+        result = isnan(b) ? NAN : (b > 0.0 ? a : a * 0.0);
+        break;
+    case CharonMPSGraphOperationKindSigmoid:
+        result = 1.0 / (1.0 + exp(-a));
+        break;
+    // A sigmoid's gradient reads the source as the value that was activated, not as its answer: measured
+    // over the sixteen classes, a sigmoidGradient of an incoming gradient of 1.0 over a source of 0.0 is
+    // 0x3e800000, which is 1.0 times the sigmoid of 0.0 times one minus the sigmoid of 0.0.
+    case CharonMPSGraphOperationKindSigmoidGradient: {
+        double s = 1.0 / (1.0 + exp(-b));
+        result = a * s * (1.0 - s);
+        break;
+    }
     default:
         result = a;
         break;
     }
-    if (resultType == MPSDataTypeFloat16) {
+    if (resultType == MPSDataTypeFloat16 && CharonMPSGraphHalfRule(kind)) {
         /* A half is a different arithmetic on this host, and this is the half of it that is a rule
          * rather than an approximation. Measured on macOS 27.0 build 26A428 (M4 Pro, Metal 4) over
          * the sixteen classes tests/backports/host/mpsgraph/graph-cases.m feeds, against the same
@@ -131,35 +485,50 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
          * argument is a zero to a square root and to a reverse square root, a logarithm of a zero is
          * -45440 (0xf98c) and of anything else that is not a positive number is a zero.
          */
-        if (isnan(a) || isnan(b)) {
-            double sign = isnan(a) ? a : b;
-            switch (kind) {
-            case CharonMPSGraphOperationKindSquare:
-            case CharonMPSGraphOperationKindAbs:
-                result = INFINITY;
-                break;
-            case CharonMPSGraphOperationKindReciprocal:
-                // Measured 0x0000 for a NaN of either sign, where the square and the absolute value
-                // answer an infinity and the three that carry a sign answer one of that sign.
-                result = 0.0;
-                break;
-            case CharonMPSGraphOperationKindIdentity:
-            case CharonMPSGraphOperationKindAdd:
-            case CharonMPSGraphOperationKindSubtract:
+        if (isnan(a) || isnan(b) || isnan(c)) {
+            double sign = isnan(a) ? a : (isnan(b) ? b : c);
+            switch (CharonMPSGraphHalfNaNOf(kind)) {
+            case CharonMPSGraphHalfNaNInfinityOfSign:
                 result = copysign(INFINITY, sign);
                 break;
-            case CharonMPSGraphOperationKindSqrt:
-                // The sign bit and not the value: a NaN compares false against everything, so the
-                // sign of a NaN is read from its bit and a positive NaN is 0x7c00 here.
-                result = signbit(sign) ? 0.0 : INFINITY;
+            case CharonMPSGraphHalfNaNInfinityOfFlippedSign:
+                result = copysign(INFINITY, -sign);
                 break;
-            case CharonMPSGraphOperationKindSign:
-                result = copysign(1.0, sign);
-                break;
-            default:
+            case CharonMPSGraphHalfNaNZero:
                 result = 0.0;
                 break;
+            case CharonMPSGraphHalfNaNCanonical:
+                result = NAN;
+                break;
+            case CharonMPSGraphHalfNaNSaturates:
+                result = copysign(1.0, sign);
+                break;
+            case CharonMPSGraphHalfNaNSaturatesAtOne:
+                result = 1.0;
+                break;
+            case CharonMPSGraphHalfNaNSigmoid:
+                result = signbit(sign) ? 0.0 : 1.0;
+                break;
+            default:
+                // The two the arithmetic family has and the table above does not: the square and the
+                // absolute value answer a positive infinity for a NaN of either sign, and a reciprocal
+                // answers a zero of either sign.
+                result = (kind == CharonMPSGraphOperationKindReciprocal) ? 0.0 : INFINITY;
+                break;
             }
+            // The square root and the sign are the two the table cannot hold, because their answer is
+            // read off the bit and not off the class: measured, the square root of a positive NaN is
+            // 0x7c00 and of a negative one 0x0000, and the sign of a NaN is the sign of the NaN.
+            if (kind == CharonMPSGraphOperationKindSqrt)
+                result = signbit(sign) ? 0.0 : INFINITY;
+            else if (kind == CharonMPSGraphOperationKindSign)
+                result = copysign(1.0, sign);
+            if (kind == CharonMPSGraphOperationKindSquare || kind == CharonMPSGraphOperationKindAbs)
+                result = INFINITY;
+        } else if (isinf(a) && (kind == CharonMPSGraphOperationKindSin || kind == CharonMPSGraphOperationKindCos)) {
+            // Measured: the sine and the cosine of an infinity of either sign are 0x0000, where the
+            // arithmetic of an infinity is a NaN.
+            result = 0.0;
         } else {
             switch (kind) {
             case CharonMPSGraphOperationKindSqrt:
@@ -197,14 +566,36 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
                 break;
             }
         }
-        if (result == 0.0) {
-            result = 0.0;
-        }
     }
-    if (copying) {
-        return result;
-    }
-    return CharonMPSGraphOwnNaN(CharonMPSGraphAsZero(result, resultType));
+    // A zero is a positive zero in half as it is in the float types, and it is one rule for every kind
+    // rather than one per operation: measured, the ceiling of a positive zero, the floor of a positive
+    // zero, the sine of a positive zero, a product of a negative zero, the negation of a negative zero, a
+    // maximum of -1.0 and -0.0, a select whose value is a negative zero, a ReLU's gradient of a negative
+    // ordinary source and an error function of a positive zero are each 0x0000, where IEEE answers a
+    // zero of the operand's own sign.
+    if (resultType == MPSDataTypeFloat16 && result == 0.0)
+        result = 0.0;
+    // A boolean is a truth and not a number, so a predicate's result goes through the store as the one
+    // or the zero it is and the two rules above - the release's own NaN and the flush - do not touch it.
+    if (resultType == MPSDataTypeBool)
+        return result != 0.0 ? 1.0 : 0.0;
+    // A zero is a positive zero for two of the transcendentals, which is a rule and not IEEE's: measured
+    // over the same sixteen classes, the arctangent and the hyperbolic tangent of -0.0 are 0x00000000
+    // where IEEE answers -0.0, and the hyperbolic tangent of a negative denormal is 0x00000000 as well.
+    // It is applied after the flush, so a denormal that flushed to a zero of either sign comes out
+    // positive, and only for those two: the identity, a reciprocal, a square root, a remainder and a
+    // minimum all answer -0.0 for a negative zero on this host, measured, and are left alone.
+    if ((kind == CharonMPSGraphOperationKindAtan || kind == CharonMPSGraphOperationKindTanh) &&
+        result == 0.0)
+        result = 0.0;
+    if (CharonMPSGraphCopiesTheOperand(kind))
+        return stored ? result : CharonMPSGraphAsZero(result, resultType);
+    double narrowed = stored ? result : CharonMPSGraphAsZero(result, resultType);
+    // A kind that keeps the NaN it was given keeps it only when it WAS given one: the arcsine of a NaN
+    // is that NaN, measured, and the arcsine of -inf is 0x7fc00000 and not a NaN of a negative sign.
+    if (CharonMPSGraphKeepsTheNaNItWasGiven(kind) && (isnan(a) || isnan(b)))
+        return narrowed;
+    return CharonMPSGraphOwnNaN(narrowed);
 }
 
 @implementation MPSGraph (CharonMPSGraphInterpreter)
@@ -242,10 +633,13 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
     // answer. A caller whose feeds and inputs do not line up is told so here.
     MPSGraphTensorData *left = values[inputs.firstObject];
     MPSGraphTensorData *right = inputs.count > 1 ? values[inputs[1]] : nil;
+    MPSGraphTensorData *third = inputs.count > 2 ? values[inputs[2]] : nil;
     if (left && ![left isKindOfClass:[MPSGraphTensorData class]])
         left = nil;
     if (right && ![right isKindOfClass:[MPSGraphTensorData class]])
         right = nil;
+    if (third && ![third isKindOfClass:[MPSGraphTensorData class]])
+        third = nil;
     if (!left) {
         CharonMPSGraphRefuse(@"MPSGraph: an operation named %@ has no value for its first input, so nothing was written to its output", [operation name]);
         return;
@@ -257,17 +651,28 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
     // A tensor's storage is a buffer of its own, made when the tensor is first read, so that a run
     // never writes into a buffer the caller fed it.
     [result charon_mps_bytes];
+    void *out = [result charon_mps_bytes];
+    MPSDataType operandType = left.dataType;
     if (right) {
-        for (NSUInteger i = 0; i < count; i++)
-            CharonMPSStoreRounded([result charon_mps_bytes], dataType, i,
-                           CharonMPSGraphApply(kind, CharonMPSLoad([left charon_mps_bytes], left.dataType, i),
+        if (third) {
+            for (NSUInteger i = 0; i < count; i++)
+                CharonMPSStoreRounded(out, dataType, i,
+                           CharonMPSGraphApply(kind, CharonMPSLoad([left charon_mps_bytes], operandType, i),
                                                CharonMPSLoad([right charon_mps_bytes], right.dataType, i),
-                                               left.dataType, dataType), 1);
+                                               CharonMPSLoad([third charon_mps_bytes], third.dataType, i),
+                                               operandType, dataType), 1);
+        } else {
+            for (NSUInteger i = 0; i < count; i++)
+                CharonMPSStoreRounded(out, dataType, i,
+                           CharonMPSGraphApply(kind, CharonMPSLoad([left charon_mps_bytes], operandType, i),
+                                               CharonMPSLoad([right charon_mps_bytes], right.dataType, i), 0.0,
+                                               operandType, dataType), 1);
+        }
     } else {
         for (NSUInteger i = 0; i < count; i++)
-            CharonMPSStoreRounded([result charon_mps_bytes], dataType, i,
-                           CharonMPSGraphApply(kind, CharonMPSLoad([left charon_mps_bytes], left.dataType, i), 0.0,
-                                               left.dataType, dataType), 1);
+            CharonMPSStoreRounded(out, dataType, i,
+                       CharonMPSGraphApply(kind, CharonMPSLoad([left charon_mps_bytes], operandType, i), 0.0, 0.0,
+                                           operandType, dataType), 1);
     }
     values[output] = result;
 }

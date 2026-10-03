@@ -2590,6 +2590,396 @@
    "effect": "the class is carried whole, with every member the newest SDK declares on it, and the descriptor answers the anchor boxes and the seven scales the YOLO loss runs with, and reads back what a program sets",
    "facts": "facts/MLCompute/Descriptors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
-  }
- ]
+  },
+    {
+      "api": "MLCOptimizer",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCSGDOptimizer",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamOptimizer",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamWOptimizer",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "+[MLCAdamOptimizer optimizerWithDescriptor:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "+[MLCAdamOptimizer optimizerWithDescriptor:beta1:beta2:epsilon:timeStep:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "+[MLCOptimizer new]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "+[MLCSGDOptimizer optimizerWithDescriptor:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "+[MLCSGDOptimizer optimizerWithDescriptor:momentumScale:usesNesterovMomentum:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "-[MLCOptimizer init]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "+[MLCAdamWOptimizer optimizerWithDescriptor:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "+[MLCAdamWOptimizer optimizerWithDescriptor:beta1:beta2:epsilon:usesAMSgrad:timeStep:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "+[MLCAdamOptimizer optimizerWithDescriptor:beta1:beta2:epsilon:usesAMSGrad:timeStep:]",
+      "kind": "method",
+      "introduced": "15",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCOptimizer.appliesGradientClipping",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCOptimizer.gradientClipMax",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCOptimizer.gradientClipMin",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCOptimizer.gradientRescale",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCOptimizer.learningRate",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCOptimizer.regularizationScale",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCOptimizer.regularizationType",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCOptimizer.customGlobalNorm",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCOptimizer.gradientClippingType",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCOptimizer.maximumClippingNorm",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCSGDOptimizer.momentumScale",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCSGDOptimizer.usesNesterovMomentum",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamOptimizer.beta1",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamWOptimizer.beta1",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamOptimizer.beta2",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamWOptimizer.beta2",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamOptimizer.epsilon",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamWOptimizer.epsilon",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamOptimizer.usesAMSGrad",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamWOptimizer.usesAMSGrad",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamOptimizer.timeStep",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "MLCAdamWOptimizer.timeStep",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the numbers are the descriptor's and the subclass's own, copied in when the optimizer is made and read back through the one object every kind of optimizer holds; measured against the system's own MLCompute over a descriptor whose every field is a value of its own and over one that says nothing, facts/MLCompute/Optimizers.md carries the table",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "+[MLCOptimizer charon_mlc_optimizerOfClass:copying:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the port's own storage for an optimizer's seventeen numbers, which its own files share and an application never calls",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "-[MLCOptimizer charon_mlc_state]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the port's own storage for an optimizer's seventeen numbers, which its own files share and an application never calls",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "-[MLCOptimizer charon_mlc_takeStateFrom:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the port's own storage for an optimizer's seventeen numbers, which its own files share and an application never calls",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "-[MLCOptimizer charon_mlc_setState:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the port's own storage for an optimizer's seventeen numbers, which its own files share and an application never calls",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    }
+  ]
 }
