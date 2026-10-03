@@ -64,9 +64,11 @@ status=0
 # this one's output. They were in this directory and named by no runner, which is what
 # coordination/crutches.md's "MediaPlayer MPSeekCommandEvent's host check is missing" recorded; they run
 # here now.
-for check in contract mpratingcommandeventcheck mpskipintervalcommandeventcheck; do
+# The UIKit stand-in joins the include path for the checks that include the port's 7.1 object, which
+# sends its events through +[UIApplication sharedApplication] and reads UIEventTypeRemoteControl.
+for check in contract mpratingcommandeventcheck mpskipintervalcommandeventcheck mpseekcommandeventcheck; do
     rm -f "$bin"
-    if ! xcrun clang -fobjc-arc -w -framework Foundation -I"$here" -I"$library" -o "$bin" "$here/$check.m"; then
+    if ! xcrun clang -fobjc-arc -w -framework Foundation -I"$here" -I"$library" -I"$here/standin" -o "$bin" "$here/$check.m"; then
         echo "FAIL: $check.m did not build, so it certifies nothing"
         rm -f "$bin"
         exit 1
