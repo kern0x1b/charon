@@ -237,7 +237,7 @@ of the six rows' `effect` says that.
 The control that proves "a mutation that does not compile is RUN FAILED, never red" first named its
 scratch file `broken.m.tmp`. **clang does not recognise a `.tmp` extension as a source file**: it
 compiled nothing, reported success, and the control passed because no compiler ran. The scratch is
-`broken.m` now, and the control also requires an `error:` line in the log — a control that fails because
+`broken.m` now, and the control also requires an `error:` line in the log - a control that fails because
 nothing ran is the same defect as one that fails for the wrong reason.
 
 ## Two more, both in the assertions rather than the code
