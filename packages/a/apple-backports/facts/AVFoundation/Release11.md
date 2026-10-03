@@ -231,10 +231,19 @@ capability the release cannot have, carried as the truthful constant.
   question no code in this tree can answer on 6.1.3.
 - `AVSampleBufferAudioRenderer`, `AVSampleBufferRenderSynchronizer` and the protocol
   `AVQueuedSampleBufferRendering`: the only `AVSampleBuffer*` names either end carries are the
-  display layer's three classes (the census's control above). The release's own way to push buffers
-  at a rate is `AVAudioEngine` with `AVAudioPlayerNode` and `AVAudioPCMBuffer`, which this port
-  already carries; what the three names here ask for is a renderer a `CMSampleBuffer` can be timed
-  against, and a synchronizer that puts audio and video on one clock, which no 6.x buffer path has.
+  display layer's three classes (the census's control above), and neither class is on 6.1.3 at all.
+  The release's own way to push buffers at a rate is `AVAudioEngine` with `AVAudioPlayerNode` and
+  `AVAudioPCMBuffer`, which this port already carries. **The last sentence of the earlier reading of
+  this bullet was wrong**: "no 6.x buffer path has" a renderer a `CMSampleBuffer` can be timed
+  against is not true - `AudioToolbox` on 6.1.3 armv7 exports `_AudioQueueNewOutput`,
+  `_AudioQueueAllocateBuffer`, `_AudioQueueEnqueueBuffer` and `_AudioQueueFlush`, `CoreMedia`
+  exports `_CMTimebaseCreate`, `_CMTimebaseSetTime` and `_CMTimebaseGetTime`, and
+  `_CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer` is there to get the audio out of a
+  sample buffer. So these three rows are the port's own debt and not a wall, they are class symbols
+  and `absent` for a strong-imported one is what COORDINATION.md section 2 forbids, and what is left
+  to write is in [`SampleBufferRender11.md`](SampleBufferRender11.md) - which also records that this
+  machine's own AVFoundation cannot be the oracle for them, because its SDK no longer declares the
+  11.0 API and its class carries 51 own instance methods of a later surface.
 - `AVCapturePhoto`: 6.1.3 captures a still through `AVCaptureStillImageOutput` and delivers a
   `CMSampleBufferRef` (`captureStillImageAsynchronouslyFromConnection:completionHandler:`,
   `availableImageDataCodecTypes`, `imageDataFormatType`, `previewImageSize`). There is no photo
