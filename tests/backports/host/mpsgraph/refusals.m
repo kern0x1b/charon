@@ -16,6 +16,8 @@
 #import <MetalPerformanceShadersGraph/MetalPerformanceShadersGraph.h>
 
 @interface MPSGraph (MPSGraph26)
+- (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor dimension:(NSUInteger)dimensionIndex start:(NSInteger)start length:(NSInteger)length name:(NSString *)name;
+- (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor starts:(NSArray<NSNumber *> *)starts ends:(NSArray<NSNumber *> *)ends strides:(NSArray<NSNumber *> *)strides name:(NSString *)name;
 - (MPSGraphTensor *)reshapeTensor:(MPSGraphTensor *)tensor withShape:(NSArray<NSNumber *> *)withShape name:(NSString *)name;
 - (MPSGraphTensor *)reshapeTensor:(MPSGraphTensor *)tensor withShapeTensor:(MPSGraphTensor *)withShapeTensor name:(NSString *)name;
 - (MPSGraphTensor *)transposeTensor:(MPSGraphTensor *)tensor dimension:(NSUInteger)dimension withDimension:(NSUInteger)withDimension name:(NSString *)name;
@@ -137,6 +139,7 @@ int main(int argc, const char *argv[])
         static const char *const kQuestions[] = {
             "broadcast-wider", "broadcast-added", "broadcast-narrower", "broadcast-zero-extent",
             "reshape-fed-shape", "reshape-volume-mismatch", "reshape-two-dynamic", "reshape-dynamic-only",
+            "slice-length-zero", "slice-start-past-end", "slice-stride-zero", "slice-length-past-end",
             "fed-flatten-axis", "fed-broadcast-shape", "fed-reverse-axes", "fed-squeeze-axes",
             "fed-expand-axes", "squeeze-not-unit", "flatten-axis-outside", "expand-axis-outside",
             "transpose-axis-outside", "reverse-axis-outside", "reverse-axes-empty", "squeeze-axes-empty",
@@ -181,6 +184,26 @@ int main(int argc, const char *argv[])
         }
         // The five FED forms. Each of these is a parameter that arrives at run time rather than written down,
         // and each is asked in a process of its own because the release takes the process down.
+        if (strcmp(q, "slice-length-zero") == 0) {
+            one(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                return [g sliceTensor:a dimension:1 start:0 length:0 name:@"s"]; }, twoByFour, rowFeed, "slice-length-zero");
+            return 0;
+        }
+        if (strcmp(q, "slice-start-past-end") == 0) {
+            one(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                return [g sliceTensor:a dimension:1 start:9 length:2 name:@"s"]; }, twoByFour, rowFeed, "slice-start-past-end");
+            return 0;
+        }
+        if (strcmp(q, "slice-stride-zero") == 0) {
+            one(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                return [g sliceTensor:a starts:@[@0, @0] ends:@[@2, @4] strides:@[@1, @0] name:@"s"]; }, twoByFour, rowFeed, "slice-stride-zero");
+            return 0;
+        }
+        if (strcmp(q, "slice-length-past-end") == 0) {
+            one(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                return [g sliceTensor:a dimension:1 start:2 length:9 name:@"s"]; }, twoByFour, rowFeed, "slice-length-past-end");
+            return 0;
+        }
         if (strcmp(q, "reshape-fed-shape") == 0) {
             fed(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
                 return [g reshapeTensor:a withShapeTensor:p name:@"r"]; }, twoByFour, rowFeed, 4, MPSDataTypeInt32, @[@1], "reshape-fed-shape");

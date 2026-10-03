@@ -848,6 +848,51 @@ static void family_gather_transpose(void)
     chain_case();
 }
 
+// The slice, which is the same walk with an OFFSET and a STRIDE: the result's axis k reads the operand's axis
+// k from the caller's start, stepping by the caller's stride. The header's two forms are the same walk.
+static void family_gather_slice(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+    gather_case("slice-axis1-start1-length2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a dimension:1 start:1 length:2 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-axis1-startNeg2-length2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a dimension:1 start:-2 length:2 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-axis0-start1-length1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a dimension:0 start:1 length:1 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-stride2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @0] ends:@[@2, @4] strides:@[@1, @2] name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-strideNeg1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @3] ends:@[@2, @0] strides:@[@1, @-1] name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-endsPastEnd float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @2] ends:@[@2, @9] strides:@[@1, @1] name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-rank3 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@1, @1, @1] ends:@[@2, @3, @4] strides:@[@1, @1, @2] name:@"s"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("slice-classes float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a dimension:1 start:1 length:3 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, gatherClasses);
+    gather_case("slice-all float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @0] ends:@[@2, @4] strides:@[@1, @1] name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    chain_case();
+}
+
 // The reshape, which is the same walk with the axes left alone and the result's shape the caller's: the
 // operand's elements in the same row-major order at another extent. A dynamic extent is the header's -1 and
 // is the element count over the product of the extents written down.
@@ -1476,6 +1521,7 @@ static const Family kFamilies[] = {
     { "reduction_rest", family_reduction_rest },
     { "cumulative", family_cumulative },
     { "gather_transpose", family_gather_transpose },
+    { "gather_slice", family_gather_slice },
     { "gather_reshape", family_gather_reshape },
     { "gather_flatten", family_gather_flatten },
     { "gather_broadcast", family_gather_broadcast },

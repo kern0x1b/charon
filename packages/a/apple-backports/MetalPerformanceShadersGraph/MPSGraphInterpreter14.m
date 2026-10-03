@@ -1341,6 +1341,79 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
             [sourceCounts addObject:@1];
             [reversed addObject:([flipped containsIndex:i] ? @YES : @NO)];
         }
+    } else if (strcmp(gather, "slice") == 0) {
+        // A slice is one gather with an OFFSET and a STRIDE: the result's axis k reads the operand's axis k,
+        // starting at the caller's start and stepping by the caller's stride. The header's two forms are the
+        // same walk: `sliceTensor:dimension:start:length:name:` is one axis with a length (a stride of one and
+        // an end of start + length), and `sliceTensor:starts:ends:strides:name:` is every axis at once with
+        // TensorFlow's strided-slice semantics, which is what the header says it is based on.
+        //
+        // A NEGATIVE start, end or stride counts from the end of that axis of the operand, measured: axis 1 of
+        // a 2x4 sliced from -2 with a length of two answers (3, 4) and a stride of -1 from the end answers the
+        // row the other way round. The count of the result's axis is how many steps from the start reach the
+        // end, and a result coordinate with no element of the operand behind it is a zero, as it is for a
+        // broadcast (measured over a destination filled with a pattern).
+        NSArray<NSNumber *> *starts = parameters[@"sliceStarts"];
+        NSArray<NSNumber *> *strides = parameters[@"sliceStrides"];
+        if (starts.count != sourceRank || strides.count != sourceRank) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was asked to slice a rank-%lu tensor with %lu starts and %lu "
+                               @"strides, and the release wants one of each per axis", name,
+                                (unsigned long)sourceRank, (unsigned long)starts.count,
+                                (unsigned long)strides.count];
+        }
+        NSMutableArray<NSNumber *> *offsets = [NSMutableArray arrayWithCapacity:sourceRank];
+        NSMutableArray<NSNumber *> *steps = [NSMutableArray arrayWithCapacity:sourceRank];
+        for (NSUInteger k = 0; k < sourceRank; k++) {
+            NSInteger extentOfSource = sourceShape[k].integerValue;
+            NSInteger from = starts[k].integerValue;
+            NSInteger step = strides[k].integerValue;
+            if (from < 0)
+                from += extentOfSource;
+            if (step == 0) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to slice axis %lu with a stride of zero, which "
+                                   @"never leaves the start", name, (unsigned long)k];
+            }
+            if (from < 0 || from >= extentOfSource) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to slice axis %lu from %ld, and the release's own "
+                                   @"compiler wants a start value that fits the dimension size %ld", name,
+                                    (unsigned long)k, (long)starts[k].integerValue, (long)extentOfSource];
+            }
+            // The simple form is one axis with a LENGTH and the strided form is every axis with an END; both
+            // are how many steps of the stride from the start reach it, and the release takes the SMALLER of
+            // that and the number of steps the operand's own extent allows - measured, a 2x4 sliced from 2
+            // with an end of 9 answers a 2x2 and not a 2x7.
+            NSInteger length = [parameters[@"sliceLength"] integerValue];
+            NSInteger end = [parameters[@"sliceEnds"][k] integerValue];
+            if (end < 0)
+                end += extentOfSource;
+            // The simple form writes the length down and the strided form does not, so the LENGTH's presence
+            // is what tells them apart - a length of zero is a form of its own, refused below, and not the
+            // strided form's absence of one.
+            NSInteger asked = (parameters[@"sliceLength"] != nil && k == [parameters[@"sliceAxis"] unsignedIntegerValue])
+                ? length
+                : (NSInteger)ceil((double)(end - from) / (double)step);
+            NSInteger step_ = step < 0 ? -step : step;
+            NSInteger available = step > 0 ? (extentOfSource - from + step_ - 1) / step_
+                                            : (from + step_) / step_;
+            NSInteger howMany = asked < available ? asked : available;
+            if (howMany <= 0) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to slice axis %lu into a result of no elements, and "
+                                   @"the release builds that shape and then cannot make an NDArray for it",
+                                name, (unsigned long)k];
+            }
+            [shape addObject:@(howMany)];
+            [sourceAxes addObject:@(k)];
+            [sourceCounts addObject:@1];
+            [reversed addObject:@0];
+            [offsets addObject:@(from)];
+            [steps addObject:@(step)];
+        }
+        return @{@"shape": shape, @"sourceAxes": sourceAxes, @"sourceCounts": sourceCounts,
+                 @"reversed": reversed, @"offsets": offsets, @"strides": steps};
     } else if (strcmp(gather, "reshape") == 0) {
         // A reshape is the same walk with the axes left alone and the result's shape the caller's: the operand
         // and the result hold the same elements in the same row-major order, so the result's axes consume the
@@ -1458,6 +1531,10 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
     NSArray<NSNumber *> *sourceAxes = plan[@"sourceAxes"];
     NSArray<NSNumber *> *sourceCounts = plan[@"sourceCounts"];
     NSArray<NSNumber *> *reversed = plan[@"reversed"];
+    // The two keys a slice's plan carries and every other gather's does not; a gather without them reads an
+    // offset of zero and a stride of one, which is what its own axes already say.
+    NSArray<NSNumber *> *offsets = plan[@"offsets"];
+    NSArray<NSNumber *> *strides = plan[@"strides"];
     NSUInteger sourceRank = sourceShape.count;
     NSUInteger resultRank = resultShape.count;
     NSUInteger count = CharonMPSGraphElementCount(resultShape);
@@ -1505,7 +1582,14 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
                 unsigned long long available = 1;
                 for (NSUInteger c = 0; c < covered && first + c < sourceRank; c++)
                     available *= (unsigned long long)sourceShape[first + c].unsignedIntegerValue;
+                NSInteger step = offsets != nil ? [strides[k] integerValue] : 1;
+                NSInteger from = offsets != nil ? [offsets[k] integerValue] : 0;
+                unsigned long long last = (unsigned long long)(from + step * (NSInteger)(coordinate ? coordinate - 1 : 0));
                 if (available > 1 && coordinate >= available) {
+                    unsourced = YES;
+                    break;
+                }
+                if (step > 0 ? (NSInteger)last >= (NSInteger)available : (NSInteger)last < 0) {
                     unsourced = YES;
                     break;
                 }
@@ -1525,6 +1609,11 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
                 place /= extentOfSource;
                 if ([reversed[k] boolValue])
                     component = extentOfSource - 1 - component;
+                // A slice's OFFSET and STRIDE, which no other gather of the family has: the coordinate of the
+                // result is the caller's start plus so many steps of the caller's stride.
+                if (offsets != nil)
+                    component = (unsigned long long)((NSInteger)component * [strides[k] integerValue] +
+                                                     [offsets[k] integerValue]);
                 sourceIndex += component * sourceStride[axis];
             }
         }
