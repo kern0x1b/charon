@@ -51,7 +51,7 @@ MTL4SpecializedFunctionDescriptor MTL4StitchedFunctionDescriptor MTL4LibraryFunc
 MTL4AccelerationStructureGeometryDescriptor MTL4AccelerationStructureTriangleGeometryDescriptor \
 MTL4AccelerationStructureBoundingBoxGeometryDescriptor MTL4AccelerationStructureCurveGeometryDescriptor \
 MTL4AccelerationStructureMotionTriangleGeometryDescriptor MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor \
-MTL4AccelerationStructureMotionCurveGeometryDescriptor \
+MTL4AccelerationStructureMotionCurveGeometryDescriptor MTL4RenderPassDescriptor \
 MTLTileRenderPipelineColorAttachmentDescriptor MTLTileRenderPipelineColorAttachmentDescriptorArray"
 
 prove_defined() {   # $1 nm output
@@ -124,10 +124,12 @@ cat > "$work/port/port.m" <<'PORTTU'
 #define MTL4AccelerationStructureMotionTriangleGeometryDescriptor charonHost_MTL4AccelerationStructureMotionTriangleGeometryDescriptor
 #define MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor charonHost_MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor
 #define MTL4AccelerationStructureMotionCurveGeometryDescriptor charonHost_MTL4AccelerationStructureMotionCurveGeometryDescriptor
+#define MTL4RenderPassDescriptor charonHost_MTL4RenderPassDescriptor
 #define MTLTileRenderPipelineColorAttachmentDescriptor charonHost_MTLileRenderPipelineColorAttachmentDescriptor
 #define MTLTileRenderPipelineColorAttachmentDescriptorArray charonHost_MTLTileRenderPipelineColorAttachmentDescriptorArray
 #include "MTL4Descriptors26.m"
 #include "MTL4AccelerationGeometry26.m"
+#include "MTL4RenderPass26.m"
 #include "MTLTileRenderPipelineAttachments11.m"
 PORTTU
 cp "$work/port/port.m" "$work/port/port-pristine.m"
@@ -189,7 +191,7 @@ if [ -n "$SDK16" ]; then
     # BOTH DEVICE OBJECTS ARE COMPILED ONCE, before the names are checked: the loop over the names was
     # inside the compile loop once, so only the first name was ever checked against a second compile of
     # the first file.
-    for source in MTL4Descriptors26 MTL4AccelerationGeometry26 MTLTileRenderPipelineAttachments11; do
+    for source in MTL4Descriptors26 MTL4AccelerationGeometry26 MTL4RenderPass26 MTLTileRenderPipelineAttachments11; do
         if ! xcrun clang -target armv7-apple-ios6.1.3 -isysroot "$SDK16" -fobjc-arc -Os -g0 -Wall \
              -Wno-unguarded-availability-new -Wno-unguarded-availability \
              -Werror=objc-missing-property-synthesis -Werror=incomplete-implementation \

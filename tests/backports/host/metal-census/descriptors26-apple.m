@@ -69,6 +69,7 @@ int main(void)
         report([MTL4SpecializedFunctionDescriptor class], "MTL4SpecializedFunctionDescriptor", YES);
         report([MTL4StitchedFunctionDescriptor class], "MTL4StitchedFunctionDescriptor", YES);
         report([MTL4LibraryFunctionDescriptor class], "MTL4LibraryFunctionDescriptor", YES);
+        report([MTL4RenderPassDescriptor class], "MTL4RenderPassDescriptor", YES);
         report([MTL4AccelerationStructureGeometryDescriptor class], "MTL4AccelerationStructureGeometryDescriptor", YES);
         report([MTL4AccelerationStructureTriangleGeometryDescriptor class], "MTL4AccelerationStructureTriangleGeometryDescriptor", YES);
         report([MTL4AccelerationStructureBoundingBoxGeometryDescriptor class], "MTL4AccelerationStructureBoundingBoxGeometryDescriptor", YES);
