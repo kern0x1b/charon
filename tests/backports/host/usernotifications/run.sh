@@ -26,4 +26,17 @@ done
 xcrun clang $target -fobjc-arc $quiet -I"$UIKIT" "$here/differential.m" "$BUILD"/renamed/*.o \
     -framework UserNotifications -framework UIKit -framework Foundation -o "$BUILD/differential"
 "$BUILD/differential"
-"$BUILD/differential" --expectations > "$here/../../device/usernotifications-expectations.h"
+# The expectations file is TRACKED, and the device-side usernotifications.m compiles against it, so
+# the redirect used to write into it directly: the shell truncates the target before the binary has
+# produced a byte, and anything that ends this line early - the sweep's own 120 s kill, a signal, a
+# failed build above - leaves the tree with a truncated expectations file. Measured: after a full
+# host sweep the file was 610 rows short of HEAD, and a completed run regenerates the same 5760 rows,
+# so nothing about the content was in question and everything about the exposure was.
+#
+# So it is written beside the tree and moved into place only once the run that produced it has ended
+# with status 0. A failure leaves the tracked file exactly as it was, which is the only outcome that
+# can be right: a half-written expectations header is a tree that no longer says what it said.
+expectations=$here/../../device/usernotifications-expectations.h
+staged=$BUILD/usernotifications-expectations.h
+"$BUILD/differential" --expectations > "$staged"
+mv "$staged" "$expectations"
