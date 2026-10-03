@@ -1096,47 +1096,67 @@ static void outer_and_sparse_product_cases(void)
     const sparse_index indy[3] = {0, 2};
     float _Complex y[2] = {5.0f + 1.0fi, -6.0f + 2.0fi};
 
-    // C = alpha * x * y' with x = {1, 2+i, -1}, y = {5+i, -6+2i} at the columns indy = {0, 2}, so
-    // C[i][0] = (2+i)*1*(5+i) = 9+7i and C[i][2] = (2+i)*(2+i)*(-6+2i) = -26-18i for every row i, and
-    // nothing anywhere else.
+    // C = alpha * x * y' over the x, y and indy this function already built: x = {1, 2+i, -1} over three
+    // rows, y = {5+i, -6+2i} at the columns indy = {0, 2}. x is indexed by the row and y by the column,
+    // C[i, indy[k]] = alpha * x[i] * y[k], so at alpha = 2+i the three rows are
     //
-    // The oracle is those two products written out here and not the host, because the host's own outer
-    // product ignores x: measured for the complex type at alpha = 1 with x = {1, 2, 3} and y = {5, -6} it
-    // answers C[0][2] = -6, which is y[1] with no factor of x[1] at all, where the header's C = alpha * x *
-    // y' gives -12. The real type does the same (measured: the same -6), and the real family's differential
-    // cannot see it because every one of its outer-product cases passes x = {1, 1}. facts/
-    // Accelerate/SparseComplex.md has the numbers and the coordinator has the finding.
-    const float _Complex wantFirst = (2.0f + 1.0fi) * (1.0f + 0.0fi) * (5.0f + 1.0fi);
-    const float _Complex wantThird = (2.0f + 1.0fi) * (2.0f + 1.0fi) * (-6.0f + 2.0fi);
-    sparse_matrix_float_complex hostC = NULL, portC = NULL;
-    sparse_status hostS = SPARSE_SUCCESS, portS = SPARSE_SUCCESS;
-    portS = RENAME(sparse_outer_product_dense_float_complex)(3, 3, 2, 2.0f + 1.0fi, x, 1, y, indy, &portC);
-    int ok = portS == SPARSE_SUCCESS && portC != NULL && RENAME(sparse_get_matrix_nonzero_count)(portC) == 6;
-
-    for (sparse_index r = 0; r < 3 && ok; r++) {
-        // The whole row: two entries, at columns 0 and 2, and nothing at column 1 - which the count of two
-        // and the indices naming those columns show, without asking for the empty column.
-        sparse_index portEnd = 0;
-        float _Complex portValues[4];
-        sparse_index portIndices[4];
-        portS = RENAME(sparse_extract_sparse_row_float_complex)(portC, r, 0, &portEnd, 4, portValues, portIndices);
-        ok = portS == (long)2 && portEnd == 3 && portIndices[0] == 0 && portIndices[1] == 2 &&
-             REAL_OF(portValues[0]) == REAL_OF(wantFirst) && IMAG_OF(portValues[0]) == IMAG_OF(wantFirst) &&
-             REAL_OF(portValues[1]) == REAL_OF(wantThird) && IMAG_OF(portValues[1]) == IMAG_OF(wantThird);
+    //   C[0] = (9+7i, -14-2i)    C[1] = (11+8i, -18-3i)    C[2] = (8+6i, -12+4i)
+    //
+    // and the host answers exactly those. The case is here because every earlier one passed x = {1, 1},
+    // where reading x at the wrong index gives the same number: the mutant below is that wrong index - it
+    // reads x at k and writes alpha * x[k] * y[k] into every row - and the case asserts that the mutant
+    // does not agree with the header, so a port carrying that bug goes red here.
+    const float _Complex alpha = 2.0f + 1.0fi;
+    float _Complex mutant[3][2];
+    int mutantDiffers = 0;
+    for (int k = 0; k < 2; k++) {
+        for (int i = 0; i < 3; i++) {
+            mutant[i][k] = alpha * x[k] * y[k];
+        }
     }
-    report(ok, "an outer product into a new matrix (header)", detail);
-    if (portC) RENAME(sparse_matrix_destroy)(portC);
+    for (int i = 0; i < 3 && !mutantDiffers; i++) {
+        for (int k = 0; k < 2 && !mutantDiffers; k++) {
+            const float _Complex right = alpha * x[i] * y[k];
+            mutantDiffers = REAL_OF(mutant[i][k]) != REAL_OF(right) || IMAG_OF(mutant[i][k]) != IMAG_OF(right);
+        }
+    }
+    report(mutantDiffers, "the outer-product mutant that indexes x by the nonzero differs from the header",
+           "the mutant agrees with the header, so the case below cannot see that bug");
 
-    // The shape and the count, which the host does answer.
-    hostC = NULL;
-    portC = NULL;
-    hostS = sparse_outer_product_dense_float_complex(3, 3, 2, 2.0f + 1.0fi, x, 1, y, indy, &hostC);
-    portS = RENAME(sparse_outer_product_dense_float_complex)(3, 3, 2, 2.0f + 1.0fi, x, 1, y, indy, &portC);
-    report(hostS == portS && hostS == SPARSE_SUCCESS && hostC != NULL && portC != NULL &&
-               sparse_get_matrix_number_of_rows(hostC) == RENAME(sparse_get_matrix_number_of_rows)(portC) &&
-               sparse_get_matrix_number_of_columns(hostC) == RENAME(sparse_get_matrix_number_of_columns)(portC) &&
-               sparse_get_matrix_nonzero_count(hostC) == RENAME(sparse_get_matrix_nonzero_count)(portC),
-           "an outer product: the shape and the nonzero count", "the statuses or the counts differ");
+    sparse_matrix_float_complex hostC = NULL, portC = NULL;
+    sparse_status hostS = sparse_outer_product_dense_float_complex(3, 3, 2, alpha, x, 1, y, indy, &hostC);
+    sparse_status portS = RENAME(sparse_outer_product_dense_float_complex)(3, 3, 2, alpha, x, 1, y, indy, &portC);
+    int ok = hostS == portS && hostS == SPARSE_SUCCESS && hostC != NULL && portC != NULL &&
+             sparse_get_matrix_number_of_rows(hostC) == RENAME(sparse_get_matrix_number_of_rows)(portC) &&
+             sparse_get_matrix_nonzero_count(hostC) == RENAME(sparse_get_matrix_nonzero_count)(portC);
+    for (sparse_index r = 0; r < 3 && ok; r++) {
+        sparse_index hostEnd = 0, portEnd = 0;
+        float _Complex hostValues[4], portValues[4];
+        sparse_index hostIndices[4], portIndices[4];
+        memset(hostValues, 0x5a, sizeof(hostValues));
+        memset(portValues, 0x5a, sizeof(portValues));
+        memset(hostIndices, 0x5a, sizeof(hostIndices));
+        memset(portIndices, 0x5a, sizeof(portIndices));
+        hostS = sparse_extract_sparse_row_float_complex(hostC, r, 0, &hostEnd, 4, hostValues, hostIndices);
+        portS = RENAME(sparse_extract_sparse_row_float_complex)(portC, r, 0, &portEnd, 4, portValues, portIndices);
+        // Only the slots the return value says were written are compared; both sides leave the rest alone.
+        ok = hostS == portS && portS == (long)2 && portEnd == 3 && hostEnd == 3 && portIndices[0] == 0 &&
+             portIndices[1] == 2;
+        for (int k = 0; k < 2 && ok; k++) {
+            // The expectation, computed by the compiler here from the same inputs and with the indices
+            // named: row r, nonzero k.
+            const float _Complex want = alpha * x[r] * y[k];
+            ok = same_complex(REAL_OF(portValues[k]), IMAG_OF(portValues[k]), REAL_OF(want), IMAG_OF(want), 1e-5,
+                             "an entry of the product against the header") &&
+                 same_complex(REAL_OF(portValues[k]), IMAG_OF(portValues[k]), REAL_OF(hostValues[k]),
+                              IMAG_OF(hostValues[k]), 1e-5, "an entry of the product against the host");
+        }
+    }
+    if (!ok) {
+        snprintf(detail, sizeof(detail), "status %d against %d, or an entry of the product differs", (int)hostS,
+                 (int)portS);
+    }
+    report(ok, "an outer product with x of three different values, against the header and the host", detail);
     if (hostC) sparse_matrix_destroy(hostC);
     if (portC) RENAME(sparse_matrix_destroy)(portC);
 

@@ -1100,6 +1100,54 @@ static void outer(void)
         {2, 3, 2, 0.0f, {0, 2, 0}, {3, 4, 0}, 1},
         {2, 3, 4, 1.0f, {0, 1, 2}, {3, 4, 5}, 0},
     };
+    // x of three different values, and the mutant that reads it at the wrong index. Every case below
+    // passes x = {1, 1}, where reading x at k instead of at the row gives the same number, so this is the
+    // case that can see that bug: C[i, indy[k]] = alpha * x[i] * y[k], and the mutant answers
+    // alpha * x[k] * y[k] for every row.
+    {
+        const sparse_index indy[2] = {0, 2};
+        const float x[3] = {1, 2, 3}, y[2] = {5, -6};
+        float mutant[3][2];
+        int differs = 0;
+        for (int k = 0; k < 2; k++) {
+            for (int i = 0; i < 3; i++) {
+                mutant[i][k] = x[k] * y[k];
+            }
+        }
+        for (int i = 0; i < 3 && !differs; i++) {
+            for (int k = 0; k < 2 && !differs; k++) {
+                differs = mutant[i][k] != x[i] * y[k];
+            }
+        }
+        report(differs, "the outer-product mutant that indexes x by the nonzero differs from the header",
+               "the mutant agrees with the header, so the case below cannot see that bug");
+
+        sparse_matrix_float mine = NULL, theirs = NULL;
+        sparse_status ma = RENAME(sparse_outer_product_dense_float)(3, 3, 2, 1.0f, x, 1, y, indy, &mine);
+        sparse_status mb = sparse_outer_product_dense_float(3, 3, 2, 1.0f, x, 1, y, indy, &theirs);
+        int passed = ma == mb;
+        for (int i = 0; i < 3 && passed; i++) {
+            sparse_index mineEnd = 0, theirsEnd = 0;
+            float mineValues[4], theirsValues[4];
+            sparse_index mineIndices[4], theirsIndices[4];
+            ma = RENAME(sparse_extract_sparse_row_float)(mine, i, 0, &mineEnd, 4, mineValues, mineIndices);
+            mb = sparse_extract_sparse_row_float(theirs, i, 0, &theirsEnd, 4, theirsValues, theirsIndices);
+            passed = ma == mb && mineEnd == theirsEnd;
+            for (int k = 0; k < 2 && passed; k++) {
+                // The expectation, computed by the compiler here from the same inputs and with the indices
+                // named: row i, nonzero k.
+                float want = x[i] * y[k];
+                passed = mineValues[k] == want && theirsValues[k] == want;
+            }
+        }
+        if (!passed) {
+            snprintf(detail, sizeof detail, "row by row: the port and the host do not both answer x[i] * y[k]");
+        }
+        report(passed, "an outer product with x of three different values, against the header and the host",
+               detail);
+        RENAME(sparse_matrix_destroy)(mine);
+        sparse_matrix_destroy(theirs);
+    }
     for (size_t k = 0; k < sizeof(cases) / sizeof(cases[0]); k++) {
         float x[2] = {1, 1};
         sparse_matrix_float mine = NULL, theirs = NULL;
