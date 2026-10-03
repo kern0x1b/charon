@@ -5,7 +5,27 @@ FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation
 DEVICE=${DEVICE:-$here/../../device}
 CHECK=${CHECK:-$DEVICE}
 BUILD=${BUILD:-$(mktemp -d)}
-sources="NSURLSession.m NSURLSessionTaskMetrics.m NSURLSessionConfiguration.m NSURLSessionConfiguration+BackgroundIdentifier.m NSURLSessionTask+Priority.m NSURLSession+AllTasks.m"
+# THE WHOLE NSURLSession FAMILY, DISCOVERED, not a list kept beside it. Six of the fourteen were named here
+# and two of the eight that were missing broke the run in turn, in the two ways a missing source does: the
+# link said `Undefined symbols _charon_network_cellular` (CharonNetworkAccess.c defines it, and it is the
+# port's own C helper, a file of its own for the reason its header gives), and then, with that linked, a task
+# answered -delegate with doesNotRecognizeSelector: because -[NSURLSessionTask delegate] lives in
+# NSURLSessionTask+Delegate15.m, a category nothing had pulled in. A category is reached through objc_msgSend,
+# so no linker error names it: only the sources decide. The family is fourteen files and every one of them
+# belongs to the framework this harness compares, so all fourteen are built and the next one is picked up.
+sources=$(ls "$FOUNDATION"/NSURLSession*.m | sed -e "s|^$FOUNDATION/||" | sort)
+[ -n "$sources" ] || { echo "FAIL: no NSURLSession*.m in $FOUNDATION, so the port's own session code is not built"; exit 1; }
+# The one private class the family reaches. NSURLSessionStreamTask9.m calls NSURLSessionStreamTaskState, which
+# the port defines for itself in CharonStreamTaskState.m - a class no SDK header declares, so it carries a name
+# of its own that has nothing to do with the session. It is named here because the LINK is what finds a missing
+# one: a class is reached through objc_msgSend and only an undefined _OBJC_CLASS_$_ symbol names it.
+sources="$sources CharonStreamTaskState.m"
+# ... and the port's plain C with them: a C function shared between backport files lives beside neither of them,
+# so it is a file of its own and the family glob cannot reach it. CharonNetworkAccess.c is that file here.
+for source in "$FOUNDATION"/*.c; do
+    [ -f "$source" ] || { echo "FAIL: no .c in $FOUNDATION, so a C helper the port's own sources call is not built"; exit 1; }
+    sources="$sources $(basename "$source")"
+done
 quiet="-Wno-deprecated-declarations -Wno-incomplete-implementation -Wno-objc-protocol-method-implementation"
 mkdir -p "$BUILD/plain" "$BUILD/renamed"
 for source in $sources; do
