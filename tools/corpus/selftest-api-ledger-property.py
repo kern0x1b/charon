@@ -100,13 +100,15 @@ check("an owner in no inventory at all still reads missing",
 # The call site, which is a defect of its own: a matcher that is right and a caller that forgets to
 # hand it the protocols moves nothing, and every check above still passes. Checked against main's
 # source text rather than by running it, because build() needs a gate, a dyld cache and an SDK to
-# reach this line; it is a wiring check and says so. Dropping `built_protocols` from the call leaves
-# every other check in this file green.
+# reach that line; it is a wiring check and says so. Dropping `built_protocols` from the call leaves
+# every other check in this file green. The sixth argument is the declared getter the surface
+# records (selftest-api-ledger-getter.py), which arrived after this one and has its own checks.
 source = open(os.path.join(HERE, "api-ledger.py"), encoding="utf-8").read()
 call = re.search(r"classify_property\(([^)]*)\)", source[source.index("def main("):])
 check("main() passes both protocol inventories to classify_property",
       sorted(part.strip() for part in call.group(1).split(",")),
-      ["api", "built_classes", "built_protocols", "release_classes", "release_protocols"])
+      ['api', 'built_classes', 'built_protocols', 'getter=row["getter"]', 'release_classes',
+       'release_protocols'])
 
 print("\n%d checks, %d failures" % (10 + len(failures), len(failures)))
 sys.exit(1 if failures else 0)

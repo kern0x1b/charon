@@ -9,6 +9,12 @@ import sys
 import tempfile
 
 LINE = re.compile(r"^([| ]*)[|`]-(\w+) 0x[0-9a-f]+ ?(.*)$")
+# The accessor a property declares under a different name: `-getter ObjCMethod 0x... 'isSupported'`
+# is a child of the property, one level deeper, and it does NOT match LINE -- after the node name
+# `getter` comes the type `ObjCMethod`, not an address, so LINE's `\w+ 0x[0-9a-f]+` cannot span it.
+# A property whose accessor is its own name has no such child at all, so a hit here is only ever
+# what the header says is different.
+ACCESSOR = re.compile(r"^([| ]*)[|`]-(getter|setter) ObjCMethod 0x[0-9a-f]+ '([^']*)'")
 PATH = re.compile(r"(/[^\s:<>,]+\.\w+):\d+:\d+")
 ATTRIBUTE = re.compile(r"\b(ios|maccatalyst) (\d+(?:\.\d+){0,2}) \d+(?:\.\d+){0,2} \d+(?:\.\d+){0,2}( Unavailable)?")
 # The same attribute with all three numbers kept: introduced, deprecated, obsoleted (0 = not set;
@@ -64,7 +70,11 @@ class Surface:
     that is tvOS's or visionOS's and not iOS's at all, which is a different fact from
     NS_UNAVAILABLE and the surface keeps the two apart only here. `owns` says which header
     paths belong to this walk (default: the framework's own bundle); `anonymous` counts the enums
-    and structs that have no name and so no row (their cases and members still get one)."""
+    and structs that have no name and so no row (their cases and members still get one). A property's
+    detail also carries `getter` and `setter` when -- and only when -- the header declared an accessor
+    other than the property's own name (`getter=isEnabled` prints a `getter ObjCMethod` child, which
+    a property with no attribute does not have), because a property is read through its accessors and
+    `AVAudioSessionCapability.supported` is not read through `-supported`."""
 
     def __init__(self, framework, full=False, owns=None):
         self.framework = framework
@@ -81,6 +91,7 @@ class Surface:
         self.target = None
         self.target_depth = None
         self.target_attrs = []
+        self.accessors = {}
         self.enum_open = False
 
     def own(self, kind, name, api):
@@ -91,9 +102,11 @@ class Surface:
             self.rows[api] = (kind, version)
             self.details[api] = detail
 
-    def resolve(self, kind):
+    def resolve(self, kind, accessors=None):
         """The declaration's own attributes folded into one detail, and the container's where the
-        declaration has none."""
+        declaration has none. A property also carries what the header declared for its accessors
+        (`accessors`), which is the only place the surface can know that `enabled` is read through
+        `isEnabled`."""
         introduced = None
         deprecated = None
         obsoleted = None
@@ -119,15 +132,22 @@ class Surface:
                 obsoleted = container["obsoleted"]
                 unavailable = container["unavailable"]
                 unavailable_ios = container.get("unavailable_ios", False)
-        return {"introduced": introduced, "deprecated": deprecated, "obsoleted": obsoleted,
-                "unavailable": unavailable, "unavailable_ios": unavailable_ios, "via": via}
+        detail = {"introduced": introduced, "deprecated": deprecated, "obsoleted": obsoleted,
+                  "unavailable": unavailable, "unavailable_ios": unavailable_ios, "via": via}
+        if kind == "property" and accessors:
+            detail.update(accessors)
+        return detail
 
     def finish_target(self):
+        # accessors is taken and cleared before the early return below: it belongs to the target
+        # being finished, so a target that was set to None (an implicit method) must not leave its
+        # accessors to be read by the next property.
+        accessors, self.accessors = self.accessors, {}
         if self.target is None:
             return
         api, kind, versions = self.target
         chosen = min(versions) if versions else None
-        detail = self.resolve(kind)
+        detail = self.resolve(kind, accessors)
         if api is not None:
             self.record(api, "constant" if kind == "case" else kind, chosen if chosen is not None else (self.container_version if kind in ("method", "property", "case") else None), detail)
         if kind in ("class", "protocol"):
@@ -141,6 +161,16 @@ class Surface:
 
     def feed(self, lines):
         for line in lines:
+            accessor = ACCESSOR.match(line)
+            if accessor:
+                # Read before LINE, which does not match these lines at all: the name is followed
+                # by a type, not by an address. Only a property's own child counts -- depth is the
+                # property's depth plus one -- and it is collected, not recorded here, because
+                # resolve() is what folds the availability and the accessors into one detail.
+                if self.target is not None and self.target[1] == "property" \
+                        and len(accessor.group(1)) // 2 == self.target_depth + 1:
+                    self.accessors[accessor.group(2)] = accessor.group(3)
+                continue
             match = LINE.match(line)
             if not match:
                 continue

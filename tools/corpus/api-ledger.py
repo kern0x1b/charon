@@ -69,7 +69,7 @@ CHARON_ROOT = os.path.realpath(os.path.join(HERE, "..", ".."))
 TARGET = "armv7-apple-ios6.1.3"
 
 SURFACE_COLUMNS = ["framework", "kind", "lang", "api", "introduced", "deprecated", "obsoleted",
-                   "unavailable", "via", "registry", "owner-registry", "demand-rank",
+                   "unavailable", "via", "getter", "registry", "owner-registry", "demand-rank",
                    "demand-severity", "demand-apps", "demand-telegram", "impl-lead", "impl-file-lead"]
 
 # The run-time kinds resolve against the built libraries and the release cache; the header-only and
@@ -423,17 +423,25 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
 
 
 def classify_property(api, built_classes, release_classes, built_protocols=None,
-                      release_protocols=None):
+                      release_protocols=None, getter=None, setter=None):
     """A property row's owner is named without saying whether it is a class or a protocol, and the
     surface has both, so both are searched -- the same question classify_method answers, and for the
     same reason. A property is read through its accessors, so it is the accessors that are looked
     for, in the instance set and in the class set: a `@property (class, readonly)` is read through a
-    class method, and its getter is a class selector and never an instance one."""
+    class method, and its getter is a class selector and never an instance one.
+
+    `getter` and `setter` are what the header declared (`@property (readonly, getter=isSupported)`),
+    which the surface records and which is the only way to know the accessor is not the property's own
+    name: `AVAudioSessionCapability.supported` is read through `-isSupported`, and a selector derived
+    from the name alone asks for `-supported`, which no release declares. They arrive as clang prints
+    them (`isSupported`, `setSupported:`) and are turned into selectors here, the same leading dash
+    the inventories carry. Where the header declared nothing the accessor is derived as it was before."""
     m = PROPERTY_RE.match(api)
     if not m:
         return "undecided", "property api does not parse as Class.prop: %r" % api
     owner, prop = m.groups()
-    getter, setter = "-" + prop, "-set" + prop[0].upper() + prop[1:] + ":"
+    getter = "-" + getter if getter else "-" + prop
+    setter = "-" + setter if setter else "-set" + prop[0].upper() + prop[1:] + ":"
     for classes, why in ((built_classes, None), (release_classes, "release-native: 6.1.3 dyld cache")):
         entry = classes.get(owner)
         if not entry:
@@ -1258,7 +1266,7 @@ def main():
                                                  built_protocols, release_protocols)
             else:
                 status, reason = classify_property(api, built_classes, release_classes, built_protocols,
-                                            release_protocols)
+                                            release_protocols, getter=row["getter"])
             # The decide pass: a registry that records this row absent/inert/ignored has decided it,
             # with a reason, so it is not a row anybody is going to build.
             decided = decide(row, registries, diagnostics) if status == "missing" else None

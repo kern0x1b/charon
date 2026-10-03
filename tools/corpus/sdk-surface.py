@@ -30,6 +30,11 @@ Columns of the surface table:
                     with no annotation extends). The last two are a FLOOR: the member arrived in that
                     version or later, not necessarily in it (`MTLGPUFamilyApple8` says 13.0 through its
                     enum and came with iOS 16). Rows with no version at all are not in the table.
+    getter          the accessor a property's header declared, when it is not the property's own name
+                    (`@property (readonly, getter=isSupported)` -> `isSupported`); empty for every row
+                    the header declared nothing different for, and for every row that is not a property.
+                    A property is read through its accessors, so this is what says `supported` is read
+                    through `-isSupported` and not through `-supported`.
     impl-lead       a lead to where an implementation might be read, by file name: swift-foundation,
                     swift-corelibs-foundation, apple-oss (CF, objc4, libdispatch), OpenCombine, OpenSwiftUI,
                     WinObjC; empty where none of those has a file of that name. impl-file-lead names the file.
@@ -300,7 +305,12 @@ def enrich(row, registry, demand, impl):
 
 
 ENRICHED = ["registry", "owner-registry", "demand-rank", "demand-severity", "demand-apps", "demand-telegram", "impl-lead", "impl-file-lead"]
-SURFACE_HEAD = ["framework", "kind", "lang", "api", "introduced", "deprecated", "obsoleted", "unavailable", "via"] + ENRICHED
+# `getter` sits with the declaration's own facts, next to `via`, and not with the enrichment: it is
+# what the header declared (`getter=isSupported`), empty for every row the header declared nothing
+# different for. It goes after `via` rather than at the end so the columns that describe the
+# declaration stay together; the readers that index the row positionally (tools/intents/
+# gen-registry.py:211, tests/backports/host/matter/members.m:101) only ever reach the first four.
+SURFACE_HEAD = ["framework", "kind", "lang", "api", "introduced", "deprecated", "obsoleted", "unavailable", "via", "getter"] + ENRICHED
 REMOVED_HEAD = ["framework", "kind", "lang", "api", "introduced", "deprecated", "old-obsoleted", "state", "new-framework", "new-introduced",
                 "new-obsoleted", "new-unavailable"] + ENRICHED
 
@@ -351,7 +361,7 @@ def build(options):
     enriched = []
     for row in surface:
         enriched.append([row["framework"], row["kind"], row["lang"], row["api"], row["introduced"], row["deprecated"],
-                         row["obsoleted"], row["unavailable"], row["via"]] + enrich(row, registry, demand, impl))
+                         row["obsoleted"], row["unavailable"], row["via"], row.get("getter", "")] + enrich(row, registry, demand, impl))
     tsv(os.path.join(CORPUS, stem + "-surface.tsv"), SURFACE_HEAD, enriched)
 
     present = {}
