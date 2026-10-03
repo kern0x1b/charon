@@ -169,6 +169,54 @@ STORE_EFFECT = {
         "ever added to Siri; charon_shortcutSuggestions reads the suggestions back",
 }
 
+# Rows a plain run does not reproduce, read from curated-rows.json beside this file and keyed
+# "api\tkind".  The curated prose used to live only in the generated JSON, which is why the next
+# generate.sh overwrote it: every other table in this file is in the tool, and a hand edit to a row's
+# prose was in neither.  A key here REPLACES the emitted row whole, key order included, because these
+# files' key order is not the generator's (a hand-set row carries `effect` where an emitted one does
+# not) and a fixed point that is byte for byte has to carry the order too.  Replacing the row is also
+# what lets an `absent` row become `implemented`; an overlay would have to invent the fields the other
+# shape has.
+#
+# A key that matches no row this run emitted is an error, not a silent no-op: a table entry for a row
+# the generator no longer writes is a claim about a row that is not there.
+CURATED_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "curated-rows.json")
+
+
+def curated_rows(name):
+    """The curated rows for the file this run writes, keyed "api\tkind".  Nesting by file is what
+    lets one invocation of this script - which writes exactly one file, and generate.sh writes all of
+    them - tell "this row belongs to another file" from "this row is gone"."""
+    if not os.path.exists(CURATED_PATH):
+        return {}
+    return json.load(open(CURATED_PATH, encoding="utf-8")).get(name, {})
+
+
+def apply_curated(entries, curated):
+    """Replace the rows curated-rows.json holds for this file.
+
+    A key that matched no row this run emitted is an error rather than a silent no-op: the generator
+    no longer writes that row, so the table is making a claim about a row that is not there. generate.sh
+    writes every registry file, so every key in the table is checked by the end of a run.
+    """
+    if not curated:
+        return 0
+    index = {(entry["api"], entry["kind"]): n for n, entry in enumerate(entries)}
+    replaced, stale = 0, []
+    for key in sorted(curated):
+        api, _, kind = key.partition("\t")
+        where = index.get((api, kind))
+        if where is None:
+            stale.append(key)
+            continue
+        entries[where] = curated[key]
+        replaced += 1
+    if stale:
+        raise SystemExit("curated-rows.json holds %d row(s) of this file this run emitted no row "
+                         "for: %s" % (len(stale), "; ".join(stale[:5])))
+    return replaced
+
+
 LATER_GROUP = "a class of a group of this delivery that is not in this one"
 
 
@@ -831,6 +879,9 @@ def main():
         entries.append(absent(api, kind, intro, reason, options.facts))
         missing["unanswered member"] += 1
 
+    replaced = apply_curated(entries, curated_rows(os.path.basename(options.out)))
+    if replaced:
+        print("  %d row(s) from curated-rows.json" % replaced)
     entries.sort(key=lambda entry: (entry["kind"], entry["api"]))
     document = {"framework": options.framework, "entries": entries}
     with open(options.out, "w") as handle:
