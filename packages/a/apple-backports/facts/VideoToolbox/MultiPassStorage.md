@@ -28,7 +28,7 @@ host, which is the property a caller compares it for.
 | the same, `kVTMultiPassStorageCreationOption_DoNotDelete` = true | `0`; the file **survives** `CFRelease` | the same |
 | a path whose file **already exists** | `-12214` `kVTMultiPassStorageInvalidErr`, no session | the same, and the file is left untouched |
 | `fileURL` = NULL | `0`, a session | `0`, a session, a unique name in the temporary directory |
-| a path whose parent directory does not exist | `-17913`, no file created | `kVTAllocationFailedErr` (-10803) - recorded, not guessed |
+| a path whose parent directory does not exist | `-17913`, no file created | `-17913`, the measured value |
 | `Close` a second time | `-12214` `kVTMultiPassStorageInvalidErr` | the same |
 
 **Two of this file's answers were wrong before the host was asked, and the measurements are what fixed
@@ -56,13 +56,25 @@ implements is the file's **lifecycle**, because that is what the header specifie
 observe; the contents are Apple's, and they are not reproduced. A caller that hands this object to a real
 encoder will find the encoder does not read the file, and that is stated here rather than discovered.
 
-## `-17913` is not a VideoToolbox code
+## `-17913` is measured, and no header here names it
 
-A path whose parent directory does not exist gives `-17913` on the host, and `-17913` is not in
-`VTErrors.h` - not in VideoToolbox's and not in CoreMedia's on this machine. The port answers
-`kVTAllocationFailedErr` (-10803), the release's own allocation-failure code, and says so at the call site
-rather than guessing at a number it cannot name. `createFileAtPath:contents:attributes:` fails in that case
-because the directory is missing, which is the same condition Apple refuses.
+A path whose parent directory does not exist gives **`-17913`** on the host. An earlier version of this file
+answered `kVTAllocationFailedErr` (-10803) there and said it was guessing; the coordinator's answer is that a
+literal is native when it is the measured value with its source named next to it, and answering a different
+code where the oracle says otherwise is a divergence. So the port answers `-17913`, as
+`kCharonVTMultiPassStorageDirectoryMissing` in `VTMultiPassStorage9_0.m`, with the measurement in the comment
+above the constant.
+
+**The framework that owns -17913 could not be identified, and is recorded as not identified.**
+`grep -rn 17913` over every framework's headers in the 16.4 SDK, the iPhoneOS 26.2 SDK and the macOS SDK
+finds nothing: it is not in `VTErrors.h` and it is not in any other header on this machine. Naming a framework
+for it would be a guess, so the facts say "not named anywhere here" instead.
+
+**The parent directory is checked on its own**, before the file is created, so `-17913` answers the one
+condition it was measured giving and is not stretched over create failures nobody measured - a file that cannot
+be created for some other reason still answers `kVTAllocationFailedErr`. Apple's single code covers all of them
+because that is what Apple's implementation does; scoping the port's answer to the measured condition keeps it
+from claiming a mapping it has not seen.
 
 ## How this was checked
 

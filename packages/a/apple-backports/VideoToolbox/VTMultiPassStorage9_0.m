@@ -50,6 +50,17 @@
 // first. The class is NOT called VTMultiPassStorage: a class with Apple's name would collide with the
 // host's own class in any differential compiled against the host's SDK, and this library must compile in
 // both places.
+// -17913: the code Apple's own VTMultiPassStorageCreate answers when the path it was given has no parent
+// directory. MEASURED on this host's own VideoToolbox, 2026-10-03, with a path one level under a directory
+// that was never created.
+//
+// NO HEADER ON THIS MACHINE NAMES IT. It is not in VideoToolbox's VTErrors.h, and `grep -rn 17913` over
+// every framework's headers in the 16.4 SDK, the iPhoneOS 26.2 SDK and the macOS SDK finds nothing, so the
+// framework that owns the code could not be identified and is not guessed at here. It is spelled as a named
+// constant with its source rather than as a bare literal in the middle of a function, because a number with
+// no name next to it is a number nobody can check later.
+static const OSStatus kCharonVTMultiPassStorageDirectoryMissing = -17913;
+
 @interface CharonVTMultiPassStorage : NSObject {
 @public
     CFStringRef _path;          // the backing file's path; released in -dealloc
@@ -186,12 +197,20 @@ OSStatus VTMultiPassStorageCreate(
         CFRelease(path);
         return kVTMultiPassStorageInvalidErr;
     }
+    // The parent directory is checked on its own, so the measured code answers the measured condition and
+    // is not stretched over conditions nobody measured. Apple's Create gives -17913 for a path whose parent
+    // directory does not exist; for a file that cannot be created for some other reason this port answers
+    // the release's own kVTAllocationFailedErr rather than borrowing -17913 for a case it was not measured
+    // giving it.
+    NSString *parent = [pathString stringByDeletingLastPathComponent];
+    if (![parent length] || ![[NSFileManager defaultManager] fileExistsAtPath:parent]) {
+        CFRelease(url);
+        CFRelease(path);
+        return kCharonVTMultiPassStorageDirectoryMissing;
+    }
     if (![[NSFileManager defaultManager] createFileAtPath:pathString
                                                 contents:[NSData data]
                                               attributes:nil]) {
-        // Apple's own answer for a path whose parent directory does not exist is measured as -17913, which
-        // is not a VideoToolbox code; the release's own allocation-failure code is the nearest this port
-        // has, and the difference is recorded rather than guessed at.
         CFRelease(url);
         CFRelease(path);
         return kVTAllocationFailedErr;
