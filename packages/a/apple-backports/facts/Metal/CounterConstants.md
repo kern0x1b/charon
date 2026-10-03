@@ -60,8 +60,8 @@ holds **NULL**, and a name that is there and holds a string whose **length and b
 Comparing the text without the length would pass a string that is a prefix of Apple's — which is
 exactly the `PostTessellationCycle` near-miss above.
 
-**No device is created.** These are strings, and `MTLCreateSystemDefaultDevice()` hangs on a machine
-with no GPU.
+**No device is created.** These are strings, and a descriptor asks a device nothing (the measurement
+that settles it, and the machine these cases run on, are in `facts/Metal/DeviceOnThisMachine.md`).
 
 ## The mutants
 

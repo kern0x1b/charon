@@ -13,8 +13,8 @@
 // siblings are carried.
 //
 // NOTHING HERE CREATES A DEVICE, and the host differential is built on that. Each side is
-// `[[X alloc] init]`, the port's class and Apple's, and `MTLCreateSystemDefaultDevice()` HANGS on a
-// machine with no GPU, so no case in this file calls it.
+// `[[X alloc] init]`, the port's class and Apple's, and a descriptor asks a device nothing - which
+// facts/Metal/DeviceOnThisMachine.md measures - so no case in this file creates one.
 //
 // THE SAMPLE BUFFER EACH ATTACHMENT CARRIES IS A DEVICE-MADE OBJECT and there is no facility in this
 // port that makes one - not this release's and not the port's - so it is CARRIED AND NOT MEASURED:
