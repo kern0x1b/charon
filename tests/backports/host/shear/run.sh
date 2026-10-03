@@ -25,6 +25,15 @@ mkdir -p "$build"
 # PLANT control removes the test that survives to show it.
 package_cflags="-Os -Wall -Wno-unguarded-availability-new -Wno-unguarded-availability"
 
+# SAN=1 builds the port's objects and this harness with the address and undefined-behaviour sanitizers, at the
+# package's own warning set but without its -Os, because an -Os build of a sanitizer's instrumentation is a
+# sanitizer that reports less. The comparison is unchanged: the same three answers, byte for byte.
+san=""
+if [ -n "${SAN:-}" ]; then
+    san="-fsanitize=address,undefined -fno-omit-frame-pointer -g -O1"
+    package_cflags="$package_cflags -Wno-deprecated-declarations -Wno-unguarded-availability -Wno-nullability-completeness"
+fi
+
 # PLANT=<substring> copies the four band files and the shared header to a scratch directory with that line
 # removed, and the run is then REQUIRED to fail: a red control for the NULL tests. The copy is made by a script
 # that counts its target first, because `str.replace` on a missing needle is a silent no-op and a "planted" run
@@ -77,7 +86,7 @@ objects=""
 for source in vImageShear70.m vImageShear80.m vImageShear100.m vImageShear150.m; do
     # $package_cflags is deliberately unquoted: it is a list of flags, and the count of diagnostics per
     # object is what this prints, because a warning here is a warning the package build would print too.
-    diagnostics=$(xcrun clang -c -fobjc-arc $package_cflags $renames -I"$ACCELERATE" -I"$SHEARS" \
+    diagnostics=$(xcrun clang -c -fobjc-arc $san $package_cflags $renames -I"$ACCELERATE" -I"$SHEARS" \
         "$SHEARS/$source" -o "$build/$(basename "$source").o" 2>&1 | grep -v "^$" || true)
     errors=$(printf '%s\n' "$diagnostics" | grep -c " error: " || true)
     warnings=$(printf '%s\n' "$diagnostics" | grep -c " warning: " || true)
@@ -88,7 +97,7 @@ done
 
 # The differential includes the port's own filter header to make a filter the port will read, so the include
 # path is the port's directory whether or not the objects above were planted.
-xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -I"$ACCELERATE" -I"$SHEARS" \
+xcrun clang -fobjc-arc $san -Wall -Wno-deprecated-declarations -I"$ACCELERATE" -I"$SHEARS" \
     "$here/differential.m" $objects \
     -framework Foundation -framework Accelerate -o "$build/differential"
 "$build/differential" > "$build/log" 2>&1 && result=0 || result=$?

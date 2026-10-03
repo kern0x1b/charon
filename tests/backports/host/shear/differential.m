@@ -459,7 +459,11 @@ static void one(const Shear *shear, vImagePixelCount srcW, vImagePixelCount srcH
                 double slope, float scale, vImage_Flags flags, int lobes, const char *label)
 {
     size_t pixelBytes = bytesPerPixel(shear);
-    size_t pad = pixelBytes + 3;   // padding past the width, so a write past it is a difference
+    // The padding past the width, so a write past it is a difference - and EVEN, because an odd one starts every
+    // second row at an odd address and a sixteen-bit shape then takes a misaligned store, which
+    // UndefinedBehaviorSanitizer names in the port's own header and which has nothing to do with the port.
+    size_t pad = pixelBytes + 3;
+    if (pad % 2) pad++;
     vImage_Buffer src = makeBuffer(srcW, srcH, pixelBytes, 0), theirDest = makeBuffer(dstW, dstH, pixelBytes, pad),
                  ourDest = makeBuffer(dstW, dstH, pixelBytes, pad), mine = makeBuffer(dstW, dstH, pixelBytes, pad);
     fillSource(&src, shear);
@@ -476,9 +480,6 @@ static void one(const Shear *shear, vImagePixelCount srcW, vImagePixelCount srcH
     CharonResampleFilterInit(&portFilter, scale, flags);
     vImage_Error ours = shear->port(&src, &ourDest, along0, cross0, translate, slope, &portFilter, back, flags);
 
-    expectDestination(shear, &src, &theirDest, along0, cross0, translate, slope, scale, lobes,
-                      (flags & kvImageEdgeExtend) ? 1 : 0, backScale, &mine);
-
     static int dumped = 0;
     char what[256], note[320];
     snprintf(what, sizeof what, "%s %s %ux%u into %ux%u offsets %u,%u translate %g slope %g scale %g flags 0x%x",
@@ -491,6 +492,10 @@ static void one(const Shear *shear, vImagePixelCount srcW, vImagePixelCount srcH
         printf("FAIL %s: the host answers %ld and the port %ld\n", what, (long)theirs, (long)ours);
     }
     if (theirs != kvImageNoError) {
+        // The expectation is NOT computed for a refused case, and AddressSanitizer says why it must not be:
+        // the release refuses a destination whose across extent exceeds the source's, so this harness's own
+        // walk would name a source row that does not exist and read past the caller's buffer.
+        //
         // A refused case writes nothing on either side, and the guards must still be intact: the whole
         // destination is the guard byte, on both sides.
         if (!sameBuffer(note, sizeof note, "the case was refused and one side wrote over the guard",
@@ -504,6 +509,9 @@ static void one(const Shear *shear, vImagePixelCount srcW, vImagePixelCount srcH
     }
     // DUMP=1 prints the first row of all three answers for the first few divergences, which is what says WHERE
     // two of them part company; the byte offset alone does not.
+    expectDestination(shear, &src, &theirDest, along0, cross0, translate, slope, scale, lobes,
+                      (flags & kvImageEdgeExtend) ? 1 : 0, backScale, &mine);
+
     if (!sameBuffer(note, sizeof note, "the port and the host differ",
                     (const uint8_t *)theirDest.data, (const uint8_t *)ourDest.data, &theirDest,
                     "host against port")) {
