@@ -237,19 +237,24 @@ capability the release cannot have, carried as the truthful constant.
   this bullet was wrong**: "no 6.x buffer path has" a renderer a `CMSampleBuffer` can be timed
   against is not true - `AudioToolbox` on 6.1.3 armv7 exports `_AudioQueueNewOutput`,
   `_AudioQueueAllocateBuffer`, `_AudioQueueEnqueueBuffer` and `_AudioQueueFlush`, `CoreMedia`
-  exports `_CMTimebaseCreate`, `_CMTimebaseSetTime` and `_CMTimebaseGetTime`, and
+  exports `_CMTimebaseCreateWithMasterClock`, `_CMTimebaseSetTime` and `_CMTimebaseGetTime`
+  (the plain `_CMTimebaseCreate` is **not** one of them - it is 0 in this release's CoreMedia),
+  and
   `_CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer` is there to get the audio out of a
-  sample buffer. Measured further, the three rows split: **`AVSampleBufferAudioRenderer` is a wall**,
-  because `AudioQueueBuffer` has no time field and `AudioStreamPacketDescription` has none either, so
-  6.1.3's queue can only play from now and cannot honour a buffer's timestamp - while
-  **`AVSampleBufferRenderSynchronizer` is not**, because
-  `CMTimebaseCreateWithMasterClock(kCFAllocatorDefault, CMClockGetHostTimeClock(), &timebase)` is two
-  exported calls on this release and every member the synchronizer declares is a `CMTimebase` operation
-  beside it. The renderer stays absent; the synchronizer is buildable debt. Both rows' reasons now carry
-  their own measurement and [`SampleBufferRender11.md`](SampleBufferRender11.md) has the numbers, the
-  two-step that builds the clock, and the note that this machine's own AVFoundation cannot be the
-  oracle for either class - its SDK no longer declares the 11.0 API and the class there carries 51 own
-  instance methods of a later surface.
+  sample buffer.
+  **And the split that followed was wrong too**: `AudioQueueBuffer` carrying no time field is not
+  what decides it, because the time is not carried on the buffer - it is the tenth argument of
+  `_AudioQueueEnqueueBufferWithParameters`, which 6.1.3's `AudioToolbox` exports among its 43
+  `AudioQueue` symbols (`AudioQueue.h:1189`, and its note at :1181 that the sample time is relative to
+  the time the queue started). So neither class is a wall and both are carried: the port's own
+  `AVFoundation/AVSampleBufferRenderSynchronizer11.m`, `AVFoundation/AVSampleBufferAudioRenderer11.m`,
+  `AVFoundation/AVSampleBufferRenderSynchronizer12.m` and `AVFoundation/AVSampleBufferRenderSynchronizer14.m`,
+  one release each. [`SampleBufferRender11.md`](SampleBufferRender11.md) has the numbers, the two-step
+  that builds the clock, the eleven mutations of the differential that holds them against this
+  machine's own two classes, and the two claims of the earlier reading of this bullet that were wrong:
+  the 11.0 API *is* declared in this Mac's SDK for every member it has, so the class there is the
+  oracle and not a different thing (51 own instance methods, 39 for the synchronizer), and the release's
+  own `AVSampleBufferDisplayLayer` needs no backport because 6.1.3 carries it.
 - `AVCapturePhoto`: 6.1.3 captures a still through `AVCaptureStillImageOutput` and delivers a
   `CMSampleBufferRef` (`captureStillImageAsynchronouslyFromConnection:completionHandler:`,
   `availableImageDataCodecTypes`, `imageDataFormatType`, `previewImageSize`). There is no photo

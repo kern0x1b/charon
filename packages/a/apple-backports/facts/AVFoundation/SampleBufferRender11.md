@@ -1,121 +1,277 @@
-# The two 11.0 sample-buffer render classes: one cannot be timed on 6.1.3, the other can be built
+# The two 11.0 sample-buffer render classes, carried
 
-Two rows of `registry/AVFoundation/absent_AVFoundation.json`, `AVSampleBufferAudioRenderer` and
-`AVSampleBufferRenderSynchronizer`, plus the protocol `AVQueuedSampleBufferRendering` named in
-`Release11.md`. Both stay `absent`. What changed is that each row's reason is now a measurement instead of
-an impression, and the two point in OPPOSITE directions: the renderer is a wall, the synchronizer is not.
+`AVSampleBufferAudioRenderer`, `AVSampleBufferRenderSynchronizer` and the protocol
+`AVQueuedSampleBufferRendering`, all of them `absent` on 6.1.3 and all three now carried by the port's own
+objects. Four objects, one release each:
 
-## The renderer: a wall, and the wall is the queue
+| object | release | what it carries |
+| --- | --- | --- |
+| `AVFoundation/AVSampleBufferRenderSynchronizer11.m` | 11.0 | the class, and the eleven 11.0 members of the two classes and the protocol |
+| `AVFoundation/AVSampleBufferAudioRenderer11.m` | 11.0 | the renderer, on an AudioQueue |
+| `AVFoundation/AVSampleBufferRenderSynchronizer12.m` | 12.0 | `-currentTime` |
+| `AVFoundation/AVSampleBufferRenderSynchronizer14.m` | 14.5 | `-setRate:time:atHostTime:` |
 
-`AVSampleBufferAudioRenderer` must play a buffer "at sampleBuffer's output presentation timestamp, as
-interpreted by the timebase" (`AVQueuedSampleBufferRendering.h:60`). 6.1.3's AudioQueue cannot do that, and
-the three places that could have said otherwise all say the same thing:
+`AVFoundation/CharonAVSampleBufferRender.h` is the private header the three of them share: the one method
+the synchronizer says to a renderer when its rate changes, and the synchronizer's own seams.
 
-- **`AudioQueueBuffer` has no time field.** Its members are `mAudioDataBytesCapacity`, `mAudioData`,
-  `mAudioDataByteSize`, `mUserData`, `mPacketDescriptionCapacity`, `mPacketDescriptions` and
-  `mPacketDescriptionCount` - read from the SDK header the release's own AudioToolbox is built against.
-- **`AudioStreamPacketDescription` has three fields and none is a time**: `mStartOffset`,
-  `mVariableFramesInPacket`, `mDataByteSize`.
-- **Of the 43 exports matching `AudioQueue` in 6.1.3's AudioToolbox, the three time members all READ a
-  time**: `_AudioQueueGetCurrentTime`, `_AudioQueueDeviceGetNearestStartTime`,
-  `_AudioQueueDeviceTranslateTime`. Not one of them schedules a buffer at one, and there is no
-  `AudioQueueEnqueueBufferAtTime` among the 43.
+## The correction, and it is in the renderer's queue
 
-A queue that can only play from now cannot honour a timestamp, so this class is not carried, and its row
-now says exactly that instead of saying the release has no renderer. The release's own way to push
-buffers at a rate - `AVAudioEngine` with `AVAudioPlayerNode` and `AVAudioPCMBuffer`, which the port
-already carries - takes an `AVAudioPCMBuffer`, not a `CMSampleBuffer`.
+The row said `AVSampleBufferAudioRenderer` was a wall, and the wall was the queue: "of the 43 exports
+matching `AudioQueue` the three time members all READ a time, so a queue that can only play from now cannot
+honour a timestamp." **That is false, and the coordinator's reading was right.** Measured:
 
-## The synchronizer: NOT a wall, and here is the two-step that builds its clock
+    xmake l tools/image-exports.lua 6.1.3 armv7 AudioToolbox.framework/AudioToolbox AudioQueue
 
-This is the correction, and it is the one that matters for what a next session does. The plain
-`_CMTimebaseCreate` is **not** exported by 6.1.3's CoreMedia. The two-step form is:
+337 exports, 43 matching, and among them **`_AudioQueueEnqueueBufferWithParameters`**, whose tenth argument
+is the time to play the buffer at (AudioQueue.h:1189, and the note at :1181: "If you specify the time using
+the mSampleTime field of the AudioTimeStamp structure, the sample time is relative to the time the queue
+started"). So the timestamp never travels on the buffer - which is why `AudioQueueBuffer` has no time field
+and `AudioStreamPacketDescription` has none either - it is an argument of the enqueue. The mapping from a
+`CMTime` on the synchronizer's clock to that queue-relative sample time is read off the queue at the instant
+of the call:
 
-    CMTimebaseCreateWithMasterClock(kCFAllocatorDefault, CMClockGetHostTimeClock(), &timebase)
+- `_AudioQueueGetCurrentTime` answers the queue's sample time and the host time of that instant together;
+- the synchronizer's clock answers its own time, and its rate;
+- the frames between two times follow from the format's sample rate and the clock's rate.
 
-and **both halves are exported on this release**, read from CoreMedia's own export trie
-(1819 exports, 62 matching `Timebase`):
+Every one of those symbols is in the same 43, and so are the ten the renderer uses:
+`_AudioQueueNewOutput`, `_AudioQueueAllocateBuffer`, `_AudioQueueEnqueueBufferWithParameters`,
+`_AudioQueueReset`, `_AudioQueueStart`, `_AudioQueueStop`, `_AudioQueueGetCurrentTime`,
+`_AudioQueueFreeBuffer`, `_AudioQueueSetParameter`, `_AudioQueueDispose`.
 
-| symbol | on 6.1.3 armv7 |
+The synchronizer's half of the correction was already right and is re-measured here: the plain
+`_CMTimebaseCreate` is **0** in 6.1.3's CoreMedia (1819 exports, 62 matching `Timebase`) while
+`_CMTimebaseCreateWithMasterClock` and `_CMClockGetHostTimeClock` are both there, so the two-step
+`CMTimebaseCreateWithMasterClock(kCFAllocatorDefault, CMClockGetHostTimeClock(), &timebase)` is the call.
+Also there, and used: `_CMTimebaseSetTime`, `_CMTimebaseGetTime`, `_CMTimebaseSetRate`,
+`_CMTimebaseGetRate`, `_CMTimebaseSetRateAndAnchorTime`, `_CMTimebaseSetMasterTimebase`,
+`_CMTimebaseSetMasterClock`, `_CMTimebaseGetMasterTimebase`, and the dispatch-source timer pair
+`_CMTimebaseAddTimerDispatchSource`, `_CMTimebaseSetTimerDispatchSourceNextFireTime`,
+`_CMTimebaseRemoveTimerDispatchSource`. The private pre-4.0 `_FigTimebase*` spellings are in the same trie
+and are not used.
+
+## What the oracle answered, and how it was reached
+
+`tests/backports/host/avf-samplerender11` is one source compiled twice: once against this Mac's own
+AVFoundation - the ORACLE, from which every expectation in the join is read - and once with `-I standin`
+and the port's four objects linked in unmodified, against a stand-in release shaped like 6.1.3 (which
+carries none of the three names). **103 rows, 97 of them answered the same by both halves, five allowed
+differences, zero rows one side answers alone, zero unexplained.**
+
+The earlier reading of this page - "measured, this machine cannot answer the 11.0 questions ... the class
+that is there has 51 own instance methods ... The 11.0 names the port must carry - `-renderSampleBuffer:`,
+`-renderingAlgorithm`, `-currentTime`, `-isRendering`, `-isRenderingForwards`, `-finishRendering` - are not
+among them" - was wrong in a way worth naming, because it is the difference between a class that cannot be
+carried and one that can. Those six names **are not in the 16.4 header for this class at all**: they belong
+to `AVSampleBufferVideoRenderer` (14.0) and to the protocol of a later release. Every member the 16.4
+header *does* declare for `AVSampleBufferAudioRenderer` is present in this Mac's class, and so is every one
+for the synchronizer. Measured over `class_copyMethodList` on 2026-10-03: 51 own instance methods and 3 own
+class methods on the renderer (superclass `NSObject`, instance size 16), 39 own instance methods and 2 own
+class methods on the synchronizer, and the shared surface is
+`-init`, `-timebase`, `-status`, `-error`, `-volume`/`-setVolume:`, `-isMuted`/`-setMuted:`,
+`-audioTimePitchAlgorithm`/`-setAudioTimePitchAlgorithm:`, `-enqueueSampleBuffer:`, `-flush`,
+`-flushFromSourceTime:completionHandler:`, `-isReadyForMoreMediaData`,
+`-requestMediaDataWhenReadyOnQueue:usingBlock:`, `-stopRequestingMediaData`,
+`-hasSufficientMediaDataForReliablePlaybackStart` on the renderer, and `-timebase`, `-rate`/`-setRate:`,
+`-currentTime`, `-setRate:time:`, `-setRate:time:atHostTime:`, `-renderers`, `-addRenderer:`,
+`-removeRenderer:atTime:completionHandler:`, `-addPeriodicTimeObserverForInterval:queue:usingBlock:`,
+`-addBoundaryTimeObserverForTimes:queue:usingBlock:`, `-removeTimeObserver:` on the synchronizer. The two
+halves differ in how a renderer is attached (macOS spells it `-setRenderSynchronizer:error:`) and in the
+construction: macOS has a runtime class factory `+sampleBufferAudioRenderer` that no header here declares,
+and both builds therefore construct with `-init`, which is what the 16.4 header and this Mac's header
+between them leave as the way in.
+
+The other two claims of that reading, corrected the same way:
+
+- "the release's own `AVSampleBufferDisplayLayer` ... which the port carries in
+  `AVFoundation/AVSampleBufferDisplayLayer8.m`" - there is no such file, and none is needed: the display
+  layer is on 6.1.3 itself (first held rung 6.0), so the release carries it.
+- "the 11.0 declarations are in the 26.2 iOS SDK the port compiles against" - the port compiles against
+  the 16.4 iOS SDK, and there is no 26.2 SDK on this machine.
+
+### The synchronizer, measured
+
+| question | this Mac's own class | this port |
+| --- | --- | --- |
+| `-timebase` at `-init` | non-nil; the clock reads `0/1` | same |
+| `-rate` at `-init` | 0.0 | same |
+| `-currentTime` at `-init` | `0/1` | same |
+| `-renderers` at `-init` | empty | same |
+| `-setRate:` 1.0 / 0.0 / 2.0 / 1.0 | 1.000 / 0.000 / 2.000 / 1.000 (read after a settle) | same |
+| `-setRate: -1.0` | raises `NSInvalidArgumentException` | same |
+| `-setRate: 1.0 time: 600/1` | `-currentTime` reads `600000011125/1000000000` | same bucket |
+| `-setRate: 1.0 time: kCMTimeInvalid` | the time is left alone | same |
+| the clock frozen at rate 0, moving at 1, twice as fast at 2 | yes / yes / within 100 ms of twice the host clock's advance | same |
+| `-addPeriodicTimeObserverForInterval: 100 ms` | at least three calls in 420 ms, the first within 200 ms of registration, times 100 ms apart to within 20 ms, the time is the clock's own | same |
+| `-removeTimeObserver:` | no further calls; a second removal of the same token is accepted and does nothing; anything that is not a token raises | same |
+| `-addBoundaryTimeObserverForTimes:` ahead / past / empty | fires / does **not** fire / raises | same |
+| `-addRenderer:` twice | raises | same |
+| `-addRenderer:` a second renderer | accepted | same |
+| `-removeRenderer:atTime:` 120 ms ahead | the handler does not run before the time, runs within 300 ms, answers YES, and the list is one shorter | same |
+| `-removeRenderer:` never added | the handler answers NO | same |
+| the renderer's clock after the add | a different object from the synchronizer's, reading the same time; after a removal, a rate of 0 at a time of 0 | same |
+| `-setRate:time:atHostTime:` with the host time in the past | the time is the named time plus what the rate has run since then (101.1051 at the first read, 101.6221 six steps later) | same |
+| `-setRate:time:atHostTime:` with the host time in the future | the clock **holds** the named time until that host time and then runs at the rate (200.0000 at 900 ms, 200.0463 at 1000 ms) - **not** the "immediately start running from an earlier time" the header's paragraph describes | same |
+| an invalid time, or an invalid host time | the other input applies at once, and the rate is applied even while the clock is held | same |
+
+### The renderer, measured
+
+| question | this Mac's own class | this port |
+| --- | --- | --- |
+| `-init` | status `0`, error nil, `-isReadyForMoreMediaData` YES, a `-timebase` of its own, volume 1.000, `-isMuted` NO, `audioTimePitchAlgorithm` `TimeDomain` | same |
+| `-setVolume: 0.25 / 2.0 / -1.0` | 0.250 / **above 1.0** / **below 0.0** - stored, not clamped | same |
+| `-setMuted: YES / NO` | YES / NO | same |
+| `audioTimePitchAlgorithm` set to `AVAudioTimePitchSpectral` | reads back `Spectral` | same |
+| `-flush` on a renderer holding no media | status stays `0`, ready YES, error nil | same |
+| `-flushFromSourceTime:` past / future / `kCMTimeInvalid` on a renderer holding no media | YES / YES / not refused | same |
+| `-requestMediaDataWhenReadyOnQueue:` then `-stopRequestingMediaData` | the block runs, then no more calls | same |
+| a rate change on a renderer holding no media | the clock follows the rate, **no** flushed-automatically notification, status stays `0`, error nil | same |
+| `-isReadyForMoreMediaData` after the first enqueue, and after nine | NO / NO | same |
+| status and error after media | `1` (Rendering) and nil, because Apple's own decode layer sits above the output device and this machine has none | `2` (Failed) with an `AVFoundationErrorDomain` error, and the ALLOWANCES below say why |
+| `-enqueueSampleBuffer: NULL` | raises | raises (not in the join: this Mac's class answers nothing usable afterwards - see below) |
+
+## What this machine cannot answer, and what was measured instead
+
+**There is no audio device on this machine**, and that is a measurement rather than an impression:
+
+    AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, kAudioHardwarePropertyDevices)
+    -> 'who?' (CoreAudio's hardware-not-running)
+
+and with no device behind it, of the queue calls above:
+
+| call | on this machine |
 | --- | --- |
-| `_CMTimebaseCreate` | **0** |
-| `_CMTimebaseCreateWithMasterClock` | 1 |
-| `_CMClockGetHostTimeClock` | 1 |
-| `_CMTimebaseAddTimer`, `_CMTimebaseRemoveTimer` | 1 each |
-| `_CMTimebaseSetTime`, `_CMTimebaseGetTime`, `_CMTimebaseGetTimeAndRate` | 1 each |
-| `_CMTimebaseSetRate`, `_CMTimebaseGetRate` | 1 each |
-| `_CMTimebaseDispose` | 1 |
-| `_FigTimebaseCreateWithMasterClock`, `_FigClockRetain` | 1 each - the pre-4.0 spellings, private, and not to be used |
+| `AudioQueueNewOutput` | **0** - the queue is made |
+| `AudioQueueAllocateBuffer` | 0 |
+| `AudioQueueStart(NULL)` | 0 |
+| `AudioQueueGetCurrentTime` | **-66678 (0xFFFEFB8A)**, with no valid time in the `AudioTimeStamp` |
+| `AudioQueueEnqueueBufferWithParameters` | 0, and `outActualStartTime` is meaningless (4661570860979585024) |
+| `AudioQueueReset` | 0 |
+| `AudioQueueSetParameter(kAudioQueueParam_Volume, 0.5f)` | 0 |
 
-So every member `AVSampleBufferRenderSynchronizer` declares - `-timebase`, `-rate`/`-setRate:`,
-`-setRate:time:`, `-currentTime`, `-addPeriodicTimeObserverForInterval:queue:usingBlock:`,
-`-addBoundaryTimeObserverForTimes:queue:usingBlock:`, `-removeTimeObserver:` - is one `CMTimebase`
-operation the release exports, and the clock itself is two exported calls. This class is the port's debt
-and it is buildable, which is what the earlier reading of the row got wrong.
+So the one call a timestamp needs - the queue's own time, which comes from the device's clock - cannot
+answer here, and a renderer that cannot place a buffer at its timestamp answers
+`AVQueuedSampleBufferRenderingStatusFailed` with an `AVFoundationErrorDomain` error rather than a status
+that claims to be rendering. Those five rows are the check's ALLOWANCES, each carrying that measurement.
+**The sound itself was not measured, and cannot be on this machine**: the brief's two routes are an
+AudioQueue input tap (there is no input device either) and the queue's own time against the PTS (the queue
+has no device clock here). What *is* measured is that the renderer holds what it was given until the queue
+can take it, and that it stops answering `-isReadyForMoreMediaData` YES while it holds any - which is the
+property's own meaning, and is the release's own bound, because the bound is
+`AudioQueueAllocateBuffer` refusing, not a buffer count this file chooses.
 
-**What it is worth on 6.1.3, measured**: the release's own `AVSampleBufferDisplayLayer` carries
-`-enqueueSampleBuffer:` and `-flush` (first-rung 6.0, and the port carries the class in
-`AVFoundation/AVSampleBufferDisplayLayer8.m`), so a client puts the RELEASE'S display layer on this clock
-and gets video frames timed against audio it plays itself. Without the renderer there is no CMSampleBuffer
-sink, so the synchronizer's other end is the display layer and not this pair.
+**Three questions were dropped from the join because this Mac cannot answer them at all.** On a renderer
+that has been given media and has never played it, this Mac's own `AVSampleBufferAudioRenderer` **aborts** -
+measured, SIGABRT with empty stderr - on `-flush`, on a rate change, on `-enqueueSampleBuffer: NULL`, and on
+release; and its `-isReadyForMoreMediaData` never comes back (still NO after eight enqueues, while
+`-hasSufficientMediaDataForReliablePlaybackStart` is YES from the first). So:
 
-## The oracle the coordinator pointed at is not available on this machine
+- the flush rows and the rate-change rows are asked of renderers that hold **no** media, which is askable;
+- the with-media flush is not asked at all, and what the port answers for it is in the row's reason;
+- `-enqueueSampleBuffer: NULL` is implemented (it raises, as the host's does) but is not a join row,
+  because a raise on this machine is followed by an abort and the answers after it are not answers.
 
-The brief for this work was to carry the classes and hold them against "this Mac's
-AVSampleBufferAudioRenderer". Measured, this machine cannot answer the 11.0 questions:
+One more answer of the host that shaped the code and is worth recording: **a rate change is applied through
+a barrier**, so a `-rate` read in the same breath as `-setRate:` can answer the rate from before the change -
+measured, four back-to-back `-setRate:` calls for 1, 0, 2 and 1 read 1.000, 0.000, 0.000 and 1.000 on one
+run and 1.000, 0.000, 2.000 and 1.000 on another. The port applies the change in the call, and the check
+asks the settled question rather than a row that changes from run to run.
 
-- **The 11.0 API is not declared in this Mac's SDK.** `-[AVSampleBufferAudioRenderer
-  initWithAudioFormatDescription:bufferCapacity:]` and `-[AVSampleBufferAudioRenderer
-  initWithAudioFormatDescription:]` do not compile against macOS's own headers - "no known instance method
-  for selector" - so a probe cannot construct the object through the API the port must implement.
-- **The class exists and is nothing like the 11.0 surface.** At runtime, through `class_copyMethodList`,
-  `AVSampleBufferAudioRenderer` is PRESENT with superclass `NSObject`, instance size 16, and **51 own
-  instance methods**: `-init`, `-requestMediaDataWhenReadyOnQueue:usingBlock:`, `-enqueueSampleBuffer:`,
-  `-flush`, `-isReadyForMoreMediaData`, `-setRenderSynchronizer:error:`, `-setVolume:`, `-isMuted`,
-  `-timebase`, `-status`, `-error`, `-setAudioTimePitchAlgorithm:`, `-outputContext`, `-expire` and a tail
-  of `_`-prefixed and 26-era members (`-copyFigSampleBufferAudioRenderer:`, `-contentKeySession`,
-  `-audioTapProcessor`). The 11.0 names the port must carry - `-renderSampleBuffer:`, `-renderingAlgorithm`,
-  `-currentTime`, `-isRendering`, `-isRenderingForwards`, `-finishRendering` - are **not among them**.
-  `AVSampleBufferRenderSynchronizer` is PRESENT with 39 own instance methods, of which the 11.0 ones that
-  remain are `-currentTime`, `-rate`/`-setRate:`, `-addPeriodicTimeObserverForInterval:queue:usingBlock:`,
-  `-removeTimeObserver:` and `-timebase`; the rest are `_`-prefixed.
+## The five allowed differences, in one place
 
-So Apple's own class here cannot be the answer key for what the port should return: it does not have the
-API, and its own API is a later one. An oracle is still reachable - the 11.0 declarations are in the 26.2
-iOS SDK the port compiles against, and a probe can declare that interface itself and reach the runtime's
-implementation through it, which is the same shape as
-`tests/backports/host/avf-recommended-settings7` (the concrete class of a capture output on this machine is
-`AVCaptureVideoDataOutput_Tundra`, a framework subclass, so that check calls the port's IMP fetched with
-`class_getInstanceMethod` rather than a message send). What it costs is a reconstructed interface and a
-runtime-driven probe, not an unavailable machine.
+| row | host | port | why |
+| --- | --- | --- | --- |
+| `renderer: status after the first enqueue` | 1 | 2 | no audio device here, so the queue has no clock: see above |
+| `renderer: error after the first enqueue is nil` | YES | NO | the same |
+| `renderer: status after nine enqueues` | 1 | 2 | the same |
+| `renderer: error after nine enqueues is nil` | YES | NO | the same |
+| `renderer: status after a buffer with no frames` | 1 | 2 | the same |
 
-## What is left to write, named
+plus one more, which is not a media row: `attached: the renderer's clock reads the synchronizer's clock as
+its master` answers NO here and YES in the port. The port slaves the renderer's own `CMTimebase` to the
+synchronizer's, which is what "Adds a renderer to begin operating with the synchronizer's timebase" asks
+for; this Mac's own synchronizer answers `NULL` from `CMTimebaseGetMasterTimebase` for both clocks and keeps
+them in step by propagating the rate instead (its own private method is `-_updateRateFromTimebase`, measured
+in the method list above). The two clocks read the same time either way, which is the row beside it.
 
-- `AVSampleBufferAudioRenderer` as a port-defined class: `-initWithAudioFormatDescription:bufferCapacity:`
-  over an `AudioQueue` created with `_AudioQueueNewOutput` on a format the description carries, buffers
-  allocated with `_AudioQueueAllocateBuffer`, `-renderSampleBuffer:` copying the audio out with
-  `_CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer` and enqueueing it with
-  `_AudioQueueEnqueueBuffer`, `-flush` on `_AudioQueueFlush`, `-isRendering`/`-isRenderingForwards`/`-rate`
-  from the queue's own state, `-currentTime` from the timebase the renderer owns.
-- `AVSampleBufferRenderSynchronizer` as a port-defined class owning one `CMTimebase`, holding its renderers
-  weakly, `-addRenderer:error:`/`-removeRenderer:error:` moving them onto and off that clock,
-  `-currentTime` from `_CMTimebaseGetTime`, `-setRate:` on `_CMTimebaseSetRate`, and the two time observers.
-- the protocol `AVQueuedSampleBufferRendering` as `@protocol`, which the renderer would then conform to -
-  a protocol row needs the header the sources import, which is the check `protocol_headers_test` runs.
-- a check in the shape of the two above: one source, Apple's own answers and the port's joined key by key,
-  with mutations. The oracle has to be built first, per the paragraph above.
+## What the port does not carry, and why, member by member
 
-Every member of both classes needs a registry row of its own (a member of a class the port defines is API
-the port carries, and `check_registry` asks whether a row says so), and `tools/cache-index/first-rung.py`
-must answer 11.0 for all of them before they share an object with anything else.
+| member | release | why not |
+| --- | --- | --- |
+| `-[AVSampleBufferRenderSynchronizer delaysRateChangeUntilHasSufficientMediaData]` | 14.5 | it asks the renderer below, and that level is not measurable here |
+| `AVSampleBufferAudioRenderer.hasSufficientMediaDataForReliablePlaybackStart` | 14.5 | the header states no preroll level, and this Mac answers YES from the first buffer on a machine where nothing plays any of them - so the level cannot be read from the oracle either |
+| `AVSampleBufferAudioRenderer.allowedAudioSpatializationFormats` | 15.0 | the value "will attempt to spatialize" the media and 6.1.3's AVFAudio carries nothing to spatialize with; the header also says the property is not observable, so any answer would be a value with no behaviour behind it |
+| `AVSampleBufferAudioRenderer.audioOutputDeviceUniqueID` | 11.0 on macOS | the 16.4 header declares it `API_UNAVAILABLE(ios, tvos, watchos, visionos)`, so there is no iOS member to carry and no row for it |
+
+Two things the members above would need and the release does not have, named here because they are the
+reason the port's answers are what they are:
+
+- **Only linear PCM is played, and compressed audio is refused with a reason.** The header says this class
+  "can decompress and play compressed or uncompressed audio", and the port does not decompress: what the
+  queue is given has to be laid out as audio by the release's own
+  `-CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer`, which is linear PCM, so a buffer whose format
+  is anything else is refused and the renderer answers `AVQueuedSampleBufferRenderingStatusFailed` with an
+  `AVFoundationErrorDomain` error naming the format it was given. A decoder this port could use and could
+  measure is not one this machine or this release has on the table: `AudioConverterNew` and
+  `_AudioConverterFillComplexBuffer` are both exported by 6.1.3's AudioToolbox (measured, 12 exports
+  matching `AudioConverter`), but there is no device here to play the result through and no measured answer
+  for what a 6.1.3 decode costs, so a decoder on this path would be code nothing here could verify. What was
+  measured instead is the refusal above, and the two rows that carry it are
+  `AVSampleBufferAudioRenderer.status` and `.error`.
+- **`audioTimePitchAlgorithm` has no effect on the audio this port renders.** The release has no time-pitch
+  unit (`tools/corpus/objc-inventory.lua` over the armv7 caches of 6.1.3 and 4.3 lists no such class in
+  AVFAudio), so a rate other than 1.0 is honoured by the mapping alone: the queue plays at the rate the
+  format names and the media is heard faster or slower with its pitch following. The header's own words for
+  the rate are "play at the natural rate of the media", which is what the mapping is.
+- **The synchronizer's clock runs on the host time clock, not on an audio device clock.** The header says
+  "By default, this timebase will be driven by the clock of an added AVSampleBufferAudioRenderer", and
+  CoreMedia on 6.1.3 exports eight `CMClock` symbols (`_CMClockConvertHostTimeToSystemUnits`,
+  `_CMClockGetAnchorTime`, `_CMClockGetHostTimeClock`, `_CMClockGetTime`, `_CMClockGetTypeID`,
+  `_CMClockInvalidate`, `_CMClockMakeHostTimeFromSystemUnits`, `_CMClockMightDrift`) and **none of them
+  makes a clock from an audio device**, so there is no public mechanism for it on this release.
+
+One more thing a client on this port should know, and it is a gap rather than a choice: the rate-change
+notification `AVSampleBufferRenderSynchronizerRateDidChangeNotification` is a 12.0 constant (the port
+carries it, in `AVFoundationConstants120.m`) and nothing posts it, because the setter that would post it is
+an 11.0 member and the bands do not link upward - an 11.0 object cannot reference a 12.0 symbol. The
+renderer side of the same family is not affected: `AVSampleBufferAudioRendererWasFlushedAutomaticallyNotification`
+is an 11.0 constant (in `AVFoundationConstants110.m`) and the renderer posts it when a rate change really
+discards media it was holding.
+
+## The eleven mutations, and what each one is for
+
+Every mutation changes a line the join reads, turns an answer that was RIGHT into one that is not, and has a
+control that runs the unmutated source through the same path. `rate`, `raterenderers`, `detachclock`,
+`periodicinterval`, `removeobserver`, `addtwice`, `boundarypast`, `emptytimes`, `flushstatus`, `readiness`,
+`volume`.
+
+Two things the check found in the port's own code while it was being written, both fixed and both recorded
+because a row that only agrees because the code is wrong is worse than no row:
+
+- the drain handed a buffer to the queue and dropped it from the pending list even when the enqueue had
+  failed, so `-isReadyForMoreMediaData` answered YES while the renderer was still holding media (the
+  readiness rows flagged it);
+- a `CMTimebase` slaved to another follows its master's **timeline** and keeps its own rate and time, so
+  slaving alone did not make a renderer's clock read the synchronizer's *time* (the
+  "reads the synchronizer's new time" row flagged it: the port answered 0.2 where the host answers 5.2032).
+  Both the rate and the time are propagated on every change now.
+
+And one thing in the port's own code that deliberately has no mutation: the two lines in `-addRenderer:`
+that slave the clock and set its rate. Every rate or time change after that propagates the same two things
+to every attached renderer, so removing them changes nothing this check can see, and the only row that reads
+the master relationship is the row the two halves deliberately differ on.
 
 ## Reproducing
 
-    xmake l tools/image-exports.lua 6.1.3 armv7 "AudioToolbox.framework/AudioToolbox" "AudioQueue"
-    xmake l tools/image-exports.lua 6.1.3 armv7 "CoreMedia.framework/CoreMedia" "Timebase"
-    xmake l tools/image-exports.lua 6.1.3 armv7 "CoreMedia.framework/CoreMedia" "AudioBufferList"
-    grep -cxF AVSampleBufferAudioRenderer ~/.charon/dyld/6.1.3/selectors_armv7.txt   # 0
+    xmake l tools/image-exports.lua 6.1.3 armv7 AudioToolbox.framework/AudioToolbox AudioQueue
+    xmake l tools/image-exports.lua 6.1.3 armv7 CoreMedia.framework/CoreMedia Timebase
+    xmake l tools/image-exports.lua 6.1.3 armv7 CoreMedia.framework/CoreMedia CMClock
+    xmake l tools/image-exports.lua 6.1.3 armv7 CoreMedia.framework/CoreMedia CMSampleBufferGetAudio
+    python3 tools/cache-index/first-rung.py _OBJC_CLASS_\$_AVSampleBufferAudioRenderer \
+        _OBJC_CLASS_\$_AVSampleBufferRenderSynchronizer _OBJC_PROTOCOL_\$_AVQueuedSampleBufferRendering
+    sh tests/backports/host/avf-samplerender11/run.sh
 
-The runtime enumeration of this machine's two classes is `class_copyMethodList` over
-`NSClassFromString(@"AVSampleBufferAudioRenderer")` and of its synchronizer; the numbers above (51 and 39 own
-instance methods, superclass `NSObject`, instance size 16) are from that, on 2026-10-03.
+The host table is `class_copyMethodList` and the run above over the macOS SDK's own
+`AVSampleBufferAudioRenderer` and `AVSampleBufferRenderSynchronizer`; the numbers in this page (51 and 39 own
+instance methods, superclass `NSObject`, instance size 16, the queue and CoreAudio answers) are from that
+and from the runs above, on 2026-10-03.

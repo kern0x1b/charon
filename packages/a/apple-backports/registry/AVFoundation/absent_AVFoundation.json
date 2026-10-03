@@ -2509,10 +2509,11 @@
       "kind": "protocol",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol is what the synchronizer takes a renderer as, so it is absent for the same reason: no protocol of 6.1.3 (1171 of them) or of 4.3 (564) carries the name, and nothing on either release takes a renderer as an argument",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
+      "status": "implemented",
+      "reason": "the protocol is what the synchronizer takes a renderer as and what the renderer conforms to, and it arrives with the classes: no protocol of 6.1.3 (1171 of them) or of 4.3 (564) carries the name, and the port's implemented protocol row makes modules/apple/backports.lua write the source that emits __OBJC_PROTOCOL_$_AVQueuedSampleBufferRendering, which is the metadata the release carries for a protocol of its own",
+      "effect": "the protocol is there: NSProtocolFromString answers it, so a caller can write id<AVQueuedSampleBufferRendering> against a class of this port and the compiler checks the conformance",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
     },
     {
       "api": "AVRouteDetector",
@@ -2529,10 +2530,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the renderer is a CMSampleBuffer sink a caller can time and enqueue, and 6.1.3 cannot time one: AVSampleBufferAudioRenderer needs its buffer played \"at sampleBuffer's output presentation timestamp, as interpreted by the timebase\" (AVQueuedSampleBufferRendering.h:60), and 6.1.3's AudioQueue has no way to schedule a buffer at a time. AudioQueueBuffer has no time field (mAudioDataBytesCapacity, mAudioData, mAudioDataByteSize, mUserData, mPacketDescriptionCapacity, mPacketDescriptions, mPacketDescriptionCount), AudioStreamPacketDescription has three fields and none of them is a time (mStartOffset, mVariableFramesInPacket, mDataByteSize), and of the 43 exports matching \"AudioQueue\" in 6.1.3's AudioToolbox the three time members are _AudioQueueGetCurrentTime, _AudioQueueDeviceGetNearestStartTime and _AudioQueueDeviceTranslateTime, which all READ a time; not one schedules a buffer at one. The release's own way to push buffers at a rate is AVAudioEngine with AVAudioPlayerNode and AVAudioPCMBuffer, which this port already carries, and it takes AVAudioPCMBuffer rather than a CMSampleBuffer",
-      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference does not link. A client that wants a CMSampleBuffer sink it can time has no member on 6.1.3 to name, and the alternative the release does offer takes AVAudioPCMBuffer rather than a CMSampleBuffer",
-      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVSampleBufferAudioRenderer, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)",
+      "status": "implemented",
+      "reason": "the release has no such class - 0 hits for AVSampleBufferAudioRenderer in 6.1.3's own 113981-name selector set - and the port carries it. The clock it owns before anything is attached to it is CoreMedia's own, built the same two-step way (see the synchronizer's row), and its media is played with the release's own AudioQueue: AudioToolbox on 6.1.3 armv7 exports 337 symbols of which 43 match \"AudioQueue\", and this class uses ten of them, including _AudioQueueEnqueueBufferWithParameters, which takes the time to play a buffer at as an argument (AudioQueue.h:1189, and its note at :1181: \"the sample time is relative to the time the queue started\"). There is no AudioQueueBuffer time field because the time is not carried on the buffer",
+      "effect": "the class is there: NSClassFromString answers it, a compile-time reference links, and a client can put audio on a synchronizer's clock, which the release could not do at all",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
       "facts": "facts/AVFoundation/SampleBufferRender11.md"
     },
     {
@@ -2540,10 +2541,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release has no such class - 0 hits for AVSampleBufferRenderSynchronizer in 6.1.3's own 113981-name selector set - and the port does not carry it. The clock it would own IS creatable from the release's own members, which is the correction this row records: CoreMedia on 6.1.3 armv7 exports _CMTimebaseCreateWithMasterClock, _CMClockGetHostTimeClock, _CMTimebaseAddTimer, _CMTimebaseSetTime, _CMTimebaseGetTime, _CMTimebaseGetTimeAndRate, _CMTimebaseSetRate, _CMTimebaseGetRate, _CMTimebaseRemoveTimer and _CMTimebaseDispose, so CMTimebaseCreateWithMasterClock(kCFAllocatorDefault, CMClockGetHostTimeClock(), &timebase) gives a CMTimebaseRef on this release and every member below is one of those. The plain _CMTimebaseCreate is 0 here, which is why the two-step form is the one to use",
-      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference does not link. A client that wants audio and video on one clock has no member to name here; the release's own AVAudioEngine carries no synchronizer for a video clock either",
-      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVSampleBufferRenderSynchronizer, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)",
+      "status": "implemented",
+      "reason": "the release has no such class - 0 hits for AVSampleBufferRenderSynchronizer in 6.1.3's own 113981-name selector set, and tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3 lists neither it nor the protocol it takes - and the port carries it. The clock it owns is CoreMedia's own, built the two-step way this release exports: the plain _CMTimebaseCreate is 0 in 6.1.3's CoreMedia export trie (1819 exports, 62 matching \"Timebase\") while _CMTimebaseCreateWithMasterClock and _CMClockGetHostTimeClock are both there, so CMTimebaseCreateWithMasterClock(kCFAllocatorDefault, CMClockGetHostTimeClock(), &timebase) is the call. Every member below is one more CMTimebase operation the same trie exports, and the two observers are the dispatch-source pair _CMTimebaseAddTimerDispatchSource and _CMTimebaseSetTimerDispatchSourceNextFireTime",
+      "effect": "the class is there: NSClassFromString answers it, a compile-time reference links, and a client that wants audio and video on one clock has the member to name - which the release had none of",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
       "facts": "facts/AVFoundation/SampleBufferRender11.md"
     },
     {
@@ -4688,6 +4689,292 @@
       "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and no centre-stage member; the release's own rectangle of interest is the exposure and focus one, -exposurePointOfInterest and -focusPointOfInterest, which are the only two AVCaptureDevice carries, and neither is the centre-stage rectangle a stage-framing camera reports. 4.3 cannot be asked either: it has no AVCaptureDevice either",
       "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release frames with -focusPointOfInterest and -exposurePointOfInterest, the release's own two rectangles of interest in the device's coordinate space, and isExposurePointOfInterestSupported is the release's own way of asking whether the device takes one; the port defines no accessor",
       "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDevice read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 100 own instance methods, controls answered as wanted"
+    },
+    {
+      "api": "-[AVSampleBufferRenderSynchronizer setRate:time:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "one CMTimebase call for the time and one for the rate, and every attached renderer told afterwards. The measured answers on this Mac's own class are in the check: the named time is what -currentTime reads straight after the call (600000011125/1000000000 for a 600/1 named time, which is what the timebase's own timescale carries), kCMTimeInvalid leaves the time alone, and a negative time is accepted because the header says this method does not validate improper values",
+      "effect": "the method is there: -setRate: 1.0 followed by -setRate: 0.0 leaves -rate at 0.0 and the clock's time where it was, and a client that seeks sets the time and the rate in one call as the header describes",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferRenderSynchronizer addRenderer:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "adds to the synchronizer's list and makes the renderer's own clock follow this one's: the timebase is slaved with _CMTimebaseSetMasterTimebase and then given this clock's time and rate. Measured on this Mac's own class, the renderer is refused a second time (NSInvalidArgumentException, \"The SampleBufferRenderer cannot be added to a Synchronizer more than once\"), a second renderer is accepted, and after the add both clocks read the same time to the microsecond",
+      "effect": "the method is there: a renderer added to a synchronizer reads that synchronizer's rate and time through its own -timebase, and adding the same one twice raises instead of silently listing it twice",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferRenderSynchronizer removeRenderer:atTime:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a removal now is a list edit and a stop of the renderer's clock; a removal at a time still ahead is a boundary observation of this synchronizer's own clock, and the handler runs from that timer. Measured on this Mac's own class: the handler does not run before the time is reached, runs within 300 ms of a time 120 ms ahead, answers YES, the renderers list is one shorter afterwards, a renderer that was never added answers NO, and the renderer's clock reads a rate of 0 and a time of 0 once it has been removed",
+      "effect": "the method is there: a client can take a renderer off a synchronizer now or at a point on its clock and learn from the handler which of the two happened",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferRenderSynchronizer addPeriodicTimeObserverForInterval:queue:usingBlock:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a dispatch timer source added to this clock with _CMTimebaseAddTimerDispatchSource and armed with _CMTimebaseSetTimerDispatchSourceNextFireTime, re-armed one interval on after every firing, which is what makes the times the block is handed one interval apart. Measured on this Mac's own class: at a 100 ms interval the observer fires at least three times in 420 ms, the first call carries the clock's own time to within 50 ms, and consecutive reported times are 100 ms apart to within 20 ms",
+      "effect": "the method is there: it answers an object to remove later, and the block runs on the queue the client named with the clock's own time",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferRenderSynchronizer addBoundaryTimeObserverForTimes:queue:usingBlock:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "one timer per call, armed at the earliest time of the list that is still ahead on this clock. Measured on this Mac's own class: a boundary 150 ms ahead fires, a boundary at 1 s on a clock already past it does NOT fire, and an empty list raises NSInvalidArgumentException (the host's own reason text is \"-[AVOccasionalTimebaseObserver initWithTimebase:times:queue:block:] invalid parameter not satisfying: [times count] > 0\")",
+      "effect": "the method is there: it answers an object to remove later, and a time that has already been passed is not a boundary that fires",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferRenderSynchronizer removeTimeObserver:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "finds the token among this synchronizer's own, cancels its timer and drops it; anything that is not one of them raises, and a token that has already been removed is accepted and does nothing. Both of those are measured answers of this Mac's own class",
+      "effect": "the method is there: it cancels exactly the observer it is given, once, and refuses an object that is not an observer at all",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferRenderSynchronizer currentTime]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the synchronizer's own clock, to the nanosecond, in the timescale that clock carries. One CMTimebaseGetTime, and it is a 12.0 member in its own object because the class is 11.0. Measured on this Mac's own class: a fresh synchronizer reads 0/1 and 600000011125/1000000000 straight after a time of 600/1 is set, which is what a fresh CMTimebase and a CMTimebase whose time has just been set read as well",
+      "effect": "the method is there: a client can read where the shared clock is, which the 11.0 API has no member for",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferRenderSynchronizer setRate:time:atHostTime:]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the anchor form, measured on this Mac's own class rather than taken from the header because the two disagree: with a host time already past, the clock's time is the named time plus what the rate has run on since then (101.1051 at the first read after a 100/1 named one second ago at rate 1, 101.6221 six 100 ms steps later), and with a host time still ahead the clock holds the named time and does not move until that host time arrives - 200.0000 at 900 ms and 200.0463 at 1000 ms - which is NOT the \"immediately start running from an earlier time\" the header's paragraph describes. The first shape is _CMTimebaseSetRateAndAnchorTime and the second is _CMTimebaseSetRate(0) with a timer on the host clock",
+      "effect": "the method is there: a client can say \"at this host time the clock reads that time\" and the port answers it the way the release does",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferAudioRenderer enqueueSampleBuffer:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the presentation timestamp of the buffer is read with _CMSampleBufferGetOutputPresentationTimeStamp, the audio is copied out with _CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer in the two-call shape CMSampleBufferCopyPCMDataIntoAudioBufferList already uses in this package - which is why the media has to be linear PCM, a format this class refuses with a reason rather than handing the queue something it cannot play, and why the header's \"compressed or uncompressed\" is only half of what this port does - and the queue's own current time and the clock's own time are read at that instant so the frames between them follow from the format's sample rate and the clock's rate. What this machine could measure about it is in the facts page and it is not the sound: there is no audio device here",
+      "effect": "the method is there: a buffer is held by the renderer until the queue can take it, the renderer stops answering -isReadyForMoreMediaData YES while it holds any, and a NULL buffer raises as it does on the release",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferAudioRenderer flush]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "drops everything the renderer holds and resets the queue, which on this platform is _AudioQueueReset (\"flushes any queued buffer, removes all buffers from previously scheduled use\", AudioQueue.h:1327 - _AudioQueueFlush is only the decoder-state reset of a sequence of encoded buffers, AudioQueue.h:1303). Measured on this Mac's own class, on a renderer that holds no media: the status stays AVQueuedSampleBufferRenderingStatusUnknown, -isReadyForMoreMediaData answers YES and -error answers nil",
+      "effect": "the method is there: it discards what was enqueued and the renderer accepts more, and it does not rewrite the status of a renderer that has rendered",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferAudioRenderer flushFromSourceTime:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "drops what the renderer holds whose presentation timestamp is at or after the one named, and calls the handler. Measured on this Mac's own class, on a renderer holding no media, for a time in the past and for one in the future alike: the handler is called with YES and nothing is raised, kCMTimeInvalid included",
+      "effect": "the method is there: a client can swap the media after a point on the clock and learn from the handler whether it was done",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferAudioRenderer requestMediaDataWhenReadyOnQueue:usingBlock:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the block is dispatched on the client's queue every time the renderer holds nothing, and only the last request is effective, as the header says. Measured on this Mac's own class, on a renderer that holds no media: the block runs, and it stops on -stopRequestingMediaData",
+      "effect": "the method is there: a client that is asked for media data is called back while there is room for it",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "-[AVSampleBufferAudioRenderer stopRequestingMediaData]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "drops the block and the queue, which is also what makes the call safe from inside the block, as the header says. Measured on this Mac's own class: no call arrives after it",
+      "effect": "the method is there: a client can stop being called back",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferAudioRenderer.volume",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "stored and handed to the queue as _AudioQueueSetParameter(kAudioQueueParam_Volume), which on this platform takes the value by value (AudioQueue.h:1392). Measured on this Mac's own class and it is not a clamp: -setVolume: 2.0 leaves -volume reading 2.0 and -setVolume: -1.0 leaves it reading -1.0",
+      "effect": "the property is there: it reads back what was set, and the release's queue answers 0 for a volume outside 0..1",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferAudioRenderer.muted",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the same queue parameter with a zero in it when muted, and the state stored so that -isMuted reads back before any queue exists. Measured on this Mac's own class: -isMuted answers YES after -setMuted: YES and NO after -setMuted: NO, and NO at -init",
+      "effect": "the property is there: it reads back what was set and it silences the queue's own volume",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferAudioRenderer.audioTimePitchAlgorithm",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the stored string, whose default is the one the 16.4 header names for an application linked on or after iOS 15.0 - AVAudioTimePitchAlgorithmTimeDomain, which is what this Mac's own renderer answers for -init (measured: \"TimeDomain\") and what the port already carries in AVFoundationConstants70.m. The algorithm has no effect on the audio this class renders, because 6.1.3 carries no time-pitch unit to apply it with; what was measured instead is in the facts page",
+      "effect": "the property is there: it reads back what was set",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferAudioRenderer.timebase",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the renderer's own CMTimebase, which a synchronizer drives once the renderer is attached to one. Measured on this Mac's own class: a renderer answers a non-nil timebase before it is added anywhere, after -addRenderer: its timebase is a different object from the synchronizer's and the two read the same time, and after a removal the renderer's clock reads a rate of 0 and a time of 0",
+      "effect": "the property is there: the renderer reads the rate and the time of the clock it is playing on",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferAudioRenderer.readyForMoreMediaData",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "YES exactly while the renderer holds nothing it has not handed to the queue, which is the release's own bound: the queue answers _AudioQueueAllocateBuffer with an error when it has no memory for another buffer, so no buffer count is invented anywhere. Measured on this Mac's own class, on a machine with no audio device: YES at -init, NO from the first enqueue on, and NO after nine enqueues",
+      "effect": "the property is there: it answers whether the renderer can take more now, which is what a client polls",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferRenderSynchronizer.timebase",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the synchronizer's own CMTimebaseRef, built as the class's row says. Measured on this Mac's own class: non-nil at -init, and a fresh CMTimebase reads 0/1, which is what the host's -currentTime reads at -init",
+      "effect": "the property is there: a client can read or retain the clock the synchronizer runs on",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferRenderSynchronizer.rate",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the rate that was asked for, which is what this Mac's own class answers: after -setRate:1.5 time:kCMTimeInvalid atHostTime:<five seconds ahead> it answers 1.5 while its clock is held at zero until that host time arrives. A negative rate is refused with NSInvalidArgumentException on both",
+      "effect": "the property is there: it reads back the rate that was set, including one a future host time has not reached yet",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferRenderSynchronizer.renderers",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a snapshot of the list, so that a renderer scheduled for removal but not yet removed is in it, as the header says. Measured on this Mac's own class: empty at -init, one entry after one -addRenderer:, two after two, and one fewer after a scheduled removal has run",
+      "effect": "the property is there: a client can see what is attached",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferAudioRenderer.status",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "Unknown at -init and Rendering from the first media, and Failed with an AVFoundationErrorDomain error when the queue cannot be made, cannot be started, cannot be asked for its time, or the media is not linear PCM - which is what this Mac answers for every renderer, because CoreAudio reports its hardware not running there ('who?' for kAudioHardwarePropertyDevices) and _AudioQueueGetCurrentTime answers -66678 with no valid time in it. Measured on this Mac's own class for -init and for a renderer that holds no media",
+      "effect": "the property is there: it answers 0, 1 or 2, and 2 comes with an -error that says what the queue said",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferAudioRenderer.error",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the AVFoundationErrorDomain error that goes with status Failed, nil otherwise, exactly as the header says (\"The value of this property is nil unless the value of status is AVQueuedSampleBufferRenderingStatusFailed\"). The domain is the release's own symbol (first held rung 4.0) and the code is AVErrorUnknown",
+      "effect": "the property is there: a client that sees status 2 learns why",
+      "source": "SDK 16.4, AVFoundation: AVSampleBufferRenderSynchronizer.h:25 and AVSampleBufferAudioRenderer.h:26, and the members each declares with its own API_AVAILABLE. Carried by the port's own objects: AVFoundation/AVSampleBufferRenderSynchronizer11.m, AVFoundation/AVSampleBufferAudioRenderer11.m, AVFoundation/AVSampleBufferRenderSynchronizer12.m, AVFoundation/AVSampleBufferRenderSynchronizer14.m",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferAudioRenderer.hasSufficientMediaDataForReliablePlaybackStart",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header's preroll level, and neither this port nor this machine can say what it is: the header does not state how much media is enough, and this Mac's own renderer answers YES from the first buffer on a machine where nothing can play any of them, so the level cannot be read from it either. Answering the property would be answering a constant nothing measured",
+      "effect": "the property is not there: calling it raises an unrecognised selector, which is what absent means",
+      "source": "SDK 16.4, AVFoundation, AVQueuedSampleBufferRendering.h:130 declares it for ios(14.5); no row for a member the port does not carry is implied by any other row here",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferRenderSynchronizer.delaysRateChangeUntilHasSufficientMediaData",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it asks whether the renderer above has enough media for a reliable start, which is the preroll level of the row above, and it is not measurable on this machine for the same reason: the renderer that would answer it holds nothing here",
+      "effect": "the property is not there: calling it raises an unrecognised selector, which is what absent means",
+      "source": "SDK 16.4, AVFoundation, AVSampleBufferRenderSynchronizer.h:117 declares it for ios(14.5); the level it asks about is the one above",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
+    },
+    {
+      "api": "AVSampleBufferAudioRenderer.allowedAudioSpatializationFormats",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header says the value \"will attempt to spatialize\" the media, and 6.1.3 carries nothing to spatialize with: no spatializer of any kind is in the release's AVFAudio, which is what tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3 answers for that library's own classes. The property is also declared \"not observable\", so an answer would be a value with no behaviour behind it",
+      "effect": "the property is not there: calling it raises an unrecognised selector, which is what absent means",
+      "source": "SDK 16.4, AVFoundation, AVSampleBufferAudioRenderer.h:89 declares it for ios(15.0)",
+      "facts": "facts/AVFoundation/SampleBufferRender11.md"
     }
   ]
 }
