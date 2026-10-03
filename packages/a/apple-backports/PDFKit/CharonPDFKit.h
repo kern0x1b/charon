@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @class PDFPage;
 @class PDFBorder;
 @class UIColor;
+@class PDFAction;
+@class PDFDestination;
 
 // -init is the third way the header's own comment names a document being made ("either the init
 // method, initWithURL:, or initWithData:"), so it is a convenience initializer here and it reaches
@@ -143,6 +145,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSDate *modificationDate;
 @property (nonatomic) BOOL shouldPrint;
 @property (nonatomic, weak, nullable) PDFPage *page;
+// The action and the destination of an annotation, which are the two ways a PDF points somewhere.  They
+// are read independently and a document may carry either or both: an /A dictionary gives the action, a
+// /Dest gives the destination, and an /Dest with no /A gives BOTH - the host synthesises a GoTo action
+// for a bare /Dest, measured on ann-dest-array and ann-dest-named.  Where both are written the action is
+// the /A one and the destination is the /Dest one (ann-dest-and-a).  See PDFAnnotation11.m.
+@property (nonatomic, readonly, nullable) PDFAction *action;
+@property (nonatomic, readonly, nullable) PDFDestination *destination;
 // The border, a PDFBorder of its own below, over this annotation's /Border array and its /BS
 // dictionary.  nil is a measured answer and not a missing one: see the rule on -border in
 // PDFAnnotation11.m, which is the whole of what the absent case is.  Readwrite, as PDFAnnotation.h:167
@@ -242,6 +251,137 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 @property (nonatomic, copy, nullable) NSString *rolloverCaption;
 @property (nonatomic, copy, nullable) NSString *downCaption;
 @property (nonatomic, readonly, copy) NSDictionary *appearanceCharacteristicsKeyValues;
+@end
+
+// ---- PDFDestination, and the action family --------------------------------------------------
+//
+// Seven classes the 26.2 headers declare and neither band carries: PDFDestination, PDFAction and
+// PDFActionGoTo, PDFActionNamed, PDFActionURL, PDFActionRemoteGoTo and PDFActionResetForm.  All of them
+// are read out of an annotation's /A action dictionary and its /Dest, so the substrate is the release's
+// own dictionary and array reader again - with ONE thing the release has no API for, which is the page a
+// destination names: a destination is [pageRef /XYZ left top zoom], and there is no object-number
+// accessor in this SDK, so PDFDestination11.m resolves the reference to a page DICTIONARY and matches it
+// against CGPDFPageGetDictionary by identity.  That is measured to work, and it is what makes a
+// destination that names the second page answer that page.
+
+// The sentinel PDFKit's own header calls "no position is specified".  The port's value is the host's own
+// (FLT_MAX, and NOT CGFLOAT_MAX - measured and recorded in registry/PDFKit/constants.json), and
+// PDFKitConstants11.m exports it, so this is a declaration and not a second definition.
+extern const CGFloat kPDFDestinationUnspecifiedValue;
+
+// PDFActionNamedName, PDFActionNamed.h:15.  The twelve names the enum declares, in the header's order.
+//
+// The host builds a PDFActionNamed for EIGHT of them and for no other: NextPage, FirstPage, LastPage,
+// GoBack, GoForward, GoToPage, Find and Print.  None, PreviousPage, ZoomIn, ZoomOut and a name the
+// format does not list all answer NO ACTION AT ALL - measured one fixture per name, act-named-all.pdf -
+// so the port's own -initWithName: keeps whatever it is given (the host keeps 0 and 99 too) while a
+// dictionary is read through the same eight-name table.
+typedef NS_ENUM(NSInteger, PDFActionNamedName) {
+    kPDFActionNamedNone = 0,
+    kPDFActionNamedNextPage = 1,
+    kPDFActionNamedPreviousPage = 2,
+    kPDFActionNamedFirstPage = 3,
+    kPDFActionNamedLastPage = 4,
+    kPDFActionNamedGoBack = 5,
+    kPDFActionNamedGoForward = 6,
+    kPDFActionNamedGoToPage = 7,
+    kPDFActionNamedFind = 8,
+    kPDFActionNamedPrint = 9,
+    kPDFActionNamedZoomIn = 10,
+    kPDFActionNamedZoomOut = 11,
+};
+
+@interface PDFDestination : NSObject <NSCopying>
+- (instancetype)initWithPage:(nullable PDFPage *)page atPoint:(CGPoint)point NS_DESIGNATED_INITIALIZER;
+@property (nonatomic, weak, readonly, nullable) PDFPage *page;
+@property (nonatomic, readonly) CGPoint point;
+@property (nonatomic) CGFloat zoom;
+@end
+
+// The port's own constructor, over the destination ARRAY itself - [pageRef /XYZ left top zoom], which
+// is how both an action's /D and an annotation's /Dest hold it.  Not Apple's API: the array is an
+// implementation's, and the two places that have one - PDFAnnotation's -destination and
+// PDFActionGoTo's -destination - are what reach this from the outside.  A NULL array builds the
+// destination with nothing in it, which is the measured answer for a NAMED destination.
+@interface PDFDestination (CharonInternals)
+- (instancetype)initWithCharonDestinationArray:(nullable CGPDFArrayRef)array
+                                    inDocument:(nullable PDFDocument *)document;
+@end
+
+// PDFAction is the base of the family and, on its own, what an /S the format does not name: measured,
+// /S /Bogus answers a PDFAction whose -type is "Bogus".  A freshly allocated one answers a NIL -type,
+// which is the same distinction: -type is the /S NAME, and there is no name yet.
+@interface PDFAction : NSObject <NSCopying>
+@property (nonatomic, readonly, copy, nullable) NSString *type;
+@end
+
+// The factory that reads an /A dictionary: the /S name picks the class, and a name the host does not
+// build an object for - the /Named names it has no case for, and an action with no /S at all - answers
+// nil, which is a measured absence rather than an empty object.
+@interface PDFAction (CharonInternals)
++ (nullable instancetype)charon_actionWithDictionary:(CGPDFDictionaryRef)action
+                                           inDocument:(nullable PDFDocument *)document;
+// The one place a type name is written: a freshly allocated action answers a nil -type and each
+// subclass's initializer sets the name its /S carries.  A method rather than -[NSObject
+// setValue:forKey:] on a readonly property, which would be a private route to an ivar.
+- (void)charon_setTypeName:(nullable NSString *)name;
+@end
+
+@interface PDFActionGoTo : PDFAction <NSCopying>
+- (instancetype)initWithDestination:(nullable PDFDestination *)destination NS_DESIGNATED_INITIALIZER;
+@property (nonatomic, strong, nullable) PDFDestination *destination;
+@end
+
+@interface PDFActionGoTo (CharonInternals)
+- (nullable instancetype)initWithCharonActionDictionary:(CGPDFDictionaryRef)action
+                                              inDocument:(nullable PDFDocument *)document;
+@end
+
+@interface PDFActionNamed : PDFAction <NSCopying>
+- (instancetype)initWithName:(PDFActionNamedName)name NS_DESIGNATED_INITIALIZER;
+@property (nonatomic) PDFActionNamedName name;
+@end
+
+@interface PDFActionNamed (CharonInternals)
+- (nullable instancetype)initWithCharonActionDictionary:(CGPDFDictionaryRef)action;
+@end
+
+@interface PDFActionURL : PDFAction <NSCopying>
+- (instancetype)initWithURL:(nullable NSURL *)url NS_DESIGNATED_INITIALIZER;
+@property (nonatomic, copy, nullable) NSURL *URL;
+@end
+
+@interface PDFActionURL (CharonInternals)
+- (nullable instancetype)initWithCharonActionDictionary:(CGPDFDictionaryRef)action;
+@end
+
+@interface PDFActionRemoteGoTo : PDFAction <NSCopying>
+- (instancetype)initWithPageIndex:(NSUInteger)pageIndex
+                         atPoint:(CGPoint)point
+                         fileURL:(nullable NSURL *)url NS_DESIGNATED_INITIALIZER;
+@property (nonatomic) NSUInteger pageIndex;
+@property (nonatomic) CGPoint point;
+@property (nonatomic, copy, nullable) NSURL *URL;
+@end
+
+@interface PDFActionRemoteGoTo (CharonInternals)
+- (nullable instancetype)initWithCharonActionDictionary:(CGPDFDictionaryRef)action
+                                            inDocument:(nullable PDFDocument *)document;
+@end
+
+@interface PDFActionResetForm : PDFAction <NSCopying>
+- (instancetype)init;
+// The seven /Flags combinations of PDF 1.7 Table 8.44 are measured, and -fieldsIncludedAreCleared is YES
+// exactly when /FIELDS is present AND the /Flags bit of value 1 is clear: no /Flags and /Flags 0 answer
+// YES, /Flags 1 and /Flags 3 answer NO, /Flags 2 answers YES, and /Flags 1 or 2 with no /Fields answer NO
+// whatever the bit.  A freshly allocated one answers YES, which is the header's own default and not the
+// same as what a dictionary carrying neither key reads as.
+@property (nonatomic, copy, nullable) NSArray<NSString *> *fields;
+@property (nonatomic) BOOL fieldsIncludedAreCleared;
+@end
+
+@interface PDFActionResetForm (CharonInternals)
+- (nullable instancetype)initWithCharonActionDictionary:(CGPDFDictionaryRef)action;
 @end
 
 NS_ASSUME_NONNULL_END

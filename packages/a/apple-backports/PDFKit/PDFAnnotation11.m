@@ -30,6 +30,10 @@ static const CGFloat kTextAnnotationSize = 24.0;
     // a border is a value of this annotation, and a border handed to -setBorder: is held by reference,
     // so a change to it is visible through this annotation - which is what the host does.
     PDFBorder *_border;
+    // The action and the destination, built once over the dictionary below.  Held strongly: both are
+    // values of this annotation, and the destination holds its page weakly as its header declares.
+    PDFAction *_action;
+    PDFDestination *_destination;
     // Whether -setBorder: has been called at all, INCLUDING with nil.  It has to be its own flag and
     // not a test of _border: on a /Square, whose dictionary answers a border, the host answers nil after
     // -setBorder:nil and does NOT build one again - measured, annot-square answers border.set.nil = 1
@@ -77,6 +81,8 @@ static const CGFloat kTextAnnotationSize = 24.0;
 @synthesize modificationDate = _modificationDate;
 @synthesize page = _page;
 @synthesize border = _border;
+@synthesize action = _action;
+@synthesize destination = _destination;
 
 // The /SUBTYPE, as the name the header's PDFAnnotationSubtype is: "Text", "Link", "Square",
 // "Highlight" - the dictionary's name object without its leading slash.
@@ -322,6 +328,123 @@ static const CGFloat kTextAnnotationSize = 24.0;
 {
     _border = border;
     _borderSet = YES;
+}
+
+// -action is the /A dictionary, through PDFAction's own factory, and nil for an annotation that names
+// none.  Three things are measured about it:
+//
+//   an action dictionary with NO /S answers nil (act-no-s), so the key's presence is not enough.
+//
+//   an /S the format does not name answers the BASE class with -type the name it carried (act-unknown-s,
+//   "Bogus") - not nil, and not a subclass.
+//
+//   an /Named action whose /N is outside the eight the host builds answers NO ACTION AT ALL
+//   (act-named-all: None, PreviousPage, ZoomIn, ZoomOut and a name the format does not list).
+//
+// And a BARE /Dest produces an action: ann-dest-array and ann-dest-named carry a /Dest and no /A, and
+// the host answers a PDFActionGoTo for both - the format's own rule that a /Dest without /A is a /GoTo
+// to that destination.  Where both are written the /A one is the action (ann-dest-and-a) and the /Dest
+// one is the destination.
+- (PDFAction *)action
+{
+    if (_action != nil)
+        return _action;
+    if (_annotation == NULL)
+        return nil;
+    CGPDFDictionaryRef action = NULL;
+    if (CGPDFDictionaryGetDictionary(_annotation, "A", &action) && action != NULL) {
+        _action = [PDFAction charon_actionWithDictionary:action inDocument:[self charon_document]];
+        return _action;
+    }
+    if (![self charon_hasDestination])
+        return nil;
+    // a BARE /Dest stands for a /GoTo to itself - the format's own rule, and measured: ann-dest-array
+    // and ann-dest-named carry a /Dest and no /A and the host answers a PDFActionGoTo for both.  It is
+    // built through the header's own -initWithDestination: over the very destination object this
+    // annotation answers, so the action's destination and -destination are one object and not two reads
+    // of the same array.
+    // The destination is read through the PRIVATE builder and not through -destination, because
+    // -destination reads the ACTION's destination: going through it here is infinite recursion, and it
+    // showed up as a SIGSEGV on the first run rather than as a wrong answer.
+    PDFDestination *destination = [self charon_destinationFromDest];
+    if (destination == nil)
+        return nil;
+    _action = [[PDFActionGoTo alloc] initWithDestination:destination];
+    return _action;
+}
+
+// The /Dest of this annotation's own dictionary, over the three spellings, and NOT through -destination.
+// nil for a /Dest that is a dictionary, which is measured: the host reads no destination from that
+// spelling (ann-dest-dict), and it reads no action from it either.
+- (PDFDestination *)charon_destinationFromDest
+{
+    if (_destination != nil)
+        return _destination;
+    if (_annotation == NULL)
+        return nil;
+    CGPDFObjectRef object = NULL;
+    if (!CGPDFDictionaryGetObject(_annotation, "Dest", &object) || object == NULL)
+        return nil;
+    CGPDFObjectType type = CGPDFObjectGetType(object);
+    if (type == kCGPDFObjectTypeArray) {
+        CGPDFArrayRef array = NULL;
+        if (!CGPDFObjectGetValue(object, kCGPDFObjectTypeArray, &array) || array == NULL)
+            return nil;
+        _destination = [[PDFDestination alloc] initWithCharonDestinationArray:array
+                                                                    inDocument:[self charon_document]];
+        return _destination;
+    }
+    if (type == kCGPDFObjectTypeName || type == kCGPDFObjectTypeString) {
+        // the NAMED spelling.  A destination IS built and its page is nil - measured on both /Dests
+        // spellings, ann-dest-named and ann-dest-named-dict - and nothing about a name says where, so
+        // the point and the zoom stay unspecified.  The port does not resolve the name: the host does not
+        // either on these fixtures, and a name it DID resolve would be a second answer nothing measured.
+        _destination = [[PDFDestination alloc] initWithCharonDestinationArray:NULL
+                                                                    inDocument:[self charon_document]];
+        return _destination;
+    }
+    return nil;
+}
+
+// -destination is the DESTINATION OF THE ACTION, and not the /Dest read on its own.  That is measured,
+// and it is the opposite of what the first version of this did: ann-dest-and-a carries BOTH a /Dest
+// whose /XYZ names (1, 2) with zoom 3 and an /A whose /D is a /Fit, and the host answers point
+// UNSPECIFIED - the /A's - where a read of the /Dest would have answered 1, 2 and 3.
+//
+// So -destination is one line over -action: the destination of a /GoTo, and nil for every other action.
+// That is also why a bare /Dest produces one: the synthesised GoTo carries it (ann-dest-array answers
+// point 11, 22 and zoom 0.5 off a /Dest with no /A at all), and why a NAMED /Dest answers a destination
+// whose page is nil rather than no destination.
+//
+// And the DICTIONARY spelling of a /Dest answers NIL for both members (ann-dest-dict): the host reads no
+// destination from it, and -destination follows because no action is built from one either.
+- (PDFDestination *)destination
+{
+    PDFAction *action = [self action];
+    if (![action isKindOfClass:[PDFActionGoTo class]])
+        return nil;
+    return [(PDFActionGoTo *)action destination];
+}
+
+// Whether the annotation names a /Dest at all, which is the whole of the difference between an /A that
+// says where to go and a /Dest that does.  A /Dest the host does not READ still counts: ann-dest-dict
+// carries the dictionary spelling and the host answers no destination for it, but it is also the fixture
+// that shows a bare /Dest is what produces the synthesised action.
+- (BOOL)charon_hasDestination
+{
+    CGPDFObjectRef object = NULL;
+    if (!CGPDFDictionaryGetObject(_annotation, "Dest", &object) || object == NULL)
+        return NO;
+    CGPDFObjectType type = CGPDFObjectGetType(object);
+    return type == kCGPDFObjectTypeArray || type == kCGPDFObjectTypeName || type == kCGPDFObjectTypeString
+           || type == kCGPDFObjectTypeDictionary;
+}
+
+// The document this annotation's page belongs to, which is what a destination has to be resolved
+// against - and it is nil once that document has gone, which is the weak page reference at work.
+- (PDFDocument *)charon_document
+{
+    return [_page document];
 }
 - (PDFBorder *)border
 {

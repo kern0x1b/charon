@@ -330,6 +330,47 @@ ANN_DEST_FIT = link([(b"Dest", b"[3 0 R /Fit]")])
 ANN_DEST_NAMED = link([(b"Dest", b"(chapter1)")])
 ANN_DEST_AND_A = link([(b"Dest", b"[3 0 R /XYZ 1 2 3]"), (b"A", b"<< /S /GoTo /D [3 0 R /Fit] >>")])
 
+# The page a /GoToR names, as an INDEX: on the two-page fixture the pages are objects 3 and 4, so this
+# says whether -pageIndex is read out of the /D at all or is a constant
+ACT_GOTOR_PAGE2 = link([(b"A", b"<< /S /GoToR /F (other.pdf) /D [4 0 R /Fit] >>")])
+# /XYZ with fewer than its three numbers: which of the three members still answers
+ACT_GOTO_XYZ_TWO = link([(b"A", b"<< /S /GoTo /D [3 0 R /XYZ 5 6] >>")])
+ACT_GOTO_XYZ_ONE = link([(b"A", b"<< /S /GoTo /D [3 0 R /XYZ 7] >>")])
+ACT_GOTO_XYZ_ZERO = link([(b"A", b"<< /S /GoTo /D [3 0 R /XYZ 0 0 0] >>")])
+# a /D whose /XYZ is spelled with the page in the SECOND position, which the format does not allow, so
+# the port does not have to answer it but the harness says whether it was asked
+ACT_GOTO_NO_PAGE_ARRAY = link([(b"A", b"<< /S /GoTo /D [/XYZ 1 2 3] >>")])
+# a /D that is not an array and not a name at all
+ACT_GOTO_D_NUMBER = link([(b"A", b"<< /S /GoTo /D 3 >>")])
+ACT_GOTO_D_DICT = link([(b"A", b"<< /S /GoTo /D << /D [3 0 R /XYZ 1 2 3] /S /XYZ >> >>")])
+# a negative zoom, to tell "nonzero" from "positive", and a name the format does not list
+ACT_GOTO_XYZ_NEGATIVE = link([(b"A", b"<< /S /GoTo /D [3 0 R /XYZ -1 -2 -3] >>")])
+ACT_GOTO_UNKNOWN_NAME = link([(b"A", b"<< /S /GoTo /D [3 0 R /Bogus 1 2] >>")])
+ACT_GOTO_NAME_ONLY = link([(b"A", b"<< /S /GoTo /D [3 0 R /XYZ] >>")])
+# a /D that names a page and no parameters at all
+ACT_GOTO_PAGE_ONLY = link([(b"A", b"<< /S /GoTo /D [3 0 R] >>")])
+# a /D that names a page and the wrong /XYZ name
+ACT_GOTO_WRONG_NAME = link([(b"A", b"<< /S /GoTo /D [3 0 R /Zoom 3] >>")])
+# a /D that names a page reference which is not a page, beside a /D whose parameters ARE readable: the
+# two are separate questions and one fixture each keeps them separate
+ACT_GOTO_BADPAGE_XYZ = link([(b"A", b"<< /S /GoTo /D [99 0 R /XYZ 1 2 3] >>")])
+# the /Flags of a /ResetForm, every combination Table 8.44 gives, with and without /Fields
+def reset(flags, fields):
+    body = b"<< /S /ResetForm"
+    if flags is not None:
+        body += b" /Flags " + str(flags).encode()
+    if fields is not None:
+        body += b" /Fields [(" + fields + b")]"
+    return link([(b"A", body + b" >>")])
+
+
+ACT_RESET_FLAG_TABLE = [reset(None, b"f1"), reset(0, b"f1"), reset(1, b"f1"), reset(2, b"f1"),
+                        reset(3, b"f1"), reset(1, None), reset(2, None)]
+# a relative /URI and one with a fragment, because -URL answers an NSURL and not the raw string
+ACT_URI_RELATIVE = link([(b"A", b"<< /S /URI /URI (relative/path.pdf) >>")])
+ACT_URI_FRAGMENT = link([(b"A", b"<< /S /URI /URI (https://example.com/a#frag) >>")])
+ACT_GOTOR_HTTP = link([(b"A", b"<< /S /GoToR /F (https://example.com/other.pdf) /D [3 0 R /Fit] >>")])
+
 # The NAMED destination, in BOTH of the spellings PDF 1.7 Table 8.42 gives the catalog's /Dests: a
 # plain dictionary of name to destination, and a name tree.  The port's fixture puts /Dests at object 8,
 # which holds for a fixture carrying one annotation.
@@ -416,6 +457,16 @@ def main():
         ("act-reset.pdf", [ACT_RESET, ACT_RESET_NO_FIELDS, ACT_RESET_FLAGS]),
         ("act-goto-page2.pdf", [ACT_GOTO_PAGE2], (), b"", b"", 2),
         ("act-goto-bad-page.pdf", [ACT_GOTO_BAD_PAGE], (), b"", b"", 2),
+        ("act-goto-badpage-xyz.pdf", [ACT_GOTO_BADPAGE_XYZ]),
+        ("act-goto-shapes.pdf", [ACT_GOTO_XYZ_TWO, ACT_GOTO_XYZ_ONE, ACT_GOTO_XYZ_ZERO,
+                                 ACT_GOTO_NO_PAGE_ARRAY, ACT_GOTO_D_NUMBER, ACT_GOTO_D_DICT,
+                                 ACT_GOTO_PAGE_ONLY, ACT_GOTO_WRONG_NAME,
+                                 ACT_GOTO_XYZ_NEGATIVE, ACT_GOTO_UNKNOWN_NAME,
+                                 ACT_GOTO_NAME_ONLY]),
+        ("act-goto-page2.pdf", [ACT_GOTOR_PAGE2], (), b"", b"", 2),
+        ("act-reset-flags.pdf", ACT_RESET_FLAG_TABLE),
+        ("act-uri-shapes.pdf", [ACT_URI_RELATIVE, ACT_URI_FRAGMENT]),
+        ("act-gotor-http.pdf", [ACT_GOTOR_HTTP]),
         ("ann-dest-array.pdf", [ANN_DEST_ARRAY]),
         ("ann-dest-dict.pdf", [ANN_DEST_DICT]),
         ("ann-dest-fit.pdf", [ANN_DEST_FIT]),

@@ -26,6 +26,145 @@ static const struct { CGPDFBox box; const char *name; } kinds[] = {
 
 // A colour, by its components, or "(nil)".
 
+
+// ---- the action family and PDFDestination -------------------------------------------------------
+//
+// Printed once per annotation, after the border facts, in the same keys on both sides.  Three things
+// have to be compared rather than described: the CLASS the host builds (which is the /S name's answer and
+// not a string the port could match), the three destination members, and the sentinel - which is a
+// NUMBER on both sides (the port exports FLT_MAX, the host's own value, and it is not CGFLOAT_MAX), so
+// it is printed as the number it is rather than symbolically.
+static void printCGFloatOrUnspecified(const char *label, CGFloat value)
+{
+    printf("%s=%.4f\n", label, (double)value);
+}
+
+static void printDestinationFacts(const char *prefix, PDFDestination *destination)
+{
+    if (destination == nil) {
+        printf("%s.destination=nil\n", prefix);
+        return;
+    }
+    printf("%s.destination=an-object\n", prefix);
+    PDFPage *page = destination.page;
+    printf("%s.destination.page=%s\n", prefix, page ? "an-object" : "(nil)");
+    // the page's INDEX, found by asking the document for each of its pages, because the host's PDFPage
+    // has no -pageIndex - the same thing the border harness does for the same reason
+    if (page != nil) {
+        PDFDocument *owner = page.document;
+        unsigned long index = owner ? owner.pageCount : 0;
+        for (unsigned long i = 0; owner != nil && i < owner.pageCount; i++) {
+            if ([owner pageAtIndex:i] == page) { index = i; break; }
+        }
+        printf("%s.destination.pageIndex=%lu\n", prefix, index);
+    } else {
+        printf("%s.destination.pageIndex=-1\n", prefix);
+    }
+    char key[512];
+    snprintf(key, sizeof(key), "%s.destination.point.x", prefix);
+    printCGFloatOrUnspecified(key, destination.point.x);
+    snprintf(key, sizeof(key), "%s.destination.point.y", prefix);
+    printCGFloatOrUnspecified(key, destination.point.y);
+    snprintf(key, sizeof(key), "%s.destination.zoom", prefix);
+    printCGFloatOrUnspecified(key, destination.zoom);
+}
+
+static void printActionFacts(const char *prefix, PDFAction *action)
+{
+    if (action == nil) {
+        printf("%s.action=nil\n", prefix);
+        return;
+    }
+    printf("%s.action.class=%s\n", prefix, class_getName([action class]));
+    printf("%s.action.type=%s\n", prefix, action.type.UTF8String ?: "(nil)");
+    if ([action isKindOfClass:[PDFActionGoTo class]]) {
+        char key[512];
+        snprintf(key, sizeof(key), "%s.actionGoTo", prefix);
+        printDestinationFacts(key, [(PDFActionGoTo *)action destination]);
+    }
+    if ([action isKindOfClass:[PDFActionNamed class]])
+        printf("%s.action.name=%ld\n", prefix, (long)[(PDFActionNamed *)action name]);
+    if ([action isKindOfClass:[PDFActionURL class]])
+        printf("%s.action.URL=%s\n", prefix,
+               [[(PDFActionURL *)action URL] absoluteString].UTF8String ?: "(nil)");
+    if ([action isKindOfClass:[PDFActionRemoteGoTo class]]) {
+        PDFActionRemoteGoTo *remote = (PDFActionRemoteGoTo *)action;
+        printf("%s.action.pageIndex=%lu\n", prefix, (unsigned long)remote.pageIndex);
+        char key[512];
+        snprintf(key, sizeof(key), "%s.action.point.x", prefix);
+        printCGFloatOrUnspecified(key, remote.point.x);
+        snprintf(key, sizeof(key), "%s.action.point.y", prefix);
+        printCGFloatOrUnspecified(key, remote.point.y);
+        printf("%s.action.URL=%s\n", prefix, remote.URL.absoluteString.UTF8String ?: "(nil)");
+    }
+    if ([action isKindOfClass:[PDFActionResetForm class]]) {
+        PDFActionResetForm *reset = (PDFActionResetForm *)action;
+        printf("%s.action.fields=%s\n", prefix, reset.fields ? "an-array" : "(nil)");
+        NSMutableArray *parts = [NSMutableArray array];
+        for (NSString *field in reset.fields)
+            [parts addObject:field];
+        [parts sortUsingSelector:@selector(compare:)];
+        printf("%s.action.fields.values=%s\n", prefix,
+               [[parts componentsJoinedByString:@","] UTF8String]);
+        printf("%s.action.cleared=%d\n", prefix, (int)reset.fieldsIncludedAreCleared);
+    }
+}
+
+// The six designated initializers the 26.2 headers declare, each built in code with no dictionary
+// behind it, because a class the program cannot construct is a class whose setters answer a crash - the
+// question the coordinator asked about PDFBorder, asked here before the code was written.
+static void printInitializerFacts(const char *fixture)
+{
+    // A real document, so -initWithPage:atPoint: is asked about a page that exists.  An
+    // empty one has no page and answers a different set of values, which is a corner
+    // nothing in this harness needs and which probe12 measured separately.
+    PDFDocument *document = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:@(fixture)]];
+    PDFDestination *plain = [[PDFDestination alloc] init];
+    printf("init.destination.page=%s\n", plain.page ? "an-object" : "(nil)");
+    printCGFloatOrUnspecified("init.destination.point.x", plain.point.x);
+    printCGFloatOrUnspecified("init.destination.zoom", plain.zoom);
+    PDFPage *page = document != nil && document.pageCount > 0 ? [document pageAtIndex:0] : nil;
+    PDFDestination *made = [[PDFDestination alloc] initWithPage:page atPoint:CGPointMake(3, 4)];
+    printf("init.destination.made.page=%s\n", made.page ? "an-object" : "(nil)");
+    printCGFloatOrUnspecified("init.destination.made.point.x", made.point.x);
+    printCGFloatOrUnspecified("init.destination.made.point.y", made.point.y);
+    printCGFloatOrUnspecified("init.destination.made.zoom", made.zoom);
+    made.zoom = 2.5;
+    printCGFloatOrUnspecified("init.destination.made.zoomAfterSet", made.zoom);
+    PDFAction *base = [[PDFAction alloc] init];
+    printf("init.action.class=%s\n", class_getName([base class]));
+    printf("init.action.type=%s\n", base.type.UTF8String ?: "(nil)");
+    PDFActionGoTo *goTo = [[PDFActionGoTo alloc] initWithDestination:made];
+    printf("init.goto.class=%s type=%s destination=%s\n", class_getName([goTo class]),
+           goTo.type.UTF8String ?: "(nil)", goTo.destination ? "an-object" : "(nil)");
+    PDFActionGoTo *goToNil = [[PDFActionGoTo alloc] initWithDestination:nil];
+    printf("init.gotoNil.destination=%s\n", goToNil.destination ? "an-object" : "(nil)");
+    PDFActionNamed *named = [[PDFActionNamed alloc] initWithName:kPDFActionNamedLastPage];
+    printf("init.named.class=%s type=%s name=%ld\n", class_getName([named class]),
+           named.type.UTF8String ?: "(nil)", (long)named.name);
+    PDFActionNamed *namedNone = [[PDFActionNamed alloc] initWithName:kPDFActionNamedNone];
+    printf("init.namedNone.name=%ld\n", (long)namedNone.name);
+    PDFActionNamed *named99 = [[PDFActionNamed alloc] initWithName:(PDFActionNamedName)99];
+    printf("init.named99.name=%ld\n", (long)named99.name);
+    PDFActionURL *url = [[PDFActionURL alloc] initWithURL:[NSURL URLWithString:@"https://example.com/x"]];
+    printf("init.url.class=%s type=%s URL=%s\n", class_getName([url class]),
+           url.type.UTF8String ?: "(nil)", url.URL.absoluteString.UTF8String ?: "(nil)");
+    PDFActionRemoteGoTo *remote = [[PDFActionRemoteGoTo alloc]
+        initWithPageIndex:2 atPoint:CGPointMake(5, 6) fileURL:[NSURL fileURLWithPath:@"/tmp/other.pdf"]];
+    printf("init.remote.class=%s type=%s pageIndex=%lu\n", class_getName([remote class]),
+           remote.type.UTF8String ?: "(nil)", (unsigned long)remote.pageIndex);
+    printCGFloatOrUnspecified("init.remote.point.x", remote.point.x);
+    printf("init.remote.URL=%s\n", remote.URL.absoluteString.UTF8String ?: "(nil)");
+    PDFActionResetForm *reset = [[PDFActionResetForm alloc] init];
+    printf("init.reset.class=%s type=%s fields=%s cleared=%d\n", class_getName([reset class]),
+           reset.type.UTF8String ?: "(nil)", reset.fields ? "an-array" : "(nil)",
+           (int)reset.fieldsIncludedAreCleared);
+    reset.fields = @[@"a", @"b"];
+    reset.fieldsIncludedAreCleared = NO;
+    printf("init.reset.after.fields=%lu cleared=%d\n", (unsigned long)reset.fields.count,
+           (int)reset.fieldsIncludedAreCleared);
+}
+
 // The key values of one border, in the header's own key order, in the shape both binaries print.
 static void printBorderKeys(const char *label, PDFBorder *border)
 {
@@ -264,6 +403,12 @@ int main(int argc, char **argv)
                 // compared against the port's nil by accident - it is compared like anything else, and
                 // the subtypes that answer one where the port does not would show up here.
                 for (unsigned a = 0; a < first.annotations.count; a++) {
+                    PDFAnnotation *each = first.annotations[a];
+                    NSString *prefix = [NSString stringWithFormat:@"%s.page0.annotation%u", name, a];
+                    printActionFacts([prefix UTF8String], each.action);
+                    printDestinationFacts([prefix UTF8String], each.destination);
+                }
+                for (unsigned a = 0; a < first.annotations.count; a++) {
                     PDFBorder *border = first.annotations[a].border;
                     if (border == nil) {
                         printf("%s.page0.annotation%u.border=nil\n", name, a);
@@ -411,6 +556,7 @@ int main(int argc, char **argv)
             printAppearanceCharacteristics("full", full);
         }
         printBorderValueFacts();
+        printInitializerFacts(argv[1]);
     }
     return 0;
 }
