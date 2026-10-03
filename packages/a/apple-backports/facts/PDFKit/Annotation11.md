@@ -216,6 +216,40 @@ the string member answers `Yes` and `Marked` and not `/Yes`. The first version o
 against `@"/Off"`, never matched, and answered 1 for the three shapes where one of the two keys is `/Off`.
 
 
+## The colours and the font: measured, and stopped where the measurement stops
+
+`annotation-colours.pdf` carries sixteen annotations, one spelling of one of the four members each, and
+what the host answers is this - measured, and it does not match the reading I expected:
+
+**`backgroundColor` and `interiorColor` answer NIL for every `/MK` spelling written.** `/MK << /BC
+[1 0 0] >>`, `[0.5]`, `[0 0 0 0]` and `[0.1 0.2 0.3 0.4]` - the four component counts Table 8.40 defines -
+and `(a string)` all answer nil, and so does `/MK << /IC [0 1 0] >>`. So **`/MK` `/BC` is not
+`backgroundColor`'s key**, even though it **is** the key `-[PDFAnnotation border]` reads to decide whether
+a widget has a border at all. What the key is, is not measured.
+
+**`fontColor` and `font` have DEFAULTS, not nil.** Every annotation carrying no `/DA` at all - seven of
+them - answers **opaque black** and **Helvetica 12**. And of the `/DA`:
+
+| `/DA` | `fontColor` |
+| --- | --- |
+| *absent* | opaque black, a custom space |
+| `(/Helv 12 Tf 0 g)` | black, a gray space |
+| `(/Helv 12 Tf 1 g)` | white, a gray space |
+| `(/Helv 12 Tf 1 0 0 rg)` | red, an RGB space |
+| `(/Helv 12 Tf 0 1 0 RG)` | **black** - the UPPERCASE operand is not read |
+| `(/Helv 12 Tf 1 0 0 1 k)` | black - which is both what a CMYK value can convert to and what ignoring the operator gives, and one discriminating value would tell them apart |
+| `(/Helv 12 Tf)` | black, and Helvetica 12 - a font and a size with no colour |
+
+So the lowercase `g` and `rg` are read and the uppercase `RG` is not; the `k`/`K` pair, the other five
+operators of Table 8.68, the operand's position inside the `/DA`, and what a non-numeric operand does are
+all unmeasured. And `font`'s three separating shapes - `(12 Tf)` with no name, `(/Helv Tf)` with no size,
+and `(/Nonexistent 9 Tf)` for a font the system lacks - are in the fixture and were not separated.
+
+All four rows are therefore registered `inert` with these measurements as their reasons, which is the
+honest state: two of them have an unexpected answer that a reader needs, and two have a default and a
+half-read rule. Implementing a colour reader from this would be guessing at the key for the first two and
+at half the operator table for the third.
+
 ## The 25 rows that are not implemented, and why each one waits
 
 Each of the 27 carries the host's measured answer in its `reason` in
@@ -235,9 +269,8 @@ Each of the 27 carries the host's measured answer in its `reason` in
   (`/Q 2` -> 0), `choices` and `values` (`/Opt [(one) (two) (three)]` -> empty), `open`, `caption`, `URL`.
   Each is written in a fixture and the host does not answer it from there, which says the key or the scale
   is something else and not what I assumed.
-* **the three colours and the font**, which need the Mac Catalyst third binary and a colour reader for
-  `/MK` `/BC`, `/MK` `/IC` and the `/DA` colour string. `backgroundColor` is the nearest: its key is
-  already measured for `-[PDFAnnotation border]`, where a widget's `/BC` decides whether it has a border.
+* **the three colours and the font**, measured above and stopped there: `/MK` `/BC` turns out not to be
+  `backgroundColor`'s key, and `fontColor` and `font` have defaults rather than answering nil.
 * **the geometry six** - `startPoint`, `endPoint`, `startLineStyle`, `endLineStyle`, `paths`,
   `quadrilateralPoints`. `/InkList` is a list of variable-length point runs and needs a bezier-path object
   the port does not carry; `PDFLineStyle` is a class the port does not carry; `/QuadPoints` is a flat array

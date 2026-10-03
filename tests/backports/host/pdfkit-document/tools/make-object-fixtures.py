@@ -460,6 +460,34 @@ BUTTON_AS_OFF_V_ON = [
     widget([(b"AS", b"/On"), (b"V", b"/Yes")], field=b"/Btn"),
 ]
 
+# The THREE COLOURS and the FONT, one annotation per key.  -backgroundColor reads /MK /BC and
+# -interiorColor reads /MK /IC, which are the colour arrays of Table 8.40; -fontColor reads the COLOUR
+# OPERAND of the /DA string, which is a content-stream fragment; and -font reads the /DA's font name and
+# size.  Each annotation carries one spelling of one of them, so a rule is measured against a file that sets
+# that key and nothing else.
+#
+# The /DA colour operators are the six of PDF 1.7 Table 8.68: g and G for gray, rg and RG for RGB, k and K
+# for CMYK.  Both cases of each letter are here because /DA is written with lowercase in practice and the
+# format allows both.
+COLOUR_SHAPES = [
+    widget([(b"MK", b"<< /BC [1 0 0] >>")], field=b"/Tx"),          # -backgroundColor, RGB
+    widget([(b"MK", b"<< /BC [0.5] >>")], field=b"/Tx"),            # gray
+    widget([(b"MK", b"<< /BC [0 0 0 0] >>")], field=b"/Tx"),        # no colour
+    widget([(b"MK", b"<< /BC [0.1 0.2 0.3 0.4] >>")], field=b"/Tx"),# CMYK
+    widget([(b"MK", b"<< /BC (a string) >>")], field=b"/Tx"),        # the wrong type
+    widget([(b"MK", b"<< /IC [0 1 0] >>")], field=b"/Tx"),          # -interiorColor, RGB
+    widget([(b"MK", b"<< /IC [0.25] /BC [1 0 0] >>")], field=b"/Tx"),
+    widget([(b"DA", b"(/Helv 12 Tf 0 g)")], field=b"/Tx"),           # -fontColor, gray 0
+    widget([(b"DA", b"(/Helv 12 Tf 1 g)")], field=b"/Tx"),
+    widget([(b"DA", b"(/Helv 12 Tf 1 0 0 rg)")], field=b"/Tx"),      # RGB red
+    widget([(b"DA", b"(/Helv 12 Tf 0 1 0 RG)")], field=b"/Tx"),      # RGB green, stroking case
+    widget([(b"DA", b"(/Helv 12 Tf 1 0 0 1 k)")], field=b"/Tx"),     # CMYK
+    widget([(b"DA", b"(/Helv 12 Tf)")], field=b"/Tx"),               # a font and a size, no colour
+    widget([(b"DA", b"(12 Tf)")], field=b"/Tx"),                     # a size with no font name
+    widget([(b"DA", b"(/Helv Tf 0 g)")], field=b"/Tx"),              # a font with no size
+    widget([(b"DA", b"(/Nonexistent 9 Tf 0 g)")], field=b"/Tx"),     # a font the system does not have
+]
+
 # /T, spelled four ways, because -[PDFAnnotation fieldName] answers a SYNTHESISED name on the first
 # version of the widget fixtures and the coordinator's challenge is right that this fits the
 # fixture-defect pattern rather than a host behaviour: a widget that DOES carry /T must be read first,
@@ -938,6 +966,9 @@ def main():
         ("mk-rot-real.pdf", [MK_ROT_REAL]),
         ("mk-r-zero.pdf", [MK_R_ZERO]),
     ]
+    for name, annotations in (("annotation-colours.pdf", COLOUR_SHAPES),):
+        count, _ = build(os.path.join(directory, name), annotations)
+        print("  wrote %-20s %d objects, %d annotations" % (name, count, len(annotations)))
     for name, annotations in (("button-asoff-von.pdf", BUTTON_AS_OFF_V_ON),
                               ("button-v-only.pdf", BUTTON_V_ONLY),
                               ("button-asyes-voff.pdf", BUTTON_AS_YES_V_OFF),

@@ -228,7 +228,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "not implemented",
-   "reason": "a UIColor read out of /MK /BC, which the Mac Catalyst third binary can compare by its four components - and the key is the one already measured for -[PDFAnnotation border], where a widget's /BC decides whether it has a border at all",
+   "reason": "NOT IMPLEMENTED, and the key is not the one the format suggests.  Measured on annotation-colours.pdf's first six annotations - /MK << /BC [1 0 0] >>, [0.5], [0 0 0 0], [0.1 0.2 0.3 0.4] and (a string), the four component counts Table 8.40 defines and one of the wrong type - and the host answers NIL for every one of them, on a /Tx widget.  So /MK /BC is NOT this member's key even though it IS the key -[PDFAnnotation border] reads to decide whether a widget has a border at all.  What the key is has not been measured, and this row waits for that rather than guessing at /C",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
   },
@@ -239,7 +239,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "not implemented",
-   "reason": "a UIColor out of the /DA colour string, which needs the /DA's operands and the colour reader; neither is measured",
+   "reason": "NOT IMPLEMENTED, and it has a DEFAULT rather than answering nil: every annotation with NO /DA answers opaque BLACK, measured on seven annotations of annotation-colours.pdf.  What is measured of the /DA is that its lowercase colour operand is read - (/Helv 12 Tf 0 g) answers black and (1 g) answers white, both in a gray space, and (1 0 0 rg) answers red in an RGB space - and that the UPPERCASE operand is NOT: (0 1 0 RG) answers black.  What is not measured is whether k and K are read: (1 0 0 1 k) answers black, which is consistent both with a CMYK value that converts to black and with the operator being ignored, and one discriminating CMYK value would tell them apart.  The remaining five operators of Table 8.68, the operand's POSITION within the /DA, and what a non-numeric operand does are unmeasured too",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
   },
@@ -250,7 +250,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "not implemented",
-   "reason": "a UIColor out of /MK /IC, which no fixture writes and whose spelling the port has not confirmed",
+   "reason": "NOT IMPLEMENTED.  Measured: /MK << /IC [0 1 0] >> answers nil and so does /MK << /IC [0.25] /BC [1 0 0] >>, on the same /Tx widgets whose /MK /BC the border reader does act on.  So /MK /IC is not established as this member's key either, and no fixture in the harness writes a /C or any other colour key that this member answers from",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
   },
@@ -261,7 +261,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "not implemented",
-   "reason": "a UIFont out of the /DA font name, and the /DA fixtures in this harness do not name a font the walk resolves",
+   "reason": "NOT IMPLEMENTED, and it also has a DEFAULT: every annotation with no /DA at all answers Helvetica at 12 points, measured on the same seven annotations, and so does (/Helv 12 Tf) with no colour operand.  What is not measured is the half that matters: the three shapes that separate the default from a read - (12 Tf) with no font name, (/Helv Tf) with no size, and (/Nonexistent 9 Tf) for a font the system does not have - are all in annotation-colours.pdf but were not separated before this batch ran out of room, and neither was whether the name is mapped (Helvetica for /Helv) or taken verbatim",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
   },
