@@ -41,16 +41,32 @@ PY
 echo "renamed: $(grep -c define "$build/rename.h") classes"
 
 printf '#import <MetalPerformanceShadersGraph/MetalPerformanceShadersGraph.h>\n#import "CharonMPSGraph.h"\n' > "$build/declarations.h"
-objects=""
-for source in "$graph"/*.m; do
-    name=$(basename "$source" .m)
-    xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -c "$source" -o "$build/$name.plain.o"
-    python3 "$here/../prefix_selectors.py" "$source" "$build/$name.m" ccharonHost_ \
-        --declarations="$build/declarations.h" -fobjc-arc $target $quiet -I"$graph" -include "$build/rename.h" -- "$build/$name.plain.o"
-    xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -I"$graph" -include "$build/rename.h" \
-        -include "$build/declarations.h" -c "$build/$name.m" -o "$build/$name.o"
-    objects="$objects $build/$name.o"
-done
+# The plant has to reach the objects, not only the case file. CharonMPSStore in ../MetalPerformanceShaders/
+# CharonMPS.h is where CHARON_PLANT is compiled in, and it is on the way out of every element the graph's
+# interpreter writes, so a planted build has to be compiled with the flag like any other source: passed on
+# the case file's line alone it would arm nothing and both builds would print the same correct bytes.
+# Each build gets its own object directory, so a planted object cannot be handed back to the plain run.
+build_objects() {
+    _plant=$1
+    _objdir="$build/obj-p$_plant"
+    rm -rf "$_objdir"
+    mkdir -p "$_objdir"
+    _objects=""
+    for source in "$graph"/*.m; do
+        _s=$(basename "$source" .m)
+        xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -DCHARON_PLANT=$_plant \
+            -c "$source" -o "$_objdir/$_s.plain.o"
+        python3 "$here/../prefix_selectors.py" "$source" "$_objdir/$_s.m" ccharonHost_ \
+            --declarations="$build/declarations.h" -fobjc-arc $target $quiet -DCHARON_PLANT=$_plant \
+            -I"$graph" -include "$build/rename.h" -- "$_objdir/$_s.plain.o"
+        xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -DCHARON_PLANT=$_plant \
+            -I"$graph" -include "$build/rename.h" \
+            -include "$build/declarations.h" -c "$_objdir/$_s.m" -o "$_objdir/$_s.o"
+        _objects="$_objects $_objdir/$_s.o"
+    done
+    echo "$_objects"
+}
+objects=$(build_objects 0)
 echo "compiled: $(echo "$objects" | wc -w) objects"
 
 xcrun clang -fobjc-arc $target $quiet -include "$build/rename.h" "$here/graph-cases.m" $objects \
@@ -61,6 +77,18 @@ port_status=$?
 set -e
 echo "port: exit $port_status"
 [ "$port_status" -ne 0 ] && echo "port: stopped at: $(tail -1 "$build/port.txt" | cut -c1-70)"
+
+# The red control: the same sources with every stored element off by one. It exists because a comparison
+# that cannot see a wrong kernel is not a comparison, and this file's own history is the reason - the
+# verdict line it printed for a year could not be told apart from a test nobody ran.
+plant_objects=$(build_objects 1)
+xcrun clang -fobjc-arc $target $quiet -include "$build/rename.h" "$here/graph-cases.m" $plant_objects \
+    -framework Foundation -framework Metal -framework MetalPerformanceShaders -framework MetalPerformanceShadersGraph -o "$build/port-plant1"
+set +e
+"$build/port-plant1" > "$build/port-plant1.txt" 2> "$build/port-plant1.err"
+plant_status=$?
+set -e
+echo "port-plant1: exit $plant_status"
 
 n=$(wc -l < "$build/system.txt" | tr -d ' ')
 m=$(wc -l < "$build/port.txt" | tr -d ' ')
@@ -82,7 +110,17 @@ if [ "$n" -eq 0 ]; then
 fi
 head -n "$n" "$build/system.txt" > "$build/system.prefix"
 head -n "$n" "$build/port.txt" > "$build/port.prefix"
+head -n "$n" "$build/port-plant1.txt" > "$build/port-plant1.prefix"
 echo "compared: $n cases"
+# The red control, judged against the same oracle rather than trusted: a plant the comparison cannot see
+# is a comparison that would pass a wrong port, and this file's verdict line was unreadable to the sweep
+# for a year for a reason of the same family.
+if cmp -s "$build/port.prefix" "$build/port-plant1.prefix"; then
+    echo "the red control did not fire: the planted build printed exactly what the plain build printed"
+    exit 1
+fi
+plant_wrong=$(diff "$build/system.prefix" "$build/port-plant1.prefix" | grep '^<' | wc -l | tr -d ' ')
+echo "red control: the planted build differs from the release in $plant_wrong of $n cases"
 # The verdict, in the words the host sweep reads. It counted this directory as DEAD whatever the
 # comparison said, because nothing here began a line the sweep recognises: this run ended
 # "port: DIFFERS in 1 cases" and a sweep cannot tell that from a test nobody ran. The two counts are

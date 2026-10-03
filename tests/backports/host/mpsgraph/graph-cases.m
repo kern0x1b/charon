@@ -63,9 +63,28 @@ static MPSGraphTensorData *feed(const void *values, NSArray<NSNumber *> *shape, 
     return [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:shape dataType:type];
 }
 
-static float leftValues[8] = {1, 2, 3, 4, -1, -2, -3, -4};
-static float rightValues[8] = {10, 20, 30, 40, 0.5f, 2, -1, 4};
-static float resultValues[8];
+// One element per input class the arithmetic has to distinguish, so every case in this file covers the
+// whole space rather than the handful of values that first showed a difference: a positive and a
+// negative, a negative zero and a positive zero, both infinities, a NaN of each sign, a NaN carrying a
+// payload, a denormal of each sign, the largest denormal, the smallest normal just above it, an ordinary
+// small value, an ordinary value below one and one above it. The hex float literals are how a denormal
+// is written; no decimal literal below 1.2e-38 is one.
+// Measured against this host's own MPSGraph, macOS 27.0 build 26A428 (M4 Pro, Metal 4):
+// 1, -1, -0.0, 0.0, +inf, -inf, qNaN, -qNaN, 0x1p-149, -0x1p-149, 0x1.fffffep-127, 0x1p-126, 0x1p-20,
+// 0x1.fffffep-1, -0x1p-20, 1e-20. facts/MetalPerformanceShadersGraph/Core.md carries what each
+// operation answers for each of them.
+static float leftValues[16] = {
+    1.0f, -1.0f, -0.0f, 0.0f, INFINITY, -INFINITY, NAN, -NAN,
+    0x1p-149f, -0x1p-149f, 0x1.fffffep-127f, 0x1p-126f, 0x1p-20f, 0x1.fffffep-1f, -0x1p-20f, 1e-20f,
+};
+// The second operand carries the classes the divisor column needs - a positive zero, a negative zero, an
+// infinity of each sign, a NaN, a denormal - and ordinary values elsewhere, so a division is checked
+// against every kind of divisor and not only against ones that divide.
+static float rightValues[16] = {
+    0.0f, -0.0f, INFINITY, -INFINITY, NAN, -NAN, 0x1p-149f, 2.0f,
+    4.0f, -4.0f, 0.5f, 8.0f, 16.0f, 3.0f, 1.0f, 1.0f,
+};
+static float resultValues[16];
 static float constantValues[4] = {0.25f, -0.25f, 0.5f, 2};
 static int32_t integerValues[4] = {7, -3, 11, 0};
 static int32_t integerDivisors[4] = {2, 2, 4, -4};
@@ -99,11 +118,13 @@ int main(void)
         // MPSGraphTensor does not declare -[MPSGraphTensor tensorDataType] - and take the process down,
         // so the shape, the data type and the graph's placeholder count are what is compared here, and
         // the rest of the builder side is checked in a program of its own.
-        MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@2, @4] dataType:MPSDataTypeFloat32];
+        MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@4, @4] dataType:MPSDataTypeFloat32];
         printf("shaped dataType %d\n", (int)shaped.dataType);
 
-        // The unary family, over values that include a zero and negatives, which is what pins the
-        // release's square root: it answers the magnitude where the arithmetic itself is undefined.
+        // The unary family, over the sixteen classes above, so each one of them is answered for every
+        // operation of the family rather than for the one operation a difference happened to show up in.
+        // The square root is what the class of a negative pins: the release answers a NaN there, where an
+        // earlier version of this port answered the magnitude.
         struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *); } unary[] = {
             {"square", ^MPSGraphTensor *(MPSGraph *gg, MPSGraphTensor *a) { return [gg squareWithTensor:a name:@"sq"]; }},
             {"reciprocal", ^MPSGraphTensor *(MPSGraph *gg, MPSGraphTensor *a) { return [gg reciprocalWithTensor:a name:@"rec"]; }},
@@ -115,10 +136,10 @@ int main(void)
         };
         for (unsigned i = 0; i < sizeof(unary) / sizeof(unary[0]); i++) {
             MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+            MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:MPSDataTypeFloat32 name:@"a"];
             MPSGraphTensor *t = unary[i].build(one, a);
             memset(resultValues, 0, sizeof(resultValues));
-            run(one, @[a], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
+            run(one, @[a], @[feed(&leftValues[0], @[@4, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
             put(unary[i].name, &resultValues[0], sizeof(resultValues));
         }
         {
@@ -141,23 +162,23 @@ int main(void)
         };
         for (unsigned i = 0; i < 4; i++) {
             MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"a"];
-            MPSGraphTensor *b = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"b"];
+            MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+            MPSGraphTensor *b = [one placeholderWithShape:@[@4, @4] dataType:MPSDataTypeFloat32 name:@"b"];
             MPSGraphTensor *t = cases[i].build(one, a, b);
             memset(resultValues, 0, sizeof(resultValues));
-            run(one, @[a, b], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@2, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
+            run(one, @[a, b], @[feed(&leftValues[0], @[@4, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@4, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
             put(cases[i].name, &resultValues[0], sizeof(resultValues));
         }
         // A chain, so the walk over the operations in order is checked too.
         {
             MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"a"];
-            MPSGraphTensor *b = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"b"];
+            MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+            MPSGraphTensor *b = [one placeholderWithShape:@[@4, @4] dataType:MPSDataTypeFloat32 name:@"b"];
             MPSGraphTensor *sum = [one additionWithPrimaryTensor:a secondaryTensor:b name:@"sum"];
             MPSGraphTensor *doubled = [one multiplicationWithPrimaryTensor:sum secondaryTensor:sum name:@"doubled"];
             MPSGraphTensor *root = [one squareRootWithTensor:doubled name:@"root"];
             memset(resultValues, 0, sizeof(resultValues));
-            run(one, @[a, b], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@2, @4], MPSDataTypeFloat32)], root, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
+            run(one, @[a, b], @[feed(&leftValues[0], @[@4, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@4, @4], MPSDataTypeFloat32)], root, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
             put("chain", &resultValues[0], sizeof(resultValues));
         }
         // Last, and on its own: -constantWithShape:dataType:values:name: aborts the host of this
@@ -165,12 +186,12 @@ int main(void)
         // family it was taking seven cases down with it.
         {
             MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"a"];
-            MPSGraphTensor *c = [one constantWithShape:@[@2, @4] dataType:MPSDataTypeFloat32
+            MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+            MPSGraphTensor *c = [one constantWithShape:@[@4, @4] dataType:MPSDataTypeFloat32
                                              values:[NSData dataWithBytes:&constantValues[0] length:sizeof(constantValues)] name:@"c"];
             MPSGraphTensor *t = [one additionWithPrimaryTensor:a secondaryTensor:c name:@"withConstant"];
             memset(resultValues, 0, sizeof(resultValues));
-            run(one, @[a], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
+            run(one, @[a], @[feed(&leftValues[0], @[@4, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
             put("constant", &resultValues[0], sizeof(resultValues));
         }
 
