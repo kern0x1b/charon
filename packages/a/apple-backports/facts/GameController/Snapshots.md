@@ -48,16 +48,18 @@ version symbol for the plain gamepad, and the registry carries no row for one: i
 ## One object per release
 
 The ten functions, the two constants and the three objects do not share a release, so they are four
-objects, split by what the ladder first exports:
+objects, split by what the ladder first exports. The rung below is measured, not read off a header:
+`python3 tools/cache-index/first-rung.py <name>`, which is what `measured_names()` and so
+`check_releases` reads.
 
 - `GCSnapshots7.m` — the plain game's V100 pair and the extended game's V100 pair, both at 7.0, and
-  with them `GCGamepadSnapshot` and `-[GCGamepad saveSnapshot]`, which the ladder also first exports
-  at 7.0;
+  with them `GCGamepadSnapshot`, `-[GCGamepad saveSnapshot]` and `GCExtendedGamepadSnapshot`, which the
+  ladder also places at 7.0;
 - `GCSnapshots9.m` — the micro game's V100 pair, whose symbols the ladder first exports at 10.0.1,
-  which is why `GCMicroGamepad9.m` is named for 9 and not for 10.0.1;
+  which is why `GCMicroGamepad9.m` is named for 9 and not for 10.0.1; and with them
+  `GCMicroGamepadSnapshot` and `-[GCMicroGamepad saveSnapshot]`, which the ladder also places at 10.0.1;
 - `GCSnapshots16.m` — the four current functions and both version constants, first exported at 16.0,
   the rule `GCConstants16.m` already follows;
-- `GCSnapshotObjects9.m` — the two 9.0 classes and the micro game's `-saveSnapshot`, all at 9.0.
 
 The shared encoding and decoding are `static inline` in `CharonGCSnapshot.h`, so each object holds
 its own copy and no object names a symbol another one defines — which is the failure
@@ -82,14 +84,34 @@ Two more were added with the objects, and both are the shape of the defect the o
 one changes the element a field is read from (`Button X` takes `buttonY`), the other reads the
 direction pad as if it were an axis. Neither breaks the build and neither survives.
 
+## What `-[GCExtendedGamepad saveSnapshot]` is waiting for now
+
+It was refused for a measured reason, recorded in `coordination/api-queue.md`: the method is 7.0, its
+return type was believed to be 9.0, and a method's IMP emits an `objc-class-ref` for its return type,
+so the 6.1.3 band had nothing to satisfy it. The measurement is still sound; **its premise was not**.
+The class was placed at 9.0 from `GCExtendedGamepadSnapshot.h`'s `API_AVAILABLE(ios(9.0))`, and
+`first-rung.py` answers 7.0. So the class and the method are now on the same rung in the same object
+and the reference has something to resolve against. The method is still `absent` and is not added
+here: that is one more change, and it wants its own measurement on the gate's own path rather than a
+claim in a facts page.
+
 ## The three snapshot objects
 
 The three classes and the three `-saveSnapshot` methods that make them are not one release, and the
 ladder is what splits them:
 
 - `GCSnapshots7.m` -- `GCGamepadSnapshot` and `-[GCGamepad saveSnapshot]`, both first exported at 7.0;
-- `GCSnapshotObjects9.m` -- `GCExtendedGamepadSnapshot` and `GCMicroGamepadSnapshot` (both 9.0) and
-  `-[GCMicroGamepad saveSnapshot]` (9.0);
+- and, by what the ladder says rather than by what the SDK header says:
+  `GCExtendedGamepadSnapshot` is at **7.0** and lives in `GCSnapshots7.m` beside `GCGamepadSnapshot`
+  (`python3 tools/cache-index/first-rung.py GCExtendedGamepadSnapshot` -> 7.0), while
+  `GCMicroGamepadSnapshot` is at **10.0.1** and lives in `GCSnapshots9.m` with the micro game's V100
+  pair and `-[GCMicroGamepad saveSnapshot]` (first-rung -> 10.0.1). `measured_names()` reads classes
+  and C functions off the held caches, so an Objective-C *method* measures `NONE` and its registry
+  `introduced` is what places it; for `-[GCMicroGamepad saveSnapshot]` the floor it cannot precede is
+  its own return type, which is 10.0.1. The SDK header's `API_AVAILABLE(ios(9.0))` on the classes says
+  when the declaration appeared and the ladder says when the name arrived, and `check_releases` reads
+  the ladder first - a class placed off the header lands in an object holding two releases, which is
+  the error this note records;
 - `-[GCExtendedGamepad saveSnapshot]` is **not carried**, and the reason is the port's own shape
   rather than the work: the SDK declares the method at 7.0 (`GCExtendedGamepad.h:65`) returning a
   class that first appears at 9.0, and a method's implementation emits an `objc-class-ref` for its

@@ -36,8 +36,6 @@ BOOL GCExtendedGamepadSnapShotDataV100FromNSData(GCExtendedGamepadSnapShotDataV1
 // satisfied by the method's own first appearance at 7.0. GCExtendedGamepadSnapshot is forward-declared
 // below for that reason and is not defined by this object.
 
-@class GCExtendedGamepadSnapshot;
-
 @implementation GCGamepadSnapshot {
     NSData *_snapshotData;
 }
@@ -97,6 +95,89 @@ BOOL GCExtendedGamepadSnapShotDataV100FromNSData(GCExtendedGamepadSnapShotDataV1
 // the current values into the structure, and hand the structure to the encoder this object ships. It is
 // a category because the class itself is implemented in the 7.0 gamepad object and this object holds
 // only the snapshot API.
+// GCExtendedGamepadSnapshot is measured on the ladder at 7.0, the rung this object already
+// carries, so the class belongs here rather than in an object of its own:
+// `python3 tools/cache-index/first-rung.py GCExtendedGamepadSnapshot` answers 7.0. What it is,
+// is the header's own - a profile of the extended game's elements that holds the values it was
+// saved from and answers them again - so it holds the data and pushes it through the same
+// accessors a live game uses, and the layout it reads is the packed structure
+// GCExtendedGamepadSnapshot.h:41-78 documents.
+//
+// This also settles what -[GCExtendedGamepad saveSnapshot] was waiting for. That method is 7.0
+// and returns this class, and a method's IMP emits an objc-class-ref for its return type; while
+// the class sat at 9.0 the 6.1.3 band had nothing to satisfy that reference, which is the wall
+// coordination/api-queue.md records. With the class here, at the same rung as the method, the
+// reference is satisfied by this same object. The method is still absent and is not added here:
+// that is one more change with its own measurement, and this commit is the split the gate asked
+// for.
+@implementation GCExtendedGamepadSnapshot {
+    NSData *_snapshotData;
+}
+
+// The header's own property, at its own ownership: `atomic, copy`. @synthesize rather than
+// @dynamic, because the port's build runs with -Werror=objc-missing-property-synthesis and a property
+// with no accessor of its own is refused there.
+@synthesize snapshotData = _snapshotData;
+
+- (instancetype)initWithSnapshotData:(NSData *)data
+{
+    GCExtendedGamepadSnapshotData fields;
+    memset(&fields, 0, sizeof(fields));
+    if (!charon_gc_snapshot_read(&fields, data, sizeof(fields), charon_gc_accept_declared_size))
+        return nil;
+    self = [super init];
+    if (self == nil)
+        return nil;
+    _snapshotData = [data copy];
+    [self charon_applyExtended:&fields];
+    return self;
+}
+
+- (instancetype)initWithController:(GCController *)controller snapshotData:(NSData *)data
+{
+    self = [self initWithSnapshotData:data];
+    if (self == nil)
+        return nil;
+    [self charon_setController:controller];
+    return self;
+}
+
+// The decoded values become the game's own elements, so a snapshot read back answers the same numbers
+// the data holds. Every pad here writes through its own two axes - GCElements7.m gives a pad its xAxis
+// and yAxis, and `charon_setValue:` is declared on GCControllerAxisInput, which a pad does not answer.
+- (void)charon_applyExtended:(GCExtendedGamepadSnapshotData *)fields
+{
+    GCControllerDirectionPad *dpad = (GCControllerDirectionPad *)[self charon_elementNamed:@"Direction Pad"];
+    if (dpad != nil) {
+        [(GCControllerAxisInput *)dpad.xAxis charon_setValue:fields->dpadX];
+        [(GCControllerAxisInput *)dpad.yAxis charon_setValue:fields->dpadY];
+    }
+    GCControllerDirectionPad *left = (GCControllerDirectionPad *)[self charon_elementNamed:@"Left Thumbstick"];
+    if (left != nil) {
+        [(GCControllerAxisInput *)left.xAxis charon_setValue:fields->leftThumbstickX];
+        [(GCControllerAxisInput *)left.yAxis charon_setValue:fields->leftThumbstickY];
+    }
+    GCControllerDirectionPad *right = (GCControllerDirectionPad *)[self charon_elementNamed:@"Right Thumbstick"];
+    if (right != nil) {
+        [(GCControllerAxisInput *)right.xAxis charon_setValue:fields->rightThumbstickX];
+        [(GCControllerAxisInput *)right.yAxis charon_setValue:fields->rightThumbstickY];
+    }
+    NSDictionary *buttons = @{@"Button A": @(fields->buttonA), @"Button B": @(fields->buttonB),
+                              @"Button X": @(fields->buttonX), @"Button Y": @(fields->buttonY),
+                              @"Left Shoulder": @(fields->leftShoulder),
+                              @"Right Shoulder": @(fields->rightShoulder),
+                              @"Left Trigger": @(fields->leftTrigger),
+                              @"Right Trigger": @(fields->rightTrigger),
+                              @"Left Thumbstick Button": @(fields->leftThumbstickButton),
+                              @"Right Thumbstick Button": @(fields->rightThumbstickButton)};
+    for (NSString *name in buttons)
+        [(GCControllerButtonInput *)[self charon_elementNamed:name]
+            charon_update:(float)[buttons[name] floatValue]];
+}
+
+@end
+
+
 @implementation GCGamepad (CharonGCSnapshot7)
 
 - (GCGamepadSnapshot *)saveSnapshot
