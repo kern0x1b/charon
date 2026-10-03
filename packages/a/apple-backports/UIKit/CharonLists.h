@@ -224,8 +224,12 @@ UICollectionView *charon_owning_collection_view(UIView *view);
 // These are internal plumbing between two objects of this library and nothing outside it reads them: the
 // case in tests/backports/host/uikit2/listseparator_test.m reads the public -visualEffect and
 // -setVisualEffect:, which the 15.0 object defines.  Nothing here is API and nothing here is a registry row.
+//
+// There are four, not three: the equality the 14.5 object answers includes the visual effect, and that
+// comparison is over a member the 15.0 object owns.
 @interface UIListSeparatorConfiguration (CharonVisualEffect15)
 - (void)charon_takeVisualEffectFrom:(UIListSeparatorConfiguration *)other;
+- (BOOL)charon_visualEffectIsEqualTo:(UIListSeparatorConfiguration *)other;
 - (void)charon_encodeVisualEffectWithCoder:(NSCoder *)coder;
 - (void)charon_decodeVisualEffectWithCoder:(NSCoder *)coder;
 @end

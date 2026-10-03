@@ -165,13 +165,80 @@ static UIColor *charon_multiple_selection_separator_colour(void)
     return copy;
 }
 
-// -isEqual: and -hash are NOT defined here, and that is a measurement rather than an omission.  The
-// header declares neither, so neither is a row - and what the host answers is not a value equality either:
-// two fresh configurations from the same appearance ARE equal, and two configurations both written alike
-// are NOT ("two written alike isEqual=0").  So the host's isEqual: is comparing something this port has no
-// measurement for, and defining a value equality here would be inventing an answer the release does not
-// give.  NSObject's identity semantics stand, and the case asks the port and the host the same two
-// questions rather than asking them to agree.
+// -isEqual: and -hash are Apple's, and both are in the class's own 37 methods in the iOS 18.0 cache, so
+// they are defined here.  What each field joins was measured one field at a time, with a pair that is
+// identical apart from that one field (facts/UIKit/UIListSeparatorConfiguration145.md, M5; the probe in
+// .agent-work/runs/fix/equality-probe.m):
+//
+//   field                     joins isEqual:   joins hash
+//   topSeparatorVisibility            yes            yes
+//   bottomSeparatorVisibility         yes            yes
+//   topSeparatorInsets                yes            NO
+//   bottomSeparatorInsets             yes            yes
+//   color                             yes            yes
+//   multipleSelectionColor            yes            yes
+//   visualEffect (15.0)               yes            NO
+//   the list appearance               NO             NO
+//
+// The two "NO" in the hash column were re-measured with four value sets each, because one sample cannot
+// tell a field left out of the hash from a pair that happened to collide: the top insets and the visual
+// effect are out of it every time, the bottom insets are in it every time.
+//
+// The appearance is the interesting one: it is not compared at all. Two configurations built from DIFFERENT
+// appearances and equal in every field are equal - measured, both by writing every field alike (isEqual 1)
+// and by writing only multipleSelectionColor alike (isEqual 1) - while two built from different appearances
+// with nothing written are NOT, and the difference is their default multipleSelectionColor: on the host it
+// is a UIDynamicProviderColor that differs between a plain and a sidebar configuration (measured: the two
+// defaults are not isEqual: to each other). Writing either colour except that one leaves the pair unequal.
+// So the appearance is carried by that default and by nothing else, which is also why the port's own pair
+// from two appearances is EQUAL where the host's is not: the port's dynamic colour is the same role for
+// every appearance, there being no list here whose appearance could vary it.
+
+- (BOOL)isEqual:(id)other
+{
+    if (other == self)
+        return YES;
+    if (![other isKindOfClass:[UIListSeparatorConfiguration class]])
+        return NO;
+    UIListSeparatorConfiguration *that = other;
+    if (_topVisibility != that->_topVisibility || _bottomVisibility != that->_bottomVisibility)
+        return NO;
+    // The four doubles each, rather than UIEdgeInsetsEqualToDirectionalEdgeInsets: the SDK has no such
+    // function - it was UIEdgeInsetsEqualToEdgeInsets for the older type - so an equality here is written out.
+    const NSDirectionalEdgeInsets *top = &_topInsets, *topOther = &that->_topInsets;
+    if (top->leading != topOther->leading || top->top != topOther->top ||
+        top->bottom != topOther->bottom || top->trailing != topOther->trailing)
+        return NO;
+    const NSDirectionalEdgeInsets *bottom = &_bottomInsets, *bottomOther = &that->_bottomInsets;
+    if (bottom->leading != bottomOther->leading || bottom->top != bottomOther->top ||
+        bottom->bottom != bottomOther->bottom || bottom->trailing != bottomOther->trailing)
+        return NO;
+    // Colours by -isEqual:, not by identity: the host calls two separately made but equal colours equal
+    // (measured, isEqual 1), and this port's dynamic colours are fresh objects on every read.
+    if (_color != that->_color && ![_color isEqual:that->_color])
+        return NO;
+    if (_multipleSelectionColor != that->_multipleSelectionColor && ![_multipleSelectionColor isEqual:that->_multipleSelectionColor])
+        return NO;
+    // The visual effect is 15.0 and its storage is in the 15.0 object.
+    if ([self respondsToSelector:@selector(charon_visualEffectIsEqualTo:)])
+        return [self charon_visualEffectIsEqualTo:that];
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)_topVisibility;
+    hash = hash * 31 + (NSUInteger)_bottomVisibility;
+    // The BOTTOM insets only, and not the top: measured, four value sets each, and that is what the release
+    // answers. It looks like a mistake and it is not - see the table above.
+    hash = hash * 31 + (NSUInteger)_bottomInsets.leading;
+    hash = hash * 31 + (NSUInteger)_bottomInsets.top;
+    hash = hash * 31 + (NSUInteger)_bottomInsets.bottom;
+    hash = hash * 31 + (NSUInteger)_bottomInsets.trailing;
+    hash = hash * 31 + _color.hash;
+    hash = hash * 31 + _multipleSelectionColor.hash;
+    return hash;
+}
 
 // The keys are the host's own, read out of the host's archive plist (facts/UIKit/
 // UIListSeparatorConfiguration145.md, M4): topSepVisibility, bottomSepVisibility, topSepInsets, insets -

@@ -157,6 +157,78 @@ works is the one the locale object uses: the older object calls, the newer one i
 declarations both can see in `CharonLists.h`. Nothing outside this library reads those three, which is why
 they are not registry rows; the case reads the public pair.
 
+## M5. `-isEqual:` and `-hash`, field by field
+
+Both are Apple's: the arm64e cache of iOS 18.0 carries them in `UIListSeparatorConfiguration`'s own 37
+methods. **The port's `-isEqual:` is a value equality over seven fields, and the port's `-hash` covers five
+of them.**
+
+How each field was measured: a pair of configurations from one appearance, identical apart from exactly one
+field, and both answers taken (`.agent-work/runs/fix/equality-probe.m`, the host's own UIKitCore only).
+
+| field | joins `-isEqual:` | joins `-hash` |
+| --- | --- | --- |
+| `topSeparatorVisibility` | yes | yes |
+| `bottomSeparatorVisibility` | yes | yes |
+| `topSeparatorInsets` | yes | **no** |
+| `bottomSeparatorInsets` | yes | yes |
+| `color` | yes | yes |
+| `multipleSelectionColor` | yes | yes |
+| `visualEffect` (15.0) | yes | **no** |
+| the list appearance | **no** | **no** |
+
+The two `no`s in the hash column were re-measured with **four** value sets each, because one sample cannot
+tell a field left out of the hash from a pair that happened to collide: the top insets and the visual effect
+are out of it every time, the bottom insets are in it every time. So the asymmetry between the two insets is
+the release's and not a slip in the table.
+
+**The appearance is not compared at all**, and that is the one that looks wrong until it is measured. Two
+configurations built from **different** appearances and equal in every field are equal:
+
+    appearance, all written alike             isEqual = 1   hashes alike
+    plain vs sidebar, colours written         isEqual = 1   hashes alike
+    plain vs sidebar, msc only written        isEqual = 1   hashes alike
+    plain vs sidebar, colour only written     isEqual = 0   hashes DIFFER
+    plain vs sidebar, visibility written      isEqual = 0   hashes DIFFER
+    plain vs sidebar, insets written          isEqual = 0   hashes DIFFER
+    plain vs sidebar, effect written          isEqual = 0   hashes DIFFER
+
+The carrier is `multipleSelectionColor`: on the host its default is a `UIDynamicProviderColor` that differs
+between a plain and a sidebar configuration (the two defaults are not `-isEqual:` to each other), and
+writing that one field on both sides makes the pair equal. The automatic insets are the **same** for both
+appearances on this host (measured: `1.79769e+308 0 1.79769e+308 0` either way), so they cannot be the
+carrier, and writing `color` leaves the pair unequal, so `color` is not it either.
+
+Two configurations whose colours are equal by value but are separate objects are **equal** (measured), which
+is what a value equality means and what an identity cannot do - and it is the pair an earlier measurement in
+this tree called unequal.
+
+### What this leaves different, stated rather than smoothed over
+
+A port pair built from two **different** appearances with nothing written answers **equal**, where the host
+answers unequal: the port's `multipleSelectionColor` is the same dynamic role for every appearance, there
+being no list here whose appearance could vary it. That is a difference in a *default*, not in the equality
+rule, and it is the honest consequence of carrying a value that varies with a thing this release does not
+have.
+
+### The red control
+
+Two plants in a scratch copy of the port's source - the bottom insets left out of the equality, and the top
+insets put into the hash - and the case goes red on exactly the two rows they touch:
+
+    FAIL the top insets join the equality and NOT the hash:   port 0/other hash != system 0/same hash
+    FAIL the bottom insets join the equality and the hash:   port 1/other hash != system 0/other hash
+
+### A correction, and what it cost
+
+The 14.5 object's first version said `-isEqual:` and `-hash` were deliberately left undefined because "the
+host's isEqual: is not a value equality either: two configurations both written alike are NOT equal
+(`two written alike isEqual=0`)". **That is false, and it was false in the same tree, in the same commit
+family.** The probe written for the visual effect had already measured `isEqual = 1` for two alike
+configurations; the claim was taken from an earlier band's note, was repeated in a code comment and in this
+file, and was used to justify leaving two of Apple's own methods unimplemented. A measurement in the same
+directory contradicted it and the contradiction was not read.
+
 ## What this port does not do
 
 The appearance model. `-initWithListAppearance:` stores the appearance and applies the defaults above; it does

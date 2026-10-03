@@ -46,6 +46,28 @@ static NSString *colourRole(UIColor *color)
     return @"present";
 }
 
+// One field at a time, the way facts/UIKit/UIListSeparatorConfiguration145.md M5 measured the host: a pair
+// that is identical apart from that one field, and the two answers. The port's class and the system's are
+// asked the same question side by side, so the comparison is between two classes and never between two
+// objects of the same one.
+static void equality(NSString *what, void (^write)(id configuration), Class port, Class system)
+{
+    UICollectionLayoutListAppearance appearance = UICollectionLayoutListAppearancePlain;
+    // NSObject-typed, because -isEqual: and -hash are declared there and an `id` has no visible
+    // declaration of either under ARC; the objects themselves are this class on both sides.
+    NSObject *written = [[port alloc] initWithListAppearance:appearance];
+    NSObject *fresh = [[port alloc] initWithListAppearance:appearance];
+    write(written);
+    NSObject *writtenTheirs = [[system alloc] initWithListAppearance:appearance];
+    NSObject *freshTheirs = [[system alloc] initWithListAppearance:appearance];
+    write(writtenTheirs);
+    BOTH(what,
+         [NSString stringWithFormat:@"%d/%@", (int)[written isEqual:fresh],
+          written.hash == fresh.hash ? @"same hash" : @"other hash"],
+         [NSString stringWithFormat:@"%d/%@", (int)[writtenTheirs isEqual:freshTheirs],
+          writtenTheirs.hash == freshTheirs.hash ? @"same hash" : @"other hash"]);
+}
+
 static void check_one_appearance(NSInteger appearance, NSString *label)
 {
     CharonHostUIListSeparatorConfiguration *ours = [[CharonHostUIListSeparatorConfiguration alloc] initWithListAppearance:(UICollectionLayoutListAppearance)appearance];
@@ -189,6 +211,39 @@ static void check_every_appearance(void)
 // -init and +new are NS_UNAVAILABLE and neither refuses; what they answer is NOT the initialiser's shape.
 // The insets are ZERO where the initialiser gives the automatic ones, and both colours are nil. That is
 // measured and it is the whole of what these two rows are.
+// The equality and the hash, field by field (M5). One call each, here, rather than inside
+// check_one_appearance: the answer does not depend on the appearance and ten repetitions of it would be ten
+// copies of one measurement.
+static void check_the_equality(void)
+{
+    Class port = [CharonHostUIListSeparatorConfiguration class], system = [UIListSeparatorConfiguration class];
+    equality(@"two fresh configurations are equal", ^(id c) {}, port, system);
+    equality(@"the top visibility joins the equality and the hash", ^(id c) { [c setTopSeparatorVisibility:2]; }, port, system);
+    equality(@"the bottom visibility joins the equality and the hash", ^(id c) { [c setBottomSeparatorVisibility:1]; }, port, system);
+    equality(@"the top insets join the equality and NOT the hash",
+             ^(id c) { [c setTopSeparatorInsets:NSDirectionalEdgeInsetsMake(1, 2, 3, 4)]; }, port, system);
+    equality(@"the bottom insets join the equality and the hash",
+             ^(id c) { [c setBottomSeparatorInsets:NSDirectionalEdgeInsetsMake(5, 6, 7, 8)]; }, port, system);
+    equality(@"the colour joins the equality and the hash", ^(id c) { [c setColor:[UIColor redColor]]; }, port, system);
+    equality(@"the multiple-selection colour joins the equality and the hash",
+             ^(id c) { [c setMultipleSelectionColor:[UIColor greenColor]]; }, port, system);
+    equality(@"the visual effect joins the equality and NOT the hash", ^(id c) {
+        [c setVisualEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemThinMaterial]];
+    }, port, system);
+    // Equal values that are not the same objects, which a value equality must call equal and an identity
+    // cannot: this is the pair the earlier measurement in this tree called unequal.
+    equality(@"equal colours from separate objects are equal", ^(id c) {
+        [c setColor:[UIColor colorWithRed:1 green:0 blue:0 alpha:1]];
+        [c setMultipleSelectionColor:[UIColor colorWithRed:0 green:1 blue:0 alpha:1]];
+    }, port, system);
+    // And a configuration is never equal to another class's object.
+    NSObject *ours = [[port alloc] initWithListAppearance:UICollectionLayoutListAppearancePlain];
+    NSObject *theirs = [[system alloc] initWithListAppearance:UICollectionLayoutListAppearancePlain];
+    BOTH(@"a configuration is not equal to a view",
+         [NSString stringWithFormat:@"%d", (int)[ours isEqual:(id)[UIView new]]],
+         [NSString stringWithFormat:@"%d", (int)[theirs isEqual:(id)[UIView new]]]);
+}
+
 static void check_the_unavailable_pair(void)
 {
     CharonHostUIListSeparatorConfiguration *ours = ((zero_init)objc_msgSend)((id)((zero_init)objc_msgSend)((id)[CharonHostUIListSeparatorConfiguration class], @selector(alloc)), @selector(init));
@@ -220,6 +275,7 @@ int main(void)
     @autoreleasepool {
         check_every_appearance();
         check_the_unavailable_pair();
+        check_the_equality();
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
     }
     return charon_failures;
