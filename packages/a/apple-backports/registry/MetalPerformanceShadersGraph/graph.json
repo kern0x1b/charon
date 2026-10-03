@@ -1264,6 +1264,28 @@
       "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
     },
     {
+      "api": "-[MPSGraph reshapeTensor:withShape:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements at another extent, which is one gather with the axes left alone and the result's shape the caller's: the result's element at a flat index is the operand's element at the same flat index, measured on this host's own MPSGraph - a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) answers those eight values and not the transpose over a 4x2, a 2x4 and a 1x8 alike, and a 2x3x4 answers its own twenty-four in order over a 6x4, a 2x3x4 and a 24x1. A dynamic extent, the header's -1, is resolved against the operand's element count (measured: a 2x4 into @[@4, -1] and into @[@-1, @4] answer a 4x2 and a 2x4, and a single -1 answers a shape of 8, a rank of one). Compared cell for cell by tests/backports/host/mpsgraph/run.sh in a process of its own: 11 cases over the written-down forms and their result shapes, every cell and every shape byte-identical to the release (gather_reshape checks=11 failures=0 recorded=0 over 160 cells). A shape whose volume does not match is refused with NSInvalidArgumentException where the graph is built: the release builds the tensor the caller asked for and its own compiler refuses it (\"the result shape is not compatible with the input shape\", MPSGraphUtilities.mm:310) and the process is gone, so this is the named divergence the family's other refusals are. Two dynamic extents are refused too, which the header's own words rule out; the release does not resolve them either and its shape line prints -1x-1 before the NDArray assertion takes the process down.",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 16.4, which declares both forms, and the behaviour measured against the system's own MPSGraph"
+    },
+
+    {
+      "api": "-[MPSGraph reshapeTensor:withShapeTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the same reshape over a shape the caller FEEDS as a 1D tensor of int32 or int64, which is 15.0's own form and the port's own extension: the result's shape is not known until the graph runs and the walk reads it out of the operation's second input, and an int32 and an int64 of shape [1] both answer. THE FED FORM, which the differential cannot compare: asked in a process of its own the process dies with SIGSEGV and writes nothing (exit 139), so there is no answer of the release for a case to hold against and the port's answer is its header's - the same named divergence the family's other five fed forms carry, and refusals.txt asks it in a process of its own so that the measurement is one a later reader re-runs. A floating point shape is refused where the graph is built, because the release cannot build the graph over one at all.",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 16.4, which declares both forms, and the behaviour measured against the system's own MPSGraph"
+    },
+
+    {
       "api": "-[MPSGraph reductionOrWithTensor:axes:name:]",
       "kind": "method",
       "introduced": "15.3",

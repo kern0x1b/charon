@@ -38,6 +38,7 @@ reduction:0
 reduction_rest:0
 cumulative:0
 gather_transpose:0
+gather_reshape:0
 gather_flatten:0
 gather_broadcast:0
 gather_reverse:0
