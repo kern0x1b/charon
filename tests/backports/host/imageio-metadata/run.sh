@@ -193,6 +193,30 @@ if diff -q "$build/host.cmp" "$build/plant.cmp" > /dev/null; then
 fi
 echo "  MUTATION 4: a lookup that matches names only moves a case answer, so the namespace rule can go red too"
 
+# 5. the number spelling: keeping the CFNumber must move a record, and these records print the tag's VALUE,
+#    so a plant that only turned the value back into a number is seen by the comparison and not by the type
+python3 - "$metadata_table" <<'PYPLANT'
+import sys
+path = sys.argv[1]
+text = open(path).read()
+old = "    if (resolved == kCGImageMetadataTypeString)\n        object = charon_xmp_number(object, &spelled);\n"
+new = "    if (resolved == kCGImageMetadataTypeString && 0)\n        object = charon_xmp_number(object, &spelled);\n"
+if old not in text:
+    sys.exit("the fifth mutation changed nothing (the pattern is stale)")
+open(path, "w").write(text.replace(old, new))
+PYPLANT
+hit=$(grep -c 'kCGImageMetadataTypeString && 0' "$metadata_table" || true)
+[ "$hit" -eq 1 ] || { echo "FAIL  the fifth mutation changed nothing (the pattern is stale)"; exit 1; }
+build_plant "number spelling" > /dev/null
+"$build/plantbin" > "$build/plant.out" 2>"$build/plant.err" || { echo "FAIL  the mutated port build raised"; exit 1; }
+grep -v '^PORTONLY' "$build/plant.out" > "$build/plant.cmp"
+if diff -q "$build/host.cmp" "$build/plant.cmp" > /dev/null; then
+  echo "  NOT NOTICED  keeping the CFNumber in a tag and the comparison did not see it"; exit 1
+fi
+moved=$(grep '^-' "$build/diff.txt" > /dev/null; diff "$build/host.cmp" "$build/plant.cmp" | grep -c '^[<>] number\|^[<>] tag number\|^[<>] value number')
+[ "$moved" -gt 0 ] || { echo "  NOT THE RIGHT RECORDS  keeping the CFNumber moved no number record, so the value is not what moved"; exit 1; }
+echo "  MUTATION 5: keeping the CFNumber moves $moved of the number records, which print the tag's value"
+
 cp "$here/cases.m" "$plant/cases.m"
 
 echo "imageio-metadata: $n cases compared, $differing declared differences, mutation RED"

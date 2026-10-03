@@ -130,6 +130,56 @@ static CGImageMetadataType charon_type_of_value(id value)
     return kCGImageMetadataTypeInvalid;
 }
 
+// A number written where XMP writes a number is the STRING XMP spells it, because that is what the host's own
+// ImageIO stores and what its own XMP packet carries: measured 2026-10-03, a tag made from a CFNumber holds a
+// CFString and the packet says <exif:N>7</exif:N>, and the spelling follows the number's own CFNumber type -
+// CFBooleanGetTypeID first, then CFNumberIsFloatType, then an integer. That is XMP's own three scalar types
+// (Boolean, Real, Integer) and not a format this library chooses: @3 writes "3" and @3.0 writes "3.000000"
+// because CFNumberIsFloatType says which of the two it is, and @YES writes "True".
+//
+// ONLY THE TAG'S OWN VALUE IS CONVERTED. A number inside an array or inside a structure's fields stays a
+// number: measured, a tag made from @[@1, @"two", @2.5] holds a CFNumber, a tag and a CFNumber, and the
+// packet writes <rdf:li>1</rdf:li> and <rdf:li>2.5</rdf:li> out of them. So the conversion is here, where the
+// tag's value is set, and not in charon_wrap, which builds the elements.
+//
+// The caller holds the text in `owned` for as long as it uses it, which is the length of its own call.
+static id charon_xmp_number(id value, NSString **owned)
+{
+    CFTypeRef ref = (__bridge CFTypeRef)value;
+    CFTypeID type = CFGetTypeID(ref);
+    if (type == CFBooleanGetTypeID()) {
+        *owned = CFBooleanGetValue((CFBooleanRef)ref) ? @"True" : @"False";
+    } else if (type == CFNumberGetTypeID()) {
+        if (CFNumberIsFloatType((CFNumberRef)ref)) {
+            double real = 0;
+            CFNumberGetValue((CFNumberRef)ref, kCFNumberDoubleType, &real);
+            *owned = [NSString stringWithFormat:@"%f", real];
+        } else {
+            long long integer = 0;
+            CFNumberGetValue((CFNumberRef)ref, kCFNumberLongLongType, &integer);
+            *owned = [NSString stringWithFormat:@"%lld", integer];
+        }
+    } else {
+        return value;
+    }
+    return *owned;
+}
+
+// WHAT A TAG'S VALUE HOLDS, and the one element kind that becomes a tag of its own. Measured 2026-10-03 on
+// the host's own ImageIO, for a value holding a string, a number, a boolean, a real, a nested array and a
+// nested structure in each position:
+//
+//   array    @[@"s", @1, @YES, @2.5, @[@"nested"], @{@"k": @"v"}]
+//     -> [ a tag named [0] of type String holding "s", 1, true, 2.5, an array holding "nested",
+//          a structure holding k = "v" ]
+//   structure @{@"s": @"str", @"n": @7, @"b": @YES, @"r": @1.25, @"a": @[@"x"], @"d": @{@"k": @"v"}}
+//     -> { a tag named s of type String holding "str", 7, true, 1.25, an array holding "x",
+//          a structure holding k = "v" }
+//
+// So a STRING becomes a tag - named by its position in an array and by its key in a structure - and everything
+// else is stored as it is. The wrapping is also ONE LEVEL DEEP: the string inside the nested array stays a
+// string, and the host's own packet for the array above writes three <rdf:li> elements and leaves out both the
+// boolean and the two containers.
 static id charon_wrap(id value, NSString *ns, NSString *prefix)
 {
     if ([value isKindOfClass:[NSArray class]]) {
@@ -140,8 +190,13 @@ static id charon_wrap(id value, NSString *ns, NSString *prefix)
             // value carries (measured: an ArrayUnordered tag built from @[@"a", @"b"] describes its
             // elements as [0] and [1] - facts/ImageIO/Metadata.md, "an array value holds tags")
             NSString *name = [NSString stringWithFormat:@"[%lu]", (unsigned long)index++];
+            if (![element isKindOfClass:[NSString class]]) {
+                [wrapped addObject:element];
+                continue;
+            }
             CGImageMetadataTagRef tag = CGImageMetadataTagCreate((__bridge CFStringRef)ns, (__bridge CFStringRef)prefix,
-                                                                 (__bridge CFStringRef)name, charon_type_of_value(element),
+                                                                 (__bridge CFStringRef)name,
+                                                                 kCGImageMetadataTypeString,
                                                                  (__bridge CFTypeRef)element);
             if (!tag)
                 return nil;
@@ -154,8 +209,14 @@ static id charon_wrap(id value, NSString *ns, NSString *prefix)
         NSMutableDictionary *wrapped = [NSMutableDictionary dictionaryWithCapacity:[(NSDictionary *)value count]];
         for (id key in (NSDictionary *)value) {
             id element = [(NSDictionary *)value objectForKey:key];
+            if (![element isKindOfClass:[NSString class]]) {
+                [wrapped setObject:element forKey:key];
+                continue;
+            }
+            // a field is named by its own name, which is what the host's own value carries (measured: the
+            // structure above describes its string field as a tag called s)
             CGImageMetadataTagRef tag = CGImageMetadataTagCreate((__bridge CFStringRef)ns, (__bridge CFStringRef)prefix,
-                                                                 (__bridge CFStringRef)key, charon_type_of_value(element),
+                                                                 (__bridge CFStringRef)key, kCGImageMetadataTypeString,
                                                                  (__bridge CFTypeRef)element);
             if (!tag)
                 return nil;
@@ -189,6 +250,12 @@ CGImageMetadataTagRef CGImageMetadataTagCreate(CFStringRef xmlns, CFStringRef pr
         resolved != kCGImageMetadataTypeArrayOrdered && resolved != kCGImageMetadataTypeAlternateArray &&
         resolved != kCGImageMetadataTypeAlternateText && resolved != kCGImageMetadataTypeStructure)
         return NULL;
+    // a tag that holds a string holds a number as the string XMP spells it, and this is the one place a value
+    // becomes one: CGImageMetadataSetValueWithPath and the image-property bridge both make their tags here,
+    // so all three agree without a second copy of the spelling
+    NSString *spelled = nil;
+    if (resolved == kCGImageMetadataTypeString)
+        object = charon_xmp_number(object, &spelled);
     id wrapped = charon_wrap(object, (__bridge NSString *)xmlns, given);
     if (!wrapped)
         return NULL;
@@ -1674,40 +1741,6 @@ CGImageMetadataTagRef CGImageMetadataCopyTagMatchingImageProperty(CGImageMetadat
     return NULL;
 }
 
-// A number the caller passes is written as the string XMP spells it and not as a CFNumber, because that is
-// what the host writes and what its own XMP packet carries: measured on 2026-10-03, the tag's value comes
-// back a CFString for every one of these - 3 writes "3", 3.0 writes "3.000000", 1.5 writes "1.500000" and
-// 0.1 writes "0.100000", -2 writes "-2", a 64-bit integer writes its digits, and a CFBoolean writes
-// "True" or "False". The spelling follows the number's own CFNumber type (CFBooleanGetTypeID, then
-// CFNumberIsFloatType, then an integer), which is XMP's own three scalar types and not a format this
-// library chooses: that is the only thing CFNumberIsFloatType says, so a float writes %f and an integer
-// writes %lld. Nothing else is touched - an array and a dictionary go to the path writer as the caller
-// passed them, which is what "The same value restrictions apply as in CGImageMetadataTagCreate" asks for,
-// and the type of the tag is read off that value as before.
-//
-// The text is autoreleased and the caller holds it in `owned` for exactly as long as the write needs it,
-// which is the length of this function's own call into the path writer.
-static CFTypeRef charon_property_number(CFTypeRef value, NSString **owned)
-{
-    CFTypeID type = CFGetTypeID(value);
-    if (type == CFBooleanGetTypeID()) {
-        *owned = CFBooleanGetValue((CFBooleanRef)value) ? @"True" : @"False";
-    } else if (type == CFNumberGetTypeID()) {
-        if (CFNumberIsFloatType((CFNumberRef)value)) {
-            double real = 0;
-            CFNumberGetValue((CFNumberRef)value, kCFNumberDoubleType, &real);
-            *owned = [NSString stringWithFormat:@"%f", real];
-        } else {
-            long long integer = 0;
-            CFNumberGetValue((CFNumberRef)value, kCFNumberLongLongType, &integer);
-            *owned = [NSString stringWithFormat:@"%lld", integer];
-        }
-    } else {
-        return value;
-    }
-    return (__bridge CFTypeRef)*owned;
-}
-
 bool CGImageMetadataSetValueMatchingImageProperty(CGMutableImageMetadataRef metadata, CFStringRef dictionaryName,
                                                  CFStringRef propertyName, CFTypeRef value)
 {
@@ -1727,9 +1760,6 @@ bool CGImageMetadataSetValueMatchingImageProperty(CGMutableImageMetadataRef meta
     // second value
     NSString *path = [NSString stringWithFormat:@"%@:%@", [NSString stringWithUTF8String:row[3]],
                                                 [NSString stringWithUTF8String:row[4]]];
-    NSString *number = nil;
-    CFTypeRef written = charon_property_number(value, &number);
-    BOOL ok = CGImageMetadataSetValueWithPath(metadata, NULL, (__bridge CFStringRef)path, written);
-    return ok;
+    return CGImageMetadataSetValueWithPath(metadata, NULL, (__bridge CFStringRef)path, value);
 }
 

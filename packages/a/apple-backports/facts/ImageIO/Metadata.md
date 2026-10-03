@@ -265,12 +265,43 @@ CGImageMetadataTagCreate" asks for, and the tag's type is read off the value's C
 string and a number both write a `String` tag, an array an `ArrayOrdered` one). A second set for the same
 pair keeps one tag and its second value.
 
-**One difference this leaves standing, in a row that is not this slice's:** the host's *path* API writes a
-number as that same string, and this library's path writer keeps the `CFNumber` (`path-number-set=1
-value-type=CFString` on the host, the number on the port). So `CGImageMetadataSetValueWithPath` and
-`CGImageMetadataTagCreate` carry the same difference against the host today, and the harness compares only
-their type and not their value, which is why the differential is green there. It is a separate family and a
-separate decision; it is named here so the next band does not find it for itself.
+### The same spelling everywhere, and the element rule that came with it (2026-10-03)
+
+The spelling above is not a property of the image-property bridge: **the host's tag API spells a number the
+same way**, and the port's answer did not. Measured on the host for all three entry points:
+
+| asked of the host | tag type | the tag's value |
+| --- | --- | --- |
+| `CGImageMetadataTagCreate(ns, prefix, "N", kCGImageMetadataTypeDefault, @7)` | 1 (String) | a `CFString` |
+| `CGImageMetadataTagCreate(..., @3.0)` and `(@1.5)` and `(@YES)` | 1 | `CFString` |
+| `CGImageMetadataTagCreate(ns, prefix, "N", (CGImageMetadataType)1, @3.5)` - an explicit String type | 1 | `CFString` |
+| `CGImageMetadataSetValueWithPath(m, NULL, "exif:N", @7)` | 1 | a `CFString`, and the host's own packet says `<exif:N>7</exif:N>` |
+
+So the conversion belongs where a tag's own value is set, which is `CGImageMetadataTagCreate`: the path writer
+builds its tag there and the image-property bridge writes through the path writer, so all three agree from one
+place and there is no second copy of the spelling. The harness now prints the **value** of every tag it makes
+through either path - `tagline()` always did - and it adds a plant that keeps the `CFNumber`, which moves 48
+of the number records:
+
+    MUTATION 5: keeping the CFNumber moves 48 of the number records, which print the tag's value
+
+**What a number inside a container is, measured with the same probe, is NOT a string.** A tag made from
+`@[@"s", @1, @YES, @2.5, @[@"nested"], @{@"k": @"v"}]` holds
+
+    [ a tag named [0] of type String holding "s", 1, true, 2.5, an array holding "nested", a structure holding k = "v" ]
+
+and a tag made from `@{@"s": @"str", @"n": @7, @"b": @YES, @"r": @1.25, @"a": @[@"x"], @"d": @{@"k": @"v"}}` holds
+
+    { a tag named s of type String holding "str", 7, true, 1.25, an array holding "x", a structure holding k = "v" }
+
+So the rule is narrower than "an array value holds tags", which is what this file said before this measurement
+and which is right only for an array of strings: **a string becomes a tag - named by its position in an array
+and by its key in a structure - and every other element is held as it is**, and the wrapping is **one level
+deep**, so the string inside the nested array stays a string. The host's own packet for that array writes three
+`<rdf:li>` elements and leaves out both the boolean and the two containers, which is the same answer. The
+port's `charon_wrap` wrapped every element before, which made a number a tag holding the string `"2.500000"`
+where the host holds the number itself; that is fixed here too, and the harness's
+`tag number in array`, `tag number in structure` and `tag number in path array` records are what say so.
 
 ### What the 2026-10-01 reading of this pair list said, and why it was wrong
 

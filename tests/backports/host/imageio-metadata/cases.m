@@ -260,6 +260,60 @@ int main(void)
         reportValue(@"default array elements", fromArray);
         reportValue(@"default dictionary elements", fromDictionary);
 
+        // A NUMBER IS THE STRING XMP SPELLS IT. The records below print the tag's VALUE (tagline() carries
+        // it), not only its type, which is what makes this a check and not a type check: a port that keeps
+        // the CFNumber answers type=1 here and would answer type=1 on the cases above as well.
+        // The spelling follows the number's own CFNumber type, and a number inside an array or inside a
+        // structure's fields is NOT spelled - it stays a number (measured: the host's own tag for
+        // @[@1, @"two", @2.5] holds a number, a tag and a number).
+        {
+            struct { const char *label; id value; } scalars[] = {
+                { "integer", @3 },
+                { "negative", @(-2) },
+                { "long-long", @(1234567890123LL) },
+                { "double-integral", @3.0 },
+                { "double", @1.5 },
+                { "small", @0.1 },
+                { "bool-yes", @YES },
+                { "bool-no", @NO },
+            };
+            for (size_t i = 0; i < sizeof scalars / sizeof scalars[0]; i++) {
+                NSString *label = @(scalars[i].label);
+                report([NSString stringWithFormat:@"number tag %@", label],
+                       CGImageMetadataTagCreate(kCGImageMetadataNamespaceExif, kCGImageMetadataPrefixExif, CFSTR("N"),
+                                                kCGImageMetadataTypeDefault, (__bridge CFTypeRef)scalars[i].value));
+                CGMutableImageMetadataRef pathedNumber = CGImageMetadataCreateMutable();
+                CGImageMetadataSetValueWithPath(pathedNumber, NULL, CFSTR("exif:N"),
+                                                (__bridge CFTypeRef)scalars[i].value);
+                record([NSString stringWithFormat:@"number set %@", label], @"yes");
+                report([NSString stringWithFormat:@"number at %@", label],
+                       CGImageMetadataCopyTagWithPath(pathedNumber, NULL, CFSTR("exif:N")));
+                reportValue([NSString stringWithFormat:@"number value %@", label],
+                            CGImageMetadataCopyTagWithPath(pathedNumber, NULL, CFSTR("exif:N")));
+                if (pathedNumber)
+                    CFRelease(pathedNumber);
+            }
+            // and the two containers, whose numbers stay numbers
+            {
+                CGImageMetadataTagRef array = CGImageMetadataTagCreate(
+                    kCGImageMetadataNamespaceExif, kCGImageMetadataPrefixExif, CFSTR("N"), kCGImageMetadataTypeDefault,
+                    (__bridge CFTypeRef)@[ @1, @"two", @2.5 ]);
+                report(@"number in array", array);
+                reportValue(@"number in array value", array);
+                CGImageMetadataTagRef structure =
+                    CGImageMetadataTagCreate(kCGImageMetadataNamespaceExif, kCGImageMetadataPrefixExif, CFSTR("N"),
+                                             kCGImageMetadataTypeDefault,
+                                             (__bridge CFTypeRef)@{ @"A" : @1 });
+                report(@"number in structure", structure);
+                reportValue(@"number in structure value", structure);
+                CGMutableImageMetadataRef mixed = CGImageMetadataCreateMutable();
+                CGImageMetadataSetValueWithPath(mixed, NULL, CFSTR("exif:N"), (__bridge CFTypeRef)@[ @1, @2 ]);
+                report(@"number in path array", CGImageMetadataCopyTagWithPath(mixed, NULL, CFSTR("exif:N")));
+                if (mixed)
+                    CFRelease(mixed);
+            }
+        }
+
         // every declared type, asked of the type getter and answered as a number
         for (int type = 0; type <= 6; type++) {
             CGImageMetadataTagRef tag = CGImageMetadataTagCreate(kCGImageMetadataNamespaceExif, NULL, CFSTR("Name"),
