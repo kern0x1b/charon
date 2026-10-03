@@ -55,10 +55,17 @@ uuid_of() {
     printf 'installed LC_UUID %s\n' "$ub"
     printf 'built     mtime   %s\n' "$(stat -f %m "$built")"
     printf 'installed mtime   %s\n' "$(stat -f %m "$installed")"
-    if [ "$(stat -f %m "$installed")" -lt "$(stat -f %m "$built")" ]; then
-      printf 'the copy is OLDER than the build it was copied from, so the run is NOT going ahead\n'
-      printf 'HASHES MISMATCH\n'
-    elif [ "$ua" = "$ub" ] && [ -n "$ua" ] && [ "$ua" != "(no file)" ]; then
+    # **The LC_UUID is the gate and the mtime is only printed.** The two rules were joined by an `elif` on
+    # the timestamps, and this rootfs does not keep them: measured on the iPhone3,1 6.1.3 image of
+    # 2026-10-03, the installed copy reads `mtime 0` while the build it came from reads a real time, so the
+    # mtime test refused a run whose two LC_UUIDs were the same value -
+    # `507BFF79-1BC5-3C33-83DD-A67F6D9E9138` on both sides - and a stale run is exactly what this script
+    # exists to prevent, so a rule that stops the good run without ever identifying a bad one is worse than
+    # no rule. The image's rootfs is cloned from a golden image and the placed file carries no timestamp of
+    # its own; the UUID is what identifies a build, as the comment above says, and neither strip nor
+    # `ldid -S` changes it.
+    if [ "$ua" = "$ub" ] && [ -n "$ua" ] && [ "$ua" != "(no file)" ]; then
+      printf 'the two carry the same LC_UUID, so the image holds this build\n'
       printf 'HASHES MATCH\n'
     else
       printf 'the two carry different LC_UUIDs, so the image holds a program from another build\n'
