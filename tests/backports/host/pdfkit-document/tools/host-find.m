@@ -42,6 +42,33 @@ static NSString *visible(NSString *text)
 // The fixtures directory main() is walking, so the helper below can build a path of its own.
 static NSString *fixturesDirectory;
 
+// Everything a selection can be asked, printed the one way: its string with the control characters
+// visible, the pages it covers, and EVERY range on every one of those pages.  A selection that holds
+// more than one range is a different object from one that holds a single one, and the count and the
+// ranges are the only way to see which one this is.
+static void printSelectionState(const char *label, PDFSelection *selection, PDFDocument *document)
+{
+    printf("%-26s string=%-18s pages=%lu", label,
+           selection ? visible(selection.string).UTF8String : "(nil)",
+           (unsigned long)selection.pages.count);
+    for (NSUInteger p = 0; p < selection.pages.count; p++) {
+        PDFPage *page = selection.pages[p];
+        printf("  page%lu:", (unsigned long)[document indexForPage:page]);
+        for (NSUInteger i = 0; i < [selection numberOfTextRangesOnPage:page]; i++)
+            printf(" {%lu,%lu}", (unsigned long)[selection rangeAtIndex:i onPage:page].location,
+                   (unsigned long)[selection rangeAtIndex:i onPage:page].length);
+    }
+    printf("  byLine=%lu\n", (unsigned long)selection.selectionsByLine.count);
+}
+
+// The fifth row of the mutator table needs a selection that was never in a find, so this builds one the
+// way PDFSelection.h:20 says a caller does: -initWithDocument: is the container the mutators fill.
+static PDFDocument *openFixture(const char *fixture)
+{
+    NSString *path = [NSString stringWithFormat:@"%@/%@", fixturesDirectory, @(fixture)];
+    return [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:path]];
+}
+
 // A NIL selection on a document that has already been searched is not the same question as one on a
 // document that has not: a search leaves a cursor behind, and this asks for the two steps a caller makes
 // in sequence - a find, then a continue-from-nil - with the needle of each named separately, so a state
@@ -279,6 +306,167 @@ int main(int argc, char **argv)
         afterSearch("cgfixture-words.pdf", "bravo", "alpha", 1);
         afterSearch("cgfixture-words.pdf", "alpha", "alpha", 2);
         afterSearch("cgfixture-words.pdf", "alpha", "bravo", 1);
+
+        printf("\n== the five mutators\n");
+        //
+        // A FRESH DOCUMENT PER ROW, and the reason is measured rather than tidiness: the array a search
+        // answers is the DOCUMENT's own, so the next search on the same document replaces its contents.
+        // Asking for four needles in a row gave every row the answers of the last one, and one array came
+        // back with one element where a fresh document gives three.  Each row below therefore opens its
+        // own document and takes only what it needs.
+        {
+            // addSelection: over a contiguous range, over a disjoint one, and over an overlap
+            PDFDocument *words = openFixture("cgfixture-words.pdf");
+            PDFSelection *one = [[words findString:@"alpha" withOptions:0][0] copy];
+            [one addSelection:[[words findString:@"alpha bravo charlie" withOptions:0][0] copy]];
+            printSelectionState("addSelection contiguous", one, words);
+        }
+        {
+            PDFDocument *words = openFixture("cgfixture-words.pdf");
+            PDFSelection *one = [[words findString:@"alpha" withOptions:0][0] copy];
+            [one addSelection:[[words findString:@"alpha alpha" withOptions:0][0] copy]];
+            printSelectionState("addSelection disjoint", one, words);
+        }
+        {
+            // an overlap in each of the three shapes: the added range inside, containing, and crossing
+            PDFDocument *inside = openFixture("cgfixture-words.pdf");
+            PDFSelection *base = [[inside findString:@"alpha alpha" withOptions:0][0] copy];
+            printSelectionState("base alpha alpha", base, inside);
+            @try {
+                PDFSelection *added = [[inside findString:@"alpha" withOptions:0][0] copy];
+                [base addSelection:added];
+                printSelectionState("added inside", base, inside);
+            } @catch (NSException *raised) {
+                printf("added inside                RAISED %s: %s\n", [[raised name] UTF8String],
+                       [[raised reason] UTF8String] ?: "(no reason)");
+            }
+        }
+        {
+            PDFDocument *crossing = openFixture("cgfixture-words.pdf");
+            PDFSelection *base = [[crossing findString:@"alpha alpha" withOptions:0][0] copy];
+            PDFSelection *added = [[crossing findString:@"alpha bra" withOptions:0][0] copy];
+            @try {
+                [base addSelection:added];
+                printSelectionState("added crossing", base, crossing);
+            } @catch (NSException *raised) {
+                printf("added crossing              RAISED %s: %s\n", [[raised name] UTF8String],
+                       [[raised reason] UTF8String] ?: "(no reason)");
+            }
+        }
+        {
+            PDFDocument *containing = openFixture("cgfixture-words.pdf");
+            PDFSelection *base = [[containing findString:@"alpha" withOptions:0][0] copy];
+            PDFSelection *added = [[containing findString:@"alpha alpha" withOptions:0][0] copy];
+            @try {
+                [base addSelection:added];
+                printSelectionState("added containing", base, containing);
+            } @catch (NSException *raised) {
+                printf("added containing            RAISED %s: %s\n", [[raised name] UTF8String],
+                       [[raised reason] UTF8String] ?: "(no reason)");
+            }
+        }
+        {
+            // addSelections:, several at once, one of them overlapping
+            PDFDocument *many = openFixture("cgfixture-words.pdf");
+            PDFSelection *base = [[many findString:@"alpha alpha" withOptions:0][0] copy];
+            NSArray<PDFSelection *> *additions = @[
+                [[many findString:@"alpha" withOptions:0][0] copy],
+                [[many findString:@"alpha bra" withOptions:0][0] copy],
+            ];
+            [base addSelections:additions];
+            printSelectionState("addSelections two", base, many);
+        }
+        {
+            // extendSelectionAtEnd: and extendSelectionAtStart:, in characters
+            PDFDocument *words = openFixture("cgfixture-words.pdf");
+            PDFSelection *end = [[words findString:@"alpha" withOptions:0][0] copy];
+            [end extendSelectionAtEnd:3];
+            printSelectionState("extendSelectionAtEnd: 3", end, words);
+        }
+        {
+            PDFDocument *words = openFixture("cgfixture-words.pdf");
+            PDFSelection *start = [[words findString:@"alpha" withOptions:0][0] copy];
+            [start extendSelectionAtStart:2];
+            printSelectionState("extendSelectionAtStart: 2", start, words);
+        }
+        {
+            PDFDocument *words = openFixture("cgfixture-words.pdf");
+            PDFSelection *both = [[words findString:@"alpha" withOptions:0][0] copy];
+            [both extendSelectionAtStart:2];
+            [both extendSelectionAtEnd:3];
+            printSelectionState("both ends", both, words);
+        }
+        {
+            // extendSelectionForLineBoundaries, inside one line and across two
+            PDFDocument *words = openFixture("cgfixture-words.pdf");
+            PDFSelection *line = [[words findString:@"alpha" withOptions:0][0] copy];
+            [line extendSelectionForLineBoundaries];
+            printSelectionState("extendForLine 1 line", line, words);
+        }
+        {
+            PDFDocument *lines2 = openFixture("cgfixture-lines2.pdf");
+            PDFSelection *twoLine = [[lines2 findString:@"two\nthree" withOptions:0][0] copy];
+            printSelectionState("two-line selection", twoLine, lines2);
+            [twoLine extendSelectionForLineBoundaries];
+            printSelectionState("extendForLine 2 lines", twoLine, lines2);
+        }
+        {
+            // across PAGES: cgfixture-3.pdf carries "page 1", "page 2", "page 3"
+            PDFDocument *three = openFixture("cgfixture-3.pdf");
+            NSArray<PDFSelection *> *pages = [three findString:@"page" withOptions:0];
+            for (NSUInteger i = 0; i < pages.count; i++)
+                printSelectionState("page match", [pages[i] copy], three);
+            PDFSelection *ontoNext = [pages[1] copy];
+            [ontoNext extendSelectionAtEnd:20];
+            printSelectionState("extendEnd 20 from page 2", ontoNext, three);
+            PDFSelection *ontoPrevious = [pages[1] copy];
+            [ontoPrevious extendSelectionAtStart:20];
+            printSelectionState("extendStart 20 from page 2", ontoPrevious, three);
+            PDFSelection *pastTheEnd = [pages[2] copy];
+            [pastTheEnd extendSelectionAtEnd:20];
+            printSelectionState("extendEnd 20 from page 3", pastTheEnd, three);
+            PDFSelection *beforeTheStart = [pages[0] copy];
+            [beforeTheStart extendSelectionAtStart:20];
+            printSelectionState("extendStart 20 from page 1", beforeTheStart, three);
+        }
+        {
+            // the container the header describes: an empty selection, then one added, then several
+            PDFDocument *words = openFixture("cgfixture-words.pdf");
+            PDFSelection *container = [[PDFSelection alloc] initWithDocument:words];
+            printSelectionState("initWithDocument:", container, words);
+            [container addSelection:[[words findString:@"alpha" withOptions:0][0] copy]];
+            printSelectionState("container + 1", container, words);
+            [container addSelections:@[ [[words findString:@"alpha alpha" withOptions:0][0] copy],
+                                         [[words findString:@"alpha bra" withOptions:0][0] copy] ]];
+            printSelectionState("container + 2 more", container, words);
+        }
+
+        {
+            // ADJACENT ranges with a space between them: whether the normalization merges ranges that TOUCH
+            // or only ranges that OVERLAP
+            PDFDocument *words = openFixture("cgfixture-words.pdf");
+            PDFSelection *base = [[words findString:@"alpha" withOptions:0][0] copy];
+            [base addSelection:[[words findString:@"bra" withOptions:0][0] copy]];
+            printSelectionState("adjacent alpha + bra", base, words);
+        }
+        {
+            PDFDocument *words = openFixture("cgfixture-words.pdf");
+            PDFSelection *zero = [[words findString:@"alpha" withOptions:0][0] copy];
+            [zero extendSelectionAtEnd:0];
+            printSelectionState("extendSelectionAtEnd: 0", zero, words);
+        }
+        {
+            PDFDocument *words = openFixture("cgfixture-words.pdf");
+            PDFSelection *back = [[words findString:@"alpha" withOptions:0][0] copy];
+            [back extendSelectionAtEnd:-1];
+            printSelectionState("extendSelectionAtEnd: -1", back, words);
+        }
+        {
+            PDFDocument *words = openFixture("cgfixture-words.pdf");
+            PDFSelection *back = [[words findString:@"alpha" withOptions:0][0] copy];
+            [back extendSelectionAtStart:-1];
+            printSelectionState("extendSelectionAtStart: -1", back, words);
+        }
 
         printf("\n== the line split and the attributed string\n");
         for (NSString *fixture in @[ @"cgfixture-lines2.pdf", @"cgfixture-lines.pdf" ]) {
