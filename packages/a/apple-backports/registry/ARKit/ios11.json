@@ -2177,10 +2177,10 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
-      "effect": "no +new is defined on ARFaceTrackingConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "reason": "Apple's ARKit does not define it on the class: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited. The SDK header redeclares `+ (instancetype)new;` in ARFaceTrackingConfiguration's own @interface (it lifts ARConfiguration's NS_UNAVAILABLE), so the port defines it - without a definition the compiler reports the declared method as not found - and the definition is NSObject's own, [[self alloc] init]",
+      "effect": "+[ARFaceTrackingConfiguration new] answers [[ARFaceTrackingConfiguration alloc] init], a configuration with this class's defaults, which is what the inherited +new of NSObject answers in Apple's ARKit",
       "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
@@ -2199,10 +2199,10 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
-      "effect": "no +new is defined on ARImageTrackingConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "reason": "Apple's ARKit does not define it on the class: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited. The SDK header redeclares `+ (instancetype)new;` in ARImageTrackingConfiguration's own @interface (it lifts ARConfiguration's NS_UNAVAILABLE), so the port defines it - without a definition the compiler reports the declared method as not found - and the definition is NSObject's own, [[self alloc] init]",
+      "effect": "+[ARImageTrackingConfiguration new] answers [[ARImageTrackingConfiguration alloc] init], a configuration with this class's defaults, which is what the inherited +new of NSObject answers in Apple's ARKit",
       "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
@@ -2210,10 +2210,10 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
-      "effect": "no +new is defined on ARObjectScanningConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "reason": "Apple's ARKit does not define it on the class: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited. The SDK header redeclares `+ (instancetype)new;` in ARObjectScanningConfiguration's own @interface (it lifts ARConfiguration's NS_UNAVAILABLE), so the port defines it - without a definition the compiler reports the declared method as not found - and the definition is NSObject's own, [[self alloc] init]",
+      "effect": "+[ARObjectScanningConfiguration new] answers [[ARObjectScanningConfiguration alloc] init], a configuration with this class's defaults, which is what the inherited +new of NSObject answers in Apple's ARKit",
       "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
@@ -2221,10 +2221,10 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
-      "effect": "no +new is defined on AROrientationTrackingConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "reason": "Apple's ARKit does not define it on the class: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited. The SDK header redeclares `+ (instancetype)new;` in AROrientationTrackingConfiguration's own @interface (it lifts ARConfiguration's NS_UNAVAILABLE), so the port defines it - without a definition the compiler reports the declared method as not found - and the definition is NSObject's own, [[self alloc] init]",
+      "effect": "+[AROrientationTrackingConfiguration new] answers [[AROrientationTrackingConfiguration alloc] init], a configuration with this class's defaults, which is what the inherited +new of NSObject answers in Apple's ARKit",
       "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
@@ -2232,10 +2232,10 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
-      "effect": "no +new is defined on ARWorldTrackingConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
+      "reason": "Apple's ARKit does not define it on the class: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited. The SDK header redeclares `+ (instancetype)new;` in ARWorldTrackingConfiguration's own @interface (it lifts ARConfiguration's NS_UNAVAILABLE), so the port defines it - without a definition the compiler reports the declared method as not found - and the definition is NSObject's own, [[self alloc] init]",
+      "effect": "+[ARWorldTrackingConfiguration new] answers [[ARWorldTrackingConfiguration alloc] init], a configuration with this class's defaults, which is what the inherited +new of NSObject answers in Apple's ARKit",
       "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
@@ -2254,10 +2254,10 @@
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "owed",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit defines it: `-init` is in ARGeoTrackingConfiguration's OWN instance selector list, read out of ARKit of the arm64e shared cache of iOS 16.0 with modules/apple/objc.lua's inventory. This subclass's own @interface in the 16.4 SDK re-declares `- (instancetype)init;` WITHOUT the NS_UNAVAILABLE its base class carries - ARConfiguration.h:114 - and Apple's metadata agrees with the subclass: the method is there and the port defines it",
-      "effect": "-[ARGeoTrackingConfiguration init] is defined and returns an object carrying the base class's state plus this class's own defaults, which is what Apple builds when a caller makes one",
+      "reason": "Apple's ARKit defines it: `-init` is in ARGeoTrackingConfiguration's OWN instance selector list, read out of ARKit of the arm64e shared cache of iOS 16.0 with modules/apple/objc.lua's inventory. This subclass's own @interface in the 16.4 SDK re-declares `- (instancetype)init;` WITHOUT the NS_UNAVAILABLE its base class carries - ARConfiguration.h:114 - and Apple's metadata agrees with the subclass: the method is there and the port defines it. The port does not carry ARGeoTrackingConfiguration itself yet (no class row, no object), so this -init is owed with the class and not implemented: nothing is denied here",
+      "effect": "the class is not in the port, so neither is its -init; when the class is carried, -init is defined and returns an object carrying the base class's state plus this class's own defaults, which is what Apple builds",
       "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
