@@ -199,12 +199,68 @@ because the SDK's own declaration of the property is `(nullable, retain)`; the f
 differential read a fresh task (nil beside the system's nil), a delegate set and read back, and the
 system's own doing the same.
 
-The other half is the routing, and the host cannot measure it: the port's `NSURLSession` is a class the
-host also defines, so that file cannot be linked beside the host's. `charon_task_delegate()` in
-`NSURLSession.m` is the one place that decides — a task's own delegate answers the task-scoped messages
-in place of the session's, and the eleven `-respondsToSelector:` guards and the eighteen sends all read
-it, so a guard and its send cannot disagree about who was asked. `tests/backports/device/ios1516.m` is
-where that runs; the canon build is what measures it and this band did not.
+### The routing is per SELECTOR, and that was measured before it was written
+
+The header states three things about this property beyond its accessors, at SDK 16.4
+`NSURLSession.h:296-304`, and `charon_task_delegate()` in `NSURLSession.m` was answering only the first
+of them:
+
+    Sets a task-specific delegate. Methods not implemented on this delegate will
+    still be forwarded to the session delegate.
+    Cannot be modified after task resumes. Not supported on background session.
+    Delegate is strongly referenced until the task completes, after which it is
+    reset to `nil`.
+
+It returned the task's delegate **whole**, which answers the first sentence per OBJECT: a caller that
+set a delegate implementing nothing of the protocol heard nothing at all, because every guard asked the
+task's delegate and every send went to it. The header says per SELECTOR.
+
+`tests/backports/host/tasksession/` is the harness that measured it, asking the system's own
+`NSURLSession` and not the port — the port's objects are armv7 iOS 6.1.3 that no macOS process can
+load. Its control runs first and fails if the reader cannot see the property, the protocol or a live
+task, because a reader that could not would report every rule as "does not happen". Nothing leaves the
+machine: every task is `http://127.0.0.1:1/`, which the loopback stack refuses at once. On macOS 27.0
+build 26A428 arm64:
+
+    $ sh tests/backports/host/tasksession/run.sh
+    forwarding: the task's delegate implements nothing
+      the task's delegate was set and reads back: yes
+      setDelegate: after resume: NSGenericException: Cannot set task delegate after resumption
+      the session delegate heard didCompleteWithError: 1 time(s)
+      delegate after completion: (nil)
+    partial: the task's delegate implements didCompleteWithError:
+      the task's delegate heard it: 1 time(s)
+      the session delegate heard it: 0 time(s)
+      setDelegate: after resume: NSGenericException: Cannot set task delegate after resumption
+      delegate after completion: (nil)
+    tasksession: 10 checks, 0 failures
+
+Three answers, and each one is a different piece of code:
+
+- **Per selector.** A delegate implementing nothing left the session delegate hearing
+  `URLSession:task:didCompleteWithError:` once; a delegate implementing exactly that selector heard it
+  once and the session delegate heard it **zero** times. So `charon_task_delegate()` takes the selector
+  being sent and falls through to the session's delegate when the task's own does not answer it. All
+  seventeen call sites pass their own selector, which is what makes the `-respondsToSelector:` guards
+  and the sends read the same answer — a guard and its send still cannot disagree about who was asked,
+  and now they are also asking the question the header asks.
+- **Refused after `-resume`, not accepted.** `NSGenericException`, reason
+  `"Cannot set task delegate after resumption"`. The port raises the same name with the same reason:
+  the header's "cannot be modified" is that sentence, and a caller that catches the system's exception
+  catches the port's. The gate on it is `state != NSURLSessionTaskStateSuspended`, which is the state a
+  task created but not yet resumed is in — the case the header leaves open — so a task that has run in
+  any way is refused.
+- **Reset to nil once the task has completed**, in both runs. The reset cannot go through
+  `-setDelegate:`, which now refuses a task that has resumed and a task being completed has resumed, so
+  it clears the association directly through `-charon_resetTaskDelegate` — the same shape as
+  `CharonURLSessionMetrics.h`'s note calls: a method the loader itself calls, declared in
+  `CharonTaskDelegate15.h` so the call and the definition cannot disagree about its name. The
+  association was already `RETAIN_NONATOMIC`, so "strongly referenced until the task completes" was
+  true of the port before this and still is; what was missing was the nil afterwards.
+
+What is **not** measured here, and is not claimed: any of this running on the port's own objects. The
+routing needs a process where the port's `NSURLSession` is the only one — `tests/backports/device/
+ios1516.m` is where that runs, and the canon build is what measures it.
 
 ## The release answers the initialisers of an abstract class, and nothing can be held to the answer
 

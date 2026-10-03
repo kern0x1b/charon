@@ -481,12 +481,12 @@
     },
     {
       "api": "NSURLSessionTask.delegate",
-      "effect": "the accessors are the port's own: a fresh task has no delegate of its own although its session has one, a delegate set on the task reads back, and charon_task_delegate() in NSURLSession.m is the one place that decides, so all eleven task-scoped guards and eighteen sends read the task's delegate in place of the session's",
+      "effect": "the accessors are the port's own: a fresh task has no delegate of its own although its session has one, a delegate set on the task reads back, and it is refused after the task resumes with the system's own NSGenericException and reason. charon_task_delegate() in NSURLSession.m is the one place that decides, and it decides PER SELECTOR as the header says: a method the task's own delegate does not implement still goes to the session's delegate, so all seventeen task-scoped guards and sends read the delegate that answers the selector being sent. Once the task has completed the delegate reads nil",
       "introduced": "15.0",
       "kind": "property",
       "minimum": "6.0",
       "reason": "neither iOS 6 nor the backports give NSURLSessionTask a property like it: it arrived in iOS 15",
-      "source": "sh tests/backports/host/attributed15/run.sh in the four cases task.freshDelegate, task.freshDelegate.port, task.setAndReadBack and task.systemReadBack; the routing itself cannot be measured here, because the port's NSURLSession is a class the host also defines and that file cannot be linked beside the host's - tests/backports/device/ios1516.m is where it runs, and this band did not run it",
+      "source": "the accessors, sh tests/backports/host/attributed15/run.sh in the four cases task.freshDelegate, task.freshDelegate.port, task.setAndReadBack and task.systemReadBack. The three rules the header states beside the property, measured on the system's own NSURLSession by sh tests/backports/host/tasksession/run.sh on macOS 27.0 build 26A428 arm64, 10 checks and 0 failures with its control run first: a delegate implementing nothing left the session delegate hearing URLSession:task:didCompleteWithError: once and a delegate implementing exactly that selector heard it once with the session delegate hearing zero, which is the per-selector answer; -setDelegate: after -resume raised NSGenericException with the reason 'Cannot set task delegate after resumption'; and -delegate read nil once the completion had been delivered. The port's own routing cannot be measured here, because the port's NSURLSession is a class the host also defines and that file cannot be linked beside the host's - tests/backports/device/ios1516.m is where it runs, and this band did not run it",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
