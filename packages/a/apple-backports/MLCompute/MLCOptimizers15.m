@@ -15,15 +15,15 @@
 
 #import "CharonMLCompute.h"
 
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-#pragma clang diagnostic ignored "-Wnullability-completeness"
-
 // The 15.0 properties of the base class. Declared here because MLCOptimizers14.m cannot name them: the
 // SDK annotates them ios(15.0) and this object is the one that carries them.
 @interface MLCOptimizer (CharonMLCOptimizer15)
-@property (readwrite, nonatomic) MLCGradientClippingType gradientClippingType;
-@property (readwrite, nonatomic) float maximumClippingNorm;
-@property (readwrite, nonatomic) float customGlobalNorm;
+// Readonly, as the SDK declares them. A category that redeclares an SDK-readonly property readwrite
+// answers -Wobjc-property-implementation three times over, and readwrite would be a promise the header
+// does not make: an application cannot set them.
+@property (readonly, nonatomic) MLCGradientClippingType gradientClippingType;
+@property (readonly, nonatomic) float maximumClippingNorm;
+@property (readonly, nonatomic) float customGlobalNorm;
 @end
 
 @implementation MLCOptimizer (CharonMLCOptimizer15)

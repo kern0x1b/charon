@@ -11,10 +11,21 @@
 
 #import "CharonMLCompute.h"
 
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-#pragma clang diagnostic ignored "-Wnullability-completeness"
+// A CATEGORY and not a second @implementation of the class: a file-level
+// -Wincomplete-implementation pragma hides the warning, and the two objects then both define
+// _OBJC_CLASS_$_MLCAdamOptimizer, which ld64 refuses as a duplicate symbol the moment the library is
+// built. The coordinator found it by nm over the two objects; it is written here as the category it has to
+// be, and the pragma that hid it is not carried over.
+@interface MLCAdamOptimizer (CharonMLCAdamAMSGrad15)
++ (instancetype)optimizerWithDescriptor:(MLCOptimizerDescriptor *)optimizerDescriptor
+                                  beta1:(float)beta1
+                                  beta2:(float)beta2
+                                epsilon:(float)epsilon
+                            usesAMSGrad:(BOOL)usesAMSGrad
+                               timeStep:(NSUInteger)timeStep;
+@end
 
-@implementation MLCAdamOptimizer
+@implementation MLCAdamOptimizer (CharonMLCAdamAMSGrad15)
 
 + (instancetype)optimizerWithDescriptor:(MLCOptimizerDescriptor *)optimizerDescriptor
                                   beta1:(float)beta1

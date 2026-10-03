@@ -2970,6 +2970,16 @@
       "reason": "a name no SDK header declares: the port's own storage for an optimizer's seventeen numbers, which its own files share and an application never calls",
       "facts": "facts/MLCompute/Optimizers.md",
       "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
+    },
+    {
+      "api": "-[MLCOptimizer charon_mlc_setState:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the port's own storage for an optimizer's seventeen numbers, which its own files share and an application never calls",
+      "facts": "facts/MLCompute/Optimizers.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MLCompute by the probe named in the facts"
     }
- ]
+  ]
 }

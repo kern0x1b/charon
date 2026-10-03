@@ -4,11 +4,13 @@
 
 void charon_mlcompute_cases(void);
 void charon_mlcompute_layer_cases(void);
+void charon_mlcompute_optimizer_cases(void);
 
 int main(void)
 {
     setbuf(stdout, NULL);
     charon_mlcompute_cases();
     charon_mlcompute_layer_cases();
+    charon_mlcompute_optimizer_cases();
     return 0;
 }

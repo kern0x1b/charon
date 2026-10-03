@@ -81,4 +81,7 @@ NSUInteger CharonMLCNextLayerID(void);
 // An optimizer of the given class holding a copy of another's numbers, which is what -copyWithZone:
 // answers.
 + (instancetype)charon_mlc_optimizerOfClass:(Class)cls copying:(MLCOptimizer *)other;
+// Give this optimizer these numbers, over whatever it held. Read by the copy above, which cannot write
+// another's ivars and has to go through the accessor the factory below uses.
+- (void)charon_mlc_setState:(CharonMLCOptimizerState *)state;
 @end
