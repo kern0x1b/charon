@@ -43,7 +43,7 @@ print("renamed %d names" % len(names))
 PY
 
 # The system side: the host's framework answers every case.
-xcrun clang $common "$here/record.m" "$here/cases.m" "$here/layer-cases.m" "$here/optimizer-cases.m" $libs -framework MLCompute -o "$build/system"
+xcrun clang $common "$here/record.m" "$here/cases.m" "$here/layer-cases.m" "$here/optimizer-cases.m" "$here/graph-cases.m" $libs -framework MLCompute -o "$build/system"
 "$build/system" > "$build/system.log" 2>&1 || { echo "the system run failed:"; tail -20 "$build/system.log"; exit 1; }
 
 # The port side: the same program with the port's own files, which answer every case in their place. A
@@ -51,9 +51,10 @@ xcrun clang $common "$here/record.m" "$here/cases.m" "$here/layer-cases.m" "$her
 # answer a machine with no GPU gives; the run.sh notes those lines below as the ones that are meant to
 # differ, and they are the only ones.
 xcrun clang $common -include "$build/rename.h" -I"$port" "$here/record.m" "$here/cases.m" "$here/layer-cases.m" \
-    "$here/optimizer-cases.m" "$port/MLCTypes14.m" "$port/MLCDevice15.m" "$port/MLCTensors14.m" \
-    "$port/MLCDescriptors14.m" "$port/MLCLayers14.m" "$port/MLCOptimizers14.m" "$port/MLCOptimizers15.m" \
-    "$port/MLCAdamAMSGrad15.m" $libs -o "$build/port"
+    "$here/optimizer-cases.m" "$here/graph-cases.m" "$port/MLCTypes14.m" "$port/MLCDevice15.m" \
+    "$port/MLCTensors14.m" "$port/MLCDescriptors14.m" "$port/MLCLayers14.m" "$port/MLCOptimizers14.m" \
+    "$port/MLCOptimizers15.m" \
+    "$port/MLCAdamAMSGrad15.m" "$port/MLCGraph14.m" $libs -o "$build/port"
 "$build/port" > "$build/port.log" 2>&1 || { echo "the port run failed:"; tail -20 "$build/port.log"; exit 1; }
 
 # The red control: the same program and the same objects with every optimizer default one step off, which
@@ -61,9 +62,9 @@ xcrun clang $common -include "$build/rename.h" -I"$port" "$here/record.m" "$here
 # number is not a comparison: -DCHARON_MLC_PLANT is compiled into CharonMLCOptimizerState's initialiser in
 # MLCompute/MLCOptimizers14.m and into nothing else, so a build of the library carries no plant.
 xcrun clang $common -DCHARON_MLC_PLANT=1 -include "$build/rename.h" -I"$port" "$here/record.m" "$here/cases.m" \
-    "$here/layer-cases.m" "$here/optimizer-cases.m" "$port/MLCTypes14.m" "$port/MLCDevice15.m" \
+    "$here/layer-cases.m" "$here/optimizer-cases.m" "$here/graph-cases.m" "$port/MLCTypes14.m" "$port/MLCDevice15.m" \
     "$port/MLCTensors14.m" "$port/MLCDescriptors14.m" "$port/MLCLayers14.m" "$port/MLCOptimizers14.m" \
-    "$port/MLCOptimizers15.m" "$port/MLCAdamAMSGrad15.m" $libs -o "$build/port-plant1"
+    "$port/MLCOptimizers15.m" "$port/MLCAdamAMSGrad15.m" "$port/MLCGraph14.m" $libs -o "$build/port-plant1"
 "$build/port-plant1" > "$build/port-plant1.log" 2>&1 || { echo "the planted port run failed:"; tail -20 "$build/port-plant1.log"; exit 1; }
 plant_wrong=$(diff "$build/system.log" "$build/port-plant1.log" | grep -c '^<' || true)
 if [ "$plant_wrong" -lt 1 ]; then
