@@ -113,23 +113,48 @@ static inline double CharonSaturate(double value, enum CharonPixelType type)
     }
 }
 
+// The release ROUNDS to nearest at the store, and the rounding is half UP - toward plus infinity, not away from
+// zero. Three independent measurements, each with a control where the answer must be exact:
+//
+// - **The store.** `CharonChannelPut` used to cast, which truncates toward zero. At a whole-pixel phase the
+//   kernel is the single tap at `L(0) = 1` and the sum is that tap's own integer, so the host's stored value is
+//   exactly the source value on 180 of 180 samples, a round to nearest reproduces 180 of 180 and the
+//   truncation 29 of 180.
+// - **The tie.** Over eighty cells of 180 samples - both axes, six translates, four slopes, both edging modes -
+//   the release's own Q14 weights summed as integers and rounded half up reproduce the host's stored value on
+//   14400 of 14400, and rounding half away from zero does not (`.agent-work/probe/vsweep.m`, ARGB16S).
+// - **The ulp.** The 109 samples a previous pass found "off by exactly 255" are this and nothing else: on
+//   `ARGB16S` the backColor is `(int16_t)(-1.0)` = `0xFFFF` for channels 2 and 3, a wholly-outside sample's
+//   sum is `-1` to within one ulp of double, and the truncating cast answers `0x0000` where the host answers
+//   `0xFFFF`. Ninety-eight of the 109 are that, on the low byte of a channel; the other eleven are the same
+//   cast the other way. The whole count is on the four `ARGB16S` spellings and one sample each elsewhere.
+//
+// `CharonSaturate` runs first, so the rounding is applied to the value already clamped to the stored type's
+// range, and `floor(x + 0.5)` is the half-up rule for negatives as well: -1.5 rounds to -1, which is what the
+// release does and what a cast never could.
+#define CHARON_ROUND_HALF_UP(v) ((v) >= 0.0 ? floor((v) + 0.5) : ceil((v) - 0.5))
+
 static inline void CharonChannelPut(void *row, vImagePixelCount pixel, unsigned channel, double value,
                                     enum CharonPixelType type)
 {
     switch (type) {
-    case CharonARGB16U: ((uint16_t *)row)[pixel * 4 + channel] = (uint16_t)CharonSaturate(value, type); break;
-    case CharonARGB16S: ((int16_t *)row)[pixel * 4 + channel] = (int16_t)CharonSaturate(value, type); break;
-    case CharonPlanar16U: ((uint16_t *)row)[pixel] = (uint16_t)CharonSaturate(value, type); break;
-    case CharonPlanar16S: ((int16_t *)row)[pixel] = (int16_t)CharonSaturate(value, type); break;
-    case CharonCbCr8: ((uint8_t *)row)[pixel * 2 + channel] = (uint8_t)CharonSaturate(value, type); break;
-    case CharonCbCr16U: ((uint16_t *)row)[pixel * 2 + channel] = (uint16_t)CharonSaturate(value, type); break;
-    case CharonCbCr16S: ((int16_t *)row)[pixel * 2 + channel] = (int16_t)CharonSaturate(value, type); break;
+    case CharonARGB16U: ((uint16_t *)row)[pixel * 4 + channel] = (uint16_t)CHARON_ROUND_HALF_UP(CharonSaturate(value, type)); break;
+    case CharonARGB16S: ((int16_t *)row)[pixel * 4 + channel] = (int16_t)CHARON_ROUND_HALF_UP(CharonSaturate(value, type)); break;
+    case CharonPlanar16U: ((uint16_t *)row)[pixel] = (uint16_t)CHARON_ROUND_HALF_UP(CharonSaturate(value, type)); break;
+    case CharonPlanar16S: ((int16_t *)row)[pixel] = (int16_t)CHARON_ROUND_HALF_UP(CharonSaturate(value, type)); break;
+    case CharonCbCr8: ((uint8_t *)row)[pixel * 2 + channel] = (uint8_t)CHARON_ROUND_HALF_UP(CharonSaturate(value, type)); break;
+    case CharonCbCr16U: ((uint16_t *)row)[pixel * 2 + channel] = (uint16_t)CHARON_ROUND_HALF_UP(CharonSaturate(value, type)); break;
+    case CharonCbCr16S: ((int16_t *)row)[pixel * 2 + channel] = (int16_t)CHARON_ROUND_HALF_UP(CharonSaturate(value, type)); break;
     case CharonCbCr16F: ((uint16_t *)row)[pixel * 2 + channel] = charon_float_to_half((float)value); break;
     case CharonPlanar16F: ((uint16_t *)row)[pixel] = charon_float_to_half((float)value); break;
     case CharonARGB16F: ((uint16_t *)row)[pixel * 4 + channel] = charon_float_to_half((float)value); break;
     case CharonXRGB2101010W: {
+        // The ten-bit field is masked AFTER the round, so the round is on the value and not on the field: a
+        // value of 1023.9 must become 1024 (which wraps to 0 in the field) rather than 1023, which is what a
+        // truncating cast before the mask gave.
         uint32_t word = ((uint32_t *)row)[pixel], shift = channel * 10;
-        word = (word & ~(0x3FFu << shift)) | ((((uint32_t)CharonSaturate(value, type)) & 0x3FFu) << shift);
+        word = (word & ~(0x3FFu << shift))
+             | ((((uint32_t)CHARON_ROUND_HALF_UP(CharonSaturate(value, type))) & 0x3FFu) << shift);
         ((uint32_t *)row)[pixel] = word;
         break;
     }
