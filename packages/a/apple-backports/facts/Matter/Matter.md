@@ -237,261 +237,47 @@ three things:
   whose generated `MTRCommandPayloadsObjc.h` is the 26.2-era shape (`groupID` at `MTR_AVAILABLE(ios(16.4))`,
   the same as 26.2).
 
-* **NOT FIXED, and named**: `MTRDeviceControllerStartupParams.fabricID` and `.ipk` - the host holds `(null)`
-  where the port holds a zero, and both SDKs declare the member `nonnull`. That is host behaviour the port
-  does not reproduce, it is two readings, and it needs its own measurement of which members the host's
-  `-init` deliberately leaves nil.
+**`fabricID` and `ipk` are FIXED, and the rule came out of the framework's own source.** The port wrote an
+`-init` for all 924 plain data classes. It should write one only where the framework's source does:
 
-* **NOT FIXED, and named**: `ownDescription` is 918 of 919, the one being
-  `MTRUnitTestingClusterNestedStructList` - the class the closure added after the measurement was taken. The
-  measurement has to be re-taken with the class in it; one reading.
+    charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/MTRDeviceControllerStartupParams.h:30
+        - (instancetype)init NS_UNAVAILABLE;
+    charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/zap-generated/MTRCommandPayloadsObjc.mm
+        @implementation MTRGroupsClusterAddGroupParams
+        - (instancetype)init
+        {
+            if (self = [super init]) {
+                _groupID = @(0);
+                _groupName = @"";
+                _timedInvokeTimeoutMs = nil;
+                _serverSideProcessingTimeout = nil;
+            }
+            return self;
+        }
 
-* `alias` 26 of 37. Eleven rows where the port's own `measured=` differs from the host's: the host says
-  `MTRApplicationBasicClusterApplicationStruct.applicationId` shares `applicationID` and the port's own probe
-  says `own`. The port's accessors and the shared ivar are right - `applicationId` and `applicationID` are both
-  `NSString *` and both read the same slot - so the port's BEHAVIOUR test is what is wrong: it writes the alias
-  through a setter that copies, and two writes of one sentinel then read equal. The test has to write two
-  DIFFERENT values of the type, which is what the host-side run does.
+So the rule is not "a nonnull member gets a zero": it is **"the class has an `-init` of its own, and that
+`-init` defaults every member"** - the generated sources write one line per member, `@(0)` for the nonnull
+ones and `nil` for the nullable ones. A class the source declares no initialiser for inherits NSObject's,
+which stores nothing, so every member of it is nil whatever its nullability says. The generator reads
+`- (instancetype)init NS_UNAVAILABLE` out of the SDK's own headers and finds **2 of the 924**:
+`MTRDeviceControllerFactoryParams` and `MTRDeviceControllerStartupParams`. Those two objects now have no
+`-init`, and the run says so every time:
 
-**The second run's port side does not build.** Generated with `--host-measurements` and `--sdk16 <the host
-SDK>`, 23 of 1067 objects do not compile against the macOS SDK - `CharonMatterMTRAccessControlCluster
-AccessControlEntryStruct.m`, `CharonMatterMTRChannelClusterProgramStruct.m` and 21 more - because the
-port's `-description` reads each member through its SDK 26.2 getter and the host SDK declares some of them
-differently or not at all. That is the same defect the shipped tree has for its own target and it is NOT
-fixed. Until it is, the honest statement is: the three behaviours are measured, the port has the -init
-defaults and the alias storage, and it has NOT been shown to answer -description or the alias conversions the
-way the host does.
+    2 of the 924 plain data classes whose own header marks -init NS_UNAVAILABLE, and so get no -init here:
+    MTRDeviceControllerFactoryParams, MTRDeviceControllerStartupParams
 
-## What the host answers, and what the port does not (measured 2026-10-03, review of 5b0f9f271)
+**`ownDescription` is 919 of 919 and `alias` 37 of 37.** The measurement is re-taken with
+`MTRUnitTestingClusterNestedStructList` in it - 919 classes present, 5 absent, 0 raised - and the port answers
+both for every class the host has.
 
-Three behaviours of the 923 plain data classes are NOT what the port does. They are measured here by
-`tests/backports/host/matter/params-probe.m`, one program that runs against the host's Matter.framework and
-prints, per class, what a fresh `[[X alloc] init]` holds, the alias round trip, the copy in both directions
-and the `-description`. The probe reads nothing at compile time - the class, the properties and their names
-come from the runtime and from its driver - so the same source is the whole comparison.
-
-**1. `-init` leaves members nil where the host fills them.** Measured:
-
-    fresh  MTRGroupsClusterAddGroupParams  groupID                NSNumber(0)
-    fresh  MTRGroupsClusterAddGroupParams  groupName              NSString()
-    fresh  MTRGroupsClusterAddGroupParams  timedInvokeTimeoutMs   (nil)
-    fresh  MTRTestClusterClusterSimpleStruct  a                   NSNumber(0)
-    fresh  MTRTestClusterClusterSimpleStruct  d                   NSData(0)
-    fresh  MTRAccessControlClusterAccessControlEntryStruct  privilege  NSNumber(0)
-    description  MTRGroupsClusterAddGroupParams  <MTRGroupsClusterAddGroupParams: groupID:0; groupName:; >
-
-so a NONNULL object property is the zero value of its own type and a NULLABLE one is nil. That IS derivable
-from the header - the type and the nullability are in the declaration - and the derivation is
-`default_of()` in `tools/matter-generate.py`. The port's side is NOT yet shown to match - the differential
-counts 3141 of 3273 `fresh` readings identical - so this is "written and measured on the host", not "matched".
-
-**2. A deprecated alias is the same value as its successor.** Measured, both directions:
-
-    alias  MTRGroupsClusterAddGroupParams  groupId   groupID   NSNumber(1001)
-    alias  MTRGroupsClusterAddGroupParams  groupID   groupId   NSNumber(1001)
-
-88 alias pairs are named by the SDK's own deprecation text - `@property ... NSNumber *groupId
-MTR_DEPRECATED("Please use groupID", ...)` - and the pair is read out of that text, never from a list. The
-MEASURED pair is what decides, because the text does not always name a member: 82 were measured, and **49 of
-them disagree with the text**. `MTRControllerFactoryParams.storageDelegate` says "Please use the storage
-property", which is prose, and the host gives it storage of its own. LANDED: the probe finds the shared
-storage by setting the alias to a sentinel and reading every own member, so the name is a measurement and not
-a reading of the prose.
-
-**Whether an alias shares storage is MEASURED, per pair, and the answer is not what the deprecation text
-says.** The probe writes the alias TWICE, with two values of the alias's OWN type, and watches whether another
-member's reading moves. An earlier version of it wrote one `NSValue` sentinel through KVC whatever the type
-was, and that produced 11 rows reading `raised` which were the probe's own artifact and not host behaviour: a
-`BOOL` or a `uint64_t` member answers an `NSValue` with `NSInvalidArgumentException`. With a typed value the
-run is clean - **0 raised rows** - and 36 of the 37 alias pairs measure as SHARING their successor's storage.
-
-Four of those 36 are pairs whose two types DIFFER, and the host converts between them rather than keeping two
-storages. The conversion is measured too, by writing the successor and reading the alias:
-
-    aliasBack  MTRReadParams  filterByFabric  fabricFiltered  NSNumber(1)
-    aliasBack  MTRSubscribeParams  replaceExistingSubscriptions  keepPreviousSubscriptions  NSNumber(0)
-    aliasBack  MTRSubscribeParams  resubscribeAutomatically  autoResubscribe  NSNumber(1)
-
-A `BOOL` ivar read back through an `NSNumber *` alias reads 0 or 1 and never the value written - 42 goes in as
-a `BOOL`, 1 comes out - so the ivar is the successor's type and the alias's accessors convert. The four:
-`MTRReadParams.fabricFiltered`, `MTRSubscribeParams.keepPreviousSubscriptions`,
-`MTRSubscribeParams.autoResubscribe`, and `MTRDeviceControllerStartupParams.fabricId`, whose successor
-`fabricID` the host measures as NOT shared.
-
-**One pair measures as NOT sharing**: `MTRDeviceControllerStartupParams.fabricId`, whose declared successor
-is `fabricID`. That is host behaviour and the port answers the same - its own storage. So one alias keeps
-storage of its own, and the generator counts and names it rather than a list of six that included five
-measurements nobody had taken.
-
-**3. `-description` is overridden, BUT NOT BY EVERY CLASS.** The format, where it is overridden, is measured:
-
-    description  MTRGroupsClusterAddGroupParams  <MTRGroupsClusterAddGroupParams: groupID:0; groupName:; >
-    description  MTRAccessControlClusterAccessControlEntryStruct  <MTRAccessControlClusterAccessControlEntryStruct:
-        privilege:0; authMode:0; subjects:(null); targets:(null); auxiliaryType:(null); fabricIndex:0; >
-    description  MTRReadParams  <MTRReadParams: 0x1022a9a20>
-
-`<` + the class name + `: ` + `name:value; ` per property of the class's OWN @interface, in declaration
-order, + `>` - inherited properties are not in it, and the value is what `%@` prints. **66 of the 918 classes the host has do NOT override it**, and that is NSObject's own `<Class: 0xADDRESS>`.
-So which classes override `-description` is a fact about the host's binary and not about the header. It is
-MEASURED: `tests/backports/host/matter/params-probe.m` reads `class_copyMethodList` on the class itself -
-`respondsToSelector:` answers YES for every class that inherits NSObject's - and the run's output is
-committed as `tests/backports/host/matter/host-measurements.tsv` with the host's own version
-(`Matter.framework 1.4.0.94`) and the date in its first line. `tools/matter-generate.py
---host-measurements` reads it, and a class the host does not have is 5 of the 923: the port keeps the
-header's answer for those and says so, per class, in the object. The port's side is NOT yet shown to match:
-the differential counts 25 of 37 alias readings identical.
-
-The copy the port writes is right: `copy  <class> <property> original-after-copy-write` and
-`copy-after-original-write` differ on the host in every fixture tried, and so do they in the port.
-
-## What is owed
-
-- **The plain data classes are carried; their initialisers are not.** The 923 `*Params`/`*Struct`/`*Event`
-  classes are generated, declared and implemented - "What is carried" above - and 86 of the framework's
-  `missing` rows are the members those classes carry beyond their properties:
-  - **82 are `-initWithResponseValue:error:`**, one per response params class
-    (`MTRDoorLockClusterGetUserResponseParams`, `MTRAccessControlClusterReviewFabricRestrictionsResponseParams`,
-    `MTROTASoftwareUpdateProviderClusterQueryImageResponseParams` and the rest). The host measurement of what
-    that method answers with is in the section below; the SUCCESS path is still unmeasured, because
-    `MTRCommandPathKey` must hold an `MTRCommandPath` object, which is another SDK class the port does not
-    carry yet (the next bullet family: `MTRClusterPath` and the three that extend it).
-  - **`MTRSubscribeParams`** carries `-init`, `+new` and `-initWithMinInterval:maxInterval:`; its two
-    properties are carried and the three methods are not.
-  - **`MTRDeviceControllerStartupParams`** carries `-init`, `+new` and the four `initWith...` initialisers the
-    header gives it, and **`MTRDeviceControllerFactoryParams`** `-init` and `-initWithStorage:`. Each is a
-    plain holder, so each keeps what it was given. `-init` is `NS_UNAVAILABLE` on the first, which is why no
-    object in this family writes one.
-- **3 clusters the SDK spells two ways** are excluded: the SDK declares `MTRBaseClusterOtaSoftwareUpdateProvider`,
-  `MTRBaseClusterOtaSoftwareUpdateRequestor` and `MTRBaseClusterWakeOnLan` as DEPRECATED SUBCLASSES of the
-  classes the runtime registers, `MTRBaseClusterOTASoftwareUpdateProvider`, `MTRBaseClusterOTASoftwareUpdateRequestor`
-  and `MTRBaseClusterWakeOnLAN`. The runtime spellings are carried; on a case-insensitive volume the two file
-  names are one inode, which is why the generator treats a case-only collision as an error.
-- **`initWithDevice:endpointID:queue:`** was reported `shape-differs` by an earlier differential run, on the
-  clusters that run compared. The emitted object carries the header's own declaration verbatim and nothing
-  re-measures it now, because the check does not build on this host (see "What is measured"); deciding which
-  side's shape is wrong needs the system class's signature read out of the binary.
-- **The comparison against the system framework is OWED.** `tests/backports/host/matterdifferential/run.sh`
-  reports `DOES NOT BUILD on this host: 142 clusters not built, 0 checked` for the reason given above, so no
-  member set has been compared with the system framework's. Every `effect` in `registry/Matter/ios16.json`
-  therefore claims only the generator's own two-way check, which is what the run measures.
-- **`MTRCluster`'s 17.4 `endpointID` is not carried.** SDK 26.2's `MTRCluster.h` gives the class one member the
-  library's own SDK does not declare: `@property (nonatomic, readonly) NSNumber *endpointID
-  NS_REFINED_FOR_SWIFT MTR_AVAILABLE(ios(17.4), macos(14.4), watchos(10.4), tvos(17.4))`. 16.4 declares the class
-  with `-init` and `+new` `NS_UNAVAILABLE` and no member, so `CharonMatterMTRCluster.m` is the class and nothing
-  else, and a client that asks a port cluster for its endpoint gets no responder. No row claims the member -
-  `MTRCluster`'s row says `no member and no state of its own` and names the omission. `SHARED_TYPES` already
-  names `endpointID` for `MTRCluster`, so emitting it is a small follow-up behind the same `minimum`
-  machinery, not a design question, and the plain data family above did NOT change it: that family declares
-  only what a *payload* class needs, and `MTRCluster` is a base. The endpoint a caller does have is the one its
-  own initializer was given, in `_charon_endpoint`.
-- **`MTRClusterPath`, `MTRAttributePath`, `MTRCommandPath` and `MTREventPath` are declared and not
-  implemented** - 15 of the framework's `missing` rows - and they are what `-initWithResponseValue:error:`
-  needs before its SUCCESS path can be measured on the host. `tools/matter-generate.py --paths` writes the
-  four objects and the host measurement of their shape is the section "The path classes, as the host answers"
-  below; the wiring is what is owed.
-- **4 of the 145 `MTRBaseCluster` classes have no object** - `MTRBaseClusterBarrierControl`,
-  `MTRBaseClusterBinaryInputBasic`, `MTRBaseClusterElectricalMeasurement` and
-  `MTRBaseClusterOnOffSwitchConfiguration` - and 1,202 rows are missing with them. They are not excluded and
-  not unread: the generator emits the other 142 from `clusters-emitted.txt`, and these four are simply not on
-  that list. They are owed with the concrete `MTRCluster*` classes.
-- **The 122 concrete `MTRCluster*` classes have no object** - `MTRClusterOnOff`, `MTRClusterThermostat`,
-  `MTRClusterElectricalMeasurement` and the rest, declared in `MTRClusters.h` as `: MTRGenericCluster` - and
-  3,361 rows are missing with them. They carry the same members their `MTRBaseCluster` counterpart does, in the
-  SDK's own declaration, so the generator reads them the same way; what they need is the class list and the
-  base class each of them declares.
-- **The 3,179 `+readAttribute...WithClusterStateCache:endpoint:queue:completionHandler:` and `+new` rows on the
-  142 emitted clusters are not carried.** The generator deliberately does not answer them: a cluster-state
-  cache is a live node's state and a release with no Matter hardware has none. They are OWED, not ABSENT -
-  `tests/backports/host/matter/excluded.txt` and the registry hold no claim either way.
-- **Attribute state is per cluster CLASS, not per cluster instance.** `+charon_port_values` is one
-  `static NSMutableDictionary` per class, indexed by attribute name alone, so two cluster objects of the same
-  class over two endpoints share every value written through either. What IS per instance is the identity the
-  initializer was given: `_charon_device`, `_charon_endpoint` and `_charon_queue`, which the object's own
-  initializer writes and no member reads back, because no member here reaches a fabric. Per-instance storage
-  keyed by (device, endpoint) is what a real node needs, and it is owed with the rest of the fabric-free
-  behaviour.
-
-Every group above is OWED, not ABSENT: no row anywhere claims the port does not carry them, and no object is
-emitted for an excluded name.
-
-## The registry rows
-
-`registry/Matter/ios16.json` is written by `tools/matter-registry.py` from the emitted objects, in the
-registry's own layout: one row per class the objects define and one per method they define, which is 144 class
-rows and 8475 method rows. The classes are read out of the objects, not out of a list of cluster names, so an
-object the run wrote and the gate builds cannot be without a row - which is what four of them were for a whole
-series: `MTRBaseClusterContentControl`, `MTRBaseClusterGroupcast` and `MTRBaseClusterTimer` were passed to the
-writer with `--skip` on a claim that they do not build, which stopped being true when the params family was
-forward-declared, and `MTRGenericBaseCluster` is not a cluster and so was never on a cluster list at all. A
-class with no row is what the 6.1.3 gate reports as `neither the SDK, the registry nor a held release's own
-cache says which iOS release X arrived in`, and an object with no registry `minimum` is compiled by every band
-below the floor its neighbours have, which is how four objects reached armv7-apple-ios4.3 and failed there.
-
-`introduced` is read from the header's own availability annotation, per member where the member carries one:
-16.1, 16.4, 17.0, 17.4, 17.6 and 18.4 are all in the file. Four tiers, taken in order: the member's own
-annotation; the `@interface`, category or `@protocol` it sits in; the first dated sibling property or method
-of the class; and only when none of those exists the annotation on the line above the `@interface`. The
-third tier is the plain data family's, and it is what dates 599 of the 1067 class rows: a payload class
-declares no method at all, so the method loop leaves it undated and the annotation above its `@interface` is
-a comment. A member with no annotation of its own takes its class's, and `MTRGenericBaseCluster` is dated 17.4
-and `MTRCluster` 16.1 by the annotation above its own. **5236 of the 14948 rows take the 16.0 fallback, which
-the header states nowhere - 376 class, 3214 method and 1646 property rows - and a further 815 method rows carry
-no annotation of their own and take their class's release, which the header does state.** What falls back is
-what SDK 26.2 annotates `MTR_PROVISIONALLY_AVAILABLE`: it expands to an export or to `NS_UNAVAILABLE` and
-names no iOS release, so there is nothing to read and the tool says so rather than inventing a number per row.
-`registry/Matter/ios16.json.unannotated` lists every declaration the header leaves undated - 6978 of them, a
-superset of the 5236 that take the fallback - so both sets are countable from one file and neither is hidden.
-The counts are by KIND, which the tool used to get wrong: it sorted the fallback rows by whether the row's
-name holds a `[`, so every `Class.property` row counted as a class and it reported 2022 class rows over 1067
-classes.
-
-**Every row says `minimum` 6.0, and that is measured.** SDK 16.4's `MTRDeviceControllerStartupParams.h`
-declares
-
-    @property (nonatomic, strong, nullable)
-        dispatch_queue_t operationalCertificateIssuerQueue API_AVAILABLE(ios(16.4), macos(13.3), ...);
-
-`dispatch_queue_t` is a C pointer below iOS 6 and an Objective-C object from 6 on, so that line is
-`property with 'retain (or strong)' attribute must be of object type` for `armv7-apple-ios4.3` and clean for
-`armv7-apple-ios6.0`. `Matter.h` imports that header and every one of the 1067 objects imports `Matter.h`, so
-the whole family is carried from 6.0 on: `modules/apple/backports.lua`'s `floors()` reads `minimum` off the
-rows and compiles an object only from the release its rows name, and `band()` puts it in the `left` list for
-every release below it.
-
-## `initWithResponseValue:error:`, as the host answers it
-
-Measured on the host framework with `tests/backports/host/matterdifferential/probe-response-value.m`, four
-fixtures against `MTRAccessControlClusterReviewFabricRestrictionsResponseParams`:
-
-| fixture | returns | error domain | code | localizedDescription |
-| --- | --- | --- | --- | --- |
-| a command data response with a command path that is an `NSNumber` | nil | `MTRErrorDomain` | 4 | `response-value command path is not an MTRCommandPath` |
-| the same, with the field's value the wrong class of object | nil | `MTRErrorDomain` | 4 | `response-value command path is not an MTRCommandPath` |
-| a dictionary that is not a command data response | nil | `MTRErrorDomain` | 4 | `commandPath is null when not expected to be` |
-| nil | nil | `MTRErrorDomain` | 4 | `commandPath is null when not expected to be` |
-
-Two things follow, and only the first is implemented so far. The failure domain and code are fixed —
-`MTRErrorDomain` code 4 for every rejection, whatever the reason — so a generic port implementation can
-report one error and put the reason in `NSLocalizedDescriptionKey`. The reason itself names the exact
-precondition, so the port can mirror the wording.
-
-The SUCCESS path is not yet measured: `MTRCommandPathKey` must hold an `MTRCommandPath` object, which is
-another SDK class the port does not carry, so no fixture yet gets past the command-path check. That is the
-next measurement, not a guess: build a real `MTRCommandPath` on the host and re-run the same four fixtures.
-
-## The path classes, as the host answers
-
-Measured on the host by `tests/backports/host/matterdifferential/probe-paths.m`:
-
-    commandPath(1,2,3)   MTRCommandPath  command=3  description=<MTRCommandPath endpoint 1 cluster 0x2 (2) command 0x3 (3)>
-    attributePath(1,2,7) MTRAttributePath attribute=7
-    eventPath(1,2,5)     MTREventPath    event=5
-    copy: same class, isEqual 1, same hash 1
-    built again from the same ids: isEqual 1, same hash 1
-    a different id:          isEqual 0, same hash 0
-
-`MTRClusterPath` is `NSObject <NSCopying, NSSecureCoding>` with readonly `endpoint` and `cluster`; each of
-the three adds one readonly id. The header marks `-init` and `+new` `NS_UNAVAILABLE` on `MTRClusterPath`, so
-a path is built only through the factory. The host's `description` annotates a cluster and an id it does not
-recognise as `<Unknown clusterID 2>`; the port has no cluster table, so it emits the same format without that
-annotation and says so.
+**23 readings are still UNEXPLAINED, and they are ONE cause.** `MTRJointFabricDatastoreClusterAddKeySetParams
+.groupKeySet`, `MTRJointFabricDatastoreClusterUpdateKeySetParams.groupKeySet` and every member of the classes
+that carry one: the port prints
+`MTRJointFabricDatastoreClusterDatastoreGroupKeySetStruct: ...; epochStartTime2:(null); groupKeyMulticastPolicy:0; >`
+and the host prints the same string ending at `epochStartTime2`, because
+`MTRJointFabricDatastoreClusterDatastoreGroupKeySetStruct` has no `groupKeyMulticastPolicy` in the HOST's SDK.
+It is the member-SET rule one level down, inside a nested value. `predict.py` compares the OUTER member's
+declaration, which is the same in both SDKs, and so reports the whole string as unexplained. The fix is to
+apply the member-set rule to a nested `-description` before falling through to a value comparison, and it is
+NOT in the tree: it was written, it did not fire on the run's own output, and it was reverted rather than
+committed as a branch that does not work. 23 is the measured number.
