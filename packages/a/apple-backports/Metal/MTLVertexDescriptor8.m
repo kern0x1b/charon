@@ -1,8 +1,6 @@
 #import "CharonMetal.h"
 #import <objc/runtime.h>
 
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
-
 @implementation MTLVertexAttributeDescriptor
 
 - (id)copyWithZone:(NSZone *)zone

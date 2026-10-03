@@ -1,6 +1,5 @@
 #import "CharonMetal.h"
 
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
 // A fence on this device is a signal value the CPU holds, and the work a fence stands for was
 // already issued as it was encoded: the port has no queue of commands in flight, because a command is

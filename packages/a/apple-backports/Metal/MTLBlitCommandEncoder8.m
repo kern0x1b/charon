@@ -1,7 +1,6 @@
 #import "CharonMetal.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 // A blit on this device is a copy on the CPU. The port's buffers are their own bytes and the port's

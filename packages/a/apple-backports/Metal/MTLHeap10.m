@@ -1,7 +1,6 @@
 #import "CharonMetal.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 // A heap is one allocation that resources are taken out of, and on this device that is literally what
