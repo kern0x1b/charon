@@ -58,11 +58,41 @@ recorded `absent` in `registry/VideoToolbox/ios26.json` with the declaration's o
 the source, which is where a reader looks for it rather than leaving the gap to be rediscovered.
 
 `-init` and `+new` on the sixteen classes that declare `- (instancetype) init NS_UNAVAILABLE;` are
-also recorded `absent`, one row each, for the same measured reason: the port declares no initialiser
-of its own there, so the class inherits NSObject's, and a program that sends it anyway gets an object
-with nothing in it - which is what the host does too, and is the case the annotation exists to warn
-about. `VTFrameProcessor` is the seventeenth and the exception: SDK 26.2 declares its `-init`
-without the annotation, so the port carries it, and `[VTFrameProcessor new]` reaches it.
+recorded `absent`, one row each, and the row is decided by a MEASUREMENT and not by the annotation.
+
+## What Apple's own classes do, measured
+
+`class_copyMethodList` over the host's class, then `+new` and `-init` sent through `objc_msgSend` with the
+exceptions caught (a bracketed call will not compile against the annotation, so the runtime is the only
+way to ask). 2026-10-03, on this machine's own VideoToolbox:
+
+```
+VTFrameProcessorFrame                          own -init: no (inherited) | +new answers | -init answers | buffer=0x0
+VTFrameRateConversionConfiguration             own -init: no (inherited) | +new answers | -init answers | frameWidth=0
+VTSuperResolutionScalerConfiguration           own -init: no (inherited) | +new answers | -init answers | frameWidth=0
+... the same line for all sixteen, and VTFrameProcessor itself
+```
+
+Apple implements NO `-init` of its own on any of them: the method is NSObject's, inherited. Both
+selectors answer, and **nothing raises** - a frame reads `buffer` NULL, a configuration reads
+`frameWidth` 0. So the class's own method list does not gain an `-init` in the port either, because
+adding one would make the port's class differ from Apple's in exactly the way that matters: which class
+owns the method. This is CoreML's shape, not SensorKit's: `registry/CoreML/absent_CoreML.json` measures
+`+new responds=1` and "answers an MLKey whose name and scope are both nil", while SensorKit's
+`SRSensorReader -init` raises because Apple implements it to raise.
+
+`VTFrameProcessor` is the seventeenth and the exception, and the difference is the SDK's own: its
+`VTFrameProcessor.h:51` declares `- (instancetype) init;` with NO annotation, so the method is declared
+surface and the port carries it as `[super init]` - which is the inherited implementation written out.
+Apple's own class also inherits it rather than defining it; the facts record that, because it is the one
+place in this family where the port's class owns a method Apple's does not, and the reason is the
+header's.
+
+`processorSupported` is declared on three of the classes and the SDK marks it
+`API_DEPRECATED_WITH_REPLACEMENT("isSupported") API_UNAVAILABLE(ios)`, so it is not iOS surface
+and carrying it would collide with the host's own header on the armv7 build. All three are
+recorded `absent` in `registry/VideoToolbox/ios26.json` with the declaration's own availability as
+the source, which is where a reader looks for it rather than leaving the gap to be rediscovered.
 
 ## The nine VTFrameProcessor methods, and what each answers
 

@@ -117,7 +117,7 @@ def main():
         sys.exit("check_port.py: pass <host-answers output> <apple-backports dir> <build dir>")
     host_path, backports, build = sys.argv[1:4]
 
-    domain, codes, supported, unavailable = None, {}, {}, {}
+    domain, codes, supported, unavailable, raised = None, {}, {}, {}, []
     controls = 0
     for line in open(host_path, encoding="utf-8", errors="replace"):
         parts = line.rstrip("\n").split("\t")
@@ -129,8 +129,10 @@ def main():
             codes[parts[1]] = int(parts[2])
         elif parts[0] == "SUPPORTED" and len(parts) == 3:
             supported[parts[1]] = parts[2]
-        elif parts[0] == "UNAVAILABLE" and len(parts) == 5:
-            unavailable[parts[1]] = (parts[2], parts[3], parts[4])
+        elif parts[0] == "UNAVAILABLE" and len(parts) == 6:
+            unavailable[parts[1]] = (parts[2], parts[3], parts[4], parts[5])
+        elif parts[0] == "RAISES" and len(parts) == 3:
+            raised.append((parts[1], parts[2]))
 
     failures = []
     if controls != 1:
@@ -216,6 +218,26 @@ def main():
         if "supported" in found["class"]:
             failures.append("%s.o carries +supported as well; the SDK declares one accessor, "
                             "getter=isSupported, and a second spelling is not that accessor" % cls)
+
+    # The host's own answer about -init, held to the row's claim rather than to the header. The row says
+    # Apple's class implements no -init of its own and that nothing raises; if the host ever starts
+    # raising, or grows its own -init, the row's reason is no longer what it says it is and the check must
+    # say so rather than let a stale claim stand.
+    for cls, text in raised:
+        failures.append("the host RAISES on %s: %s. The absent rows for this family claim it does not, "
+                        "and that claim is now false" % (cls, text))
+    for cls in NS_UNAVAILABLE_CLASSES:
+        if cls not in unavailable:
+            failures.append("the host reader printed no UNAVAILABLE line for %s" % cls)
+            continue
+        own_init, new_answers, init_answers, _width = unavailable[cls]
+        if own_init != "own-init=0":
+            failures.append("the host's %s implements -init of its own (own-init=1), so the absent row's "
+                            "reason - that it inherits NSObject's - is no longer what it says" % cls)
+        if new_answers != "+new-answers=1" or init_answers != "-init-answers=1":
+            failures.append("the host's %s does not answer both +new and -init (%s, %s), so the absent "
+                            "row's measured effect is no longer what it says"
+                            % (cls, new_answers, init_answers))
 
     # processorSupported is API_UNAVAILABLE(ios) on three classes: the registry says absent, and the
     # three objects must not carry either spelling of the accessor.
@@ -338,12 +360,13 @@ def main():
           "hardware, and that difference is the documented answer):")
     for cls in sorted(supported):
         print("  %-46s host=%s  port=NO" % (cls, supported[cls]))
-    print("the host's own +new/-init on the NS_UNAVAILABLE classes (both answer, with an object that has "
-          "nothing in it - which is why the port's rows are `absent` and not a raise):")
+    print("the host's own +new/-init on the NS_UNAVAILABLE classes: none of them implements -init, both "
+          "answer, nothing raises, and the object that comes back is empty - which is why the rows are "
+          "`absent` and the port's objects must not grow an -init of their own:")
     for cls in sorted(unavailable):
-        new, init, width = unavailable[cls]
+        own_init, new_answers, init_answers, width = unavailable[cls]
         if cls in NS_UNAVAILABLE_CLASSES:
-            print("  %-46s +new=%s -init=%s frameWidth=%s" % (cls, new, init, width))
+            print("  %-46s %s %s %s empty=%s" % (cls, own_init, new_answers, init_answers, width))
 
     if failures:
         for failure in failures:

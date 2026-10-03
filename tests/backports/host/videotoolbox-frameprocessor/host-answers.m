@@ -11,7 +11,8 @@
 // WHAT IT PRINTS, one TSV line per row:
 //   DOMAIN   <the NSString VTFrameProcessorErrorDomain holds>
 //   UNKNOWN  <the codes VTFrameProcessorError enumerates, in the header's own order>
-//   UNAVAILABLE <class> <+new answers 0|1> <-init answers 0|1> <frameWidth, or NA>
+//   UNAVAILABLE <class> own-init=0|1 <+new answers 0|1> <-init answers 0|1> <frameWidth, or NA>
+//   RAISES     <class> <which selector raised>, printed only when one does
 //   SUPPORTED <class> <+isSupported, or NA where the class declares no such property>
 //   ERRORCODE <name> <the value>
 #include <dlfcn.h>
@@ -21,6 +22,36 @@
 #import <VideoToolbox/VideoToolbox.h>
 
 extern NSErrorDomain const VTFrameProcessorErrorDomain;
+
+// Does the class implement the selector ITSELF, or inherit it? The two are different answers and the
+// distinction is what this file exists to settle: a class whose own -init raises is doing what the
+// annotation is for, and one that inherits NSObject's answers with an object that has nothing in it.
+static BOOL implements_init(Class cls)
+{
+    unsigned int count = 0;
+    Method *methods = class_copyMethodList(cls, &count);
+    BOOL found = NO;
+    for (unsigned int index = 0; index < count; index++) {
+        const char *name = sel_getName(method_getName(methods[index]));
+        if (name[0] == 'i' && name[1] == 'n' && name[2] == 'i' && name[3] == 't' && name[4] == 0)
+            found = YES;
+    }
+    free(methods);
+    return found;
+}
+
+// An exception on this thread is an answer, not a crash: the file asks whether the send raises, so it
+// catches rather than letting it reach the runtime's terminate.
+static BOOL send_id_catching(id target, SEL selector, id *answer)
+{
+    @try {
+        *answer = ((id (*)(id, SEL))objc_msgSend)(target, selector);
+        return NO;
+    } @catch (NSException *exception) {
+        *answer = nil;
+        return YES;
+    }
+}
 
 static id send_id(id target, SEL selector)
 {
@@ -82,14 +113,19 @@ int main(void)
         NSString *name = [NSString stringWithUTF8String:CLASSES[index]];
         Class cls = NSClassFromString(name);
         if (!cls) { printf("ABSENT\t%s\n", CLASSES[index]); continue; }
-        id made = send_id(cls, @selector(new));
-        id again = made ? send_id(made, @selector(init)) : nil;
+        id made = nil, again = nil;
+        BOOL newRaises = send_id_catching(cls, @selector(new), &made);
+        BOOL initRaises = made ? send_id_catching(made, @selector(init), &again) : NO;
+        if (newRaises || initRaises)
+            printf("RAISES\t%s\t%s\n", CLASSES[index],
+                   newRaises ? "+new raised" : "-init raised");
         // frameWidth is on the configuration and parameters classes and not on the two value holders, so
         // asking it of everything would raise; respondsToSelector decides, and "NA" is a real answer.
         const char *width = "NA";
         if (made && [made respondsToSelector:@selector(frameWidth)])
             width = [[NSString stringWithFormat:@"%lld", (long long)send_id(made, @selector(frameWidth))] UTF8String];
-        printf("UNAVAILABLE\t%s\t%d\t%d\t%s\n", CLASSES[index], made != nil, again != nil, width);
+        printf("UNAVAILABLE\t%s\town-init=%d\t+new-answers=%d\t-init-answers=%d\t%s\n",
+               CLASSES[index], implements_init(cls), made != nil, again != nil, width);
         if ([cls respondsToSelector:@selector(isSupported)])
             printf("SUPPORTED\t%s\t%d\n", CLASSES[index], send_bool(cls, @selector(isSupported)));
     }
