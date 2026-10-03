@@ -233,6 +233,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # this worktree's own run directory: a control's scratch copy is band output and belongs under
 # .agent-work/runs/, never in a system temp path
 RUNS = os.path.join(_worktree_root(HERE), ".agent-work", "runs", "homekit")
+# made here, where it is named: a fresh worktree has no .agent-work/runs/ at all, and
+# tempfile.TemporaryDirectory(dir=RUNS) then died with FileNotFoundError on the first control,
+# which took the whole check down after its header contract had already been compared.
+os.makedirs(RUNS, exist_ok=True)
 
 
 PARSE_ERRORS = []
@@ -466,7 +470,7 @@ MANGLED_SELECTOR = re.compile(r"^[-+]\[[A-Za-z_][A-Za-z0-9_]*\s+")
 
 
 def selector_of(mangled):
-    """The selector out of a mangled method name, for BOTH shapes clang writes.
+    """The selector out of a mangled method name, for every shape clang writes.
 
     -[Cls initWithURL:ownershipToken:]  and  -[Cls payload]  are spelled differently, and the difference
     is one space: a mangled name with a selector that takes arguments has a space after the class name,
@@ -476,10 +480,19 @@ def selector_of(mangled):
     two spellings of one member then disagree, the property-derived one is expected and never found, and
     a correct port is reported as binding nothing at all. The leading sign is kept, so a class method is
     not read as an instance one.
+
+    A third shape carries the CATEGORY: -[Cls(Charon13_0) initWithURL:ownershipToken:]. The optional
+    group below is what makes it a shape rather than a refusal, and refusing it was a blind spot with a
+    cost: HMAccessorySetupPayload's 13.0 object is a category by design (a second @implementation of
+    one class cannot be linked into one binary, so the 11.3 object holds the class and the 13.0 one adds
+    the newer initialiser to it), so -initWithURL:ownershipToken: read as bound by NOBODY and the check
+    reported the header's own 13.0 member missing from a port that binds it. What told the two apart is
+    not the category but the member: a charon_ member is the port's own storage, and port_methods()
+    filters those on their own spelling.
     """
     if not mangled:
         return None
-    match = re.match(r"^[-+]\[[A-Za-z_][A-Za-z0-9_]*[\s\]]+(.*)$", mangled)
+    match = re.match(r"^[-+]\[[A-Za-z_][A-Za-z0-9_]*(?:\([A-Za-z_][A-Za-z0-9_]*\))?[\s\]]+(.*)$", mangled)
     if not match:
         return None
     body = match.group(1)
@@ -494,12 +507,20 @@ def self_test_selector_of():
         ("-[HMAccessorySetupPayload initWithURL:ownershipToken:]", "-initWithURL:ownershipToken:"),
         ("-[HMAccessorySetupRequest payload]", "-payload"),
         ("+[HMAccessorySetupResult new]", "+new"),
-        ("-[HMAccessorySetupResult(CharonHomeKitSetup) charon_initWithHomeIdentifier:]", None),
+        # the category shape, which is the one that used to read as no selector at all
+        ("-[HMAccessorySetupPayload(Charon13_0) initWithURL:ownershipToken:]", "-initWithURL:ownershipToken:"),
+        ("-[HMAccessorySetupResult(CharonHomeKitSetup) charon_initWithHomeIdentifier:]",
+         "-charon_initWithHomeIdentifier:"),
+        ("-[HMAccessorySetupResult(CharonHomeKitSetup) payload]", "-payload"),
+        # and a name that is not a method at all, which must stay refused: this control compared only
+        # the cases that wanted a selector, so a helper that answered None to everything passed it.
+        ("", None),
+        (None, None),
     ]
     wrong = []
     for mangled, want in cases:
         got = selector_of(mangled)
-        if want is not None and got != want:
+        if got != want:
             wrong.append("%s gave %s, wanted %s" % (mangled, got, want))
     print("  self-test: selector_of on a with-arguments and an argument-less name: %s"
           % ("ok" if not wrong else "; ".join(wrong)))
