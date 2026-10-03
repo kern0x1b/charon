@@ -13,7 +13,7 @@
 // by one double ULP. The kernel below is therefore the header's own, in the caller's precision.
 //
 // **The pseudocode, and the two things in it that a paraphrase gets wrong.** vDSP.h gives it directly, and the
-// loop that fills the delay runs `for (s = 0; s <= S; ++s)` — inclusive, so a cascade of M sections has **M+1**
+// loop that fills the delay runs `for (s = 0; s <= S; ++s)` - inclusive, so a cascade of M sections has **M+1**
 // rows and the caller's delay buffer is **2 * (M + 1)** elements, not 2 * M. And the recurrence is Direct Form
 // II as printed, accumulated **left to right and in the caller's type**, with the two `A` terms subtracted:
 //
