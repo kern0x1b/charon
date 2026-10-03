@@ -7,6 +7,7 @@
 #import <CoreML/CoreML.h>
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
+#import "CharonCoreMLComputeDevices.h"
 
 @protocol MLCustomLayer;
 
@@ -15,3 +16,5 @@
 @protocol MLBatchProvider;
 
 @protocol MLFeatureProvider;
+
+@protocol MLComputeDeviceProtocol;
