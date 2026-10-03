@@ -46,6 +46,15 @@
     return _dataType;
 }
 
+- (void)charon_mps_setShape:(NSArray<NSNumber *> *)shape
+{
+    // Only an operation whose shape is the caller's to feed - a broadcast into a shape that is fed, a flatten
+    // along an axis that is fed, a squeeze of a set of axes that is fed - has its shape decided when the
+    // graph runs and not when it is built, and then this is where the walk puts it. It says nothing about
+    // the tensor's element count, which is a function of the shape.
+    _shape = [shape copy];
+}
+
 - (MPSGraphOperation *)operation
 {
     return _operation;

@@ -493,16 +493,407 @@ reciprocal, square root, reverse square root, exponential, logarithm, absolute a
 in `CharonMPSGraphOperationKind` and a case in the interpreter, so a family lands by adding a kind and a
 function rather than by touching every other operation.
 
-Not written: reductions, matmul, convolution, pooling, normalization, activation, shape operations,
+Not written: matmul, convolution, pooling, normalization, activation, shape operations,
 control flow, random, optimizers, and the rest of the surface. Each is a family of the same shape, and
 each wants the differential to run a graph end to end first.
+
+## The reduction family of 14.0
+
+A reduction is the first family here whose result is not the operand's shape, so it is walked by a
+function of its own (`CharonMPSGraphReduce` in `MPSGraphInterpreter14.m`) over the OPERAND rather than by
+the element-at-a-time loop the arithmetic family uses, and `graph-cases.m` asks it through a case helper
+of its own (`reduction_case`) that gives the compile a feed of the operand's shape and a destination of the
+result's.
+
+Measured against this host's own MPSGraph (macOS, Apple M4 Pro), over a 2x4 feed of
+(1, 2, 3, 4 | 10, 20, 30, 40) and over the case file's sixteen input classes, in MPSDataTypeFloat32,
+MPSDataTypeInt32 and MPSDataTypeFloat16. `bytes` is the release's own answer, little-endian, and every one
+of them is byte-identical to the port's:
+
+| question | answer |
+| --- | --- |
+| `reductionSumWithTensor:axis:0` over the 2x4 | shape (1, 4), `00003041 0000b041 00000442 00003042` = (11, 22, 33, 42) |
+| `reductionSumWithTensor:axis:1` | shape (2, 1), `00002041 0000c842` = (10, 100) |
+| `axis:-1` and `axes:@[1]` | the same bytes and the same (2, 1) as `axis:1` |
+| `axis:-2` | the same bytes and the same (1, 4) as `axis:0` |
+| `axes:@[@1, @0]` and `axes:@[@0, @1]` | both shape (1, 1), `0000dc42` = 110 |
+| `axes:@[@0, @0]` | the same bytes and the same (1, 4) as `axes:@[@0]`: a set, so a repeated axis reduces once |
+| `axes:@[]` | shape (2, 4) and the operand's own bytes: no axis is reduced |
+| `axes:nil` | shape (1, 1), `0000dc42` = 110: nil is EVERY axis |
+| `reductionProductWithTensor:axis:1` | `0000c041 00606a48` = (24, 240000) |
+| `reductionMaximumWithTensor:axis:1` | `00008040 00002042` = (4, 40) |
+| `reductionMinimumWithTensor:axis:1` | `0000803f 00002041` = (1, 10) |
+| `meanOfTensor:axes:@[@1]` | `00002040 0000c841` = (2.5, 25); as int32 `ffffffff 02000000` = (-1, 2), the truncated quotients; as float16 `0041 8046` = (2.5, 6.5) |
+| `varianceOfTensor:axes:@[@1]` | `0000a03f 0000fa42` = (1.25, 125); as int32 `01000000 01000000`; as float16 `003d 003d` = (1.25, 1.25) |
+| `varianceOfTensor:meanTensor:axes:@[@1]` over the same feed and the mean of it | the same bytes as the variance above |
+
+The three rules of the set of axes, which is what a caller can get wrong and what the port normalises:
+a negative axis is counted from the end of the rank, the order written does not matter, and nil is every
+axis while an empty array is none.
+
+### The NaN in a reduction, which is the whole of the difference between the four extremes
+
+Over a feed of (1, NaN, 3, 4 | NaN, 6, 7, 8), and then over a 2x4 whose eight elements are all NaN:
+
+| operation | over a row with a NaN | over a row of nothing but NaNs |
+| --- | --- | --- |
+| `reductionMaximumWithTensor:axis:1` | (4, 8) - the NaN is skipped | `000080ff 000080ff` = negative infinity |
+| `reductionMaximumPropagateNaNWithTensor:axis:1` | `0000c07f 0000c07f` = NaN | NaN |
+| `reductionMinimumWithTensor:axis:1` | (1, 6) - the NaN is skipped | `0000807f 0000807f` = positive infinity |
+| `reductionMinimumPropagateNaNWithTensor:axis:1` | NaN | NaN |
+
+So the kernel seeds an infinity - negative for a maximum, positive for a minimum - and lets one comparison
+decide the rest, and a NaN loses every comparison including one against another NaN. That is why a
+maximum skips a NaN and why a reduced set of nothing but NaNs answers the seed rather than a NaN. The
+propagating variants latch: a NaN that reaches an element is that element's answer and nothing after it
+can move it. The sum, the product, the mean and the variance are different - over the same feed all four
+answer NaN, because a NaN reaches the arithmetic and the arithmetic's own NaN is what leaves it.
+
+### An axis outside the rank, which the release cannot answer at all
+
+`reductionSumWithTensor:axis:5` over a 2x4 writes `invalid axes: 5` and then takes the process down with
+`LLVM ERROR: Failed to infer result type(s)`, so there is no answer to record: the graph is never built.
+A port cannot reproduce a process that is gone, and answering a tensor for it would be an answer the
+release does not give, so the port raises `NSInvalidArgumentException` when the graph is built instead.
+This is the one place in the reduction family where the port is not the release's answer in form, and it
+is named in the row of every method of the family.
+
+## The rest of the reduction family: 15.0's argument reductions and NaN-propagating extremes, and 15.3's truth folds
+
+Eight rows: `reductionArgMaximumWithTensor:axis:name:` and `reductionArgMinimumWithTensor:axis:name:` and the
+two `WithNaNPropagation` binary forms (15.0, `MPSGraphReductionOps150.m`), and `reductionAndWithTensor:` and
+`reductionOrWithTensor:` in both forms (15.3, `MPSGraphReductionOps153.m`).
+
+**How one walk serves three releases.** The walk over the family is a TABLE keyed by the operation's own
+parameters, not by its kind: an operation says which combination it folds with (`@"combination"`), whether a
+NaN latches (`@"propagateNaN"`), whether the answer is an index rather than a value (`@"index"`), and for the
+elementwise half whether the kernel latches a NaN (`@"latchNaN"`). None of those words is a name of any
+release's framework, so the 14.0 object that holds the walk and the axis arithmetic names nothing of 15.0 or
+15.3, and each of those two objects names only its own four methods. That is the arrangement the coordinator
+ruled for this family after v-mps3's report named the question; `relcheck`'s `check_releases` is what reads
+it back out of the objects ("compiled 13 objects of MPSGraphBackports", "check_releases: every object of
+MPSGraphBackports holds API of one release").
+
+Every cell of every case below is byte-identical between the release and the port, in all three data types
+the family is asked in, and none of them is on `recorded-cells.txt`.
+
+### The argument reductions
+
+| question, over the case file's 2x4 feeds | the release's answer | the port |
+| --- | --- | --- |
+| `reductionArgMaximumWithTensor:axis:1` over the sixteen classes | `00000000 00000000` = (0, 0) | identical |
+| `reductionArgMinimumWithTensor:axis:1` over the same | `01000000 01000000` = (1, 1) | identical |
+| `argMaximum` over (1, 2, 3, 4 \| 10, 20, 30, 40) | `03000000 03000000` = (3, 3) | identical |
+| `argMinimum` over the same | `00000000 00000000` = (0, 0) | identical |
+| `argMaximum` over (4, 4, 4, 9 \| 9, 9, 1, 1) | `03000000 00000000` = (3, 0) | identical |
+| `argMinimum` over the same | `00000000 02000000` = (0, 2) | identical |
+| `argMaximum` and `argMinimum` over a row of nothing but NaNs | `ffffffff ffffffff` = (-1, -1) | identical |
+| `argMaximum` over the int32 and over the float16 feed | `03000000 03000000` = (3, 3) | identical |
+| `argMaximum axis:0` and `argMinimum axis:0` over the ordinary feed | `01000000 01000000 01000000 01000000` and four zeros, a 1x4 | identical |
+| `argMaximum axis:-1` | the same bytes as `axis:1` | identical |
+
+So the rules, all measured: the answer is the index of the **first** element holding the extreme (the tied row
+above is what says so - a comparison that replaced on equality would answer the last of the three); a NaN
+loses every comparison and is never the answer wherever it sits (measured one NaN at a time at each of the
+four positions of a row of four, and at both ends and the middle of a row of nine: `(nan, 1, 2, 3)` answers 3
+for a maximum and 1 for a minimum, `(1, 2, 3, nan)` answers 2 and 0, and a row of nine with a NaN at either end
+answers 8 and 7); a reduced set of nothing but NaNs answers **-1**, which is "nothing was found" rather than
+an index into an empty set; the two signed zeros compare equal, so `(0, -0, 0, -0)` answers 0 for both; and
+the answer is stored as **MPSDataTypeInt32** whatever the operand's own type was, which is why the case names
+carry the result's type and where it came from.
+
+### The two binary NaN-propagating extremes
+
+The header states the rule (`isNaN(primary) || isNaN(secondary) ? NaN : min(primary, secondary)`) and the
+measurement over the case file's sixteen classes in float32 and float16 confirms it: the four NaN positions
+answer a NaN each and the four ordinary ones answer exactly what 14.0's pair answers over the same feeds
+(`00000000 000080bf 00000080 000080ff` against a primary of (1, -1, +0, -0, +inf, -inf, NaN, -NaN) and a
+secondary of (+0, -0, +inf, -inf, NaN, -NaN, 1.4e-45, 2)), so the four NaNs are the whole difference between
+the two pairs.
+
+**Every data type that is not a floating point one is refused, and the port refuses exactly that set.**
+Measured on this host's own MPSGraph, one type at a time, over a feed of eight ascending bytes against eight
+descending ones (which every one of these types reads as the same two numbers), both operations:
+
+| operand type | the release over `minimumWithNaNPropagation` and over `maximumWithNaNPropagation` | the kernel it reaches for |
+| --- | --- | --- |
+| `MPSDataTypeFloat32`, `MPSDataTypeFloat16` | **answers** | - |
+| `MPSDataTypeInt8` | raises `NSInvalidArgumentException` | `isNaN_i8` |
+| `MPSDataTypeInt16` | raises | `isNaN_i16_i8` |
+| `MPSDataTypeInt32` | raises | `isNaN_i_i8` |
+| `MPSDataTypeInt64` | raises | `isNaN_i64_i8` |
+| `MPSDataTypeUInt8` | raises | `isNaN_u8_i8` |
+| `MPSDataTypeUInt16` | raises | `isNaN_u16_i8` |
+| `MPSDataTypeUInt32` | raises | `isNaN_u_i8` |
+| `MPSDataTypeUInt64` | raises | `isNaN_u64_i8` |
+| `MPSDataTypeBool` | raises | `isNaN_i8` |
+
+Every refusal is `-[__NSDictionaryM setObject:forKey:]: object cannot be nil (key: ...)` from inside the
+framework's own kernel table, raised before a single element is written, and the key names the type it
+wanted: there is no NaN kernel for an integer type, and a boolean is an integer type to it. So the port's
+rule - refuse every data type that is not `MPSDataTypeFloat32` or `MPSDataTypeFloat16` - is the measured set
+and not a guess, and it is asked of both operations over all nine types in
+`tests/backports/host/mpsgraph/graph-cases.m`, each case built and run inside an `@try` because that is where
+the release raises: `raised-NSInvalidArgumentException` on both sides of all eighteen.
+
+This is the second place in this family where the port is not the release's answer in form, and it is named
+in the row of both methods.
+
+**In float16 this pair keeps the sign of a zero where 14.0's does not.** Measured over the same sixteen
+classes: `maximumWithNaNPropagation` answers `8000` for a maximum of -1.0 and -0.0 and `8000` for a maximum
+of +0.0 and -inf, where 14.0's `maximum` answers `0000` for the same two pairs - and the port's float32
+answer is -0.0 for both, so it is the half kernel and not the pair. The port's half rule ("a zero is a
+positive zero in half", one rule for every kind of 14.0, measured over nine kinds) therefore does not apply to
+an operation that latches, and the walk reads that out of the operation's own parameters like everything else.
+
+### The two truth folds
+
+| question | the release's answer | the port |
+| --- | --- | --- |
+| `reductionAndWithTensor:axis:1` over the sixteen classes | `00000000 0000803f` = (0, 1) | identical |
+| `reductionOrWithTensor:axis:1` over the same | `0000803f 0000803f` = (1, 1) | identical |
+| both over the int32 feed | `00000000 01000000` and `01000000 01000000` | identical |
+| both over the float16 feed | `003c003c` for each | identical |
+| both over a row of nothing but NaNs | `0000803f 0000803f` = (1, 1) | identical |
+| both over `axes:nil` (every axis, a 1x1) | `00000000` for the "and", `0000803f` for the "or" | identical |
+| both over `axes:@[]` (no axis, a 2x4) | the operand's own bytes, `0000803f 000080bf 00000080 000080ff ...` | identical |
+| both over `axes:@[@1, @0]` (a set, a 1x1) | `0000803f` | identical |
+
+So: the answer is written in the **operand's own type** and not in a boolean (measured in float32, float16,
+int32 and uint8), the test is against zero, so both signed zeros are false and a NaN is a nonzero like any
+other value (an "and" of a row of nothing but NaNs is 1), the answer is one and not a truth of another kind
+(0x3f800000, 0x3c00, 1, 1), and the axes are the family's own (nil every axis, an empty array none, a
+descending set still a set).
+
+**A reduced set of no axes is the identity, and the truth folds are what measure it.** Over `axes:@[]` both
+of them answer the operand byte for byte, where a seed of each fold's identity would answer 1 and 0
+everywhere. The walk therefore answers a reduction over no axis with the operand itself, and the rule is in
+the walk rather than in the two folds because a sum and a product of the identity are the identity either way:
+only a fold whose answer is not the element's own can tell the two apart.
+
+## The gather family: sixteen shape and axis methods
+
+Sixteen rows of the tensor-shape headers, in four objects: 14.0's `transposeTensor:dimension:withDimension:name:`
+(in `MPSGraph14.m`), 15.0's `MPSGraphTensorShapeOps150.m` (two flattens, two broadcasts, three reverses),
+15.4's `MPSGraphTensorShapeOps154.m` (four squeezes, three expanded dimensions) and 16.0's
+`MPSGraphTensorShapeOps160.m` (the permutation transpose).
+
+**One walk for all sixteen.** A gather is one question - for each axis of the result, which axis of the
+operand feeds it, how many of the operand's axes it covers, and whether that one is reversed or wrapped - so
+`CharonMPSGraphGatherPlan` derives that from the operation's parameters and `CharonMPSGraphGather` walks it.
+Which transformation it is (`@"gather"`), which of its parameter the caller wrote down (`@"gatherAxis"`,
+`@"gatherDrop"`, `@"gatherAdd"`, `@"gatherAxes"`, `@"gatherPermutation"`) or which of the operation's inputs
+carries it instead (`@"gatherOperand"`), and every release's factory fills those in and names only its own
+methods. The result's shape comes out of the plan and is put on the output tensor through
+`-[MPSGraphTensor charon_mps_setShape:]` before anything is allocated for it, which is what lets a shape the
+caller FEEDS - a fed axis, a fed set of axes, a fed target shape - be the result's shape at all.
+
+### The rules, all measured on this host's own MPSGraph
+
+Over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40), with the release's own bytes in
+`.agent-work/mps4/runs/probe-shape.txt`:
+
+| operation | the release answers | the rule |
+| --- | --- | --- |
+| `transposeTensor:dimension:0 withDimension:1` | a 4x2 of (1, 10, 2, 20, 3, 30, 4, 40) | the row-major transpose, in both forms and with a permutation |
+| `transposeTensor:dimension:-1 withDimension:0` | the same bytes | a negative axis is counted from the end - and the header's own type for it is `NSUInteger`, which the release still reads as signed |
+| `squeezeTensor` over a 1x2x4 | a 2x4 of (1, 2, 3, 4, 5, 6, 7, 8) | every unit axis is dropped, and the rest keep their order |
+| `squeezeTensor` over a 2x4 | the 2x4 itself | an operand with no unit axis is itself |
+| `expandDimsOfTensor:axis:0` over a 2x4 | a 1x2x4 of the same eight values | an axis of extent one is added where it is asked for |
+| `expandDimsOfTensor:axis:2` and `axis:-1` | a 2x4x1 | a negative axis is counted from the end and MAY BE THE RANK ITSELF, which is the trailing unit axis |
+| `expandDimsOfTensor:axes:@[@0, @2]` | a 1x2x1x4 | one axis is added for each of them |
+| `flatten2DTensor:axis:0` over a 2x4 | a 1x8 of the same eight values | everything from the axis named on collapses into one |
+| `flatten2DTensor:axis:1` over a 2x4 | the 2x4 itself | and `axis:0` of a 2x3x4 is a 1x24 of the same values |
+| `broadcastTensor:toShape:@[@4, @4]` | each row of the 2x4 twice | the operand aligns to the RIGHT of the shape and each axis the shape makes wider wraps |
+| `broadcastTensor:toShape:@[@2, @2, @4]` | the 2x4 twice | and a shape that is the operand's own is the operand's own |
+| `reverseTensor` | (4, 3, 2, 1 \| 40, 30, 20, 10) | every axis is flipped when none is named |
+| `reverseTensor:axes:@[@1]` | (4, 3, 2, 1 \| 40, 30, 20, 10) | only the axes named are flipped, and nothing else moves |
+| `reverseTensor:axes:@[@0]` | (10, 20, 30, 40 \| 1, 2, 3, 4) | and over the sixteen classes, `axes:@[@1, @0]` answers (NaN, NaN, -inf, +inf \| +0, -0, -1, 1) |
+
+The squeeze, the expanded dimension and the flatten are therefore **one gather with the axes left alone** -
+each of them answers the operand's own bytes in the operand's own order - and the transpose, the broadcast and
+the reverse are one gather with them not.
+
+### Three refusals, each measured
+
+* **A squeeze of an axis whose extent is not one.** The release writes `squeezed axis must have length 1,
+  input.shape[1] == 2` (MPSGraphUtilities.mm:3210) and then `LLVM ERROR: Failed to infer result type(s)`
+  takes the process down. The port raises `NSInvalidArgumentException` when the graph is built.
+* **A flatten's axis is not normalised the way the family's other axes are.** The release takes it as the
+  unsigned number it is given, so `axis:-1` of a 2x4 is a dimension length of 4294967295 and it asserts
+  (`Error: NDArray dimension length > INT_MAX`, MPSNDArray.mm:831). Measured and different from the same
+  operation's siblings: an expanded dimension and a transpose both count a negative axis from the end and
+  answer. The port raises for the flatten and counts for the other two, which is the release's own split.
+* **A fed parameter of a floating point type.** The release's own compiler refuses the operand
+  (`'mps.cumulative_sum' op operand #1 must be 0D tensor of mps index type values or static-shape defined
+  tensor with shape equal to [1] ... but got 'tensor<1xf32>'`) and `MPSGraphExecutable.mm:4419` takes the
+  process down. The port raises `NSInvalidArgumentException` when the graph is built; an int32 and an int64
+  of shape [1] both answer, measured.
+
+### What this differential does NOT do, and why
+
+**The sixteen are not compared by `tests/backports/host/mpsgraph/run.sh`, and that is a measured fact about
+the release rather than a choice.** That harness compiles three hundred graphs in one process before it is
+done, and the release's own gather operations start asserting partway through the family: the same
+`flatten2DTensor:axis:0` of a 2x4 answers in a program of its own and asserts
+(`Error: NDArray dimension length > INT_MAX`, MPSNDArray.mm:831) in the harness - asked as the fifth gather
+of the family and as the first one alike - and a fed `broadcastTensor:toShapeTensor:` into the operand's own
+shape asserts the same way.
+
+So the port was written against a program of its own, whose output is `.agent-work/mps4/runs/probe-shape.txt`
+and whose source is `.agent-work/mps4/probe-shape.m`: every form of all sixteen was asked there and the
+release answered every one of them, and the table above is those bytes. The harness holds no case for the
+family (`gather_families` is where the cases will go, with the reason written beside it), and the gap is
+named in the row of each of the sixteen as well as here. **The fix is one process per family in run.sh rather
+than one for three hundred cases**, which is what the next commit of this family should carry; until then the
+sixteen are implemented, registered and measured against the release's own answers, but not compared cell by
+cell by the harness that holds every other family.
+
+## The cumulative family of 16.0
+
+Sixteen rows in one object (`MPSGraphCumulativeOps160.m`): `cumulativeSum`, `cumulativeProduct`,
+`cumulativeMaximum` and `cumulativeMinimum`, each in four forms - an axis written down with and without the
+`exclusive:` and `reverse:` flags, and an axis fed at run time with and without them.
+
+**The walk is the reduction family's fold along an axis**, and it shares the fold table and the step with
+it: `CharonMPSGraphFoldStep` is one function both walks call, so the seeds, the NaN rule and the four steps
+are measured once. What the scan adds is a direction, an axis and a flag, all three read out of the
+operation's parameters (`@scanCombination`, `@scanAxis`/`@scanAxisTensor`, `@scanExclusive`, `@scanReverse`),
+so the 16.0 object names its sixteen methods and nothing of any other release.
+
+### The rule, and what is measured
+
+The accumulator is the result buffer and starts at the fold's seed, the walk goes along the axis in the
+direction the flag says, and at each position the element joins the answer BEFORE that answer is written -
+unless the answer is `exclusive`, which writes it first and folds the element in afterwards, so the position
+the walk starts at holds the seed.
+
+Over the case file's 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40), axis 1, every one of these byte-identical between
+the release and the port in float32, int32 and float16:
+
+| operation | inclusive | reverse | exclusive reverse |
+| --- | --- | --- | --- |
+| `cumulativeSum` | (1, 3, 6, 10 \| 10, 30, 60, 100) | (10, 9, 7, 4 \| 100, 90, 70, 40) | (9, 7, 4, 0 \| 90, 70, 40, 0) |
+| `cumulativeProduct` | (1, 2, 6, 24 \| 10, 200, 6000, 240000) | (24, 24, 12, 4 \| 240000, 24000, 1200, 40) | (24, 12, 4, 1 \| 24000, 1200, 40, 1) |
+| `cumulativeMaximum` | (1, 2, 3, 4 \| 10, 20, 30, 40) | (4, 4, 4, 4 \| 40, 40, 40, 40) | (4, 4, 4, -inf \| 40, 40, 40, -inf) |
+| `cumulativeMinimum` | (1, 1, 1, 1 \| 10, 10, 10, 10) | (1, 2, 3, 4 \| 10, 20, 30, 40) | (2, 3, 4, +inf \| 20, 30, 40, +inf) |
+
+(the exclusive columns' seeds are the type's extreme finite value, which is the next table, and the reverse
+minimum and maximum over an increasing row are each the row itself read from the other end).
+
+**The seed of the two extremes is the type's own extreme FINITE value, not an infinity.** Measured over one
+exclusive scan of each, in each of the three data types the family is asked in:
+
+| type | the maximum's seed | the minimum's seed |
+| --- | --- | --- |
+| `MPSDataTypeFloat32` | `ff7fffff` = -FLT_MAX | `7f7fffff` = +FLT_MAX |
+| `MPSDataTypeFloat16` | `fbff` = -65504, the largest finite half | `7bff` = +65504 |
+| `MPSDataTypeInt32` | -2147483648 | 2147483647 |
+
+which is the identity of a comparison over the values that type can hold. The reduction family of 14.0 seeds
+an **infinity** instead - measured, `reductionMaximumWithTensor:axis:1` over a row of nothing but NaNs
+answers `0xff800000` - and that is a different kernel with a different measurement, and it is left as it is.
+A sum's seed is the zero of the type and a product's its one, in every type measured.
+
+**A scan's comparison is not strict where a reduction's is**, and that is measured rather than guessed: over
+the sixteen classes, whose first row is (1, -1, -0.0, +0.0), a *reverse* cumulative maximum answers a NEGATIVE
+zero at positions 1 and 2 where a strict comparison keeps the zero it already held, and an exclusive reverse
+maximum answers a negative zero at positions 0 and 1 where a strict comparison would take the positive one it
+was handed. So `CharonMPSGraphFoldStep` takes both rules as arguments: the two reductions pass
+"propagate a NaN, break a tie towards the held answer" and a scan passes "skip a NaN, break a tie towards the
+new value", and the reduction family's own cases (a row of (0, -0, 0, -0) answers 0, the first of the equal
+elements) are what pin its half of that.
+
+**A NaN is skipped in a scan, as in a reduction**: over a row of (1, 2, 3, NaN) an exclusive reverse maximum
+answers (3, 3, -FLT_MAX, -FLT_MAX) and an exclusive reverse minimum (2, 3, +FLT_MAX, +FLT_MAX), and over a row
+of nothing but NaNs both answer the seed at every position. Nothing in this family latches a NaN - the two
+propagating reductions of 14.0 are the only two that do, and they are in a different object.
+
+**The other three questions the family asks.** A negative axis is counted from the end, measured (`axis:-1`
+answers what `axis:1` answers). The result is the operand's own shape and data type, measured in all three
+types - which is why this family needs no case helper of its own, unlike the reduction family whose result is
+a different shape. And the accumulator is the result's own storage: measured, the cumulative sum of
+(1, 2, 3, 4) in float16 is `4900` = 10, and the cumulative product of four halves of 65504 is an infinity from
+the second step.
+
+### The two refusals, both named in the row of every method
+
+* **An axis outside the rank.** The release asserts and dies: `MPSGraphNDArrayScan.mm:253` writes
+  `Axis = ... This class only supports axis = 0, 1, 2, 3` and takes the process with it. The port raises
+  `NSInvalidArgumentException` - when the axis is written down, when the graph is built; when it is fed, when
+  the graph runs, because then it is data and there is nothing earlier to refuse.
+* **An axis fed as a floating point tensor.** The release cannot build the graph at all: its own compiler
+  refuses the operand (`'mps.cumulative_sum' op operand #1 must be 0D tensor of mps index type values or
+  static-shape defined tensor with shape equal to [1] ... but got 'tensor<1xf32>'`) and the process goes down
+  with `failed assertion`, `MPSGraphExecutable.mm:4419`. The port raises `NSInvalidArgumentException` when the
+  graph is built. An int32 and an int64 axis of shape [1] both answer, measured.
+
+Neither is in the differential, and that is deliberate in both cases: the release's own answer is a process
+that is gone, so there is nothing to compare a line against. Both are measurements in the rows instead.
+
+### What is not measured here
+
+The rest of the shape family (`reshape`, `slice`, `pad`, `tile`, `concat`, `stack`, `split`, `spaceToDepth`,
+`depthToSpace`, `spaceToBatch`, `batchToSpace`, `coordinateAlongAxis`, `nonZeroIndices`, the `gather*` and
+`scatter*` forms and the `topK`/`bottomK` pair) is not in this page and not in the tree: it is the rest of the
+rows the ledger carries as `missing` for this family.
 
 ## The R4 names this band adds, in full
 
 The SDK this package compiles against, the iPhoneOS 16.4 one, declares none of these: they are the
-private surface the two families use to share their own state, and each is a registered implemented name
-that no header the build sees declares. **27 of them**, read out of the compiled objects with
-`nm -g --defined-only`, not from the sources, so a declaration and a definition are not confused:
+private surface the two families use to share their own state, and each is a registered implemented name or a
+method of its object's own class rather than of a category - which is the one shape `carried_api` does not
+read, so it is named here in the facts rather than only in the registry. The graph's are read out of the
+graph's own compiled objects with `nm` (`MPSGraphBackports`, 13 objects), not from the sources, so a
+declaration and a definition are not confused:
+
+* `-[MPSGraph charon_mps_addOperationOfKind]` — MPSGraph14.m
+* `-[MPSState charon_mps_appendBuffer]` — MPSState11.m
+* `-[MPSState charon_mps_appendResource]` — MPSState11.m
+* `-[MPSState charon_mps_appendTexture]` — MPSState11.m
+* `-[MPSGraph charon_mps_arithmetic]` — MPSGraph14.m
+* `-[MPSMatrixRandom charon_mps_batchOver]` — MPSMatrixRandom13.m
+* `-[MPSMatrixRandom charon_mps_configureWithDataType]` — MPSMatrixRandom13.m, MPSMatrixRandomMTGP3213.m, MPSMatrixRandomPhilox13.m
+* `-[MPSMatrixCopy charon_mps_destinationAtIndex]` — MPSMatrixCopy11.m, MPSMatrixCopyDescriptor11.m
+* `-[MPSCNNConvolutionDescriptor charon_mps_fold]` — MPSCNNConvolutionDescriptor10.m
+* `-[MPSCNNBatchNormalization charon_mps_foldFromDataSource]` — MPSCNNBatchNormalization12.m
+* `-[MPSCNNConvolutionWeightsAndBiasesState charon_mps_listOfBufferSizes]` — MPSCNNConvolutionWeightsAndBiasesState11.m
+* `-[MPSGraph charon_mps_nanPropagatingExtreme:secondaryTensor:lesser:name:]` — MPSGraphReductionOps150.m, the one method 15.0's two NaN-propagating extremes share
+* `-[MPSMatrixCopyDescriptor charon_mps_offsetsAtIndex]` — MPSMatrixCopy11.m, MPSMatrixCopyDescriptor11.m
+* `-[MPSGraph charon_mps_operation]` — MPSGraph14.m
+* `-[MPSGraph charon_mps_predicate]` — MPSGraph14.m
+* `-[MPSGraph charon_mps_reduction:axes:tensor:parameters:name:]` — MPSGraph14.m, the seam every release's reduction factory goes through
+* `-[MPSGraph charon_mps_reductionOf:tensor:combination:kind:propagatesNaN:name:]` — MPSGraph14.m
+* `-[MPSGraph charon_mps_runOperation]` — MPSGraph14.m, MPSGraphInterpreter14.m
+* `-[MPSMatrixLogSoftMax charon_mps_setLogarithmic]` — MPSMatrixLogSoftMax12.m, MPSMatrixSoftMax12.m
+* `-[MPSCNNPooling charon_mps_setMaximum]` — MPSCNNPooling10.m
+* `-[MPSCNNConvolutionDescriptor charon_mps_setNeuronParameterC]` — MPSCNNConvolutionDescriptor10.m
+* `-[MPSGraph charon_mps_setOutputTensors]` — MPSGraph14.m, MPSGraphOperation14.m
+* `-[MPSGraph charon_mps_setParameters]` — MPSGraph14.m, MPSGraphOperation14.m
+* `-[MPSCNNKernel charon_mps_setWindowWidth]` — MPSCNNKernel10.m, MPSCNNPooling10.m
+* `-[MPSMatrixCopy charon_mps_sourceAtIndex]` — MPSMatrixCopy11.m, MPSMatrixCopyDescriptor11.m
+* `-[MPSState charon_mps_temporaryWithBlock]` — MPSState11.m
+* `-[MPSMatrixCopyDescriptor charon_mps_withCount]` — MPSMatrixCopyDescriptor11.m
+* `-[MPSTemporaryMatrix charon_mps_withReadCount]` — MPSTemporaryMatrix11.m, MPSTemporaryVector12.m
+* `-[MPSMatrixRandom charon_mps_wordAtIndex]` — MPSMatrixRandom13.m
+* `-[MPSCNNPooling charon_mps_zeroPadSizeX]` — MPSCNNPooling10.m
+* `-[MPSCNNPooling charon_mps_zeroPadSizeY]` — MPSCNNPooling10.m
+
+**The matrix and CNN entries are a snapshot of an earlier pass and are short of the tree**: measured against
+the sources, `MPSPredicate16.m` carries `charon_mps_permitsExecution`, `MPSImagePyramid16.m` carries three
+(`charon_mps_filter`, `charon_mps_filterWidth`, `charon_mps_filterHeight`) and `MPSNDArray13.m` carries four
+(`charon_mps_wholeShapeOf:`, `charon_mps_makeBuffer`, `charon_mps_elementCount`, `charon_mps_bufferStrides:`),
+and none of those eight is named above. The graph's nineteen are current, read out of the graph's own
+compiled objects (`MPSGraphBackports`, 13 objects) rather than from the sources, so a declaration and a
+definition are not confused; nothing in the graph family rests on the gap in the rest of the list, because
+the registry check reads the built libraries and not this page - but the page is wrong about the tree until
+the whole library's objects are read again, which is what the closing sentence describes.
+
+The graph's are the interpreter's — its kinds, its per-operation wiring, its element accessors and the seams
+its releases' factories share — and the matrix and CNN families' are the window, the fold, the state and the
+copy descriptor's. None of them is called by an application. Each needs the lift's sets re-measured in the
+same push as the ones that land with them, and the list is regenerated from the objects whenever the family
+changes.
 
 * `-[MPSGraph charon_mps_addOperationOfKind]` — MPSGraph14.m
 * `-[MPSState charon_mps_appendBuffer]` — MPSState11.m

@@ -1032,6 +1032,651 @@
       "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m agrees with the release over the file's thirty-two input classes in both MPSDataTypeFloat32 and MPSDataTypeFloat16: byte for byte where the specification holds the operation to the correctly rounded answer, and otherwise within the figure tests/backports/host/mpsgraph/tolerances.txt gives for it, which is the Metal Shading Language Specification's own, cited there by table and page; the half answer for a NaN, an infinity and a zero is the rule of that operation's own row in CharonMPSGraphHalfNaNOf, measured class by class; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionSumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionSumWithTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionProductWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionProductWithTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionMaximumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement A maximum that does not propagate skips a NaN and answers the largest of what is left, and a reduced set of nothing but NaNs answers negative infinity: measured, over a 2x4 of eight NaNs the release answers 0xff800000 for both elements; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionMaximumWithTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement A maximum that does not propagate skips a NaN and answers the largest of what is left, and a reduced set of nothing but NaNs answers negative infinity: measured, over a 2x4 of eight NaNs the release answers 0xff800000 for both elements; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionMinimumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement A minimum that does not propagate skips a NaN, and a reduced set of nothing but NaNs answers positive infinity: measured, over a 2x4 of eight NaNs the release answers 0x7f800000 for both; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionMinimumWithTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement A minimum that does not propagate skips a NaN, and a reduced set of nothing but NaNs answers positive infinity: measured, over a 2x4 of eight NaNs the release answers 0x7f800000 for both; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionMaximumPropagateNaNWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement A NaN anywhere in the reduced set is the answer for it and nothing after it can move it; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionMaximumPropagateNaNWithTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement A NaN anywhere in the reduced set is the answer for it and nothing after it can move it; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionMinimumPropagateNaNWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement A NaN anywhere in the reduced set is the answer for it and nothing after it can move it; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionMinimumPropagateNaNWithTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement A NaN anywhere in the reduced set is the answer for it and nothing after it can move it; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph meanOfTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement. The mean is the sum over the count written back through the type it is stored as, so an integer mean is the truncated quotient: measured, the mean of (-3, -2, -1, 0) as MPSDataTypeInt32 is -1; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph varianceOfTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement. The variance is the mean of the squared deviations about the mean of the reduced set, taken in the type it is stored as: measured, the variance of a row of (1, 2, 3, 4) is 0x3fa00000 = 1.25; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph varianceOfTensor:meanTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement. The same arithmetic with the mean handed over instead of computed again, which is what the header's own comment asks a caller for; the port holds the two forms to each other rather than to two different answers, and the case feeds the mean the framework itself answered; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionArgMaximumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release over the file's sixteen input classes, a 2x4 of ordinary values, a row of ties and a row of nothing but NaNs, in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is the index of the FIRST element holding the extreme, so (4, 4, 4, 9) answers 3 for a maximum, a NaN loses every comparison and is never the answer wherever it sits, a reduced set of nothing but NaNs answers -1 in both, and the answer is stored as MPSDataTypeInt32 whatever the operand's own type was - every one of those measured on this host's own MPSGraph; facts/MetalPerformanceShadersGraph/Core.md carries the rules and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionArgMinimumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release over the file's sixteen input classes, a 2x4 of ordinary values, a row of ties and a row of nothing but NaNs, in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is the index of the FIRST element holding the extreme, so (4, 4, 4, 9) answers 3 for a maximum, a NaN loses every comparison and is never the answer wherever it sits, a reduced set of nothing but NaNs answers -1 in both, and the answer is stored as MPSDataTypeInt32 whatever the operand's own type was - every one of those measured on this host's own MPSGraph; facts/MetalPerformanceShadersGraph/Core.md carries the rules and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph minimumWithNaNPropagationWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the elementwise walk on the CPU is 14.0's minimum and maximum with the one rule this release adds, that a NaN on either side is the answer, which is measured over the same sixteen classes in MPSDataTypeFloat32 and MPSDataTypeFloat16: the four NaN positions answer a NaN each and the four ordinary ones answer what the 14.0 pair answers over the same feeds, which is the whole difference between the two pairs; in float16 this pair keeps the sign of a zero where the 14.0 pair does not (measured, a maximum of -1.0 and -0.0 is 0x8000 here and 0x0000 there, and the port's float32 answer is -0.0 for both); every data type that is not a floating point one is refused with an NSInvalidArgumentException rather than answered, and the set is measured one type at a time rather than assumed: int8, int16, int32, int64, uint8, uint16, uint32, uint64 and bool each raise out of the framework's own kernel table before a single element is written (the key it reaches for names the type it wanted - isNaN_i8, isNaN_i16_i8, isNaN_i_i8, isNaN_i64_i8, isNaN_u8_i8, isNaN_u16_i8, isNaN_u_i8, isNaN_u64_i8, and isNaN_i8 for a boolean - because there is no NaN kernel for an integer type), while float16 and float32 answer, and all eighteen refusals are cases in the differential; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph maximumWithNaNPropagationWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the elementwise walk on the CPU is 14.0's minimum and maximum with the one rule this release adds, that a NaN on either side is the answer, which is measured over the same sixteen classes in MPSDataTypeFloat32 and MPSDataTypeFloat16: the four NaN positions answer a NaN each and the four ordinary ones answer what the 14.0 pair answers over the same feeds, which is the whole difference between the two pairs; in float16 this pair keeps the sign of a zero where the 14.0 pair does not (measured, a maximum of -1.0 and -0.0 is 0x8000 here and 0x0000 there, and the port's float32 answer is -0.0 for both); every data type that is not a floating point one is refused with an NSInvalidArgumentException rather than answered, and the set is measured one type at a time rather than assumed: int8, int16, int32, int64, uint8, uint16, uint32, uint64 and bool each raise out of the framework's own kernel table before a single element is written (the key it reaches for names the type it wanted - isNaN_i8, isNaN_i16_i8, isNaN_i_i8, isNaN_i64_i8, isNaN_u8_i8, isNaN_u16_i8, isNaN_u_i8, isNaN_u64_i8, and isNaN_i8 for a boolean - because there is no NaN kernel for an integer type), while float16 and float32 answer, and all eighteen refusals are cases in the differential; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionAndWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the fold is a question about the whole reduced set rather than an arithmetic over it, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is written in the operand's own type and not in a boolean, the test is against zero so a NaN is a nonzero like any other value and both signed zeros are false, the answer is one and not a truth of another kind, and a reduced set of no axes is the operand byte for byte - measured over axes:@[], which a seed of the fold's identity would answer one and zero everywhere instead; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionAndWithTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "15.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the fold is a question about the whole reduced set rather than an arithmetic over it, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is written in the operand's own type and not in a boolean, the test is against zero so a NaN is a nonzero like any other value and both signed zeros are false, the answer is one and not a truth of another kind, and a reduced set of no axes is the operand byte for byte - measured over axes:@[], which a seed of the fold's identity would answer one and zero everywhere instead; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionOrWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the fold is a question about the whole reduced set rather than an arithmetic over it, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is written in the operand's own type and not in a boolean, the test is against zero so a NaN is a nonzero like any other value and both signed zeros are false, the answer is one and not a truth of another kind, and a reduced set of no axes is the operand byte for byte - measured over axes:@[], which a seed of the fold's identity would answer one and zero everywhere instead; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionOrWithTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "15.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the fold is a question about the whole reduced set rather than an arithmetic over it, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is written in the operand's own type and not in a boolean, the test is against zero so a NaN is a nonzero like any other value and both signed zeros are false, the answer is one and not a truth of another kind, and a reduced set of no axes is the operand byte for byte - measured over axes:@[], which a seed of the fold's identity would answer one and zero everywhere instead; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    }
+,
+{
+      "api": "-[MPSGraph charon_mps_reduction:axes:tensor:parameters:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the one seam every release's reduction factory goes through, which takes the axes of the operand and the combination to fold with, so that the 14.0 object that defines it names no operation of any later release; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraph charon_mps_reductionOf:tensor:combination:kind:propagatesNaN:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraph charon_mps_nanPropagatingExtreme:secondaryTensor:lesser:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: 15.0's two NaN-propagating extremes are one method here, which refuses an integer operand the way the release does and then builds 14.0's minimum or maximum with the latch that is this release's own; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    }
+,
+{
+      "api": "-[MPSGraph cumulativeSumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeSumWithTensor:axis:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeSumWithTensor:axisTensor:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeSumWithTensor:axisTensor:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeProductWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeProductWithTensor:axis:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeProductWithTensor:axisTensor:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeProductWithTensor:axisTensor:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMaximumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMaximumWithTensor:axis:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMaximumWithTensor:axisTensor:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMaximumWithTensor:axisTensor:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMinimumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMinimumWithTensor:axis:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMinimumWithTensor:axisTensor:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph cumulativeMinimumWithTensor:axisTensor:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the scan is walked on the CPU along the axis of the operand, each answer holding the fold of the elements on one side of its position, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16 over the ordinary feed, the sixteen input classes, a row of nothing but NaNs and rows chosen for their ties, in all four combinations of the exclusive and reverse flags and over both axes: the result is the operand's own shape and type, a negative axis is counted from the end, a NaN loses every comparison and is skipped so the position whose whole side of the walk is NaN answers the seed, and the seed of an exclusive scan of the two extremes is the type's own extreme FINITE value (measured, 0xff7fffff and 0x7f7fffff in float32, 0xfbff and 0x7bff in float16, INT32_MIN and INT32_MAX in int32) where the reduction family of 14.0 seeds an infinity; an axis outside the rank is refused rather than answered, because the release destroys the process over one (MPSGraphNDArrayScan.mm:253), and an axis fed as a floating point tensor is refused when the graph is built because the release cannot build it at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    }
+,
+{
+      "api": "-[MPSGraph charon_mps_scanAxis:ofRank:named:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the normalisation of a cumulative operation's axis, which the reduction family's seam also does by hand - a negative axis counted from the end and an axis outside the rank refused when the graph is built - and which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraph charon_mps_scan:axis:tensor:combination:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the one seam 16.0's sixteen cumulative factories go through, which takes the axis and the fold and the two flags; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraph charon_mps_scan:axisTensor:tensor:combination:exclusive:reverse:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the same seam over an axis the caller feeds at run time, which refuses a floating point axis tensor because the release cannot build the graph over one; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    }
+,
+{
+      "api": "-[MPSGraph transposeTensor:dimension:withDimension:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph transposeTensor:permutation:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph flatten2DTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph flatten2DTensor:axisTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph broadcastTensor:toShape:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph broadcastTensor:toShapeTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph reverseTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph reverseTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph reverseTensor:axesTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph squeezeTensor:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph squeezeTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph squeezeTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph squeezeTensor:axesTensor:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph expandDimsOfTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph expandDimsOfTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph expandDimsOfTensor:axesTensor:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    }
+,
+{
+      "api": "-[MPSGraph charon_mps_gather:tensor:parameters:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the one seam every release's shape factory goes through, which takes the transformation and its parameter and leaves the result's shape to the walk - which is what lets a shape the caller FEEDS be one of them; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraph charon_mps_gather:tensor:fedParameter:parameters:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the same seam over a parameter the caller feeds at run time, which refuses a floating point one because the release cannot build the graph over it at all; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraphTensor charon_mps_setShape:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the one place a tensor's shape is written rather than read, which the gather walk uses for the result of an operation whose shape the caller feeds - it is decided when the graph runs and not when it is built; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
     }
   ]
 }
