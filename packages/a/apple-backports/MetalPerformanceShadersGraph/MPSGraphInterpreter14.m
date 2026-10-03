@@ -683,9 +683,6 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
         }
     }
 
-    int isSum = kind == CharonMPSGraphOperationKindReductionSum ||
-                kind == CharonMPSGraphOperationKindReductionMean ||
-                kind == CharonMPSGraphOperationKindReductionVariance;
     int isProduct = kind == CharonMPSGraphOperationKindReductionProduct;
     int isExtreme = kind == CharonMPSGraphOperationKindReductionMaximum ||
                     kind == CharonMPSGraphOperationKindReductionMinimum ||
