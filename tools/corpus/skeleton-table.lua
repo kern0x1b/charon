@@ -6,6 +6,8 @@
 --        CHARON_ROOT=<worktree> xmake l skeleton-table.lua <cache> <image substring> parents <cfarray>
 --        CHARON_ROOT=<worktree> xmake l skeleton-table.lua <cache> <image substring> impls <class> [selector]
 --        CHARON_ROOT=<worktree> xmake l skeleton-table.lua <cache> <image substring> functions <lo> <hi>
+--        CHARON_ROOT=<worktree> xmake l skeleton-table.lua <cache> <image substring> bytes <lo> <count>
+--        CHARON_ROOT=<worktree> xmake l skeleton-table.lua <cache> <image substring> texts <address>...
 --
 -- The address space is the project's own reader (modules/apple/dyld.lua, through open_cache), so a
 -- split cache and the slide a stored pointer carries are handled by the code that already binds
@@ -223,12 +225,21 @@ local function impls(cache, wanted, class_wanted, only)
         if not cache.mapped(address, size) then return 0 end
         return cache.pointer_at(address, wide)
     end
+    -- The class object holds its metaclass at isa and its own class-data pointer at the word after
+    -- the flags and the instance size, so the same walk reaches a class's class methods: which is the
+    -- only way to tell a class method the class implements from one it merely inherits. ARPlaneExtent's
+    -- +supportsSecureCoding is such a question -- its own instance list of eleven says nothing about a
+    -- class method.
     local function class_data(class)
         if class == 0 or not cache.mapped(class, 5 * size) then return nil end
         local data = pointer_at(class + 4 * size) & (wide and ~7 or ~3)
         if not cache.mapped(data, 7 * size) then return nil end
         local offsets = wide and {name = 24, methods = 32} or {name = 16, methods = 20}
-        return {name = str(pointer_at(data + offsets.name)), methods = pointer_at(data + offsets.methods)}
+        local metaclass = pointer_at(class)
+        local meta_data = metaclass ~= 0 and pointer_at(metaclass + 4 * size) & (wide and ~7 or ~3)
+        return {name = str(pointer_at(data + offsets.name)), methods = pointer_at(data + offsets.methods),
+                meta = meta_data ~= nil and cache.mapped(meta_data, 7 * size) and
+                       pointer_at(meta_data + offsets.methods) or 0}
     end
     for _, loaded in ipairs(cache.images) do
         if loaded.install:find(wanted, 1, true) then
@@ -238,7 +249,6 @@ local function impls(cache, wanted, class_wanted, only)
                         local class = pointer_at(section.addr + index * size)
                         local data = class_data(class)
                         if data and data.name == class_wanted then
-                            print(string.format("#%s list=%#x", class_wanted, data.methods))
                             local function one(list)
                                 if not cache.mapped(list, 8) then return end
                                 local flags, count = string.unpack("<I4I4", cache.read_address(list, 8))
@@ -278,26 +288,91 @@ local function impls(cache, wanted, class_wanted, only)
                                     end
                                 end
                             end
-                            local list = data.methods
-                            if wide and list & 1 ~= 0 then
-                                local entry_size, count = string.unpack("<I4I4", cache.read_address(list & ~1, 8))
-                                if entry_size == 8 then
-                                    for slot = 0, count - 1 do
-                                        local entry = (list & ~1) + 8 + slot * 8
-                                        local packed = string.unpack("<i8", cache.read_address(entry, 8))
-                                        local delta = packed >> 16
-                                        if delta >= 0x800000000000 then delta = delta - 0x1000000000000 end
-                                        one(entry + delta)
+                            local function list_at(list, label)
+                                print(string.format("#%s list=%#x", label, list))
+                                if wide and list & 1 ~= 0 then
+                                    local entry_size, count = string.unpack("<I4I4", cache.read_address(list & ~1, 8))
+                                    if entry_size == 8 then
+                                        for slot = 0, count - 1 do
+                                            local entry = (list & ~1) + 8 + slot * 8
+                                            local packed = string.unpack("<i8", cache.read_address(entry, 8))
+                                            local delta = packed >> 16
+                                            if delta >= 0x800000000000 then delta = delta - 0x1000000000000 end
+                                            one(entry + delta)
+                                        end
                                     end
+                                elseif list ~= 0 then
+                                    one(list)
                                 end
-                            elseif list ~= 0 then
-                                one(list)
                             end
+                            list_at(data.methods, "instance")
+                            -- A separate list and its own header line, so a selector that appears in
+                            -- both cannot be read as one entry twice: an instance method and a class
+                            -- method of the same name are different methods.
+                            list_at(data.meta or 0, "class")
                         end
                     end
                 end
             end
         end
+    end
+end
+
+-- The C string at each of a list of addresses, with the image and section it belongs to. The keys a
+-- coder method loads are literal `__cstring` bytes rather than `__cfstring` objects, so there is no
+-- constant to ask a symbol table about: the address the disassembly computed is the whole of what is
+-- known, and the string that answers is what turns it into a key. Every image of the cache is
+-- searched, because a method's key can be in another image (a string shared with a framework it
+-- calls) and saying "ARKitCore's" when the address is in libFoundation would be a wrong claim that
+-- reads as a measurement.
+local function texts(cache, addresses)
+    for _, address in ipairs(addresses) do
+        local holder = "no image section"
+        for _, loaded in ipairs(cache.images) do
+            for _, section in ipairs(loaded.image.sections) do
+                if address >= section.addr and address < section.addr + section.size then
+                    holder = loaded.install .. " " .. section.name
+                end
+            end
+        end
+        local text = cache.string_at(address)
+        if not text then
+            local out = {}
+            for index = 0, 255, 8 do
+                local chunk = cache.read_address(address + index, 8)
+                if not chunk then break end
+                local finish = chunk:find("\0", 1, true)
+                if finish then
+                    table.insert(out, chunk:sub(1, finish - 1))
+                    break
+                end
+                table.insert(out, chunk)
+            end
+            text = #out > 0 and table.concat(out) or nil
+        end
+        print(string.format("%#x\t%s\t%s", address, text and text:gsub("[^\32-\126]", ".") or "(not a string)",
+                            holder))
+    end
+end
+
+-- The raw bytes of one function, in the order they sit in the image, so that they can be
+-- disassembled with the release's own address added back (see tools/corpus/disasm.sh). A
+-- disassembler needs bytes; a reader that printed its own idea of them would be a second parser, so
+-- this prints what it read and nothing else: the count is checked against the bytes handed back, and
+-- a short read is reported as such rather than padded.
+local function bytes(cache, sections, low, count)
+    local data = cache.read_address(low, count)
+    if not data then
+        print(string.format("#no bytes at %#x (%s)", low, where(sections, low)))
+        return
+    end
+    if #data ~= count then
+        print(string.format("#short read at %#x: asked %d, read %d", low, count, #data))
+    end
+    print(string.format("#%#x %d", low, #data))
+    local hex = data:gsub(".", function (byte) return string.format("%02x", byte:byte()) end)
+    for offset = 0, #hex - 1, 64 do
+        print(string.sub(hex, offset + 1, offset + 64))
     end
 end
 
@@ -346,8 +421,45 @@ function main(cachefile, wanted, what, ...)
         local low, high = tonumber(arguments[1], 16), tonumber(arguments[2], 16)
         assert(low and high, "usage: skeleton-table.lua <cache> <image> functions <lo> <hi>")
         functions(dyld, cache, wanted, low, high)
+    elseif what == "sections" then
+        -- Every image whose install name contains the substring, with its sections and their address
+        -- ranges, and the first and last mapped byte of the cache. A pc-relative reference has to be
+        -- resolved against these: without the ranges there is no way to tell a computed address that
+        -- names a string from one that names nothing.
+        -- The cache's own mappings, from the mapping table its header points at. A computed address
+        -- is only meaningful against the range it is supposed to land in, and the table is what the
+        -- reader itself locates an address with.
+        for index = 0, 255, 1 do
+            local entry = cache.read(cache.main, cache.main.mapping_offset + index * 32, 24)
+            if not entry then break end
+            local address, size = string.unpack("<I8I8", entry)
+            if size == 0 then break end
+            print(string.format("#mapping %d %#x .. %#x", index, address, address + size - 1))
+        end
+        for _, hit in ipairs(found) do
+            print(string.format("#%s", hit[1].install))
+            for _, section in ipairs(hit[1].image.sections) do
+                print(string.format("  %-24s %#x .. %#x", section.name, section.addr,
+                                    section.addr + section.size - 1))
+            end
+        end
+    elseif what == "texts" then
+        local addresses = {}
+        for _, text in ipairs(arguments) do
+            local address = tonumber(text, 16)
+            assert(address, "usage: skeleton-table.lua <cache> <image> texts <address>...")
+            table.insert(addresses, address)
+        end
+        assert(#addresses > 0, "usage: skeleton-table.lua <cache> <image> texts <address>...")
+        texts(cache, addresses)
+    elseif what == "bytes" then
+        local low = tonumber(arguments[1], 16)
+        local count = tonumber(arguments[2])
+        assert(low and count, "usage: skeleton-table.lua <cache> <image> bytes <lo> <count>")
+        bytes(cache, sections, low, count)
     else
-        error("what must be names, parents, impls or functions, not " .. tostring(what))
+        error("what must be names, parents, impls, functions, sections, texts or bytes, not "
+              .. tostring(what))
     end
     cache.close()
 end
