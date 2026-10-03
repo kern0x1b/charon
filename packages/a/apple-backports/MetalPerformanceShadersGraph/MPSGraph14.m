@@ -674,7 +674,7 @@ typedef enum {
     return [self charon_mps_gather:CharonMPSGraphOperationKindTranspose
                              tensor:tensor
                         parameters:@{@"gather": @"transpose",
-                                     @"gatherPermutation": @[@((int32_t)dimension), @((int32_t)withDimension)]}
+                                     @"gatherPermutation": @[@((int32_t)withDimension), @((int32_t)dimension)]}
                                name:name];
 }
 
