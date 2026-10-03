@@ -60,6 +60,17 @@ static int CharonMPSGraphReadsOperandAsStored(CharonMPSGraphOperationKind kind)
     case CharonMPSGraphOperationKindMaximum:
     case CharonMPSGraphOperationKindSelect:
     case CharonMPSGraphOperationKindClamp3:
+    // Five more, all measured the same way and all of them the same kind of case: the release answers a
+    // denormal with the denormal, because for these five its own answer for a tiny argument is the
+    // argument. sin, sinh, arcsine, asinh and the hyperbolic arc-tangent of 0x00000001 are 0x00000001 and
+    // of 0x80000001 are 0x80000001, where a kernel that read the operand as a zero would answer a zero.
+    // arctangent, the hyperbolic tangent and erf do not: measured, each of the three answers 0x00000000
+    // for 0x00000001 and 0x80000001 for 0x80000001, and they are left out of this list for that reason.
+    case CharonMPSGraphOperationKindSin:
+    case CharonMPSGraphOperationKindSinh:
+    case CharonMPSGraphOperationKindAsin:
+    case CharonMPSGraphOperationKindAsinh:
+    case CharonMPSGraphOperationKindAtanh:
         return 1;
     default:
         return 0;
@@ -483,9 +494,23 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
     // or the zero it is and the two rules above - the release's own NaN and the flush - do not touch it.
     if (resultType == MPSDataTypeBool)
         return result != 0.0 ? 1.0 : 0.0;
-    if (CharonMPSGraphCopiesTheOperand(kind) || CharonMPSGraphKeepsTheNaNItWasGiven(kind))
+    // A zero is a positive zero for two of the transcendentals, which is a rule and not IEEE's: measured
+    // over the same sixteen classes, the arctangent and the hyperbolic tangent of -0.0 are 0x00000000
+    // where IEEE answers -0.0, and the hyperbolic tangent of a negative denormal is 0x00000000 as well.
+    // It is applied after the flush, so a denormal that flushed to a zero of either sign comes out
+    // positive, and only for those two: the identity, a reciprocal, a square root, a remainder and a
+    // minimum all answer -0.0 for a negative zero on this host, measured, and are left alone.
+    if ((kind == CharonMPSGraphOperationKindAtan || kind == CharonMPSGraphOperationKindTanh) &&
+        result == 0.0)
+        result = 0.0;
+    if (CharonMPSGraphCopiesTheOperand(kind))
         return stored ? result : CharonMPSGraphAsZero(result, resultType);
-    return CharonMPSGraphOwnNaN(stored ? result : CharonMPSGraphAsZero(result, resultType));
+    double narrowed = stored ? result : CharonMPSGraphAsZero(result, resultType);
+    // A kind that keeps the NaN it was given keeps it only when it WAS given one: the arcsine of a NaN
+    // is that NaN, measured, and the arcsine of -inf is 0x7fc00000 and not a NaN of a negative sign.
+    if (CharonMPSGraphKeepsTheNaNItWasGiven(kind) && (isnan(a) || isnan(b)))
+        return narrowed;
+    return CharonMPSGraphOwnNaN(narrowed);
 }
 
 @implementation MPSGraph (CharonMPSGraphInterpreter)
