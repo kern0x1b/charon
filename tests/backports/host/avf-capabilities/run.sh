@@ -28,6 +28,7 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 avf=$root/packages/a/apple-backports/AVFoundation
+pkg=$root/packages/a/apple-backports
 control=${CONTROL:-0}
 # AVFCAPSMUTANT=1 plants a wrong capability answer; AVFCAPSMUTANT=prefcam plants the preferred-camera pair's
 # persistence away. Each is named, so a run that plants neither is not called a mutation.
@@ -546,7 +547,10 @@ for pair in "reactions17.rn:reactions17.o" "depthzoom17.rn:depthzoom17.o" \
             "dynamic26.rn:dynamic26.o" "deferredstart26.rn:deferredstart26.o" \
             "standins.rn:standins.o"; do
     src=${pair%%:*}; obj=${pair##*:}
-    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$src" \
+    # -I"$avf" is the object's own folder and -I"$pkg" the package root, for a header a source reaches above
+    # its folder: the deferred-start object includes packages/a/apple-backports/CharonProgramSDK.h, and without
+    # the second the copy does not build.
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$pkg" -I"$build/src" -c "$build/src/$src" \
             -o "$build/o/$obj" > "$build/o/$obj.log" 2>&1; then
         echo "RUN FAILED: the port's $src did not build - a build failure is never a noticed mutation"
         head -8 "$build/o/$obj.log"
@@ -570,10 +574,11 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
     syncmin)      plant=syncmin;      target=externalsync26 ;;
     smudge)       plant=smudge;       target=dynamic26 ;;
     deferred)     plant=deferred;     target=deferredstart26 ;;
+    linkread)     plant=linkread;     target=deferredstart26 ;;
     cinematic)    plant=cinematic;    target=cinematic26 ;;
     *) echo "FAIL: AVFCAPSMUTANT=$mutant is not a plant this harness writes; run it as 1, as prefcam, as"
        echo "      capabilities, as multichannel, as rectsupport, as cinematic, as syncmin, as smudge or as"
-       echo "      deferred"
+       echo "      deferred or as linkread"
        exit 1 ;;
     esac
     python3 - "$build/src/$target.rn" "$plant" <<'PERTURB'
@@ -654,6 +659,11 @@ plants = {
 {
     return YES; /* PLANTED */
 }"""),
+    # And the linked-on-or-after read itself: asking about a version every band already passes. A band links
+    # against 16.4, so a comparison against 4.0 is TRUE where it must be false, and the session's default row
+    # moves the wrong way - which the two-build check above sees as well as the table.
+    "linkread": ("""    return charon_program_linked_on_or_after(26.0, 0);""",
+                 """    return charon_program_linked_on_or_after(4.0, 0); /* PLANTED */"""),
     "cinematic": ("""- (BOOL)isCinematicVideoCaptureSupported
 {
     return NO;
@@ -685,6 +695,9 @@ print("# the mutation applied: " + {"reactions": "-canPerformReactionEffects ans
                                                " is settable and kept",
                                      "deferred": "a session that supports a deferred start by hand, so"
                                                  " -setAutomaticallyRunsDeferredStart: false stops refusing",
+                                     "linkread": "the linked-on-or-after read asks about version 4.0, which"
+                                                " every band passes, so the session's default answers YES"
+                                                " where the link says NO",
                                      "cinematic": "every format claims Cinematic Video support, so the input's"
                                                   " flag, its setter and the three focus methods follow"}[plant])
 PERTURB
@@ -694,7 +707,7 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
     # plant applied before it leaves the object identical to its own recompile and the guard then refuses a
     # mutation that did happen.
     before=$(shasum -a 256 "$build/o/$target.o" | cut -d' ' -f1)
-    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$target.rn" \
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$pkg" -I"$build/src" -c "$build/src/$target.rn" \
             -o "$build/o/$target.o" > "$build/o/$target.rebuild.log" 2>&1; then
         echo "RUN FAILED: the port's $target.rn did not build after the mutation"
         head -6 "$build/o/$target.rebuild.log"
@@ -710,12 +723,43 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
 fi
 # CoreGraphics joins the three frameworks the 26.0 rectangle rows need for CGRectNull, CGRectIsNull and
 # CGRectGetMidX/Y; the port's other objects need the three that were here before it.
-if ! xcrun clang -fobjc-arc -w -I"$avf" "$here/probe.m" $objects -framework Foundation -framework AVFoundation \
-        -framework CoreMedia -framework CoreGraphics -o "$build/probe" > "$build/probe.log" 2>&1; then
+#
+# THE PROBE IS LINKED TWICE, and the second link is what makes the 26.0 deferred-start defaults checkable at
+# all: "By default, for apps that are linked on or after iOS 26, this value is true" (AVCaptureSession.h:685) is
+# a property of the APPLICATION, which this port can only read out of the main executable's own load command
+# (packages/a/apple-backports/CharonProgramSDK.h). One binary answers one branch, so both are asked: the
+# default link carries this host's SDK and the second carries an explicit pre-26 field. Each probe PRINTS the
+# field it was linked with (a CONTROL line, read back with the port's own helper), and run.sh refuses either
+# binary whose measurement does not match the branch it was linked for - so the label on a row is a measurement
+# and not a claim.
+link_probe() {   # $1 = output binary, $2... = extra linker flags
+    output=$1
+    shift
+    xcrun clang -fobjc-arc -w -I"$avf" -I"$pkg" "$here/probe.m" $objects -framework Foundation \
+        -framework AVFoundation -framework CoreMedia -framework CoreGraphics "$@" -o "$output"
+}
+if ! link_probe "$build/probe" > "$build/probe.log" 2>&1; then
     echo "FAIL: the probe did not build"; head -14 "$build/probe.log"; exit 1
+fi
+if ! link_probe "$build/probe16" -Wl,-platform_version,macos,11.0,16.4 > "$build/probe16.log" 2>&1; then
+    echo "FAIL: the pre-26 probe did not build"; head -14 "$build/probe16.log"; exit 1
 fi
 "$build/probe" "$build/members.tsv" > "$build/table" 2> "$build/stderr" || {
     echo "FAIL: the probe did not run"; head -10 "$build/stderr"; exit 1; }
+# The same arguments as the first run, with no tag: which table a row is in says which build answered it, and
+# the CONTROL line in each says what that build was linked with.
+"$build/probe16" "$build/members.tsv" > "$build/table16" 2> "$build/stderr16" || {
+    echo "FAIL: the pre-26 probe did not run"; head -10 "$build/stderr16"; exit 1; }
+# BOTH BUILDS ANSWERED, and the one the table above compares is the PRE-26 one, because that is what every band
+# of this repository is: its package line names SDK 16.4 and that is the sdk field of the binary. The other
+# build is here so that the rows the 26.0 header writes with a linked-on-or-after condition are checkable in
+# both directions, which the check below does.
+printf '' > "$build/table16moved"
+mv "$build/table" "$build/table26"
+mv "$build/table16" "$build/table"
+mv "$build/table16moved" "$build/table16"
+mv "$build/stderr" "$build/stderr26"
+mv "$build/stderr16" "$build/stderr"
 
 # 1. the controls, each named, so a run that examined nothing cannot pass
 check_control() {
@@ -754,6 +798,81 @@ esac
 #    reading nothing. A host that later gains the selector fails the run below with a message that asks for a
 #    re-measurement, which is what should happen then.
 host_absent=$(awk -F'\t' '$2 == "-" && $1 !~ /^#/ { print $1 }' "$here/expectations.tsv")
+# THE LINKED-ON-AFTER CHECK: two probes, one linked with this host's SDK field and one with an explicit
+# pre-26 field, and the rows the 26.0 header writes with a linked-on-or-after condition must answer
+# DIFFERENTLY between them while every other row answers the same. Each probe prints the SDK field of its own
+# image - a CONTROL line, read back with the port's own helper - and the two fields are checked against what the
+# two links claim, so a link flag that did not take is caught here rather than as a silent agreement.
+#
+# WHY it matters: "By default, for apps that are linked on or after iOS 26, this value is true"
+# (AVCaptureSession.h:685) is a property of the APPLICATION, and every band of this repository links against
+# SDK 16.4 - so the answer a band gives is the pre-26 one, and the port must not read the condition as TRUE in
+# one place and FALSE in another. A rule read one way in two places shows up here as a row that does not move.
+answer_row_in() {   # $1 = table, $2 = api
+    awk -F'\t' -v wanted="$2" '$1 == "ANSWER" && $2 == wanted { print; exit }' "$1"
+}
+linked16=$(grep '^CONTROL	linked-sdk	' "$build/table" | cut -f3 || true)
+linked26=$(grep '^CONTROL	linked-sdk	' "$build/table26" | cut -f3 || true)
+case "$linked16" in
+1[6-9].*) : ;;
+*) echo "FAIL: the pre-26 probe reports a linked SDK of [$linked16], so the pre-26 case is not what this run"
+   echo "      claims, and the port's answer for it would be a claim rather than a measurement"
+   exit 1 ;;
+esac
+case "$linked26" in
+2[6-9].*|3*) : ;;
+*) echo "FAIL: the probe linked with this host's SDK reports [$linked26], so the 26-or-later case is not what"
+   echo "      this run claims"
+   exit 1 ;;
+esac
+# The rows the header writes with that condition, and they are NOT the same kind of row:
+#   moves   - the session's default (:685). The condition is the ONLY thing behind it, so it must answer
+#            differently in the two builds or the condition is not being read at all.
+#   pinned  - the output's default (:129), whose sentence needs three things at once: an application linked on
+#            or after 26, an AVCapturePhotoOutput or AVCaptureFileOutput subclass, AND deferredStartSupported
+#            ("if supported, and false otherwise"). The support flag is NO for every output on this port, so
+#            this row is NO in BOTH builds whatever the link says - and it must not move, which is what makes
+#            "and false otherwise" visible.
+# The preview layer's default names no version at all (:271), so it must not move either.
+moves=" AVCaptureSession.automaticallyRunsDeferredStart "
+pinned=" AVCaptureOutput.deferredStartEnabled AVCaptureVideoPreviewLayer.deferredStartEnabled "
+moved=0; disagreement=0; linked_wrong=0; pinned_wrong=0
+awk -F'\t' '$1 == "ANSWER" { print $2 "\t" $3 "\t" $4 }' "$build/table26" > "$build/answers26"
+while IFS=$(printf '\t') read -r api host26 port26; do
+    case "$api" in ''|\#*) continue ;; esac
+    line16=$(answer_row_in "$build/table" "$api")
+    [ -n "$line16" ] || continue
+    [ "$host26" = "$(printf '%s\n' "$line16" | cut -f3)" ] || disagreement=$((disagreement + 1))
+    port16=$(printf '%s\n' "$line16" | cut -f4)
+    case "$moves" in
+    *" $api "*)
+        if [ "$port26" != "$port16" ]; then moved=$((moved + 1)); else disagreement=$((disagreement + 1)); fi ;;
+    *)
+        [ "$port26" = "$port16" ] || disagreement=$((disagreement + 1)) ;;
+    esac
+done < "$build/answers26"
+# The disagreement is COUNTED and not exited on, so that a planted run reaches the verdict below and says
+# "the mutation was noticed" like every other plant does; a clean run fails on it in the verdict section.
+if [ "$disagreement" != 0 ]; then
+    echo "note: $disagreement row(s) differ between the two linked probes where the header does not make them"
+    echo "      differ, or on the host's side; the verdict below decides whether that is a noticed mutation"
+fi
+pinned_no=0
+for api in $pinned; do
+    line16=$(answer_row_in "$build/table" "$api")
+    line26=$(answer_row_in "$build/table26" "$api")
+    [ "$(printf '%s\n' "$line16" | cut -f4)" = "port=[0]" ] && [ "$(printf '%s\n' "$line26" | cut -f4)" = "port=[0]" ] \
+        && pinned_no=$((pinned_no + 1))
+done
+pinned_wrong=$((2 - pinned_no))
+if [ "$pinned_wrong" != 0 ]; then
+    echo "note: $pinned_wrong of the two rows the header pins to NO through a term this port answers NO did not"
+    echo "      answer NO in both builds; the verdict below decides"
+fi
+echo "ok  two probes, linked against [$linked26] and [$linked16]: the one row whose only condition is the link"
+echo "    moves with it, the two rows the header pins through a term this port answers NO do not, and the"
+echo "    other $(grep -c '^ANSWER' "$build/answers26") answers are the same in both"
+
 members=$(grep -c '^RESPONDS	' "$build/table" || true)
 listed=$(wc -l < "$build/members.tsv" | tr -d ' ')
 if [ "$members" != "$listed" ]; then
@@ -951,25 +1070,25 @@ echo "      a bundle of its own reads [$third], so what is kept is one applicati
 # 6. THE VERDICT, for a planted run and for its control. Both the table and the preferred-camera steps count: a
 #    plant that only one of the two can see is a plant that proves nothing.
 if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
-    if [ $((wrong + wrong_prefcam + persist_wrong)) = 0 ]; then
-        echo "FAIL: the mutation left every answer, every step and both launches as they were, so this check"
-        echo "      cannot fail and proves nothing"
+    if [ $((wrong + wrong_prefcam + persist_wrong + linked_wrong + pinned_wrong)) = 0 ]; then
+        echo "FAIL: the mutation left every answer, every step, both launches and both linked builds as they"
+        echo "      were, so this check cannot fail and proves nothing"
         exit 1
     fi
     echo "ok  the mutation was noticed: $wrong of $compared table answers, $wrong_prefcam of $compared_prefcam"
-    echo "    preferred-camera steps, and $persist_wrong of the two checks around surviving a launch differ"
-    echo "    from what the header's rules give"
+    echo "    preferred-camera steps, $persist_wrong of the two checks around surviving a launch, and"
+    echo "    $((linked_wrong + pinned_wrong)) of the linked-on-or-after rows differ"
     head -4 "$build/wrong.log"
     head -4 "$build/prefcam-wrong.log"
     head -4 "$build/persist-wrong.log"
     exit 0
 fi
 if [ "$mutant" != 0 ] && [ "$control" != 0 ]; then
-    if [ $((wrong + wrong_prefcam + persist_wrong)) != 0 ]; then
+    if [ $((wrong + wrong_prefcam + persist_wrong + linked_wrong + pinned_wrong)) != 0 ]; then
         echo "FAIL: the control is not clean: $wrong of $compared table answers, $wrong_prefcam of"
-        echo "      $compared_prefcam preferred-camera steps and $persist_wrong of the two checks around"
-        echo "      surviving a launch differ through the identical path, so the red would be the path and not"
-        echo "      the mutation"
+        echo "      $compared_prefcam preferred-camera steps, $persist_wrong of the two checks around"
+        echo "      surviving a launch and $((linked_wrong + pinned_wrong)) of the linked-on-or-after rows differ"
+        echo "      through the identical path, so the red would be the path and not the mutation"
         head -4 "$build/wrong.log"
         head -4 "$build/prefcam-wrong.log"
         head -4 "$build/persist-wrong.log"
@@ -977,6 +1096,11 @@ if [ "$mutant" != 0 ] && [ "$control" != 0 ]; then
     fi
     echo "ok  the control is clean: the unmutated sources through the identical build-and-run path"
     exit 0
+fi
+if [ $((linked_wrong + pinned_wrong)) != 0 ]; then
+    echo "FAIL: $((linked_wrong + pinned_wrong)) of the linked-on-or-after rows are wrong: a row whose only"
+    echo "      condition is the link did not move with it, or one the header pins did not stay put"
+    exit 1
 fi
 if [ "$persist_wrong" != 0 ]; then
     echo "FAIL: $persist_wrong of the two checks around the choice surviving a launch are not what the"

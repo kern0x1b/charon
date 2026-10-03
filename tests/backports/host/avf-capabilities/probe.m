@@ -31,6 +31,10 @@
 #import <AVFoundation/AVFoundation.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
+// The port's own read of the SDK this binary was linked against, so the label below is a MEASUREMENT of this
+// binary and not a claim about it: run.sh links this source twice, once with a 26-or-later SDK field and once
+// with a pre-26 one, and the two runs have to answer differently for the 26.0 deferred-start defaults.
+#import "CharonProgramSDK.h"
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -838,6 +842,10 @@ int main(int argc, char **argv)
         Class portLayerClass = objc_getClass(PORT_PREFIX "AVCaptureVideoPreviewLayer");
         AVCaptureDevice *camera = hostDevice ? [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] : nil;
         AVCaptureDeviceFormat *format = camera ? [camera activeFormat] : nil;
+        // The load command packs the version as (major << 16) | (minor << 8) | patch, so 16.4 is 0x00100400:
+        // printing the low half whole would say "16.1024", which is neither of the two numbers a reader wants.
+        printf("CONTROL\tlinked-sdk\t%u.%u\n", (unsigned)(charon_program_sdk_on_platform(0) >> 16),
+               (unsigned)((charon_program_sdk_on_platform(0) >> 8) & 0xff));
         printf("CONTROL\tAVCaptureNoSuchClass\t%s\n",
                NSClassFromString(@"AVCaptureNoSuchClass") ? "HAS" : "ABSENT");
         printf("CONTROL\tAVCaptureDevice\t%s\tcamera=%s\n", hostDevice ? "HAS" : "ABSENT",

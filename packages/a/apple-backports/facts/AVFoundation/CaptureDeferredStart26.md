@@ -46,11 +46,43 @@ same refusal for a delegate with a real dispatch queue exactly as it does for on
 for a case Apple never reaches - the decision `CaptureControls.md` records for the controls family's own
 NULL-queue rule.
 
+## "LINKED ON OR AFTER iOS 26" IS A PROPERTY OF THE APPLICATION, and the port READS it
+
+Three of the header's sentences are written with that condition - the session's default (`:685`) and the output's
+default (`AVCaptureOutputBase.h:129`) - and the preview layer's has **no** version clause at all (`:271`). An
+earlier version of this object read the condition as TRUE in one place and FALSE in another, which the
+coordinator's ruling called the wrong answer twice over: the condition is a fact about the application, and every
+band of this repository links against SDK 16.4.
+
+So it is read, once, from the only place it is written down: the `sdk` field of the main executable's own load
+command (`LC_VERSION_MIN_IPHONEOS`, or `LC_BUILD_VERSION` for the platform the image was linked for), through
+`packages/a/apple-backports/CharonProgramSDK.h`. That read was a file-static in
+`UIKit/UIViewController+AutomaticPresentation.m`, which is not reusable - a static in one object cannot be called
+from another - so it became a header of `static inline` functions and the UIKit caller includes it, which is the
+arrangement `CharonValueStore.h` and `CharonSayOnce.h` already use and for the same reason: two libraries that
+include it each get their own copy and neither needs an exported symbol, which this package's registry does not
+allow.
+
+The harness holds both branches, because one binary can only answer one: it links the probe twice, once with this
+host's SDK field and once with `-Wl,-platform_version,macos,11.0,16.4`, and each probe prints the field it was
+linked with (a `CONTROL` line, read back through the port's own helper) so the link is a measurement and not a
+claim. Then:
+
+- **`AVCaptureSession.automaticallyRunsDeferredStart` moves with the link** (NO at 16.4, YES at 27.0), because
+  the condition is the only thing behind it.
+- **`AVCaptureOutput.deferredStartEnabled` does not move, and must not**: its sentence also needs
+  `deferredStartSupported`, which is NO for every output on this port, so "and false otherwise" answers NO in
+  either reading.
+- **`AVCaptureVideoPreviewLayer.deferredStartEnabled` does not move**, because its sentence names no version.
+
+The plant `linkread` asks the read about version 4.0 - which every band passes - so the session's row answers YES
+where the link says NO, and both the two-build check and the table comparison see it.
+
 ## Three rows where the port follows the header and the host does not, each with both columns
 
 | case | host | port | the sentence |
 | --- | --- | --- | --- |
-| `automaticallyRunsDeferredStart` | 0 | **YES** | "By default, for apps that are linked on or after iOS 26, this value is `true`" (`:685`) - and this port is what such an application links against. The host's 0 is macOS's own default, not this rule's |
+| `automaticallyRunsDeferredStart` | 0 | **NO** | "By default, for apps that are linked on or after iOS 26, this value is `true`" (`:685`), and **the condition is read from the main executable's own load command** - see the section below. Every band of this repository links against SDK 16.4, so the band answer is the pre-26 one, NO. The host's 0 is macOS's own default, not this rule's |
 | `setAutomaticallyRunsDeferredStart: false` | **returns** | raises NSInvalidArgumentException | "If `manualDeferredStartSupported` is `false`, setting this property value to `false` results in the session throwing an `NSInvalidArgumentException`" (`:686`), and the flag is NO |
 | `setDeferredStartEnabled: true` on a preview layer | **returns**, and the getter then reads 1 | raises NSInvalidArgumentException | "If `deferredStartSupported` is `false`, setting this property value to `true` results in the session throwing an `NSInvalidArgumentException`" (`AVCaptureVideoPreviewLayer.h:275`), and the flag is NO |
 
@@ -76,18 +108,22 @@ header's own documented default.
 
 ```
 sh tests/backports/host/avf-capabilities/run.sh   exit 0
+  ok  two probes, linked against [27.0] and [16.4]: the one row whose only condition is the link
+      moves with it, the two rows the header pins through a term this port answers NO do not, and the
+      other 103 answers are the same in both
   ok  66 members are answered by both sides, or by the port alone where the table says the host has none
   ok  103 answers are the ones expectations.tsv names, the host's and the port's columns both
   ok  AVCaptureSession.deferredStartDelegate after every refused set - host and port both nil, which is what
       the three refusals mean for the two read-only members
 AVFCAPSMUTANT=deferred  ok  the mutation was noticed: 1 of 103 table answers, 0 of 8
-CONTROL=1 with each of the nine plants  ok  the control is clean
+AVFCAPSMUTANT=linkread  ok  the mutation was noticed: 1 of 103 table answers, 0 of 8
+CONTROL=1 with each of the ten plants  ok  the control is clean
 ```
 
-Nine plants, all noticed: `reactions` (1 of 103), `prefcam` (6 of the 8 preferred-camera steps),
+Ten plants, all noticed:
 `capabilities` (3 of 103), `multichannel` (4 of 103), `rectsupport` (1 of 103), `cinematic` (6 of 103),
 `syncmin` (2 of 103), `smudge` (1 of 103), `deferred` (1 of 103 - a session that supports a deferred start by
-hand, which is what `-setAutomaticallyRunsDeferredStart:`'s refusal is tied to).
+hand, which is what `-setAutomaticallyRunsDeferredStart:`'s refusal is tied to), `linkread` (1 of 103 - the linked-on-or-after read asked about version 4.0, which every band passes).
 
 ### Two more harness defects this family found
 

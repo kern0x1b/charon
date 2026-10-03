@@ -60,7 +60,7 @@
 //   NO and then answers YES to the same value (measured, the getter reads 1 afterwards) - while the header says
 //   the session throws. The port refuses.
 #import "CharonAVCaptureDeferredStart26.h"
-#import <objc/runtime.h>
+#import "CharonProgramSDK.h"
 
 // Where the port keeps the two values it can accept: the session's automaticallyRunsDeferredStart (which can only
 // be YES here, and the default is YES, so this exists for symmetry with the rule rather than for a value) - no:
@@ -84,9 +84,18 @@ static void charon_deferred_start_unsupported(NSString *selector)
 
 - (BOOL)automaticallyRunsDeferredStart
 {
-    // The header's own default for the release an application links against (:685). Nothing is stored: the
-    // setter below accepts YES and refuses NO, so the value is the default and only the default.
-    return YES;
+    // "By default, for apps that are linked on or after iOS 26, this value is true" (:685). The condition is
+    // about the APPLICATION, not about this port, so it is READ from the main executable's own load command
+    // (packages/a/apple-backports/CharonProgramSDK.h): every band of this repository links against SDK 16.4,
+    // which is the sdk field of the binary, and so every band here answers NO - the value the same header
+    // gives an application linked before 26, since the sentence names no default for that case and the
+    // property's own default before 26 is the one that does not defer anything. An application linked against
+    // 26 or later against THIS library would read YES, because its own load command says so.
+    //
+    // The same read governs the two deferredStartEnabled defaults below, so all three of the header's
+    // linked-on-or-after defaults are decided by one fact read one way. Nothing is stored: the setter accepts
+    // the value the condition gives and refuses the other, so there is no last accepted one.
+    return charon_program_linked_on_or_after(26.0, 0);
 }
 
 - (void)setAutomaticallyRunsDeferredStart:(BOOL)automaticallyRunsDeferredStart
@@ -136,7 +145,17 @@ static void charon_deferred_start_unsupported(NSString *selector)
 
 - (BOOL)isDeferredStartEnabled
 {
-    return NO;
+    // The header's own sentence needs three things at once (AVCaptureOutputBase.h:129): "By default, for apps
+    // that are linked on or after iOS 26, this property value is true for AVCapturePhotoOutput and
+    // AVCaptureFileOutput subclasses IF SUPPORTED, and false otherwise". The first is read the same way as the
+    // session's default above - one fact, one read - and the second is NO for every output on this port, so
+    // the answer is false in EITHER reading of the first, which is what "and false otherwise" says. All three
+    // terms are written because the header's rule has three.
+    if (!charon_program_linked_on_or_after(26.0, 0))
+        return NO;
+    if (!self.isDeferredStartSupported)
+        return NO;
+    return [self isKindOfClass:[AVCapturePhotoOutput class]];
 }
 
 - (void)setDeferredStartEnabled:(BOOL)deferredStartEnabled
@@ -162,6 +181,10 @@ static void charon_deferred_start_unsupported(NSString *selector)
 
 - (BOOL)isDeferredStartEnabled
 {
+    // "By default, this value is false for AVCaptureVideoPreviewLayer objects, since this object is used to
+    // display preview" (AVCaptureVideoPreviewLayer.h:271). This one has NO linked-on-or-after clause of its
+    // own, so the read above does not decide it and the answer is false in both readings; it is asked in both
+    // builds anyway, so a header that grew the clause later would be caught here rather than pass unnoticed.
     return NO;
 }
 
