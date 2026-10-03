@@ -1671,6 +1671,14 @@ local function property_of(selector)
     if getter then
         table.insert(found, getter:sub(1, 1):lower() .. getter:sub(2))
     end
+    -- a property whose own name already starts lower-case and continues upper-case, the way Apple spells an
+    -- acronym at the front: NSProcessInfo.h:247-248 declare iOSAppOnMac and iOSAppOnVision with
+    -- getter=isiOSAppOnMac and getter=isiOSAppOnVision, so the property is what follows "is", unchanged. The
+    -- upper-case second letter is the condition, so a selector such as -issue is not read as a property "sue".
+    local acronym = selector:match("^is(%l%u[%w_]*)$")
+    if acronym then
+        table.insert(found, acronym)
+    end
     local literal = selector:match("^([%w_]+)$")
     if literal then
         table.insert(found, literal)

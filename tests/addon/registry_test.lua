@@ -286,6 +286,14 @@ local function member_and_protocol_rows(backports, found)
     if said:find("FixClass") then
         table.insert(found, "a category method with a row of its own must pass, and it is red: " .. said)
     end
+    -- a property whose name starts with a lower-case acronym, read through the getter its header declares:
+    -- NSProcessInfo.iOSAppOnVision is getter=isiOSAppOnVision, and the gate of land-w5 (2026-10-03) read the
+    -- built -isiOSAppOnVision as rowless and the row as unbuilt, because "is" + lower-case was not an accessor
+    rows(class .. ',{"api": "FixClass.iOSAppOnFix", "kind": "property", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}')
+    said = asked({["-[FixClass isiOSAppOnFix]"] = true})
+    if said:find("FixClass", 1, true) then
+        table.insert(found, "a getter=isiOSAppOnFix accessor must answer the row FixClass.iOSAppOnFix, and it is red: " .. said)
+    end
     rows(protocol)
     -- the metadata symbol is one the object *defines*, so the rule reads the defined set: with the symbol in
     -- the imported set instead - where a class's names live - the row stays unbuilt, which is how 73 rows
