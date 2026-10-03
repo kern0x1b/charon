@@ -422,7 +422,13 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
     return "missing", "%s is there, selector %s is not" % (owner, selector)
 
 
-def classify_property(api, built_classes, release_classes):
+def classify_property(api, built_classes, release_classes, built_protocols=None,
+                      release_protocols=None):
+    """A property row's owner is named without saying whether it is a class or a protocol, and the
+    surface has both, so both are searched -- the same question classify_method answers, and for the
+    same reason. A property is read through its accessors, so it is the accessors that are looked
+    for, in the instance set and in the class set: a `@property (class, readonly)` is read through a
+    class method, and its getter is a class selector and never an instance one."""
     m = PROPERTY_RE.match(api)
     if not m:
         return "undecided", "property api does not parse as Class.prop: %r" % api
@@ -442,7 +448,14 @@ def classify_property(api, built_classes, release_classes):
             return "implemented", (why or built_why(entry, carried)) + (
                 " (a class property: read through %s)" % getter
                 if getter in entry["class"] and getter not in entry["instance"] else "")
-    if owner not in built_classes and owner not in release_classes:
+    for protocols, why in ((built_protocols or {}, "built: "), (release_protocols or {},
+                                                              "release-native: 6.1.3 dyld cache")):
+        entry = protocols.get(owner)
+        if entry and any(sel in entry["instance"] or sel in entry["class"] for sel in (getter, setter)):
+            label = why + (entry.get("library", "") if why == "built: " else "")
+            return "implemented", label + " (the protocol %s declares it)" % owner
+    if owner not in built_classes and owner not in release_classes \
+            and not (built_protocols or {}).get(owner) and not (release_protocols or {}).get(owner):
         return "missing", "owner class %s not in the built libraries or the 6.1.3 cache" % owner
     return "missing", "%s is there, neither %s nor %s is an instance or a class selector" % (
         owner, getter, setter)
@@ -1197,7 +1210,8 @@ def main():
                 status, reason = classify_method(api, built_classes, release_classes,
                                                  built_protocols, release_protocols)
             else:
-                status, reason = classify_property(api, built_classes, release_classes)
+                status, reason = classify_property(api, built_classes, release_classes, built_protocols,
+                                            release_protocols)
             # The decide pass: a registry that records this row absent/inert/ignored has decided it,
             # with a reason, so it is not a row anybody is going to build.
             decided = decide(row, registries, diagnostics) if status == "missing" else None
