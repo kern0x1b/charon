@@ -4,9 +4,6 @@
 
 #import "CharonMPSGraph.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-
 @implementation MPSGraphDevice {
     MPSGraphDeviceType _type;
     id<MTLDevice> _metalDevice;

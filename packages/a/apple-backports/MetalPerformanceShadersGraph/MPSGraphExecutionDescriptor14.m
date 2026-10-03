@@ -5,9 +5,6 @@
 
 #import "CharonMPSGraph.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-
 @implementation MPSGraphExecutionDescriptor {
     MPSGraphOptions _options;
     NSUInteger _maximumCommandsPerBuffer;
@@ -66,6 +63,19 @@
 - (void)setExecutionDescriptor:(MPSGraphExecutionDescriptor *)executionDescriptor
 {
     _executionDescriptor = executionDescriptor;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // The header's own class declaration says `NSObject<NSCopying>`, and this is the method that answers it.
+    // A copy is ANOTHER descriptor carrying the same two values and not this object: both of them are
+    // readwrite properties, so a caller that changes the copy's must not change this one's - which is the
+    // difference from MPSGraphTensor's own -copyWithZone:, where `self` is right because a tensor's shape and
+    // data type are never written after it is made.
+    MPSGraphExecutableExecutionDescriptor *copy = [[[self class] allocWithZone:zone] init];
+    copy.executionDescriptor = _executionDescriptor;
+    copy.waitForCompilationCompletion = _waitForCompilationCompletion;
+    return copy;
 }
 
 - (BOOL)waitForCompilationCompletion

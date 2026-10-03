@@ -5,9 +5,6 @@
 
 #import "CharonMPSGraph.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-
 // A value that is a denormal in the type it is stored as is a value the release's arithmetic never sees:
 // it reads one as a zero of the same sign, and it leaves no denormal behind. Measured on macOS 27.0
 // build 26A428 (M4 Pro, Metal 4) over the sixteen classes tests/backports/host/mpsgraph/graph-cases.m
