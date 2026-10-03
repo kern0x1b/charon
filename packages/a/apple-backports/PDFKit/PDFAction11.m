@@ -130,6 +130,19 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
     _type = [name copy];
 }
 
+// -copyWithZone: is the NSCopying conformance CharonPDFKit.h declares, and it is implemented because a
+// caller reaches it: [action copy] answers on the host and raises on a port that declares the protocol
+// and does not implement it.  Measured: the copy is a NEW object of the SAME class carrying every member,
+// and it is INDEPENDENT - a destination's zoom set on the copy leaves the original alone.  The type name
+// is the base's own member and each subclass adds its own below, so -[super copyWithZone:] is what
+// allocates an object of self's class with the type already copied.
+- (id)copyWithZone:(NSZone *)zone
+{
+    PDFAction *copy = [[[self class] alloc] init];
+    copy->_type = _type;
+    return copy;
+}
+
 // The factory.  It reads /S once, refuses an action with no /S, and then hands the dictionary to the
 // class the name picks - so the /N table, the /D reader and the /Flags rule all live in the class that
 // owns them rather than in one switch here.
@@ -164,6 +177,17 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
 
 @synthesize destination = _destination;
 
+// -init is NSObject's, and the host's answer for [[PDFActionGoTo alloc] init] is a PDFActionGoTo with a
+// NIL -type and a nil destination - measured, init.gotoNil.class in the harness.  So -init deliberately
+// sets NOTHING: a type name belongs to a dictionary this object was not built from, and the earlier
+// version that set "GoTo" here would answer a name the host does not.  It is implemented because the
+// superclass's -init is this class's designated initializer's superclass and the compiler will not let a
+// subclass leave that unimplemented (-Wobjc-designated-initializers).
+- (instancetype)init
+{
+    return [super init];
+}
+
 - (instancetype)initWithDestination:(PDFDestination *)destination
 {
     self = [super init];
@@ -172,6 +196,15 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
     _destination = destination;
     [self charon_setTypeName:@"GoTo"];
     return self;
+}
+
+// A copy's destination is a NEW object - measured, the copy's destination is not the original's - so the
+// destination itself is copied and not just pointed at.
+- (id)copyWithZone:(NSZone *)zone
+{
+    PDFActionGoTo *copy = (PDFActionGoTo *)[super copyWithZone:zone];
+    copy->_destination = [_destination copy];
+    return copy;
 }
 
 // The /D, through PDFDestination's own reader.  PDF 1.7 Table 8.44 spells this action's /D as "an
@@ -215,6 +248,13 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
 
 @synthesize name = _name;
 
+// -init leaves the name at kPDFActionNamedNone and the type nil - measured on [[PDFActionNamed alloc]
+// init] - for the reason -[PDFActionGoTo init] gives: nothing here came from a dictionary.
+- (instancetype)init
+{
+    return [super init];
+}
+
 - (instancetype)initWithName:(PDFActionNamedName)name
 {
     self = [super init];
@@ -231,6 +271,15 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
 // The table maps a name to the ENUM VALUE it answers, and not to a position: the enum's order and the
 // host's eight are both measured, and the answer for each is its own value - /NextPage answers 1,
 // /FirstPage 3, /LastPage 4, /GoBack 5, /GoForward 6, /GoToPage 7, /Find 8 and /Print 9.
+// The name is a value, so a copy carries it and changing the copy's name leaves the original alone -
+// measured.
+- (id)copyWithZone:(NSZone *)zone
+{
+    PDFActionNamed *copy = (PDFActionNamed *)[super copyWithZone:zone];
+    copy->_name = _name;
+    return copy;
+}
+
 - (instancetype)initWithCharonActionDictionary:(CGPDFDictionaryRef)action
 {
     NSString *name = charonActionString(action, "N");
@@ -249,6 +298,21 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
 }
 
 @synthesize URL = _url;
+
+// -init leaves the URL nil and the type nil - measured on [[PDFActionURL alloc] init].
+- (instancetype)init
+{
+    return [super init];
+}
+
+// NSURL is immutable, so the copy shares it - which is what -[url copy] on the host answers and what
+// assigning the property already does.
+- (id)copyWithZone:(NSZone *)zone
+{
+    PDFActionURL *copy = (PDFActionURL *)[super copyWithZone:zone];
+    copy->_url = _url;
+    return copy;
+}
 
 - (instancetype)initWithURL:(NSURL *)url
 {
@@ -287,6 +351,28 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
 @synthesize pageIndex = _pageIndex;
 @synthesize point = _point;
 @synthesize URL = _url;
+
+// -init leaves the index at 0, the point UNSPECIFIED and the URL nil, with the type nil - measured on
+// [[PDFActionRemoteGoTo alloc] init], and the unspecified point is this class's own default rather than
+// the origin.
+- (instancetype)init
+{
+    self = [super init];
+    if (self == nil)
+        return nil;
+    _point = CGPointMake(kPDFDestinationUnspecifiedValue, kPDFDestinationUnspecifiedValue);
+    return self;
+}
+
+// All three members are values, so a copy carries them.
+- (id)copyWithZone:(NSZone *)zone
+{
+    PDFActionRemoteGoTo *copy = (PDFActionRemoteGoTo *)[super copyWithZone:zone];
+    copy->_pageIndex = _pageIndex;
+    copy->_point = _point;
+    copy->_url = _url;
+    return copy;
+}
 
 - (instancetype)initWithPageIndex:(NSUInteger)pageIndex atPoint:(CGPoint)point fileURL:(NSURL *)url
 {
@@ -363,6 +449,17 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
     _fieldsIncludedAreCleared = YES;
     [self charon_setTypeName:@"ResetForm"];
     return self;
+}
+
+// A copy's -fields is the SAME ARRAY the original holds - measured, resetCopy.fields == reset.fields -
+// and not a copy of it.  So this member is shared rather than duplicated, which is also what the host
+// answers, and it is the one member in this family whose copy is shallow.
+- (id)copyWithZone:(NSZone *)zone
+{
+    PDFActionResetForm *copy = (PDFActionResetForm *)[super copyWithZone:zone];
+    copy->_fields = _fields;
+    copy->_fieldsIncludedAreCleared = _fieldsIncludedAreCleared;
+    return copy;
 }
 
 // The /Fields array of names or strings, and the one rule behind -fieldsIncludedAreCleared.

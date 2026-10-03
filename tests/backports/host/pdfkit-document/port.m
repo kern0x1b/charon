@@ -114,6 +114,10 @@ static void printBorderValueFacts(void)
     printBorderKeys("border.widthzero", widthOnly);
 }
 
+// The fixture file both of the once-only blocks below open, set by printInitializerFacts
+// and read by copyFactsPage - one file, one way in, rather than a second argument.
+static const char *gCopyFactsFixture = NULL;
+
 // ---- the action family and PDFDestination -------------------------------------------------------
 //
 // The same keys, the same order and the same prints as host.m's, on the port's own classes.  Two things
@@ -206,6 +210,7 @@ static void printInitializerFacts(const char *fixture)
     // A real document, so -initWithPage:atPoint: is asked about a page that exists.  An
     // empty one has no page and answers a different set of values, which is a corner
     // nothing in this harness needs and which probe12 measured separately.
+    gCopyFactsFixture = fixture;
     PDFDocument *document = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:@(fixture)]];
     PDFDestination *plain = [[PDFDestination alloc] init];
     printf("init.destination.page=%s\n", [plain page] ? "an-object" : "(nil)");
@@ -252,6 +257,111 @@ static void printInitializerFacts(const char *fixture)
     printf("init.reset.after.fields=%lu cleared=%d\n", (unsigned long)[reset fields].count,
            (int)[reset fieldsIncludedAreCleared]);
 }
+
+// -copy and the four subclass -inits, printed once outside the fixture loop because neither is about a
+// file: both are questions about the OBJECT.  Every key here is measured on the host - the copy's class,
+// every member, whether a mutable member of the copy is shared with the original, and whether the page a
+// destination names is the same object - and the red controls name four of them.
+// A real page for the copy block, out of the first fixture file.  The nil-page case has a key of its
+// own below; the copy of a destination is only worth comparing when there is a page to keep.
+static PDFPage *copyFactsPage(void)
+{
+    static PDFPage *page = nil;
+    if (page != nil)
+        return page;
+    NSString *path = @(gCopyFactsFixture);
+    PDFDocument *document = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:path]];
+    page = document.pageCount > 0 ? [document pageAtIndex:0] : nil;
+    return page;
+}
+
+static void printCopyFacts(void)
+{
+    // the nil-page rule, asked first because it is what the copy block below was originally
+    // written against and got wrong: the host answers NO OBJECT for a nil page
+    // the four subclasses' -init, built with nothing: a nil -type each, and the members below
+    PDFActionGoTo *goToInit = [[PDFActionGoTo alloc] init];
+    printf("initgoto.class=%s type=%s destination=%s\n", class_getName([goToInit class]),
+           goToInit.type.UTF8String ?: "(nil)",
+           goToInit.destination ? "an-object" : "(nil)");
+    PDFActionNamed *namedInit = [[PDFActionNamed alloc] init];
+    printf("initnamed.class=%s type=%s name=%ld\n", class_getName([namedInit class]),
+           [namedInit type] ? [[namedInit type] UTF8String] : "(nil)", (long)[namedInit name]);
+    PDFActionURL *urlInit = [[PDFActionURL alloc] init];
+    printf("initurl.class=%s type=%s URL=%s\n", class_getName([urlInit class]),
+           [urlInit type] ? [[urlInit type] UTF8String] : "(nil)",
+           [[urlInit URL] absoluteString] ? [[[urlInit URL] absoluteString] UTF8String] : "(nil)");
+    PDFActionRemoteGoTo *remoteInit = [[PDFActionRemoteGoTo alloc] init];
+    printf("initremote.class=%s type=%s pageIndex=%lu URL=%s\n", class_getName([remoteInit class]),
+           [remoteInit type] ? [[remoteInit type] UTF8String] : "(nil)", (unsigned long)[remoteInit pageIndex],
+           [[remoteInit URL] absoluteString] ? [[[remoteInit URL] absoluteString] UTF8String] : "(nil)");
+    printCGFloatOrUnspecified("initremote.point.x", remoteInit.point.x);
+    printCGFloatOrUnspecified("initremote.point.y", remoteInit.point.y);
+
+    PDFDestination *noPage = [[PDFDestination alloc] initWithPage:nil atPoint:CGPointMake(3, 4)];
+    printf("initdest.nilpage=%s\n", noPage ? "an-object" : "(nil)");
+
+    // a destination copied: a new object, the SAME page, and a zoom that is its own
+    PDFDestination *made = [[PDFDestination alloc] initWithPage:copyFactsPage()
+                                                      atPoint:CGPointMake(3, 4)];
+    [made setZoom:2.5];
+    PDFDestination *madeCopy = [made copy];
+    printf("copy.destination.class=%s\n", class_getName([madeCopy class]));
+    printf("copy.destination.same=%d\n", (int)(madeCopy == made));
+    printf("copy.destination.page.same=%d\n", (int)(madeCopy.page == made.page));
+    printCGFloatOrUnspecified("copy.destination.point.x", [madeCopy point].x);
+    printCGFloatOrUnspecified("copy.destination.point.y", [madeCopy point].y);
+    printCGFloatOrUnspecified("copy.destination.zoom", [madeCopy zoom]);
+    [madeCopy setZoom:9];
+    printCGFloatOrUnspecified("copy.destination.zoomAfterSet", [madeCopy zoom]);
+    printCGFloatOrUnspecified("copy.destination.zoomOriginal", [made zoom]);
+
+    // a destination with NO page copied - one a named destination and a plain -init both
+    // make - which is a different question from copying one that has a page
+    PDFDestination *bare = [[PDFDestination alloc] init];
+    PDFDestination *bareCopy = [bare copy];
+    printf("copy.nopage=%s\n", bareCopy ? "an-object" : "(nil)");
+
+    // an action copied: the class and the type come along, and each subclass's own member with them
+    PDFAction *base = [[PDFAction alloc] init];
+    PDFAction *baseCopy = [base copy];
+    printf("copy.action.class=%s type=%s same=%d\n", class_getName([baseCopy class]),
+           [baseCopy type] ? [[baseCopy type] UTF8String] : "(nil)", (int)(baseCopy == base));
+    PDFActionGoTo *goTo = [[PDFActionGoTo alloc] initWithDestination:made];
+    PDFActionGoTo *goToCopy = [goTo copy];
+    printf("copy.goto.class=%s type=%s destination=%s\n", class_getName([goToCopy class]),
+           [goToCopy type] ? [[goToCopy type] UTF8String] : "(nil)",
+           goToCopy.destination ? "an-object" : "(nil)");
+    printf("copy.goto.destination.same=%d\n", (int)([goToCopy destination] == [goTo destination]));
+    printf("copy.goto.destination.page.same=%d\n",
+           (int)([goToCopy destination] && [[goToCopy destination] page]
+                 && [[goToCopy destination] page] == [[goTo destination] page]));
+    PDFActionNamed *named = [[PDFActionNamed alloc] initWithName:kPDFActionNamedFind];
+    PDFActionNamed *namedCopy = [named copy];
+    printf("copy.named.name=%ld\n", (long)[namedCopy name]);
+    [namedCopy setName:kPDFActionNamedPrint];
+    printf("copy.named.nameAfterSet=%ld original=%ld\n", (long)[namedCopy name], (long)[named name]);
+    PDFActionURL *url = [[PDFActionURL alloc]
+        initWithURL:[NSURL URLWithString:@"https://example.com/x"]];
+    PDFActionURL *urlCopy = [url copy];
+    printf("copy.url.URL=%s\n", [[urlCopy URL] absoluteString] ? [[[urlCopy URL] absoluteString] UTF8String] : "(nil)");
+    PDFActionRemoteGoTo *remote = [[PDFActionRemoteGoTo alloc]
+        initWithPageIndex:2 atPoint:CGPointMake(5, 6)
+                  fileURL:[NSURL URLWithString:@"https://example.com/x"]];
+    PDFActionRemoteGoTo *remoteCopy = [remote copy];
+    printf("copy.remote.pageIndex=%lu\n", (unsigned long)[remoteCopy pageIndex]);
+    printCGFloatOrUnspecified("copy.remote.point.x", [remoteCopy point].x);
+    printCGFloatOrUnspecified("copy.remote.point.y", [remoteCopy point].y);
+    printf("copy.remote.URL=%s\n", [[remoteCopy URL] absoluteString] ? [[[remoteCopy URL] absoluteString] UTF8String] : "(nil)");
+    PDFActionResetForm *reset = [[PDFActionResetForm alloc] init];
+    [reset setFields:@[@"a", @"b"]];
+    [reset setFieldsIncludedAreCleared:NO];
+    PDFActionResetForm *resetCopy = [reset copy];
+    printf("copy.reset.fields.same=%d count=%lu cleared=%d\n",
+           (int)([resetCopy fields] == [reset fields]), (unsigned long)[resetCopy fields].count,
+           (int)[resetCopy fieldsIncludedAreCleared]);
+}
+
 int main(int argc, char **argv)
 {
     setvbuf(stdout, NULL, _IOLBF, 0);
@@ -450,6 +560,7 @@ int main(int argc, char **argv)
             printf("%s.pageAtIndex.one-past-the-end=%s\n", name, past ? "an-object" : "nil");
         }
         printInitializerFacts(argv[1]);
+        printCopyFacts();
         printBorderValueFacts();
     }
     return 0;

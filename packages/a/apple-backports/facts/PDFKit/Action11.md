@@ -207,6 +207,66 @@ The `NSCopying` conformances the headers declare (`PDFAction.h:29` and each subc
 implemented: nothing in this port copies an action, a destination or a border, and neither release asks for
 `-copyWithZone:`.
 
+## `-copy`, which the header's `NSCopying` makes reachable
+
+`PDFAction.h:29` and `PDFDestination.h:24` both declare `NSCopying`, so a caller can write `[action copy]`.
+"Not implemented, nothing in this port copies an action" is not a defence: the caller is not this port.
+Measured on the host, in the harness's own `copy.*` keys:
+
+| | answered |
+| --- | --- |
+| the copy's class | the original's own class, every one of the seven |
+| the copy IS the original | **no** — `copy.action.same` 0 for a bare `PDFAction` too |
+| `PDFDestination`'s **page** | **the same object** — a destination names a page and does not own it, and the page is weak here as `PDFDestination.h:19` declares |
+| `PDFDestination`'s zoom | copied, and **independent**: 9 on the copy leaves 2.5 on the original |
+| `PDFActionGoTo`'s destination | a **new** object — the copy's destination is not the original's, and its page is again the same page |
+| `PDFActionNamed`'s name | copied and independent — 9 on the copy leaves 8 on the original |
+| `PDFActionURL`'s URL, `PDFActionRemoteGoTo`'s three members | copied |
+| `PDFActionResetForm`'s `-fields` | **the same array**, `copy.reset.fields.same` 1 — the one shallow member in the family |
+| a destination with **no page**, copied | an object, `copy.nopage` — so `-copyWithZone:` cannot be built through `-initWithPage:atPoint:`, which answers nil for a nil page |
+
+## `-initWithPage:atPoint:` answers no object for a nil page
+
+Found by the harness rather than asked for. The copy block was written against
+`initWithPage:nil atPoint:(3, 4)` and the host answered **nil** for it, so every read off that object
+answered nil or zero and `[made copy]` answered nil as well — nine differences that all said the same
+thing. The SDK does not say why; the measurement is that a caller who passes no page gets nothing back,
+and the port does the same.
+
+So `PDFDestination`'s plain `-init` cannot reach its state through `-initWithPage:atPoint:`, and sets the
+three members itself: no page, and an unspecified point and zoom.
+
+## The four subclasses' `-init`
+
+`[[X alloc] init]` works on the host for all four, and answers a **nil `-type`** for each — measured:
+
+| | `-type` | members |
+| --- | --- | --- |
+| `[[PDFActionGoTo alloc] init]` | nil | destination nil |
+| `[[PDFActionNamed alloc] init]` | nil | name `kPDFActionNamedNone` |
+| `[[PDFActionURL alloc] init]` | nil | URL nil |
+| `[[PDFActionRemoteGoTo alloc] init]` | nil | index 0, point **unspecified**, URL nil |
+
+(`[[PDFActionResetForm alloc] init]` is the exception and not an `-init` override: `-init` **is** that
+class's designated initializer, so it answers `-type` "ResetForm" — measured.)
+
+A nil `-type` is the point: a type name belongs to a dictionary the object was not built from, and an
+earlier version that set `"GoTo"` in `-init` would answer a name the host does not.
+
+`-init` is marked `NS_DESIGNATED_INITIALIZER` in the port's header and **not** in the SDK's. Two reasons,
+both about this port rather than about Apple:
+
+* the host answers `[[PDFActionGoTo alloc] init]` with an object, so a caller of this port must be able to
+  write it without a diagnostic;
+* a class that declares a designated initializer of its own otherwise treats `-init` as a *convenience*
+  initializer, and clang rejects a convenience initializer that calls `[super init]` — two warnings per
+  subclass, replacing the one it fixed.
+
+The alternative was `#pragma clang diagnostic ignored "-Wobjc-designated-initializers"`, which this tree
+does use for exactly this situation (`PKPaymentRequestStatus11.m`, `MTLRasterizationRate13.m`,
+`PHObject8.m`). It was not used here because the coordinator asked for the warnings to be *cleared*, and
+because an implemented `-init` plus a marked declaration is a real answer where a pragma is a silence.
+
 ## What is NOT here, and why
 
 * **`-[PDFDestination compare:]`** (`PDFDestination.h:26`). No ledger row names it and no fixture in this
@@ -222,7 +282,7 @@ implemented: nothing in this port copies an action, a destination or a border, a
     $ sh tests/backports/host/pdfkit-document/run.sh
       images differ by construction: host=/System/…/PDFKit.framework/…/PDFKit
                                       port=…/runs/pdfkit-document/port-side
-      COMPARED 6375 MISMATCHES 0  (not compared: 105, expected to differ: 315, of which 72 compared from the Catalyst side)
+      COMPARED 6403 MISMATCHES 0  (not compared: 105, expected to differ: 315, of which 72 compared from the Catalyst side)
       RED CONTROL ok: the comparison goes red on a mutated port, and names the key
       RED CONTROL ok for act-goto-xyz.pdf.page0.annotation0.action.class
       RED CONTROL ok for act-goto-badpage-xyz.pdf.page0.annotation0.actionGoTo.destination.zoom
@@ -232,7 +292,11 @@ implemented: nothing in this port copies an action, a destination or a border, a
       RED CONTROL ok for act-reset-flags.pdf.page0.annotation2.action.cleared
       RED CONTROL ok for ann-dest-and-a.pdf.page0.annotation0.destination.point.x
       RED CONTROL ok for init.remote.class
-      … 52 red controls in all, 31 of them naming an action, destination or initializer key
+      … 68 red controls in all, 51 of them naming an action, destination, initializer or copy key —
+      among them initdest.nilpage, initgoto.class, initnamed.class, copy.destination.same,
+      copy.destination.page.same, copy.destination.zoomAfterSet, copy.destination.zoomOriginal,
+      copy.nopage, copy.goto.destination.same, copy.goto.destination.page.same,
+      copy.named.nameAfterSet, copy.remote.pageIndex, copy.reset.fields.same and copy.action.class
 
 105 fixtures, 88 of them this series' — 3 box, 3 hand-written text, 9 annotation and 2 conforming-writer
 text from before, plus 88 from `tools/make-object-fixtures.py`, each with every xref offset measured from
