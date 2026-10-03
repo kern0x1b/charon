@@ -6,7 +6,12 @@ harness=${INTERACTIONS_HARNESS:-$here/../../device}
 build=${INTERACTIONS_BUILD:-${TMPDIR:-/tmp}/charon-interactions-host}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
-files="UIView+Interactions.m NSObject+AccessibilityAttributedStrings.m UIKitConstants11.m"
+# UIKitConstants110.m, and the name it is called here was stale: the constants were split by the release the
+# ladder places them at, and the 11.0 file is UIKitConstants110.m - UIActivityTypeMarkupAsPDF and
+# UIImagePickerControllerImageURL are in it (measured with grep over the port). The harness named
+# UIKitConstants11.m, which no longer exists, and clang said "no such file or directory" and then
+# "no input files", so the test guarded nothing.
+files="UIView+Interactions.m NSObject+AccessibilityAttributedStrings.m UIKitConstants110.m"
 constants="UIAccessibilitySpeechAttributeQueueAnnouncement UIAccessibilitySpeechAttributeIPANotation UIAccessibilityTextAttributeHeadingLevel UIAccessibilityTextAttributeCustom UIImagePickerControllerImageURL UIActivityTypeMarkupAsPDF UIAccessibilityVoiceOverStatusDidChangeNotification"
 frameworks="-framework UIKit -framework Foundation -framework CoreGraphics"
 rm -rf "$build"
