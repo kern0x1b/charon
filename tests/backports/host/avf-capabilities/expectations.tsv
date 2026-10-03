@@ -1,0 +1,16 @@
+# One row per api the port carries here: what this host's own camera answers, what the port answers, and why
+# the two columns differ where they do. The host column is measured by this run; the port column is the
+# answer for the devices of this port's bands (an iPhone 4S, an iPad 2), which is the reason in the note.
+#
+# api	host	port	why they differ, or what both are
+AVCaptureDevice.availableReactionTypes	8 type(s): ReactionBalloons,ReactionConfetti,ReactionFireworks,ReactionHeart,ReactionLasers,ReactionRain,ReactionThumbsDown,ReactionThumbsUp	0 type(s): 	the host's camera has the hardware; the port's devices have none, so the list of types that can be performed is empty
+AVCaptureDevice.canPerformReactionEffects	1	0	the same: YES where "resources for reactions are available on the device instance" (AVCaptureDevice.h:2471)
+AVCaptureDevice.reactionEffectsInProgress	0 running	0 running	neither camera nor device has a reaction running; both answer 0
+AVCaptureDeviceFormat.reactionEffectsSupported	1	0	the host's camera reports YES for all seven of its formats (measured); the port's devices cannot
+AVCaptureDeviceFormat.videoFrameRateRangeForReactionEffectsInProgress	a range	nil	a format runs reactions only where it reports reactionEffectsSupported, and the port's do not; every format of the host's camera reports YES and a 15-30 range (measured)
+AVCaptureDeviceFormat.supportedVideoZoomRangesForDepthDataDelivery	0 range(s)	0 range(s)	both empty: this host's camera has no depth sensor either, so this row is not the port's judgement alone
+AVCaptureDeviceFormat.zoomFactorsOutsideOfVideoZoomRangesForDepthDeliverySupported	0	0	both NO, measured on the host's own camera
+AVCaptureDevice.reactionEffectsEnabled	1	0	the header's iOS rule is the application's own UIBackgroundModes or its NSCameraReactionEffectsEnabled opt-in (AVCaptureDevice.h:2448); the host's rule is macOS's, "enabled by default for all applications". The four-Info.plists phase checks both branches of the port's rule
+AVCaptureDevice.reactionEffectGesturesEnabled	0	1	the host reflects this Mac's Control Center Gestures setting (AVCaptureDevice.h:2458); the port answers the documented default, "gesture detection is enabled" (:2461), which an application may change from 17.4 on with NSCameraReactionEffectGesturesEnabledDefault. The four-Info.plists phase checks both branches
+AVCaptureDevice.systemPreferredCamera	nil	nil	both nil, measured: there is nothing to prefer between on either
+AVCaptureDevice.userPreferredCamera	nil	nil	both nil until set; the port keeps and reads back what it is given (the port's own object is asked again after the setter, below the table)
