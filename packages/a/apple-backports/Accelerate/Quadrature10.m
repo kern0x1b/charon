@@ -899,7 +899,18 @@ double alist[2 * 1000], blist[2 * 1000], rlist[2 * 1000], elist[2 * 1000];
     rlist[0] = *result;
     elist[0] = *abserr;
     iord[0] = 1;
-    if (*abserr <= 100.0 * CHARON_EPMACH * defabs && *abserr > errbnd) {
+    // dqagse.f raises ier = 2 here for both integrators - `if(abserr.le.1.0d+02*epmach*defabs.and
+    // .abserr.gt.errbnd) ier = 2` - and so does QUADPACK's dqags, which is dqagse and nothing else. The host
+    // raises it for QAG and does not for QAGS, on every integrand measured: over 0..1 at a 1e-300 tolerance,
+    // where the first pass's estimate is inside 100 * DBL_EPSILON * defabs and outside the tolerance, QAG
+    // answers QUADRATURE_INTEGRATE_BAD_BEHAVIOUR_ERROR after one pass of 21 points and QAGS subdivides to
+    // max_intervals and answers QUADRATURE_INTEGRATE_MAX_EVAL_ERROR - x^2, sin, 1/(1+x^2) and exp(-x) all
+    // 199 passes over 4179 points at max_intervals 100, and 1/(1+100 x^2) nineteen passes for the QAG half,
+    // where its estimate 1.6332757290306007e-15 is inside 3.2659e-15. The threshold itself is the Fortran's
+    // own: at 4e-15 both integrators stop after one pass with QUADRATURE_SUCCESS and at 1e-15 they part
+    // company. This follows the host, as the two tests below do, and dqagse.f's line is named here so a
+    // reviewer can read the original.
+    if (!extrapolate && *abserr <= 100.0 * CHARON_EPMACH * defabs && *abserr > errbnd) {
         ier = 2;
     }
     if (limit == 1) {
@@ -968,7 +979,15 @@ double alist[2 * 1000], blist[2 * 1000], rlist[2 * 1000], elist[2 * 1000];
         rlist[maxerr - 1] = area1;
         rlist[last - 1] = area2;
         errbnd = fmax(epsabs, epsrel * fabs(area));
-        if (iroff1 + iroff2 >= 10 || iroff3 >= 20) {
+        // dqagse.f's `if(iroff1+iroff2.ge.10.or.iroff3.ge.20) ier = 2`, with the same QAGS exclusion the first-pass
+        // test above carries and the same measurement: over 1/(1+100 x^2) from 0 to 1 at a 1e-300 tolerance
+        // the host's QAG stops at nrmax-th pass 10 with QUADRATURE_INTEGRATE_BAD_BEHAVIOUR_ERROR over 399
+        // points in 19 batches and answers the same at every limit from 10 to 100, while its QAGS answers
+        // QUADRATURE_INTEGRATE_MAX_EVAL_ERROR at every limit and runs to it - nine passes at limit 5,
+        // nineteen at 10, thirty-nine at 20, a hundred and ninety-nine at 100. So the host's QAGS raises
+        // neither of dqagse.f's two roundoff flags, and QUADPACK's dqags, which is dqagse and nothing else,
+        // raises both.
+        if (!extrapolate && (iroff1 + iroff2 >= 10 || iroff3 >= 20)) {
             ier = 2;
         }
         if (iroff2 >= 5) {
