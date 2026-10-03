@@ -1,6 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
-#import "CharonProgramSDK.h"
+#import "../CharonProgramSDK.h"
 
 /* iOS 13 makes UIModalPresentationAutomatic the style of a new view controller when the program was
    linked with SDK 13.0 or later, and answers the style it resolves to (UIKitCore 16.0: the ivar is

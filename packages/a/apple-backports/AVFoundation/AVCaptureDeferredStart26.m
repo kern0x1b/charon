@@ -60,7 +60,7 @@
 //   NO and then answers YES to the same value (measured, the getter reads 1 afterwards) - while the header says
 //   the session throws. The port refuses.
 #import "CharonAVCaptureDeferredStart26.h"
-#import "CharonProgramSDK.h"
+#import "../CharonProgramSDK.h"
 
 // Where the port keeps the two values it can accept: the session's automaticallyRunsDeferredStart (which can only
 // be YES here, and the default is YES, so this exists for symmetry with the rule rather than for a value) - no:
