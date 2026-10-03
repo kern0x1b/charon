@@ -4,7 +4,7 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 ACCELERATE=${ACCELERATE:-$here/../../../../packages/a/apple-backports/Accelerate}
-build=${SPARSEBLAS_BUILD:-${TMPDIR:-/tmp}/charon-sparseblas-host}
+build=${SPARSEBLAS_BUILD:-$here/../../../../.agent-work/runs/sparseblas-host}
 rm -rf "$build"
 mkdir -p "$build"
 
@@ -26,10 +26,11 @@ PY
     renames="$renames -D$name=charon_host_$name"
 done
 
-# Both object files, because the release ladder puts the two sparse-times-sparse products in one release
-# and the other sixty-seven in another, and the differential needs both.
+# All three object files. The release ladder puts the two sparse-times-sparse products of the real
+# family in one release and the other sixty-seven in another, and puts all fifty-eight complex names in
+# a third (18.5), so the differential needs all three.
 objects=""
-for source in SparseBLAS9.m SparseProduct10.m; do
+for source in SparseBLAS9.m SparseProduct10.m SparseComplex18.m; do
     xcrun clang -fobjc-arc -w $renames -I"$ACCELERATE" -c "$ACCELERATE/$source" -o "$build/${source%.m}.o"
     objects="$objects $build/${source%.m}.o"
 done
@@ -38,5 +39,12 @@ xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -Wno-unused-function \
     -framework Foundation -framework Accelerate -o "$build/differential"
 "$build/differential" > "$build/log" 2>&1 && result=0 || result=$?
 grep -v '^ok ' "$build/log" || true
+# The complex half, in its own binary so a crash in one cannot hide the other's verdict.
+xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -Wno-unused-function -I"$ACCELERATE" \
+    "$here/differential-complex.m" $objects \
+    -framework Foundation -framework Accelerate -o "$build/differential-complex"
+"$build/differential-complex" > "$build/log-complex" 2>&1 && complexResult=0 || complexResult=$?
+grep -v '^ok ' "$build/log-complex" || true
 echo "log=$build/log"
-exit $result
+echo "log-complex=$build/log-complex"
+[ $result -eq 0 ] && [ $complexResult -eq 0 ]
