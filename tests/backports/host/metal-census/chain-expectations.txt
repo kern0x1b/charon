@@ -36,7 +36,22 @@ endEncoding on each encoder that exists, then endCommandBuffer
    endCommandBuffer answered
    status at the end                  -> not a member of AGXG16XFamilyCommandBuffer_mtlnext
 
-and the queue's commit, which is NOT ASKED and why
-   -[MTL4CommandQueue commit:count:] with an ENDED buffer: Segmentation fault in Apple's
-       own framework, measured (exit 139) - so the row is recorded as not answerable
-       rather than measured, and the port refuses it instead of calling through
+and the queue's commit, in a child process, with the C ARRAY the header declares
+   commit:count: with an ARRAY of one ENDED buffer, the header's own path -> ABORTED, signal 11 - Apple's own framework asserted, which is an answer
+      and the assertion it raised, captured when the same commit ran in the parent,
+      names the cause:
+        Assertion failed: (allocator && storage), function
+        -[IOGPUMetal4CommandQueue commitFillArgs:count:args:argsSize:commitFeedback:],
+        file IOGPUMetal4CommandQueue.mm, line 360.
+      So the buffer has no STORAGE at commit time - which is what this port's Metal 3
+      buffer has no equivalent of, and why the row is a recorded difference rather than
+      a refusal.
+   commit:count: with an ARRAY of one buffer NOT begun or ended -> ABORTED, signal 11 - Apple's own framework asserted, which is an answer
+      and the assertion it raised, captured when the same commit ran in the parent,
+      names the cause:
+        Assertion failed: (allocator && storage), function
+        -[IOGPUMetal4CommandQueue commitFillArgs:count:args:argsSize:commitFeedback:],
+        file IOGPUMetal4CommandQueue.mm, line 360.
+      So the buffer has no STORAGE at commit time - which is what this port's Metal 3
+      buffer has no equivalent of, and why the row is a recorded difference rather than
+      a refusal.
