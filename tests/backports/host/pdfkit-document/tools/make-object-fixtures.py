@@ -26,10 +26,14 @@ FONT = b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"
 TEXT = b"BT /F1 12 Tf 72 720 Td (outlined) Tj ET\n"
 
 
-def annot(kind, extra):
+def annot(kind, extra, name=None):
+    """One annotation dictionary as BYTES.  `name` writes the /NM of PDF 1.7 Table 8.16, the unique name,
+    which is what lets a reading be keyed by the annotation it belongs to rather than by a position."""
     body = b"<< /Type /Annot /Subtype /" + kind
     for key, value in extra:
         body += b" /" + key + b" " + value
+    if name is not None:
+        body += b" /NM (" + name.encode("ascii") + b")"
     return body + b" >>"
 
 
@@ -288,8 +292,8 @@ SQUARE_T = annot(b"Square", [(b"Rect", b"[40 40 140 140]"), (b"F", b"4"), (b"T",
 # carries one annotation PER BIT with only that bit set, so each member is measured against a file that
 # sets its own bit and nothing else.  A fixture with all the bits at once would answer every member YES
 # and prove nothing.
-def widget(extra, field=b"/Tx", rect=b"[40 40 240 70]"):
-    return annot(b"Widget", [(b"Rect", rect), (b"F", b"4"), (b"FT", field)] + extra)
+def widget(extra, field=b"/Tx", rect=b"[40 40 240 70]", name=None):
+    return annot(b"Widget", [(b"Rect", rect), (b"F", b"4"), (b"FT", field)] + extra, name=name)
 
 
 # bit 1 ReadOnly, 2 Required, 3 NoExport, 13 Multiline, 14 Password, 15 NoToggleToOff, 16 Radio in
@@ -473,41 +477,115 @@ BUTTON_AS_OFF_V_ON = [
 # the /DA's FILL colour operand - g, rg and k - because text is painted with the fill colour and RG, G and
 # K set the stroke (Table 8.68), which is why the first version's uppercase shapes answering black was the
 # format and not a gap.
+#
+# EVERY ANNOTATION HERE CARRIES ITS OWN /NM, and that is the whole point of the list's shape.  The first
+# version of this fixture was a bare list read by INDEX, and the host keeps 26 of its 27 - it drops the
+# /Ch widget, whose /Opt Table 8.39 makes required and which therefore fails the choice-widget skip
+# -[PDFPage annotations] already had.  So every reading after the seventh was a reading of the WRONG
+# ANNOTATION: the "a /Ch field answers a green the array does not contain" line was the NEXT annotation's
+# /BG [0 1 0], and every /DA shape after it was measured one annotation out of step.  /NM is the format's
+# own unique-name key (PDF 1.7 Table 8.16), it travels with the annotation, and a reading keyed by it
+# cannot shift.  /Rect cannot do the job either: the widgets here all share one rectangle - this list
+# wrote [40 40 240 70] on every /Tx - which is why the name is the key and not the rectangle.
+def named(name, body):
+    """The annotation `annot` or `widget` already built, carrying the /NM every reading is keyed by.
+
+    The name is the fixture's own and not one the format reserves: what matters is that it is a PDF
+    string both sides can read back out of the dictionary, so a key built from it belongs to an
+    annotation.  The assert is the helper's contract - the body is ONE dictionary and this writes into
+    it, so anything else has to fail here rather than write a file the host cannot parse."""
+    assert body.endswith(b" >>"), body[:60]
+    return body[:-3] + b" /NM (" + name.encode("ascii") + b") >>"
+
+
 COLOUR_SHAPES = [
     # -backgroundColor, off /MK /BG, one annotation per component count of Table 8.40
-    widget([(b"MK", b"<< /BG [1 0 0] >>")], field=b"/Tx"),
-    widget([(b"MK", b"<< /BG [0.5] >>")], field=b"/Tx"),
-    widget([(b"MK", b"<< /BG [0 0 0 0] >>")], field=b"/Tx"),
-    widget([(b"MK", b"<< /BG [0.1 0.2 0.3 0.4] >>")], field=b"/Tx"),
-    widget([(b"MK", b"<< /BG (a string) >>")], field=b"/Tx"),
-    # and off a /Btn and a /Ch, since the header names those field types too
-    widget([(b"MK", b"<< /BG [0 0 1] >>")], field=b"/Btn"),
-    widget([(b"MK", b"<< /BG [0 0 1] >>")], field=b"/Ch"),
+    named("bg-rgb",       widget([(b"MK", b"<< /BG [1 0 0] >>")], field=b"/Tx")),
+    named("bg-gray",      widget([(b"MK", b"<< /BG [0.5] >>")], field=b"/Tx")),
+    named("bg-cmyk-none", widget([(b"MK", b"<< /BG [0 0 0 0] >>")], field=b"/Tx")),
+    named("bg-cmyk",      widget([(b"MK", b"<< /BG [0.1 0.2 0.3 0.4] >>")], field=b"/Tx")),
+    named("bg-notarray",  widget([(b"MK", b"<< /BG (a string) >>")], field=b"/Tx")),
+    # and off a /Btn and a /Ch, since the header names those field types too.  THE /Ch IS THE ONE THE HOST
+    # DOES NOT SURFACE, and it is here on purpose: its /NM is the one name this fixture writes that no
+    # annotation answers, which is how the drop is visible rather than inferred.
+    named("bg-btn",       widget([(b"MK", b"<< /BG [0 0 1] >>")], field=b"/Btn")),
+    named("bg-ch-noopt",  widget([(b"MK", b"<< /BG [0 0 1] >>")], field=b"/Ch")),
     # and with /BC beside it, to show the two keys are not confused with one another
-    widget([(b"MK", b"<< /BC [1 0 0] /BG [0 1 0] >>")], field=b"/Tx"),
+    named("bg-bc-beside", widget([(b"MK", b"<< /BC [1 0 0] /BG [0 1 0] >>")], field=b"/Tx")),
     # -interiorColor, off a geometry annotation's own /IC
-    annot(b"Square", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4"), (b"IC", b"[0 1 0]")]),
-    annot(b"Square", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4"), (b"IC", b"[0.25]")]),
-    annot(b"Square", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4")]),
-    annot(b"Circle", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4"), (b"IC", b"[0.1 0.2 0.3 0.4]")]),
-    annot(b"Link", [(b"Rect", b"[20 700 60 720]"), (b"F", b"4"), (b"IC", b"[1 0 0]")]),
-    annot(b"Widget", [(b"Rect", b"[40 40 240 70]"), (b"F", b"4"), (b"FT", b"/Tx"), (b"IC", b"[1 0 0]")]),
-    # -fontColor off the FILL operands, with one CMYK value whose conversion is NOT black, and the
+    named("ic-square-rgb",   annot(b"Square", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4"),
+                                                (b"IC", b"[0 1 0]")])),
+    named("ic-square-gray",  annot(b"Square", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4"),
+                                                (b"IC", b"[0.25]")])),
+    named("ic-square-none",  annot(b"Square", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4")])),
+    named("ic-circle-cmyk",  annot(b"Circle", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4"),
+                                                (b"IC", b"[0.1 0.2 0.3 0.4]")])),
+    named("ic-link",         annot(b"Link", [(b"Rect", b"[20 700 60 720]"), (b"F", b"4"),
+                                             (b"IC", b"[1 0 0]")])),
+    named("ic-widget",       annot(b"Widget", [(b"Rect", b"[40 40 240 70]"), (b"F", b"4"),
+                                                (b"FT", b"/Tx"), (b"IC", b"[1 0 0]")])),
+    # -fontColor off the FILL operands, with two CMYK values whose conversion is NOT black, and the
     # stroking operands beside them to show the pair is not confused with one another
-    widget([(b"DA", b"(/Helv 12 Tf 0 g)")]),
-    widget([(b"DA", b"(/Helv 12 Tf 1 g)")]),
-    widget([(b"DA", b"(/Helv 12 Tf 1 0 0 rg)")]),
-    widget([(b"DA", b"(/Helv 12 Tf 0 1 1 0 k)")]),      # CMYK -> red, not black
-    widget([(b"DA", b"(/Helv 12 Tf 1 0 0 0 k)")]),      # CMYK -> cyan
-    widget([(b"DA", b"(/Helv 12 Tf 0 1 0 RG)")]),      # stroking
-    widget([(b"DA", b"(/Helv 12 Tf 0 1 0 K)")]),       # stroking CMYK
-    widget([(b"DA", b"(/Helv 12 Tf 0 1 0 G)")]),       # stroking gray
-    widget([(b"DA", b"(/Helv 12 Tf)")]),
-    # and -font's four shapes: a real font, no name, no size, and a font the system does not have
-    widget([(b"DA", b"(/Courier 7 Tf 0 g)")]),
-    widget([(b"DA", b"(12 Tf 0 g)")]),
-    widget([(b"DA", b"(/Helv Tf 0 g)")]),
-    widget([(b"DA", b"(/Nonexistent 9 Tf 0 g)")]),
+    named("da-fill-gray-0",    widget([(b"DA", b"(/Helv 12 Tf 0 g)")])),
+    named("da-fill-gray-1",    widget([(b"DA", b"(/Helv 12 Tf 1 g)")])),
+    named("da-fill-rgb",       widget([(b"DA", b"(/Helv 12 Tf 1 0 0 rg)")])),
+    named("da-fill-cmyk-red",  widget([(b"DA", b"(/Helv 12 Tf 0 1 1 0 k)")])),
+    named("da-fill-cmyk-cyan", widget([(b"DA", b"(/Helv 12 Tf 1 0 0 0 k)")])),
+    named("da-stroke-rg",      widget([(b"DA", b"(/Helv 12 Tf 0 1 0 RG)")])),
+    named("da-stroke-k",       widget([(b"DA", b"(/Helv 12 Tf 0 1 0 K)")])),
+    named("da-stroke-g",       widget([(b"DA", b"(/Helv 12 Tf 0 1 0 G)")])),
+    named("da-nooperand",      widget([(b"DA", b"(/Helv 12 Tf)")])),
+    # and the two questions the /DA reader cannot answer from one operator each: whether the OPERAND'S
+    # POSITION in the string matters, and whether a colour operator with the WRONG NUMBER OF OPERANDS is
+    # read or refused.  A later fill must beat an earlier one, an earlier must beat a later one, and the
+    # two-operand gray is not a colour the format defines.
+    named("da-fill-gray-then-rgb", widget([(b"DA", b"(/Helv 12 Tf 0.5 g 1 0 0 rg)")])),
+    named("da-fill-rgb-then-gray", widget([(b"DA", b"(/Helv 12 Tf 1 0 0 rg 0.5 g)")])),
+    named("da-fill-gray-twice",    widget([(b"DA", b"(/Helv 12 Tf 1 g 0.25 g)")])),
+    named("da-fill-badcount",      widget([(b"DA", b"(/Helv 12 Tf 0.5 0.25 g)")])),
+    # and -font's shapes: a full PostScript name, no name, no size, and a font the system does not have
+    named("font-courier-7",   widget([(b"DA", b"(/Courier 7 Tf 0 g)")])),
+    named("font-size-only",   widget([(b"DA", b"(12 Tf 0 g)")])),
+    named("font-name-only",   widget([(b"DA", b"(/Helv Tf 0 g)")])),
+    named("font-unknown",     widget([(b"DA", b"(/Nonexistent 9 Tf 0 g)")])),
+    # and the STANDARD FOURTEEN's own abbreviations, one per FACE, because -font has to MAP the name and
+    # a rule written from Courier and Helvetica alone would be two data points and a guess.  PDF 1.7
+    # 9.6.2.2 names these fourteen, and these fourteen annotations carry one abbreviation each - the
+    # complete list, not a sample of it, because the first five of them already refused to be a rule:
+    # /HeBo and /Cour come back as their own faces while /TiRo, /Symb and /ZaDb all answer Helvetica.
+    # Which of the fourteen the host knows is then a measurement over the whole set rather than an
+    # assumption from the format's list, and the sizes differ so a fallback that forgot the size shows.
+    named("font-abbrev-helv",  widget([(b"DA", b"(/Helv 21 Tf 0 g)")])),
+    named("font-abbrev-hebo",  widget([(b"DA", b"(/HeBo 11 Tf 0 g)")])),
+    named("font-abbrev-heob",  widget([(b"DA", b"(/HeOb 12 Tf 0 g)")])),
+    named("font-abbrev-hebo-bi", widget([(b"DA", b"(/HeBO 13 Tf 0 g)")])),
+    named("font-abbrev-cour",  widget([(b"DA", b"(/Cour 14 Tf 0 g)")])),
+    named("font-abbrev-cobo",  widget([(b"DA", b"(/CoBo 15 Tf 0 g)")])),
+    named("font-abbrev-coob",  widget([(b"DA", b"(/CoOb 16 Tf 0 g)")])),
+    named("font-abbrev-cbo-bi", widget([(b"DA", b"(/CBO 17 Tf 0 g)")])),
+    named("font-abbrev-tiro",  widget([(b"DA", b"(/TiRo 18 Tf 0 g)")])),
+    named("font-abbrev-tibo",  widget([(b"DA", b"(/TiBo 19 Tf 0 g)")])),
+    named("font-abbrev-tiit",  widget([(b"DA", b"(/TiIt 20 Tf 0 g)")])),
+    named("font-abbrev-tibi",  widget([(b"DA", b"(/TiBI 22 Tf 0 g)")])),
+    named("font-abbrev-symb",  widget([(b"DA", b"(/Symb 23 Tf 0 g)")])),
+    named("font-abbrev-zadb",  widget([(b"DA", b"(/ZaDb 24 Tf 0 g)")])),
+    # and a FACE OF THE FOURTEEN spelled the way PostScript spells it, because "the name as given" and
+    # "the abbreviation table" are two rules this has to tell apart and only one of them can answer for
+    # a face the table does not carry.
+    named("font-full-oblique", widget([(b"DA", b"(/Helvetica-Oblique 25 Tf 0 g)")])),
+    named("font-full-roman",   widget([(b"DA", b"(/Times-Roman 26 Tf 0 g)")])),
+    # and the SHAPE of the lookup, because "which fourteen does PDFKit know" is only half the question:
+    # a rule written as a table of the three it answers needs to say what it does with everything else,
+    # and the candidates are a prefix match, a case-insensitive match and an exact one.  These five
+    # separate them - a PREFIX match would answer Courier, Times-Roman and Helvetica for /Co, /Ti and /H,
+    # a CASE-INSENSITIVE table would answer Helvetica for /HELV, and an EXACT table answers Helvetica for
+    # all five.  -[NSFont fontWithName:] is nil for every abbreviation (measured), so the platform's own
+    # lookup is not what does this.
+    named("font-prefix-h",     widget([(b"DA", b"(/H 27 Tf 0 g)")])),
+    named("font-prefix-co",    widget([(b"DA", b"(/Co 28 Tf 0 g)")])),
+    named("font-prefix-ti",    widget([(b"DA", b"(/Ti 29 Tf 0 g)")])),
+    named("font-case-upper",   widget([(b"DA", b"(/HELV 30 Tf 0 g)")])),
+    named("font-case-mixed",   widget([(b"DA", b"(/Hebo 31 Tf 0 g)")])),
 ]
 
 # /T, spelled four ways, because -[PDFAnnotation fieldName] answers a SYNTHESISED name on the first
@@ -1037,9 +1115,6 @@ def main():
         # numbered, because the three /Ch fixtures share a field type and the first version of this named
         # them all widget-ftch.pdf, so each overwrote the last and only the first was ever measured
         name = "widget-ft%s%d.pdf" % (field_type.decode().strip("/").lower(), position)
-        count, _ = build(os.path.join(directory, name), annotations)
-        print("  wrote %-20s %d objects, %d annotations" % (name, count, len(annotations)))
-    for _name, _annotations in []:
         count, _ = build(os.path.join(directory, name), annotations)
         print("  wrote %-20s %d objects, %d annotations" % (name, count, len(annotations)))
     for name, spec, sign, signs, extra in (("outline-collapsed.pdf", OUTLINE_OPEN, -1, None, 0),

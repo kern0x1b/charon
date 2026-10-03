@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class PDFSelection;
 @class PDFBorder;
 @class UIColor;
+@class UIFont;
 @class PDFAction;
 @class PDFDestination;
 @class PDFOutline;
@@ -319,10 +320,11 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 // the harness.
 //
 // NOT declared here, each for the reason its row repeats: widgetStringValue and widgetDefaultStringValue,
-// whose /V and /DV the host does not read on these fixtures; buttonWidgetState and
-// buttonWidgetStateString, which need their own /AS matrix; maximumLength, alignment, choices, values,
-// open, caption, URL, the three colours, font, the two line styles, the two points, paths,
-// quadrilateralPoints, iconType, markupType and stampName.  fieldName is implemented for a widget the
+// whose /V and /DV the host does not read on these fixtures; maximumLength, alignment, choices, values,
+// open, caption, URL, the two line styles, the two points, paths, quadrilateralPoints, iconType,
+// markupType and stampName.  buttonWidgetState, buttonWidgetStateString, backgroundColor,
+// interiorColor and font ARE declared: the /AS matrix is measured, and the colour and font keys are
+// measured below.  fieldName is implemented for a widget the
 // document NAMES and its row says what it cannot answer for one it does not.  See
 // facts/PDFKit/Annotation11.md, which carries the host's measured answer for every one of them.
 @interface PDFAnnotation (PDFAnnotationUtilitiesSubset)
@@ -351,6 +353,43 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 // /Off; and -1 for a widget that is not a BUTTON.  Three clauses and 31 measured shapes, with each
 // fixture that discriminates one of them named in PDFAnnotation11.m.
 @property (nonatomic, readonly) NSInteger buttonWidgetState;
+
+@end
+
+// ---- PDFAnnotation's three colours and its font, in a category of their own ------------------------
+//
+// A SEPARATE CATEGORY, and a separate object, for the reason PDFAnnotationColours11.m's own header gives:
+// UIColor and UIFont are UIKit's and there is no Foundation class for either on iOS, so these four are
+// the only members in this header a macOS process cannot compile and the only ones the Catalyst side of
+// the harness carries.  Everything else about them is as measured:
+//
+// All four are DECLARED READ-ONLY where PDFAnnotationUtilities.h declares them readwrite, because each
+// one's setter writes back into a document and this port reads documents.  Each row says so.
+//
+// Every reading is keyed by the annotation's /NM rather than by its position, over
+// annotation-colours.pdf, and the shape of the answer is the answer:
+//
+//   backgroundColor   /MK's /BG (Table 8.40's /BG, not /BC - /BC is the BORDER colour, which is the key
+//                     -[PDFAnnotation border] reads), in the DEVICE colour space its COMPONENT COUNT names:
+//                     one is DeviceGray, three is DeviceRGB, four is DeviceCMYK, and the components are
+//                     the ARRAY'S OWN.  A /BG that is not an array is nil.
+//   interiorColor     the annotation's OWN /IC, which is not an /MK key at all, in the same three Device
+//                     spaces by the same component count, and nil when the annotation carries no /IC.
+//                     The 26.2 header names /Circle, /Line and /Square as the subtypes that use it; the
+//                     host answers it on every subtype measured, /Link and a /Tx /Widget included.
+//   font              the /DA's font NAME and SIZE.  The name is used as written when the platform's own
+//                     font has it, and then through an exact table of THREE abbreviations - Helv, HeBo
+//                     and Cour - which is the whole of what the host resolves out of the standard
+//                     fourteen's fourteen.  Anything else is Helvetica, with the size kept; the default
+//                     size is 12.
+//
+// facts/PDFKit/Annotation11.md carries the table, the fixtures that pin every clause of it, and the
+// retracted readings of the version that read this fixture by index and was one annotation out of step
+// from the seventh on.
+@interface PDFAnnotation (PDFAnnotationColours)
+@property (nonatomic, readonly, copy, nullable) UIColor *backgroundColor;
+@property (nonatomic, readonly, copy, nullable) UIColor *interiorColor;
+@property (nonatomic, readonly, copy, nullable) UIFont *font;
 @end
 
 // ---- PDFDestination, and the action family --------------------------------------------------

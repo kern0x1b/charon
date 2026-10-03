@@ -216,74 +216,193 @@ the string member answers `Yes` and `Marked` and not `/Yes`. The first version o
 against `@"/Off"`, never matched, and answered 1 for the three shapes where one of the two keys is `/Off`.
 
 
-## The colours and the font: the KEYS are established, and two answers were the format all along
+## The colours and the font: read by `/NM`, and TWO of the earlier readings are withdrawn
 
-My previous batch wrote the wrong keys and read the nil answers as surprises. **They were not
-surprises, they were the format**, and the 26.2 header says which key each member uses in so many words:
-`PDFAnnotationUtilities.h:280` "Background color characteristics. Used by annotations type(s): /Widget
-(field type(s): /Btn, /Ch, /Tx)", and `:131` "Interior color of the annotation. Used by annotations
-type(s): /Circle, /Line, /Square". Rewritten over the right keys, all twenty-seven annotations of
-`annotation-colours.pdf` answer:
+The section this replaces was a table read by **index**, and it was wrong from the seventh row on. It is
+replaced here by a table read by the annotation's own **`/NM`**, and the two rows that were wrong for a
+reason nobody had measured are named and withdrawn. Everything below is keyed by a name the fixture writes
+into each annotation, so a reading belongs to an annotation rather than to a position.
 
-**`-backgroundColor` reads `/MK` `/BG`** - `/BC` is the BORDER colour of Table 8.40, which is the key
-`-[PDFAnnotation border]` reads, and the two members were never in conflict:
+### The dropped annotation: it is the `/Ch` one, and the skip that drops it was already in the port
 
-| `/MK /BG` | field type | answered (sRGB, from a DeviceRGB colour) |
+`annotation-colours.pdf` writes **48** annotations and the host surfaces **47**. The missing name is
+**`bg-ch-noopt`** - the `/Widget` whose `/FT` is `/Ch` and which carries **no `/Opt`**. That is
+`-[PDFPage annotations]`'s **choice-widget skip**, which PDFAnnotation11.md records from the field-type
+fixtures: Table 8.39 makes `/Opt` required for a choice field, and the host enforces it.
+
+So the drop was not a mystery and it was not about colours: it is a rule the port already implements, and
+the port surfaces the same 47 names. That is asserted on both sides on every run by one key,
+**`<fixture>.colours.names`**, which prints the `/NM` values in the order `-annotations` returns them. It is
+one of the run's named red controls, so a skip list that stopped matching would go red on it and not only
+on a count.
+
+**Two readings of the old table are withdrawn, and both were the same mistake.**
+
+1. **"`/Ch` with `[0 0 1]` answers `0.1353, 1.0000, 0.0249` - a GREEN THE ARRAY DOES NOT CONTAIN."** It does
+   not: that annotation is not surfaced at all. The green belongs to **`bg-bc-beside`**, the next one, whose
+   `/MK` carries `/BC [1 0 0] /BG [0 1 0]` - which is what the very next row of the old table said, so the
+   table contradicted itself one row apart.
+2. **"the host makes a DeviceRGB colour, so `[1 0 0]` answers `0.9860, 0.0000, 0.0269`".** No conversion
+   happens. Measured through `-[NSColor CGColor]`, the host's colour for `[1 0 0]` is
+   **`kCGColorSpaceDeviceRGB` carrying components `1.000000, 0.000000, 0.000000, 1.000000`** - the array's own
+   numbers. The old figures were the sRGB *rendition* of that DeviceRGB colour, produced by the probe
+   converting before printing, and they were a reading of the probe. The same goes for `[0 0 0 0]`, which
+   the old table called **white**: it is **`kCGColorSpaceDeviceCMYK` carrying `0, 0, 0, 0, 1`**, not a
+   colour converted to anything.
+
+This is why a colour is printed as a **space name and its components in that space**, on both sides, rather
+than as four RGBA numbers: a gray answers two components, a CMYK five, and `-[NSColor
+getRed:green:blue:alpha:]` is **void** on macOS and raises on a space with no RGB. Both sides read the two
+facts off CoreGraphics, which is the one thing they share.
+
+### `-backgroundColor` reads `/MK` `/BG` - in the DEVICE space its component count names
+
+`/BC` is the **border** colour of Table 8.40 and is the key `-[PDFAnnotation border]` reads;
+`bg-bc-beside` carries both and answers the `/BG`. `PDFAnnotationUtilities.h:280` names the member
+"Background color characteristics. Used by annotations type(s): /Widget".
+
+| `/NM` | `/MK /BG` | the host answers |
 | --- | --- | --- |
-| `[1 0 0]` | `/Tx` | 0.9860, 0.0000, 0.0269, 1 - **DeviceRGB** red, not sRGB red |
-| `[0.5]` | `/Tx` | 0.4247 gray |
-| `[0 0 0 0]` | `/Tx` | **white** 1, 0.9982, 0.9953 - "no colour" means unpainted |
-| `[0.1 0.2 0.3 0.4]` | `/Tx` | 0.4707, 0.4192, 0.3551 - CMYK converted |
-| `(a string)` | `/Tx` | **nil** - the wrong type is refused |
-| `[0 0 1]` | `/Btn` | 0, 0, 0.9982 - DeviceRGB blue |
-| `[0 0 1]` | `/Ch` | **0.1353, 1.0000, 0.0249 - a GREEN the array does not contain** |
-| `/BC [1 0 0] /BG [0 1 0]` | `/Tx` | green, i.e. the `/BG` - so `/BC` is ignored here |
+| `bg-rgb` | `[1 0 0]` | `kCGColorSpaceDeviceRGB`, `1, 0, 0, 1` |
+| `bg-gray` | `[0.5]` | `kCGColorSpaceDeviceGray`, `0.5, 1` |
+| `bg-cmyk-none` | `[0 0 0 0]` | `kCGColorSpaceDeviceCMYK`, `0, 0, 0, 0, 1` |
+| `bg-cmyk` | `[0.1 0.2 0.3 0.4]` | `kCGColorSpaceDeviceCMYK`, `0.1, 0.2, 0.3, 0.4, 1` |
+| `bg-notarray` | `(a string)` | **nil** - the wrong type is refused |
+| `bg-btn` | `[0 0 1]`, `/FT /Btn` | `kCGColorSpaceDeviceRGB`, `0, 0, 1, 1` |
+| **`bg-ch-noopt`** | `[0 0 1]`, `/FT /Ch`, no `/Opt` | **not surfaced at all** - see above |
+| `bg-bc-beside` | `/BC [1 0 0] /BG [0 1 0]` | `kCGColorSpaceDeviceRGB`, `0, 1, 0, 1` - the `/BG` |
 
-Two things the numbers say that the shapes do not: the host makes a **DeviceRGB** colour, so a port that
-built an sRGB one would differ in the third decimal, and **a `/Ch` field answers a green of its own**
-rather than its `/BG`. Neither is written yet.
+**One is DeviceGray, three is DeviceRGB, four is DeviceCMYK, the components are the array's own, and the
+alpha is 1.** Nothing converts, and the three `CGColorSpaceCreateDevice*` spaces are iOS 2.0 - which is why
+the member is implemented (`PDFAnnotationColours11.m`) rather than deferred.
 
-**`-interiorColor` reads the annotation's own `/IC`**, which is not an `/MK` key at all - and the host
-reads it on **more subtypes than the header names**: a `/Square` and a `/Circle` answer it, and so do a
-`/Link` and a `/Tx` `/Widget`, all four answering red or the array's own colour. A `/Square` with no `/IC`
-answers nil.
+### `-interiorColor` reads the annotation's OWN `/IC`, on more subtypes than the header names
 
-**`-fontColor` reads the `/DA`'s FILL operand**, and not the stroke one. That is the format's rule and not
-a gap: text is painted with the fill colour, so `g`, `rg` and `k` are read and `G`, `RG` and `K` - which
-set the stroke - are not:
+`/IC` is not an `/MK` key. `PDFAnnotationUtilities.h:131` names "/Circle, /Line, /Square"; the host answers
+it on **every** subtype measured, `/Link` and a `/Tx` `/Widget` included.
 
-| `/DA` | answered |
-| --- | --- |
-| `(/Helv 12 Tf 0 g)` | black, a gray space |
-| `(/Helv 12 Tf 1 g)` | white - so the operand's VALUE is read, not just its presence |
-| `(/Helv 12 Tf 1 0 0 rg)` | red, an RGB space |
-| `(/Helv 12 Tf 0 1 1 0 k)` | **black**, where CMYK(0,1,1,0) converts to RED |
-| `(/Helv 12 Tf 1 0 0 0 k)` | **black**, where CMYK(1,0,0,0) converts to CYAN |
-| `(/Helv 12 Tf 0 1 0 RG)` / `K` / `G` | black, a gray space - the three STROKE operands |
+| `/NM` | `/IC` | the host answers |
+| --- | --- | --- |
+| `ic-square-rgb` | `[0 1 0]` | `kCGColorSpaceDeviceRGB`, `0, 1, 0, 1` |
+| `ic-square-gray` | `[0.25]` | `kCGColorSpaceDeviceGray`, `0.25, 1` |
+| `ic-square-none` | absent | **nil** |
+| `ic-circle-cmyk` | `[0.1 0.2 0.3 0.4]` | `kCGColorSpaceDeviceCMYK`, four components and alpha 1 |
+| `ic-link` | `[1 0 0]` | `kCGColorSpaceDeviceRGB`, `1, 0, 0, 1` |
+| `ic-widget` | `[1 0 0]`, `/FT /Tx` | `kCGColorSpaceDeviceRGB`, `1, 0, 0, 1` |
 
-**So `k` is NOT read either**: two CMYK values whose conversions are red and cyan both answer black, and
-black is the no-`/DA` default. The fill set is `g` and `rg`; `k`, `K`, `G` and `RG` are all un-read, which
-is a fact about the host and not the format - the format paints text with `k`.
+### `-fontColor`: the `/DA`'s FIRST fill operand, in the GENERIC spaces - and the member is NOT carried
 
-**`-font` reads the `/DA`'s name and size, and MAPS the name**:
+Measured, keyed by name:
 
-| `/DA` | answered |
-| --- | --- |
-| `(/Courier 7 Tf 0 g)` | **Courier at 7** - so `/Courier` is mapped to the PostScript name, not taken verbatim |
-| `(12 Tf 0 g)` | Helvetica 12 - no name, so the default font at the size that IS given |
-| `(/Helv Tf 0 g)` | Helvetica 12 - no size, so the default size |
-| `(/Nonexistent 9 Tf 0 g)` | **Helvetica at 9** - an unknown name falls back to Helvetica and the SIZE IS KEPT |
-| *no `/DA` at all* | Helvetica 12 |
+| `/NM` | `/DA` | the host answers |
+| --- | --- | --- |
+| *(every `/NM` with no `/DA`)* | absent | `kCGColorSpaceGenericGrayGamma2_2`, `0, 1` |
+| `da-fill-gray-0` | `(/Helv 12 Tf 0 g)` | `kCGColorSpaceGenericGray`, `0, 1` |
+| `da-fill-gray-1` | `(/Helv 12 Tf 1 g)` | `kCGColorSpaceGenericGray`, `1, 1` |
+| `da-fill-rgb` | `(/Helv 12 Tf 1 0 0 rg)` | `kCGColorSpaceGenericRGB`, `1, 0, 0, 1` |
+| `da-fill-cmyk-red` | `(/Helv 12 Tf 0 1 1 0 k)` | `kCGColorSpaceGenericGray`, `0, 1` |
+| `da-fill-cmyk-cyan` | `(/Helv 12 Tf 1 0 0 0 k)` | `kCGColorSpaceGenericGray`, `0, 1` |
+| `da-stroke-rg` / `-k` / `-g` | `0 1 0 RG` / `K` / `G` | `kCGColorSpaceGenericGray`, `0, 1` |
+| `da-nooperand` | `(/Helv 12 Tf)` | `kCGColorSpaceGenericGray`, `0, 1` |
+| `da-fill-gray-then-rgb` | `(/Helv 12 Tf 0.5 g 1 0 0 rg)` | `kCGColorSpaceGenericGray`, **`0.5, 1`** |
+| `da-fill-rgb-then-gray` | `(/Helv 12 Tf 1 0 0 rg 0.5 g)` | `kCGColorSpaceGenericRGB`, **`1, 0, 0, 1`** |
+| `da-fill-gray-twice` | `(/Helv 12 Tf 1 g 0.25 g)` | `kCGColorSpaceGenericGray`, **`1, 1`** |
+| `da-fill-badcount` | `(/Helv 12 Tf 0.5 0.25 g)` | `kCGColorSpaceGenericGray`, **`0.25, 1`** |
 
-So the defaults are Helvetica and 12, the size is read independently of the name, and an unrecognised name
-falls back to Helvetica rather than being taken verbatim.
+Five things are now settled, and three of them the old table listed as open:
 
-**What is still open, and it is a list and not a shrug:** the DeviceRGB conversion the port would have to
-reproduce to the third decimal; the `/Ch` field's own green; whether the `/DA` operand's POSITION inside
-the string matters; and one dropped annotation - the host keeps 26 of the 27 this fixture writes and which
-one it drops was not identified, so the indices above are read off the host's own order and are shifted by
-one from the fixture's after the eighth annotation. All four rows therefore stay `inert` with this table as
-their reasons.
+* **`k` is not read.** Both CMYK values, whose conversions are red and cyan, answer the gray default - and
+  so do all three **stroke** operands, which is the format's own rule rather than a gap: text is painted
+  with the fill colour.
+* **The operand's POSITION does not decide; being FIRST does.** `0.5 g 1 0 0 rg` answers the gray and
+  `1 0 0 rg 0.5 g` answers the RGB, so this is a defaults read and not a replay of a content stream.
+* **A colour operator with the wrong operand count is not refused; it reads the numbers in FRONT of it.**
+  `0.5 0.25 g` answers 0.25.
+* **No `/DA` and a `/DA` with no fill operand are TWO DIFFERENT DEFAULTS**: `kCGColorSpaceGenericGrayGamma2_2`
+  against `kCGColorSpaceGenericGray`.
+
+**And this member is not declared and not implemented, for a reason of its own.** The host answers in the
+**generic** colour spaces, and this SDK marks `kCGColorSpaceGenericGray`, `kCGColorSpaceGenericGrayGamma2_2`
+and `kCGColorSpaceGenericRGB` **`API_AVAILABLE(ios(9.0))`** while the row's `minimum` is **6.0**.
+`CGColorSpaceCreateWithName` is iOS 2.0 and is the mechanism, but the three **names** it would be handed are
+not in a 6.1.3 CoreGraphics, so a port that called them would build a dylib that cannot load on its own
+minimum release. That is not a wall to argue with: it is the header's own annotation against a row the
+ledger types at 6.0. A measurement of which release first **exports** each name, from the held caches'
+export tries through `tools/symbol-first-release.lua`, was queued on this machine and **has not come back**
+(load average 15 for the whole of this session), so no claim is made here about what 6.1.3 does export - only
+about what this SDK says and about the consequence if the header is right.
+
+### `-font`: the name as written, then an EXACT table of THREE abbreviations
+
+| `/NM` | `/DA` name | the host answers |
+| --- | --- | --- |
+| `font-courier-7` | `/Courier` | **Courier** at 7 - the PostScript name, used as written |
+| `font-size-only` | *(none)* | Helvetica at **12** |
+| `font-name-only` | `/Helv`, no size | Helvetica at **12** |
+| `font-unknown` | `/Nonexistent` | **Helvetica at 9** - the SIZE IS KEPT |
+| `font-abbrev-helv` | `/Helv` | Helvetica at 21 |
+| `font-abbrev-hebo` | `/HeBo` | **Helvetica-Bold** at 11 |
+| `font-abbrev-cour` | `/Cour` | **Courier** at 14 |
+| `font-full-oblique` | `/Helvetica-Oblique` | **Helvetica-Oblique** at 25 |
+| `font-full-roman` | `/Times-Roman` | **Times-Roman** at 26 |
+| `font-abbrev-heob`, `-hebo-bi` | `/HeOb`, `/HeBO` | **Helvetica** |
+| `font-abbrev-cobo`, `-coob`, `-cbo-bi` | `/CoBo`, `/CoOb`, `/CBO` | **Helvetica** |
+| `font-abbrev-tiro`, `-tibo`, `-tiit`, `-tibi` | `/TiRo`, `/TiBo`, `/TiIt`, `/TiBI` | **Helvetica** |
+| `font-abbrev-symb`, `-zadb` | `/Symb`, `/ZaDb` | **Helvetica** |
+| `font-prefix-h`, `-co`, `-ti` | `/H`, `/Co`, `/Ti` | **Helvetica** - not a prefix match |
+| `font-case-upper`, `-mixed` | `/HELV`, `/Hebo` | **Helvetica** - not case-insensitive |
+
+**All fourteen abbreviations of the standard fourteen are measured, and exactly THREE of them resolve**:
+`Helv` to Helvetica, `HeBo` to Helvetica-Bold and `Cour` to Courier. The other eleven answer Helvetica with
+the size kept. That is the whole of the map, and it is a fact about PDFKit rather than about the format:
+PDF 1.7 9.6.2.2's fourteen would have `/TiRo` as Times-Roman, and it does not.
+
+**The platform's own font lookup is not what does this.** `-[NSFont fontWithName:]` is **nil for every one
+of the fourteen** (measured on this Mac, `.agent-work/v-pdfkit2/probe-fontnames.m`), and answers the full
+PostScript names, which is clause one. The table is **exact and case-sensitive**, pinned by the three prefix
+names and the two wrong-case ones.
+
+So `-font` is three clauses and 24 named fixtures: the name **as written** when the platform has a font of
+that name; else the exact table of three; else **Helvetica**, with the size read independently of the name
+and defaulting to **12**. It is implemented in `PDFAnnotationColours11.m`, which needs only `UIFont`
+(iOS 2.0) and `-[UIFont fontWithName:size:]` (iOS 2.0).
+
+### The other wall, and it is the harness's: three of these four cannot be COMPARED on this machine
+
+`backgroundColor`, `interiorColor` and `font` are **in the library** and **measured**, and the run still
+cannot compare them, for a reason worth writing down because it is invisible by construction.
+
+The harness has three binaries: the host's, the port's on macOS, and - because a macOS process has no
+`UIColor` - the port's again under **Mac Catalyst**. The Catalyst binary **links no PDFKit** (`otool -L`
+lists UIKit, Foundation, CoreGraphics and nothing else) and still loads
+`/System/iOSSupport/System/Library/Frameworks/PDFKit.framework` at run time: `color.txt` carries **14**
+`Class PDFDocument is implemented in both ...` lines. A **category** on a class is *replaced* when the image
+holding it loads later, and the platform declares these same selectors on its own
+`PDFAnnotationUtilities` category - so the port's three members are shadowed there and the values printed
+under `.colours.` are the platform's.
+
+That this is a **category** effect and not a broken port is measured, not argued: a `-777` sentinel planted
+in `PDFAppearanceCharacteristics`' own `-init` appeared as `appearance.fresh.controlType=-777` in that same
+binary, so the **class's own** members there do run - which is also why the appearance block's 72 compared
+keys are the port's and not the platform's. And the three cannot be moved into the class's own
+`@implementation` either: `PDFPage`'s and `PDFAnnotation`'s ivars are declared in `PDFAnnotation11.m`, and a
+class has one `@implementation`, so a second object can only add a **category** - and it needs `UIKit`,
+which the macOS port side has not got.
+
+`run.sh` therefore prints **every** one of those keys as `not compared` **with this reason on the line** -
+329 of them - rather than dropping them silently, and the run's own comment carries the measurement.
+
+### The rows
+
+All four stay **`inert`**, and for two different reasons, each of which is in its row:
+
+* **`backgroundColor`, `interiorColor`, `font`** - implemented in `PDFAnnotationColours11.m`, measured over
+  48 named fixtures, and **not comparable** on this machine because the only process that has a `UIColor`
+  loads the platform's PDFKit, which answers those selectors.
+* **`fontColor`** - measured in full above and **not carried at all**, because its three colour spaces are
+  iOS 9.0 names against a 6.0 row.
+
+Neither reason is "hard", and neither is a shrug: both name the process, the mechanism and the measurement.
 
 ## The 25 rows that are not implemented, and why each one waits
 
@@ -304,10 +423,12 @@ Each of the 27 carries the host's measured answer in its `reason` in
   (`/Q 2` -> 0), `choices` and `values` (`/Opt [(one) (two) (three)]` -> empty), `open`, `caption`, `URL`.
   Each is written in a fixture and the host does not answer it from there, which says the key or the scale
   is something else and not what I assumed.
-* **the three colours and the font**, measured above: every key is now established - `/MK` `/BG`,
-  the annotation's own `/IC`, the `/DA`'s fill operand and its font name and size - and what is missing is
-  the DeviceRGB conversion, the `/Ch` field's own green, and the position question. `fontColor`'s fill set
-  is `g` and `rg`; `k` is not read, which is the host's behaviour and not the format's.
+* **the two colours and the font**, measured above and IMPLEMENTED in `PDFAnnotationColours11.m` - every key
+  is established (`/MK` `/BG`, the annotation's own `/IC`, the `/DA`'s font name and size), the DeviceRGB
+  question is settled (there is no conversion at all) and the `/Ch` question is settled (that annotation is
+  not surfaced). What is missing is a **process that can compare them**: the only macOS binary with a
+  `UIColor` loads the platform's PDFKit and answers those selectors itself. `fontColor` is a fourth case and
+  is not carried at all, because its colour spaces are iOS 9.0 names against a 6.0 row.
 * **the geometry six** - `startPoint`, `endPoint`, `startLineStyle`, `endLineStyle`, `paths`,
   `quadrilateralPoints`. `/InkList` is a list of variable-length point runs and needs a bezier-path object
   the port does not carry; `PDFLineStyle` is a class the port does not carry; `/QuadPoints` is a flat array
@@ -321,15 +442,24 @@ Each of the 27 carries the host's measured answer in its `reason` in
     $ sh tests/backports/host/pdfkit-document/run.sh
       images differ by construction: host=/System/.../PDFKit.framework/.../PDFKit
                                       port=.../runs/pdfkit-document/port-side
-      COMPARED 13518 MISMATCHES 0  (not compared: 175, expected to differ: 525, of which 72 compared from the Catalyst side)
+      COMPARED 14390 MISMATCHES 0  (not compared: 519, expected to differ: 519, of which 292 compared from the Catalyst side)
       RED CONTROL ok: the comparison goes red on a mutated port, and names the key
 
-175 fixtures. **Forty-seven named red controls name a flag, skip, fieldName or state key**, among them one per member over
-`widget-flags.pdf`'s first annotation, the three fixtures that pin `widgetControlType`'s priority
-(`noflags`, bit 16, bit 17, `allflags`), the two that pin the inversions (bit 15 and bit 18), the one that
-pins `radiosInUnison` off bit 26, the field-type fixtures that pin `activatableTextField`, and the three
-annotation **counts** that pin the choice-widget skip - `widget-fttx1` (1), `widget-ftch2` (0) and
-`widget-ftch4` (1).
+178 fixtures. **165 named red controls, 165 of them with a `DIFFER` line in their own log**, among them one
+per member over `widget-flags.pdf`'s first annotation, the three fixtures that pin
+`widgetControlType`'s priority (`noflags`, bit 16, bit 17, `allflags`), the two that pin the inversions
+(bit 15 and bit 18), the one that pins `radiosInUnison` off bit 26, the field-type fixtures that pin
+`activatableTextField`, the three annotation **counts** that pin the choice-widget skip -
+`widget-fttx1` (1), `widget-ftch2` (0) and `widget-ftch4` (1) - and `annotation-colours.pdf.colours.names`,
+which is the one control that names **the /NM list itself** and so pins the dropped annotation rather than a
+count of it.
+
+**The 519 `not compared` lines are 190 pre-existing and 329 of this family**, and the 329 name their cause
+on the line: they are `backgroundColor`, `interiorColor` and `font` over `annotation-colours.pdf`, which the
+Catalyst binary cannot answer from the port. Nothing else moved into that count.
 
 The harness prints the nine members one key per line, for the reason the outline facts were lost the first
-time round: a line carrying several `key=value` pairs registers as one key and drops the rest.
+time round: a line carrying several `key=value` pairs registers as one key and drops the rest. The colour
+and font keys go under `.colours.` and **not** `.page0.` for the same reason and one more: `compare()`
+reads any `.page0.` key of four numbers as a **rectangle** and gives it a 0.001 tolerance, which is right
+for a rectangle and would hide the third-decimal difference this family is about.

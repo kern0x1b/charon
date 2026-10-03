@@ -406,6 +406,84 @@ static void printAppearanceColour(const char *label, const char *member, id colo
            (double)a);
 }
 
+// ---- PDFAnnotation's three colours and its font, keyed by the annotation's /NM --------------------
+//
+// The keys carry `.colours.' and NOT `.page0.' on purpose: compare() treats any key containing ".page0."
+// whose value is four numbers as a RECTANGLE and compares it with a 0.001 tolerance, which is right for a
+// rectangle and wrong for a colour - the difference this family is about is in the THIRD decimal, and a
+// tolerance there would be exactly the thing that hides it.  These keys are compared as text.
+//
+// A colour is printed as its SPACE NAME and its COMPONENTS IN THAT SPACE, not as four RGBA numbers,
+// because most of these colours have no RGB: a gray answers two components and a CMYK five, and
+// -[NSColor getRed:green:blue:alpha:] is VOID on macOS and raises on a space with no RGB.  Both sides
+// read the same two facts off CoreGraphics, which is the one thing they share.
+static void printAnnotationColour(const char *label, const char *member, id colour)
+{
+    if (colour == nil) {
+        printf("%s.%s=(nil)\n", label, member);
+        return;
+    }
+    CGColorRef cgcolour = [(NSColor *)colour CGColor];
+    // CGColorGetColorSpace and not cgcolour->colorSpace: struct CGColor is an OPAQUE type in this SDK -
+    // CF_BRIDGED_TYPE(id) - so its member is not readable and the accessor is the only way to the space.
+    CGColorSpaceRef space = cgcolour != NULL ? CGColorGetColorSpace(cgcolour) : NULL;
+    printf("%s.%s.space=%s\n", label, member,
+           space != NULL ? [(__bridge NSString *)CGColorSpaceGetName(space) UTF8String] : "(nil)");
+    size_t count = cgcolour != NULL ? CGColorGetNumberOfComponents(cgcolour) : 0;
+    NSMutableArray *parts = [NSMutableArray array];
+    const CGFloat *raw = cgcolour != NULL ? CGColorGetComponents(cgcolour) : NULL;
+    for (size_t i = 0; i < count; i++)
+        [parts addObject:[NSString stringWithFormat:@"%.6f", (double)raw[i]]];
+    printf("%s.%s.components=%s\n", label, member,
+           [[parts componentsJoinedByString:@","] UTF8String]);
+}
+
+// The /NM of an annotation, as the format's own unique-name key (PDF 1.7 Table 8.16) and as a C string,
+// or NULL when the annotation does not carry one.  This is the whole of the re-keying: an annotation that
+// names itself can be found in -annotations' output whatever the host has dropped, and one that does not
+// is not printed at all rather than printed under a position that could shift.
+static const char *charonAnnotationName(PDFAnnotation *annotation)
+{
+    id name = [annotation valueForAnnotationKey:@"NM"];
+    if (![name isKindOfClass:[NSString class]] || [(NSString *)name length] == 0)
+        return NULL;
+    return [(NSString *)name UTF8String];
+}
+
+// The whole block for one fixture: the names it surfaced - which is where a dropped annotation shows up
+// as a MISSING NAME rather than as a shift - and then the four members of each named annotation.
+static void printAnnotationColourFacts(const char *fixture, PDFPage *page)
+{
+    NSMutableArray *names = [NSMutableArray array];
+    for (unsigned a = 0; a < page.annotations.count; a++) {
+        const char *name = charonAnnotationName(page.annotations[a]);
+        if (name != NULL)
+            [names addObject:@(name)];
+    }
+    if (names.count == 0)
+        return;
+    printf("%s.colours.names=%s\n", fixture, [[names componentsJoinedByString:@","] UTF8String]);
+    for (unsigned a = 0; a < page.annotations.count; a++) {
+        PDFAnnotation *annotation = page.annotations[a];
+        const char *name = charonAnnotationName(annotation);
+        if (name == NULL)
+            continue;
+        char label[512];
+        snprintf(label, sizeof(label), "%s.colours.nm%s", fixture, name);
+        printAnnotationColour(label, "backgroundColor", annotation.backgroundColor);
+        printAnnotationColour(label, "interiorColor", annotation.interiorColor);
+        printAnnotationColour(label, "fontColor", annotation.fontColor);
+        NSFont *font = annotation.font;
+        if (font == nil) {
+            printf("%s.font.name=(nil)\n", label);
+            printf("%s.font.size=(nil)\n", label);
+        } else {
+            printf("%s.font.name=%s\n", label, [font.fontName UTF8String]);
+            printf("%s.font.size=%.6f\n", label, (double)font.pointSize);
+        }
+    }
+}
+
 // One appearance-characters object, printed under one label, so the two sides' blocks are the same
 // shape and the comparison needs no knowledge of which is which.
 static void printAppearanceCharacteristics(const char *label,
@@ -735,6 +813,7 @@ int main(int argc, char **argv)
                 // compared against the port's nil by accident - it is compared like anything else, and
                 // the subtypes that answer one where the port does not would show up here.
                 printOutlineWalk(name, document.outlineRoot, 0);
+                printAnnotationColourFacts(name, first);
                 for (unsigned a = 0; a < first.annotations.count; a++) {
                     PDFAnnotation *each = first.annotations[a];
                     NSString *prefix = [NSString stringWithFormat:@"%s.page0.annotation%u", name, a];
