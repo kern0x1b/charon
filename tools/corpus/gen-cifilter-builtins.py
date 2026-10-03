@@ -73,9 +73,10 @@ def reason_of(tag, selector):
     return BANDS[tag][2].format(rung="iOS " + BANDS[tag][0], selector=selector)
 
 SOURCE = ("the host's own CoreImage over all 239 of the SDK's constructors, by tests/backports/host/ciimagefilter, "
-          "which builds the port's objects with their selectors prefixed and asks both in one process: "
-          "'compared 478 of 239 port constructors against the host's own, 57 rendered and compared, 0 different'; "
-          "the 50 held rungs by tools/cache-index/first-rung.py for the release each selector first appears at")
+          "which builds the port's objects with their selectors prefixed and asks both in one process, with every "
+          "input set to the value a fresh filter of that name already answers: 'compared 478 of 239 port "
+          "constructors against the host's own, 237 rendered and compared, 0 different'; the 50 held rungs by "
+          "tools/cache-index/first-rung.py for the release each selector first appears at")
 FACTS = "facts/CoreImage/FilterBuiltins.md"
 
 OBJECT = '''#import <CoreImage/CoreImage.h>
@@ -87,10 +88,13 @@ OBJECT = '''#import <CoreImage/CoreImage.h>
 //
 // WHAT THEY ARE, MEASURED: on the host, +[CIFilter {example}] answers exactly the object
 // +[CIFilter filterWithName:@"{examplename}"] answers - the same class, the same name, the same
-// inputKeys, outputKeys and attributes, and the same rendered bytes over a fixed window where the
-// filter's declared inputs are only an image.  tests/backports/host/ciimagefilter/ builds these very
-// objects with their selectors prefixed and asks both in one process; it checked {checked} class
-// methods, rendered and compared {rendered} of them, and reported {different} differences.
+// inputKeys, outputKeys and attributes, and, for {rendered} of the {total}, the same rendered RGBA
+// bytes over a fixed 32x32 window.  tests/backports/host/ciimagefilter/ builds these very objects with
+// their selectors prefixed and asks both in one process; it compared {checked} fields over all {total}
+// constructors, rendered and compared {rendered} of them, and reported {different} differences.  Every
+// input of every filter is given the value a FRESH filter of that name already answers for it, so the
+// values compared are Apple's own defaults and not ones the harness chose; the two it cannot render are
+// named in facts/CoreImage/FilterBuiltins.md.
 //
 // So each method here is that one call, and the filter's own arithmetic is the release's:
 // +filterWithName: is exported from iOS 3.0 and answers nil for a name the release has no filter of,
@@ -170,7 +174,7 @@ def main():
         example = selectors[0]
         text = OBJECT.format(version=version, count=len(selectors), total=total, why=why, example=example,
                              examplename=names[example], category="CharonFilterBuiltins" + tag, checked=total * 2,
-                             rendered=44, different=0)
+                             rendered=237, different=0)
         text += "".join(METHOD.format(selector=s, name=names[s]) for s in selectors)
         text += "@end\n"
         with open(os.path.join(GRAPHICS, "CIFilterBuiltins%s.m" % tag), "w") as out:

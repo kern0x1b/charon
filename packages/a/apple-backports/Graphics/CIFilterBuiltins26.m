@@ -7,10 +7,13 @@
 //
 // WHAT THEY ARE, MEASURED: on the host, +[CIFilter areaAverageMaximumRedFilter] answers exactly the object
 // +[CIFilter filterWithName:@"CIAreaAverageMaximumRed"] answers - the same class, the same name, the same
-// inputKeys, outputKeys and attributes, and the same rendered bytes over a fixed window where the
-// filter's declared inputs are only an image.  tests/backports/host/ciimagefilter/ builds these very
-// objects with their selectors prefixed and asks both in one process; it checked 478 class
-// methods, rendered and compared 44 of them, and reported 0 differences.
+// inputKeys, outputKeys and attributes, and, for 237 of the 239, the same rendered RGBA
+// bytes over a fixed 32x32 window.  tests/backports/host/ciimagefilter/ builds these very objects with
+// their selectors prefixed and asks both in one process; it compared 478 fields over all 239
+// constructors, rendered and compared 237 of them, and reported 0 differences.  Every
+// input of every filter is given the value a FRESH filter of that name already answers for it, so the
+// values compared are Apple's own defaults and not ones the harness chose; the two it cannot render are
+// named in facts/CoreImage/FilterBuiltins.md.
 //
 // So each method here is that one call, and the filter's own arithmetic is the release's:
 // +filterWithName: is exported from iOS 3.0 and answers nil for a name the release has no filter of,
