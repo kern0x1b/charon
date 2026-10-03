@@ -13,9 +13,6 @@
 #import <Accelerate/Accelerate.h>
 #include "CharonChannels.h"
 
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-#pragma clang diagnostic ignored "-Wpointer-bool-conversion"
-#pragma clang diagnostic ignored "-Wnonnull"
 
 // **The flag set is measured per function and the three groups of this file differ.** Asked of the host one
 // bit at a time over all thirty-two (tests/backports/host/vimagechannels prints every one of them):
@@ -39,7 +36,7 @@ static vImage_Error charon_channels8_ready(const vImage_Buffer *src, const vImag
         return kvImageUnknownFlagsBit;
     if (flags & kvImageGetTempBufferSize)
         return 0;
-    if (!src || !dest)
+    if (CharonChannelsIsNull(src) || CharonChannelsIsNull(dest))
         return kvImageNullPointerArgument;
     if (src->width < dest->width || src->height < dest->height)
         return kvImageRoiLargerThanInputBuffer;
@@ -56,7 +53,7 @@ static vImage_Error charon_channels8_ready_dest(const vImage_Buffer *dest, vImag
         return kvImageUnknownFlagsBit;
     if (flags & kvImageGetTempBufferSize)
         return 0;
-    if (!dest)
+    if (CharonChannelsIsNull(dest))
         return kvImageNullPointerArgument;
     return kvImageNoError;
 }
@@ -133,7 +130,7 @@ vImage_Error vImagePermuteChannels_RGB888(const vImage_Buffer *src, const vImage
     // port refuses a NULL map the way the four-channel forms do rather than answering a header sentence the
     // release does not implement: a caller passing NULL has a bug either way, and a refusal is the answer
     // that is the same on both sides.
-    if (!permuteMap)
+    if (CharonChannelsIsNull(permuteMap))
         return kvImageNullPointerArgument;
     const uint8_t *map = permuteMap;
     for (int i = 0; i < 3; i++)

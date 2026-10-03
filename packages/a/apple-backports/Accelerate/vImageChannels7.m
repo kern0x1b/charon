@@ -16,9 +16,6 @@
 #import <Accelerate/Accelerate.h>
 #include "CharonChannels.h"
 
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-#pragma clang diagnostic ignored "-Wpointer-bool-conversion"
-#pragma clang diagnostic ignored "-Wnonnull"
 
 // The refusals, measured rather than copied from a neighbour. **The flag set is `DoNotTile` and
 // `GetTempBufferSize` and nothing else**, which is not what the tree's other vImage files accept: asked of
@@ -49,7 +46,7 @@ static vImage_Error charon_channels7_ready(const vImage_Buffer *src, const vImag
         return kvImageUnknownFlagsBit;
     if (flags & kvImageGetTempBufferSize)
         return 0;
-    if (!src || !dest)
+    if (CharonChannelsIsNull(src) || CharonChannelsIsNull(dest))
         return kvImageNullPointerArgument;
     if (src->width < dest->width || src->height < dest->height)
         return kvImageRoiLargerThanInputBuffer;
@@ -67,7 +64,7 @@ static vImage_Error charon_channels7_ready(const vImage_Buffer *src, const vImag
 // which is what the host does. An earlier version of this file refused a mask above 0x0F and was wrong.
 static vImage_Error charon_channels7_map(const uint8_t *map)
 {
-    if (!map)
+    if (CharonChannelsIsNull(map))
         return kvImageNullPointerArgument;
     for (int i = 0; i < 4; i++)
         if (map[i] > 3)
