@@ -33,7 +33,7 @@
 # The host table is built once and cached beside the build directory, which is removed on every run; a
 # baseline that a run deletes is a baseline no mutant can be judged against.
 #
-# Eleven mutations, and one thing in the port's own code that deliberately has none. -addRenderer: sets the
+# Twelve mutations, and one thing in the port's own code that deliberately has none. -addRenderer: sets the
 # master relationship between the two clocks, and every rate or time change after that propagates the rate
 # and the time to every attached renderer (which is what makes a renderer's clock read the synchronizer's),
 # so removing the two lines in -addRenderer: changes nothing this check can see: the first rate change after
@@ -110,6 +110,11 @@ MUTATIONS = {
     # -setVolume: holds a fixed volume whatever it is given. Read by "volume after setVolume: 0.25", which
     # both answer 0.250.
     "volume": ("    _volume = volume;\n    [self charon_applyVolume];", "    _volume = 1.0f;\n    [self charon_applyVolume];"),
+    # One @dynamic removed, which is what a class answers when clang is left to synthesise a property the
+    # rows say is absent: the accessors come back and respondsToSelector: answers YES. Read by "absent: the
+    # renderer answers respondsToSelector: for allowedAudioSpatializationFormats", which the join requires
+    # the port to answer NO.
+    "nodynamic": ("@dynamic allowedAudioSpatializationFormats;", "// (the @dynamic for allowedAudioSpatializationFormats is gone)"),
     # the rate a synchronizer change reaches its renderers with: this never sets it. Read by "rate 0 stops
     # the renderer's timebase" and "the renderer reads the synchronizer's rate through its timebase", which
     # both answer YES.
@@ -137,7 +142,7 @@ if [ "$control" = 0 ] && [ -n "$want" ]; then
     case "$want" in
         rate|detachclock|raterenderers) mutate "$build/src/synchronizer.m" "$want" ;;
         boundarypast|emptytimes|removeobserver) mutate "$build/src/synchronizer.m" "$want" ;;
-        flushstatus|readiness|volume) mutate "$build/src/renderer.m" "$want" ;;
+        flushstatus|readiness|volume|nodynamic) mutate "$build/src/renderer.m" "$want" ;;
         periodicinterval) mutate "$build/src/synchronizer.m" "$want" ;;
         addtwice) mutate "$build/src/synchronizer.m" "$want" ;;
         *)          echo "FAIL: no such mutant: $want"; exit 1 ;;
@@ -207,10 +212,10 @@ else
     }
 fi
 
-# ---- 5. the join and the verdict
+# ---- 5. the join, and the value every row must answer
 set +e
 python3 - "$build" "$oracle_dir" <<'PYEOF'
-import sys, os
+import json, os, sys
 build, oracle_dir = sys.argv[1], sys.argv[2]
 
 def load(path):
@@ -229,11 +234,13 @@ def load(path):
 
 host = load(os.path.join(build, "host.table"))
 port = load(os.path.join(build, "port.table"))
-base = load(os.path.join(oracle_dir, "port.baseline"))
 
-# The differences that are in the PORT's build and not in the host's. Every one of them is in the MEDIA
-# path and every one of them has the same cause, measured on this machine on 2026-10-03: CoreAudio reports
-# the hardware not running, so the audio queue is made but has no device clock behind it, and
+# The differences that are in the PORT's build and not in the host's. Each is (the value the PORT is
+# required to answer, the measurement behind it) - every one of them states a value, so the directionality
+# step can hold a mutation to it even where the two halves deliberately answer differently.
+#
+# The five media rows are all the same cause, measured on this machine on 2026-10-03: CoreAudio reports the
+# hardware not running, so the audio queue is made but has no device clock behind it, and
 # -AudioQueueGetCurrentTime - the one call a timestamp needs - answers -66678 with no valid time in it.
 # Apple's own renderer has its own decode layer above the output device, so it keeps answering
 # AVQueuedSampleBufferRenderingStatusRendering and a nil error for media it has accepted and can never
@@ -242,22 +249,42 @@ base = load(os.path.join(oracle_dir, "port.baseline"))
 # only answer that is not a claim about audio that does not exist. Every other row of the media path - the
 # one this machine CAN answer - agrees, which is what the summary below counts.
 ALLOWANCES = {
- "renderer: status after the first enqueue":
+ "renderer: status after the first enqueue": ("2",
    "there is no audio device on this machine (CoreAudio answers 'who?' for kAudioHardwarePropertyDevices), so "
    "the queue the port made has no device clock and -AudioQueueGetCurrentTime answers -66678 with no valid "
    "time in it; a renderer that cannot place a buffer at its timestamp answers Failed with an "
    "AVFoundationErrorDomain error, where Apple's own renderer keeps answering Rendering for media it has "
-   "accepted and can never play. Measured in packages/a/apple-backports/facts/AVFoundation/SampleBufferRender11.md",
- "renderer: error after the first enqueue is nil": "follows the row above",
- "renderer: status after nine enqueues": "follows the first-enqueue row",
- "renderer: error after nine enqueues is nil": "follows the first-enqueue row",
- "renderer: status after a buffer with no frames": "follows the first-enqueue row",
- "attached: the renderer's clock reads the synchronizer's clock as its master":
+   "accepted and can never play. Measured in packages/a/apple-backports/facts/AVFoundation/SampleBufferRender11.md"),
+ "renderer: error after the first enqueue is nil": ("NO", "follows the row above, and the port names the queue's own OSStatus in the description"),
+ "renderer: status after nine enqueues": ("2", "follows the first-enqueue row"),
+ "renderer: error after nine enqueues is nil": ("NO", "follows the first-enqueue row"),
+ "renderer: status after a buffer with no frames": ("2", "follows the first-enqueue row"),
+ # The four members the rows answer absent. The port must answer NO to each and Apple's own classes answer
+ # YES to each, because their surface is a later one - and the port answering YES is not a difference to be
+ # explained but a defect: a synthesised accessor is a name the port claims and does not carry. So these
+ # four carry the value the port is REQUIRED to answer, not only a reason.
+ "absent: the renderer answers respondsToSelector: for allowedAudioSpatializationFormats": ("NO",
+   "the property is 15.0 and the row answers absent; clang synthesises an ivar and both accessors from the "
+   "SDK's @interface unless @dynamic says not to, and @dynamic is what makes respondsToSelector: answer NO, "
+   "which is the truth. Measured on the object at -target armv7-apple-ios6.0 and armv7-apple-ios4.3."),
+ "absent: the renderer answers respondsToSelector: for audioOutputDeviceUniqueID": ("NO",
+   "the header declares it API_UNAVAILABLE(ios), so there is no iOS row and the port carries nothing; "
+   "@dynamic stops clang synthesising the accessors the @interface would otherwise get it. Apple's own "
+   "class answers YES."),
+ "absent: the renderer answers respondsToSelector: for hasSufficientMediaDataForReliablePlaybackStart": ("NO",
+   "the protocol property at 14.5 needs no @dynamic: a property a protocol declares is not auto-synthesised "
+   "(measured: no accessor of that name in any of the four objects, and "
+   "-Wobjc-protocol-property-synthesis says so at compile time). Apple's own class answers YES."),
+ "absent: the synchronizer answers respondsToSelector: for delaysRateChangeUntilHasSufficientMediaData": ("NO",
+   "the property is 14.5 and the row answers absent, because the preroll level it asks about is not "
+   "measurable on this machine; @dynamic is what makes respondsToSelector: answer NO. Apple's own class "
+   "answers YES."),
+ "attached: the renderer's clock reads the synchronizer's clock as its master": ("YES",
    "the port slaves the renderer's own CMTimebase to the synchronizer's, which is what the header's \"Adds a "
    "renderer to begin operating with the synchronizer's timebase\" asks for; this Mac's own renderer "
    "answers nil from CMTimebaseGetMasterTimebase for both clocks and keeps them in step by propagating the "
    "rate instead, which is what its private -_updateRateFromTimebase is for (measured over both classes' "
-   "method lists). The two clocks read the same time either way, which is the row above",
+   "method lists). The two clocks read the same time either way, which is the row beside it"),
 }
 # Rows that describe the two BUILDS and not the two answers.
 BUILD_ROWS = {
@@ -269,8 +296,18 @@ BUILD_ROWS = {
  "CONTROL: the renderer answers the protocol's own -timebase": "each half answers for its own build",
 }
 
-less = more = differs = malformed = 0
-unexplained = []
+# What every row must answer: the host's own value, unless an allowance names a value of its own. The
+# directionality step reads this file, so a mutation that breaks either kind of required answer is noticed
+# even where the two halves deliberately differ.
+required = {}
+for key, (value, _reason) in ALLOWANCES.items():
+    required[key] = value if value is not None else host.get(key)
+for key in host:
+    required.setdefault(key, host[key])
+json.dump(required, open(os.path.join(build, "required.json"), "w"), indent=1)
+
+less = more = unexplained = 0
+differing = []
 for key in sorted(set(host) | set(port)):
     if key in BUILD_ROWS:
         print("BUILD             %-74s %s" % (key, BUILD_ROWS[key]))
@@ -279,15 +316,25 @@ for key in sorted(set(host) | set(port)):
         print("ANSWERS LESS      %s" % key); less += 1
     elif key not in host:
         print("HOST LACKS IT     %s" % key); more += 1
-    elif host[key] != port[key]:
-        differs += 1
-        if key in ALLOWANCES:
+    else:
+        # Every row is checked against the value the join REQUIRES, not against the host's: for a must-match
+        # row those are the same, and for a row the two halves deliberately answer differently on it is the
+        # value the allowance names. A mutation that made the port agree with the host by answering the one
+        # thing it must not answer would otherwise read as "no difference", which is the trap this ordering
+        # closes.
+        want = required.get(key)
+        if want is not None and port[key] != want:
+            if key in ALLOWANCES:
+                print("WRONG ALLOWED     %-74s the port was required to answer [%s] and answers [%s] (the host answers [%s])"
+                      % (key, want, port[key], host[key]))
+            else:
+                print("UNEXPLAINED       %-74s host=[%s] port=[%s]" % (key, host[key], port[key]))
+            unexplained += 1
+        elif host[key] != port[key]:
             print("ALLOWED           %-74s host=[%s] port=[%s]" % (key, host[key], port[key]))
-        else:
-            print("UNEXPLAINED       %-74s host=[%s] port=[%s]" % (key, host[key], port[key]))
-            unexplained.append(key)
-print("SUMMARY rows: host=%d port=%d  must-match-unequal=%d answers-less=%d host-lacks=%d unexplained=%d"
-      % (len(host), len(port), differs, less, more, len(unexplained)))
+            differing.append(key)
+print("SUMMARY rows: host=%d port=%d  allowed-differences=%d answers-less=%d host-lacks=%d unexplained=%d"
+      % (len(host), len(port), len(differing), less, more, unexplained))
 sys.exit(1 if (less or more or unexplained) else 0)
 PYEOF
 join_status=$?
@@ -297,7 +344,7 @@ set -e
 if [ -n "$want" ] && [ "$control" = 0 ]; then
     set +e
     changed=$(python3 - "$build" "$oracle_dir" <<'PYEOF'
-import sys, os
+import json, os, sys
 build, oracle_dir = sys.argv[1], sys.argv[2]
 def load(name):
     rows = {}
@@ -308,44 +355,50 @@ def load(name):
         rows[key.strip()] = value.strip()
     return rows
 base = load(os.path.join(oracle_dir, "port.baseline"))
-port, host = load(os.path.join(build, "port.table")), load(os.path.join(build, "host.table"))
-changed, right_then_wrong, closer = [], [], []
+port = load(os.path.join(build, "port.table"))
+host = load(os.path.join(build, "host.table"))
+# every row's required value, written by the join above: the host's own, or the one an allowance names
+required = json.load(open(os.path.join(build, "required.json")))
+changed, broke_required, closer = [], [], []
 for key in set(base) | set(port):
     if base.get(key) == port.get(key):
         continue
     changed.append(key)
-    if key in host and base.get(key) == host[key] and port.get(key) != host[key]:
-        right_then_wrong.append(key)
+    if key in required and base.get(key) == required[key] and port.get(key) != required[key]:
+        # The join NAMES the value this row must answer, so breaking it is turning a required answer wrong -
+        # whether that value is the host's (a must-match row) or the one an allowance says (a row the two
+        # halves deliberately answer differently on).
+        broke_required.append(key)
     elif key in host and base.get(key) != host[key] and port.get(key) == host[key]:
         closer.append(key)
-for key in sorted(right_then_wrong):
-    print("BROKE A RIGHT ONE  %s" % key)
+for key in sorted(broke_required):
+    print("BROKE A REQUIRED ONE  %s" % key)
 for key in sorted(closer):
-    print("MOVED TOWARD HOST  %s" % key)
+    print("MOVED TOWARD HOST     %s" % key)
 for key in sorted(changed):
     print("CHANGED           %-74s before=[%s] after=[%s]" % (key, base.get(key), port.get(key)))
-print("DIRECTIONALITY changed=%d right-then-wrong=%d moved-toward-host=%d"
-      % (len(changed), len(right_then_wrong), len(closer)))
-sys.exit(0 if (changed and right_then_wrong) else 1)
+print("DIRECTIONALITY changed=%d broke-a-required-answer=%d moved-toward-host=%d"
+      % (len(changed), len(broke_required), len(closer)))
+sys.exit(0 if (changed and broke_required) else 1)
 PYEOF
 )
     dir_status=$?
     set -e
     if [ "$dir_status" != 0 ]; then
         echo "FAIL: the $want mutation was NOT noticed in the required direction: it did not turn a"
-        echo "      right answer wrong. A mutation that only moves the port AWAY from a row that already"
-        echo "      differed is not a check; it needs a row that was RIGHT."
+        echo "      required answer wrong. A mutation that only moves the port AWAY from a row that already"
+        echo "      differed is not a check; it needs a row the join says the port must answer."
         echo "$changed"
         exit 1
     fi
     if [ "$join_status" = 0 ]; then
-        echo "FAIL: the $want mutation changed a row that matched the host and the join stayed GREEN, so"
+        echo "FAIL: the $want mutation changed a row the join requires and the join stayed GREEN, so"
         echo "      nothing the check reads was wrong. A mutation must be noticed by the join too."
         exit 1
     fi
-    echo "ok  the $want mutation was noticed, turned a right answer wrong, and the join went red:"
+    echo "ok  the $want mutation was noticed, turned a required answer wrong, and the join went red:"
     echo "$changed" | grep -E '^(CHANGED|BROKE|MOVED)' | head -14
-    echo "DIRECTIONALITY $(echo "$changed" | tail -1)"
+    echo "$(echo "$changed" | tail -1)"
     echo "log=$build"
     exit 0
 fi
@@ -371,6 +424,6 @@ if [ "$join_status" != 0 ]; then
     echo "FAIL: the differential is not green"
     exit 1
 fi
-echo "ok  every row both halves answer is answered the same, and what differs is the five media rows this"
-echo "    machine has no audio device for, each with the measurement behind it"
+echo "ok  every row both halves answer is answered the same, apart from the nine this check names, and each"
+echo "    of them carries the value the port is required to answer and the measurement behind it"
 echo "log=$build"

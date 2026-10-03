@@ -93,6 +93,34 @@ static void charon_queueReturnedBuffer(void *userData, AudioQueueRef queue, Audi
 
 @implementation AVSampleBufferAudioRenderer
 
+// NOT BUILT IN THIS OBJECT, AND SAID SO RATHER THAN CLAIMED.
+//
+// clang synthesises an ivar and a pair of accessors for every property the SDK's @interface declares and
+// this @implementation does not mention, whatever the property's API_AVAILABLE says and whatever release
+// is being built. Measured on this object's own code at the package's flags: `nm -a` over
+// AVSampleBufferAudioRenderer11.o carries -allowedAudioSpatializationFormats, -setAllowedAudioSpatializationFormats:,
+// -audioOutputDeviceUniqueID, -setAudioOutputDeviceUniqueID: and the two ivars behind them, identically at
+// -target armv7-apple-ios6.0 and at -target armv7-apple-ios4.3. Both are members the registry rows answer
+// absent - one is 15.0, the other is API_UNAVAILABLE(ios) in the SDK's own header - and a synthesised
+// accessor is a name the port claims and does not carry, which is what check_registry reads as
+// "listed as absent, but what is built answers it".
+//
+// Why nothing caught it here, measured rather than assumed: -fsyntax-only emits no code and so cannot show
+// auto-synthesis at all, which is the only thing that went wrong in this series' own verification; the
+// package's -Werror=objc-missing-property-synthesis is the warning for the OPPOSITE condition (a property
+// that is not synthesised, which happens under -fno-objc-default-synthesize-properties) and never fires for
+// one that was synthesised silently; and -Wincomplete-implementation did fire for the two METHODS another
+// release's object carries (-currentTime at 12.0, -setRate:time:atHostTime: at 14.5) but cannot fire for a
+// property, because auto-synthesis satisfies the declaration. The protocol's own
+// hasSufficientMediaDataForReliablePlaybackStart needs no @dynamic: a property a protocol declares is not
+// synthesised (measured: no accessor of that name in any of the four objects, and
+// -Wobjc-protocol-property-synthesis says so at compile time).
+//
+// @dynamic leaves respondsToSelector: answering NO, which is the truth, and tests/backports/host/
+// avf-samplerender11 asks each of these two of the built class.
+@dynamic allowedAudioSpatializationFormats;
+@dynamic audioOutputDeviceUniqueID;
+
 // ---------------------------------------------------------------------------------------------
 // the clock
 

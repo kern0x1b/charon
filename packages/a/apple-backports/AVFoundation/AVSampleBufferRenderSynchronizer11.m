@@ -124,6 +124,19 @@
         [observer charon_cancel];
 }
 
+// NOT BUILT IN THIS OBJECT, AND SAID SO RATHER THAN CLAIMED. clang synthesises an ivar and a pair of
+// accessors for every property the SDK's @interface declares and this @implementation does not mention,
+// whatever the property's API_AVAILABLE says: measured on this object's own code at the package's flags,
+// `nm -a` over AVSampleBufferRenderSynchronizer11.o carries -delaysRateChangeUntilHasSufficientMediaData,
+// -setDelaysRateChangeUntilHasSufficientMediaData: and the ivar behind them, identically at -target
+// armv7-apple-ios6.0 and at -target armv7-apple-ios4.3. The property is 14.5 and its registry row answers
+// absent, because the level it asks about is the preroll level
+// AVSampleBufferAudioRenderer.hasSufficientMediaDataForReliablePlaybackStart answers and that is not
+// measurable on this machine or derivable from the header. @dynamic leaves respondsToSelector: answering
+// NO, which is the truth; the reason and the measurement are in AVSampleBufferAudioRenderer11.m, where the
+// same thing happens to two properties, and the check asks all three.
+@dynamic delaysRateChangeUntilHasSufficientMediaData;
+
 #pragma mark - the clock
 
 - (CMTimebaseRef)timebase

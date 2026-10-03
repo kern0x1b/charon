@@ -504,6 +504,25 @@ static void probeRendererAttached(AVSampleBufferRenderSynchronizer *sync, AVSamp
 // handed to (measured: probe over the macOS SDK's own AVSampleBufferAudioRenderer, SIGABRT, empty
 // stderr), so the with-media case is not asked here and is written down in
 // facts/AVFoundation/SampleBufferRender11.md.
+// What the port does NOT carry, asked of the built classes. clang synthesises an ivar and a pair of
+// accessors for every property an SDK @interface declares and an @implementation does not mention, whatever
+// the property's API_AVAILABLE says, so a member the registry rows answer absent can still be answered by
+// the class - and check_registry reads that as "listed as absent, but what is built answers it". Each of
+// these four is a property of one of the two SDK @interfaces or of the protocol, and each must leave
+// respondsToSelector: answering NO on the port. Apple's own classes answer YES for all four, because their
+// surface is a later one, which is what the ALLOWANCES in run.sh say.
+static void probeAbsentMembers(void)
+{
+    row("absent: the renderer answers respondsToSelector: for allowedAudioSpatializationFormats",
+        yesno([AVSampleBufferAudioRenderer instancesRespondToSelector:@selector(allowedAudioSpatializationFormats)]));
+    row("absent: the renderer answers respondsToSelector: for audioOutputDeviceUniqueID",
+        yesno([AVSampleBufferAudioRenderer instancesRespondToSelector:@selector(audioOutputDeviceUniqueID)]));
+    row("absent: the renderer answers respondsToSelector: for hasSufficientMediaDataForReliablePlaybackStart",
+        yesno([AVSampleBufferAudioRenderer instancesRespondToSelector:@selector(hasSufficientMediaDataForReliablePlaybackStart)]));
+    row("absent: the synchronizer answers respondsToSelector: for delaysRateChangeUntilHasSufficientMediaData",
+        yesno([AVSampleBufferRenderSynchronizer instancesRespondToSelector:@selector(delaysRateChangeUntilHasSufficientMediaData)]));
+}
+
 static void probeRendererFlushWithoutMedia(AVSampleBufferRenderSynchronizer *sync, AVSampleBufferAudioRenderer *renderer)
 {
     rowf("flush: status before -flush, with no media", @"%ld", (long)renderer.status);
@@ -657,6 +676,7 @@ int main(void)
         row("CONTROL: the renderer answers the protocol's own -timebase",
             yesno([AVSampleBufferAudioRenderer instancesRespondToSelector:@selector(timebase)]));
 
+        probeAbsentMembers();
         probeSynchronizerClock();
         probeAnchorForm();
         probeAnchorInvalidInputs();

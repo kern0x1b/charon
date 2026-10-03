@@ -71,12 +71,21 @@ extern NSString *const AVSampleBufferAudioRendererFlushTimeKey;
 - (CMTime)CMTimeValue;
 @end
 
+// The three properties below are declared here because the 16.4 SDK declares them and the port's rows
+// answer them absent, NOT because this check needs them to exist: clang synthesises an ivar and a pair of
+// accessors for every property an @interface declares and an @implementation does not mention, whatever
+// its API_AVAILABLE says, and a synthesised accessor is a name the port claims and does not carry. The
+// port's objects answer @dynamic for each, which is what makes -respondsToSelector: answer NO, and the
+// four "absent:" rows of the differential are what hold them to that. Leaving them out of this header
+// would have made the whole question invisible to this check, and it is visible in the real build.
 @interface AVSampleBufferAudioRenderer : NSObject <AVQueuedSampleBufferRendering>
 @property (nonatomic, readonly) AVQueuedSampleBufferRenderingStatus status;
 @property (nonatomic, readonly, nullable) NSError *error;
 @property (nonatomic, copy) AVAudioTimePitchAlgorithm audioTimePitchAlgorithm;
 @property (nonatomic) float volume;
 @property (nonatomic, getter=isMuted) BOOL muted;
+@property (nonatomic) NSUInteger allowedAudioSpatializationFormats;
+@property (nonatomic, copy, nullable) NSString *audioOutputDeviceUniqueID;
 - (void)flushFromSourceTime:(CMTime)time completionHandler:(void (^)(BOOL flushSucceeded))completionHandler;
 @end
 
@@ -86,6 +95,7 @@ extern NSString *const AVSampleBufferAudioRendererFlushTimeKey;
 - (void)setRate:(float)rate time:(CMTime)time;
 - (CMTime)currentTime;
 - (void)setRate:(float)rate time:(CMTime)time atHostTime:(CMTime)hostTime;
+@property (nonatomic) BOOL delaysRateChangeUntilHasSufficientMediaData;
 @property (atomic, readonly) NSArray<__kindof id <AVQueuedSampleBufferRendering>> *renderers;
 - (void)addRenderer:(id <AVQueuedSampleBufferRendering>)renderer;
 - (void)removeRenderer:(id <AVQueuedSampleBufferRendering>)renderer

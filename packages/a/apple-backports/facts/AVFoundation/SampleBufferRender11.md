@@ -238,12 +238,64 @@ renderer side of the same family is not affected: `AVSampleBufferAudioRendererWa
 is an 11.0 constant (in `AVFoundationConstants110.m`) and the renderer posts it when a rate change really
 discards media it was holding.
 
-## The eleven mutations, and what each one is for
+## clang synthesises the properties the rows say are absent, and how that was found
 
-Every mutation changes a line the join reads, turns an answer that was RIGHT into one that is not, and has a
-control that runs the unmutated source through the same path. `rate`, `raterenderers`, `detachclock`,
-`periodicinterval`, `removeobserver`, `addtwice`, `boundarypast`, `emptytimes`, `flushstatus`, `readiness`,
-`volume`.
+**The coordinator's gate caught this on my branch: "listed as absent, but what is built answers it" for
+`AVSampleBufferAudioRenderer.allowedAudioSpatializationFormats` and
+`AVSampleBufferRenderSynchronizer.delaysRateChangeUntilHasSufficientMediaData`.** Measured then, on my own
+objects at the package's flags, `nm -a` over `AVSampleBufferAudioRenderer11.o` and
+`AVSampleBufferRenderSynchronizer11.o` carried, at **both** `-target armv7-apple-ios6.0` and
+`-target armv7-apple-ios4.3`:
+
+| auto-synthesised member | where the SDK declares it | the row says |
+| --- | --- | --- |
+| `-allowedAudioSpatializationFormats`, `-setAllowedAudioSpatializationFormats:`, `_allowedAudioSpatializationFormats` | `AVSampleBufferAudioRenderer.h:88`, `API_AVAILABLE(ios(15.0))` | `absent` |
+| `-delaysRateChangeUntilHasSufficientMediaData`, `-setDelaysRateChangeUntilHasSufficientMediaData:`, `_delaysRateChangeUntilHasSufficientMediaData` | `AVSampleBufferRenderSynchronizer.h:117`, `API_AVAILABLE(ios(14.5))` | `absent` |
+| `-audioOutputDeviceUniqueID`, `-setAudioOutputDeviceUniqueID:`, `_audioOutputDeviceUniqueID` | `AVSampleBufferAudioRenderer.h:41`, `API_UNAVAILABLE(ios)` | no iOS row at all |
+
+**Why it happened, measured rather than guessed: it is plain auto-synthesis and availability is not part of
+it.** clang gives an ivar and a pair of accessors to every property **the `@interface` the `@implementation`
+answers** declares and the implementation does not mention - no inheritance consulted, no `API_AVAILABLE`
+consulted, and nothing different at the 4.3 band's target, which is the point: the same members appear at
+both, so this was never a question of what the band is. The protocol's own
+`hasSufficientMediaDataForReliablePlaybackStart` is **not** synthesised (measured: no accessor of that name in
+any of the four objects, and `-Wobjc-protocol-property-synthesis` says so at compile time), because a
+property a *protocol* declares is not auto-synthesised.
+
+**Why this series' own verification missed it, which is the part worth keeping:**
+
+- `-fsyntax-only` emits no code, so it cannot show auto-synthesis **at all**. That was the whole of my
+  verification of these objects and it was the wrong instrument: `check_registry` reads the built library, and
+  a synthesised accessor exists only in the object file. The check that catches it is `nm -a` (or
+  `strings -a`) over the object, at each band target.
+- `-Werror=objc-missing-property-synthesis`, which the package passes, is the warning for the **opposite**
+  condition: a property that is *not* synthesised, which is what happens under
+  `-fno-objc-default-synthesize-properties`. It cannot fire for a property that was synthesised silently.
+- `-Wincomplete-implementation` **did** fire, for the two *methods* another release's object carries
+  (`-currentTime` at 12.0, `-setRate:time:atHostTime:` at 14.5), and it cannot fire for a property: the
+  synthesised accessors satisfy the declaration, so from the compiler's point of view nothing is missing.
+
+**The fix** is main's idiom (`FileProvider/FileProvider11.m`, NSFileProviderDomain): `@dynamic` for each of
+the three, in the object that declares the class, with the reason beside it. `@dynamic` leaves
+`respondsToSelector:` answering NO, which is the truth - a synthesised accessor is a name the port claims and
+does not carry. Measured after the fix, at both targets: no accessor and no ivar of any of the three names in
+any of the four objects.
+
+**And the check holds it.** Four rows in `avf-samplerender11` ask each build what it answers for those three
+plus the protocol's preroll property: this Mac's own classes answer YES to all four (their surface is a later
+one) and the port answers NO, so each is an ALLOWANCE **carrying the value the port is required to answer**,
+not only a reason. The join checks every row against the value it requires rather than against the host's
+value, which is what lets a mutation break an allowance: the `nodynamic` mutation removes one `@dynamic`, the
+port answers YES, the join prints `WRONG ALLOWED` and goes red, and the directionality step reports
+`broke-a-required-answer=1`. The stand-in header now declares those three properties as well, because the
+16.4 SDK does - without them the check could not have asked the question at all.
+
+## The twelve mutations, and what each one is for
+
+Every mutation changes a line the join reads, turns an answer that was **required** - the host's own, or the
+value an ALLOWANCE names - into one that is not, and has a control that runs the unmutated source through the
+same path. `rate`, `raterenderers`, `detachclock`, `periodicinterval`, `removeobserver`, `addtwice`,
+`boundarypast`, `emptytimes`, `flushstatus`, `readiness`, `volume`, `nodynamic`.
 
 Two things the check found in the port's own code while it was being written, both fixed and both recorded
 because a row that only agrees because the code is wrong is worse than no row:
