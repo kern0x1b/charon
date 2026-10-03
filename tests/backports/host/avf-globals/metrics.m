@@ -79,11 +79,24 @@ static void probe_protocol(const char *name)
    instantiated here: several of them are AV_INIT_UNAVAILABLE and the point of this phase is that an
    instance answers its members, which the port's own build answers by construction - the objects hold
    what they were given and there is no object. */
+/* The selector asked is the ACCESSOR THE HEADER DECLARES, not the property's name: run.sh reads the
+   getter= out of CharonAVMetrics18.h and passes it here. `readFromCache` is declared
+   `getter=wasReadFromCache`, so asking -readFromCache finds nothing on either side and reports the row
+   equal without having asked anything - which is how the first version of this list read
+   `host=no` for a selector no class anywhere implements.
+ *
+ * The port side is asked of its OWN renamed class, and answers by whether it implements the accessor: a
+ * @property (readonly) with an @synthesize behind it does, and the three rendition properties carried by the
+ * 26.0 category's association-backed getters do too. */
 static void probe_member(const char *owner, const char *selector)
 {
     Class host = gHost ? NSClassFromString([NSString stringWithUTF8String:owner]) : Nil;
-    printf("RESPONDS\t-[%s %s]\thost=%s\tport=declared\n", owner, selector,
-           (host && class_getInstanceMethod(host, sel_registerName(selector))) ? "yes" : "no");
+    char prefixed[512];
+    snprintf(prefixed, sizeof prefixed, "charon_host_%s", owner);
+    Class port = objc_getClass(prefixed);
+    printf("RESPONDS\t-[%s %s]\thost=%s\tport=%s\n", owner, selector,
+           (host && class_getInstanceMethod(host, sel_registerName(selector))) ? "yes" : "no",
+           (port && class_getInstanceMethod(port, sel_registerName(selector))) ? "yes" : "no");
 }
 
 int main(int argc, char **argv)

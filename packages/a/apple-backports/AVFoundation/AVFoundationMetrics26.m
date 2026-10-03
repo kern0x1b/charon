@@ -2,6 +2,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
+#import "../../../c/charon-coding/files/CharonCoding.h"
 
 // The part of the metric surface that arrived at iOS 26, one release's worth: AVMetricMediaRendition and
 // the three rendition properties each variant-switch class gained. The classes those two categories are
@@ -25,6 +26,41 @@
 @synthesize stableID = _stableID;
 @synthesize URL = _URL;
 
+// NSSecureCoding, the same three methods and through the same helper as AVMetricEvent carries, and for the
+// same reason: the header declares the conformance on this class too, so without them an archive of a
+// rendition would carry nothing and clang would say so:
+//
+//   method 'supportsSecureCoding' in protocol 'NSSecureCoding' not implemented
+//   method 'encodeWithCoder:' in protocol 'NSCoding' not implemented
+//   method 'initWithCoder:' in protocol 'NSCoding' not implemented
+//
+// This is the OTHER root of a hierarchy in this family, not a second copy on one: AVMetricMediaRendition is
+// an NSObject of its own and nothing derives from it.
+//
+// WHAT AN ARCHIVE DOES NOT CARRY, stated rather than left to be found: the three rendition properties on the
+// two variant-switch classes are object associations, and an ivar walk does not see an association. An
+// archive of a variant-switch event therefore does not carry them. That is not a wrong answer here, and the
+// host round trip in tests/backports/host/avf-globals/coding.m is what makes it checkable rather than
+// argued: there is no setter for any of the three - the header declares them readonly - so every instance
+// this port can produce has nil for all three, and an archive carrying nil for nil is true.
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    charon_intents_encode(self, coder);
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        charon_intents_decode(self, coder);
+    }
+    return self;
+}
+
 @end
 
 // THE THREE PROPERTIES ARE STORED AS ASSOCIATED OBJECTS, and that is forced rather than chosen.
@@ -43,10 +79,10 @@ static id CharonAVMetricRenditionValue(id object, NSString *property)
     return objc_getAssociatedObject(object, property.UTF8String);
 }
 
-static void CharonAVMetricSetRenditionValue(id object, NSString *property, id value)
-{
-    objc_setAssociatedObject(object, property.UTF8String, value, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
+// There is NO SETTER beside these, and that is the reason there is none: the header declares all three
+// properties @property (readonly), so a setter would be an accessor the SDK does not declare, which is not a
+// backport. It also means an instance this port can produce holds nil for all three, which is what makes the
+// archive's not carrying them true rather than a loss - see the note in AVMetricMediaRendition below.
 
 #define CHARON_AVF_RENDITION_GETTER(CLASS, PROPERTY)                                          \
     - (AVMetricMediaRendition *)PROPERTY                                                       \

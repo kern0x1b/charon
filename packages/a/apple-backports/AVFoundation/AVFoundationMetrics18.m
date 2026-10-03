@@ -3,6 +3,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreMedia/CoreMedia.h>
 #import <objc/runtime.h>
+#import "../../../c/charon-coding/files/CharonCoding.h"
 
 // AVFoundation's metric event surface, one release's worth: an object may only hold API of one release,
 // and which release that is was MEASURED - all sixteen classes below are first EXPORTED by the 18.0 cache
@@ -177,10 +178,6 @@
 // category on each of the two classes, because a property is API of the release it arrived in and this
 // object is the 18.0 band; a category adds a selector to a class the 18.0 object defines, and
 // charon_collect installs it where the class does not already answer it, which is exactly the case here.
-//
-// NSSecureCoding is declared by the header and NOT implemented here: +supportsSecureCoding,
-// -encodeWithCoder: and -initWithCoder: are not among the rows this worker's list holds, and an
-// encoder this port cannot produce is not something to invent. facts/AVFoundation/Metrics.md says so.
 @implementation AVMetricEvent
 
 @synthesize date = _date;
@@ -194,6 +191,45 @@
         _date = [NSDate date];
         _mediaTime = CMTimeMake(0, 1);
         _sessionID = nil;
+    }
+    return self;
+}
+
+// NSSecureCoding. The header declares the conformance, so without the three methods below an archive of one
+// of these events would carry nothing at all - a silent wrong answer rather than a crash - and clang says so
+// on this class:
+//
+//   method 'supportsSecureCoding' in protocol 'NSSecureCoding' not implemented
+//   method 'encodeWithCoder:' in protocol 'NSCoding' not implemented
+//   method 'initWithCoder:' in protocol 'NSCoding' not implemented
+//
+// They are here ONCE, on the root of the hierarchy, and every one of the sixteen subclasses inherits all
+// three: none of them declares the conformance itself, so a second copy would be six identical methods.
+//
+// Encoding goes through packages/c/charon-coding/files/CharonCoding.h, whose walker reads the class's own
+// ivar list through the runtime from the object's class up to NSObject - so a subclass carries its parent's
+// state without either of them naming it, and a property added to a class later is carried by the same code
+// rather than by an edit to an archive method, which would then be one list instead of the class.
+//
+// The initialiser is the superclass's own -init written out, because the header marks this class's -init
+// AV_INIT_UNAVAILABLE and a file that reads the header cannot spell [super init] for it.
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    charon_intents_encode(self, coder);
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    // charon_intents_decode writes the ivars this object was archived from, so it must NOT go through
+    // -init: that would stamp the decode time over the archived date and put CMTimeMake(0, 1) back over an
+    // archived mediaTime. The host round trip in tests/backports/host/avf-globals/coding.m is what says so.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        charon_intents_decode(self, coder);
     }
     return self;
 }

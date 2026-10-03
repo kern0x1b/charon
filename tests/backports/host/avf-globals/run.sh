@@ -40,6 +40,7 @@ mutant=${AVFGLOBALSMUTANT:-0}
 kind=constant
 [ "$mutant" = function ] && kind=function
 [ "$mutant" = metrics ] && kind=metrics
+[ "$mutant" = coding ] && kind=coding
 build=${AVF_GLOBALS_BUILD:-$root/.agent-work/avf-globals-build}
 rm -rf "$build"
 mkdir -p "$build/src" "$build/o"
@@ -217,7 +218,7 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = function ]; then
     fi
     echo "ok  the constants are clean, so the function mutation below is the only thing that can go red"
 fi
-if [ "$mutant" != 0 ] && [ "$control" != 0 ]; then
+if [ "$mutant" != 0 ] && [ "$control" != 0 ] && [ "$kind" = constant ]; then
     if [ "$differs" != 0 ]; then
         echo "FAIL: the control is not clean: the unmutated sources through the identical path still"
         echo "      differ on $differs row(s), so the red is the path and not the mutation"
@@ -375,6 +376,11 @@ reactdiffers=$(grep '^AVCaptureReactionType' "$build/functions.table" | grep -vc
 planted=$(grep "^PLANTED-TYPE	" "$build/functions.table" | cut -f2,3 || true)
 
 if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = function ]; then
+    if [ "$differs" != 0 ]; then
+        echo "FAIL: the constants differ on $differs row(s) before the function mutation is applied"
+        sed -n '1,12p' "$build/diff.log"
+        exit 1
+    fi
     if [ "$fdiffers" = 0 ] && [ "$reactdiffers" = 0 ]; then
         echo "FAIL: the mutation left every function answer equal, so this check cannot fail and proves nothing"
         exit 1
@@ -384,7 +390,7 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = function ]; then
     grep '^AVCaptureReactionType' "$build/functions.table" | grep -v 'host=\[\(.*\)\]	port=\[\1\]$' | head -4
     exit 0
 fi
-if [ "$mutant" != 0 ] && [ "$control" != 0 ]; then
+if [ "$mutant" != 0 ] && [ "$control" != 0 ] && [ "$kind" = function ]; then
     if [ "$fdiffers" != 0 ] || [ "$reactdiffers" != 0 ]; then
         echo "FAIL: the control is not clean: $fdiffers struct row(s) and $reactdiffers reaction row(s) differ"
         echo "      through the identical path, so the red would be the path and not the mutation"
@@ -412,7 +418,7 @@ echo "note: the type the port does not carry, measured on both sides: $planted"
 # The host HAS this surface - iOS 18 added it and this macOS is 27 - so this is a real structural
 # differential: every class and its superclass, and one member per property row.
 # ---------------------------------------------------------------------------------------------
-for msource in AVFoundationMetrics18.m AVFoundationMetrics26.m; do
+for msource in AVFoundationMetrics18.m AVFoundationMetrics18b.m AVFoundationMetrics26.m; do
     [ -f "$avf/$msource" ] || {
         echo "FAIL: $avf/$msource does not exist, so the metric surface this run checks for is not there"
         exit 1
@@ -422,10 +428,69 @@ done
 # and per property row, out of the two files this family writes. A name the registry does not carry is a
 # name the probe is not asked about, and a row the tree forgot to register cannot hide behind a list that
 # was written by hand.
-python3 - "$root/packages/a/apple-backports/registry/AVFoundation" "$build/metric-list.tsv" <<'LISTEOF'
+# THE DECLARED GETTER, not the property name. `@property (readonly, getter=wasReadFromCache) BOOL
+# readFromCache;` declares a property called readFromCache whose accessor is -wasReadFromCache, so a probe
+# that asks for -readFromCache finds nothing on EITHER side and reports the row equal - it never asks.
+# CharonAVMetrics18.h:156 is that line, and the first version of this list asked the property name, so
+# `-[AVMetricMediaResourceRequestEvent readFromCache] host=no` was a statement about a selector neither side
+# implements rather than about the port carrying more than the host.
+#
+# So the list carries the SELECTOR the header declares, read out of the header itself, and a row whose
+# accessor cannot be found there is reported rather than guessed at.
+python3 - "$avf/CharonAVMetrics18.h" "$build/metric-getters.tsv" <<'GETTERS'
+import re, sys
+text = open(sys.argv[1]).read()
+# @property ... <name> ...; with an optional getter=<accessor> in the attribute list
+pattern = re.compile(r"@property\s*(\([^)]*\))?\s*[^;]*?\b(\w+)\s*(?:\w+\s*)*;")
+decl = {}
+current = None
+for line in text.split("\n"):
+    match = re.match(r"@interface\s+(AVMetric\w+)", line)
+    if match:
+        current = match.group(1)
+        continue
+    if "@property" not in line or current is None:
+        continue
+    attributes = line.split("@property", 1)[1].split(")", 1)[0] if "(" in line.split("@property",1)[1] else ""
+    getter = None
+    found = re.search(r"getter=(\w+)", attributes)
+    if found:
+        getter = found.group(1)
+    # The property NAME is the last identifier BEFORE the first annotation. Taking the last identifier of
+    # the line is wrong: `API_AVAILABLE(macos(26.0), ios(26.0), ...)` ends the line, so the last token is a
+    # version number and the three rendition properties came out unnamed - which the guard below turned into
+    # a refusal rather than a wrong selector. The three rendition properties are what that guard was for.
+    annotation = re.compile(r"^(NS_|API_|CF_|AVF_|UI_|SWIFT_|readonly|readwrite|nonatomic|atomic|strong|"
+                            r"weak|copy|assign|retain|unsafe_unretained|getter|setter)")
+    # The attribute list goes first: `(readonly)` is itself an annotation token, so walking the line from
+    # `readonly` stops before the name is ever seen - which is what raised on `@property (readonly) NSDate
+    # *date;`, the very first property in the header.
+    head = re.sub(r"^\s*\([^)]*\)", "", line.split("@property", 1)[1])
+    head = re.sub(r"<[^<>]*>", "", head)
+    name = None
+    for token in re.findall(r"\b(\w+)\b", head):
+        if annotation.match(token):
+            break
+        name = token
+    if name is None:
+        raise SystemExit("cannot tell the property name on this line, so this run must not guess: " + line)
+    names = [name]
+    decl[(current, names[-1])] = getter or names[-1]
+with open(sys.argv[2], "w") as handle:
+    for (owner, prop), accessor in sorted(decl.items()):
+        handle.write("%s\t%s\t%s\n" % (owner, prop, accessor))
+print("the header declares %d accessors, %d of them under a name other than the property's"
+      % (len(decl), sum(1 for (o, p), a in decl.items() if a != p))
+      )
+GETTERS
+python3 - "$root/packages/a/apple-backports/registry/AVFoundation" "$build/metric-list.tsv" "$build/metric-getters.tsv" <<'LISTEOF'
 import json, os, sys
-folder, out = sys.argv[1], sys.argv[2]
-rows = []
+folder, out, getters_path = sys.argv[1], sys.argv[2], sys.argv[3]
+getters = {}
+for line in open(getters_path):
+    owner, prop, accessor = line.rstrip("\n").split("\t")
+    getters[(owner, prop)] = accessor
+rows, unnamed = [], []
 for name in sorted(os.listdir(folder)):
     if not name.startswith("metrics") or not name.endswith(".json"):
         continue
@@ -436,7 +501,14 @@ for name in sorted(os.listdir(folder)):
             rows.append(("protocol", entry["api"], ""))
         elif entry["kind"] == "property":
             owner, member = entry["api"].split(".", 1)
-            rows.append(("member", owner, member))
+            accessor = getters.get((owner, member))
+            if accessor is None:
+                unnamed.append(entry["api"])
+                continue
+            rows.append(("member", owner, accessor))
+if unnamed:
+    raise SystemExit("no accessor is declared for these rows, so asking the property name would ask a "
+                     "selector neither side has: " + " ".join(unnamed))
 with open(out, "w") as handle:
     for kind, first, second in rows:
         handle.write("%s\t%s\t%s\n" % (kind, first, second))
@@ -515,8 +587,18 @@ fi
            -e 's/^@interface (AVMetric[A-Za-z0-9_]*) \(/@interface charon_host_\1 (/' \
         "$avf/AVFoundationMetrics26.m"
 } > "$build/src/metrics26.rn"
+# The 18 BAND object is in this binary too. Without it the probe reports port=no for every
+# AVMetricDownloadSummaryEvent accessor, because the class is not in the binary at all - which is the
+# port-lacks guard doing its job on a port that was merely not linked.
+{
+    cat "$build/src/metric-prologue.h"
+    sed -E -e 's/^@implementation (AVMetric[A-Za-z0-9_]*) *$/@implementation charon_host_\1/' \
+           -e 's/^@implementation (AVMetric[A-Za-z0-9_]*) \(/@implementation charon_host_\1 (/' \
+           -e 's/^@interface (AVMetric[A-Za-z0-9_]*) \(/@interface charon_host_\1 (/' \
+        "$avf/AVFoundationMetrics18b.m"
+} > "$build/src/metrics18b.rn"
 mobjs=""
-for pair in "metrics18.rn:metrics18.o" "metrics26.rn:metrics26.o"; do
+for pair in "metrics18.rn:metrics18.o" "metrics18b.rn:metrics18b.o" "metrics26.rn:metrics26.o"; do
     src=${pair%%:*}; obj=${pair##*:}
     # -x objective-c for the same reason as the functions phase: the copy is named .rn, which the driver
     # does not recognise, and with -c it exits 0 having written nothing at all. The object-exists guard
@@ -530,10 +612,70 @@ for pair in "metrics18.rn:metrics18.o" "metrics26.rn:metrics26.o"; do
     [ -f "$build/o/$obj" ] || { echo "FAIL: $obj was not written, so the link below would measure nothing"; exit 1; }
     mobjs="$mobjs $build/o/$obj"
 done
-if ! xcrun clang -fobjc-arc -w "$here/metrics.m" $mobjs -framework Foundation -framework CoreMedia \
+# THE ARCHIVER IS COMPILED FOR THE HOST, from the tree's own source, rather than linked from the installed
+# package - and that is not a preference. The installed libcharon-coding.a is `Non-fat file ... architecture:
+# armv7`: it is built for the device, so linking it into an arm64 macOS binary leaves
+#
+#   "_charon_intents_encode", referenced from: -[charon_host_AVMetricEvent encodeWithCoder:]
+#   ld: symbol(s) not found for architecture arm64
+#
+# The port's own objects are compiled for the host here in the same way, so the walker is treated the same.
+coding=""
+for candidate in "$root/packages/c/charon-coding/files" "$HOME/Git/projects/ios/charon/packages/c/charon-coding/files"; do
+    [ -f "$candidate/CharonCoding.m" ] && { coding_source="$candidate/CharonCoding.m"; break; }
+done
+[ -n "${coding_source:-}" ] || {
+    echo "FAIL: no CharonCoding.m was found, so the archive would carry nothing and every"
+    echo "      +supportsSecureCoding would answer no. Build the package and try again."
+    exit 1
+}
+if ! xcrun clang -fobjc-arc -w -c "$coding_source" -o "$build/o/coding.o" > "$build/o/coding.log" 2>&1; then
+    echo "RUN FAILED: the tree's own CharonCoding.m did not build for the host"
+    head -8 "$build/o/coding.log"
+    exit 1
+fi
+[ -f "$build/o/coding.o" ] || { echo "FAIL: coding.o was not written, so the round trip would measure nothing"; exit 1; }
+coding="$build/o/coding.o"
+echo "charon-coding compiled for the host from $(basename "$coding_source")"
+
+if ! xcrun clang -fobjc-arc -w "$here/metrics.m" $mobjs $coding -framework Foundation -framework CoreMedia \
         -framework AVFoundation -o "$build/metrics" > "$build/metrics.log" 2>&1; then
     echo "FAIL: the metrics probe did not build"; head -14 "$build/metrics.log"; exit 1
 fi
+if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = coding ]; then
+    # The plant is the SILENT wrong answer, not a crash: -initWithCoder: calling -init instead of decoding.
+    # Everything still archives, everything still unarchives, and a test comparing two freshly made archives
+    # would still pass - only a test that reads an archived date set to a moment in the past sees the restamp.
+    python3 - "$build/src/metrics18.rn" <<'PERTURB'
+import sys
+path = sys.argv[1]
+text = open(path).read()
+before = "    if ((self = charon_intents_super_init(self, [NSObject class]))) {\n        charon_intents_decode(self, coder);\n    }"
+after = "    if ((self = [self init])) {\n        charon_intents_decode(self, coder);\n    }"
+if text.count(before) != 1:
+    raise SystemExit("the mutation target is not unique (%d matches), so this run proves nothing"
+                     % text.count(before))
+out = text.replace(before, after)
+if out.count(before) != 0 or out.count(after) != 1:
+    raise SystemExit("the mutation did not take, so this run proves nothing")
+open(path, "w").write(out)
+print("# the mutation applied: -initWithCoder: no longer decodes, so the archive carries nothing")
+PERTURB
+    # the objects have to be rebuilt for the plant to be in the binary
+    mobjs=""
+    for pair in "metrics18.rn:metrics18.o" "metrics18b.rn:metrics18b.o" "metrics26.rn:metrics26.o"; do
+        src=${pair%%:*}; obj=${pair##*:}
+        xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -c "$build/src/$src" -o "$build/o/$obj" \
+            > "$build/o/$obj.log" 2>&1 || { echo "RUN FAILED: $src did not build after the mutation"; head -6 "$build/o/$obj.log"; exit 1; }
+        mobjs="$mobjs $build/o/$obj"
+    done
+fi
+if ! xcrun clang -fobjc-arc -w "$here/coding.m" $mobjs $coding -framework Foundation -framework CoreMedia \
+        -framework AVFoundation -o "$build/coding" > "$build/coding.log" 2>&1; then
+    echo "FAIL: the coding probe did not build"; head -14 "$build/coding.log"; exit 1
+fi
+"$build/coding" > "$build/coding.table" 2> "$build/coding.stderr" || {
+    echo "FAIL: the coding probe did not run"; head -10 "$build/coding.stderr"; exit 1; }
 "$build/metrics" "$build/metric-list.tsv" > "$build/metrics.table" 2> "$build/metrics.stderr" || {
     echo "FAIL: the metrics probe did not run"; head -10 "$build/metrics.stderr"; exit 1; }
 
@@ -559,8 +701,14 @@ mdiffer=$(grep -c '	DIFFERENT$' "$build/metrics.table" || true)
 mclasses=$(grep -c '^CLASS	' "$build/metrics.table" || true)
 mmembers=$(grep -c '^RESPONDS	' "$build/metrics.table" || true)
 mhostlacks=$(grep '^RESPONDS	' "$build/metrics.table" | grep -c 'host=no' || true)
+mportlacks=$(grep '^RESPONDS	' "$build/metrics.table" | grep -c 'port=no' || true)
 
 if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = metrics ]; then
+    if [ "$differs" != 0 ]; then
+        echo "FAIL: the constants differ on $differs row(s) before the metric mutation is applied"
+        sed -n '1,12p' "$build/diff.log"
+        exit 1
+    fi
     if [ "$mdiffer" = 0 ] && [ -z "$mabsent" ]; then
         echo "FAIL: the mutation left every class where it was, so this check cannot fail and proves nothing"
         exit 1
@@ -579,7 +727,60 @@ if [ "$mdiffer" != 0 ]; then
     grep '	DIFFERENT$' "$build/metrics.table" | head -12
     exit 1
 fi
+if [ "$mportlacks" != 0 ]; then
+    echo "FAIL: the port does not implement the declared accessor of $mportlacks row(s), so a registry row"
+    echo "      claims a member the object does not answer"
+    grep '^RESPONDS	' "$build/metrics.table" | grep 'port=no' | head -12
+    exit 1
+fi
 echo "ok  $mclasses classes resolve on both sides with the same superclass, and $mmembers members were asked of the host"
-echo "note: $mhostlacks of those members the host's own class does not answer - the port carries them and the host's 18.0-era class does not, which is the direction the policy asks for, printed rather than hidden"
+if [ "$mhostlacks" != 0 ]; then
+    echo "note: $mhostlacks of those members the host's own class does not answer - the port carries them and"
+    echo "      the host's class does not, which is the direction the policy asks for; printed, not exempted:"
+    grep '^RESPONDS	' "$build/metrics.table" | grep 'host=no' | head -6
+fi
+# the secure-coding verdict, from the table the coding probe wrote
+check_coding() {
+    line=$(grep "^CONTROLSECTIONPORT	$1	" "$build/coding.table" | cut -f3 || true)
+    [ "$line" = YES ] || { echo "FAIL: +[$1 supportsSecureCoding] answered [$line], expected YES"; exit 1; }
+    echo "ok  +[$1 supportsSecureCoding] = YES"
+}
+cline=$(grep "^ARCHIVE-CONTROL	" "$build/coding.table" | cut -f2 || true)
+[ "$cline" = kept ] || { echo "FAIL: the Foundation-only archive control answered [$cline], expected kept"; exit 1; }
+echo "ok  archive control: $cline"
+check_coding AVMetricEvent
+check_coding AVMetricMediaRendition
+cbad=$(grep -c 'host-carried=NO' "$build/coding.table" || true)
+crestamped=$(grep -c 'held=RESTAMPED' "$build/coding.table" || true)
+# An OPEN row is reported and counted on its own, never as a pass: it is a value this run could not show
+# carried, and folding it into either verdict would be the one thing this harness must not do.
+copen=$(grep -c '	OPEN' "$build/coding.table" || true)
+if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = coding ]; then
+    if [ "$cbad" = 0 ] && [ "$crestamped" = 0 ]; then
+        # OPEN, and the run says so instead of passing. The plant removes charon_intents_decode from
+        # -initWithCoder: and the archived values still arrive, so the phase does not yet catch it and is
+        # therefore NOT a check for the archive path - only its controls and its values are evidence. The
+        # plant lands in the source and the values still arrive, which points at the rebuild below not
+        # reaching the object the probe links; that is not isolated yet and is recorded in
+        # coordination/wave-2026-10-03/v-avf-report.md rather than guessed at here.
+        echo "OPEN the coding mutation was NOT noticed: $cbad value(s) lost, $crestamped restamped, with the"
+        echo "     decode removed from -initWithCoder:. This phase's controls and values stand; its"
+        echo "     power to fail does not, and nothing here should be read as saying it does."
+        exit 1
+    fi
+    echo "ok  the mutation was noticed: $cbad archived value(s) lost and $crestamped restamped"
+    grep -E 'host-carried=NO|held=RESTAMPED|ARCHIVE-FAILED|UNARCHIVE-FAILED' "$build/coding.table" | head -6
+    exit 0
+fi
+if [ "$cbad" != 0 ] || [ "$crestamped" != 0 ]; then
+    echo "FAIL: $cbad archived value(s) were not carried and $crestamped were restamped by -init"
+    grep -E 'host-carried=NO|held=RESTAMPED|ARCHIVE-FAILED|UNARCHIVE-FAILED' "$build/coding.table" | head -10
+    exit 1
+fi
+echo "ok  $(grep -c 'host-carried=yes' "$build/coding.table") archived values carried, on both roots and a"
+echo "    subclass, and -initWithCoder: did not go through -init"
+[ "$copen" = 0 ] || echo "OPEN $copen archived value(s) this run could not show carried - printed above and"
+[ "$copen" = 0 ] || echo "     in coordination/wave-2026-10-03/v-avf-report.md, not counted as a pass"
+
 log=$build
 exit 0
