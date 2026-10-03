@@ -132,12 +132,44 @@ So the shape of both classes is measured and is not a guess: the inference graph
 is asked and the training graph answers NO to everything that needs an engine, and the two are different
 answers rather than one of them being unimplemented.
 
-**One number is not yet pinned down, and it is `deviceMemorySize`.** It is 0 before a compile and 24 after
-one over a graph with a single 2x3 float32 tensor, and a second graph with a single **one-element**
-float32 tensor answers **4** after its compile - so it is not a constant, and 24 is that tensor's six
-elements of four bytes. Whether it is the output's bytes, the input's, or a sum over something, was not
-settled: the third shape in the sweep raised inside the host (`-[__PlaceholderDictionary
-initWithObjects:forKeys:count:]`, a nil result for the second node over a graph's own result) and the run
-stopped there. **That is the one measurement left before `MLCInferenceGraph` and `MLCTrainingGraph` can be
-written**, and it is not guessed at here: a port that answered 24 for every graph would be right on the one
-graph measured and wrong on every other.
+**`deviceMemorySize` is pinned down, and it is none of the three hypotheses.**
+`tests/backports/host/mlcompute/probes/device-memory.m` builds graphs where the input's bytes, the output's
+bytes and a sum over both are three different numbers. Every operand in it is a tensor the probe makes, never
+one a node made, because a graph's own result asked for as an output raised inside the host on the earlier
+sweep. What this host answers, over a graph with a single node whose result holds six `MLCDataTypeFloat32`
+elements - twenty-four bytes - and over one whose result holds one - four bytes:
+
+| the graph | before a compile | after |
+| --- | --- | --- |
+| six elements, nothing bound | 0 | **24** |
+| six elements, one input of six | 24 | **24** |
+| six elements, one input of **one** | 24 | **24** |
+| six elements, one output of six | 24 | **24** |
+| six elements, an input of one **and** an output of six | 24 | **24** |
+| six elements, two inputs of six | 24 | **24** |
+| six elements, one input of six and **two** outputs of six | 24 | **24** |
+| six elements, an input of one and outputs of six and one | 24 | **24** |
+| **one element**, an input of one and an output of one | 0 | **4** |
+| one element, nothing bound | 4 | **4** |
+| one element, an input of six | 4 | **4** |
+| one element, an input of six and an output of one | 4 | **4** |
+| two graphs linked, one bound to an input of one and the other to six | 24 and 24 | **24 and 24** |
+
+Two rules, and both are measured:
+
+* **It is the byte width of a tensor the graph's OWN nodes produce.** The caller's bindings do not move it at
+  all: an input of one element and an input of six over the same six-element graph are the same 24, two
+  outputs of six are the same 24, and a graph whose node holds one element is 4 whatever is bound to it and
+  whatever a link adds. So the input's bytes, the output's bytes and a sum over both are **all three refuted**.
+* **It is 0 until the graph has been compiled** - or until another graph in the same process has been, which
+  is a lazy global of the framework's own and is measured rather than argued: read in order, a six-element
+  graph answers 0, 0 and then 24 after its compile, a one-element graph answers 0 and then 4 after its
+  compile, and a **third** six-element graph made afterwards and never compiled answers **24 on its first
+  read**. So "before a compile" means "before anything in the process has been compiled".
+
+**What is still not measured, and is not needed for the two classes to be written:** whether a graph of
+**several** nodes answers the largest node's bytes or the sum of theirs. A second node over a graph's own
+result raises inside the host (`-[__PlaceholderDictionary initWithObjects:forKeys:count:]`), so every graph
+above has exactly one node. The port therefore computes the sum over its nodes' results and the facts name
+that as the one rule this measurement does not decide - it is a choice between two readings of a property
+whose multi-node value is unmeasured, and it is written down rather than passed off as measured.
