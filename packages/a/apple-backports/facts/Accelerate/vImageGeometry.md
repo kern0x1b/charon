@@ -1323,3 +1323,74 @@ values recovers weights that differ from `sinc*sinc` by 1.5e-05 to 7.9e-05 and l
 **So: the kernel is closed, the phase grid is closed, the rounding is closed, and the remaining unit and three
 quarters is inside the release's accumulation of six products - and the substrate that has never been read is
 the `int16` table inside the release's own filter object.**
+
+## The int16 table decoded, and the arithmetic closed (2026-10-03, v-tail-a9)
+
+The substrate a previous pass named and left unread is the release's own **Q14 weight table**, and it is
+inside the object `vImageNewResamplingFilter(scale, flags)` allocates, past the float one.
+
+**Its geometry, read out of the object rather than inferred.** Past a header and 64 rows of six `float`, a
+second table of `int16` begins at **halfword 1080 (byte 2160)** of the 3192-byte default Lanczos3 filter at a
+scale of one and two, **64 rows of eight** `int16` on a stride of 16 bytes. At a scale of 0.25 it is at
+halfword 856 in sixteen rows of 24; at 0.5 the rows are twelve wide. **Every one of the 64 rows sums to exactly
+16384**, so the scale is `2^14` and the row is normalised so its *integers* sum to the full scale - not to
+within a rounding of it, on every row.
+
+Row `p` is the kernel at the release's phase `p / 64`: entry `k` is the weight of tap `base - 2 + k` for
+`base = floor(centre)`, and it equals normalised `sinc(x) * sinc(x / 3)` at `x = k - 2 - p/64` to within **1.24
+of 16384**, i.e. 7.6e-05 in weight. Phase 0 is `[0, 0, 16384, 0, 0, 0]` because Lanczos3's lobes vanish at
+every nonzero integer - `sinc(1) = 0` - and phase 32 is `[400, -2225, 10017, 10017, -2225, 400]`. **The
+scale-1 and scale-2 tables are byte-identical**, which is what the phase grid `64 * min(1, scale)` predicts.
+
+**The release sums those integers and rounds at the store, half UP.** Over **eighty cells of 180 samples** -
+both axes, six translates, four slopes, both edging modes, `ARGB16S`, the release's own table and the host's own
+output compared sample by sample (`.agent-work/probe/vsweep.m`) - the count of the host's stored values the
+release's own row reproduces is
+
+    the release's Q14 row, integer sum, round half up      14400 of 14400
+    the same row, round half away from zero                14398 of 14400
+    round-to-nearest Q14 weights, peak takes the remainder 11006 of 14400
+    truncating Q14 weights                                  9922 of 14400
+    the exact double kernel, round half up                 10777 of 14400
+
+and the widest residual is 0.5, which is all a round to nearest leaves. The two misses in the first row are
+saturation - a sum of 33186 against a signed 16-bit store's 32767 - which the port already clamps. **So the
+integer weights are necessary and sufficient, and the store's tie goes toward plus infinity**, not away from
+zero: a value of -1.5 rounds to -1, which a cast never could.
+
+**The rule that turns the float weights into those integers is NOT identified**, and each of these is excluded
+with a count of the 64 rows it fails: `trunc`, `round`, `floor`, `ceil`, round-half-away and round-half-even of
+the normalised weight (57-62 rows wrong, worst 2); error-diffusion carry forward and backward on each of them
+(59); the difference of consecutive rounded prefix sums (59-61); "quantise then put the deficit on one entry" by
+any of ten priority keys (49-56); the largest-remainder apportionment (49); "quantise the *unnormalised* kernel
+and rescale by the integer sum of the quantised row", over sixteen combinations of base, divisor and rounding
+(56 at best); and "the peak entry takes the remainder", which cannot reach phase 32 at all because rounding
+already sums to 16384 there and the row is not the rounded one. The row's entries are **not** a monotone
+function of the exact weight - no single scale factor reproduces a row, which is what excludes every per-entry
+rule - and the deviation from `trunc` reaches 1.6 of 16384, which is 150 times the float the release's own
+float table stores the same weights in. So the release's integer path evaluates the kernel **less accurately
+than its float path**, and that evaluation is the one thing left.
+
+**What this changes in the port, and it is landed.** `CharonChannelPut` cast, which truncates toward zero;
+`tests/backports/host/shear/differential.m`'s own loops did the same. Both now round half up, and the packed
+ten-bit field is masked *after* the round. `port and the host differ` goes **5743 -> 5260** over the sweep.
+**The 109 samples a previous pass could not attribute are this and nothing else**: on `ARGB16S` the backColor is
+`(int16_t)(-1.0)` = `0xFFFF` for channels 2 and 3, a sample whose whole kernel lies outside the source sums to
+`-1` to within an ulp of double, and the truncating cast answers `0x0000` where the host answers `0xFFFF`.
+Ninety-eight of the 109 are the host's `0xFF` against the port's `0x00` on the low byte of a channel, the other
+eleven the same cast the other way, and rounding takes the count **109 -> 0**.
+
+**The differential's blind spot is closed.** Its sweep's six translates and four slopes made every mapped
+position a multiple of the release's grid, so it could not see the phase quantisation: planting the grid into
+`CharonResampleWeights` left both per-kind counts exactly where they were. A seventh translate of **1/128**
+puts every mapped position off the grid at every scale, and the same plant now moves the harness's own loops
+from 180 to 1328 cases. **The release does quantise the phase, and the differential can now see it.** The sweep
+is 9900 checks and 10572 failures, both PLANT controls red, and `SAN=1` the same count.
+
+**What is left, and it is one number's worth of arithmetic.** The port has to *produce* the Q14 row, and the
+rule that produces the release's is not derived. It is not a rounding mode and it is not a scale factor, so it
+is a fixed-point evaluation of `sinc` with about four significant decimal digits that the port cannot copy
+without knowing it. The map for whoever takes it is one experiment: **read the Q14 row of a filter whose lobes
+are not three**, which `vImageNewResamplingFilter(scale, kvImageHighQualityResampling)` gives (ten taps, forty
+rows at a scale of one), and check whether the deviation from the normalised five-lobe kernel has the same
+magnitude and the same sign pattern - a fixed-point `sinc` would, a normalising correction would not.
