@@ -240,8 +240,11 @@ typedef NS_ENUM(NSInteger, WKWebExtensionContextPermissionStatus) {
 @property (nonatomic, readonly, weak) WKWebExtensionController *webExtensionController;
 @property (nonatomic, readonly, weak) WKWebExtension *webExtension;
 @property (nonatomic, readonly, copy) NSUUID *uniqueIdentifier;
-@property (nonatomic, readonly) BOOL loaded;
-@property (nonatomic, readonly) BOOL inspectable;
+/* getter=isLoaded and getter=isInspectable are Apple's own (WKWebExtensionContext.h:172 and :202);
+   without them a client that reads `context.isLoaded` -- the spelling the release documents, and the
+   one the Swift overlay's own NS_SWIFT_NAME-free declaration produces -- would not find it. */
+@property (nonatomic, readonly, getter=isLoaded) BOOL loaded;
+@property (nonatomic, readonly, getter=isInspectable) BOOL inspectable;
 @property (nonatomic, readonly, copy) NSURL *baseURL;   /* webkit-extension://<uniqueIdentifier>/ */
 @property (nonatomic, readonly, nullable, copy) NSURL *optionsPageURL;
 @property (nonatomic, readonly, nullable, copy) NSURL *overrideNewTabPageURL;
