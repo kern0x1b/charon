@@ -138,18 +138,41 @@ xcrun clang $FLAGS "$build/writer.o" "$build/standin.o" "$build/port.o" \
 set +e; "$build/port" > "$build/port.table" 2> "$build/port.stderr"; port_status=$?; set -e
 
 # ---- 3. the HOST half, once. Built without -I standin, so <AVFoundation/AVFoundation.h> is the real one,
-#         and linked against this machine's own AVFoundation.
+#         and linked against this machine's own AVFoundation. The BINARY and the TABLE are cached
+#         separately and each is built when it is missing: a cached binary with no table (an interrupted
+#         run, or an oracle directory handed to a fresh tree) used to be copied as a table that was not
+#         there, and the join then read whatever was left.
 if [ ! -x "$oracle_dir/host" ]; then
     mkdir -p "$oracle_dir"
     # shellcheck disable=SC2086
     xcrun clang $FLAGS "$here/writer.m" -framework Foundation -framework AVFoundation -framework CoreMedia \
         -o "$oracle_dir/host" > "$oracle_dir/build.log" 2>&1 || {
             echo "RUN FAILED: the host half did not build"; head -8 "$oracle_dir/build.log"; exit 1; }
+fi
+if [ ! -f "$oracle_dir/host.table" ]; then
     set +e; "$oracle_dir/host" > "$oracle_dir/host.table" 2> "$oracle_dir/host.stderr"; host_status=$?; set -e
     if [ "$host_status" != 0 ]; then
         echo "RUN FAILED: the host half exited $host_status, which is a control failing and not a result"
         exit 1
     fi
+fi
+# A TABLE THAT WAITED AND GOT NOTHING IS NOT CACHED, AND IS NOT USED. writer.m prints TIMED-OUT-<bound>
+# instead of a count when the invocation AVAssetWriterInput.h:492 promises in response to
+# -markCurrentPassAsFinished did not arrive inside the bound, and that marker says the run did not answer
+# the question - it says the oracle could not. Caching such a table would repeat exactly the failure this
+# rule exists for: the coordinator's gate read "currentPassDescription after markAsFinished host=[{0/1,0/0}]"
+# and "markAsFinished after the final pass invocation host=[RAISED NSInternalInconsistencyException]" out of
+# a table built once under load beside fifteen other tests, and every later run in that tree reported
+# unexplained=2 while a fresh tree of the same commit answered unexplained=0 every time. So the table is
+# named, deleted, and the run fails - and because the check sits HERE rather than inside the build, it
+# also rejects a table that was already cached, which is the case that bit.
+if grep -q 'TIMED-OUT' "$oracle_dir/host.table"; then
+    echo "RUN FAILED: the host half did not settle, and its table is neither used nor cached. These rows"
+    echo "      waited for an invocation the header promises and did not get it inside the bound:"
+    grep 'TIMED-OUT' "$oracle_dir/host.table" | sed 's/^/      /'
+    rm -f "$oracle_dir/host.table"
+    echo "      Deleted, so the next run builds the oracle again from scratch rather than inherit it."
+    exit 1
 fi
 cp "$oracle_dir/host.table" "$build/host.table"
 host_status=0

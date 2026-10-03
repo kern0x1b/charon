@@ -121,6 +121,72 @@ static NSString *describeRanges(AVAssetWriterInputPassDescription *description)
     return parts.count ? [parts componentsJoinedByString:@" "] : @"[]";
 }
 
+// ---- Waiting for the pass description, with a bound and not with a sleep. ----
+//
+// AVAssetWriterInput.h:485 says currentPassDescription "will transition to an initial non-nil value during
+// the call to -startWriting", :504 says after -markCurrentPassAsFinished "After the receiver analyzes
+// whether an additional pass is warranted, the value of currentPassDescription will change (usually
+// asynchronously)", and :492 says the block "will be invoked one final time so the client can invoke
+// -markAsFinished in response". So the deliveries this harness depends on are the release's own promises,
+// and the only question left is WHEN to look. The two waits below are how, and neither is a sleep:
+//
+//   * charon_wait_for_calls waits on a semaphore the block signals, with a deadline. It answers "did the
+//     promised invocation arrive", and reports NO when the deadline passed.
+//   * charon_settle waits for the promised invocations and then for a QUIET interval with no further
+//     one. That is what "the analysis has finished" looks like from outside: with the switch on, Apple's
+//     class may nominate a second pass or may not, and which one it does is its own answer - but either way
+//     there is a last invocation, and until a quiet interval has passed the harness has not seen it.
+//
+// THE BOUNDS ARE MEASURED, not chosen to make a run pass. On this machine, with this Mac's own class, the
+// invocation after -markCurrentPassAsFinished arrives 3 ms after the call when the machine is idle and 11 ms
+// when four other heavy host tests are running beside it (measured over five rounds of eight each,
+// .agent-work/runs/w-avf4/load-timing.sh). The quiet interval below is twenty times the worst of those, and
+// the overall bound is generous enough that a missed delivery is a fact about the run rather than a fact
+// about the timing.
+//
+// AND A RUN THAT MISSED ONE SAYS SO. Every count the waits decide is printed through
+// charon_count_value, which prints the marker instead of a number when a promised delivery did not arrive,
+// and run.sh refuses to cache a host table carrying that marker. A table whose count is a race is not a
+// measurement, and the earlier version of this harness cached one: the coordinator's gate read
+// "currentPassDescription after markAsFinished host=[{0/1,0/0}]" and
+// "markAsFinished after the final pass invocation host=[RAISED NSInternalInconsistencyException]" from a
+// table built once under load, and every later run in that tree reported unexplained=2.
+static const double kCharonPassBoundSeconds = 2.0;    // the longest a promised invocation is waited for
+static const double kCharonPassQuietSeconds = 0.25;   // no further invocation for this long: settled
+
+// The marker, and the two functions that produce it.
+static NSString *charon_timedOutMarker(void)
+{
+    return [NSString stringWithFormat:@"TIMED-OUT-%gs", kCharonPassBoundSeconds];
+}
+
+static NSString *charon_count_value(BOOL settled, NSInteger count)
+{
+    return settled ? [NSString stringWithFormat:@"%ld", (long)count] : charon_timedOutMarker();
+}
+
+static dispatch_time_t charon_deadline(double seconds)
+{
+    return dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * (double)NSEC_PER_SEC));
+}
+
+// atLeast invocations, then a quiet interval with no further one. Returns NO when the promised invocations
+// did not arrive inside the bound, and YES when the last one has been seen and nothing has followed it.
+// atLeast is 1 where the header promises an invocation (:492, in response to -markCurrentPassAsFinished -
+// one that begins the next pass if another is warranted, and one final one either way) and 0 where it
+// promises none (a pass that had already begun when the block was registered, and anything before
+// -startWriting), because a wait with nothing to wait for cannot time out and must not pretend to.
+static BOOL charon_settle(dispatch_semaphore_t semaphore, NSInteger atLeast)
+{
+    for (NSInteger index = 0; index < atLeast; index++) {
+        if (dispatch_semaphore_wait(semaphore, charon_deadline(kCharonPassBoundSeconds)) != 0)
+            return NO;
+    }
+    while (dispatch_semaphore_wait(semaphore, charon_deadline(kCharonPassQuietSeconds)) == 0)
+        ;   // another invocation arrived inside the quiet window, so it is not settled yet
+    return YES;
+}
+
 static void reportCall(NSString *label, void (^work)(void))
 {
     @try {
@@ -226,11 +292,13 @@ static void askBeforeStartWriting(NSDictionary *settings, BOOL requestMultiplePa
     __block NSInteger calls = 0;
     __block NSMutableArray *seen = [NSMutableArray array];
     __block NSInteger onTheGivenQueue = 0;
+    dispatch_semaphore_t arrived = dispatch_semaphore_create(0);
     void (^record)(void) = ^{
         calls++;
         [seen addObject:describeRanges(input.currentPassDescription)];
         if (dispatch_get_specific(&key))
             onTheGivenQueue++;
+        dispatch_semaphore_signal(arrived);
     };
     reportCall(@"respondToEachPassDescription before startWriting", ^{
         [input respondToEachPassDescriptionOnQueue:queue usingBlock:record];
@@ -238,9 +306,11 @@ static void askBeforeStartWriting(NSDictionary *settings, BOOL requestMultiplePa
     reportCall(@"respondToEachPassDescription a second time", ^{
         [input respondToEachPassDescriptionOnQueue:queue usingBlock:record];
     });
-    dispatch_sync(queue, ^{});
-    row(@"block calls before startWriting".UTF8String, [NSString stringWithFormat:@"%ld", (long)calls]);
-    row(@"block on the given queue before startWriting".UTF8String, [NSString stringWithFormat:@"%ld", (long)onTheGivenQueue]);
+    // Nothing is promised before -startWriting - AVAssetWriterInput.h:505 forbids registering before it -
+    // so there is nothing to wait FOR, and a quiet interval is what "nothing has arrived" means here.
+    BOOL quiet = charon_settle(arrived, 0);
+    row(@"block calls before startWriting".UTF8String, charon_count_value(quiet, calls));
+    row(@"block on the given queue before startWriting".UTF8String, charon_count_value(quiet, onTheGivenQueue));
 
     reportCall(@"markCurrentPassAsFinished before startWriting", ^{
         [input markCurrentPassAsFinished];
@@ -270,6 +340,7 @@ static void askFullSequence(NSDictionary *settings, BOOL requestMultiplePasses)
     __block NSInteger calls = 0;
     __block NSMutableArray *seen = [NSMutableArray array];
     __block NSInteger onTheGivenQueue = 0;
+    dispatch_semaphore_t arrived = dispatch_semaphore_create(0);
 
     if (requestMultiplePasses) {
         input.performsMultiPassEncodingIfSupported = YES;
@@ -290,21 +361,29 @@ static void askFullSequence(NSDictionary *settings, BOOL requestMultiplePasses)
 
     // the callback the header describes, registered where the header allows it: after -addInput: and
     // after -startWriting
+    // A pass that had ALREADY begun when the block was registered is not one the header promises a
+    // delivery for (:486 "whenever a NEW pass has begun", and the first pass begins during -startWriting,
+    // which is before this call). So this is a bounded wait and not an expectation, and the rows say what
+    // arrived inside it. Measured on the host: 0 or 1, and the 1 arrives 1-20 ms after the call whether the
+    // machine is idle or four heavy host tests are running beside it - so what moves is Apple's own choice,
+    // not a slow delivery.
     reportCall(@"respondToEachPassDescription after startWriting", ^{
         [input respondToEachPassDescriptionOnQueue:queue usingBlock:^{
             calls++;
             [seen addObject:describeRanges(input.currentPassDescription)];
             if (dispatch_get_specific(&key))
                 onTheGivenQueue++;
+            dispatch_semaphore_signal(arrived);
         }];
     });
-    dispatch_sync(queue, ^{});
-    row(@"block calls on registration".UTF8String, [NSString stringWithFormat:@"%ld", (long)calls]);
-    row(@"block on the given queue on registration".UTF8String, [NSString stringWithFormat:@"%ld", (long)onTheGivenQueue]);
+    BOOL registrationSettled = charon_settle(arrived, 0);
+    row(@"block calls on registration".UTF8String, charon_count_value(registrationSettled, calls));
+    row(@"block on the given queue on registration".UTF8String, charon_count_value(registrationSettled, onTheGivenQueue));
 
     reportCall(@"respondToEachPassDescription a second time after startWriting", ^{
         [input respondToEachPassDescriptionOnQueue:queue usingBlock:^{
             calls++;
+            dispatch_semaphore_signal(arrived);
         }];
     });
 
@@ -315,22 +394,30 @@ static void askFullSequence(NSDictionary *settings, BOOL requestMultiplePasses)
     reportCall(@"markCurrentPassAsFinished after startWriting", ^{
         [input markCurrentPassAsFinished];
     });
+    // THE WAIT THAT FIXES THE POISONED TABLE. :492 promises an invocation in response to this call - one
+    // that begins the next pass if another is warranted, and one final one so the client can invoke
+    // -markAsFinished - and :504 says it arrives after the receiver has analysed, "usually
+    // asynchronously". Every row below reads the state AFTER that analysis, so each one first waits for
+    // the promised invocations and then for a quiet interval with no further one. Asking before the
+    // analysis has landed is what made "currentPassDescription after markAsFinished" and "markAsFinished
+    // after the final pass invocation" answers to the machine's load, and the cached table carried them.
+    BOOL analysisSettled = charon_settle(arrived, 1);
     askInputState(@"after markCurrentPassAsFinished", input);
     row(@"markCurrentPassAsFinished called markAsFinished itself".UTF8String,
         input.invoked.count ? [input.invoked componentsJoinedByString:@","] : @"NO");
-    dispatch_sync(queue, ^{});
-    row(@"block calls after markCurrentPassAsFinished".UTF8String, [NSString stringWithFormat:@"%ld", (long)calls]);
+    row(@"block calls after markCurrentPassAsFinished".UTF8String, charon_count_value(analysisSettled, calls));
     row(@"block on the given queue after markCurrentPassAsFinished".UTF8String,
-        [NSString stringWithFormat:@"%ld", (long)onTheGivenQueue]);
-    row(@"block saw".UTF8String, seen.count ? [seen componentsJoinedByString:@" then "] : @"NONE");
+        charon_count_value(analysisSettled, onTheGivenQueue));
+    row(@"block saw".UTF8String, analysisSettled ? (seen.count ? [seen componentsJoinedByString:@" then "] : @"NONE")
+                                                 : charon_timedOutMarker());
 
     // a second -markCurrentPassAsFinished, now that there is no pass left to mark: the header does not
     // say it is refused, so it is asked rather than assumed either way
     reportCall(@"markCurrentPassAsFinished a second time", ^{
         [input markCurrentPassAsFinished];
     });
-    dispatch_sync(queue, ^{});
-    row(@"block calls after a second markCurrentPassAsFinished".UTF8String, [NSString stringWithFormat:@"%ld", (long)calls]);
+    analysisSettled = charon_settle(arrived, 0);
+    row(@"block calls after a second markCurrentPassAsFinished".UTF8String, charon_count_value(analysisSettled, calls));
 
     // and the client does what the final invocation told it to. With the switch on, Apple's own class
     // is between passes here and refuses, so this is caught like every other refusal: a run that dies
@@ -338,6 +425,9 @@ static void askFullSequence(NSDictionary *settings, BOOL requestMultiplePasses)
     reportCall(@"markAsFinished after the final pass invocation", ^{
         [input markAsFinished];
     });
+    // and the same wait once more, because this row's answer is the state the writer input is in AFTER
+    // -markAsFinished, which is only the header's documented state once the final invocation has landed.
+    analysisSettled = charon_settle(arrived, 0);
     askInputState(@"after markAsFinished", input);
     row(@"finishWriting".UTF8String, [writer finishWriting] ? @"YES" : @"NO");
     askInputState(@"after finishWriting", input);
