@@ -219,6 +219,13 @@ local function kept_failures(folder, opt)
         table.insert(found, "the reading is kept beside the release and read back: -heldMethod must be in the answer, and the answer names " ..
                     table.concat(table.slice(table.orderkeys(known), 1, 8), " "))
     end
+    -- A second call must answer from the file the first one wrote and not read the library again, which is
+    -- the whole reason the reading is kept: a marker left in the file survives only if it was read back.
+    local list = path.join(folder, "kept", "selectors_armv7.txt")
+    io.writefile(list, io.readfile(list) .. "charonMarkerInTheKeptList\n")
+    if not objc.known_selectors(libraries)["-charonMarkerInTheKeptList"] then
+        table.insert(found, "a second reading must answer from the file beside the release, and it read the library again")
+    end
     local keyed = os.files(path.join(folder, "kept", "selectors_armv7.txt.reader"))
     if #keyed ~= 1 then
         table.insert(found, "the list this reader writes names the reader that wrote it beside it, and beside the release there are " .. #keyed ..

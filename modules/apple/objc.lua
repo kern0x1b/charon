@@ -531,7 +531,7 @@ function known_selectors(source)
     end
     table.sort(names)
     io.writefile(list, table.concat(names, "\n") .. "\n")
-    io.writefile(written_by, reader_key() .. "\n")
+    io.writefile(written_by, reader_key())
     return known
 end
 
