@@ -64,7 +64,6 @@
 @end
 
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 // The three members below are declared on GKPath by GKPath.h:36, :49 and :50 and are implemented in the
 // category at the foot of this file, so the compiler says the primary class does not have them. That
