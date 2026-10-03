@@ -100,12 +100,12 @@ times in this corpus, where `PHLivePhotoShouldRenderAtPlaybackTime` is
 name.
 
 ```
-$ xmake l extract-avkit.lua ~/.charon/dyld/9.0/dyld_shared_cache_armv7 AVKit .agent-work/avkit9/AVKit
-extracted AVKit -> .../.agent-work/avkit9/AVKit
+$ xmake lua tools/cache-extract.lua modules ~/.charon/dyld/9.0/dyld_shared_cache_armv7 AVKit .agent-work/avkit9/AVKit
+extracted AVKit: 4 segments, 1677 symbols, 51187479 bytes
 $ file .agent-work/avkit9/AVKit
 .agent-work/avkit9/AVKit: Mach-O dynamically linked shared library arm_v7
 $ python3 tools/cfconst/cache32.py .agent-work/avkit9/AVKit AVKitErrorDomain
-AVKitErrorDomain	AVKitErrorDomain
+AVKitErrorDomain	0x33ffd380	AVKitErrorDomain	(16 bytes, cfstring 0x33ffe800)
 ```
 
 Three details a reader needs, because each one is a way to get a wrong answer:
