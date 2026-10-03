@@ -264,6 +264,17 @@ float CharonGKCellFloor(float value, float size)
     return (float)floorf(value / size) * size;
 }
 
+float CharonGKNodeSize(float cellSize)
+{
+    return cellSize * 2;
+}
+
+// A node's far edge, never past the box it indexes.
+float CharonGKNodeCeiling(float edge, float limit)
+{
+    return edge > limit ? limit : edge;
+}
+
 float CharonGKCellCeiling(float value, float size, float limit)
 {
     if (!(size > 0)) {

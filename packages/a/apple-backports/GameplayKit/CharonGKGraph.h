@@ -47,6 +47,16 @@ float CharonGKCellSize(float minimum, float extent);
 float CharonGKCellFloor(float value, float size);
 float CharonGKCellCeiling(float value, float size, float limit);
 
+// The NODE an element is filed in, one level above the cell its low corner falls in, so its size is twice
+// the cell size. Measured on the host and written out at the definition in CharonGKGraph.m.
+float CharonGKNodeSize(float cellSize);
+
+// A node's far edge, never past the box it indexes.
+float CharonGKNodeCeiling(float edge, float limit);
+
+// The node an element is filed in: one level above the cell its low corner falls in, so its size is twice
+// the cell size. Measured on the host and recorded in CharonGKGraph.m above the function.
+
 // --- the geometry an obstacle stands for --------------------------------------------------------------
 // Is a point inside the closed polygon an obstacle gives? The rule is the standard even-odd crossing
 // count: a ray from the point upwards crosses a side when the side straddles the point's row and the

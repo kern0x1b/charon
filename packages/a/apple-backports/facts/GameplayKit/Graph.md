@@ -6,7 +6,7 @@ objects -- the 9.0 classes (`GKGraph`, `GKGraphNode`, `GKGraphNode2D`, `GKGridGr
 and the 10.0 ones (`GKGraphNode3D`, `GKSphereObstacle`, `GKOctree`, `GKQuadtree`, `GKMeshGraph`,
 `GKRTree`, and the 3D half of `GKPath`). Measured against the host's own GameplayKit by
 `tests/backports/host/gameplaykit-graph/measure.m` and held to it by that directory's
-`differential.m`: **149 checks, 0 failures**.
+`differential.m`: **152 checks, 0 failures**.
 
 None of it needs the device. `GameplayKit.framework` carries no code at all before iOS 8, and iOS 6 has
 none of the logic this is: every class here is a region of the plane, a search over it, and the shape of
@@ -121,7 +121,7 @@ the same four. An R-tree's `-queryReserve` is **1** on a fresh tree and after si
 `-setQueryReserve:` changes nothing and the getter keeps answering 1; the port does not keep a value the
 host would not read back.
 
-## Four members where the host contradicts its own headers, and what the port does instead
+## Three members where the host contradicts its own headers, and what the port does instead
 
 These are measured, they are held by `contract(...)` checks rather than `host(...)`, and **none of the
 host's answers is reproduced** -- each one carries no information about the thing it is asked about, which
@@ -137,28 +137,62 @@ is the silent fake `coordination/crutches.md` forbids.
    0,0..0,0. A node that comes back with a region of zeros describes no region at all, so the port
    answers the cell the element was filed in, which is what `GKQuadtree.h:11-12` declares.
 
-3. **`-elementsAtPoint:` and `-elementsInBox:` for an element added with a box or a quad.** The host
-   answers a box element for **every** query tried, including (7,7,7)-(8,8,8) and (3,3,3)-(5,5,5), neither
-   of which the box (3,0,0)-(5,2,2) meets at all -- so its answer says nothing about where the box is.
-   And a quad added at (3,3)-(5,5) is answered at (0,0), (1,1), (2,2) and (3,3) and **not** at (4,4),
-   (5,5), (6,6) or (7,7) with a cell size of 2, while in a tree of cell size 8 -- one cell -- it is
-   answered at every point from (0,0) to (7,7). The rule that fits those numbers is the cell index of the
-   element's **size** rather than of its position, which is a walk of the wrong tree. So the port answers
-   the header's rule in both cases.
+3. **`-elementsAtPoint:` for a region element answers the NODE, not the element's own extent.** I got this
+   wrong first and the coordinator corrected it; the correction is right and the header says so.
+   `GKQuadtree.h:61` calls it "all of the elements in the quadtree node this point would be placed in" and
+   `:69` calls `-elementsInQuad:` the elements "that reside in quad tree nodes which intersect the given
+   quad". The host does exactly that, and the rule is now derived and reproduced:
 
-4. **An obstacle graph's node positions are NaN.** All four nodes of a single wall, seven of eight for
-   two walls, at buffer radii 0, 1 and 2 alike, and the same for a node joined by
-   `-connectNodeUsingObstacles:`. A node that cannot say where it is describes nothing, and a path walked
-   through the graph would be walked through points that are not numbers. The **count** is well defined on
-   the host -- one node per vertex, four and four, eight and not six -- and is reproduced; the positions
-   are the port's own: the obstacle's vertices pushed out by the buffer radius. A closed obstacle really
-   does cut the graph: two nodes on either side of a square answer no common edge at all, while a node
-   near the square on one side is joined to the three corners it can see.
+   * an element is filed in the NODE one level above the cell its LOW CORNER falls in -- node size is
+     **twice** the cell size -- while a **point** element is filed in the CELL itself. Measured: a quad at
+     (1,1) in a tree of minimum cell size 1 is answered from the node 0..2 and not from the cell 1..2; one
+     at (5,5) from the node 4..8 and not from 0..4; one at (7,7), on the boundary, from 4..8. A point at
+     (5.5,5.5,5.5) in a tree of minimum cell size 2 hands back a node of 4..6, which is the cell, while a
+     box at (1,1,1)-(2,2,2) hands back a node of 0..4.
+   * with one quad element at (1,1)-(2,2) in a tree of minimum cell size 1, `-elementsAtPoint:` answers at
+     (1.5,1.5), **(0.5,0.5), (0,0)** and (1,1) -- three of those four are outside the quad's own extent --
+     and at (2.5,2.5), (3,3), (1.5,3.5), (3.5,1.5), (6,6), (4,4), (7.9,0.1) and (2,2), which are not.
+     `-elementsInQuad:` answers for (0,0)-(0.5,0.5), (0,0)-(4,4) and (1.2,1.2)-(1.8,1.8), and not for
+     (3,3)-(4,4) or (2.5,0)-(4,1). Both are the node's answer.
+   * **the two queries are not symmetric**: a POINT element is in `-elementsInQuad:`'s answer and in
+     **nobody's** `-elementsAtPoint:` answer, at any point and any cell size -- measured, a point element at
+     (1,1) answers nothing of a dense 256-point sweep. The octree's mirror image: `-elementsAtPoint:` there
+     answers point elements and **never** a box element (measured over 256 points, every one inside the
+     box, at cell sizes 1, 2 and 4: all empty), while `-elementsInBox:` answers a box element where the box
+     meets the query -- its own extent, not the node it is filed in.
+   * `-[GKQuadtreeNode quad]` still answers the zero quad for every node of every tree tried, and that one
+     stays a caveat: the header says the node's quad is the one the element was added with
+     (`GKQuadtree.h:11-12`), and zeros describe no region.
+
+4. **An obstacle graph's node positions: a one-obstacle graph is all NaN, a two-obstacle graph is not.**
+   This corrects what I told the coordinator, who had taken "all NaN" from my hand-over. The probe is
+   `tests/backports/host/gameplaykit-graph/measure_obstacle.m`, it computes its own expectation from the
+   values it prints, and it prints:
+
+   ```
+   one wall, buffer 0: 4 nodes, every position nan,nan
+   one wall, buffer 1: 4 nodes, every position nan,nan
+   one wall, buffer 2: 4 nodes, every position nan,nan
+   two obstacles, buffer 1: 8 nodes, positions: nan,nan nan,nan nan,nan nan,nan nan,nan
+                                       23.0001,-1.00009 23.0001,4.41435 nan,nan
+   ```
+
+   So a graph of **one** obstacle answers NaN for every node's `-position` at every buffer radius tried,
+   and **two** of a two-obstacle graph's eight nodes carry positions -- the ones the far obstacle
+   contributes, pushed out by the buffer. The **count** is well defined on the host throughout (one node per
+   vertex: 4, then 8, not 6) and is reproduced. The positions are the port's own: the obstacle's vertices,
+   pushed out by the buffer radius, which is `GKObstacleGraph.h:15`'s `GKGraphNode2D` and the region an
+   agent may not walk into. A closed obstacle really does cut the graph: two nodes on either side of a
+   square answer no common edge at all, while a node near it on one side is joined to the three corners it
+   can see.
+
+   Not probed there, because it crashes: `-connectNodeUsingObstacles:` with a node of the caller's own, on a
+   graph whose nodes have already been walked, raises SIGSEGV inside GameplayKit. Measured three times.
 
 ## The harness fails when the code is wrong, proved three ways
 
-`differential.m` is only worth reading if it can fail. Three mutations, each one line, each run against
-the whole 149 checks:
+`differential.m` is only worth reading if it can fail. Five mutations, each one line, each run against the
+whole 152 checks:
 
 | mutation | result |
 | --- | --- |

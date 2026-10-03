@@ -241,43 +241,71 @@
     return [[self alloc] initWithBoundingBox:box minimumCellSize:minCellSize];
 }
 
-- (NSString *)charon_keyForCellMin:(vector_float3)low
+// The key of the NODE a low corner falls in. The node is one level above the cell: its size is TWICE the
+// cell size, and its low edge is a multiple of that. This is the whole reason the host's answer for a
+// region element is not the element's own extent -- measured, a box element added at (1,1,1)-(2,2,2) in a
+// tree of minimum cell size 2 hands back a node whose box is 0..4, which is the node of size 4 holding its
+// low corner, and not the cell 1..2 and not the box 1..2. And it follows the low corner rather than the
+// element's size: a quad added at (5,5) is answered from the node 4..8 and not from 0..4.
+// The key of a node at a given size. A POINT element is filed in the CELL its own point falls in and a
+// REGION element one level above that -- the two sizes are the whole of the difference, and both are
+// measured (facts/GameplayKit/Graph.md): a point at (5.5,5.5,5.5) in a tree of minimum cell size 2 hands
+// back a node of 4..6 on the host, which is the cell, while a box at (1,1,1)-(2,2,2) hands back a node of
+// 0..4, which is the node above the cell.
+- (NSString *)charon_keyAtSize:(float)size low:(vector_float3)low
 {
-    float size = _charonMinimumCellSize;
     return [NSString stringWithFormat:@"%g,%g,%g", (double)CharonGKCellFloor(low.x, size),
                                       (double)CharonGKCellFloor(low.y, size),
                                       (double)CharonGKCellFloor(low.z, size)];
 }
 
-// The node of the cell a point falls in, made if the tree has none. The cell's own box is what
-// -[GKOctreeNode box] answers, and it is the whole of that node's state besides what it holds: measured,
-// the node for a point added at (1.9,1.9,1.9) in a tree of minimum cell size 2 answers 0..2 on all three
-// axes, and a node for a box added at (3,0,0)-(5,2,2) answers the cell of its own low corner, 2..4.
-- (GKOctreeNode *)charon_cellNodeForLow:(vector_float3)low
+- (NSString *)charon_keyForCellMin:(vector_float3)low
 {
-    GKOctreeNode *node = [_charonCells objectForKey:[self charon_keyForCellMin:low]];
+    return [self charon_keyAtSize:_charonMinimumCellSize low:low];
+}
+
+- (NSString *)charon_keyForNodeMin:(vector_float3)low
+{
+    return [self charon_keyAtSize:CharonGKNodeSize(_charonMinimumCellSize) low:low];
+}
+
+// The node a point falls in, made if the tree has none. Its own box is what -[GKOctreeNode box] answers,
+// and it is the whole of that node's state besides what it holds: measured, a point element added at
+// (1,1,1) in a tree of minimum cell size 2 answers a node of 0..4, and one at (1.9,1.9,1.9) in a tree of
+// minimum cell size 2 the same.
+- (GKOctreeNode *)charon_nodeAtSize:(float)size low:(vector_float3)low
+{
+    NSString *key = [self charon_keyAtSize:size low:low];
+    GKOctreeNode *node = [_charonCells objectForKey:key];
     if (node != nil) {
         return node;
     }
-    float size = _charonMinimumCellSize;
-    GKBox cell;
-    cell.boxMin = (vector_float3){CharonGKCellFloor(low.x, size), CharonGKCellFloor(low.y, size),
+    GKBox held;
+    held.boxMin = (vector_float3){CharonGKCellFloor(low.x, size), CharonGKCellFloor(low.y, size),
                                   CharonGKCellFloor(low.z, size)};
-    cell.boxMax = (vector_float3){CharonGKCellCeiling(low.x, size, _charonBounds.boxMax.x),
-                                  CharonGKCellCeiling(low.y, size, _charonBounds.boxMax.y),
-                                  CharonGKCellCeiling(low.z, size, _charonBounds.boxMax.z)};
+    held.boxMax = (vector_float3){
+        CharonGKNodeCeiling(CharonGKCellFloor(low.x, size) + size, _charonBounds.boxMax.x),
+        CharonGKNodeCeiling(CharonGKCellFloor(low.y, size) + size, _charonBounds.boxMax.y),
+        CharonGKNodeCeiling(CharonGKCellFloor(low.z, size) + size, _charonBounds.boxMax.z)};
     node = [[GKOctreeNode alloc] init];
-    [node charon_setBox:cell];
-    _charonCells[[self charon_keyForCellMin:low]] = node;
+    [node charon_setBox:held];
+    _charonCells[key] = node;
     return node;
 }
 
+- (GKOctreeNode *)charon_nodeForLow:(vector_float3)low
+{
+    return [self charon_nodeAtSize:CharonGKNodeSize(_charonMinimumCellSize) low:low];
+}
+
+// A point element goes in the CELL its point falls in -- measured, (5.5,5.5,5.5) in a tree of minimum
+// cell size 2 hands back the node 4..6, which is the cell and not the node above it.
 - (GKOctreeNode *)addElement:(id)element withPoint:(vector_float3)point
 {
     if (element == nil) {
         return nil;
     }
-    GKOctreeNode *node = [self charon_cellNodeForLow:point];
+    GKOctreeNode *node = [self charon_nodeAtSize:_charonMinimumCellSize low:point];
     // A point element answers for its whole cell, which is measured: an element added at (0,0,0) in a tree
     // of minimum cell size 2 is answered by -elementsAtPoint: at (1.999,0,0) and not at (2,0,0).
     NSMutableArray *filed = [[node charon_entries] mutableCopy];
@@ -292,39 +320,41 @@
 // minimum cell size 2 overlaps two cells on x, and a point at (4,1,1) is in the second of them, so an entry
 // filed only under the first would never be found. The node handed back is the one of the box's low corner,
 // which is what the header says the method returns and what -[GKOctreeNode box] describes.
+// A box element goes in the NODE one level above the cell its low corner falls in, and it is filed ONCE:
+// measured, a box at (1,1,1)-(2,2,2) in a tree of minimum cell size 2 hands back a node of 0..4 and a
+// point query answers nothing of it at any of 256 points, so where it is filed is what -elementsInBox:
+// answers from and not -elementsAtPoint:. The node handed back is that one, which is what the header says
+// the method returns and what -[GKOctreeNode box] describes.
 - (GKOctreeNode *)addElement:(id)element withBox:(GKBox)box
 {
     if (element == nil) {
         return nil;
     }
-    float size = _charonMinimumCellSize;
-    for (float x = CharonGKCellFloor(box.boxMin.x, size); x <= box.boxMax.x; x += size) {
-        for (float y = CharonGKCellFloor(box.boxMin.y, size); y <= box.boxMax.y; y += size) {
-            for (float z = CharonGKCellFloor(box.boxMin.z, size); z <= box.boxMax.z; z += size) {
-                GKOctreeNode *node = [self charon_cellNodeForLow:(vector_float3){x, y, z}];
-                NSMutableArray *filed = [[node charon_entries] mutableCopy];
-                if ([filed indexOfObjectPassingTest:^BOOL(CharonGKEntry *entry, NSUInteger at, BOOL *stop) {
-                        (void)at;
-                        (void)stop;
-                        return entry->charon_element == element;
-                    }] == NSNotFound) {
-                    [filed addObject:[CharonGKEntry charon_entryWithElement:element low:box.boxMin
-                                                                          high:box.boxMax
-                                                                        isPoint:NO]];
-                }
-                [node charon_setEntries:filed];
-            }
-        }
+    GKOctreeNode *node = [self charon_nodeForLow:box.boxMin];
+    NSMutableArray *filed = [[node charon_entries] mutableCopy];
+    if ([filed indexOfObjectPassingTest:^BOOL(CharonGKEntry *entry, NSUInteger at, BOOL *stop) {
+            (void)at;
+            (void)stop;
+            return entry->charon_element == element;
+        }] == NSNotFound) {
+        [filed addObject:[CharonGKEntry charon_entryWithElement:element low:box.boxMin high:box.boxMax
+                                                          isPoint:NO]];
     }
-    return [self charon_cellNodeForLow:box.boxMin];
+    [node charon_setEntries:filed];
+    return node;
 }
 
 - (NSArray *)elementsAtPoint:(vector_float3)point
 {
     GKOctreeNode *node = [_charonCells objectForKey:[self charon_keyForCellMin:point]];
+    // The host answers the POINT elements of the cell the point falls in and never a box element, at any
+    // point and any cell size: measured, a tree of minimum cell size 2 with one box element at
+    // (1,1,1)-(2,2,2) answers NOTHING at all of a dense sweep of 256 points from (0,0,0) to (7.5,7.5,7.5)
+    // -- every one of them inside the box -- while a point element at (1,1,1) in the same tree is answered
+    // from its cell. So the two kinds are kept apart, and this is the branch that keeps them apart.
     NSMutableArray *answer = [NSMutableArray array];
     for (CharonGKEntry *entry in [node charon_entries]) {
-        if ([entry charon_holdsPoint:point]) {
+        if (entry->charon_isPoint) {
             [answer addObject:entry->charon_element];
         }
     }
@@ -333,32 +363,28 @@
 
 - (NSArray *)elementsInBox:(GKBox)box
 {
+    // Every element whose OWN region meets the box asked for, whatever node it is filed in: measured, the
+    // box element at (1,1,1)-(2,2,2) is answered for the query (0,0,0)-(4,4,4) and not for (4,4,4)-(8,8,8),
+    // and for (3,0,0)-(5,5,5) and not for (6,0,0)-(8,8,8) -- which is its own extent, not the node it
+    // was filed in and not the cell.
     NSMutableArray *answer = [NSMutableArray array];
     for (GKOctreeNode *node in [_charonCells allValues]) {
-        if (![node charon_holdsBox:box]) {
-            continue;
-        }
         for (CharonGKEntry *entry in [node charon_entries]) {
-            // A point element's region is its whole cell, so this one test covers a point element and a
-            // region element alike.
             if (entry->charon_max.x >= box.boxMin.x && entry->charon_min.x <= box.boxMax.x &&
                 entry->charon_max.y >= box.boxMin.y && entry->charon_min.y <= box.boxMax.y &&
-                entry->charon_max.z >= box.boxMin.z && entry->charon_min.z <= box.boxMax.z) {
-                if ([answer indexOfObjectIdenticalTo:entry->charon_element] == NSNotFound) {
-                    [answer addObject:entry->charon_element];
-                }
+                entry->charon_max.z >= box.boxMin.z && entry->charon_min.z <= box.boxMax.z &&
+                [answer indexOfObjectIdenticalTo:entry->charon_element] == NSNotFound) {
+                [answer addObject:entry->charon_element];
             }
         }
     }
     return answer;
 }
 
+// Every cell, for the reason the octree's removal is: a quad element is filed in every cell its quad touches,
+// so stopping at the first would answer YES a second time. Measured, removal answers YES once and NO after.
 - (BOOL)removeElement:(id)element
 {
-    // Removal walks every cell, because the tree does not say which cells an element was filed in -- and a
-    // region element is in several, one per cell its box or quad touches. Measured: an element answers YES once
-    // and NO after that, and NO for one that was never there, which is what clearing it out of every cell
-    // gives; stopping at the first cell it was found in would answer YES a second time.
     BOOL removed = NO;
     for (GKOctreeNode *node in [_charonCells allValues]) {
         NSMutableArray *entries = [[node charon_entries] mutableCopy];
@@ -377,190 +403,6 @@
 }
 
 - (BOOL)removeElement:(id)element withNode:(GKOctreeNode *)node
-{
-    if (node == nil) {
-        return [self removeElement:element];
-    }
-    NSMutableArray *entries = [node charon_entries];
-    NSUInteger index = [entries indexOfObjectPassingTest:^BOOL(CharonGKEntry *entry, NSUInteger at, BOOL *stop) {
-        (void)at;
-        (void)stop;
-        return entry->charon_element == element;
-    }];
-    if (index == NSNotFound) {
-        return NO;
-    }
-    [entries removeObjectAtIndex:index];
-    return YES;
-}
-
-@end
-
-@implementation GKQuadtreeNode {
-    GKQuad _quad;
-    NSMutableArray *_charonEntries;
-}
-
-- (GKQuad)quad { return _quad; }
-- (void)charon_setQuad:(GKQuad)quad { _quad = quad; }
-
-- (NSMutableArray *)charon_entries
-{
-    if (_charonEntries == nil) {
-        _charonEntries = [NSMutableArray array];
-    }
-    return _charonEntries;
-}
-
-- (void)charon_setEntries:(NSArray *)entries { _charonEntries = [entries mutableCopy]; }
-
-@end
-
-@implementation GKQuadtree {
-    GKQuad _charonBounds;
-    float _charonMinimumCellSize;
-    NSMutableDictionary *_charonCells;
-}
-
-- (instancetype)initWithBoundingQuad:(GKQuad)quad minimumCellSize:(float)minCellSize
-{
-    self = [super init];
-    if (self) {
-        _charonBounds = quad;
-        float extentX = quad.quadMax.x - quad.quadMin.x;
-        float extentY = quad.quadMax.y - quad.quadMin.y;
-        float extent = extentX < extentY ? extentX : extentY;
-        _charonMinimumCellSize = CharonGKCellSize(minCellSize, extent);
-        _charonCells = [NSMutableDictionary dictionary];
-    }
-    return self;
-}
-
-+ (instancetype)quadtreeWithBoundingQuad:(GKQuad)quad minimumCellSize:(float)minCellSize
-{
-    return [[self alloc] initWithBoundingQuad:quad minimumCellSize:minCellSize];
-}
-
-- (NSString *)charon_keyForCellMin:(vector_float2)low
-{
-    float size = _charonMinimumCellSize;
-    return [NSString stringWithFormat:@"%g,%g", (double)CharonGKCellFloor(low.x, size),
-                                      (double)CharonGKCellFloor(low.y, size)];
-}
-
-- (GKQuadtreeNode *)charon_cellNodeForLow:(vector_float2)low
-{
-    GKQuadtreeNode *node = [_charonCells objectForKey:[self charon_keyForCellMin:low]];
-    if (node != nil) {
-        return node;
-    }
-    float size = _charonMinimumCellSize;
-    GKQuad cell;
-    cell.quadMin = (vector_float2){CharonGKCellFloor(low.x, size), CharonGKCellFloor(low.y, size)};
-    cell.quadMax = (vector_float2){CharonGKCellCeiling(low.x, size, _charonBounds.quadMax.x),
-                                   CharonGKCellCeiling(low.y, size, _charonBounds.quadMax.y)};
-    node = [[GKQuadtreeNode alloc] init];
-    [node charon_setQuad:cell];
-    _charonCells[[self charon_keyForCellMin:low]] = node;
-    return node;
-}
-
-- (GKQuadtreeNode *)addElement:(id)element withPoint:(vector_float2)point
-{
-    if (element == nil) {
-        return nil;
-    }
-    GKQuadtreeNode *node = [self charon_cellNodeForLow:point];
-    vector_float3 low = (vector_float3){node.quad.quadMin.x, node.quad.quadMin.y, 0};
-    vector_float3 high = (vector_float3){node.quad.quadMax.x, node.quad.quadMax.y, 0};
-    [[node charon_entries] addObject:[CharonGKEntry charon_entryWithElement:element low:low high:high
-                                                                        isPoint:YES]];
-    return node;
-}
-
-// An element added with a QUAD is filed in every cell the quad touches, for the same reason the octree's box
-// element is: a point query has to find the element wherever the quad is, and a quad may span four cells.
-- (GKQuadtreeNode *)addElement:(id)element withQuad:(GKQuad)quad
-{
-    if (element == nil) {
-        return nil;
-    }
-    float size = _charonMinimumCellSize;
-    for (float x = CharonGKCellFloor(quad.quadMin.x, size); x <= quad.quadMax.x; x += size) {
-        for (float y = CharonGKCellFloor(quad.quadMin.y, size); y <= quad.quadMax.y; y += size) {
-            GKQuadtreeNode *node = [self charon_cellNodeForLow:(vector_float2){x, y}];
-            NSMutableArray *filed = [[node charon_entries] mutableCopy];
-            if ([filed indexOfObjectPassingTest:^BOOL(CharonGKEntry *entry, NSUInteger at, BOOL *stop) {
-                    (void)at;
-                    (void)stop;
-                    return entry->charon_element == element;
-                }] == NSNotFound) {
-                [filed addObject:[CharonGKEntry
-                                     charon_entryWithElement:element
-                                                       low:(vector_float3){quad.quadMin.x, quad.quadMin.y, 0}
-                                                      high:(vector_float3){quad.quadMax.x, quad.quadMax.y, 0}
-                                                     isPoint:NO]];
-            }
-            [node charon_setEntries:filed];
-        }
-    }
-    return [self charon_cellNodeForLow:quad.quadMin];
-}
-
-- (NSArray *)elementsAtPoint:(vector_float2)point
-{
-    GKQuadtreeNode *node = [_charonCells objectForKey:[self charon_keyForCellMin:point]];
-    NSMutableArray *answer = [NSMutableArray array];
-    vector_float3 asked = (vector_float3){point.x, point.y, 0};
-    for (CharonGKEntry *entry in [node charon_entries]) {
-        if ([entry charon_holdsPoint:asked]) {
-            [answer addObject:entry->charon_element];
-        }
-    }
-    return answer;
-}
-
-- (NSArray *)elementsInQuad:(GKQuad)quad
-{
-    NSMutableArray *answer = [NSMutableArray array];
-    for (GKQuadtreeNode *node in [_charonCells allValues]) {
-        GKQuad cell = node.quad;
-        if (cell.quadMax.x < quad.quadMin.x || cell.quadMin.x > quad.quadMax.x ||
-            cell.quadMax.y < quad.quadMin.y || cell.quadMin.y > quad.quadMax.y) {
-            continue;
-        }
-        for (CharonGKEntry *entry in [node charon_entries]) {
-            if ([entry charon_meetsRange:quad.quadMin high:quad.quadMax] &&
-                [answer indexOfObjectIdenticalTo:entry->charon_element] == NSNotFound) {
-                [answer addObject:entry->charon_element];
-            }
-        }
-    }
-    return answer;
-}
-
-// Every cell, for the reason the octree's removal is: a quad element is filed in every cell its quad touches,
-// so stopping at the first would answer YES a second time. Measured, removal answers YES once and NO after.
-- (BOOL)removeElement:(id)element
-{
-    BOOL removed = NO;
-    for (GKQuadtreeNode *node in [_charonCells allValues]) {
-        NSMutableArray *entries = [[node charon_entries] mutableCopy];
-        NSUInteger index = [entries indexOfObjectPassingTest:^BOOL(CharonGKEntry *entry, NSUInteger at, BOOL *stop) {
-            (void)at;
-            (void)stop;
-            return entry->charon_element == element;
-        }];
-        if (index != NSNotFound) {
-            [entries removeObjectAtIndex:index];
-            [node charon_setEntries:entries];
-            removed = YES;
-        }
-    }
-    return removed;
-}
-
-- (BOOL)removeElement:(id)element withNode:(GKQuadtreeNode *)node
 {
     if (node == nil) {
         return [self removeElement:element];
@@ -680,6 +522,224 @@
 // GKGraph9.m and a second @implementation of one class in another file is what that object's ivars are
 // not visible to. The three ivars the 10.0 members read are therefore reached through accessors the 9.0
 // object defines, which is the same seam CarPlay/CarPlayLane174.m uses for CPLane's two halves.
+@implementation GKQuadtreeNode {
+    GKQuad _quad;
+    NSMutableArray *_charonEntries;
+}
+
+- (GKQuad)quad { return _quad; }
+- (void)charon_setQuad:(GKQuad)quad { _quad = quad; }
+
+- (NSMutableArray *)charon_entries
+{
+    if (_charonEntries == nil) {
+        _charonEntries = [NSMutableArray array];
+    }
+    return _charonEntries;
+}
+
+- (void)charon_setEntries:(NSArray *)entries { _charonEntries = [entries mutableCopy]; }
+
+@end
+
+@implementation GKQuadtree {
+    GKQuad _charonBounds;
+    float _charonMinimumCellSize;
+    NSMutableDictionary *_charonCells;
+}
+
+- (instancetype)initWithBoundingQuad:(GKQuad)quad minimumCellSize:(float)minCellSize
+{
+    self = [super init];
+    if (self) {
+        _charonBounds = quad;
+        float extentX = quad.quadMax.x - quad.quadMin.x;
+        float extentY = quad.quadMax.y - quad.quadMin.y;
+        float extent = extentX < extentY ? extentX : extentY;
+        _charonMinimumCellSize = CharonGKCellSize(minCellSize, extent);
+        _charonCells = [NSMutableDictionary dictionary];
+    }
+    return self;
+}
+
++ (instancetype)quadtreeWithBoundingQuad:(GKQuad)quad minimumCellSize:(float)minCellSize
+{
+    return [[self alloc] initWithBoundingQuad:quad minimumCellSize:minCellSize];
+}
+
+// The key of a node at a given size. A QUAD element is filed in the NODE one level above the cell, whose
+// size is twice the cell size -- measured, a quad added at (1,1) in a tree of minimum cell size 1 is
+// answered from the node 0..2 and not from the cell 1..2, one added at (5,5) from the node 4..8 and not from
+// 0..4, and one added at (7,7), on the boundary, from 4..8 as well. That is what GKQuadtree.h:61 and :69 mean
+// by "the quadtree node this point would be placed in", and it is why the host's answer for a quad element
+// is not the element's own extent.
+- (NSString *)charon_keyAtSize:(float)size low:(vector_float2)low
+{
+    return [NSString stringWithFormat:@"%g,%g", (double)CharonGKCellFloor(low.x, size),
+                                      (double)CharonGKCellFloor(low.y, size)];
+}
+
+- (NSString *)charon_keyForCellMin:(vector_float2)low
+{
+    return [self charon_keyAtSize:_charonMinimumCellSize low:low];
+}
+
+- (NSString *)charon_keyForNodeMin:(vector_float2)low
+{
+    return [self charon_keyAtSize:CharonGKNodeSize(_charonMinimumCellSize) low:low];
+}
+
+- (GKQuadtreeNode *)charon_nodeAtSize:(float)size low:(vector_float2)low
+{
+    NSString *key = [self charon_keyAtSize:size low:low];
+    GKQuadtreeNode *node = [_charonCells objectForKey:key];
+    if (node != nil) {
+        return node;
+    }
+    GKQuad held;
+    held.quadMin = (vector_float2){CharonGKCellFloor(low.x, size), CharonGKCellFloor(low.y, size)};
+    held.quadMax = (vector_float2){
+        CharonGKNodeCeiling(CharonGKCellFloor(low.x, size) + size, _charonBounds.quadMax.x),
+        CharonGKNodeCeiling(CharonGKCellFloor(low.y, size) + size, _charonBounds.quadMax.y)};
+    node = [[GKQuadtreeNode alloc] init];
+    [node charon_setQuad:held];
+    _charonCells[key] = node;
+    return node;
+}
+
+// The node a quad element is filed in: one level above the cell.
+- (GKQuadtreeNode *)charon_nodeForLow:(vector_float2)low
+{
+    return [self charon_nodeAtSize:CharonGKNodeSize(_charonMinimumCellSize) low:low];
+}
+
+- (GKQuadtreeNode *)addElement:(id)element withPoint:(vector_float2)point
+{
+    if (element == nil) {
+        return nil;
+    }
+    GKQuadtreeNode *node = [self charon_nodeAtSize:_charonMinimumCellSize low:point];
+    vector_float3 low = (vector_float3){node.quad.quadMin.x, node.quad.quadMin.y, 0};
+    vector_float3 high = (vector_float3){node.quad.quadMax.x, node.quad.quadMax.y, 0};
+    [[node charon_entries] addObject:[CharonGKEntry charon_entryWithElement:element low:low high:high
+                                                                        isPoint:YES]];
+    return node;
+}
+
+// A quad element goes in the NODE one level above the cell its low corner falls in, and is filed once. The
+// node handed back is that one, which is what the header says the method returns; the node's own -quad
+// answers the NODE, which is what GKQuadtree.h:11-12 means by "the quad associated with the element you
+// want to store" -- and what the host does not answer, which is recorded in the facts file.
+- (GKQuadtreeNode *)addElement:(id)element withQuad:(GKQuad)quad
+{
+    if (element == nil) {
+        return nil;
+    }
+    GKQuadtreeNode *node = [self charon_nodeForLow:quad.quadMin];
+    NSMutableArray *filed = [[node charon_entries] mutableCopy];
+    if ([filed indexOfObjectPassingTest:^BOOL(CharonGKEntry *entry, NSUInteger at, BOOL *stop) {
+            (void)at;
+            (void)stop;
+            return entry->charon_element == element;
+        }] == NSNotFound) {
+        [filed addObject:[CharonGKEntry
+                                 charon_entryWithElement:element
+                                                   low:(vector_float3){quad.quadMin.x, quad.quadMin.y, 0}
+                                                  high:(vector_float3){quad.quadMax.x, quad.quadMax.y, 0}
+                                                 isPoint:NO]];
+    }
+    [node charon_setEntries:filed];
+    return node;
+}
+
+// -elementsAtPoint: answers the QUAD elements of the node the point falls in, which is what GKQuadtree.h:61
+// says and what the host does: a quad at (1,1)-(2,2) in a tree of minimum cell size 1 is answered at
+// (1.5,1.5), (0.5,0.5) and (0,0) -- outside its own extent, and in the node with it -- and at (2.5,2.5),
+// (3,3), (6,6) and (4,4), which are not.
+- (NSArray *)elementsAtPoint:(vector_float2)point
+{
+    GKQuadtreeNode *node = [_charonCells objectForKey:[self charon_keyForNodeMin:point]];
+    NSMutableArray *answer = [NSMutableArray array];
+    for (CharonGKEntry *entry in [node charon_entries]) {
+        if (!entry->charon_isPoint) {
+            [answer addObject:entry->charon_element];
+        }
+    }
+    return answer;
+}
+
+// -elementsInQuad: answers the elements whose NODE meets the quad asked for, again GKQuadtree.h:69, again
+// the host: the same quad element is answered for (0,0)-(0.5,0.5), which is nowhere near it, and for
+// (1.2,1.2)-(1.8,1.8), and not for (3,3)-(4,4) or (2.5,0)-(4,1).
+- (NSArray *)elementsInQuad:(GKQuad)quad
+{
+    NSMutableArray *answer = [NSMutableArray array];
+    for (GKQuadtreeNode *node in [_charonCells allValues]) {
+        GKQuad cell = node.quad;
+        if (cell.quadMax.x < quad.quadMin.x || cell.quadMin.x > quad.quadMax.x ||
+            cell.quadMax.y < quad.quadMin.y || cell.quadMin.y > quad.quadMax.y) {
+            continue;
+        }
+        for (CharonGKEntry *entry in [node charon_entries]) {
+            if ([answer indexOfObjectIdenticalTo:entry->charon_element] == NSNotFound) {
+                [answer addObject:entry->charon_element];
+            }
+        }
+    }
+    return answer;
+}
+
+
+// Every cell, for the reason the octree's removal is: a quad element is filed in every cell its quad touches,
+// so stopping at the first would answer YES a second time. Measured, removal answers YES once and NO after.
+- (BOOL)removeElement:(id)element
+{
+    BOOL removed = NO;
+    for (GKQuadtreeNode *node in [_charonCells allValues]) {
+        NSMutableArray *entries = [[node charon_entries] mutableCopy];
+        NSUInteger index = [entries indexOfObjectPassingTest:^BOOL(CharonGKEntry *entry, NSUInteger at, BOOL *stop) {
+            (void)at;
+            (void)stop;
+            return entry->charon_element == element;
+        }];
+        if (index != NSNotFound) {
+            [entries removeObjectAtIndex:index];
+            [node charon_setEntries:entries];
+            removed = YES;
+        }
+    }
+    return removed;
+}
+
+- (BOOL)removeElement:(id)element withNode:(GKQuadtreeNode *)node
+{
+    if (node == nil) {
+        return [self removeElement:element];
+    }
+    NSMutableArray *entries = [node charon_entries];
+    NSUInteger index = [entries indexOfObjectPassingTest:^BOOL(CharonGKEntry *entry, NSUInteger at, BOOL *stop) {
+        (void)at;
+        (void)stop;
+        return entry->charon_element == element;
+    }];
+    if (index == NSNotFound) {
+        return NO;
+    }
+    [entries removeObjectAtIndex:index];
+    return YES;
+}
+
+@end
+
+// --- the R-tree --------------------------------------------------------------------------------------
+// An R-tree files elements by the rectangle they occupy and answers the ones that meet a rectangle asked
+// for. Which rectangles meet is geometry, and the split strategy -- halve, linear, quadratic, reduce
+// overlap -- says how the tree is cut when a node holds more than its maximum number of children. All
+// four are measured to answer the same elements for the same query, because the strategy changes the shape
+// of the tree and the shape is internal: -elementsInBoundingRectMin:rectMax: is the only thing a caller
+// reads. So this port files the rectangles in the cells they fall in, which is the same index the octree
+// and the quadtree are, and answers a query by asking every entry whether its rectangle meets the one
+// asked for.
 @implementation GKPath (CharonGKPath10)
 
 - (vector_float3)float3AtIndex:(NSUInteger)index

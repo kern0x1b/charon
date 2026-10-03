@@ -639,31 +639,43 @@ int main(void)
 
             GKOctree *boxed = [GKOctree octreeWithBoundingBox:outer minimumCellSize:2];
             GKOctreeNode *boxNode = [boxed addElement:@"box" withBox:(GKBox){{3, 0, 0}, {5, 2, 2}}];
-            host(boxNode.box.boxMin.x == 2 && boxNode.box.boxMax.x == 4,
-                 @"m11 an element added with a box is filed under the cell of its own low corner, 3 falling in "
-                 @"the cell 2..4, and that cell's node is what the method hands back");
-            // A point in the same CELL as the box but outside the box itself: the cell is coarse and the
-            // element's own region is what answers, so this is the check that says the two are separate.
-            // The box (3,0,0)-(5,2,2) is filed under the cells of x = 2 and x = 4, so (5.5,1,1) shares a cell
-            // with it and is not in it.
-            NSArray *sameCellOutside = [boxed elementsAtPoint:(vector_float3){5.5f, 1, 1}];
-            NSArray *sameCellInside = [boxed elementsAtPoint:(vector_float3){4, 1, 1}];
-            contract([printedNames(sameCellInside) isEqualToString:@" box"] &&
-                         [printedNames(sameCellOutside) isEqualToString:@""],
-                     @"contract: an element added with a box is answered only where its OWN BOX holds the point, "
-                     @"not wherever its cell is: a box (3,0,0)-(5,2,2) is answered at (4,1,1) and not at "
-                     @"(5.5,1,1), and the two share a cell. Without that second test a box element would "
-                     @"answer the whole of every cell it touches");
-            NSArray *overlapping = [boxed elementsInBox:(GKBox){{3, 3, 3}, {5, 5, 5}}];
-            NSArray *touching = [boxed elementsInBox:(GKBox){{2, 0, 0}, {6, 2, 2}}];
-            NSArray *apart = [boxed elementsInBox:(GKBox){{7, 7, 7}, {8, 8, 8}}];
-            contract([printedNames(overlapping) isEqualToString:@""] &&
-                         [printedNames(touching) isEqualToString:@" box"] &&
-                         [printedNames(apart) isEqualToString:@""],
-                     @"contract: a box element is answered where its own box meets the one asked for, which is "
-                     @"GKOctree.h:16. The host answers it for EVERY query tried, including (7,7,7)-(8,8,8) and "
-                     @"(3,3,3)-(5,5,5), neither of which the box (3,0,0)-(5,2,2) meets at all (measure.m m11), "
-                     @"so its answer says nothing about where the box is");
+            host(near(boxNode.box.boxMin.x, 0) && near(boxNode.box.boxMax.x, 4),
+                 @"m11 a box element is filed in the NODE one level above the cell of its low corner, and that "
+                 @"node is what the method hands back: a low corner at 3 in a tree of minimum cell size 2 is "
+                 @"in the cell 2..4, so the node is 0..4");
+            // -elementsAtPoint: NEVER answers a box element. Measured on the host over a dense sweep of 256
+            // points from (0,0,0) to (7.5,7.5,7.5) -- every one of them inside the box -- at cell sizes 1,
+            // 2 and 4: all of them empty. A point element at (1,1,1) in the same tree IS answered.
+            NSArray *insideBox = [boxed elementsAtPoint:(vector_float3){1.5f, 1.5f, 1.5f}];
+            NSArray *onBox = [boxed elementsAtPoint:(vector_float3){3.5f, 1, 1}];
+            NSArray *farFromBox = [boxed elementsAtPoint:(vector_float3){7, 7, 7}];
+            host([printedNames(insideBox) isEqualToString:@""] &&
+                     [printedNames(onBox) isEqualToString:@""] &&
+                     [printedNames(farFromBox) isEqualToString:@""],
+                 @"m11 -elementsAtPoint: never answers a box element: one added at (3,0,0)-(5,2,2) in a tree "
+                 @"of minimum cell size 2 is answered at nothing, inside the box, on its far edge or away from "
+                 @"it -- measured over a 256-point sweep of the whole box at cell sizes 1, 2 and 4");
+            GKOctree *pointBeside = [GKOctree octreeWithBoundingBox:outer minimumCellSize:2];
+            [pointBeside addElement:@"p" withPoint:(vector_float3){1, 1, 1}];
+            NSArray *pointAnswered = [pointBeside elementsAtPoint:(vector_float3){1.5f, 1.5f, 1.5f}];
+            host([printedNames(pointAnswered) isEqualToString:@" p"],
+                 @"m11 while a POINT element in the same tree is answered from its cell -- so the two kinds "
+                 @"are kept apart and this is the branch that keeps them apart");
+            // -elementsInBox: answers a box element where its OWN box meets the query. The node it is filed
+            // in is one level above the cell, and its own -box answers that NODE: measured, a box element at
+            // (1,1,1)-(2,2,2) in a tree of minimum cell size 2 hands back a node of 0..4.
+            GKOctree *lifted = [GKOctree octreeWithBoundingBox:outer minimumCellSize:2];
+            GKOctreeNode *liftedNode = [lifted addElement:@"box" withBox:(GKBox){{1, 1, 1}, {2, 2, 2}}];
+            host(near(liftedNode.box.boxMin.x, 0) && near(liftedNode.box.boxMax.x, 4),
+                 @"m11 and the node a box element is filed in is one level above the cell: (1,1,1) in a tree "
+                 @"of minimum cell size 2 hands back the node 0..4, which is why the host's answer for a box "
+                 @"is a NODE's and not the box's");
+            NSArray *meets = [lifted elementsInBox:(GKBox){{0, 0, 0}, {4, 4, 4}}];
+            NSArray *doesNotMeet = [lifted elementsInBox:(GKBox){{4, 4, 4}, {8, 8, 8}}];
+            host([printedNames(meets) isEqualToString:@" box"] &&
+                     [printedNames(doesNotMeet) isEqualToString:@""],
+                 @"m11 and -elementsInBox: answers it where the box meets the query and not where the node is, "
+                 @"which is its own extent rather than the node it is filed in");
 
             GKOctree *pair = [GKOctree octreeWithBoundingBox:outer minimumCellSize:2];
             [pair addElement:@"p" withPoint:(vector_float3){0.1f, 0.1f, 0.1f}];
@@ -705,17 +717,55 @@ int main(void)
 
             GKQuadtree *quads = [GKQuadtree quadtreeWithBoundingQuad:outer minimumCellSize:2];
             [quads addElement:@"y" withQuad:(GKQuad){{3, 3}, {5, 5}}];
-            NSArray *atFour = [quads elementsAtPoint:(vector_float2){4, 4}];
-            NSArray *atOne = [quads elementsAtPoint:(vector_float2){1, 1}];
-            contract([printedNames(atFour) isEqualToString:@" y"] && [printedNames(atOne) isEqualToString:@""],
-                     @"contract: a quad element is answered where its OWN QUAD holds the point, which is "
-                     @"GKQuadtree.h:15. The host answers it at (0,0),(1,1),(2,2),(3,3) and NOT at (4,4) with a "
-                     @"cell size of 2, and everywhere from (0,0) to (7,7) with a cell size of 8 (measure.m m12) "
-                     @"-- answers that contradict its own header and its own tree at two different cell sizes, "
-                     @"so they are not reproduced");
-            NSArray *quadAnswer = [quads elementsInQuad:(GKQuad){{0, 0}, {4, 4}}];
-            host([printedNames(quadAnswer) isEqualToString:@" y"],
-                 @"m12 and the quad element is in the answer for any quad that meets its own");
+            // The coordinator's table, measured: bounding quad (0,0)-(8,8), minimumCellSize 1, one quad
+            // element at (1,1)-(2,2). The answer follows the NODE, not the element's extent -- (0.5,0.5) and
+            // (0,0) are outside the quad and are answered, (2.5,2.5) is inside its bounding node and is not.
+            GKQuadtree *one = [GKQuadtree quadtreeWithBoundingQuad:outer minimumCellSize:1];
+            [one addElement:@"box" withQuad:(GKQuad){{1, 1}, {2, 2}}];
+            struct { float x, y; BOOL found; } probes[] = {
+                {1.5f, 1.5f, YES}, {0.5f, 0.5f, YES}, {0, 0, YES}, {1, 1, YES},
+                {2.5f, 2.5f, NO},  {3, 3, NO},     {1.5f, 3.5f, NO}, {3.5f, 1.5f, NO},
+                {6, 6, NO},        {4, 4, NO},     {7.9f, 0.1f, NO}, {2, 2, NO},
+            };
+            BOOL pointsAgree = YES;
+            for (unsigned index = 0; index < sizeof(probes) / sizeof(probes[0]); index++) {
+                BOOL found = [one elementsAtPoint:(vector_float2){probes[index].x, probes[index].y}].count > 0;
+                if (found != probes[index].found) {
+                    pointsAgree = NO;
+                }
+            }
+            host(pointsAgree,
+                 @"m12 -elementsAtPoint: answers the quad elements of the NODE the point falls in, as "
+                 @"GKQuadtree.h:61 says -- a quad at (1,1)-(2,2) in a tree of minimum cell size 1 is answered "
+                 @"at (1.5,1.5), (0.5,0.5), (0,0) and (1,1), which includes points OUTSIDE its own extent, and "
+                 @"at (2.5,2.5), (3,3), (1.5,3.5), (3.5,1.5), (6,6), (4,4), (7.9,0.1) and (2,2), which are "
+                 @"not: the answer is the node's, not the quad's");
+            struct { float lo, hi; BOOL found; } asked[] = {
+                {0, 0.5f, YES}, {3, 4, NO}, {0, 4, YES}, {2.5f, 0, NO}, {1.2f, 1.8f, YES},
+            };
+            BOOL quadsAgree = YES;
+            for (unsigned index = 0; index < 5; index++) {
+                float lo = asked[index].lo, hi = asked[index].hi;
+                GKQuadtree *fresh = [GKQuadtree quadtreeWithBoundingQuad:outer minimumCellSize:1];
+                [fresh addElement:@"box" withQuad:(GKQuad){{1, 1}, {2, 2}}];
+                BOOL found = [fresh elementsInQuad:(GKQuad){{lo, lo}, {hi, hi}}].count > 0;
+                if (found != asked[index].found) {
+                    quadsAgree = NO;
+                }
+            }
+            host(quadsAgree,
+                 @"m12 and -elementsInQuad: answers the elements whose NODE meets the quad, as GKQuadtree.h:69 "
+                 @"says -- the same quad element is answered for (0,0)-(0.5,0.5), which is nowhere near it, "
+                 @"and for (1.2,1.2)-(1.8,1.8), and not for (3,3)-(4,4) or (2.5,0)-(4,1)");
+            GKQuadtree *justPoint = [GKQuadtree quadtreeWithBoundingQuad:outer minimumCellSize:1];
+            [justPoint addElement:@"p" withPoint:(vector_float2){1, 1}];
+            NSArray *pointNever = [justPoint elementsAtPoint:(vector_float2){1.5f, 1.5f}];
+            NSArray *pointInQuad = [justPoint elementsInQuad:(GKQuad){{0, 0}, {2, 2}}];
+            host([printedNames(pointNever) isEqualToString:@""] &&
+                     [printedNames(pointInQuad) isEqualToString:@" p"],
+                 @"m12 and the two queries are not symmetric on the host: a POINT element is in "
+                 @"-elementsInQuad:'s answer and in NOBODY's -elementsAtPoint: answer, at any point and any "
+                 @"cell size -- measured, a point element at (1,1) answers nothing of a 256-point sweep");
             BOOL once = [quads removeElement:@"y"];
             BOOL twice = [quads removeElement:@"y"];
             host(once && !twice, @"m12 removal answers YES once and NO after that");
