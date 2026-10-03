@@ -96,3 +96,57 @@ write-into-the-file paths that `PDFOutline`'s two were: what they need is a real
 can grow, which is what the range model above is. `drawForPage:` needs a `CGContext` and a
 `PDFDisplayBox`, which a port that reads documents has no way to be handed; those two are the same shape
 as the outline's write paths and say so.
+## The five mutators, and the two shapes the header's prose did not settle
+
+`PDFSelection.h:66-79` is the whole of what is known about these before measuring, and the family added the
+fixtures. Every row is on a FRESH document, for the reason the seventh round found: **the array a search
+answers is the document's own** - a document searched for `alpha` answers an array of 3, searching the same
+document for `alpha alpha` afterwards leaves that same array object holding 1, and searching it for `alpha`
+again answers the same object again. A second document's search does not touch it. Asking for four needles
+in a row gave every row the answers of the last one.
+
+On `cgfixture-words.pdf`, one line of 36 characters, and `cgfixture-3.pdf`, three pages of `page N`:
+
+| call | the host answers |
+| --- | --- |
+| `{5,5}` + `{5,19}` (one contains the other) | ONE range `{5,19}` - the overlap is removed and the longer survives |
+| `{5,5}` + `{25,11}` | two ranges `{5,5}` `{25,11}` |
+| `{25,11}` + `{25,5}` (inside) | one range `{25,11}`, unchanged |
+| `{25,11}` + `{5,9}` (crossing) | two ranges `{5,9}` `{25,11}` - and they do NOT merge |
+| `{5,5}` + `{10,3}` (adjacent, one space between) | two ranges `{5,5}` `{11,3}` - **adjacent ranges are not merged either**, only overlapping ones are |
+| `addSelections:` with three at once | three ranges, all applied, in order |
+| `-string` of two ranges on one page | the two texts **concatenated with nothing between**: `zero` + `alpha bra` is `zeroalpha bra` |
+| `-string` of ranges on two pages | the pages joined with `"\n"`: `page 2` + `page 3` is `page 2\npage 3` |
+| `extendSelectionAtEnd:3` on `{5,5}` | `{5,8}` |
+| `extendSelectionAtStart:2` on `{5,5}` | `{3,7}` |
+| `extendSelectionAtEnd:0` | unchanged |
+| `extendSelectionAtEnd:-1` / `extendSelectionAtStart:-1` | `{5,4}` / `{6,4}` - a negative count SHRINKS, which is the only reading an `NSInteger` has |
+| `extendSelectionForLineBoundaries` inside one line | the whole line, `{0,36}` |
+| the same across two lines already whole | unchanged |
+| `extendSelectionAtEnd:20` from page 2 of 3 | **crosses onto page 3**: page 1 `{0,6}`, page 2 `{0,6}`, string `page 2\npage 3` |
+| `extendSelectionAtStart:20` from page 2 | crosses back onto page 1: page 0 `{0,6}`, page 1 `{0,4}` |
+| `extendSelectionAtEnd:20` from the LAST page | unchanged: there is no page 4 and the page's own text is already covered |
+| `initWithDocument:` | nil string, 0 pages, nil colour, `selectionsByLine` 0 |
+| `initWithDocument:` then `addSelection:` | the selection the empty one becomes: `alpha`, one range `{5,5}` |
+
+Two more measured facts about the objects themselves:
+
+- **`-[PDFSelection copy]` is a DEEP copy**: extending the copy left the original at `{5,5}` and the copy at
+  `{5,8}`, and two copies are two objects.
+- **`-[PDFSelection addSelection:]` raises `NSGenericException`, reason `addSelection: selection document
+  mismatch`**, when the selection comes from a different `PDFDocument` - even one opened on the same file.
+  So the document is compared by identity and not by content, and a caller that opens the file twice cannot
+  add across the two.
+
+### The host's own defect, which the port does not copy
+
+**After ONE add, the selection stops answering any further mutation.** Measured, five shapes: an add
+followed by an extend (the extend is dropped), an extend followed by an add (the add is dropped), two
+extends (both apply), `addSelections:` with three selections in one call (all three apply), and an add
+followed by `addSelections:` (the `addSelections:` is dropped). The add path replaces the range storage and
+the object keeps a reference to the old one.
+
+The port applies **every** add, which is `PDFSelection.h:69`'s own sentence ("Add the selection to this
+selection"), so the two sides differ from the second add onwards and the rows say so. The differential
+compares ONE add per selection for that reason and the reason is written next to the comparison, not left
+for a reader to infer.
