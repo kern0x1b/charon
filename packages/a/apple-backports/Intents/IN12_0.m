@@ -870,8 +870,18 @@
 {
     // The header's own note is that a new set replaces every one provided before, so the
     // whole set is replaced here rather than added to. This release runs no assistant
-    // daemon to read the set, so it is kept in the class's own state and the handler is
-    // answered with no error, which is what the framework reports for a set it took.
+    // daemon to read the set, so it is kept in the class's own state.
+    //
+    // The handler is answered HERE, inside the call, with no error, and the host's own
+    // Intents answers it after the call returns with the same nil error - measured by
+    // tests/backports/host/intents/intents12-rows.m, which prints before-return=0 and
+    // within-5s=1 for -setRelevantShortcuts:completionHandler: on the singleton
+    // (macOS 27.0 build 26A428). The timing is this port's own answer and the difference is
+    // deliberate: there is no daemon here to hand the write to, so a handler that fired
+    // later would need a run loop the caller has no reason to turn, and the value the
+    // framework itself reports is the same either way. On a receiver that is NOT the
+    // singleton the host never calls the handler at all inside that window, which is the
+    // third answer and the reason the port keeps its own.
     _relevantShortcuts = [shortcuts copy] ?: [NSArray array];
     if (completionHandler) {
         completionHandler(nil);
@@ -880,7 +890,8 @@
 
 + (INRelevantShortcutStore *)defaultStore
 {
-    // The header's own note is to use this singleton, so it is one object for the process.
+    // The header's own note is to use this singleton, so it is one object for the process;
+    // measured on the host's own Intents, two calls return the same object.
     static INRelevantShortcutStore *shared;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
@@ -945,9 +956,9 @@
 + (instancetype)new
 {
     // The header marks this class's +new unavailable, which the runtime never sees:
-    // measured, +[INShortcut new] is answered and returns an object, and what answers
-    // it is NSObject's own +new. So the method is defined here and that one is reached
-    // through its IMP, because the header forbids naming the selector.
+    // measured, +[INShortcut new] is answered and returns an INShortcut, and what
+    // answers it is NSObject's own +new. So the method is defined here and that one is
+    // reached through its IMP, because the header forbids naming the selector.
     Class parent = [NSObject class];
     SEL selector = @selector(new);
     IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
@@ -1048,7 +1059,8 @@
 
 + (INUpcomingMediaManager *)sharedManager
 {
-    // The header's own note is to use this singleton, so it is one object for the process.
+    // The header's own note is to use this singleton, so it is one object for the process;
+    // measured on the host's own Intents, two calls return the same object.
     static INUpcomingMediaManager *shared;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
@@ -1103,9 +1115,9 @@
 + (instancetype)new
 {
     // The header marks this class's +new unavailable, which the runtime never sees:
-    // measured, +[INVoiceShortcut new] is answered and returns an object, and what
-    // answers it is NSObject's own +new. So the method is defined here and that one is
-    // reached through its IMP, because the header forbids naming the selector.
+    // measured, +[INVoiceShortcut new] is answered and returns an INVoiceShortcut, and
+    // what answers it is NSObject's own +new. So the method is defined here and that one
+    // is reached through its IMP, because the header forbids naming the selector.
     Class parent = [NSObject class];
     SEL selector = @selector(new);
     IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
@@ -1163,11 +1175,11 @@
 + (instancetype)new
 {
     // The header marks this class's +new unavailable, which the runtime never sees:
-    // measured, +[INVoiceShortcutCenter new] is answered and returns an object, and
-    // what answers it is NSObject's own +new. So the method is defined here and that one
-    // is reached through its IMP, because the header forbids naming the selector. The
-    // header's note is to use +sharedCenter; +new is answered anyway, and this answers
-    // it the way the release does.
+    // measured, +[INVoiceShortcutCenter new] is answered and returns an
+    // INVoiceShortcutCenter, and what answers it is NSObject's own +new. So the method is
+    // defined here and that one is reached through its IMP, because the header forbids
+    // naming the selector. The header's note is to use +sharedCenter; +new is answered
+    // anyway, and this answers it the way the release does.
     Class parent = [NSObject class];
     SEL selector = @selector(new);
     IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
@@ -1178,8 +1190,13 @@
     (void (^)(NSArray<INVoiceShortcut *> * _Nullable, NSError * _Nullable))completionHandler
 {
     // This release runs no assistant daemon and has no Shortcuts app, so no shortcut was
-    // ever added to Siri: the answer is an empty array and no error, which is what the
-    // framework reports when the app has none. A nil handler is not called.
+    // ever added to Siri: the answer is an empty array and no error. That is what the
+    // host's own Intents answers with, measured by
+    // tests/backports/host/intents/intents12-rows.m: count=0, the array is not nil, and the
+    // error is nil. It answers it AFTER the call returns (before-return=0, within-5s=1) and
+    // this answers it inside the call, for the reason
+    // -setRelevantShortcuts:completionHandler: gives: a handler that fired later would need
+    // a run loop the caller has no reason to turn. A nil handler is not called.
     if (completionHandler) {
         completionHandler([NSArray array], nil);
     }
@@ -1189,7 +1206,9 @@
     completion:(void (^)(INVoiceShortcut * _Nullable, NSError * _Nullable))completionHandler
 {
     // The same empty store as getAllVoiceShortcutsWithCompletion:, read by the identifier
-    // this release was never given one for: nil and no error. A nil handler is not called.
+    // this release was never given one for: nil and no error, which is what the host's own
+    // Intents answers with (intents12-rows.m: shortcut=nil error=nil, and after the call
+    // returns rather than inside it). A nil handler is not called.
     if (completionHandler) {
         completionHandler(nil, nil);
     }
@@ -1205,7 +1224,8 @@
 
 + (INVoiceShortcutCenter *)sharedCenter
 {
-    // The header's own note is to use this singleton, so it is one object for the process.
+    // The header's own note is to use this singleton, so it is one object for the process;
+    // measured on the host's own Intents, two calls return the same object.
     static INVoiceShortcutCenter *shared;
     static dispatch_once_t once;
     dispatch_once(&once, ^{

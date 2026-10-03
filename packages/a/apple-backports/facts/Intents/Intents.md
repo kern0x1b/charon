@@ -706,6 +706,67 @@ So the port answers each `+new` with NSObject's own `+new`, reached through its 
 reason the `-init` above is: the header forbids naming the selector. `INObject` is in that table as
 the control, and it is the one class of the four whose header marks nothing.
 
+That table says `returns=object` and not WHICH object, so the twelve members of this group that
+`EXTRA_METHODS` writes by hand - three `+new`, three singleton accessors, three void setters and
+three handler members - were asked again, member by member, and this is the whole output of that
+run. `sh tests/backports/host/intents/run-rows.sh`, host `macOS 27.0 build 26A428, arm64`, one
+process per section:
+
+    intents12 classes INShortcut=1 INVoiceShortcut=1 INVoiceShortcutCenter=1 INRelevantShortcutStore=1 INUpcomingMediaManager=1 INObject=1 INCharonNoSuchClassForThisHarness=0
+    intents12 +[INCharonNoSuchClassForThisHarness sharedCenter]          ABSENT class=INCharonNoSuchClassForThisHarness
+    intents12 +[NSObject new]                                            IMP non-NULL returned NSObject
+    intents12 +[INShortcut new]                                          IMP non-NULL returned INShortcut
+    intents12 +[INVoiceShortcut new]                                     IMP non-NULL returned INVoiceShortcut
+    intents12 +[INVoiceShortcutCenter new]                               IMP non-NULL returned INVoiceShortcutCenter
+    intents12 +[INRelevantShortcutStore defaultStore]                    IMP non-NULL returned INRelevantShortcutStore identical=1
+    intents12 +[INUpcomingMediaManager sharedManager]                    IMP non-NULL returned INUpcomingMediaManager identical=1
+    intents12 +[INVoiceShortcutCenter sharedCenter]                      IMP non-NULL returned INVoiceShortcutCenter identical=1
+    intents12 -[INVoiceShortcutCenter setShortcutSuggestions:]           receiver=INVoiceShortcutCenter IMP non-NULL returned void
+    intents12 -[INUpcomingMediaManager setSuggestedMediaIntents:]        receiver=INUpcomingMediaManager IMP non-NULL returned void
+    intents12 -[INUpcomingMediaManager setPredictionMode:forType:]       receiver=INUpcomingMediaManager IMP non-NULL returned void mode=0 type=0
+    intents12 -[INRelevantShortcutStore setRelevantShortcuts:completionHandler:] on the singleton handler before-return=0 within-5s=1 error=nil
+    intents12 -[INRelevantShortcutStore setRelevantShortcuts:completionHandler:] on a fresh instance handler before-return=0 within-5s=0
+    intents12 -[INVoiceShortcutCenter getAllVoiceShortcutsWithCompletion:] on the singleton handler before-return=0 within-5s=1 count=0 array-nil=0 error=nil
+    intents12 -[INVoiceShortcutCenter getAllVoiceShortcutsWithCompletion:] on a fresh instance handler before-return=0 within-5s=1 count=0 array-nil=0 error=nil
+    intents12 -[INVoiceShortcutCenter getVoiceShortcutWithIdentifier:completion:] on the singleton handler before-return=0 within-5s=1 shortcut=nil error=nil
+    intents12 -[INVoiceShortcutCenter getVoiceShortcutWithIdentifier:completion:] on a fresh instance handler before-return=0 within-5s=1 shortcut=nil error=nil
+
+Four things it settles, and one it changes:
+
+- **The three `+new` return an instance of their own class**, not of `NSObject` - which is what the
+  table above left as `returns=object`. The emitted body reaches `NSObject`'s `+new` and that is
+  correct, because `+new` is where the class's own `-init` is entered from.
+- **The three singleton accessors are singletons on the system's own framework too**: two calls in
+  one process return the same object (`identical=1`), so `dispatch_once` is not this port's
+  invention but the shape the release itself has. That was previously read off the header's
+  `@note` alone.
+- **The three handler members' VALUES are the port's own, measured on the host**: an empty array
+  that is not nil with a nil error, a nil shortcut with a nil error, and a nil error for a
+  relevant-shortcut set the singleton took.
+- **Their TIMING is not the port's.** Every one of them is `before-return=0`: the framework calls
+  the handler after the method returns, and the port calls it inside. The values agree and the
+  timing does not, so each of the three bodies now says so and gives the reason - there is no
+  daemon on this release to hand the work to, and a handler that fired later would need a run loop
+  the caller has no reason to turn. That is this port's answer, deliberately, and not a claim that
+  the framework answers the same way.
+- **One host behaviour has no port counterpart at all**: `-setRelevantShortcuts:completionHandler:`
+  on a receiver that is **not** the singleton never calls its handler inside the window
+  (`within-5s=0`). The port always answers, on any receiver, because its answer is its own state
+  and not a handoff. Which of the two is right for an application is not decidable from here, and
+  is not claimed either way.
+
+Two limits, both measured rather than assumed:
+
+- **One process per receiver, and that is not tidiness.** A version that asked both receivers of one
+  member in a single process printed `before-return=1` for
+  `-getAllVoiceShortcutsWithCompletion:` on a fresh instance in one run and `before-return=0` in
+  the next: the first call's work was still in flight when the second was made. The receiver is an
+  argument to `intents12-rows.m` for that reason, and three runs per cell agree.
+- **Nothing here runs the port's objects.** The port's classes and the framework's share a name, so
+  a lookup in one process returns the framework's object. This measures what the system's own
+  Intents does with these twelve, which is the oracle the rows are checked against; the port's own
+  side still needs `tests/backports/host/prefix_selectors.py`, named as owed above.
+
 ## What the host was measured to answer, on all 110 of them
 
 The twenty-one above were measured by `tests/backports/host/intents/init-rows.m`, which prints its
