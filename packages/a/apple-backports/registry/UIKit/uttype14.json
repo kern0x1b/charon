@@ -1240,6 +1240,116 @@
      "effect": "the property answers whether the type's identifier begins public., which is what UTType.h documents the property to mean. That is the getter the SDK's own header spells for it (`@property (readonly, getter=isPublicType) BOOL publicType`), so no SDK header declares a -publicType or -setPublictype: selector and none is added here: what an application can call is there. The corpus names the row with the property's own spelling, which is the spelling modules/apple/backports.lua's own check_registry pairs with the `is` getter.",
      "facts": "facts/UIKit/UTType.md",
      "source": "the SDK 26.2 header's own getter= spelling, and the host's own UniformTypeIdentifiers (tests/backports/host/uttypeconstants reads declared, dynamic and public for four system types)"
+  },
+  {
+     "api": "UTType.version",
+     "kind": "property",
+     "introduced": "14.0",
+     "minimum": "6.0",
+     "status": "implemented",
+     "effect": "the type's version, read out of the process's own UTI declarations under the key CoreServices/UTType.h lists among a Type Declaration Dictionary's keys; a type the process declares nothing about has no version, which is what UTType.h documents ('Most types do not specify a version') and what the host answers for every system type the differential reads",
+     "facts": "facts/UIKit/UTTypeDeclarations.md",
+     "source": "the host's own UniformTypeIdentifiers for the question, and the release's own kUTTypeVersionKey, whose value was measured as UTTypeVersion"
+  },
+  {
+     "api": "UTType.referenceURL",
+     "kind": "property",
+     "introduced": "14.0",
+     "minimum": "6.0",
+     "status": "implemented",
+     "effect": "the type's reference URL, read out of the process's own UTI declarations under kUTTypeReferenceURLKey; nil for a type it declares nothing about, which is what UTType.h documents and what the host answers",
+     "facts": "facts/UIKit/UTTypeDeclarations.md",
+     "source": "the host's own UniformTypeIdentifiers for the question, and the measured kUTTypeReferenceURLKey value"
+  },
+  {
+     "api": "UTType.supertypes",
+     "kind": "property",
+     "introduced": "14.0",
+     "minimum": "6.0",
+     "status": "implemented",
+     "effect": "the set of the port's catalogue types the release's own UTTypeConformsTo says the receiver conforms to, directly or indirectly, which is the question -conformsToType: already asks; the release exports no function that enumerates a type's supertypes, so the set is built over the catalogue, as Apple's own is",
+     "facts": "facts/UIKit/UTTypeDeclarations.md",
+     "source": "the release's UTTypeConformsTo over the catalogue of UIKit/UTTypeCatalogue<BAND>.m, and the host's own supertypes count for four system types in tests/backports/host/uttypeconstants"
+  },
+  {
+     "api": "+[UTType exportedTypeWithIdentifier:]",
+     "kind": "method",
+     "introduced": "14.0",
+     "minimum": "6.0",
+     "status": "implemented",
+     "effect": "the type the process declares as exported for this identifier. The imported pair additionally carries out the substitution rule UTType.h states in full: a type whose preferred filename extension another type prefers yields to that other type, through the release's own UTTypeCopyPreferredTagWithClass and UTTypeCreatePreferredIdentifierForTag.",
+     "facts": "facts/UIKit/UTTypeDeclarations.md",
+     "source": "SDK 26.2's UTType.h, which states the exported, imported and substitution rules in full, and the host's own answers for an identifier its own process declares nothing for (tests/backports/host/uttypeconstants)"
+  },
+  {
+     "api": "+[UTType exportedTypeWithIdentifier:conformingToType:]",
+     "kind": "method",
+     "introduced": "14.0",
+     "minimum": "6.0",
+     "status": "implemented",
+     "effect": "the type the process declares as exported for this identifier, narrowed by the parent the header says the result is expected to conform to and tested with the release's own UTTypeConformsTo. The imported pair additionally carries out the substitution rule UTType.h states in full: a type whose preferred filename extension another type prefers yields to that other type, through the release's own UTTypeCopyPreferredTagWithClass and UTTypeCreatePreferredIdentifierForTag.",
+     "facts": "facts/UIKit/UTTypeDeclarations.md",
+     "source": "SDK 26.2's UTType.h, which states the exported, imported and substitution rules in full, and the host's own answers for an identifier its own process declares nothing for (tests/backports/host/uttypeconstants)"
+  },
+  {
+     "api": "+[UTType importedTypeWithIdentifier:]",
+     "kind": "method",
+     "introduced": "14.0",
+     "minimum": "6.0",
+     "status": "implemented",
+     "effect": "the type the process declares as imported for this identifier. The imported pair additionally carries out the substitution rule UTType.h states in full: a type whose preferred filename extension another type prefers yields to that other type, through the release's own UTTypeCopyPreferredTagWithClass and UTTypeCreatePreferredIdentifierForTag.",
+     "facts": "facts/UIKit/UTTypeDeclarations.md",
+     "source": "SDK 26.2's UTType.h, which states the exported, imported and substitution rules in full, and the host's own answers for an identifier its own process declares nothing for (tests/backports/host/uttypeconstants)"
+  },
+  {
+     "api": "+[UTType importedTypeWithIdentifier:conformingToType:]",
+     "kind": "method",
+     "introduced": "14.0",
+     "minimum": "6.0",
+     "status": "implemented",
+     "effect": "the type the process declares as imported for this identifier, narrowed by the parent the header says the result is expected to conform to and tested with the release's own UTTypeConformsTo. The imported pair additionally carries out the substitution rule UTType.h states in full: a type whose preferred filename extension another type prefers yields to that other type, through the release's own UTTypeCopyPreferredTagWithClass and UTTypeCreatePreferredIdentifierForTag.",
+     "facts": "facts/UIKit/UTTypeDeclarations.md",
+     "source": "SDK 26.2's UTType.h, which states the exported, imported and substitution rules in full, and the host's own answers for an identifier its own process declares nothing for (tests/backports/host/uttypeconstants)"
+  },
+  {
+     "api": "-[NSString stringByAppendingPathComponent:conformingToType:]",
+     "kind": "method",
+     "introduced": "14.0",
+     "minimum": "6.0",
+     "status": "implemented",
+     "effect": "the receiver with a path component appended, carrying the content type's own preferred filename extension unless the partial name already ends in an extension valid for that type -- UTType.h's own worked examples: readme + plain text gives readme.txt, puppy.jpg + image gives puppy.jpg, and puppy.jpg + plain text gives puppy.jpg.txt",
+     "facts": "facts/UIKit/UTAdditions.md",
+     "source": "SDK 26.2's UniformTypeIdentifiers/UTAdditions.h for the surface and the worked examples, over the release's own UTTypeCopyPreferredTagWithClass (through -[UTType preferredFilenameExtension]) and UTTypeConformsTo (through -[UTType conformsToType:])"
+  },
+  {
+     "api": "-[NSString stringByAppendingPathExtensionForType:]",
+     "kind": "method",
+     "introduced": "14.0",
+     "minimum": "6.0",
+     "status": "implemented",
+     "effect": "the receiver's last path component with the content type's own preferred filename extension appended, under the same rule as the pair above",
+     "facts": "facts/UIKit/UTAdditions.md",
+     "source": "SDK 26.2's UniformTypeIdentifiers/UTAdditions.h for the surface and the worked examples, over the release's own UTTypeCopyPreferredTagWithClass (through -[UTType preferredFilenameExtension]) and UTTypeConformsTo (through -[UTType conformsToType:])"
+  },
+  {
+     "api": "-[NSURL URLByAppendingPathComponent:conformingToType:]",
+     "kind": "method",
+     "introduced": "14.0",
+     "minimum": "6.0",
+     "status": "implemented",
+     "effect": "the receiver with a path component appended under the same rule, and a directory path when the content type conforms to UTTypeDirectory, which is the note the header puts on this method",
+     "facts": "facts/UIKit/UTAdditions.md",
+     "source": "SDK 26.2's UniformTypeIdentifiers/UTAdditions.h for the surface and the worked examples, over the release's own UTTypeCopyPreferredTagWithClass (through -[UTType preferredFilenameExtension]) and UTTypeConformsTo (through -[UTType conformsToType:])"
+  },
+  {
+     "api": "-[NSURL URLByAppendingPathExtensionForType:]",
+     "kind": "method",
+     "introduced": "14.0",
+     "minimum": "6.0",
+     "status": "implemented",
+     "effect": "the receiver's last path component with the content type's own preferred filename extension appended, under the same rule, with the same directory note",
+     "facts": "facts/UIKit/UTAdditions.md",
+     "source": "SDK 26.2's UniformTypeIdentifiers/UTAdditions.h for the surface and the worked examples, over the release's own UTTypeCopyPreferredTagWithClass (through -[UTType preferredFilenameExtension]) and UTTypeConformsTo (through -[UTType conformsToType:])"
   }
  ]
 }
