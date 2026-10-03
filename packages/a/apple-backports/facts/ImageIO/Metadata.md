@@ -23,7 +23,8 @@ library at all.
 
 `tests/backports/host/imageio-metadata/` is the differential: `cases.m` is compiled twice, once
 against the host's own ImageIO and once against this object, and `run.sh` compares the two outputs
-line by line. Measured 2026-09-30: `33 cases compared, 1 declared differences, mutation RED`.
+line by line. Measured 2026-10-03, after the image-property bridge arrived here:
+`imageio-metadata: 2195 cases compared, 2 declared differences, mutation RED`.
 
 **A function has one name in both libraries, so the two builds are two programs.** Linking this
 object and the host's ImageIO into one program cannot be done - the linker sees one definition twice -
@@ -125,11 +126,11 @@ array answers NULL rather than the array's first element.
 
 ## What this slice does not carry
 
-`CGImageMetadataCreateXMPData`, `CGImageMetadataCreateFromXMPData`,
-`CGImageMetadataCopyTagMatchingImageProperty` and `CGImageMetadataSetValueMatchingImageProperty` are the
-XMP and image-property half of the same iOS 7 surface, and `CGAnimateImageDataWithBlock` and
-`CGAnimateImageAtURLWithBlock` the iOS 13 animation pair. Their registry rows still carry the reason main
-gave them, which is not a decision this slice made; what each needs is named in the delivery.
+`CGImageMetadataCreateXMPData` and `CGImageMetadataCreateFromXMPData` are the XMP half of the same iOS 7
+surface, and `CGAnimateImageDataWithBlock` and `CGAnimateImageAtURLWithBlock` the animation pair. Their
+registry rows still carry the reason main gave them, which is not a decision this slice made; what each
+needs is named in the delivery. The image-property half is not among them: the two
+`...MatchingImageProperty` functions arrived here on 2026-10-03 and are measured below.
 
 ## The rows that are decided, not carried: the release's own objects
 
@@ -176,44 +177,134 @@ of its own: `CFGetTypeID` on an `NSDictionary` the caller made answers the same 
 limitation of the release's public CF surface, not a shortcut in the check, and it is written here so that a
 caller deciding between `CGImageMetadataTagGetTypeID` and the marker knows what the number is worth.
 
-## The image-property bridge: what the oracle can and cannot answer (2026-10-01)
+## The image-property bridge: the whole table, measured (measured 2026-10-01, carried and corrected 2026-10-03)
 
 `CGImageMetadataCopyTagMatchingImageProperty` and `CGImageMetadataSetValueMatchingImageProperty` map a
-(kCGImageProperty dictionary, property) pair onto an XMP tag. Neither row is registered yet, and the
-measurement below is why: the oracle answers one direction and refuses the other.
+(kCGImageProperty dictionary, property) pair onto an XMP tag. `CGImageMetadata.h:520-580` says what the
+mapping is and says it is partial: "Metadata Working Group guidance is factored into the mapping of
+CGImageProperties to XMP compatible CGImageMetadataTags. For example, kCGImagePropertyExifDateTimeOriginal
+will get the value of the corresponding XMP tag, which is photoshop:DateCreated" and "Not all dictionaries
+and properties are supported at this time."
 
-`tests/backports/host/imageio-metadata/mapping.sh`, with `property-mapping.m` and `property-pairs.h`
-beside it. `property-pairs.h` is generated from the header, so the pair list cannot drift from it:
+So neither function is a search over the names in a tree. Both are ONE LOOKUP in a table of 357 rows, and
+the table is measured rather than transcribed: `tests/backports/host/imageio-metadata/table.sh` asks the
+host's own `CGImageMetadataSetValueMatchingImageProperty` to write a value for each of the **518**
+(dictionary, property) pairs the SDK's own `CGImageProperties.h` declares - one process per pair, because a
+pair the host cannot answer for has to be recordable on its own - and reads the tag it wrote back out of the
+tree. The row IS what the host answered. `tools/corpus/gen-imageio-property-map.py` writes the table into
+`Graphics/ImageIOMetadata7.m` from that run.
 
-    python3 - <iOS 16.4 SDK>/System/Library/Frameworks/ImageIO.framework/Headers/CGImageProperties.h \
-        > tests/backports/host/imageio-metadata/property-pairs.h
+    PAIRS: 518, generated from the SDK's CGImageProperties.h by gen-property-pairs.py
+    TABLE: 518 pairs, 357 the host maps, 161 it does not, 0 TRAP it (SIGTRAP)
+    AGREE: 357/357 answer the tag the set wrote, 357/357 answer it in a fresh tree, 357/357 answer NULL in an empty one
+      167     http://iptc.org/std/Iptc4xmpExt/2008-02-29/ Iptc4xmpExt
+       94     http://ns.adobe.com/exif/1.0/ exif
+       21     http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/ Iptc4xmpCore
+       18     http://ns.adobe.com/photoshop/1.0/ photoshop
+       15     http://ns.adobe.com/tiff/1.0/ tiff
+       13     http://cipa.jp/exif/1.0/ exifEX
+       12     http://purl.org/dc/elements/1.1/ dc
+        9     http://ns.adobe.com/exif/1.0/aux/ aux
+        7     http://ns.adobe.com/xap/1.0/ xmp
+        1     http://ns.adobe.com/xap/1.0/rights/ xmpRights
+      NOT MAPPED by dictionary: 66 {DNG} 27 {TGA} 25 {IPTC} 18 {PNG} 8 {GIF} 6 {WebP} 6 {HEICS} 5 {JFIF}
+    imageio-table: 518 pairs, 357 mapped, 161 not mapped, 0 trapped
 
-192 pairs: the seven dictionaries the header declares properties for (Exif, TIFF, GPS, IPTC, JFIF, 8BIM,
-MakerApple), each property asked against a container holding the property's own name in each of the nine
-public namespaces, so the answer *names* the namespace instead of guessing it.
+**The 161 pairs the host does not map are the header's own sentence about a partial table, by name.** Every
+JFIF, GIF, HEICS, WebP, TGA and DNG property is among them, along with 18 of PNG's, 25 of IPTC's and 66 of
+DNG's - while every one of the 76 Exif, 32 GPS, 20 TIFF and 9 ExifAux properties IS mapped. The set
+direction answers false and writes no tag for those 161, and the lookup answers NULL, which is what "not
+supported at this time" means. GPS mapping 32 of 32 into `exif:*` is also why every GPS property answers at
+no name of its own below: its XMP tag is not called after it.
+
+**No rule of thumb produced these rows, which is why this is 357 measurements and not a convention.** Twelve
+TIFF and IPTC properties land in `dc:*` and seven in `xmp:*` out of the same dictionaries;
+`kCGImagePropertyExifDateTimeOriginal` is `photoshop:DateCreated` while `kCGImagePropertyExifDateTimeDigitized`
+is `exif:DateTimeDigitized`; `kCGImagePropertyExifISOSpeed` is `exifEX:ISOSpeed` (the CIPA namespace
+`http://cipa.jp/exif/1.0/`, not Adobe's exif one); and `kCGImagePropertyExifLensSerialNumber` is
+`exifEX:LensSerialNumber` while `kCGImagePropertyExifAuxLensSerialNumber` is `aux:LensSerialNumber` - the
+same name in two namespaces, which is the fact the next paragraph is about.
+
+**The host's own two functions agree with each other on all 357 rows**, which is what makes this one table
+and not two: after the set direction wrote its tag, the lookup answers that tag in that tree, and it also
+answers it in a fresh tree holding only that tag, and it answers NULL in an empty tree. `table.sh` asserts
+all three counts, so a host that stopped agreeing would be visible there and not only in the port's diff.
+
+### Three rules the table does not say, each measured and each in the differential
+
+- **The namespace is part of the match.** A tree holding `exifEX:LensSerialNumber` answers NULL for
+  (`ExifAux`, `LensSerialNumber), and one holding `aux:LensSerialNumber` answers NULL for (`Exif`,
+  `LensSerialNumber). With both in the tree each pair answers its own tag. `Rating` says the same thing a
+  second way: `xmp:Rating` is what `kCGImagePropertyIPTCStarRating` maps to and `Iptc4xmpExt:Rating` is what
+  `kCGImagePropertyIPTCExtRating` maps to.
+- **The prefix is NOT part of the match.** A tag whose namespace and name are the row's and whose prefix is
+  one the caller registered (`charonprobe:ISOSpeed` in the `cipa.jp` namespace) is answered.
+- **Only the top level of the tree is searched.** A tree holding `exif:Sub{exif:DateTimeOriginal}` answers
+  NULL for (`Exif`, `DateTimeOriginal), and one holding `exif:Sub{photoshop:DateCreated}` - the name that
+  property really maps to - answers NULL too. Nothing below a structure or inside an array is found.
+
+And the mapped tag wins over the property's own name in both orders: a tree holding `photoshop:DateCreated`
+and `exif:DateTimeOriginal` answers `photoshop:DateCreated`, and one holding them the other way round
+answers the same, while a tree holding only `exif:DateTimeOriginal` answers NULL.
+
+### A number is written as the string XMP spells it
+
+The set direction's value comes back a `CFString` for every scalar number. These are XMP's own three scalar
+types, and the number's own `CFNumber` type decides between them:
+
+| passed | CFNumber type | written |
+| --- | --- | --- |
+| `@3`, `@-2`, `@(1234567890123LL)` | integer | `3`, `-2`, `1234567890123` |
+| `@3.0`, `@3.5f`, `@1.5`, `@0.1`, `@(1e20)` | float or double | `3.000000`, `3.500000`, `1.500000`, `0.100000`, `100000000000000000000.000000` |
+| `@YES`, `@NO` | `CFBoolean` | `True`, `False` |
+
+`CFNumberIsFloatType` is what separates the first two rows, so the port asks it and formats with `%lld` or
+`%f` accordingly - the spelling is CF's and XMP's, not this library's. An array and a dictionary are handed
+to the path writer as the caller passed them, which is what "The same value restrictions apply as in
+CGImageMetadataTagCreate" asks for, and the tag's type is read off the value's CFType as before (measured: a
+string and a number both write a `String` tag, an array an `ArrayOrdered` one). A second set for the same
+pair keeps one tag and its second value.
+
+**One difference this leaves standing, in a row that is not this slice's:** the host's *path* API writes a
+number as that same string, and this library's path writer keeps the `CFNumber` (`path-number-set=1
+value-type=CFString` on the host, the number on the port). So `CGImageMetadataSetValueWithPath` and
+`CGImageMetadataTagCreate` carry the same difference against the host today, and the harness compares only
+their type and not their value, which is why the differential is green there. It is a separate family and a
+separate decision; it is named here so the next band does not find it for itself.
+
+### What the 2026-10-01 reading of this pair list said, and why it was wrong
+
+This section was first written on 2026-10-01 from the same host and the same pair list, and it concluded
+that the oracle answers one direction and refuses the other: "173 of 192 pairs TRAP the host (SIGTRAP), the
+other 19 answer false and write no tag. So a port implementation of that row could not be checked against
+this oracle at all." Both halves were the harness's own defects, and both were found by measuring the same
+pairs again rather than by reading them:
+
+1. **The trap was in the probe.** `property-mapping.m` printed the tag it had just read with
+   `[NSString appendFormat:@"%@", <a const char *>]`, and a `%@` with a C string sends
+   `-respondsToSelector:` to a stack address, where the ObjC runtime answers with a trap.
+   `CGImageMetadataSetValueMatchingImageProperty` had already returned true and written its tag before that
+   line ran - the trap is after the write, in the probe's own printing. With the format fixed, all 192
+   pairs answer and **173 of them answer true**, the same 173 this table carries for that slice of the list,
+   and `mapping.sh` asserts that number now instead of asserting that there are traps.
+2. **The names that printed as NULL were not NULL.** `CFStringGetCStringPtr` answers NULL for a string it
+   cannot hand back in place, which is most of ImageIO's own tag names: **89 of the 357 names this table
+   carries** printed `(null)` that way while `CFStringGetLength` and `CFCopyDescription` both answered the
+   real name - a `tiff:Make` tag came out with its name, its prefix and its value all reading "(null)". The
+   probe copies the C string out now, into one of four rotating buffers because one printf uses three of them.
+
+The corrected run, `tests/backports/host/imageio-metadata/mapping.sh`:
 
     LOOKUP: 192 pairs, 87 answered at the property's own name, 105 answered at no name
-        61 exif    15 tiff    7 photoshop    3 Iptc4xmpCore    1 xmpRights
-    CONTROL: a dictionary and a property no header declares answer NULL, and the pair the container holds is answered
-    SET: 192 pairs, 173 TRAP the host (SIGTRAP), 19 answer, 0 of those answer true
-    imageio-mapping: lookup 87/192 at the property's own name, set 173/192 trapped by the host
+    SET: 192 pairs, 0 TRAP the host (SIGTRAP), 192 answer, 173 of those answer true
+    imageio-mapping: lookup 87/192 at the property's own name, set 173/192 answered true
 
-**The lookup direction is measurable for 87 of 192 pairs, and not for the other 105.** Those 105 are the
-Metadata Working Group ones the header itself describes: `kCGImagePropertyExifDateTimeOriginal` is answered
-by `photoshop:DateCreated`, and a container holding `exif:DateTimeOriginal` is not what the host looks at.
-The tag's *name* is not the property's name for those, and the name is not in any header: the search that
-found it would be over strings I invent, not over a measurement. All 32 GPS properties and all 5 JFIF
-properties answer at no name in any of the nine namespaces, which is itself the measurement - Apple's
-metadata carries no XMP equivalent for either dictionary.
-
-**The set direction has no answer to compare.** 173 of 192 pairs TRAP the host inside
-`CGImageMetadataSetValueMatchingImageProperty` (SIGTRAP, exit 133), and the 19 that answer all answer
-`false` and write no tag. One process per pair, because a trap is an answer and only a process per pair
-records which. So a port implementation of that row could not be checked against this oracle at all: any
-behaviour I wrote would be my own invention with the host's silence as its only evidence.
-
-The raw outputs are beside the harness in `evidence/`, and `mapping.sh` asserts both counts, so a change in
-the host's own behaviour shows up instead of passing quietly.
+The 87 and the 105 are still right, and they are a different measurement: a container is built holding the
+property's own name in each of the nine public namespaces and the pair is asked which container answers,
+which says how many of those 192 map to a tag named after the property itself. The 105 that answer at no
+name are the Metadata Working Group ones the header describes - `kCGImagePropertyExifDateTimeOriginal` is
+answered by `photoshop:DateCreated`, and a container holding `exif:DateTimeOriginal` is not what the host
+looks at - and the table above says what each of them maps to instead.
 
 ### The XMP pair is measurable, and here is the oracle
 

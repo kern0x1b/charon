@@ -8,9 +8,18 @@
 # silent, and it prints both numbers and the controls beside them. The port's own differential is run.sh's
 # neighbour, run.sh in this directory's parent, which binds the port's object and can fail.
 #
-# ONE PAIR PER PROCESS, and that is the measurement method rather than a workaround: the host TRAPS
-# (SIGTRAP, exit 133) on CGImageMetadataSetValueMatchingImageProperty for most pairs, so a trap is an
-# answer of its own - the host cannot answer for that pair - and only a process per pair can record which.
+# ONE PAIR PER PROCESS, and that is the measurement method rather than a workaround: a pair the host
+# cannot answer for has to be recordable on its own, and only a process per pair says which. A SIGTRAP
+# (exit 133) would be such an answer, and the count of them is checked below - not because this host
+# produces any, which it does not, but because a harness that only ever sees zero traps would not notice
+# a pair that started trapping.
+#
+# WHAT AN EARIER READING OF THIS FILE SAID, AND WHY IT WAS WRONG: it reported "173 of 192 pairs TRAP the
+# host (SIGTRAP)" and read the trap as ImageIO refusing the pair. The trap was in this harness: the set
+# branch printed the tag it had just read with [NSString appendFormat:@"%@", <a const char *>], and a %@
+# with a C string sends -respondsToSelector: to a stack address, where the ObjC runtime traps. Set had
+# already returned true and written its tag before that line ran. With the format fixed, all 192 pairs
+# answer and 173 of them answer true - the same 173 the table in Graphics/ImageIOMetadata7.m carries.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 build=${BUILD:-$here/../../../.agent-work/runs/imageio-mapping}
@@ -54,7 +63,8 @@ trapped=$(awk -F'\t' '$1!=0' "$build/property-set-answers.txt" | wc -l | tr -d '
 answered=$(awk -F'\t' '$1==0' "$build/property-set-answers.txt" | wc -l | tr -d ' ')
 true_answers=$(awk -F'\t' '$1==0 && $5==1' "$build/property-set-answers.txt" | wc -l | tr -d ' ')
 echo "  SET: $pairs pairs, $trapped TRAP the host (SIGTRAP), $answered answer, $true_answers of those answer true"
-[ "$trapped" -gt 0 ] || { echo "FAIL  no pair trapped the host, so the trap is not being measured"; exit 1; }
-[ "$true_answers" -eq 0 ] || { echo "FAIL  $true_answers pairs answer true; the facts page says none does, and it must be re-read"; exit 1; }
-echo "imageio-mapping: lookup $identity/$pairs at the property's own name, set $trapped/$pairs trapped by the host"
+[ "$trapped" -eq 0 ] || { echo "FAIL  $trapped pairs trap the host; the facts page says none does, and a trap needs a process of its own to be looked at"; exit 1; }
+[ "$answered" -eq "$pairs" ] || { echo "FAIL  only $answered of $pairs pairs answered; every one of them answers something"; exit 1; }
+[ "$true_answers" -gt 0 ] || { echo "FAIL  no pair answers true; the table carries $true_answers of them for this slice of the pair list, so that has to be re-read"; exit 1; }
+echo "imageio-mapping: lookup $identity/$pairs at the property's own name, set $true_answers/$pairs answered true"
 exit 0

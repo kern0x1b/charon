@@ -870,3 +870,866 @@ void CGImageMetadataEnumerateTagsUsingBlock(CGImageMetadataRef metadata, CFStrin
         }
     }
 }
+
+// MARK: - the image-property bridge
+//
+// CGImageMetadata.h:520-580 says what these two functions are, and the sentence that matters is
+// "Metadata Working Group guidance is factored into the mapping of CGImageProperties to XMP compatible
+// CGImageMetadataTags. For example, kCGImagePropertyExifDateTimeOriginal will get the value of the
+// corresponding XMP tag, which is photoshop:DateCreated", and then "Not all dictionaries and properties are
+// supported at this time."
+//
+// So neither function is a search over the names in the tree: both are ONE LOOKUP in the table below, from
+// the (dictionary, property) pair to the (namespace, prefix, name) of the XMP tag, and then this file's own
+// path machinery. The lookup matches a tag by its namespace and its name, and only in the top level of the
+// tree; both of those are measured, and the harness prints the cases that measure them next to the
+// answers (tests/backports/host/imageio-metadata/run.sh, cases "namespace", "nested", "own-name").
+//
+// THE TABLE IS MEASURED, NOT TRANSCRIBED. tools/corpus/gen-imageio-property-map.py asks the host's own
+// CGImageMetadataSetValueMatchingImageProperty to write a value for each of the 518 (dictionary, property)
+// pairs the SDK's own CGImageProperties.h declares, one process per pair, and reads the tag it wrote back
+// out of the tree: the row IS what the host answered. 357 pairs map and 161 do not, which is the header's
+// own sentence about a partial table (every JFIF, GIF, HEICS, WebP, TGA and DNG property is among the 161,
+// and so are 25 of IPTC's). No rule of thumb produced these: 12 of them are dc:* and 7 are xmp:* out of the
+// same TIFF and IPTC dictionaries, kCGImagePropertyExifDateTimeOriginal is photoshop:DateCreated while
+// kCGImagePropertyExifDateTimeDigitized is exif:DateTimeDigitized, and kCGImagePropertyExifLensSerialNumber
+// is exifEX:LensSerialNumber while kCGImagePropertyExifAuxLensSerialNumber is aux:LensSerialNumber - the
+// same name in two namespaces, which is why the namespace is part of the match and not only the name.
+//
+// The five strings of a row are the ones the measurement printed, not constants this file spells: the
+// caller passes a dictionary name and a property name it got from somewhere else, and every one of the
+// five is compared as text. The longest of them is 43 characters (a namespace URI), so the buffers below
+// hold any of the table's own strings and a tag whose namespace or name does not fit in one cannot be a
+// row of this table - which is why failing to convert is not a match and not a crash.
+
+// 357 rows, in the header's order: the pairs as they are declared, with the pairs the host does not map
+// left out. Regenerate the block with the command in tools/corpus/gen-imageio-property-map.py's docstring;
+// the harness below compares all 518 answers, so a row that drifts shows there and not only here.
+#define CHARON_PROPERTY_ROWS 357
+static const char *const charon_property_rows[CHARON_PROPERTY_ROWS][5] = {
+    { "{TIFF}", "Compression",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "Compression" },  // kCGImagePropertyTIFFCompression
+    { "{TIFF}", "PhotometricInterpretation",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "PhotometricInterpretation" },  // kCGImagePropertyTIFFPhotometricInterpretation
+    { "{TIFF}", "DocumentName",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "DocumentName" },  // kCGImagePropertyTIFFDocumentName
+    { "{TIFF}", "ImageDescription",
+      "http://purl.org/dc/elements/1.1/", "dc", "description" },  // kCGImagePropertyTIFFImageDescription
+    { "{TIFF}", "Make",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "Make" },  // kCGImagePropertyTIFFMake
+    { "{TIFF}", "Model",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "Model" },  // kCGImagePropertyTIFFModel
+    { "{TIFF}", "Orientation",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "Orientation" },  // kCGImagePropertyTIFFOrientation
+    { "{TIFF}", "XResolution",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "XResolution" },  // kCGImagePropertyTIFFXResolution
+    { "{TIFF}", "YResolution",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "YResolution" },  // kCGImagePropertyTIFFYResolution
+    { "{TIFF}", "ResolutionUnit",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "ResolutionUnit" },  // kCGImagePropertyTIFFResolutionUnit
+    { "{TIFF}", "Software",
+      "http://ns.adobe.com/xap/1.0/", "xmp", "CreatorTool" },  // kCGImagePropertyTIFFSoftware
+    { "{TIFF}", "TransferFunction",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "TransferFunction" },  // kCGImagePropertyTIFFTransferFunction
+    { "{TIFF}", "DateTime",
+      "http://ns.adobe.com/xap/1.0/", "xmp", "ModifyDate" },  // kCGImagePropertyTIFFDateTime
+    { "{TIFF}", "Artist",
+      "http://purl.org/dc/elements/1.1/", "dc", "creator" },  // kCGImagePropertyTIFFArtist
+    { "{TIFF}", "HostComputer",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "HostComputer" },  // kCGImagePropertyTIFFHostComputer
+    { "{TIFF}", "Copyright",
+      "http://purl.org/dc/elements/1.1/", "dc", "rights" },  // kCGImagePropertyTIFFCopyright
+    { "{TIFF}", "WhitePoint",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "WhitePoint" },  // kCGImagePropertyTIFFWhitePoint
+    { "{TIFF}", "PrimaryChromaticities",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "PrimaryChromaticities" },  // kCGImagePropertyTIFFPrimaryChromaticities
+    { "{TIFF}", "TileWidth",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "TileWidth" },  // kCGImagePropertyTIFFTileWidth
+    { "{TIFF}", "TileLength",
+      "http://ns.adobe.com/tiff/1.0/", "tiff", "TileLength" },  // kCGImagePropertyTIFFTileLength
+    { "{Exif}", "ExposureTime",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ExposureTime" },  // kCGImagePropertyExifExposureTime
+    { "{Exif}", "FNumber",
+      "http://ns.adobe.com/exif/1.0/", "exif", "FNumber" },  // kCGImagePropertyExifFNumber
+    { "{Exif}", "ExposureProgram",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ExposureProgram" },  // kCGImagePropertyExifExposureProgram
+    { "{Exif}", "SpectralSensitivity",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SpectralSensitivity" },  // kCGImagePropertyExifSpectralSensitivity
+    { "{Exif}", "ISOSpeedRatings",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ISOSpeedRatings" },  // kCGImagePropertyExifISOSpeedRatings
+    { "{Exif}", "OECF",
+      "http://ns.adobe.com/exif/1.0/", "exif", "OECF" },  // kCGImagePropertyExifOECF
+    { "{Exif}", "SensitivityType",
+      "http://cipa.jp/exif/1.0/", "exifEX", "SensitivityType" },  // kCGImagePropertyExifSensitivityType
+    { "{Exif}", "StandardOutputSensitivity",
+      "http://cipa.jp/exif/1.0/", "exifEX", "StandardOutputSensitivity" },  // kCGImagePropertyExifStandardOutputSensitivity
+    { "{Exif}", "RecommendedExposureIndex",
+      "http://cipa.jp/exif/1.0/", "exifEX", "RecommendedExposureIndex" },  // kCGImagePropertyExifRecommendedExposureIndex
+    { "{Exif}", "ISOSpeed",
+      "http://cipa.jp/exif/1.0/", "exifEX", "ISOSpeed" },  // kCGImagePropertyExifISOSpeed
+    { "{Exif}", "ISOSpeedLatitudeyyy",
+      "http://cipa.jp/exif/1.0/", "exifEX", "ISOSpeedLatitudeyyy" },  // kCGImagePropertyExifISOSpeedLatitudeyyy
+    { "{Exif}", "ISOSpeedLatitudezzz",
+      "http://cipa.jp/exif/1.0/", "exifEX", "ISOSpeedLatitudezzz" },  // kCGImagePropertyExifISOSpeedLatitudezzz
+    { "{Exif}", "ExifVersion",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ExifVersion" },  // kCGImagePropertyExifVersion
+    { "{Exif}", "DateTimeOriginal",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "DateCreated" },  // kCGImagePropertyExifDateTimeOriginal
+    { "{Exif}", "DateTimeDigitized",
+      "http://ns.adobe.com/xap/1.0/", "xmp", "CreateDate" },  // kCGImagePropertyExifDateTimeDigitized
+    { "{Exif}", "OffsetTime",
+      "http://ns.adobe.com/exif/1.0/", "exif", "OffsetTime" },  // kCGImagePropertyExifOffsetTime
+    { "{Exif}", "OffsetTimeOriginal",
+      "http://ns.adobe.com/exif/1.0/", "exif", "OffsetTimeOriginal" },  // kCGImagePropertyExifOffsetTimeOriginal
+    { "{Exif}", "OffsetTimeDigitized",
+      "http://ns.adobe.com/exif/1.0/", "exif", "OffsetTimeDigitized" },  // kCGImagePropertyExifOffsetTimeDigitized
+    { "{Exif}", "ComponentsConfiguration",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ComponentsConfiguration" },  // kCGImagePropertyExifComponentsConfiguration
+    { "{Exif}", "CompressedBitsPerPixel",
+      "http://ns.adobe.com/exif/1.0/", "exif", "CompressedBitsPerPixel" },  // kCGImagePropertyExifCompressedBitsPerPixel
+    { "{Exif}", "ShutterSpeedValue",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ShutterSpeedValue" },  // kCGImagePropertyExifShutterSpeedValue
+    { "{Exif}", "ApertureValue",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ApertureValue" },  // kCGImagePropertyExifApertureValue
+    { "{Exif}", "BrightnessValue",
+      "http://ns.adobe.com/exif/1.0/", "exif", "BrightnessValue" },  // kCGImagePropertyExifBrightnessValue
+    { "{Exif}", "ExposureBiasValue",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ExposureBiasValue" },  // kCGImagePropertyExifExposureBiasValue
+    { "{Exif}", "MaxApertureValue",
+      "http://ns.adobe.com/exif/1.0/", "exif", "MaxApertureValue" },  // kCGImagePropertyExifMaxApertureValue
+    { "{Exif}", "SubjectDistance",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SubjectDistance" },  // kCGImagePropertyExifSubjectDistance
+    { "{Exif}", "MeteringMode",
+      "http://ns.adobe.com/exif/1.0/", "exif", "MeteringMode" },  // kCGImagePropertyExifMeteringMode
+    { "{Exif}", "LightSource",
+      "http://ns.adobe.com/exif/1.0/", "exif", "LightSource" },  // kCGImagePropertyExifLightSource
+    { "{Exif}", "Flash",
+      "http://ns.adobe.com/exif/1.0/", "exif", "Flash" },  // kCGImagePropertyExifFlash
+    { "{Exif}", "FocalLength",
+      "http://ns.adobe.com/exif/1.0/", "exif", "FocalLength" },  // kCGImagePropertyExifFocalLength
+    { "{Exif}", "SubjectArea",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SubjectArea" },  // kCGImagePropertyExifSubjectArea
+    { "{Exif}", "MakerNote",
+      "http://ns.adobe.com/exif/1.0/", "exif", "MakerNote" },  // kCGImagePropertyExifMakerNote
+    { "{Exif}", "UserComment",
+      "http://ns.adobe.com/exif/1.0/", "exif", "UserComment" },  // kCGImagePropertyExifUserComment
+    { "{Exif}", "SubsecTime",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SubsecTime" },  // kCGImagePropertyExifSubsecTime
+    { "{Exif}", "SubsecTimeOriginal",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SubsecTimeOriginal" },  // kCGImagePropertyExifSubsecTimeOriginal
+    { "{Exif}", "SubsecTimeDigitized",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SubsecTimeDigitized" },  // kCGImagePropertyExifSubsecTimeDigitized
+    { "{Exif}", "FlashPixVersion",
+      "http://ns.adobe.com/exif/1.0/", "exif", "FlashPixVersion" },  // kCGImagePropertyExifFlashPixVersion
+    { "{Exif}", "ColorSpace",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ColorSpace" },  // kCGImagePropertyExifColorSpace
+    { "{Exif}", "PixelXDimension",
+      "http://ns.adobe.com/exif/1.0/", "exif", "PixelXDimension" },  // kCGImagePropertyExifPixelXDimension
+    { "{Exif}", "PixelYDimension",
+      "http://ns.adobe.com/exif/1.0/", "exif", "PixelYDimension" },  // kCGImagePropertyExifPixelYDimension
+    { "{Exif}", "RelatedSoundFile",
+      "http://ns.adobe.com/exif/1.0/", "exif", "RelatedSoundFile" },  // kCGImagePropertyExifRelatedSoundFile
+    { "{Exif}", "FlashEnergy",
+      "http://ns.adobe.com/exif/1.0/", "exif", "FlashEnergy" },  // kCGImagePropertyExifFlashEnergy
+    { "{Exif}", "SpatialFrequencyResponse",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SpatialFrequencyResponse" },  // kCGImagePropertyExifSpatialFrequencyResponse
+    { "{Exif}", "FocalPlaneXResolution",
+      "http://ns.adobe.com/exif/1.0/", "exif", "FocalPlaneXResolution" },  // kCGImagePropertyExifFocalPlaneXResolution
+    { "{Exif}", "FocalPlaneYResolution",
+      "http://ns.adobe.com/exif/1.0/", "exif", "FocalPlaneYResolution" },  // kCGImagePropertyExifFocalPlaneYResolution
+    { "{Exif}", "FocalPlaneResolutionUnit",
+      "http://ns.adobe.com/exif/1.0/", "exif", "FocalPlaneResolutionUnit" },  // kCGImagePropertyExifFocalPlaneResolutionUnit
+    { "{Exif}", "SubjectLocation",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SubjectLocation" },  // kCGImagePropertyExifSubjectLocation
+    { "{Exif}", "ExposureIndex",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ExposureIndex" },  // kCGImagePropertyExifExposureIndex
+    { "{Exif}", "SensingMethod",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SensingMethod" },  // kCGImagePropertyExifSensingMethod
+    { "{Exif}", "FileSource",
+      "http://ns.adobe.com/exif/1.0/", "exif", "FileSource" },  // kCGImagePropertyExifFileSource
+    { "{Exif}", "SceneType",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SceneType" },  // kCGImagePropertyExifSceneType
+    { "{Exif}", "CFAPattern",
+      "http://ns.adobe.com/exif/1.0/", "exif", "CFAPattern" },  // kCGImagePropertyExifCFAPattern
+    { "{Exif}", "CustomRendered",
+      "http://ns.adobe.com/exif/1.0/", "exif", "CustomRendered" },  // kCGImagePropertyExifCustomRendered
+    { "{Exif}", "ExposureMode",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ExposureMode" },  // kCGImagePropertyExifExposureMode
+    { "{Exif}", "WhiteBalance",
+      "http://ns.adobe.com/exif/1.0/", "exif", "WhiteBalance" },  // kCGImagePropertyExifWhiteBalance
+    { "{Exif}", "DigitalZoomRatio",
+      "http://ns.adobe.com/exif/1.0/", "exif", "DigitalZoomRatio" },  // kCGImagePropertyExifDigitalZoomRatio
+    { "{Exif}", "FocalLenIn35mmFilm",
+      "http://ns.adobe.com/exif/1.0/", "exif", "FocalLenIn35mmFilm" },  // kCGImagePropertyExifFocalLenIn35mmFilm
+    { "{Exif}", "SceneCaptureType",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SceneCaptureType" },  // kCGImagePropertyExifSceneCaptureType
+    { "{Exif}", "GainControl",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GainControl" },  // kCGImagePropertyExifGainControl
+    { "{Exif}", "Contrast",
+      "http://ns.adobe.com/exif/1.0/", "exif", "Contrast" },  // kCGImagePropertyExifContrast
+    { "{Exif}", "Saturation",
+      "http://ns.adobe.com/exif/1.0/", "exif", "Saturation" },  // kCGImagePropertyExifSaturation
+    { "{Exif}", "Sharpness",
+      "http://ns.adobe.com/exif/1.0/", "exif", "Sharpness" },  // kCGImagePropertyExifSharpness
+    { "{Exif}", "DeviceSettingDescription",
+      "http://ns.adobe.com/exif/1.0/", "exif", "DeviceSettingDescription" },  // kCGImagePropertyExifDeviceSettingDescription
+    { "{Exif}", "SubjectDistRange",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SubjectDistRange" },  // kCGImagePropertyExifSubjectDistRange
+    { "{Exif}", "ImageUniqueID",
+      "http://ns.adobe.com/exif/1.0/", "exif", "ImageUniqueID" },  // kCGImagePropertyExifImageUniqueID
+    { "{Exif}", "CameraOwnerName",
+      "http://cipa.jp/exif/1.0/", "exifEX", "CameraOwnerName" },  // kCGImagePropertyExifCameraOwnerName
+    { "{Exif}", "BodySerialNumber",
+      "http://cipa.jp/exif/1.0/", "exifEX", "BodySerialNumber" },  // kCGImagePropertyExifBodySerialNumber
+    { "{Exif}", "LensSpecification",
+      "http://cipa.jp/exif/1.0/", "exifEX", "LensSpecification" },  // kCGImagePropertyExifLensSpecification
+    { "{Exif}", "LensMake",
+      "http://cipa.jp/exif/1.0/", "exifEX", "LensMake" },  // kCGImagePropertyExifLensMake
+    { "{Exif}", "LensModel",
+      "http://cipa.jp/exif/1.0/", "exifEX", "LensModel" },  // kCGImagePropertyExifLensModel
+    { "{Exif}", "LensSerialNumber",
+      "http://cipa.jp/exif/1.0/", "exifEX", "LensSerialNumber" },  // kCGImagePropertyExifLensSerialNumber
+    { "{Exif}", "Gamma",
+      "http://cipa.jp/exif/1.0/", "exifEX", "Gamma" },  // kCGImagePropertyExifGamma
+    { "{Exif}", "CompositeImage",
+      "http://ns.adobe.com/exif/1.0/", "exif", "CompositeImage" },  // kCGImagePropertyExifCompositeImage
+    { "{Exif}", "SourceImageNumberOfCompositeImage",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SourceImageNumberOfCompositeImage" },  // kCGImagePropertyExifSourceImageNumberOfCompositeImage
+    { "{Exif}", "SourceExposureTimesOfCompositeImage",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SourceExposureTimesOfCompositeImage" },  // kCGImagePropertyExifSourceExposureTimesOfCompositeImage
+    { "{Exif}", "SubsecTimeOriginal",
+      "http://ns.adobe.com/exif/1.0/", "exif", "SubsecTimeOriginal" },  // kCGImagePropertyExifSubsecTimeOrginal
+    { "{ExifAux}", "LensInfo",
+      "http://ns.adobe.com/exif/1.0/aux/", "aux", "LensInfo" },  // kCGImagePropertyExifAuxLensInfo
+    { "{ExifAux}", "LensModel",
+      "http://ns.adobe.com/exif/1.0/aux/", "aux", "Lens" },  // kCGImagePropertyExifAuxLensModel
+    { "{ExifAux}", "SerialNumber",
+      "http://ns.adobe.com/exif/1.0/aux/", "aux", "SerialNumber" },  // kCGImagePropertyExifAuxSerialNumber
+    { "{ExifAux}", "LensID",
+      "http://ns.adobe.com/exif/1.0/aux/", "aux", "LensID" },  // kCGImagePropertyExifAuxLensID
+    { "{ExifAux}", "LensSerialNumber",
+      "http://ns.adobe.com/exif/1.0/aux/", "aux", "LensSerialNumber" },  // kCGImagePropertyExifAuxLensSerialNumber
+    { "{ExifAux}", "ImageNumber",
+      "http://ns.adobe.com/exif/1.0/aux/", "aux", "ImageNumber" },  // kCGImagePropertyExifAuxImageNumber
+    { "{ExifAux}", "FlashCompensation",
+      "http://ns.adobe.com/exif/1.0/aux/", "aux", "FlashCompensation" },  // kCGImagePropertyExifAuxFlashCompensation
+    { "{ExifAux}", "OwnerName",
+      "http://ns.adobe.com/exif/1.0/aux/", "aux", "OwnerName" },  // kCGImagePropertyExifAuxOwnerName
+    { "{ExifAux}", "Firmware",
+      "http://ns.adobe.com/exif/1.0/aux/", "aux", "Firmware" },  // kCGImagePropertyExifAuxFirmware
+    { "{PNG}", "Author",
+      "http://purl.org/dc/elements/1.1/", "dc", "creator" },  // kCGImagePropertyPNGAuthor
+    { "{PNG}", "Comment",
+      "http://ns.adobe.com/exif/1.0/", "exif", "UserComment" },  // kCGImagePropertyPNGComment
+    { "{PNG}", "Copyright",
+      "http://purl.org/dc/elements/1.1/", "dc", "rights" },  // kCGImagePropertyPNGCopyright
+    { "{PNG}", "Description",
+      "http://purl.org/dc/elements/1.1/", "dc", "description" },  // kCGImagePropertyPNGDescription
+    { "{PNG}", "Software",
+      "http://ns.adobe.com/xap/1.0/", "xmp", "CreatorTool" },  // kCGImagePropertyPNGSoftware
+    { "{PNG}", "Title",
+      "http://purl.org/dc/elements/1.1/", "dc", "title" },  // kCGImagePropertyPNGTitle
+    { "{GPS}", "GPSVersion",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSVersionID" },  // kCGImagePropertyGPSVersion
+    { "{GPS}", "LatitudeRef",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSLatitudeRef" },  // kCGImagePropertyGPSLatitudeRef
+    { "{GPS}", "Latitude",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSLatitude" },  // kCGImagePropertyGPSLatitude
+    { "{GPS}", "LongitudeRef",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSLongitudeRef" },  // kCGImagePropertyGPSLongitudeRef
+    { "{GPS}", "Longitude",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSLongitude" },  // kCGImagePropertyGPSLongitude
+    { "{GPS}", "AltitudeRef",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSAltitudeRef" },  // kCGImagePropertyGPSAltitudeRef
+    { "{GPS}", "Altitude",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSAltitude" },  // kCGImagePropertyGPSAltitude
+    { "{GPS}", "TimeStamp",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSTimeStamp" },  // kCGImagePropertyGPSTimeStamp
+    { "{GPS}", "Satellites",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSSatellites" },  // kCGImagePropertyGPSSatellites
+    { "{GPS}", "Status",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSStatus" },  // kCGImagePropertyGPSStatus
+    { "{GPS}", "MeasureMode",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSMeasureMode" },  // kCGImagePropertyGPSMeasureMode
+    { "{GPS}", "DOP",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSDOP" },  // kCGImagePropertyGPSDOP
+    { "{GPS}", "SpeedRef",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSSpeedRef" },  // kCGImagePropertyGPSSpeedRef
+    { "{GPS}", "Speed",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSSpeed" },  // kCGImagePropertyGPSSpeed
+    { "{GPS}", "TrackRef",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSTrackRef" },  // kCGImagePropertyGPSTrackRef
+    { "{GPS}", "Track",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSTrack" },  // kCGImagePropertyGPSTrack
+    { "{GPS}", "ImgDirectionRef",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSImgDirectionRef" },  // kCGImagePropertyGPSImgDirectionRef
+    { "{GPS}", "ImgDirection",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSImgDirection" },  // kCGImagePropertyGPSImgDirection
+    { "{GPS}", "MapDatum",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSMapDatum" },  // kCGImagePropertyGPSMapDatum
+    { "{GPS}", "DestLatitudeRef",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSDestLatitudeRef" },  // kCGImagePropertyGPSDestLatitudeRef
+    { "{GPS}", "DestLatitude",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSDestLatitude" },  // kCGImagePropertyGPSDestLatitude
+    { "{GPS}", "DestLongitudeRef",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSDestLongitudeRef" },  // kCGImagePropertyGPSDestLongitudeRef
+    { "{GPS}", "DestLongitude",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSDestLongitude" },  // kCGImagePropertyGPSDestLongitude
+    { "{GPS}", "DestBearingRef",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSDestBearingRef" },  // kCGImagePropertyGPSDestBearingRef
+    { "{GPS}", "DestBearing",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSDestBearing" },  // kCGImagePropertyGPSDestBearing
+    { "{GPS}", "DestDistanceRef",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSDestDistanceRef" },  // kCGImagePropertyGPSDestDistanceRef
+    { "{GPS}", "DestDistance",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSDestDistance" },  // kCGImagePropertyGPSDestDistance
+    { "{GPS}", "ProcessingMethod",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSProcessingMethod" },  // kCGImagePropertyGPSProcessingMethod
+    { "{GPS}", "AreaInformation",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSAreaInformation" },  // kCGImagePropertyGPSAreaInformation
+    { "{GPS}", "DateStamp",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSTimeStamp" },  // kCGImagePropertyGPSDateStamp
+    { "{GPS}", "Differential",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSDifferential" },  // kCGImagePropertyGPSDifferental
+    { "{GPS}", "HPositioningError",
+      "http://ns.adobe.com/exif/1.0/", "exif", "GPSHPositioningError" },  // kCGImagePropertyGPSHPositioningError
+    { "{IPTC}", "ObjectTypeReference",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-003" },  // kCGImagePropertyIPTCObjectTypeReference
+    { "{IPTC}", "ObjectAttributeReference",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IntellectualGenre" },  // kCGImagePropertyIPTCObjectAttributeReference
+    { "{IPTC}", "ObjectName",
+      "http://purl.org/dc/elements/1.1/", "dc", "title" },  // kCGImagePropertyIPTCObjectName
+    { "{IPTC}", "EditStatus",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-007" },  // kCGImagePropertyIPTCEditStatus
+    { "{IPTC}", "Urgency",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "Urgency" },  // kCGImagePropertyIPTCUrgency
+    { "{IPTC}", "SubjectReference",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "SubjectCode" },  // kCGImagePropertyIPTCSubjectReference
+    { "{IPTC}", "Category",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "Category" },  // kCGImagePropertyIPTCCategory
+    { "{IPTC}", "SupplementalCategory",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "SupplementalCategories" },  // kCGImagePropertyIPTCSupplementalCategory
+    { "{IPTC}", "FixtureIdentifier",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-022" },  // kCGImagePropertyIPTCFixtureIdentifier
+    { "{IPTC}", "Keywords",
+      "http://purl.org/dc/elements/1.1/", "dc", "subject" },  // kCGImagePropertyIPTCKeywords
+    { "{IPTC}", "ContentLocationCode",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-026" },  // kCGImagePropertyIPTCContentLocationCode
+    { "{IPTC}", "ContentLocationName",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-027" },  // kCGImagePropertyIPTCContentLocationName
+    { "{IPTC}", "SpecialInstructions",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "Instructions" },  // kCGImagePropertyIPTCSpecialInstructions
+    { "{IPTC}", "ActionAdvised",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-042" },  // kCGImagePropertyIPTCActionAdvised
+    { "{IPTC}", "ReferenceService",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-045" },  // kCGImagePropertyIPTCReferenceService
+    { "{IPTC}", "ReferenceDate",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-047" },  // kCGImagePropertyIPTCReferenceDate
+    { "{IPTC}", "ReferenceNumber",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-050" },  // kCGImagePropertyIPTCReferenceNumber
+    { "{IPTC}", "DateCreated",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "DateCreated" },  // kCGImagePropertyIPTCDateCreated
+    { "{IPTC}", "TimeCreated",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "DateCreated" },  // kCGImagePropertyIPTCTimeCreated
+    { "{IPTC}", "DigitalCreationDate",
+      "http://ns.adobe.com/xap/1.0/", "xmp", "CreateDate" },  // kCGImagePropertyIPTCDigitalCreationDate
+    { "{IPTC}", "DigitalCreationTime",
+      "http://ns.adobe.com/xap/1.0/", "xmp", "CreateDate" },  // kCGImagePropertyIPTCDigitalCreationTime
+    { "{IPTC}", "OriginatingProgram",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-065" },  // kCGImagePropertyIPTCOriginatingProgram
+    { "{IPTC}", "ProgramVersion",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-070" },  // kCGImagePropertyIPTCProgramVersion
+    { "{IPTC}", "Byline",
+      "http://purl.org/dc/elements/1.1/", "dc", "creator" },  // kCGImagePropertyIPTCByline
+    { "{IPTC}", "BylineTitle",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "AuthorsPosition" },  // kCGImagePropertyIPTCBylineTitle
+    { "{IPTC}", "City",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "City" },  // kCGImagePropertyIPTCCity
+    { "{IPTC}", "SubLocation",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "Location" },  // kCGImagePropertyIPTCSubLocation
+    { "{IPTC}", "Province/State",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "State" },  // kCGImagePropertyIPTCProvinceState
+    { "{IPTC}", "Country/PrimaryLocationCode",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "CountryCode" },  // kCGImagePropertyIPTCCountryPrimaryLocationCode
+    { "{IPTC}", "Country/PrimaryLocationName",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "Country" },  // kCGImagePropertyIPTCCountryPrimaryLocationName
+    { "{IPTC}", "OriginalTransmissionReference",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "TransmissionReference" },  // kCGImagePropertyIPTCOriginalTransmissionReference
+    { "{IPTC}", "Headline",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "Headline" },  // kCGImagePropertyIPTCHeadline
+    { "{IPTC}", "Credit",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "Credit" },  // kCGImagePropertyIPTCCredit
+    { "{IPTC}", "Source",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "Source" },  // kCGImagePropertyIPTCSource
+    { "{IPTC}", "CopyrightNotice",
+      "http://purl.org/dc/elements/1.1/", "dc", "rights" },  // kCGImagePropertyIPTCCopyrightNotice
+    { "{IPTC}", "Contact",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "Contact" },  // kCGImagePropertyIPTCContact
+    { "{IPTC}", "Caption/Abstract",
+      "http://purl.org/dc/elements/1.1/", "dc", "description" },  // kCGImagePropertyIPTCCaptionAbstract
+    { "{IPTC}", "Writer/Editor",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "CaptionWriter" },  // kCGImagePropertyIPTCWriterEditor
+    { "{IPTC}", "ImageType",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-130" },  // kCGImagePropertyIPTCImageType
+    { "{IPTC}", "ImageOrientation",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-131" },  // kCGImagePropertyIPTCImageOrientation
+    { "{IPTC}", "LanguageIdentifier",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "IIM2-135" },  // kCGImagePropertyIPTCLanguageIdentifier
+    { "{IPTC}", "StarRating",
+      "http://ns.adobe.com/xap/1.0/", "xmp", "Rating" },  // kCGImagePropertyIPTCStarRating
+    { "{IPTC}", "CreatorContactInfo",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "CreatorContactInfo" },  // kCGImagePropertyIPTCCreatorContactInfo
+    { "{IPTC}", "UsageTerms",
+      "http://ns.adobe.com/xap/1.0/rights/", "xmpRights", "UsageTerms" },  // kCGImagePropertyIPTCRightsUsageTerms
+    { "{IPTC}", "Scene",
+      "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/", "Iptc4xmpCore", "Scene" },  // kCGImagePropertyIPTCScene
+    { "{IPTC}", "AboutCvTerm",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "AboutCvTerm" },  // kCGImagePropertyIPTCExtAboutCvTerm
+    { "{IPTC}", "AboutCvTermCvId",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvId" },  // kCGImagePropertyIPTCExtAboutCvTermCvId
+    { "{IPTC}", "AboutCvTermId",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvTermId" },  // kCGImagePropertyIPTCExtAboutCvTermId
+    { "{IPTC}", "AboutCvTermName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvTermName" },  // kCGImagePropertyIPTCExtAboutCvTermName
+    { "{IPTC}", "AboutCvTermRefinedAbout",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvTermRefinedAbout" },  // kCGImagePropertyIPTCExtAboutCvTermRefinedAbout
+    { "{IPTC}", "AddlModelInfo",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "AddlModelInfo" },  // kCGImagePropertyIPTCExtAddlModelInfo
+    { "{IPTC}", "ArtworkOrObject",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkOrObject" },  // kCGImagePropertyIPTCExtArtworkOrObject
+    { "{IPTC}", "ArtworkCircaDateCreated",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkCircaDateCreated" },  // kCGImagePropertyIPTCExtArtworkCircaDateCreated
+    { "{IPTC}", "ArtworkContentDescription",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkContentDescription" },  // kCGImagePropertyIPTCExtArtworkContentDescription
+    { "{IPTC}", "ArtworkContributionDescription",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkContributionDescription" },  // kCGImagePropertyIPTCExtArtworkContributionDescription
+    { "{IPTC}", "ArtworkCopyrightNotice",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkCopyrightNotice" },  // kCGImagePropertyIPTCExtArtworkCopyrightNotice
+    { "{IPTC}", "ArtworkCreator",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkCreator" },  // kCGImagePropertyIPTCExtArtworkCreator
+    { "{IPTC}", "ArtworkCreatorID",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkCreatorID" },  // kCGImagePropertyIPTCExtArtworkCreatorID
+    { "{IPTC}", "ArtworkCopyrightOwnerID",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkCopyrightOwnerID" },  // kCGImagePropertyIPTCExtArtworkCopyrightOwnerID
+    { "{IPTC}", "ArtworkCopyrightOwnerName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkCopyrightOwnerName" },  // kCGImagePropertyIPTCExtArtworkCopyrightOwnerName
+    { "{IPTC}", "ArtworkLicensorID",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkLicensorID" },  // kCGImagePropertyIPTCExtArtworkLicensorID
+    { "{IPTC}", "ArtworkLicensorName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkLicensorName" },  // kCGImagePropertyIPTCExtArtworkLicensorName
+    { "{IPTC}", "ArtworkDateCreated",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkDateCreated" },  // kCGImagePropertyIPTCExtArtworkDateCreated
+    { "{IPTC}", "ArtworkPhysicalDescription",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkPhysicalDescription" },  // kCGImagePropertyIPTCExtArtworkPhysicalDescription
+    { "{IPTC}", "ArtworkSource",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkSource" },  // kCGImagePropertyIPTCExtArtworkSource
+    { "{IPTC}", "ArtworkSourceInventoryNo",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkSourceInventoryNo" },  // kCGImagePropertyIPTCExtArtworkSourceInventoryNo
+    { "{IPTC}", "ArtworkSourceInvURL",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkSourceInvURL" },  // kCGImagePropertyIPTCExtArtworkSourceInvURL
+    { "{IPTC}", "ArtworkStylePeriod",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkStylePeriod" },  // kCGImagePropertyIPTCExtArtworkStylePeriod
+    { "{IPTC}", "ArtworkTitle",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ArtworkTitle" },  // kCGImagePropertyIPTCExtArtworkTitle
+    { "{IPTC}", "AudioBitrate",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "AudioBitrate" },  // kCGImagePropertyIPTCExtAudioBitrate
+    { "{IPTC}", "AudioBitrateMode",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "AudioBitrateMode" },  // kCGImagePropertyIPTCExtAudioBitrateMode
+    { "{IPTC}", "AudioChannelCount",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "AudioChannelCount" },  // kCGImagePropertyIPTCExtAudioChannelCount
+    { "{IPTC}", "CircaDateCreated",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CircaDateCreated" },  // kCGImagePropertyIPTCExtCircaDateCreated
+    { "{IPTC}", "ContainerFormat",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ContainerFormat" },  // kCGImagePropertyIPTCExtContainerFormat
+    { "{IPTC}", "ContainerFormatIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ContainerFormatIdentifier" },  // kCGImagePropertyIPTCExtContainerFormatIdentifier
+    { "{IPTC}", "ContainerFormatName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ContainerFormatName" },  // kCGImagePropertyIPTCExtContainerFormatName
+    { "{IPTC}", "Contributor",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "Contributor" },  // kCGImagePropertyIPTCExtContributor
+    { "{IPTC}", "ContributorIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ContributorIdentifier" },  // kCGImagePropertyIPTCExtContributorIdentifier
+    { "{IPTC}", "ContributorName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ContributorName" },  // kCGImagePropertyIPTCExtContributorName
+    { "{IPTC}", "ContributorRole",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ContributorRole" },  // kCGImagePropertyIPTCExtContributorRole
+    { "{IPTC}", "CopyrightYear",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CopyrightYear" },  // kCGImagePropertyIPTCExtCopyrightYear
+    { "{IPTC}", "Creator",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "Creator" },  // kCGImagePropertyIPTCExtCreator
+    { "{IPTC}", "CreatorIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CreatorIdentifier" },  // kCGImagePropertyIPTCExtCreatorIdentifier
+    { "{IPTC}", "CreatorName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CreatorName" },  // kCGImagePropertyIPTCExtCreatorName
+    { "{IPTC}", "CreatorRole",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CreatorRole" },  // kCGImagePropertyIPTCExtCreatorRole
+    { "{IPTC}", "ControlledVocabularyTerm",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ControlledVocabularyTerm" },  // kCGImagePropertyIPTCExtControlledVocabularyTerm
+    { "{IPTC}", "DataOnScreen",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DataOnScreen" },  // kCGImagePropertyIPTCExtDataOnScreen
+    { "{IPTC}", "DataOnScreenRegion",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DataOnScreenRegion" },  // kCGImagePropertyIPTCExtDataOnScreenRegion
+    { "{IPTC}", "DataOnScreenRegionD",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DataOnScreenRegionD" },  // kCGImagePropertyIPTCExtDataOnScreenRegionD
+    { "{IPTC}", "DataOnScreenRegionH",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DataOnScreenRegionH" },  // kCGImagePropertyIPTCExtDataOnScreenRegionH
+    { "{IPTC}", "DataOnScreenRegionText",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DataOnScreenRegionText" },  // kCGImagePropertyIPTCExtDataOnScreenRegionText
+    { "{IPTC}", "DataOnScreenRegionUnit",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DataOnScreenRegionUnit" },  // kCGImagePropertyIPTCExtDataOnScreenRegionUnit
+    { "{IPTC}", "DataOnScreenRegionW",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DataOnScreenRegionW" },  // kCGImagePropertyIPTCExtDataOnScreenRegionW
+    { "{IPTC}", "DataOnScreenRegionX",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DataOnScreenRegionX" },  // kCGImagePropertyIPTCExtDataOnScreenRegionX
+    { "{IPTC}", "DataOnScreenRegionY",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DataOnScreenRegionY" },  // kCGImagePropertyIPTCExtDataOnScreenRegionY
+    { "{IPTC}", "DigitalImageGUID",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DigImageGUID" },  // kCGImagePropertyIPTCExtDigitalImageGUID
+    { "{IPTC}", "DigitalSourceFileType",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DigitalSourceFileType" },  // kCGImagePropertyIPTCExtDigitalSourceFileType
+    { "{IPTC}", "DigitalSourceType",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DigitalSourceType" },  // kCGImagePropertyIPTCExtDigitalSourceType
+    { "{IPTC}", "Dopesheet",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "Dopesheet" },  // kCGImagePropertyIPTCExtDopesheet
+    { "{IPTC}", "DopesheetLink",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DopesheetLink" },  // kCGImagePropertyIPTCExtDopesheetLink
+    { "{IPTC}", "DopesheetLinkLink",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DopesheetLinkLink" },  // kCGImagePropertyIPTCExtDopesheetLinkLink
+    { "{IPTC}", "DopesheetLinkLinkQualifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "DopesheetLinkLinkQualifier" },  // kCGImagePropertyIPTCExtDopesheetLinkLinkQualifier
+    { "{IPTC}", "EmbdEncRightsExpr",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "EmbdEncRightsExpr" },  // kCGImagePropertyIPTCExtEmbdEncRightsExpr
+    { "{IPTC}", "EmbeddedEncodedRightsExpr",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "EncRightsExpr" },  // kCGImagePropertyIPTCExtEmbeddedEncodedRightsExpr
+    { "{IPTC}", "EmbeddedEncodedRightsExprType",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RightsExprEncType" },  // kCGImagePropertyIPTCExtEmbeddedEncodedRightsExprType
+    { "{IPTC}", "EmbeddedEncodedRightsExprLangID",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RightsExprLangId" },  // kCGImagePropertyIPTCExtEmbeddedEncodedRightsExprLangID
+    { "{IPTC}", "Episode",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "Episode" },  // kCGImagePropertyIPTCExtEpisode
+    { "{IPTC}", "EpisodeIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "EpisodeIdentifier" },  // kCGImagePropertyIPTCExtEpisodeIdentifier
+    { "{IPTC}", "EpisodeName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "EpisodeName" },  // kCGImagePropertyIPTCExtEpisodeName
+    { "{IPTC}", "EpisodeNumber",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "EpisodeNumber" },  // kCGImagePropertyIPTCExtEpisodeNumber
+    { "{IPTC}", "Event",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "Event" },  // kCGImagePropertyIPTCExtEvent
+    { "{IPTC}", "ShownEvent",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "Event" },  // kCGImagePropertyIPTCExtShownEvent
+    { "{IPTC}", "ShownEventIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ShownEventIdentifier" },  // kCGImagePropertyIPTCExtShownEventIdentifier
+    { "{IPTC}", "ShownEventName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ShownEventName" },  // kCGImagePropertyIPTCExtShownEventName
+    { "{IPTC}", "ExternalMetadataLink",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ExternalMetadataLink" },  // kCGImagePropertyIPTCExtExternalMetadataLink
+    { "{IPTC}", "FeedIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "FeedIdentifier" },  // kCGImagePropertyIPTCExtFeedIdentifier
+    { "{IPTC}", "Genre",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "Genre" },  // kCGImagePropertyIPTCExtGenre
+    { "{IPTC}", "GenreCvId",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvId" },  // kCGImagePropertyIPTCExtGenreCvId
+    { "{IPTC}", "GenreCvTermId",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvTermId" },  // kCGImagePropertyIPTCExtGenreCvTermId
+    { "{IPTC}", "GenreCvTermName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvTermName" },  // kCGImagePropertyIPTCExtGenreCvTermName
+    { "{IPTC}", "GenreCvTermRefinedAbout",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvTermRefinedAbout" },  // kCGImagePropertyIPTCExtGenreCvTermRefinedAbout
+    { "{IPTC}", "Headline",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "Headline" },  // kCGImagePropertyIPTCExtHeadline
+    { "{IPTC}", "IPTCLastEdited",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "IPTCLastEdited" },  // kCGImagePropertyIPTCExtIPTCLastEdited
+    { "{IPTC}", "LinkedEncRightsExpr",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "LinkedEncRightsExpr" },  // kCGImagePropertyIPTCExtLinkedEncRightsExpr
+    { "{IPTC}", "LinkedEncodedRightsExpr",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "LinkedRightsExpr" },  // kCGImagePropertyIPTCExtLinkedEncodedRightsExpr
+    { "{IPTC}", "LinkedEncodedRightsExprType",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RightsExprEncType" },  // kCGImagePropertyIPTCExtLinkedEncodedRightsExprType
+    { "{IPTC}", "LinkedEncodedRightsExprLangID",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RightsExprLangId" },  // kCGImagePropertyIPTCExtLinkedEncodedRightsExprLangID
+    { "{IPTC}", "LocationCreated",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "LocationCreated" },  // kCGImagePropertyIPTCExtLocationCreated
+    { "{IPTC}", "City",
+      "http://ns.adobe.com/photoshop/1.0/", "photoshop", "City" },  // kCGImagePropertyIPTCExtLocationCity
+    { "{IPTC}", "LocationShown",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "LocationShown" },  // kCGImagePropertyIPTCExtLocationShown
+    { "{IPTC}", "MaxAvailHeight",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "MaxAvailHeight" },  // kCGImagePropertyIPTCExtMaxAvailHeight
+    { "{IPTC}", "MaxAvailWidth",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "MaxAvailWidth" },  // kCGImagePropertyIPTCExtMaxAvailWidth
+    { "{IPTC}", "ModelAge",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ModelAge" },  // kCGImagePropertyIPTCExtModelAge
+    { "{IPTC}", "OrganisationInImageCode",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "OrganisationInImageCode" },  // kCGImagePropertyIPTCExtOrganisationInImageCode
+    { "{IPTC}", "OrganisationInImageName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "OrganisationInImageName" },  // kCGImagePropertyIPTCExtOrganisationInImageName
+    { "{IPTC}", "PersonHeard",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PersonHeard" },  // kCGImagePropertyIPTCExtPersonHeard
+    { "{IPTC}", "PersonHeardIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PersonHeardIdentifier" },  // kCGImagePropertyIPTCExtPersonHeardIdentifier
+    { "{IPTC}", "PersonHeardName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PersonHeardName" },  // kCGImagePropertyIPTCExtPersonHeardName
+    { "{IPTC}", "PersonInImage",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PersonInImage" },  // kCGImagePropertyIPTCExtPersonInImage
+    { "{IPTC}", "PersonInImageWDetails",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PersonInImageWDetails" },  // kCGImagePropertyIPTCExtPersonInImageWDetails
+    { "{IPTC}", "PersonInImageCharacteristic",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PersonCharacteristic" },  // kCGImagePropertyIPTCExtPersonInImageCharacteristic
+    { "{IPTC}", "PersonInImageCvTermCvId",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvId" },  // kCGImagePropertyIPTCExtPersonInImageCvTermCvId
+    { "{IPTC}", "PersonInImageCvTermId",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvTermId" },  // kCGImagePropertyIPTCExtPersonInImageCvTermId
+    { "{IPTC}", "PersonInImageCvTermName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvTermName" },  // kCGImagePropertyIPTCExtPersonInImageCvTermName
+    { "{IPTC}", "PersonInImageCvTermRefinedAbout",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "CvTermRefinedAbout" },  // kCGImagePropertyIPTCExtPersonInImageCvTermRefinedAbout
+    { "{IPTC}", "PersonInImageDescription",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PersonDescription" },  // kCGImagePropertyIPTCExtPersonInImageDescription
+    { "{IPTC}", "PersonInImageId",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PersonId" },  // kCGImagePropertyIPTCExtPersonInImageId
+    { "{IPTC}", "PersonInImageName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PersonName" },  // kCGImagePropertyIPTCExtPersonInImageName
+    { "{IPTC}", "ProductInImage",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ProductInImage" },  // kCGImagePropertyIPTCExtProductInImage
+    { "{IPTC}", "ProductInImageDescription",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ProductDescription" },  // kCGImagePropertyIPTCExtProductInImageDescription
+    { "{IPTC}", "ProductInImageGTIN",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ProductGTIN" },  // kCGImagePropertyIPTCExtProductInImageGTIN
+    { "{IPTC}", "ProductInImageName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ProductName" },  // kCGImagePropertyIPTCExtProductInImageName
+    { "{IPTC}", "PublicationEvent",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PublicationEvent" },  // kCGImagePropertyIPTCExtPublicationEvent
+    { "{IPTC}", "PublicationEventDate",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PublicationEventDate" },  // kCGImagePropertyIPTCExtPublicationEventDate
+    { "{IPTC}", "PublicationEventIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PublicationEventIdentifier" },  // kCGImagePropertyIPTCExtPublicationEventIdentifier
+    { "{IPTC}", "PublicationEventName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "PublicationEventName" },  // kCGImagePropertyIPTCExtPublicationEventName
+    { "{IPTC}", "Rating",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "Rating" },  // kCGImagePropertyIPTCExtRating
+    { "{IPTC}", "RatingRatingRegion",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRatingRegion" },  // kCGImagePropertyIPTCExtRatingRatingRegion
+    { "{IPTC}", "RatingRegionCity",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionCity" },  // kCGImagePropertyIPTCExtRatingRegionCity
+    { "{IPTC}", "RatingRegionCountryCode",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionCountryCode" },  // kCGImagePropertyIPTCExtRatingRegionCountryCode
+    { "{IPTC}", "RatingRegionCountryName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionCountryName" },  // kCGImagePropertyIPTCExtRatingRegionCountryName
+    { "{IPTC}", "RatingRegionGPSAltitude",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionGPSAltitude" },  // kCGImagePropertyIPTCExtRatingRegionGPSAltitude
+    { "{IPTC}", "RatingRegionGPSLatitude",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionGPSLatitude" },  // kCGImagePropertyIPTCExtRatingRegionGPSLatitude
+    { "{IPTC}", "RatingRegionGPSLongitude",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionGPSLongitude" },  // kCGImagePropertyIPTCExtRatingRegionGPSLongitude
+    { "{IPTC}", "RatingRegionIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionIdentifier" },  // kCGImagePropertyIPTCExtRatingRegionIdentifier
+    { "{IPTC}", "RatingRegionLocationId",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionLocationId" },  // kCGImagePropertyIPTCExtRatingRegionLocationId
+    { "{IPTC}", "RatingRegionLocationName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionLocationName" },  // kCGImagePropertyIPTCExtRatingRegionLocationName
+    { "{IPTC}", "RatingRegionProvinceState",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionProvinceState" },  // kCGImagePropertyIPTCExtRatingRegionProvinceState
+    { "{IPTC}", "RatingRegionSublocation",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionSublocation" },  // kCGImagePropertyIPTCExtRatingRegionSublocation
+    { "{IPTC}", "RatingRegionWorldRegion",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingRegionWorldRegion" },  // kCGImagePropertyIPTCExtRatingRegionWorldRegion
+    { "{IPTC}", "RatingScaleMaxValue",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingScaleMaxValue" },  // kCGImagePropertyIPTCExtRatingScaleMaxValue
+    { "{IPTC}", "RatingScaleMinValue",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingScaleMinValue" },  // kCGImagePropertyIPTCExtRatingScaleMinValue
+    { "{IPTC}", "RatingSourceLink",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingSourceLink" },  // kCGImagePropertyIPTCExtRatingSourceLink
+    { "{IPTC}", "RatingValue",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingValue" },  // kCGImagePropertyIPTCExtRatingValue
+    { "{IPTC}", "RatingValueLogoLink",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RatingValueLogoLink" },  // kCGImagePropertyIPTCExtRatingValueLogoLink
+    { "{IPTC}", "RegistryID",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RegistryId" },  // kCGImagePropertyIPTCExtRegistryID
+    { "{IPTC}", "RegistryEntryRole",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RegEntryRole" },  // kCGImagePropertyIPTCExtRegistryEntryRole
+    { "{IPTC}", "RegistryItemID",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RegItemId" },  // kCGImagePropertyIPTCExtRegistryItemID
+    { "{IPTC}", "RegistryOrganisationID",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "RegOrgId" },  // kCGImagePropertyIPTCExtRegistryOrganisationID
+    { "{IPTC}", "ReleaseReady",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "ReleaseReady" },  // kCGImagePropertyIPTCExtReleaseReady
+    { "{IPTC}", "Season",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "Season" },  // kCGImagePropertyIPTCExtSeason
+    { "{IPTC}", "SeasonIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "SeasonIdentifier" },  // kCGImagePropertyIPTCExtSeasonIdentifier
+    { "{IPTC}", "SeasonName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "SeasonName" },  // kCGImagePropertyIPTCExtSeasonName
+    { "{IPTC}", "SeasonNumber",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "SeasonNumber" },  // kCGImagePropertyIPTCExtSeasonNumber
+    { "{IPTC}", "Series",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "Series" },  // kCGImagePropertyIPTCExtSeries
+    { "{IPTC}", "SeriesIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "SeriesIdentifier" },  // kCGImagePropertyIPTCExtSeriesIdentifier
+    { "{IPTC}", "SeriesName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "SeriesName" },  // kCGImagePropertyIPTCExtSeriesName
+    { "{IPTC}", "StorylineIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "StorylineIdentifier" },  // kCGImagePropertyIPTCExtStorylineIdentifier
+    { "{IPTC}", "StreamReady",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "StreamReady" },  // kCGImagePropertyIPTCExtStreamReady
+    { "{IPTC}", "StylePeriod",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "StylePeriod" },  // kCGImagePropertyIPTCExtStylePeriod
+    { "{IPTC}", "SupplyChainSource",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "StorylineIdentifier" },  // kCGImagePropertyIPTCExtSupplyChainSource
+    { "{IPTC}", "SupplyChainSourceIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "StreamReady" },  // kCGImagePropertyIPTCExtSupplyChainSourceIdentifier
+    { "{IPTC}", "SupplyChainSourceName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "StylePeriod" },  // kCGImagePropertyIPTCExtSupplyChainSourceName
+    { "{IPTC}", "TemporalCoverage",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "SupplyChainSource" },  // kCGImagePropertyIPTCExtTemporalCoverage
+    { "{IPTC}", "TemporalCoverageFrom",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "SupplyChainSourceIdentifier" },  // kCGImagePropertyIPTCExtTemporalCoverageFrom
+    { "{IPTC}", "TemporalCoverageTo",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "SupplyChainSourceName" },  // kCGImagePropertyIPTCExtTemporalCoverageTo
+    { "{IPTC}", "Transcript",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "Transcript" },  // kCGImagePropertyIPTCExtTranscript
+    { "{IPTC}", "TranscriptLink",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "TranscriptLink" },  // kCGImagePropertyIPTCExtTranscriptLink
+    { "{IPTC}", "TranscriptLinkLink",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "TranscriptLinkLink" },  // kCGImagePropertyIPTCExtTranscriptLinkLink
+    { "{IPTC}", "TranscriptLinkLinkQualifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "TranscriptLinkLinkQualifier" },  // kCGImagePropertyIPTCExtTranscriptLinkLinkQualifier
+    { "{IPTC}", "VideoBitrate",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "VideoBitrate" },  // kCGImagePropertyIPTCExtVideoBitrate
+    { "{IPTC}", "VideoBitrateMode",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "VideoBitrateMode" },  // kCGImagePropertyIPTCExtVideoBitrateMode
+    { "{IPTC}", "VideoDisplayAspectRatio",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "VideoDisplayAspectRatio" },  // kCGImagePropertyIPTCExtVideoDisplayAspectRatio
+    { "{IPTC}", "VideoEncodingProfile",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "VideoEncodingProfile" },  // kCGImagePropertyIPTCExtVideoEncodingProfile
+    { "{IPTC}", "VideoShotType",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "VideoShotType" },  // kCGImagePropertyIPTCExtVideoShotType
+    { "{IPTC}", "VideoShotTypeIdentifier",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "VideoShotTypeIdentifier" },  // kCGImagePropertyIPTCExtVideoShotTypeIdentifier
+    { "{IPTC}", "VideoShotTypeName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "VideoShotTypeName" },  // kCGImagePropertyIPTCExtVideoShotTypeName
+    { "{IPTC}", "VideoStreamsCount",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "VideoStreamsCount" },  // kCGImagePropertyIPTCExtVideoStreamsCount
+    { "{IPTC}", "VisualColor",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "VisualColor" },  // kCGImagePropertyIPTCExtVisualColor
+    { "{IPTC}", "WorkflowTag",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "WorkflowTag" },  // kCGImagePropertyIPTCExtWorkflowTag
+    { "{IPTC}", "WorkflowTagCvId",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "WorkflowTagCvId" },  // kCGImagePropertyIPTCExtWorkflowTagCvId
+    { "{IPTC}", "WorkflowTagCvTermId",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "WorkflowTagCvTermId" },  // kCGImagePropertyIPTCExtWorkflowTagCvTermId
+    { "{IPTC}", "WorkflowTagCvTermName",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "WorkflowTagCvTermName" },  // kCGImagePropertyIPTCExtWorkflowTagCvTermName
+    { "{IPTC}", "WorkflowTagCvTermRefinedAbout",
+      "http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt", "WorkflowTagCvTermRefinedAbout" },  // kCGImagePropertyIPTCExtWorkflowTagCvTermRefinedAbout
+};
+
+// The row for a (dictionary, property) pair, or NULL. Both callers need the same answer to the same
+// question, and NULL is the header's own: a property the table does not carry is one "not supported at
+// this time", so the lookup answers NULL and the set answers false and writes nothing (measured, and
+// both are in the harness: a dictionary and a property no header declares behave the same way).
+static const char *const *charon_property_row(const char *dictionary, const char *property)
+{
+    for (size_t i = 0; i < CHARON_PROPERTY_ROWS; i++) {
+        const char *const *row = charon_property_rows[i];
+        if (strcmp(row[0], dictionary) == 0 && strcmp(row[1], property) == 0)
+            return row;
+    }
+    return NULL;
+}
+
+// A CFString as a C string in the caller's buffer. CFStringGetCStringPtr would answer NULL for a string
+// it cannot hand back in place, which is most of ImageIO's own (measured: 89 of the 357 names in the
+// table), so the copy is made instead and a string that does not fit is reported as no string at all.
+static BOOL charon_string(CFStringRef string, char *buffer, size_t size)
+{
+    return string && CFStringGetCString(string, buffer, (CFIndex)size, kCFStringEncodingUTF8);
+}
+
+CGImageMetadataTagRef CGImageMetadataCopyTagMatchingImageProperty(CGImageMetadataRef metadata, CFStringRef dictionaryName,
+                                                                 CFStringRef propertyName)
+{
+    NSDictionary *held = charon_metadata(metadata);
+    if (!held || !dictionaryName || !propertyName)
+        return NULL;
+    char dictionary[64], property[64];
+    if (!charon_string(dictionaryName, dictionary, sizeof dictionary) ||
+        !charon_string(propertyName, property, sizeof property))
+        return NULL;
+    const char *const *row = charon_property_row(dictionary, property);
+    if (!row)
+        return NULL;
+    char xmlns[64], name[64];
+    // the top level of the tree, and not into a structure's fields or an array's elements: measured, a
+    // tree holding exif:Sub{exif:DateTimeOriginal} answers NULL for (Exif, DateTimeOriginal)
+    for (id heldTag in (NSArray *)[held objectForKey:@"tags"]) {
+        NSDictionary *tag = (NSDictionary *)heldTag;
+        if (!charon_string((__bridge CFStringRef)[tag objectForKey:@"namespace"], xmlns, sizeof xmlns) ||
+            !charon_string((__bridge CFStringRef)[tag objectForKey:@"name"], name, sizeof name))
+            continue;
+        // the prefix is not part of the match: measured, a tag whose prefix is one a caller registered
+        // for the same namespace is answered, and the harness prints that case too
+        if (strcmp(xmlns, row[2]) == 0 && strcmp(name, row[4]) == 0)
+            return (__bridge_retained CGImageMetadataTagRef)charon_tag_copy(tag);
+    }
+    return NULL;
+}
+
+// A number the caller passes is written as the string XMP spells it and not as a CFNumber, because that is
+// what the host writes and what its own XMP packet carries: measured on 2026-10-03, the tag's value comes
+// back a CFString for every one of these - 3 writes "3", 3.0 writes "3.000000", 1.5 writes "1.500000" and
+// 0.1 writes "0.100000", -2 writes "-2", a 64-bit integer writes its digits, and a CFBoolean writes
+// "True" or "False". The spelling follows the number's own CFNumber type (CFBooleanGetTypeID, then
+// CFNumberIsFloatType, then an integer), which is XMP's own three scalar types and not a format this
+// library chooses: that is the only thing CFNumberIsFloatType says, so a float writes %f and an integer
+// writes %lld. Nothing else is touched - an array and a dictionary go to the path writer as the caller
+// passed them, which is what "The same value restrictions apply as in CGImageMetadataTagCreate" asks for,
+// and the type of the tag is read off that value as before.
+//
+// The text is autoreleased and the caller holds it in `owned` for exactly as long as the write needs it,
+// which is the length of this function's own call into the path writer.
+static CFTypeRef charon_property_number(CFTypeRef value, NSString **owned)
+{
+    CFTypeID type = CFGetTypeID(value);
+    if (type == CFBooleanGetTypeID()) {
+        *owned = CFBooleanGetValue((CFBooleanRef)value) ? @"True" : @"False";
+    } else if (type == CFNumberGetTypeID()) {
+        if (CFNumberIsFloatType((CFNumberRef)value)) {
+            double real = 0;
+            CFNumberGetValue((CFNumberRef)value, kCFNumberDoubleType, &real);
+            *owned = [NSString stringWithFormat:@"%f", real];
+        } else {
+            long long integer = 0;
+            CFNumberGetValue((CFNumberRef)value, kCFNumberLongLongType, &integer);
+            *owned = [NSString stringWithFormat:@"%lld", integer];
+        }
+    } else {
+        return value;
+    }
+    return (__bridge CFTypeRef)*owned;
+}
+
+bool CGImageMetadataSetValueMatchingImageProperty(CGMutableImageMetadataRef metadata, CFStringRef dictionaryName,
+                                                 CFStringRef propertyName, CFTypeRef value)
+{
+    NSDictionary *held = charon_is_metadata(metadata) ? charon_metadata(metadata) : nil;
+    if (!held || !dictionaryName || !propertyName || !value)
+        return false;
+    char dictionary[64], property[64];
+    if (!charon_string(dictionaryName, dictionary, sizeof dictionary) ||
+        !charon_string(propertyName, property, sizeof property))
+        return false;
+    const char *const *row = charon_property_row(dictionary, property);
+    if (!row)
+        return false; // measured: false, and no tag is written
+    // the write is this file's own path write, so the tag's type is read off the CFType of the value the
+    // way CGImageMetadataSetValueWithPath reads it: measured, a string and a number both write a String
+    // tag and an array an ArrayOrdered one, and a second set for the same pair keeps one tag and its
+    // second value
+    NSString *path = [NSString stringWithFormat:@"%@:%@", [NSString stringWithUTF8String:row[3]],
+                                                [NSString stringWithUTF8String:row[4]]];
+    NSString *number = nil;
+    CFTypeRef written = charon_property_number(value, &number);
+    BOOL ok = CGImageMetadataSetValueWithPath(metadata, NULL, (__bridge CFStringRef)path, written);
+    return ok;
+}
+
