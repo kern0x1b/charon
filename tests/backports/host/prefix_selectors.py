@@ -417,7 +417,13 @@ class Rewriter:
                         opened = self.source.rfind("[", 0, offset)
                         begin = opened + 1 if opened >= 0 else offset
                     first = selector.split(":")[0]
-                    stop = node["range"]["end"]["offset"]
+                    # The window ends at the END of the expression's last token, not at where that token
+                    # begins: clang reports `end` as the token's own offset with its length beside it, so
+                    # stopping there excluded the keyword itself whenever the keyword IS the last token -
+                    # `BOOL wasPaused = self.isPaused;` in NSProgress+State7.m:73, whose isPaused the
+                    # rewrite then could not find and reported as unrenamable, and foundationbatch died on
+                    # it. The same two fields are read this way a few lines below for the receiver.
+                    stop = node["range"]["end"]["offset"] + node["range"]["end"].get("tokLen", 1)
                     match = re.compile(r"\b" + re.escape(first) + r"\b").search(self.source, begin, stop)
                     if match:
                         self.inserts.add(match.start())
