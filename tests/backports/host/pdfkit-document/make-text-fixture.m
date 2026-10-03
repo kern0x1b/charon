@@ -16,6 +16,59 @@
 // One page, the text the harness already asks about, at the position make-pdf.m uses: x=20,
 // y=height-40, Helvetica 12.  A second fixture draws the same text at a different y, because a token
 // walk that only ever sees one position has not been tested against the page's own geometry.
+// THREE LINES on one page, each naming itself, at three different heights.  A selection's
+// -selectionsByLine and the line boundaries a search spans are only measurable on a page with more than
+// one line, and a conforming writer is what draws them - the same text, the same font, three calls to
+// CGContextShowTextAtPoint at descending y.
+static void drawLines(NSString *path, CGRect box, const char *const *lines, int count, CGFloat top)
+{
+    NSMutableDictionary *info = [NSMutableDictionary dictionary];
+    info[(id)kCGPDFContextTitle] = @"conforming-writer three-line fixture";
+    info[(id)kCGPDFContextCreator] = @"CGPDFContext";
+    CGContextRef context = CGPDFContextCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:path],
+                                                    &box, (__bridge CFDictionaryRef)info);
+    if (context == NULL) {
+        fprintf(stderr, "could not make a PDF context for %s\n", path.UTF8String);
+        return;
+    }
+    CGPDFContextBeginPage(context, NULL);
+    CGContextSelectFont(context, "Helvetica", 12.0, kCGEncodingMacRoman);
+    CGContextSetRGBFillColor(context, 0, 0, 0, 1);
+    for (int i = 0; i < count; i++) {
+        CGFloat y = top - 20.0 * i;
+        CGContextShowTextAtPoint(context, 20, y, lines[i], (int)strlen(lines[i]));
+    }
+    CGPDFContextEndPage(context);
+    CGPDFContextClose(context);
+    CGContextRelease(context);
+}
+
+// TWO runs and WHERE the second one is, because the separator between runs is the thing this fixture
+// family has to fix and a page with one show operator cannot show it.  Three shapes through the same
+// conforming writer: the second run DESCENDING (a new line), at the SAME y (no move at all), and
+// ASCENDING - back up the page, which is the shape a rule written from the descending case alone gets
+// wrong.
+static void drawPair(NSString *path, CGRect box, const char *first, const char *second, CGFloat y0,
+                      CGFloat y1)
+{
+    NSMutableDictionary *info = [NSMutableDictionary dictionary];
+    info[(id)kCGPDFContextCreator] = @"CGPDFContext";
+    CGContextRef context = CGPDFContextCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:path],
+                                                    &box, (__bridge CFDictionaryRef)info);
+    if (context == NULL) {
+        fprintf(stderr, "could not make a PDF context for %s\n", path.UTF8String);
+        return;
+    }
+    CGPDFContextBeginPage(context, NULL);
+    CGContextSelectFont(context, "Helvetica", 12.0, kCGEncodingMacRoman);
+    CGContextSetRGBFillColor(context, 0, 0, 0, 1);
+    CGContextShowTextAtPoint(context, 20, y0, first, (int)strlen(first));
+    CGContextShowTextAtPoint(context, 20, y1, second, (int)strlen(second));
+    CGPDFContextEndPage(context);
+    CGPDFContextClose(context);
+    CGContextRelease(context);
+}
+
 static void draw(NSString *path, int pages, CGRect box, const char *text, CGFloat y)
 {
     NSMutableDictionary *info = [NSMutableDictionary dictionary];
@@ -64,7 +117,22 @@ int main(int argc, char **argv)
         NSString *bare = [directory stringByAppendingPathComponent:@"cgfixture-bare.pdf"];
         draw(bare, 1, small, "", 360);
 
-        for (NSString *p in @[one, three, bare])
+        // one page, three lines at y = 360, 340 and 320 - each naming itself, and the first two lines
+        // sharing a WORD ("shared") so a search that spans lines is measurable
+        static const char *const lines[] = {"shared one", "shared two", "third line"};
+        CGRect lines_box = CGRectMake(0, 0, 300, 400);
+        NSString *lines_pdf = [directory stringByAppendingPathComponent:@"cgfixture-lines.pdf"];
+        drawLines(lines_pdf, lines_box, lines, 3, 360);
+
+        CGRect pair_box = CGRectMake(0, 0, 300, 400);
+        NSString *down = [directory stringByAppendingPathComponent:@"cgfixture-pair-down.pdf"];
+        drawPair(down, pair_box, "alpha", "beta", 360, 340);
+        NSString *same = [directory stringByAppendingPathComponent:@"cgfixture-pair-same.pdf"];
+        drawPair(same, pair_box, "alpha", "beta", 360, 360);
+        NSString *up = [directory stringByAppendingPathComponent:@"cgfixture-pair-up.pdf"];
+        drawPair(up, pair_box, "alpha", "beta", 340, 360);
+
+        for (NSString *p in @[one, three, bare, lines_pdf, down, same, up])
             printf("  wrote %s\n", [p.lastPathComponent UTF8String]);
     }
     return 0;

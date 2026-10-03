@@ -183,6 +183,54 @@ static void collectRun(NSMutableArray *runs, CFStringRef text, CGFloat x, CGFloa
     [runs addObject:[NSValue valueWithPointer:run]];
 }
 
+// The page's text IN READING ORDER, which is not the order it was drawn in and is not the runs joined
+// with a separator either.  Three fixtures fix both halves, and they are the first fixtures in this
+// harness with MORE THAN ONE show operator on a page - every fixture before them had exactly one, so the
+// separator between runs was not observable at all and this port answered "alphabeta" where the host
+// answers "alpha\nbeta".  The new fixture found it on its first run.
+//
+//   cgfixture-pair-down.pdf  draws "alpha" at y=360 then "beta" at y=340 and the host answers
+//                            "alpha\nbeta": a newline, and the DESCENDING order is the drawing order.
+//   cgfixture-pair-up.pdf    draws "alpha" at y=340 then "beta" at y=360 and answers "beta\nalpha":
+//                            a newline, and the runs come out TOP OF THE PAGE FIRST, not in drawing
+//                            order.  So the answer is sorted by y DESCENDING and a tie keeps drawing
+//                            order, which is what NSSortStable gives.
+//   cgfixture-pair-same.pdf  draws both at y=360 and answers "alphabeta": a tie on y joins with NOTHING.
+//
+// and cgfixture-lines.pdf, three runs at y = 360, 340, 320, answers "shared one\nshared two\nthird line"
+// - 32 characters, against the 30 this port answered before the fixture existed.
+static NSString *charonJoinRuns(NSArray *runs)
+{
+    if (runs.count == 0)
+        return nil;
+    NSArray *ordered = [runs sortedArrayWithOptions:NSSortStable
+                                       usingComparator:^NSComparisonResult(id left, id right) {
+        CharonTextRun *a = (CharonTextRun *)[left pointerValue];
+        CharonTextRun *b = (CharonTextRun *)[right pointerValue];
+        if (a == NULL || b == NULL)
+            return NSOrderedSame;
+        if (a->y > b->y)
+            return NSOrderedAscending;      // higher on the page first
+        if (a->y < b->y)
+            return NSOrderedDescending;
+        return NSOrderedSame;                // a tie keeps drawing order
+    }];
+    NSMutableString *answer = [NSMutableString string];
+    CGFloat previousY = 0;
+    BOOL first = YES;
+    for (NSValue *boxed in ordered) {
+        CharonTextRun *run = (CharonTextRun *)[boxed pointerValue];
+        if (run == NULL || run->text == NULL)
+            continue;
+        if (!first && run->y != previousY)
+            [answer appendString:@"\n"];
+        [answer appendString:(__bridge NSString *)run->text];
+        previousY = run->y;
+        first = NO;
+    }
+    return answer;
+}
+
 static void freeRuns(NSMutableArray *runs)
 {
     for (NSUInteger i = 0; i < runs.count; i++) {
@@ -329,10 +377,12 @@ static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
     CGPDFScannerRelease(scanner);
     CGPDFOperatorTableRelease(table);
     CGPDFContentStreamRelease(content);
+    // joined BEFORE the runs are freed, because the answer is built out of them
+    NSString *joined = exhausted ? nil : charonJoinRuns(runs);
     freeRuns(runs);
-    if (exhausted || text.length == 0)
+    if (joined == nil || joined.length == 0)
         return nil;
-    return text;
+    return joined;
 }
 
 // The page's own TEXT, which is what the host's -string answers on every fixture measured here: "page 1"

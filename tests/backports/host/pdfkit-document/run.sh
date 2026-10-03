@@ -465,7 +465,13 @@ for key in \
     outline-collapsed.pdf.childPastEnd \
     outline-collapsed.pdf.c0.childPastEnd \
     outline-collapsed.pdf.c0.c0.childPastEnd \
-    outline-nocount.pdf.c0.childPastEnd
+    outline-nocount.pdf.c0.childPastEnd \
+    cgfixture-pair-down.pdf.page0.string \
+    cgfixture-pair-down.pdf.page0.numberOfCharacters \
+    cgfixture-pair-same.pdf.page0.string \
+    cgfixture-pair-up.pdf.page0.string \
+    cgfixture-lines.pdf.page0.string \
+    cgfixture-lines.pdf.page0.numberOfCharacters
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then
