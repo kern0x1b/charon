@@ -489,11 +489,10 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
     prefcam)      plant=prefcam;     target=reactions17 ;;
     capabilities) plant=capabilities; target=capabilities18 ;;
     multichannel) plant=multichannel; target=capabilities18 ;;
-    rects)        plant=rects;        target=rects26 ;;
-    rectreset)    plant=rectreset;    target=rects26 ;;
+    rectsupport)  plant=rectsupport;  target=rects26 ;;
     cinematic)    plant=cinematic;    target=cinematic26 ;;
     *) echo "FAIL: AVFCAPSMUTANT=$mutant is not a plant this harness writes; run it as 1, as prefcam, as"
-       echo "      capabilities, as multichannel, as rects, as rectreset or as cinematic"
+       echo "      capabilities, as multichannel, as rectsupport or as cinematic"
        exit 1 ;;
     esac
     python3 - "$build/src/$target.rn" "$plant" <<'PERTURB'
@@ -529,19 +528,17 @@ plants = {
     # the two setter refusals differ, which is the whole of the rule -isMultichannelAudioModeSupported: is for.
     "multichannel": ("""    return multichannelAudioMode == AVCaptureMultichannelAudioModeNone;""",
                      """    return YES; /* PLANTED */"""),
-    # The 26.0 rectangle family's first plant. A minimum size of a quarter by a quarter is a number this port
-    # has no source for (the release carries no focus area), and it is seen by the setter phase: a rectangle
-    # exactly a quarter by a quarter is then AT the minimum rather than above it, so the accepted case refuses.
-    "rects": ("""- (CGSize)minFocusRectOfInterestSize
+    # The 26.0 rectangle family's plant, and it is the answer the coordinator's ruling settled: a rectangle of
+    # interest supported. It has to be noticed by the support row, by the rectangle, by the two default-rectangle
+    # answers and by the setter cases - so a port that answers YES behind a centre-only implementation cannot
+    # pass this harness.
+    "rectsupport": ("""- (BOOL)isFocusRectOfInterestSupported
 {
-    return CGSizeZero;
-}""", """- (CGSize)minFocusRectOfInterestSize
+    return NO;
+}""", """- (BOOL)isFocusRectOfInterestSupported
 {
-    return CGSizeMake(0.25, 0.25); /* PLANTED */
+    return YES; /* PLANTED */
 }"""),
-    # And its second: a getter that never reconciles. The header says the rectangle "resets to the default sized
-    # rectangle of interest for the new focus point of interest" when the point is set afterwards
-    # (AVCaptureDevice.h:1171), and the reset step of the setter phase is the only thing that sees it.
     # The Cinematic Video family's plant, and the one that shows the input's flag is DERIVED and not written:
     # a format that claims Cinematic Video support has to move the format's own row, the input's support row
     # (which reads that format through the release's -activeFormat), the input's setter (which would then
@@ -553,11 +550,6 @@ plants = {
 {
     return YES; /* PLANTED */
 }"""),
-    "rectreset": ("""    CGPoint centre = charon_point_for_rect(kept);
-    if (centre.x != point.x || centre.y != point.y)
-        return charon_rect_for_point(point);
-    return kept;""",
-                   """    return kept; /* PLANTED */"""),
 }
 before, after = plants[plant]
 if text.count(before) != 1:
@@ -574,10 +566,8 @@ print("# the mutation applied: " + {"reactions": "-canPerformReactionEffects ans
                                                      " -setAutoVideoFrameRateEnabled: accepts a value too",
                                      "multichannel": "-isMultichannelAudioModeSupported: answers YES for every"
                                                      " mode, so the setter accepts Stereo and ambisonics too",
-                                     "rects": "a minimum rectangle size of a quarter by a quarter, which no"
-                                              " measurement on this release gives",
-                                     "rectreset": "the rectangle never resets when the release's own point of"
-                                                  " interest is set afterwards",
+                                     "rectsupport": "a device that supports focus rectangles of interest,"
+                                                     " which this release cannot weigh and this port does not claim",
                                      "cinematic": "every format claims Cinematic Video support, so the input's"
                                                   " flag, its setter and the three focus methods follow"}[plant])
 PERTURB
