@@ -1,0 +1,60 @@
+{
+ "framework": "Metal",
+ "entries": [
+  {
+   "api": "-[MTLCaptureManager newCaptureScopeWithMTL4CommandQueue:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a capture scope over a Metal 4 queue, which is the scope the port already makes over a Metal 3 one - a device and a queue, recorded and starting nothing",
+   "effect": "the value the application set, read back, with Apple's own answer measured on a host and written down in tests/backports/device/metalchain-expectations.h; the port's queue is an EAGL object over OpenGL ES 2.0 and cannot be built in a host binary, so the CHECK against those expectations is the device case tests/backports/device/metalchain.m - and that case is WRITTEN AND NOT YET RUN, because no device is attached (idevice_id -l is empty) and a gate is using this machine, so nothing here claims it green (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTLDevice.h:1262-1280, MTL4CommandQueue.h:212 and MTL4CommandBuffer.h; Apple's own answers measured by tests/backports/host/metal-census/chain-oracle.sh and chain-commit.sh",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTLDevice newMTL4CommandQueueWithDescriptor:error:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "Metal 4's descriptor factory, measured against Apple's own object to answer with a queue and NO ERROR given a real MTL4CommandQueueDescriptor; the port takes the descriptor's label and not its feedbackQueue, because there is no feedback for this queue to report to a dispatch queue",
+   "effect": "the value the application set, read back, with Apple's own answer measured on a host and written down in tests/backports/device/metalchain-expectations.h; the port's queue is an EAGL object over OpenGL ES 2.0 and cannot be built in a host binary, so the CHECK against those expectations is the device case tests/backports/device/metalchain.m - and that case is WRITTEN AND NOT YET RUN, because no device is attached (idevice_id -l is empty) and a gate is using this machine, so nothing here claims it green (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTLDevice.h:1262-1280, MTL4CommandQueue.h:212 and MTL4CommandBuffer.h; Apple's own answers measured by tests/backports/host/metal-census/chain-oracle.sh and chain-commit.sh",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTLDevice newMTL4CommandQueue]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "Metal 4's plain queue factory, and it hands back the port's own CharonMetalQueue under a Metal 4 name: there is ONE queue in this port and it is the one that holds the EAGL context every draw goes through, so a Metal 4 caller gets the queue that works",
+   "effect": "the value the application set, read back, with Apple's own answer measured on a host and written down in tests/backports/device/metalchain-expectations.h; the port's queue is an EAGL object over OpenGL ES 2.0 and cannot be built in a host binary, so the CHECK against those expectations is the device case tests/backports/device/metalchain.m - and that case is WRITTEN AND NOT YET RUN, because no device is attached (idevice_id -l is empty) and a gate is using this machine, so nothing here claims it green (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTLDevice.h:1262-1280, MTL4CommandQueue.h:212 and MTL4CommandBuffer.h; Apple's own answers measured by tests/backports/host/metal-census/chain-oracle.sh and chain-commit.sh",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "MTL4CommandQueue.device",
+   "kind": "property",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the queue's device, which is the port's shared device and the same answer a Metal 3 caller gets; the queue is the port's own CharonMetalQueue, so the two agree by construction rather than by two lookups that could differ",
+   "effect": "the value the application set, read back, with Apple's own answer measured on a host and written down in tests/backports/device/metalchain-expectations.h; the port's queue is an EAGL object over OpenGL ES 2.0 and cannot be built in a host binary, so the CHECK against those expectations is the device case tests/backports/device/metalchain.m - and that case is WRITTEN AND NOT YET RUN, because no device is attached (idevice_id -l is empty) and a gate is using this machine, so nothing here claims it green (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTLDevice.h:1262-1280, MTL4CommandQueue.h:212 and MTL4CommandBuffer.h; Apple's own answers measured by tests/backports/host/metal-census/chain-oracle.sh and chain-commit.sh",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "MTL4CommandQueue.label",
+   "kind": "property",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the queue's label for debugging: nil on a fresh queue, measured against Apple's own object, and copied so labelling a Metal 4 queue does not touch the Metal 3 queue behind it",
+   "effect": "the value the application set, read back, with Apple's own answer measured on a host and written down in tests/backports/device/metalchain-expectations.h; the port's queue is an EAGL object over OpenGL ES 2.0 and cannot be built in a host binary, so the CHECK against those expectations is the device case tests/backports/device/metalchain.m - and that case is WRITTEN AND NOT YET RUN, because no device is attached (idevice_id -l is empty) and a gate is using this machine, so nothing here claims it green (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTLDevice.h:1262-1280, MTL4CommandQueue.h:212 and MTL4CommandBuffer.h; Apple's own answers measured by tests/backports/host/metal-census/chain-oracle.sh and chain-commit.sh",
+   "facts": "facts/Metal/CommandChain26.md"
+  }
+ ]
+}
