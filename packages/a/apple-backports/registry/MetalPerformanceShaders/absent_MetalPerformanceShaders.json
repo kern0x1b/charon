@@ -3339,6 +3339,193 @@
       "status": "absent",
       "reason": "MPSImageConvolution.h's own annotation above this interface says ios(14.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
       "effect": "ios(14.0), :375. Edge detection with hysteresis and non-maximum suppression - an algorithm, not a convolution."
+    },
+    {
+      "api": "-[MPSNNFilterNode gradientFilterWithSource:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraphNodes.h:404 declares this on MPSNNFilterNode with no availability macro of its own, inside the interface :338-340 annotates ios(11.0). It is not 11.0: the selector appears NOWHERE in the arm64 shared cache of the 11.0 release (grep -cxF over ~/.charon/dyld/11.0/selectors_arm64.txt answers 0, and that file lists every selector the whole cache carries), and what it returns is MPSNNGradientFilterNode, which tools/cache-index/first-rung.py places at 12.0 and whose own row carries the header's own ios(11.3). So 12.0 is the measured answer and the header is silent. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 12.0 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 12.0, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 12.0 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package, so a message sent to a MPSNNFilterNode of this port answers unrecognized selector. Its return type, MPSNNGradientFilterNode, is not carried at all, so a caller that reached it would have nothing to receive either",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNFilterNode gradientFilterWithSources:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraphNodes.h:412 declares this on MPSNNFilterNode with no availability macro of its own, inside the interface :338-340 annotates ios(11.0). It is not 11.0: the selector appears NOWHERE in the arm64 shared cache of the 11.0 release (grep -cxF over ~/.charon/dyld/11.0/selectors_arm64.txt answers 0, and that file lists every selector the whole cache carries), and what it returns is MPSNNGradientFilterNode, which tools/cache-index/first-rung.py places at 12.0 and whose own row carries the header's own ios(11.3). So 12.0 is the measured answer and the header is silent. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 12.0 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 12.0, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 12.0 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package, so a message sent to a MPSNNFilterNode of this port answers unrecognized selector. Its return type, MPSNNGradientFilterNode, is not carried at all, so a caller that reached it would have nothing to receive either",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNFilterNode gradientFiltersWithSources:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraphNodes.h:420 declares this on MPSNNFilterNode with no availability macro of its own, inside the interface :338-340 annotates ios(11.0). It is not 11.0: the selector appears NOWHERE in the arm64 shared cache of the 11.0 release (grep -cxF over ~/.charon/dyld/11.0/selectors_arm64.txt answers 0, and that file lists every selector the whole cache carries), and what it returns is MPSNNGradientFilterNode, which tools/cache-index/first-rung.py places at 12.0 and whose own row carries the header's own ios(11.3). So 12.0 is the measured answer and the header is silent. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 12.0 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 12.0, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 12.0 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package, so a message sent to a MPSNNFilterNode of this port answers unrecognized selector. Its return type, MPSNNGradientFilterNode, is not carried at all, so a caller that reached it would have nothing to receive either",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNFilterNode gradientFiltersWithSource:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraphNodes.h:428 declares this on MPSNNFilterNode with no availability macro of its own, inside the interface :338-340 annotates ios(11.0). It is not 11.0: the selector appears NOWHERE in the arm64 shared cache of the 11.0 release (grep -cxF over ~/.charon/dyld/11.0/selectors_arm64.txt answers 0, and that file lists every selector the whole cache carries), and what it returns is MPSNNGradientFilterNode, which tools/cache-index/first-rung.py places at 12.0 and whose own row carries the header's own ios(11.3). So 12.0 is the measured answer and the header is silent. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 12.0 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 12.0, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 12.0 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package, so a message sent to a MPSNNFilterNode of this port answers unrecognized selector. Its return type, MPSNNGradientFilterNode, is not carried at all, so a caller that reached it would have nothing to receive either",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNFilterNode trainingGraphWithSourceGradient:nodeHandler:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraphNodes.h:466 declares this on MPSNNFilterNode carrying MPS_AVAILABLE_STARTING(macos(10.13.4), ios(12.0), macCatalyst(13.0), tvos(12.0)), so the header's own date is 12.0, and the selector appears nowhere in the arm64 shared cache of the 11.0 release (grep -cxF answers 0), so the header and the cache agree. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 12.0 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 12.0, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 12.0 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package. It builds a training graph from a source gradient, which needs the gradient half MPSNNGraph11.m does not carry, and it takes a node handler block this port has no use for: a graph of this port's nodes produces no states",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNBinaryArithmeticNode gradientClass]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraphNodes.h:2158 declares this on MPSNNBinaryArithmeticNode with no availability macro of its own. It is not 11.0: the selector appears nowhere in the arm64 shared cache of the 11.0 release (grep -cxF answers 0) and what it returns is the gradient node class, which first-rung.py places at 12.0. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 12.0 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 12.0, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 12.0 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package, so it answers unrecognized selector. The class it would return is the gradient half of this node, which is not carried",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNBinaryArithmeticNode gradientFiltersWithSources:]",
+      "kind": "method",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraphNodes.h:2162 declares this on MPSNNBinaryArithmeticNode carrying MPS_AVAILABLE_STARTING(..., ios(11.3), ...), so the header's own date is 11.3, and the selector appears nowhere in the arm64 shared cache of the 11.0 release (grep -cxF answers 0). Its return type is MPSNNGradientFilterNode, a 12.0 class on the ladder. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 11.3 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 11.3, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 11.3 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package. The four arithmetic nodes of this object answer their forward operation and none of their gradient half",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "+[MPSNNDefaultPadding paddingForTensorflowAveragePooling]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNeuralNetworkTypes.h:497 declares this on MPSNNDefaultPadding carrying MPS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), so 11.3 is the header's own date - and THE CACHE DISAGREES WITH IT, which is why this row says so: the selector 'paddingForTensorflowAveragePooling' IS present in the arm64 shared cache of the 11.0 release (grep -cxF over ~/.charon/dyld/11.0/selectors_arm64.txt answers 1), so the 11.0 framework carries the method and the header annotates it a release later. So the row's introduced is 11.0 and NOT the header's 11.3, and that is the gate's own rule rather than a preference: check_registry's held check refuses an absent-or-owed entry whose introduced is LATER than a band whose cache carries the name - \"listed as absent, but the release carries it itself, so it is the release's own and not absent\" - and tests/backports/host/registry/check.lua:47-49 is the harness pinning both halves of it (\"an absent entry the release carries is refused\" at a later introduced, \"an entry the release has natively passes\" at an earlier one). The measurement decides the field and the header's annotation is recorded here as the discrepancy it is. MPSNNGraph11.m still does not define it, for the separate reason that the object carries only the 11.0 surface and the header places this method a release later than the object's band. MPSNNGraph11.m does not define it for the separate reason that the object carries only the 11.0 surface. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 11.3 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 11.3, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 11.3 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package. +paddingWithMethod: carries the same policy, and MPSNNDefaultPadding of this port answers it",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "+[MPSNNDefaultPadding paddingForTensorflowAveragePoolingValidOnly]",
+      "kind": "method",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNeuralNetworkTypes.h:500 declares this on MPSNNDefaultPadding carrying MPS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), so the header's own date is 11.3, and the selector appears nowhere in the arm64 shared cache of the 11.0 release (grep -cxF answers 0) - so on this one the header and the cache agree. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 11.3 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 11.3, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 11.3 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package. +paddingWithMethod: with MPSNNPaddingMethodSizeValidOnly is the same policy, and MPSNNDefaultPadding of this port answers it",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNGraph encodeBatchToCommandBuffer:sourceImages:sourceStates:intermediateImages:destinationStates:]",
+      "kind": "method",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraph.h:264 declares this on MPSNNGraph carrying MPS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), so the header's own date is 11.3, and the selector appears nowhere in the arm64 shared cache of the 11.0 release (grep -cxF answers 0). Its return type is MPSImageBatch, which first-rung.py places at no held release at all and which this port does not carry in any band. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 11.3 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 11.3, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 11.3 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple. It needs a substrate as well as an object: MPSImageBatch is the type the whole batch family is written in, and nothing in this package defines it",
+      "effect": "nothing on this port: the selector is in no file of the package. The single-image encode of the same graph, -encodeToCommandBuffer:sourceImages:..., is carried and is what the host case reaches",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNGraph encodeBatchToCommandBuffer:sourceImages:sourceStates:]",
+      "kind": "method",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraph.h:299 declares this on MPSNNGraph with NO availability macro of its own, and its two arguments are NSArray<MPSImageBatch*>* and NSArray<MPSStateBatch*>* - neither MPSImageBatch nor MPSStateBatch is placed by any held release (first-rung.py answers NONE for both) and neither appears in the arm64 shared cache of the 11.0 release (grep -cxF answers 0 for both). The 11.3 on this row is the date its sibling carries: MPSNNGraph.h:264, the other -encodeBatchToCommandBuffer: form, carries MPS_AVAILABLE_STARTING ios(11.3), and the two are the pair MPSNNGraph.h:311 tells a caller to choose between. That is the header's own date for the family, not a measurement of this selector, and the measurement is the one above: this port cannot write the method whatever its date, because it does not carry MPSImageBatch. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 11.3 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 11.3, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 11.3 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple. It needs a substrate as well as an object",
+      "effect": "nothing on this port: the selector is in no file of the package, and neither MPSImageBatch nor MPSStateBatch is carried",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNGraph readCountForSourceImageAtIndex:]",
+      "kind": "method",
+      "introduced": "12.1",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraph.h:363 declares this on MPSNNGraph carrying MPS_AVAILABLE_STARTING(macos(10.14.1), ios(12.1), macCatalyst(13.0), tvos(12.1)), so the header's own date is 12.1, and the selector appears nowhere in the arm64 shared cache of the 11.0 release (grep -cxF answers 0). MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 12.1 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 12.1, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 12.1 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package. MPSNNGraph.h:353-358 says what it answers - how many times the graph will read an MPSImage at that index, which a caller needs to set the read count - and this port's own kernels do not keep a read count for a graph input",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNGraph readCountForSourceStateAtIndex:]",
+      "kind": "method",
+      "introduced": "12.1",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraph.h:375 declares this on MPSNNGraph carrying MPS_AVAILABLE_STARTING(macos(10.14.1), ios(12.1), macCatalyst(13.0), tvos(12.1)), so the header's own date is 12.1, and the selector appears nowhere in the arm64 shared cache of the 11.0 release (grep -cxF answers 0). MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 12.1 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 12.1, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 12.1 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package. MPSNNGraph.h:353-358 says what it answers - how many times the graph will read an MPSState at that index, which a caller needs to set the read count - and this port's own kernels do not keep a read count for a graph input",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNGraph initWithDevice:resultImages:resultsAreNeeded:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraph.h:98 declares this on MPSNNGraph carrying MPS_AVAILABLE_STARTING(macos(10.15), ios(13.0), macCatalyst(13.0), tvos(13.0)), so the header's own date is 13.0, and the selector appears nowhere in the arm64 shared cache of the 11.0 release (grep -cxF answers 0). It is the plural form of the initializer this object does carry: MPSNNGraph.h:72 and :98 say the plural form exists for graphs with more than one image output, the first of which the encode returns and the rest of which are intermediate images. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 13.0 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 13.0, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 13.0 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package. The single-result initializer of the same class IS carried, and a graph with one result image is the case MPSNNGraph.h:87-91 describes first",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "+[MPSNNGraph graphWithDevice:resultImages:resultsAreNeeded:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraph.h:103 declares this on MPSNNGraph carrying MPS_AVAILABLE_STARTING(macos(10.15), ios(13.0), macCatalyst(13.0), tvos(13.0)), so the header's own date is 13.0, and the selector appears nowhere in the arm64 shared cache of the 11.0 release (grep -cxF answers 0). It is the plural form of the initializer this object does carry: MPSNNGraph.h:72 and :98 say the plural form exists for graphs with more than one image output, the first of which the encode returns and the rest of which are intermediate images. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 13.0 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 13.0, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 13.0 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "effect": "nothing on this port: the selector is in no file of the package. The single-result initializer of the same class IS carried, and a graph with one result image is the case MPSNNGraph.h:87-91 describes first",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "-[MPSNNGraph initWithDevice:resultImage:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraph.h:112 declares this on MPSNNGraph carrying MPS_AVAILABLE_STARTING_BUT_DEPRECATED(\"...Please use -initWithDevice:resultImage:...resultImageIsNeeded: instead. Without this information, too much or too little work may occur. Results may be undefined.\", macos(10.13, 10.13.4), ios(11.0, 11.3), tvos(10.13,11.3)), so the header's own date is 11.0 and it is DEPRECATED from 11.3 - and unlike every other method on this list the selector IS in the arm64 shared cache of the 11.0 release (grep -cxF answers 1), which is what a method annotated ios(11.0) should be. MPSNNGraph11.m does not define it because it defines the 11.3 spelling of the same initializer, -initWithDevice:resultImage:resultImageIsNeeded: and +graphWithDevice:resultImage:resultImageIsNeeded:, and because the header's own deprecation message says results may be undefined without the flag this object does implement. That is the header's instruction and not a placement decision.",
+      "effect": "nothing on this port: the selector is in no file of the package, and the header's own replacement - the one carrying resultImageIsNeeded: - is carried and is what the host case reaches",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
+    },
+    {
+      "api": "+[MPSNNGraph graphWithDevice:resultImage:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "MPSNNGraph.h:119 declares this on MPSNNGraph carrying MPS_AVAILABLE_STARTING_BUT_DEPRECATED(\"...Please use +graphWithDevice:resultImage:...resultImageIsNeeded: instead. Without this information, too much or too little work may occur. Results may be undefined.\", macos(10.13, 10.13.4), ios(11.0, 11.3), tvos(10.13,11.3)), so the header's own date is 11.0 and it is DEPRECATED from 11.3 - and unlike every other method on this list the selector IS in the arm64 shared cache of the 11.0 release (grep -cxF answers 1), which is what a method annotated ios(11.0) should be. MPSNNGraph11.m does not define it because it defines the 11.3 spelling of the same initializer, -initWithDevice:resultImage:resultImageIsNeeded: and +graphWithDevice:resultImage:resultImageIsNeeded:, and because the header's own deprecation message says results may be undefined without the flag this object does implement. That is the header's instruction and not a placement decision.",
+      "effect": "nothing on this port: the selector is in no file of the package, and the header's own replacement - the one carrying resultImageIsNeeded: - is carried and is what the host case reaches",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     }
   ]
 }

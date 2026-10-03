@@ -111,6 +111,42 @@ belongs to, with its header line and its date:
 | | `encodeBatchToCommandBuffer:sourceImages:sourceStates:` `:299` | no date; its arguments are `MPSImageBatch` types, which the port does not carry |
 | | `initWithDevice:resultImage:` `:112`, `graphWithDevice:resultImage:` `:119` | `ios(11.0, 11.3)`, **deprecated** — the pre-11.3 spellings of the two initializers this object does implement, and `MPSNNGraph.h:113` says to use those instead |
 
+### The seventeen are named by rows, and the rows were measured against the gate's own check
+
+Each of the seventeen has a registry row, `status: owed`, `minimum: 6.0`, in
+`registry/MetalPerformanceShaders/absent_MetalPerformanceShaders.json`. `owed` and not `absent` is the
+port's own word for it (`backports.lua:1512`): the release carries the name at its own release and the port
+could carry it, so `absent` — "the release has nothing" — would be a false claim about Apple. Each row
+names its header line, its release, why this object does not define it, and what would.
+
+`introduced` is the header's own annotation where the header has one. Two rows are not, and both are
+measurements:
+
+- **The four `MPSNNFilterNode` gradient methods and `-gradientClass` read `12.0`,** not the `11.0` their
+  class's interface is annotated with. `MPSNNGraphNodes.h:404-428` and `:2158` carry no macro of their
+  own, and `grep -cxF` over `~/.charon/dyld/11.0/selectors_arm64.txt` — every selector the whole 11.0
+  cache carries — answers **0** for all five. They cannot have arrived in 11.0, and what they return is
+  `MPSNNGradientFilterNode`, which `first-rung.py` places at 12.0.
+- **`+[MPSNNDefaultPadding paddingForTensorflowAveragePooling]` reads `11.0`,** not the `11.3`
+  `MPSNeuralNetworkTypes.h:497` annotates it with, because **the selector is in the 11.0 cache** (the same
+  grep answers **1**) — and because `check_registry`'s `held` check refuses an absent-or-owed row whose
+  `introduced` is later than a band whose cache carries the name ("listed as absent, but the release carries
+  it itself"), which `tests/backports/host/registry/check.lua:47-49` pins from both sides. This is the one
+  place where Apple's header and Apple's own binary disagree, and the measurement decides the field.
+
+The rows were then run through `check_registry` itself with the real inventories, one cache per band, the
+band's own cache only — a mismatched pairing answers a question nobody asked, and a first run of the probe
+that swept seven deployments against the 12.0 cache said so loudly:
+
+```
+band 11.0 (the 11.0 arm64 cache, 52768 classes): OK, none of the 17 rows is named
+band 12.0 (the 12.0 arm64 cache):                OK, all 17 rows pass
+```
+
+16.0 and 18.0 cannot refuse a row whose `introduced` is 13.0 or less, and 4.3, 6.0 and 6.1.3 carry no MPS at
+all — `cache-census.lua MPS 6.1.3 4.3 11.0` reads 0 of 524 and 0 of 354 images naming MPS — so
+`carried_by_release` is false there by the census and not by an assumption.
+
 Implementing any of them would put a later-release name in an 11.0 object, which `misplaced()` in
 `backports.lua` refuses by raising and which `tools/release-split.lua` cannot see at all — it reads band
 points, not a file's declared release. So the object carries **four scoped `push`/`ignored`/`pop` pairs**,
