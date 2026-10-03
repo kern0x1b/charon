@@ -718,6 +718,53 @@ typedef enum {
                                name:name];
 }
 
+// The slice, which arrived with the framework itself: one axis of the operand from a start for a length, or
+// every axis at once from starts, ends and strides. It is one gather with an OFFSET and a STRIDE, which is the
+// only thing it adds to the walk, and the header's two forms are the same walk - the simple one is a single
+// axis with a stride of one and an end of start + length, which is how the factory spells it here. A negative
+// start counts from the end of that axis, as the header says and as the walk measures.
+- (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor
+                      dimension:(NSUInteger)dimensionIndex
+                          start:(NSInteger)start
+                         length:(NSInteger)length
+                           name:(NSString *)name
+{
+    NSUInteger rank = tensor.shape.count;
+    NSMutableArray<NSNumber *> *starts = [NSMutableArray arrayWithCapacity:rank];
+    NSMutableArray<NSNumber *> *strides = [NSMutableArray arrayWithCapacity:rank];
+    NSMutableArray<NSNumber *> *ends = [NSMutableArray arrayWithCapacity:rank];
+    for (NSUInteger axis = 0; axis < rank; axis++) {
+        // The axis named takes the caller's start and the axes this form does not name start at zero and keep
+        // the operand's own extent, which is what a stride of one and an end of that extent say. A negative
+        // start is counted from the end by the walk, as the header says.
+        [starts addObject:@(axis == dimensionIndex ? start : 0)];
+        [strides addObject:@1];
+        // An axis this form does not name keeps the operand's own extent, which is what a start of zero, a
+        // stride of one and an end of the extent say.
+        [ends addObject:@(axis == dimensionIndex ? start + length : tensor.shape[axis].integerValue)];
+    }
+    return [self charon_mps_gather:CharonMPSGraphOperationKindSlice
+                             tensor:tensor
+                        parameters:@{@"gather": @"slice",
+                                     @"sliceStarts": starts, @"sliceEnds": ends, @"sliceStrides": strides,
+                                     @"sliceAxis": @(dimensionIndex), @"sliceLength": @(length)}
+                               name:name];
+}
+
+- (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor
+                         starts:(NSArray<NSNumber *> *)starts
+                           ends:(NSArray<NSNumber *> *)ends
+                        strides:(NSArray<NSNumber *> *)strides
+                           name:(NSString *)name
+{
+    return [self charon_mps_gather:CharonMPSGraphOperationKindSlice
+                             tensor:tensor
+                        parameters:@{@"gather": @"slice",
+                                     @"sliceStarts": starts ?: @[], @"sliceEnds": ends ?: @[],
+                                     @"sliceStrides": strides ?: @[]}
+                               name:name];
+}
+
 #pragma mark - the gather family: the one seam every release's shape factory goes through
 
 // What a gather is: the result's shape, and the parameters that say which transformation produces it. The

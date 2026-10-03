@@ -62,3 +62,10 @@ reshape-two-dynamic 134 NDArray dimension length > INT_MAX
 # And the one the header allows where the result type can be inferred unambiguously: a 2x4 into a single -1
 # answers a shape of 8 - a rank of one, which prints without an x - and the operand's own bytes.
 reshape-dynamic-only 0 8
+
+# The slice's four. A length of zero is a result of no elements, and the release builds the shape (2x0) and
+# then cannot make an NDArray for it; the other three are its own compiler's refusals.
+slice-length-zero 134 device may not be nil
+slice-start-past-end 134 start value 9 does not fit dimension size
+slice-stride-zero 134 stride cannot be 0
+slice-length-past-end 134 does not fit within the dimension size

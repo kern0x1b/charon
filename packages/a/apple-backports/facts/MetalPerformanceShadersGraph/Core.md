@@ -821,6 +821,45 @@ an int32 and an int64 of shape [1] both answer, measured.
   shape holds no elements and then takes the process down inside `MPSNDArray` ("device may not be nil",
   MPSNDArray.mm:759).
 
+## The slice: an offset and a stride, and four shapes the release refuses
+
+`sliceTensor:dimension:start:length:name:` and `sliceTensor:starts:ends:strides:name:`, both of 14.0 and both in
+`MPSGraph14.m`. **Both are one gather with an OFFSET and a STRIDE** - the only thing the family adds to the
+walk - and the header's two forms are the same walk, the simple one being a single axis with a stride of one
+and an end of start + length. Compared in a process of their own (`gather_slice`): **9 cases, every cell and
+every shape byte-identical to the release, `gather_slice checks=9 failures=0 recorded=0` over 44 cells**, the
+red control differing from the release in 10 of the group's 21 case lines.
+
+**The rules, each measured on this host's own MPSGraph:**
+
+- **a negative start counts from the end of that axis**, as the header says: axis 1 of a 2x4 sliced from -2 for
+  two answers (3, 4 | 7, 8).
+- **the count of an axis is the SMALLER of what the range asks for and what the operand's own extent allows
+  from the start.** A 2x4 sliced from 2 with an end of 9 answers a 2x2 and not a 2x7, and the start of 9 that
+  does not fit at all is the release's own refusal below.
+- **an axis the simple form does not name keeps the operand's own extent** (a start of zero, a stride of one
+  and an end of that extent), which is why slicing axis 0 of a 2x4 answers a 1x4 and not a 1x1.
+- **a negative stride walks the axis the other way round**: starts `@[@0, @3]`, ends `@[@2, @0]`, strides
+  `@[@1, @-1]` over the 2x4 answers a 2x3 of (1, 2, 3 | 40, 30, 20).
+
+**Four shapes the release refuses, each with its own words and each a question `refusals.m` asks in a process
+of its own, with `refusals.txt` holding what it is measured to answer:**
+
+* **a start past the end of the axis**: `'mps.slice' op failed: start value 9 does not fit dimension size (4)`,
+  and the shape line is `(null)` before the process goes.
+* **a length that runs past the end**: `length value 9 does not fit within the dimension size (4) with start
+  value (2)`, likewise.
+* **a stride of zero**: `'mps.strided_slice' op stride cannot be 0`.
+* **a result of no elements**: this one the release does NOT refuse - it builds the tensor, the shape line
+  prints `2x0` for a length of zero, and then `MPSNDArray` cannot make a buffer for it and asserts "device may
+  not be nil" (MPSNDArray.mm:759), which takes the process down. The port raises
+  `NSInvalidArgumentException` for all four where the graph is built, which is the named divergence every axis
+  or extent the release refuses carries in this library.
+
+**Not in this family yet**: the ten other forms of the ledger's twelve slice rows - the three mask forms of
+14.0 and of 18.2, the two fed forms of 18.2, the three `sliceGradient` forms and the three
+`sliceUpdateData` forms - are separate rows, are not carried here and are not in the differential.
+
 ## The reshape: two rows, and the flat index
 
 `reshapeTensor:withShape:name:` (14.0, in `MPSGraph14.m`) and `reshapeTensor:withShapeTensor:name:` (15.0, in
@@ -943,7 +982,7 @@ that is gone, so there is nothing to compare a line against. Both are measuremen
 
 ### What is not measured here
 
-The rest of the shape family (`slice`, `pad`, `tile`, `concat`, `stack`, `split`, `spaceToDepth`,
+The rest of the shape family (`pad`, `tile`, `concat`, `stack`, `split`, `spaceToDepth`,
 `depthToSpace`, `spaceToBatch`, `batchToSpace`, `coordinateAlongAxis`, `nonZeroIndices`, the `gather*` and
 `scatter*` forms and the `topK`/`bottomK` pair) is not in this page and not in the tree: it is the rest of the
 rows the ledger carries as `missing` for this family.

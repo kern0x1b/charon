@@ -1264,6 +1264,28 @@
       "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
     },
     {
+      "api": "-[MPSGraph sliceTensor:dimension:start:length:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements from a start for a length or from starts, ends and strides, which is one gather with an OFFSET and a STRIDE - the only thing this form adds to the walk, and the header's two forms are the same walk: the simple one is a single axis with a stride of one and an end of start + length. Measured on this host's own MPSGraph and compared cell for cell by tests/backports/host/mpsgraph/run.sh in a process of its own: 9 cases over both forms and their result shapes, every cell and every shape byte-identical to the release (gather_slice checks=9 failures=0 recorded=0 over 44 cells). The rules, each measured: a negative start counts from the end of that axis (axis 1 of a 2x4 sliced from -2 for two answers (3, 4 | 7, 8)); the count of an axis is the SMALLER of what the range asks for and what the operand's own extent allows from the start, so a 2x4 sliced from 2 with an end of 9 answers a 2x2 and not a 2x7; an axis the simple form does not name keeps the operand's own extent; and a negative stride walks the axis the other way round. Three shapes the release refuses, each with its own words and each a question refusals.m asks in a process of its own: a start past the end of the axis (\"start value 9 does not fit dimension size (4)\"), a length that runs past it (\"length value 9 does not fit within the dimension size (4) with start value (2)\"), a stride of zero (\"stride cannot be 0\"), and a result of no elements, which the release BUILDS (the shape line prints 2x0) and then cannot make an NDArray for (\"device may not be nil\", MPSNDArray.mm:759). The port raises NSInvalidArgumentException for all four where the graph is built, which is the named divergence every axis or extent the release refuses carries in this library. NOT IN THIS ROW: the ten other forms of the slice family - the three mask forms of 14.0 and 18.2, the two fed forms of 18.2, the gradients and the three sliceUpdateData forms - are separate rows and are not carried here",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 16.4, which declares it, and the behaviour measured against the system's own MPSGraph"
+    },
+
+    {
+      "api": "-[MPSGraph sliceTensor:starts:ends:strides:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements from a start for a length or from starts, ends and strides, which is one gather with an OFFSET and a STRIDE - the only thing this form adds to the walk, and the header's two forms are the same walk: the simple one is a single axis with a stride of one and an end of start + length. Measured on this host's own MPSGraph and compared cell for cell by tests/backports/host/mpsgraph/run.sh in a process of its own: 9 cases over both forms and their result shapes, every cell and every shape byte-identical to the release (gather_slice checks=9 failures=0 recorded=0 over 44 cells). The rules, each measured: a negative start counts from the end of that axis (axis 1 of a 2x4 sliced from -2 for two answers (3, 4 | 7, 8)); the count of an axis is the SMALLER of what the range asks for and what the operand's own extent allows from the start, so a 2x4 sliced from 2 with an end of 9 answers a 2x2 and not a 2x7; an axis the simple form does not name keeps the operand's own extent; and a negative stride walks the axis the other way round. Three shapes the release refuses, each with its own words and each a question refusals.m asks in a process of its own: a start past the end of the axis (\"start value 9 does not fit dimension size (4)\"), a length that runs past it (\"length value 9 does not fit within the dimension size (4) with start value (2)\"), a stride of zero (\"stride cannot be 0\"), and a result of no elements, which the release BUILDS (the shape line prints 2x0) and then cannot make an NDArray for (\"device may not be nil\", MPSNDArray.mm:759). The port raises NSInvalidArgumentException for all four where the graph is built, which is the named divergence every axis or extent the release refuses carries in this library. NOT IN THIS ROW: the ten other forms of the slice family - the three mask forms of 14.0 and 18.2, the two fed forms of 18.2, the gradients and the three sliceUpdateData forms - are separate rows and are not carried here. TensorFlow's strided-slice semantics are what the header says this form is based on, and the release agrees with them over the range and the clamp measured here; the MASKS of the other form are what vary it and are not carried here",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the header of MPSGraphTensorShapeOps.h in the SDK of iOS 16.4, which declares it, and the behaviour measured against the system's own MPSGraph"
+    },
+
+    {
       "api": "-[MPSGraph reshapeTensor:withShape:name:]",
       "kind": "method",
       "introduced": "14.0",
