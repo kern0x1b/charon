@@ -1544,7 +1544,7 @@
       "status": "implemented",
       "effect": "the release's own initWithMarkerFormat:options:, then its startingItemNumber set",
       "facts": "facts/UIKit/NSTextMembers13.md",
-      "source": "SDK 16.4, UIKit; the release's NSTextList (UIFoundation) lacks it in 6.1.3 and 12.0 and has it in 16.0 and 18.0 (objc.inventory)"
+      "source": "SDK 16.4, UIKit; the release's NSTextList (UIFoundation) lacks it in 6.1.3 and 12.0 and has it in 16.0 and 18.0 (objc.inventory); the port's own object is packages/a/apple-backports/UIKit/NSTextList+Init16.m, a category on NSTextList that defines it by chaining to the release's own -initWithMarkerFormat:options: and then writing startingItemNumber"
     },
     {
       "api": "-[UIBarButtonItem creatingFixedGroup]",

@@ -3603,7 +3603,7 @@
    "status": "implemented",
    "effect": "sent at the end of the run loop turn in which the selection of the field being edited changed, and when editing begins",
    "facts": "facts/UIKit/NSTextMembers13.md",
-   "source": "the header of SDK 26 and the host's UIKit for what it answers; held on a device by tests/backports/device/uirest.m, which the host cannot run for this member"
+   "source": "the header of SDK 26 and the host's UIKit for what it answers; held on a device by tests/backports/device/uirest.m, which the host cannot run for this member; the port's own object is packages/a/apple-backports/UIKit/UITextField+SelectionChange13.m, a category on UITextField that sends it to the field's delegate under respondsToSelector: when the selection changes. The owner is a @protocol, so the method is one the application's own delegate implements and what this port owes is the asking"
   },
   {
    "api": "-[UITextInput replaceRange:withAttributedText:]",
@@ -3613,7 +3613,7 @@
    "status": "implemented",
    "effect": "the text view and the text field replace the range with the attributed text, keep the runs and put the caret after it, as the host does",
    "facts": "facts/UIKit/NSTextMembers13.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
+   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4; the port's own object is packages/a/apple-backports/UIKit/UITextInput+AttributedReplace13.m, a category on UITextView and on UITextField that defines it over the range's offsets from the beginning of the document: the characters are replaced in the attributed text, the runs of the new text are kept, the caret is put after it wherever the selection was, and a range outside the text is clamped. The owner is a @protocol, and the two classes are the ones the port's own text system answers it on"
   },
   {
    "api": "-[UITextView replaceRange:withAttributedText:]",
@@ -3810,7 +3810,7 @@
    "status": "implemented",
    "effect": "asked once, after launch, for the configuration of the one scene",
    "facts": "facts/UIKit/UIScene.md",
-   "source": "the header of SDK 16.4; held on a device by tests/backports/device/scenes.m"
+   "source": "the header of SDK 16.4; held on a device by tests/backports/device/scenes.m; the port's own object is packages/a/apple-backports/UIKit/UISceneHost.m, which asks the application delegate for it under respondsToSelector: when it connects a session. The owner is a @protocol, so the method is one the application's own delegate implements and what this port owes is the asking"
   },
   {
    "api": "-[UIApplicationDelegate application:shouldRestoreSecureApplicationState:]",
