@@ -195,6 +195,54 @@ kill the run, which is why the bound was measured out of process above.
 **What a native fix would be:** abort as Apple does rather than raise. It is not done here, and it is
 not hidden here.
 
+## The sample buffer, measured with a device
+
+The one row this page used to leave open is the attachment's `sampleBuffer`: it is a DEVICE-MADE
+OBJECT, so a comparison that creates no device could say only that a fresh attachment reads nil on
+both sides, and the page said so in as many words. **A device is no longer a wall** -
+`facts/Metal/DeviceOnThisMachine.md` is the measurement of the machine - so the round trip is measured,
+in `tests/backports/host/metal-census/descriptors16.sh`:
+
+```
+the sample buffer, with a real MTLCounterSampleBuffer on both sides
+  ok   there is a Metal device, which is what this section needs and the one above did not
+  ok   Apple's own device has the timestamp counter set the header names
+  ok   Apple's own device makes a counter sample buffer, which is what the port is handed
+  ok   fresh: sampleBuffer is nil on both sides
+  ok   after a set: APPLE's own attachment returns the very object it was given
+  ok   after a set: the PORT's attachment returns the very object it was given - identity within its own side
+  ok   a copy: APPLE's own copy carries the sample buffer
+  ok   a copy: the PORT's copy carries the sample buffer
+  ok   through the array: APPLE's own pass descriptor holds the attachment at index 0
+  ok   through the array: the PORT's pass descriptor holds the attachment at index 0
+  ok   through the array: APPLE's own attachment still holds the real sample buffer
+  ok   through the array: the PORT's attachment still holds the real sample buffer
+  ok   after a nil at index 0: startOfEncoderSampleIndex is back to the default on both sides: the port 18446744073709551615 and Apple's own object 18446744073709551615
+  ok   after a nil at index 0: both sides' attachment has no sample buffer again
+57 checks, each one against Apple's own object; the descriptor ones need no device and the sample buffer one does
+all checks passed
+```
+
+43 checks before this section, 57 after, and a seventh mutant for the part only it can catch. The
+buffer is made from the timestamp counter set, which `MTLCounters.h:65` names
+(`MTLCommonCounterSetTimestamp`), with one sample and no sample counters of its own - the simplest
+buffer the descriptor allows.
+
+**Identity is only ever compared within one side.** Both sides are handed the same object here, and
+what is asked is whether each side returns the object IT was given; a pointer is never compared with a
+pointer of the other side, because two objects have no address in common.
+
+**The reset is the part only this section can catch.** A nil at a legal index resets that attachment's
+state to its default values, and what those defaults are AFTER a set is only observable once something
+has been set and taken away again - which needs a device to make the something. The mutant M7 makes the
+array keep the old attachment on a nil, and it is red on exactly that check, so the section is not
+decoration.
+
+**What is still not measured is the buffer's CONTENTS.** A counter sample buffer's samples are filled
+by an encoder resolving counters, and this port vends no acceleration structure command encoder for
+one to come from - the absence the section above records. That is a statement about the port and not
+about the host.
+
 ## What these four objects do NOT do, and which rows say so
 
 Nothing in this port ever reads a descriptor made here. Two facilities are missing and both are

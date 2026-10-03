@@ -22,7 +22,8 @@
 // makes a real MTLCounterSampleBuffer on Apple's own device (the timestamp counter set,
 // MTLCounters.h:65), hands that one object to both sides, and compares what each returns, what each
 // copy carries, and what each side's array holds after the attachment goes through it and a nil takes
-// it away again. 57 checks, and the reset mutant M7 is the one only that section can catch. What is
+// it away again. 57 checks (43 before this section), and the reset mutant M7 is the one only that section can
+// catch. What is
 // still NOT measured is what a sample buffer's CONTENTS are, which needs a command encoder this port
 // vends no ray tracing path for; facts/Metal/Descriptors16.md says so.
 //
