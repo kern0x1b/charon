@@ -111,13 +111,27 @@ ones a nil getter would get wrong, and the colour attachment array is the same e
 MTLRenderPassDescriptor's own uses.
 
 **The two sample-position methods are the only members here that are an array rather than a number,
-and three of their bounds came out of Apple's own assertions rather than out of the header:**
+and FIVE of their bounds came out of Apple's own assertions rather than out of the header.** Each line
+below is quoted from a file captured out of the framework's stderr, one invocation per bound, so the
+wording and the line numbers are Metal's:
 
-| bound | Apple's own words | where it is enforced |
+| what is refused | Apple's own line, captured from its stderr | the port |
 |---|---|---|
-| the count must be a valid sample count | "count must be 0, 2, 4 or 8" | the port refuses any other count, naming the four |
-| both coordinates lie in [0, 1) | "Provided sample position y-coodinate (-0.500000) at index 0 is not within the range [0,1)" | Metal's own; the port stores what it is given |
-| a read's count must MATCH what is programmed | "Non-zero count (8) does not match the number of programmed custom sample positions (4)" | Metal's own; the port answers what is programmed |
+| a count that is not a sample count | line 417: ``count (3) is not a supported sample count for custom positions. count must be 0, 2, 4 or 8.`` | refuses any other count, naming the four |
+| an **x** coordinate outside [0, 1) | line 433: ``Provided sample position x-coodicate (1.500000) at index 1 is not within the range [0,1).`` | refuses, naming the index and the value |
+| a **y** coordinate outside [0, 1) | line 435: ``Provided sample position y-coodicate (1.500000) at index 1 is not within the range [0,1).`` | refuses, naming the index and the value |
+| a read whose count is **smaller** than what is programmed | line 449: ``Non-zero count (2) does not match the number of programmed custom sample positions (4).`` | refuses |
+| a read whose count is **larger** than what is programmed | line 449: ``Non-zero count (8) does not match the number of programmed custom sample positions (4).`` | refuses |
+
+**AND ONE COUNT THAT IS NOT A REFUSAL**, because a table of refusals with nothing else in it would be
+satisfied by a port that refuses everything: a read with a count of **zero** asserts nothing and answers
+the programmed count. That is the count a caller uses to ask how many there are without room for them,
+and both sides answer 4 to it.
+
+**The word is "coodicate".** This page's first draft and the port's two message strings both had
+"coodificate", and it is Apple's own typo in neither place: all four lines above are quoted from
+captured stderr and every one of them reads `coodicate`. The port's messages now spell it as Metal
+spells it, because a message that quotes Metal's wording has to be Metal's wording.
 
 **AND THE TWO DISABLE SPELLINGS DIFFER, which is the one a reader would get wrong.** With two
 positions programmed, `setSamplePositions:NULL count:0` leaves the object holding **TWO** - a NULL

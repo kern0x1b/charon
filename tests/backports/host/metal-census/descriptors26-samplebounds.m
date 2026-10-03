@@ -3,21 +3,25 @@
  *
  *     descriptors26-samplebounds.m <bound> apple|port
  *
- * That is the whole reason this is its own case and its own binary. Measured, out of process, one
- * invocation per bound and per side:
+ * That is the whole reason this is its own case and its own binary. Each line below is a CAPTURED
+ * stderr line, one invocation per bound, with the framework's own line numbers - they are what the
+ * harness compares the shape against, and the facts page quotes them character for character:
  *
- *   count          apple: -[MTL4RenderPassDescriptor setSamplePositions:count:]:417: failed assertion
- *                         `count (3) is not a supported sample count for custom positions. count must
- *                          be 0, 2, 4 or 8.'
- *   coordinates    apple: -[MTL4RenderPassDescriptor setSamplePositions:count:]:433: failed assertion
- *                         `Provided sample position x-coodificate (1.500000) at index 1 is not within
- *                          the range [0,1).'
- *   read-smaller   apple: -[MTL4RenderPassDescriptor getSamplePositions:count:]:449: failed assertion
- *                         `Non-zero count (2) does not match the number of programmed custom sample
- *                          positions (4).'
- *   read-larger    apple: the same assertion, with 8 instead of 2 - a count SMALLER than the programmed
- *                         one is refused exactly as a larger one is, which is the case the in-process
- *                         comparison cannot ask.
+ *   count            -[MTL4RenderPassDescriptor setSamplePositions:count:]:417: failed assertion
+ *                     `count (3) is not a supported sample count for custom positions. count must be 0,
+ *                      2, 4 or 8.'
+ *   coordinates      -[MTL4RenderPassDescriptor setSamplePositions:count:]:433: failed assertion
+ *                     `Provided sample position x-coodicate (1.500000) at index 1 is not within the
+ *                      range [0,1).'
+ *   coordinates-below the y axis has its OWN assertion, at line 435, not the same one - measured
+ *                     separately, and "coodicate" is Apple's spelling in both.
+ *   read-smaller     -[MTL4RenderPassDescriptor getSamplePositions:count:]:449: failed assertion
+ *                     `Non-zero count (2) does not match the number of programmed custom sample
+ *                      positions (4).'
+ *   read-larger      the same assertion, with 8 instead of 2 - a count SMALLER than the programmed one
+ *                     is refused exactly as a larger one is, which is the case the in-process comparison
+ *                     cannot ask.
+ *   read-zero        asserts nothing, and answers the programmed count on both sides.
  *
  * The PORT's side of each is an NSException, so it is catchable and this case prints what it said. The
  * harness runs each bound twice - once per side - and requires: the port prints "refused, " and exits

@@ -62,9 +62,10 @@ static NSUInteger CharonMetal4AttachmentBaseHash(MTLRenderPassAttachmentDescript
 //   * THE COUNT MUST BE A VALID SAMPLE COUNT. Apple's own words: "count (3) is not a supported sample
 //     count for custom positions. count must be 0, 2, 4 or 8." That is what MTL4RenderPass.h:107 means
 //     by "This value needs to be a valid sample count".
-//   * BOTH COORDINATES LIE IN [0, 1). Two separate assertions, one per axis: "Provided sample position
-//     x-coodificate (1.500000) at index 1 is not within the range [0,1)" and the same for y. A negative
-//     coordinate is out of range at the bottom of it and 1.5 at the top.
+//   * BOTH COORDINATES LIE IN [0, 1). Two separate assertions, one per axis, each captured from the
+//     framework's own stderr and each with its own line number: x-coodicate (1.500000) at index 1 at
+//     line 433, y-coodicate (1.500000) at index 1 at line 435. A negative coordinate is out of range at
+//     the bottom of the interval and 1.5 at the top.
 //   * A READ'S COUNT MUST MATCH WHAT IS PROGRAMMED. Apple's own words: "Non-zero count (2) does not match
 //     the number of programmed custom sample positions (4)" - measured for a count SMALLER than the
 //     programmed one as well as a larger one, and both are the same assertion. A count of ZERO is the
@@ -171,11 +172,11 @@ static BOOL CharonMetal4CoordinateIsInRange(float value)
         for (NSUInteger index = 0; index < count; index++) {
             if (!CharonMetal4CoordinateIsInRange(positions[index].x))
                 [NSException raise:NSInvalidArgumentException
-                            format:@"setSamplePositions:count:%lu: sample position %lu has x-coodificate %f, which is not within the range [0,1)",
+                            format:@"setSamplePositions:count:%lu: sample position %lu has x-coodicate %f, which is not within the range [0,1)",
                                    (unsigned long)count, (unsigned long)index, positions[index].x];
             if (!CharonMetal4CoordinateIsInRange(positions[index].y))
                 [NSException raise:NSInvalidArgumentException
-                            format:@"setSamplePositions:count:%lu: sample position %lu has y-coodificate %f, which is not within the range [0,1)",
+                            format:@"setSamplePositions:count:%lu: sample position %lu has y-coodicate %f, which is not within the range [0,1)",
                                    (unsigned long)count, (unsigned long)index, positions[index].y];
         }
     // A NULL POINTER STORES NOTHING, and that is measured rather than guessed: with two positions
