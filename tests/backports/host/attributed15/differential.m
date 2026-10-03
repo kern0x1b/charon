@@ -111,6 +111,31 @@ static NSAttributedString *plain(NSString *text)
     return [[NSAttributedString alloc] initWithString:text];
 }
 
+/* The rule every inflection case is built from unless it is about the rule itself: an explicit one over
+   a plural noun. It is the SYSTEM's class on both sides - the host test compiles the port's member and
+   not the classes it reads - so the two answers are given the same rule object. */
+static NSMorphology *plainPlural(void)
+{
+    NSMorphology *morphology = [[NSMorphology alloc] init];
+    morphology.number = NSGrammaticalNumberPlural;
+    morphology.grammaticalGender = NSGrammaticalGenderMasculine;
+    morphology.partOfSpeech = NSGrammaticalPartOfSpeechNoun;
+    return morphology;
+}
+
+static NSAttributedString *twoTagged(void)
+{
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"the house and the dog"];
+    [string addAttribute:NSLanguageIdentifierAttributeName value:@"en" range:NSMakeRange(0, string.length)];
+    [string addAttribute:NSInflectionRuleAttributeName
+                   value:[[NSInflectionRuleExplicit alloc] initWithMorphology:plainPlural()]
+                   range:NSMakeRange(4, 5)];
+    [string addAttribute:NSInflectionRuleAttributeName
+                   value:[[NSInflectionRuleExplicit alloc] initWithMorphology:plainPlural()]
+                   range:NSMakeRange(18, 3)];
+    return string;
+}
+
 /* The two attributes the merge cases need are the port's own, not a colour and a font: a Catalyst build
    declares neither, and which key it is has no bearing on which side wins. Both sides are handed the
    same two objects, so the comparison is about the merge and not about the value. */
@@ -146,6 +171,30 @@ static void note_delimiters(NSString *name, NSAttributedString *string)
            "the name, so the comparison leaves it out\n",
            name.UTF8String, CharonListItemDelimiter.UTF8String, (unsigned long)found.count,
            found.count ? [found componentsJoinedByString:@", "].UTF8String : "none");
+}
+
+/* A string with a rule on one range of it, and the language on all of it. A fresh object each call, so the
+   two sides of a comparison are handed two objects of the same shape and neither is passed twice. */
+static NSAttributedString *inflected(NSString *text, NSRange range, id rule, NSString *language)
+{
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:text];
+    if (rule)
+        [string addAttribute:NSInflectionRuleAttributeName value:rule range:range];
+    if (language)
+        [string addAttribute:NSLanguageIdentifierAttributeName value:language range:NSMakeRange(0, string.length)];
+    return string;
+}
+
+static NSAttributedString *inflectedWithAlternative(NSString *text, NSString *alternative)
+{
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:text];
+    [string addAttribute:NSInflectionRuleAttributeName
+                   value:[[NSInflectionRuleExplicit alloc] initWithMorphology:plainPlural()]
+                   range:NSMakeRange(4, text.length - 4)];
+    [string addAttribute:NSInflectionAlternativeAttributeName
+                   value:[[NSAttributedString alloc] initWithString:alternative]
+                   range:NSMakeRange(4, text.length - 4)];
+    return string;
 }
 
 static void compare(NSString *name, NSString *system, NSString *port)
@@ -396,27 +445,127 @@ int main(void)
 
         printf("== 4. the inflection pass, with a run that carries a rule\n");
         {
-            NSMorphology *plural = [[NSMorphology alloc] init];
-            plural.number = 3;
-            plural.grammaticalGender = 2;
-            NSInflectionRuleExplicit *explicit = [[NSInflectionRuleExplicit alloc] initWithMorphology:plural];
-            struct { const char *name; id rule; NSRange range; } cases[] = {
-                { "inflect.explicitRule", explicit, NSMakeRange(4, 4) },
-                { "inflect.automaticRule", [NSInflectionRule automaticRule], NSMakeRange(4, 4) },
-                { "inflect.whole", [NSInflectionRule automaticRule], NSMakeRange(0, 21) },
-                { "inflect.number", [NSInflectionRule automaticRule], NSMakeRange(0, 6) },
+            /* One rule per shape, and the same rule object on both sides: the host test compiles the
+               port's member and not the classes it reads, so the rule both sides see is the system's.
+               The language tag is the port's own constant (NSLanguageIdentifierAttributeName is
+               "NSLanguage"), which is the same string the system uses - measured by
+               constant.NSLanguageIdentifierAttributeName and by the shape of every answer below. */
+            NSMorphology *(^morphology)(NSInteger, NSInteger) = ^NSMorphology *(NSInteger number, NSInteger partOfSpeech) {
+                NSMorphology *m = [[NSMorphology alloc] init];
+                m.number = number;
+                m.grammaticalGender = NSGrammaticalGenderMasculine;
+                m.partOfSpeech = partOfSpeech;
+                return m;
             };
-            for (unsigned i = 0; i < sizeof cases / sizeof *cases; i++) {
-                NSMutableAttributedString *system = [plain(i == 3 ? @"1 house" : @"the house and the dog") mutableCopy];
-                NSMutableAttributedString *port = [plain(i == 3 ? @"1 house" : @"the house and the dog") mutableCopy];
-                NSRange range = i == 3 ? NSMakeRange(0, 6) : cases[i].range;
-                [system addAttribute:NSInflectionRuleAttributeName value:cases[i].rule range:range];
-                [port addAttribute:NSInflectionRuleAttributeName value:cases[i].rule range:range];
-                compare([NSString stringWithFormat:@"%s", cases[i].name],
-                        shape([system attributedStringByInflectingString]),
-                        shape([port charonHost_attributedStringByInflectingString]));
+            NSInflectionRuleExplicit *(^explicit)(NSInteger, NSInteger) = ^NSInflectionRuleExplicit *(NSInteger number, NSInteger partOfSpeech) {
+                return [[NSInflectionRuleExplicit alloc] initWithMorphology:morphology(number, partOfSpeech)];
+            };
+            id plural = explicit(NSGrammaticalNumberPlural, NSGrammaticalPartOfSpeechNoun);
+            id singular = explicit(NSGrammaticalNumberSingular, NSGrammaticalPartOfSpeechNoun);
+
+            /* The words. Every one of them is asked of the system first and the port second, and the
+               text and the run boundaries of the two answers are compared, so a table that answers the
+               wrong thing is a failure and not a look-alike. */
+            static const char *words[] = {
+                /* the three rules that need no table */
+                "dog", "key", "day", "guy", "boy", "toy", "piano", "photo", "zero", "pizza", "shoe",
+                "canoe", "house", "sieve", "test", "attorney",
+                /* -es */
+                "box", "church", "dish", "bus", "quiz", "index", "matrix", "vertex", "axis", "crisis",
+                "analysis", "address", "class", "wish", "status", "alias", "virus", "cactus", "focus",
+                "fungus", "nucleus", "octopus", "echo", "veto", "torpedo", "volcano", "mosquito",
+                "embargo", "tornado", "hero", "potato", "tomato",
+                /* -y and -ies */
+                "city", "baby", "grocery",
+                /* -ves */
+                "knife", "leaf", "life", "wife", "half", "loaf", "self", "thief", "wolf", "shelf",
+                "calf", "elf", "scarf",
+                /* the irregular and the invariant */
+                "mouse", "foot", "tooth", "goose", "ox", "person", "child", "man", "woman", "datum",
+                "criterion", "phenomenon", "hypothesis", "thesis", "sheep", "deer", "fish", "moose",
+                "buffalo",
+                /* the capitalisations */
+                "KNIFE", "Knife", "Wolf", "Person", "CHURCH", "Church",
+                /* the shapes that are declined */
+                "x", "e", "I", "s", "house3", "house-s", "house's", "child's",
+            };
+            for (unsigned i = 0; i < sizeof words / sizeof *words; i++) {
+                NSString *word = [@"the " stringByAppendingString:@(words[i])];
+                NSRange range = NSMakeRange(4, word.length - 4);
+                compare([NSString stringWithFormat:@"inflect.plural.%u", i],
+                        shape([inflected(word, range, plural, nil) attributedStringByInflectingString]),
+                        shape([inflected(word, range, plural, nil) charonHost_attributedStringByInflectingString]));
+                compare([NSString stringWithFormat:@"inflect.singular.%u", i],
+                        shape([inflected(word, range, singular, nil) attributedStringByInflectingString]),
+                        shape([inflected(word, range, singular, nil) charonHost_attributedStringByInflectingString]));
             }
-            /* a string with no rule at all comes back as it stood, with its attributes */
+            /* The same for the words that are already plural, which is what exercises the singular rules
+               rather than the three that decline a word already in its own singular. */
+            static const char *plurals[] = {
+                "houses", "dogs", "keys", "days", "boxes", "churches", "dishes", "buses", "quizzes",
+                "indexes", "matrixes", "axes", "crises", "analyses", "hypotheses", "theses",
+                "addresses", "classes", "wishes", "statuses", "aliases", "viruses", "cactuses",
+                "focuses", "nucleuses", "octopuses", "echoes", "vetoes", "potatoes", "shoes", "canoes",
+                "cities", "babies", "groceries", "knives", "leaves", "lives", "wives", "halves",
+                "loaves", "selves", "thieves", "wolves", "shelves", "calves", "elves", "scarves",
+                "mice", "feet", "teeth", "geese", "oxen", "people", "children", "men", "women",
+                "data", "criteria", "phenomena", "cacti", "foci", "nuclei", "photos", "roofs",
+                "safes", "chiefs", "beliefs", "pianos", "zeros", "sieves", "tests", "attorneys",
+                "KNIVES", "Knives", "Wolves",
+            };
+            for (unsigned i = 0; i < sizeof plurals / sizeof *plurals; i++) {
+                NSString *word = [@"the " stringByAppendingString:@(plurals[i])];
+                compare([NSString stringWithFormat:@"inflect.singularOfPlural.%u", i],
+                        shape([inflected(word, NSMakeRange(4, word.length - 4), singular, nil) attributedStringByInflectingString]),
+                        shape([inflected(word, NSMakeRange(4, word.length - 4), singular, nil) charonHost_attributedStringByInflectingString]));
+            }
+            /* The numbers, all seven the SDK declares, one at a time. */
+            const char *numbers[] = { "notSet", "singular", "zero", "plural", "pluralTwo", "pluralFew", "pluralMany" };
+            for (NSInteger n = 0; n < 7; n++) {
+                NSString *name = [NSString stringWithFormat:@"inflect.number.%@", @(numbers[n])];
+                compare(name,
+                        shape([inflected(@"the house", NSMakeRange(4, 5), explicit(n, NSGrammaticalPartOfSpeechNoun), nil) attributedStringByInflectingString]),
+                        shape([inflected(@"the house", NSMakeRange(4, 5), explicit(n, NSGrammaticalPartOfSpeechNoun), nil) charonHost_attributedStringByInflectingString]));
+            }
+            /* The parts of speech, all fifteen the SDK declares, one at a time. */
+            for (NSInteger p = 0; p < 15; p++) {
+                compare([NSString stringWithFormat:@"inflect.partOfSpeech.%ld", (long)p],
+                        shape([inflected(@"the house", NSMakeRange(4, 5), explicit(NSGrammaticalNumberPlural, p), nil) attributedStringByInflectingString]),
+                        shape([inflected(@"the house", NSMakeRange(4, 5), explicit(NSGrammaticalNumberPlural, p), nil) charonHost_attributedStringByInflectingString]));
+            }
+            /* The language: no tag and an English one are followed, and the tags the system declines are
+               the ones this object declines. */
+            const char *languages[] = { "en", "en-GB", "en-US", "EN", "de", "fr", "ru", "ar", "ja", "und" };
+            for (unsigned i = 0; i < sizeof languages / sizeof *languages; i++)
+                compare([NSString stringWithFormat:@"inflect.language.%s", languages[i]],
+                        shape([inflected(@"the house", NSMakeRange(4, 5), plural, @(languages[i])) attributedStringByInflectingString]),
+                        shape([inflected(@"the house", NSMakeRange(4, 5), plural, @(languages[i])) charonHost_attributedStringByInflectingString]));
+            /* A range that stops inside a word: with no language the system does not follow it, and with
+               an English one it follows the whole word the range lies in. */
+            struct { const char *name; const char *text; NSRange range; const char *language; } partial[] = {
+                { "inflect.partial.noLanguage", "the house and the dog", { 4, 4 }, NULL },
+                { "inflect.partial.language", "the house and the dog", { 4, 3 }, "en" },
+                { "inflect.partial.midWord", "1 house", { 4, 3 }, "en" },
+                { "inflect.partial.wholeWord", "the house", { 4, 5 }, NULL },
+            };
+            for (unsigned i = 0; i < sizeof partial / sizeof *partial; i++)
+                compare(@(partial[i].name),
+                        shape([inflected(@(partial[i].text), partial[i].range, plural, partial[i].language ? @(partial[i].language) : nil) attributedStringByInflectingString]),
+                        shape([inflected(@(partial[i].text), partial[i].range, plural, partial[i].language ? @(partial[i].language) : nil) charonHost_attributedStringByInflectingString]));
+            /* A range carrying its own answer takes it verbatim, and a range that still holds a format
+               specifier keeps the tag because the pass never looked at it. */
+            compare(@"inflect.alternative",
+                    shape([inflectedWithAlternative(@"the mouse", @"mice") attributedStringByInflectingString]),
+                    shape([inflectedWithAlternative(@"the mouse", @"mice") charonHost_attributedStringByInflectingString]));
+            compare(@"inflect.specifier",
+                    shape([inflected(@"%d house", NSMakeRange(0, 8), plural, @"en") attributedStringByInflectingString]),
+                    shape([inflected(@"%d house", NSMakeRange(0, 8), plural, @"en") charonHost_attributedStringByInflectingString]));
+            /* Two runs, two rules and one run between them: the neighbours that answer alike come back
+               as one run with no attribute on it. */
+            compare(@"inflect.twoRuns",
+                    shape([twoTagged() attributedStringByInflectingString]),
+                    shape([twoTagged() charonHost_attributedStringByInflectingString]));
+            /* A string with no rule at all comes back as it stood, with its attributes. */
             NSMutableAttributedString *untagged = [coloured(@"the house", NSMakeRange(4, 5)) mutableCopy];
             compare(@"inflect.untagged",
                     shape([untagged attributedStringByInflectingString]),

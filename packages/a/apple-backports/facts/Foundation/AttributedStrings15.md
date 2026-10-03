@@ -4,14 +4,14 @@ Markdown, the attributed formatting of a format string, the language a table's t
 inflection pass — one object for one release, six files and the rows they carry.
 
     sh tests/backports/host/attributed15/run.sh
-    bytes 176544
-    checks=72 failures=0
+    bytes 195712
+    checks=376 failures=0
 
 The port's selectors are prefixed (`tests/backports/host/prefix_selectors.py`, the mechanism `appgroup`
 and `uikit2` use) and its Markdown class is renamed with a `-D` from its own object's symbols
 (`tests/backports/host/uikit2/renames.sh`, the mechanism `presentationintent` uses), so the system's five
 members and the port's five answer in one process and every case compares the two. The whole verdict is
-72 checks and no failures: three constants, forty-five formatting cases, the bundle lookup, five
+376 checks and no failures: three constants, forty-five formatting cases, the bundle lookup, 309
 inflection cases, ten Markdown cases, the task delegate's four, and four cases that ask the *release*
 what it answers for the members of an abstract class.
 
@@ -203,22 +203,94 @@ our own — and the reason is the one `NSLanguageIdentifierAttributeName` alread
 * **An HTML block and an entity reference are the source's own text.** The system marks them
   (`NSInlinePresentationIntentBlockHTML`, 512) and the port keeps the characters without the mark.
 
-## Inflection: the rule travels in the string, and the tag goes when it has been followed
+## Inflection: the rule travels in the string, and English is what is followed
 
 `-[NSAttributedString attributedStringByInflectingString]` is not a function on the text: its own header
 says it inflects the portions tagged with `NSInflectionRuleAttributeName` by the rule in the attribute.
-What the system does with the rule, measured for every shape the header names — an explicit rule
-(Plural, Masculine), the automatic rule, a tagged run with a number in it, a whole string tagged — is to
-answer the text as it stood, and to answer it as **one run with no attribute on it at all**: the tag is
-dropped, because the rule has been followed. The port does the same, and coalesces the neighbours that
-answer alike into that one run.
+The tag is dropped from every run the pass answered, so a string of three runs comes back as **one run
+with no attribute on it**, and the neighbours that answer alike are written as one run — both measured.
 
-The rule the port carries is `NSInflectionRule` and `NSInflectionRuleExplicit`, which hold an
-`NSMorphology` and no grammar, so `CharonInflection()` in `NSAttributedStringInflection15.m` answers the
-range it is given. **A word under a case, a gender or a number is CLDR's rule table and this object does
-not carry one**; the differential prints the text of every case so a reader can see that the two agree
-rather than take it from the source. A table is data and not a function, and it is named here as the thing
-that would change that one function.
+### The gates, one measurement each
+
+The rule is `NSInflectionRuleExplicit` and not the automatic one, and the three settings the SDK declares
+are read through the SDK's own accessors. Every row below was measured one value at a time, by the case
+named in the third column.
+
+| the gate | the values, and what each answers | the cases |
+| --- | --- | --- |
+| `number` | Plural, PluralFew and PluralMany inflect; NotSet, Singular, Zero and PluralTwo leave the text as it stood | `inflect.number.*` |
+| `partOfSpeech` | Letter, Verb, Numeral and Preposition leave it as it stood; the other eleven inflect | `inflect.partOfSpeech.*` |
+| the language | none, `en`, `en-GB`, `en-US` and `EN` inflect; `de`, `fr`, `ru`, `ar`, `ja` and `und` do not | `inflect.language.*` |
+| the range | it must END where a word ends, and it is the whole word ending there that is inflected | `inflect.partial.*` |
+| the word | letters, at least two of them | `inflect.plural.*` |
+
+The range rule is the one that is not obvious. `-addAttribute:value:range:` does not widen the range it
+is given to the run it lands in, so the tagged range is read back with `-attribute:atIndex:effectiveRange:`
+rather than taken from the enumeration, and then:
+
+* `the house and the dog` tagged (4,4) — "hous" — answers the text as it stood;
+* `the house and the dog` tagged (4,3) — "hou" — answers the text as it stood;
+* `the house` tagged (4,3) answers the text as it stood;
+* `1 house` tagged (4,3) — which ends at the end of the string — answers **`1 houses`**, which is the
+  word "house" made plural and not the three characters "use".
+
+So the range has to end where a word ends, and the word that ends there is what changes. The word itself
+has to be letters and at least two of them: `child's`, `house's`, `house-s`, `house s`, `house3`, `3`,
+`two houses` and every word of one letter all answer the text as they stood, measured.
+
+Two more shapes the header names:
+
+* **A range carrying its own answer** under `NSInflectionAlternativeAttributeName` takes it verbatim:
+  `the mouse` with `mice` under the alternative is `the mice`.
+* **A range that still holds a `%`** is left as it stood **and its tag stays on it** — `"%d house"` comes
+  back as `"%d house"` with the rule still on the run. The header's "that have no format specifiers" is
+  the system declining to answer, and a tag it did not follow is still a tag.
+
+### The English rules
+
+Three need no table: a word ending in s, x, z, ch or sh takes `-es`; a word ending in a consonant and `y`
+changes it to `-ies` and one ending in a vowel and `y` takes `-s`; every other word takes `-s`. Those get
+`index` and `matrix` right on their own (`indexes`, `matrixes`) and `house` and `sieve` right by not
+applying at all (`houses`, `sieves`).
+
+Six closed sets are beside them, and every entry is the system's own answer for the word:
+
+* the nouns whose two numbers are not the regular rule's — mouse/mice, foot/feet, tooth/teeth,
+  goose/geese, ox/oxen, person/people, child/children, man/men, woman/women, datum/data,
+  criterion/criteria, phenomenon/phenomena, and sheep, deer, fish, moose and buffalo, which do not change,
+  and `the`, which does not either;
+* the Latin plurals that change back — cacti/cactus, foci/focus, nuclei/nucleus, and `data`, which the
+  system refuses to change twice;
+* the `-f` and `-fe` nouns that become `-ves` — knife/knives, leaf/leaves, life/lives, wife/wives,
+  half/halves, loaf/loaves, self/selves, thief/thieves, wolf/wolves, shelf/shelves, calf/calves,
+  elf/elves, scarf/scarves. The regular rule would make `roof` into `rooves` and the system answers
+  `roofs`, so the set is closed. `leaves` is the one row whose two ends are not reverses: the system
+  answers **`leave`**, and that is what the object answers;
+* the `-o` nouns that take `-es` — echo, veto, torpedo, volcano, mosquito, embargo, tornado, hero, potato,
+  tomato — where `photo`, `piano` and `zero` take `-s` and nothing about the letter tells the two apart;
+* six plurals whose singular keeps a final `e` — houses, shoes, canoes, safes, sieves, axes — where
+  `echoes`, `vetoes` and `potatoes` drop the whole `-es`;
+* the words that end in `-as`, `-us` or `-is` and are their own singular — bus, status, virus, cactus,
+  focus, fungus, nucleus, octopus, alias, axis, crisis, analysis, hypothesis, thesis.
+
+Four more endings are named rather than derived, each measured: `-ises`, `-yses` and `-eses` are a
+singular in `-is` with an `-es` on it (`crises` → `crisis`, `analyses` → `analysis`, `hypotheses` →
+`hypothesis`, `theses` → `thesis`), `-zzes` is a singular with a doubled z (`quizzes` → `quiz`), a final
+`z` after a vowel doubles (`quiz` → `quizzes`, where a final `s` after the same vowel does not: `bus` →
+`buses`), and the capitalisation of the word is kept (`KNIFE` → `KNIVES`, `Knife` → `Knives`, `Wolf` →
+`Wolves`).
+
+### What is not carried
+
+**The system's English table is a lexicon and this object carries a rule set.** A word outside the sets
+above gets the regular rule's answer here, where the system has its own: `thes` for `the` is the shape of
+it, and `the` is in a table only because it was measured. One measured divergence is named as well: the
+system inflects a range carrying the Spanish tag `es` the English way and this object does not, because
+the tag is not English and the rules here are English.
+
+The 309 inflection cases are the evidence: every word of every table both ways, all seven numbers, all
+fifteen parts of speech, ten language tags, four partial ranges, the alternative, the format specifier,
+two tagged runs and an untagged one. The system is asked first and the port second in every one.
 
 ## The bundle's answer carries the language it was found in
 
