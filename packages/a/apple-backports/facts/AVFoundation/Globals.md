@@ -1,17 +1,26 @@
 # The AVFoundation constants the releases this port targets do not export: 116 names, every value read
 
 One object per release, in `AVFoundation/AVFoundationGlobals<NN>.m`, because an object may only carry
-API that arrived in one of them and the gate reads that off the stub. Six objects, six releases:
+API of one release and the gate reads that off the object. Five objects, five releases:
 
-| object | release | constants | of those read twice |
-| --- | --- | --- | --- |
-| `AVFoundationGlobals100.m` | 10.0 | 1 | 1 |
-| `AVFoundationGlobals140.m` | 14.0 | 1 | 1 |
-| `AVFoundationGlobals170.m` | 17.0 | 29 | 29 |
-| `AVFoundationGlobals174.m` | 17.4 | 1 | 1 |
-| `AVFoundationGlobals180.m` | 18.0 | 23 | 23 |
-| `AVFoundationGlobals260.m` | 26.0 | 61 | 7 |
+| object | release the name is first exported by | constants | of those read twice | header's own introduced version |
+| --- | --- | --- | --- | --- |
+| `AVFoundationGlobals1001.m` | 10.0.1 | 1 | 1 | 10.0 |
+| `AVFoundationGlobals110.m` | 11.0 | 1 | 1 | 17.0 |
+| `AVFoundationGlobals160.m` | 16.0 | 9 | 9 | 14.0, 17.0 and 26.0 |
+| `AVFoundationGlobals180.m` | 18.0 | 51 | 42 | 17.0, 17.4, 18.0 and 26.0 |
+| `AVFoundationGlobals260.m` | no held cache exports it | 54 | 0 | 26.0 |
 | | | **116** | **62** |
+
+The split is by **measured** release, not by the header's `API_AVAILABLE`. `tools/symbol-first-release.lua`
+over the held cache ladder answers the question an object is placed by: the first release whose
+AVFoundation *exports* the name. The two disagree for 30 of the 116 names, and by a lot in one
+direction - the ladder holds no cache between 12.0 and 16.0 and none above 18.0, so every name that
+arrived in 13.x to 15.x measures as 16.0 and every name that arrived in 17.x measures as 18.0, whatever
+the header says. `AVMediaTypeAuxiliaryPicture` is the clearest case: the header says iOS 14.0 and the
+measurement says the 16.0 cache exports it. That is the whole reason for the rule, and it is why
+`relcheck.lua` (which is what the gate runs) refuses an object that holds names from two releases.
+
 
 ## The two oracles, and what each can reach
 
@@ -79,6 +88,31 @@ and `AVPlayerInterstitialEventMonitorInterstitialEventWasUnscheduledErrorKey` is
 `InterstitialEventWasUnschedule` - without the `d` - in the value the host's own symbol holds. Both
 were written out by name first and the measurement disagreed with what had been written, which is the
 reason every value here is read and none is typed.
+
+## What the ladder measures, and the run that measured it
+
+```
+CHARON_ROOT=$PWD xmake l tools/symbol-first-release.lua .agent-work/avf/first-names.txt > .agent-work/avf/first-release.tsv
+ladder: 53 rungs, 3.0 (armv7) .. 18.0 (arm64e)
+owner filter: on, the .tbd libraries of .../iPhoneOS16.4.sdk
+```
+
+The names are spelled with the leading underscore the image exports, and that matters: asked the way C
+spells them the same tool answers `none` for every one of the 116, which would have placed all of them
+in the 26.0 band. Its own header states what it measures - "the first held release that exports it,
+read from that release's own dyld shared cache ... what it reports is where a client can first bind the
+symbol, not what a header's availability annotation says" - and its `owner filter` line says which
+libraries count.
+
+The distribution over the 116:
+
+```
+  1 10.0.1      1 11.0      9 16.0     51 18.0     54 none
+```
+
+`none` is an answer, not a gap: it is how this port decides an API is not in any held release at all, and
+those 54 names are placed by their registry row's own `introduced` (26.0 for every one of them), which
+is why they form one object.
 
 ## The five this cannot answer
 

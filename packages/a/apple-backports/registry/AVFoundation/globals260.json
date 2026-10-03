@@ -10,18 +10,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVAssetExportPresetHEVC4320x2160, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
-    },
-    {
-      "api": "AVAssetExportPresetHEVC7680x4320",
-      "kind": "constant",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
-      "effect": "the string AVAssetExportPresetHEVC7680x4320, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
-      "facts": "facts/AVFoundation/Globals.md",
-      "source": "the arm64e/arm64 dyld shared cache of the iOS release that added the name, read with tools/corpus/cache-value.lua as the value its exported symbol holds; and the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, which agree on this name"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVAssetExportPresetMVHEVC4320x4320",
@@ -32,7 +21,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVAssetExportPresetMVHEVC4320x4320, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVAssetExportPresetMVHEVC7680x7680",
@@ -43,7 +32,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVAssetExportPresetMVHEVC7680x7680, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVAssetPlaybackConfigurationOptionNonRectilinearProjection",
@@ -54,18 +43,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVAssetPlaybackConfigurationOptionNonRectilinearProjection, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
-    },
-    {
-      "api": "AVAssetWriterInputMediaDataLocationSparselyInterleavedWithMainMediaData",
-      "kind": "constant",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
-      "effect": "the string AVAssetWriterInputMediaDataLocationSparselyInterleavedWithMainMediaData, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
-      "facts": "facts/AVFoundation/Globals.md",
-      "source": "the arm64e/arm64 dyld shared cache of the iOS release that added the name, read with tools/corpus/cache-value.lua as the value its exported symbol holds; and the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, which agree on this name"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVCaptureAspectRatio16x9",
@@ -76,7 +54,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVCaptureAspectRatio16x9, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVCaptureAspectRatio1x1",
@@ -87,7 +65,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVCaptureAspectRatio1x1, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVCaptureAspectRatio3x4",
@@ -98,7 +76,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVCaptureAspectRatio3x4, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVCaptureAspectRatio4x3",
@@ -109,7 +87,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVCaptureAspectRatio4x3, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVCaptureAspectRatio9x16",
@@ -120,7 +98,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVCaptureAspectRatio9x16, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVCaptureSceneMonitoringStatusNotEnoughLight",
@@ -131,7 +109,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVCaptureSceneMonitoringStatusNotEnoughLight, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVContentKeyRequestRandomDeviceIdentifierSeedKey",
@@ -142,7 +120,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string RandomDeviceIdentifierSeedKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVContentKeyRequestShouldRandomizeDeviceIdentifierKey",
@@ -153,7 +131,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string ShouldRandomizeDeviceIdentifierKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVFileTypeDICOM",
@@ -164,7 +142,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string org.nema.dicom, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVFileTypeQuickTimeAudio",
@@ -175,7 +153,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string com.apple.quicktime-audio, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMediaCharacteristicIndicatesNonRectilinearProjection",
@@ -186,7 +164,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string public.indicates-non-rectilinear-projection, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMediaCharacteristicMachineGenerated",
@@ -197,18 +175,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string public.machine-generated, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataCameraFocalLength35mmEquivalent",
-      "kind": "constant",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
-      "effect": "the string mdta/com.apple.quicktime.camera.focal_length.35mm_equivalent, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
-      "facts": "facts/AVFoundation/Globals.md",
-      "source": "the arm64e/arm64 dyld shared cache of the iOS release that added the name, read with tools/corpus/cache-value.lua as the value its exported symbol holds; and the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, which agree on this name"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataIdentifierQuickTimeMetadataCameraISOSensitivity",
@@ -219,7 +186,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string mdta/org.smpte.rdd18.camera.isosensitivity, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataIdentifierQuickTimeMetadataCameraLensIrisFNumber",
@@ -230,18 +197,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string mdta/com.apple.quicktime.camera.lens_irisfnumber, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataCameraLensModel",
-      "kind": "constant",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
-      "effect": "the string mdta/com.apple.quicktime.camera.lens_model, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
-      "facts": "facts/AVFoundation/Globals.md",
-      "source": "the arm64e/arm64 dyld shared cache of the iOS release that added the name, read with tools/corpus/cache-value.lua as the value its exported symbol holds; and the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, which agree on this name"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataIdentifierQuickTimeMetadataCameraShutterSpeedAngle",
@@ -252,7 +208,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string mdta/org.smpte.rdd18.camera.shutterspeed_angle, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataIdentifierQuickTimeMetadataCameraShutterSpeedTime",
@@ -263,7 +219,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string mdta/org.smpte.rdd18.camera.shutterspeed_time, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataIdentifierQuickTimeMetadataCameraWhiteBalance",
@@ -274,7 +230,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string mdta/org.smpte.rdd18.camera.whitebalance, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataIdentifierQuickTimeMetadataCinematicVideoIntent",
@@ -285,7 +241,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string mdta/com.apple.quicktime.cinematic-video-intent, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataIdentifierQuickTimeMetadataWhiteBalanceByCCTColorMatrices",
@@ -296,7 +252,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string mdta/com.apple.proresraw.whitebalance.bycct.colormatrices, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataIdentifierQuickTimeMetadataWhiteBalanceByCCTWhiteBalanceFactors",
@@ -307,29 +263,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string mdta/com.apple.proresraw.whitebalance.bycct.whitebalancefactors, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
-    },
-    {
-      "api": "AVMetadataObjectTypeCatHead",
-      "kind": "constant",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
-      "effect": "the string catHead, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
-      "facts": "facts/AVFoundation/Globals.md",
-      "source": "the arm64e/arm64 dyld shared cache of the iOS release that added the name, read with tools/corpus/cache-value.lua as the value its exported symbol holds; and the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, which agree on this name"
-    },
-    {
-      "api": "AVMetadataObjectTypeDogHead",
-      "kind": "constant",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
-      "effect": "the string dogHead, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
-      "facts": "facts/AVFoundation/Globals.md",
-      "source": "the arm64e/arm64 dyld shared cache of the iOS release that added the name, read with tools/corpus/cache-value.lua as the value its exported symbol holds; and the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, which agree on this name"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataQuickTimeMetadataKeyCameraFocalLength35mmEquivalent",
@@ -340,7 +274,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string com.apple.quicktime.camera.focal_length.35mm_equivalent, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataQuickTimeMetadataKeyCameraISOSensitivity",
@@ -351,7 +285,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string org.smpte.rdd18.camera.isosensitivity, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataQuickTimeMetadataKeyCameraLensIrisFNumber",
@@ -362,7 +296,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string com.apple.quicktime.camera.lens_irisfnumber, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataQuickTimeMetadataKeyCameraLensModel",
@@ -373,7 +307,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string com.apple.quicktime.camera.lens_model, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataQuickTimeMetadataKeyCameraShutterSpeedAngle",
@@ -384,7 +318,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string org.smpte.rdd18.camera.shutterspeed_angle, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataQuickTimeMetadataKeyCameraShutterSpeedTime",
@@ -395,7 +329,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string org.smpte.rdd18.camera.shutterspeed_time, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataQuickTimeMetadataKeyCameraWhiteBalance",
@@ -406,7 +340,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string org.smpte.rdd18.camera.whitebalance, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataQuickTimeMetadataKeyCinematicVideoIntent",
@@ -417,7 +351,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string com.apple.quicktime.cinematic-video-intent, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataQuickTimeMetadataKeyWhiteBalanceByCCTColorMatrices",
@@ -428,7 +362,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string com.apple.proresraw.whitebalance.bycct.colormatrices, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVMetadataQuickTimeMetadataKeyWhiteBalanceByCCTWhiteBalanceFactors",
@@ -439,7 +373,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string com.apple.proresraw.whitebalance.bycct.whitebalancefactors, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVOutputSettingsPresetHEVC4320x2160",
@@ -450,18 +384,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVOutputSettingsPresetHEVC4320x2160, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
-    },
-    {
-      "api": "AVOutputSettingsPresetHEVC7680x4320",
-      "kind": "constant",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
-      "effect": "the string AVOutputSettingsPresetHEVC7680x4320, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
-      "facts": "facts/AVFoundation/Globals.md",
-      "source": "the arm64e/arm64 dyld shared cache of the iOS release that added the name, read with tools/corpus/cache-value.lua as the value its exported symbol holds; and the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, which agree on this name"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVOutputSettingsPresetMVHEVC4320x4320",
@@ -472,7 +395,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVOutputSettingsPresetMVHEVC4320x4320, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVOutputSettingsPresetMVHEVC7680x7680",
@@ -483,7 +406,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVOutputSettingsPresetMVHEVC7680x7680, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorCurrentEventSkippableStateDidChangeEventKey",
@@ -494,7 +417,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string CurrentEventSkippableStateDidChangeEventKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorCurrentEventSkippableStateDidChangeNotification",
@@ -505,7 +428,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string CurrentEventSkippableStateDidChange, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorCurrentEventSkippableStateDidChangeSkipControlLabelKey",
@@ -516,7 +439,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string CurrentEventSkippableStateDidChangeSkipControlLabelKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorCurrentEventSkippableStateDidChangeStateKey",
@@ -527,7 +450,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string CurrentEventSkippableStateDidChangeStateKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorCurrentEventSkippedEventKey",
@@ -538,7 +461,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string CurrentEventSkippedEventKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorCurrentEventSkippedNotification",
@@ -549,7 +472,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string CurrentEventSkipped, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorInterstitialEventDidFinishDidPlayEntireEventKey",
@@ -560,7 +483,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string InterstitialEventDidFinishDidPlayEntireEventKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorInterstitialEventDidFinishEventKey",
@@ -571,7 +494,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string InterstitialEventDidFinishEventKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorInterstitialEventDidFinishNotification",
@@ -582,7 +505,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string InterstitialEventDidFinish, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorInterstitialEventDidFinishPlayoutTimeKey",
@@ -593,7 +516,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string InterstitialEventDidFinishPlayoutTimeKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorInterstitialEventWasUnscheduledErrorKey",
@@ -604,7 +527,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string InterstitialEventWasUnscheduleErrorKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorInterstitialEventWasUnscheduledEventKey",
@@ -615,7 +538,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string InterstitialEventWasUnscheduleEventKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVPlayerInterstitialEventMonitorInterstitialEventWasUnscheduledNotification",
@@ -626,7 +549,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string InterstitialEventWasUnscheduled, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVTrackAssociationTypeRenderMetadataSource",
@@ -637,7 +560,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string rndr, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVURLAssetShouldParseExternalSphericalTagsKey",
@@ -648,7 +571,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string AVURLAssetShouldParseExternalSphericalTagsKey, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVVideoCodecTypeAppleProResRAW",
@@ -659,7 +582,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string aprn, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     },
     {
       "api": "AVVideoCodecTypeAppleProResRAWHQ",
@@ -670,7 +593,7 @@
       "reason": "the port's minimum release does not export the name; it is carried with the text Apple's own framework gives it, so that an application that names it loads instead of failing on a missing symbol",
       "effect": "the string aprh, carried with the text the newer release gives it; nothing of iOS 6.1.3 produces it, and where an application hands it to the release - a preset name, a metadata key or key space, a media type, a notification name - the release compares it against the strings it knows and answers as it answers for any string it has not heard of",
       "facts": "facts/AVFoundation/Globals.md",
-      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0)"
+      "source": "the host's own AVFoundation asked with dlopen + dlsym and decoded through CFStringGetCString as UTF-8, recorded in coordination/corpus/ledger/constant-values-AVFoundation.tsv with the macOS 26A428 build it was measured on, the only oracle on this machine that reaches a name above the highest release whose cache is held (18.0); tools/symbol-first-release.lua over the held cache ladder, which places the name at the first release whose AVFoundation exports it (no held cache exports it, so the introduced version of this row places the object); that measurement, and not the header's API_AVAILABLE, is what the object is split by"
     }
   ]
 }
