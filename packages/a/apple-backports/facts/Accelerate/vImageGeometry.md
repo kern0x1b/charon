@@ -1394,3 +1394,81 @@ without knowing it. The map for whoever takes it is one experiment: **read the Q
 are not three**, which `vImageNewResamplingFilter(scale, kvImageHighQualityResampling)` gives (ten taps, forty
 rows at a scale of one), and check whether the deviation from the normalised five-lobe kernel has the same
 magnitude and the same sign pattern - a fixed-point `sinc` would, a normalising correction would not.
+
+## The 6.1.3 filter's layout, read out of the release's own instructions (2026-10-04, v-tail-a11)
+
+Every number in the section above came from **macOS Accelerate**, and macOS Accelerate is not 6.1.3's. The
+6.1.3 armv7 cache was read with the in-tree disassembler (`tools/corpus/disasm.sh`, v-crutch4's, on main) at
+the release's own addresses - `_vImageNewResamplingFilter` at 0x30418ef9, `_vImageNewResamplingFilterForFunctionUsingBuffer`
+at 0x3041905d, `_vImageGetResamplingFilterSize` at 0x30419299, and the static header writer both of the first
+two call at **0x304192c0**:
+
+    CHARON_ROOT=$PWD sh tools/corpus/disasm.sh ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 \
+        /Frameworks/vImage 3041905d 30419299 armv7
+
+`_vImageNewResamplingFilter(scale, flags)` builds a descriptor on its own stack, allocates, and calls
+`_vImageNewResamplingFilterForFunctionUsingBuffer(buffer, scale, NULL, NULL, 0, flags)`, which calls the
+writer with `r0 = buffer`, `d0 = (double)scale` and `d1 = (double)(1.0/scale)`. The writer is the whole of the
+header:
+
+| object byte | word | the instruction that stores it | what it is |
+| --- | --- | --- | --- |
+| 0..7 | 0,1 | `vstr d16, [r0]` with `d16 = vdiv.f64(1.0, d0)` | **the double `1.0/scale`** |
+| 8 | 2 | `vstr s0, [r0, #8]`, `s0 = (int)(2*taps + 0.5)` | `numTaps` |
+| 12 | 3 | `str r12, [r0, #12]`, `r12 = (15 + 4*numTaps) & ~15` | the float row stride, bytes |
+| 16 | 4 | `str r3, [r0, #16]`, `r3 = (((2 or 3) + 2*numTaps) + 12) & ~15` | the int16 row stride, bytes |
+| 20 | 5 | `str lr, [r0, #20]`, `lr = 1 << clamp(133 - ubfx(float(1/scale), 23, 8), 0, 6)` | the phase count |
+| 24 | 6 | `str r1, [r0, #24]`, the same clamped value | the phase exponent |
+| 28 | 7 | `add r1, r12; str r1, [r0, #28]` with `r12` = word 8 | the Q14 table's last byte |
+| 32 | 8 | `mla r12, floatStride, numPhases+1, r2` with `r2 = (buffer + 55) & ~15` | the float table's end, and so the **Q14 table's first byte** |
+| 36 | 9 | `str r2, [r0, #36]` | `(buffer + 55) & ~15` |
+
+`taps` is `|lobes/scale|` when `|scale| < 1` and `lobes` otherwise, and `lobes` is **3.0** or **5.0** read out of
+the release's own literal pool - the doubles at 0x304193ca and 0x304193c2, selected by `tst r2, #32`, which is
+`kvImageHighQualityResampling`. `_vImageGetResamplingFilterSize` is that same writer on a stack buffer followed
+by `ldr r0, [sp, #28]; adds r0, #16`, so **the size is word 7 + 16**.
+
+**Three things follow that the macOS measurements above do not say.**
+
+1. **The scale is in the object, exactly, as a `double`.** v-tail-a10 could not find it in macOS's layout and
+   concluded that the caller's scale above one was unrecoverable from the filter; on 6.1.3 it is
+   `1.0 / *(double *)object`. That is the one field the port needs to read, because the lobes come from the
+   shear's own flags and the rest of the geometry comes from `numTaps` and the two strides.
+2. **The phase count is a power of two, not `64 * min(1, scale)`.** `1 << clamp(133 - exponent(float(1/scale)), 0, 6)`
+   answers 64 at a scale of **0.75**, where `64 * min(1, 0.75)` is 48. v-tail-a10's own table already measured
+   64 rows at 0.75 and its formula did not; the instruction settles it, and the formula is wrong off a power
+   of two.
+3. **The int16 row width is `((3 + 2*numTaps) + 12) & ~15` under `kvImageHighQualityResampling` and `((2 + 2*numTaps) + 12) & ~15`
+   otherwise**, which at a scale of 0.5 with five lobes (twenty taps) is **40 bytes, twenty int16** - where macOS
+   stores 48. The row width is what the tap window hangs on, so it is a per-release number and macOS's is not
+   6.1.3's.
+
+The **Q14 table begins at word 8's value** - `_vImageNewResamplingFilterForFunctionUsingBuffer` reads
+`ldr r6, [buffer, #32]` into the row pointer and advances it by word 4 on each phase - and runs `numPhases`
+rows of `int16Stride / 2` int16. Its last byte is word 7.
+
+## Why the row cannot be generated and must be read: the release's own `sinf`
+
+The row is quantised out of a table the release's own **default kernel function** builds, and that function is
+`sinf` and `cosf` in **single precision**. At 0x30418d48 - the three-lobe one, which `vmov.f32 d11, #3.000000e+00`
+names - the loop is
+
+    vldr  s0, [r6]            ; the tap argument
+    vmul  d1, d0, d10         ; ... times pi
+    vmul  d0, d16, d0
+    blx   0x30436e68          ; sinf
+    blx   0x30436e6a          ; cosf
+    vmul  d0, d13, d16
+    vdiv  s2, s0, s24         ; normalise by the row's sum
+
+and the quantiser at 0x30419214 is `vcvt.s32.f32` of the weight times a constant - **truncation, not
+rounding**. That is why the exclusion list in the section above had `trunc` on it and why none of those rules
+was it: `trunc` of the *exact double* kernel is not `trunc` of *this* row, because this row is a truncation of
+a `sinf` the port does not have. **So the map a previous pass left for whoever took this next is answered from
+the release's own instructions:** the row is not a fixed-point evaluation of a formula to be searched for, it
+is the bits of one libm's single-precision `sinf`. There is no rule.
+
+The port therefore reads the row out of the caller's filter - a private layout, a `crutches.md` entry carrying
+the measurement above - and `CharonResampleFilterOf` refuses anything whose header does not match it:
+`numTaps` positive, the row width a whole number of int16, the phase count a power of two of at most 64, and
+every row of the Q14 table summing to exactly 16384.
