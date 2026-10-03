@@ -162,10 +162,11 @@ static UIColor *charon_unavailable_secondary_label_color(void)
             _text = @"No Results";
             _secondaryText = @"Check the spelling or try a new search.";
             // The host's search image is the SF Symbol "magnifyingglass" at the symbol configuration's point
-            // size.  The port draws that name itself - it is one of the 333 glyphs CharonSymbolGlyphs.h
-            // holds - through +[UIImage systemImageNamed:withConfiguration:], which is the same path an
-            // application asking for the symbol by name takes on this release.
-            _imageProperties.preferredSymbolConfiguration = [UIImageSymbolConfiguration configurationWithPointSize:48];
+            // size, which for this factory is the 48 the general line above already set - the search is the
+            // third factory, so it takes the same 48 the empty one does, and this is the only difference
+            // between them here.  The port draws that name itself - it is one of the 333 glyphs
+            // CharonSymbolGlyphs.h holds - through +[UIImage systemImageNamed:withConfiguration:], which is
+            // the same path an application asking for the symbol by name takes on this release.
             _image = [UIImage systemImageNamed:@"magnifyingglass"
                               withConfiguration:_imageProperties.preferredSymbolConfiguration];
             break;
@@ -433,7 +434,9 @@ static UIColor *charon_unavailable_secondary_label_color(void)
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-    return [self initWithConfiguration:[UIContentUnavailableConfiguration emptyConfiguration]];
+    if ((self = [self initWithConfiguration:[UIContentUnavailableConfiguration emptyConfiguration]]))
+        self.frame = frame;
+    return self;
 }
 
 - (UIContentUnavailableConfiguration *)configuration
@@ -468,15 +471,18 @@ static UIColor *charon_unavailable_secondary_label_color(void)
         [_scrollView addSubview:_contentView];
         [self addSubview:_scrollView];
     } else if (!scrollEnabled && _scrollView) {
-        for (UIView *child in [_contentView.subviews copy])
-            [child removeFromSuperview];
+        // The five elements were children of the scroll view's content view, so leaving is not only taking
+        // the scroll view away: the ivars would still point at views that are in no hierarchy, and
+        // charon_buildSubviews only creates an element when its ivar is nil, so the view would lay out into
+        // nothing.  All five are released and created again on the next layout.
         [_scrollView removeFromSuperview];
         _scrollView = nil;
         _contentView = nil;
-        for (UIView *child in [self.subviews copy]) {
-            if (child != _imageView && child != _textLabel && child != _secondaryLabel && child != _button && child != _secondaryButton)
-                [child removeFromSuperview];
-        }
+        _imageView = nil;
+        _textLabel = nil;
+        _secondaryLabel = nil;
+        _button = nil;
+        _secondaryButton = nil;
     }
     [self setNeedsLayout];
 }
@@ -617,7 +623,7 @@ static UIColor *charon_unavailable_secondary_label_color(void)
     CGFloat scale = charon_screen_scale();
 
     CGFloat total = margins.top + margins.bottom;
-    CGFloat textTop = 0, secondaryTop = 0, buttonTop = 0;
+    CGFloat textTop = 0, secondaryTop = 0, buttonTop = 0, secondaryHeight_measured = 0;
 
     CGSize imageSize = CGSizeZero;
     if (_imageView) {
@@ -657,6 +663,7 @@ static UIColor *charon_unavailable_secondary_label_color(void)
         CGFloat secondaryHeight = charon_pixel_ceil(fitted.height, scale);
         total += secondaryHeight;
         secondaryTop = total - secondaryHeight;
+        secondaryHeight_measured = secondaryHeight;
     }
 
     CGFloat buttonRow = 0;
@@ -683,7 +690,7 @@ static UIColor *charon_unavailable_secondary_label_color(void)
         if (_textLabel)
             _textLabel.frame = CGRectMake(left, textTop, available, textHeight);
         if (_secondaryLabel)
-            _secondaryLabel.frame = CGRectMake(left, secondaryTop, available, total - secondaryTop - buttonRow - (_button || _secondaryButton ? (_textLabel || _secondaryLabel ? configuration.textToButtonPadding : 0) : 0));
+            _secondaryLabel.frame = CGRectMake(left, secondaryTop, available, secondaryHeight_measured);
         if (_button && _secondaryButton) {
             CGFloat gap = configuration.buttonToSecondaryButtonPadding;
             CGFloat each = MAX((available - gap) / 2, 0);
