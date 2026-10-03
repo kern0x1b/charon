@@ -1660,9 +1660,42 @@ function advice(root, used)
 end
 
 local function carried_by_release(entry, inventory)
+    -- A member the OWNER does not declare can still be answered, because the release carries it on a
+    -- superclass, so a test of the owner's own table alone reports the release as lacking it. That
+    -- is what made `ignored` unsayable: the check's rule for an `ignored` row is that the release
+    -- DOES carry the name, and a row about a member inherited from a superclass was refused with
+    -- "ignored because the release carries it, but the release does not" - the check being wrong
+    -- rather than the row. Every family inherits members, so this is the check's defect.
+    --
+    -- UISearchBar.enabled is the case measured end to end, and it is the property branch's setter
+    -- spelling that finds it: at 6.1.3 UISearchBar declares neither -enabled, -isEnabled nor
+    -- -setEnabled: of its own, its superclass is UIView, and UIView owns -isEnabled and -setEnabled:.
+    --
+    -- What this does NOT reach, and it is the same measurement: a property whose getter the header
+    -- spells getter=isXxx and which the release carries ONLY as that getter is still read as absent,
+    -- because this branch asks for the property's own name and its setter and not for the `is` form
+    -- that spellings() pairs elsewhere in this file (AVCaptureVideoPreviewLayer.previewing is the
+    -- case named there). AVAssetTrack at 6.1.3 owns -isEnabled and no -setEnabled:, and
+    -- AVMutableCompositionTrack inherits through AVCompositionTrack from it, so
+    -- AVMutableCompositionTrack.enabled reads false here and would be false with the walk too.
+    -- Widening the property branch is a separate change with its own row count, and it is measured
+    -- with the same harness rather than guessed.
+    --
+    -- The walk stops at a class this binary's own inventory does not have, because the inventory is
+    -- per binary: a superclass carried by another image cannot be read here, and stopping there is
+    -- the old answer rather than a wrong one. `seen` guards a cycle, which a malformed image can have.
     local function has(class, selector, sign)
-        local carried = inventory.classes[class]
-        return carried ~= nil and carried[sign == "-" and "instance" or "class"]["-" .. selector] ~= nil
+        local wanted = sign == "-" and "instance" or "class"
+        local seen = {}
+        while class ~= nil and inventory.classes[class] ~= nil and not seen[class] do
+            seen[class] = true
+            local carried = inventory.classes[class]
+            if carried[wanted]["-" .. selector] ~= nil then
+                return true
+            end
+            class = carried.superclass
+        end
+        return false
     end
     if entry.kind == "class" then
         return inventory.classes[entry.api] ~= nil
