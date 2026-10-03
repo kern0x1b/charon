@@ -63,6 +63,20 @@ static void answer_of(id object, SEL selector, char *out, size_t room)
                        selector == @selector(systemRecommendedVideoZoomRange)) {
                 id range = ((id (*)(id, SEL))objc_msgSend)(object, selector);
                 snprintf(out, room, "%s", range ? "a range" : "nil");
+            } else if (selector == @selector(focusRectOfInterest) ||
+                       selector == @selector(exposureRectOfInterest)) {
+                /* CGRectNull is one value of CGRect and prints as three infinities, so it is asked of
+                 * CGRectIsNull first: the header's own name for it is what a reader can compare with. */
+                CGRect rect = ((CGRect (*)(id, SEL))objc_msgSend)(object, selector);
+                if (CGRectIsNull(rect))
+                    snprintf(out, room, "CGRectNull");
+                else
+                    snprintf(out, room, "%g %g %g %g", rect.origin.x, rect.origin.y, rect.size.width,
+                             rect.size.height);
+            } else if (selector == @selector(minFocusRectOfInterestSize) ||
+                       selector == @selector(minExposureRectOfInterestSize)) {
+                CGSize size = ((CGSize (*)(id, SEL))objc_msgSend)(object, selector);
+                snprintf(out, room, "%g %g", size.width, size.height);
             } else if (selector == @selector(spatialCaptureDiscomfortReasons)) {
                 /* The two reasons and the eight reaction types alike: a set rendered as one field. */
                 id set = ((id (*)(id, SEL))objc_msgSend)(object, selector);
@@ -317,6 +331,164 @@ static void setter_phase(id hostCamera, id portCamera, id hostInput, id portInpu
                 CharonGetterBool, 0, "AVCaptureDeviceInput.setWindNoiseRemovalEnabled: false");
 }
 
+/* THE 26.0 RECTANGLES OF INTEREST, and the substrate they are applied through.
+ *
+ * A rectangle of interest is applied through the release's own point of interest (AVCaptureDevice.h:1171), so
+ * the stand-in device carries the release's members and this phase asks the PORT's code about them: the support
+ * flag is the stand-in's (flipped by main() so both branches of the port's rule are asked), the lock is the
+ * stand-in's, and the rectangle itself is the port's.
+ *
+ * Six reads and five writes per side, and each is a row of its own in expectations.tsv:
+ *   the two support flags, the two minimum sizes, the two rectangles as they stand before anything is set;
+ *   -setFocusRectOfInterest: unlocked, locked with a quarter by a quarter, and locked with a negative extent,
+ *   and then the reset the header names - the point is set directly afterwards and the rectangle is read again;
+ *   and the two exposure writes, unlocked and locked.
+ * The host's column is Apple's own class, and its refusals carry Apple's own text.
+ */
+static void rect_case(id hostObject, id portObject, SEL getter, const char *label)
+{
+    char hostAnswer[128], portAnswer[128];
+    for (int side = 0; side < 2; side++) {
+        id object = side ? portObject : hostObject;
+        char *out = side ? portAnswer : hostAnswer;
+        CGRect rect = ((CGRect (*)(id, SEL))objc_msgSend)(object, getter);
+        if (CGRectIsNull(rect))
+            snprintf(out, 128, "CGRectNull");
+        else
+            snprintf(out, 128, "%g %g %g %g", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+    }
+    printf("ANSWER\t%s\thost=[%s]\tport=[%s]\n", label, hostAnswer, portAnswer);
+}
+
+/* One rectangle write, and what the point of interest and the rectangle answer afterwards. The point is printed
+ * as well as the rectangle because the header's own effect is that the point becomes the centre. */
+static void rect_write(id hostObject, id portObject, SEL setter, SEL rectGetter, SEL pointGetter,
+                      CGRect rect, const char *label)
+{
+    char hostAnswer[512], portAnswer[512];
+    for (int side = 0; side < 2; side++) {
+        id object = side ? portObject : hostObject;
+        char *out = side ? portAnswer : hostAnswer;
+        @autoreleasepool {
+            @try {
+                ((void (*)(id, SEL, CGRect))objc_msgSend)(object, setter, rect);
+                CGRect after = ((CGRect (*)(id, SEL))objc_msgSend)(object, rectGetter);
+                CGPoint point = ((CGPoint (*)(id, SEL))objc_msgSend)(object, pointGetter);
+                snprintf(out, 512, "returned, the rectangle answers %g %g %g %g and the point [%g %g]",
+                         after.origin.x, after.origin.y, after.size.width, after.size.height, point.x, point.y);
+            } @catch (NSException *exception) {
+                snprintf(out, 512, "raised %s: %s", exception.name.UTF8String,
+                         exception.reason ? exception.reason.UTF8String : "(no reason)");
+            }
+        }
+    }
+    printf("ANSWER\t%s\thost=[%s]\tport=[%s]\n", label, hostAnswer, portAnswer);
+}
+
+/* The one write whose argument is a CGPoint rather than a CGRect: the release's own point setter, sent after a
+ * rectangle has been set, which is the step the header's own reset is about. A separate case because a CGPoint
+ * and a CGRect are different types and passing one where the other belongs is exactly the probe bug this file
+ * already had once (see the setter phase's comment). */
+static void point_write_case(id hostObject, id portObject, SEL setter, SEL rectGetter, SEL pointGetter,
+                             CGPoint point, const char *label)
+{
+    char hostAnswer[512], portAnswer[512];
+    for (int side = 0; side < 2; side++) {
+        id object = side ? portObject : hostObject;
+        char *out = side ? portAnswer : hostAnswer;
+        @autoreleasepool {
+            @try {
+                ((void (*)(id, SEL, CGPoint))objc_msgSend)(object, setter, point);
+                CGRect after = ((CGRect (*)(id, SEL))objc_msgSend)(object, rectGetter);
+                CGPoint now = ((CGPoint (*)(id, SEL))objc_msgSend)(object, pointGetter);
+                snprintf(out, 512, "returned, the rectangle answers %g %g %g %g and the point [%g %g]",
+                         after.origin.x, after.origin.y, after.size.width, after.size.height, now.x, now.y);
+            } @catch (NSException *exception) {
+                snprintf(out, 512, "raised %s: %s", exception.name.UTF8String,
+                         exception.reason ? exception.reason.UTF8String : "(no reason)");
+            }
+        }
+    }
+    printf("ANSWER\t%s\thost=[%s]\tport=[%s]\n", label, hostAnswer, portAnswer);
+}
+
+static void rect_phase(id hostCamera, id portCamera, Class portStandinClass)
+{
+    /* Only the PORT's stand-in has the flag to set, and the flag is a CLASS method while the lock and the point
+     * of interest are members of the device object: the host's column is Apple's own camera, which answers for
+     * itself (measured 0 for both, its camera supports neither a point nor a rectangle). The port's supported
+     * branch is the one this phase asks first, and the unsupported branch is asked below by taking the flag
+     * away, so both of the port's rule are exercised. */
+    ((void (*)(Class, SEL, BOOL))objc_msgSend)(portStandinClass,
+                                               @selector(charon_host_setPointsOfInterestSupported:), YES);
+    rect_case(hostCamera, portCamera, @selector(focusRectOfInterest), "AVCaptureDevice.focusRectOfInterest unset");
+    rect_case(hostCamera, portCamera, @selector(exposureRectOfInterest),
+              "AVCaptureDevice.exposureRectOfInterest unset");
+    /* The two default-rectangle methods, each with two points. Two cases and not one loop with a formatted
+     * name: printf has no %@, and a %@ in a format string makes it take the NEXT argument as the object -
+     * here the double 0.5, whose bit pattern strlen() then walked, which took the probe down (measured, the
+     * address it faulted on was 0x3fe0000000000000, which is 0.5). */
+    for (int mode = 0; mode < 2; mode++) {
+        for (int step = 0; step < 2; step++) {
+            CGPoint point = step ? CGPointMake(0.75, 0.75) : CGPointMake(0.5, 0.5);
+            char hostAnswer[128], portAnswer[128];
+            SEL getter = mode ? @selector(defaultRectForExposurePointOfInterest:)
+                              : @selector(defaultRectForFocusPointOfInterest:);
+            for (int side = 0; side < 2; side++) {
+                id object = side ? portCamera : hostCamera;
+                char *out = side ? portAnswer : hostAnswer;
+                CGRect rect = ((CGRect (*)(id, SEL, CGPoint))objc_msgSend)(object, getter, point);
+                if (CGRectIsNull(rect))
+                    snprintf(out, 128, "CGRectNull");
+                else
+                    snprintf(out, 128, "%g %g %g %g", rect.origin.x, rect.origin.y, rect.size.width,
+                             rect.size.height);
+            }
+            if (mode)
+                printf("ANSWER\t-[AVCaptureDevice defaultRectForExposurePointOfInterest:] %g %g\thost=[%s]"
+                       "\tport=[%s]\n", point.x, point.y, hostAnswer, portAnswer);
+            else
+                printf("ANSWER\t-[AVCaptureDevice defaultRectForFocusPointOfInterest:] %g %g\thost=[%s]"
+                       "\tport=[%s]\n", point.x, point.y, hostAnswer, portAnswer);
+        }
+    }
+    /* The three refusals in the order Apple's own raises them, then the accepted write. */
+    rect_write(hostCamera, portCamera, @selector(setFocusRectOfInterest:), @selector(focusRectOfInterest),
+               @selector(focusPointOfInterest), CGRectMake(0, 0, 0.25, 0.25),
+               "AVCaptureDevice.setFocusRectOfInterest: a quarter by a quarter, unlocked");
+    /* The lock, on both sides: the host's own class asks it before it does anything else (measured: an
+     * unlocked write raises NSGenericException even where the device does not support the rectangle), and the
+     * stand-in's substrate refuses its own point without it too. */
+    ((void (*)(id, SEL))objc_msgSend)(portCamera, @selector(lockForConfiguration));
+    /* The host's own lock is the release's public -lockForConfiguration:, which takes the NSError out
+     * parameter; the stand-in's is the harness's own -lockForConfiguration, which the stand-in's substrate
+     * setters ask (there is no 6.1.3 release in this process to ask). */
+    ((BOOL (*)(id, SEL, NSError **))objc_msgSend)(hostCamera, @selector(lockForConfiguration:), NULL);
+    rect_write(hostCamera, portCamera, @selector(setFocusRectOfInterest:), @selector(focusRectOfInterest),
+               @selector(focusPointOfInterest), CGRectMake(0, 0, 0.25, 0.25),
+               "AVCaptureDevice.setFocusRectOfInterest: a quarter by a quarter, locked");
+    rect_write(hostCamera, portCamera, @selector(setFocusRectOfInterest:), @selector(focusRectOfInterest),
+               @selector(focusPointOfInterest), CGRectMake(0.25, 0.25, -0.5, -0.5),
+               "AVCaptureDevice.setFocusRectOfInterest: a negative extent, locked");
+    rect_write(hostCamera, portCamera, @selector(setExposureRectOfInterest:), @selector(exposureRectOfInterest),
+               @selector(exposurePointOfInterest), CGRectMake(0.25, 0.25, 0.5, 0.5),
+               "AVCaptureDevice.setExposureRectOfInterest: half by half, locked");
+    /* THE RESET the header names: the point is set directly afterwards, and the rectangle answers the default
+     * one for the new point. The host's own class refuses the point (it supports neither), so its rectangle is
+     * unchanged - which is the same pairing the header states, from the other side. */
+    point_write_case(hostCamera, portCamera, @selector(setFocusPointOfInterest:), @selector(focusRectOfInterest),
+                     @selector(focusPointOfInterest), CGPointMake(0.1, 0.9),
+                     "AVCaptureDevice.setFocusPointOfInterest: after a rectangle, then the rectangle again");
+    /* And the unsupported branch, which the flag now takes away: the support row, the rectangle and one write. */
+    ((void (*)(Class, SEL, BOOL))objc_msgSend)(portStandinClass,
+                                               @selector(charon_host_setPointsOfInterestSupported:), NO);
+    rect_case(hostCamera, portCamera, @selector(focusRectOfInterest),
+              "AVCaptureDevice.focusRectOfInterest, points unsupported");
+    rect_write(hostCamera, portCamera, @selector(setFocusRectOfInterest:), @selector(focusRectOfInterest),
+               @selector(focusPointOfInterest), CGRectMake(0, 0, 1, 1),
+               "AVCaptureDevice.setFocusRectOfInterest: the whole field of view, points unsupported");
+}
+
 static void prefcam_phase(Class hostDevice, Class portDevice, const char *mode)
 {
     /* The host's own answer, with the authorization printed beside it - the measurement the coordinator asked
@@ -435,6 +607,11 @@ int main(int argc, char **argv)
            two cameras, on each side. And the history is cleared here rather than in the phase that writes it,
            because the member loop below asks +userPreferredCamera too and must not see a previous run's choice. */
         id portInput = [portInputClass new];
+        /* The stand-in's substrate for the 26.0 rectangles of interest, set before anything is asked of it: the
+         * member table reads the support row through it, and the rect phase sets the flag again for its own
+         * steps. The static's initial value is not what a run may rely on. */
+        ((void (*)(Class, SEL, BOOL))objc_msgSend)(portDevice,
+                                                   @selector(charon_host_setPointsOfInterestSupported:), YES);
         prefcam_setup(portDevice);
         /* Not in a launch of the persistence pair: clearing the key there would erase what the launch before
            this one left, which is the only thing that launch is there to leave. */
@@ -499,6 +676,9 @@ int main(int argc, char **argv)
          * does. Both are asked of both sides and compared by run.sh through expectations.tsv. */
         support_phase(hostInput, portInput);
         setter_phase(camera, portCamera, hostInput, portInput);
+
+        /* The 26.0 rectangles of interest, over the stand-in that carries the release's substrate. */
+        rect_phase(camera, portCamera, portDevice);
 
         /* The members whose answer is a refusal rather than a value, asked of both sides. */
         raise_of(camera, portCamera, @selector(performEffectForReaction:), @"ReactionHeart",
