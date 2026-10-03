@@ -85,6 +85,54 @@ typedef struct {
     CGFloat size;
 } CharonTextWalk;
 
+// A CONTROL BYTE in a show string is a NUL in the host's text, and the release's own decoder is what
+// hides that.  Measured on this Mac's own PDFKit, over byte-level fixtures whose single show string
+// carries one control byte between two letters:
+//
+//     bytes a \0 b \1 c \t d \n e \r f \37 g \177 h
+//     host   a \0 b \0 c \0 d \0 e \0 f \0 g \0 h      (15 characters, the length preserved)
+//
+// and over a string with no control byte in it, where the answer is the letters themselves.  So the
+// LENGTH is the byte count whatever the bytes are, and only the CHARACTER changes.  That is the whole of
+// what CGPDFStringCopyTextString cannot do: it maps a NUL byte to a space and a tab to a tab, so a
+// string carrying either arrives here indistinguishable from a string that really drew a space, and the
+// host answers one NUL and the port a space - measured, `alpha\0bravo` reads `alpha\0bravo` on the host
+// and `alpha bravo` here.
+//
+// So the characters come from the release's decoder, which knows the string's encoding, and the CONTROL
+// BYTES come from the release's byte reader beside it, and the two are zipped: a byte below 0x20 or the
+// 0x7F byte becomes U+0000 and every other byte keeps the character the decoder gave it.  A byte at
+// 0x80 or above is NOT a control byte and keeps the decoder's character - the host resolves those
+// through the FONT's encoding, which is the metrics engine's business and not this walk's; facts
+// Selection11.md records what each side answers there.
+static NSString *charonTextForOperand(CGPDFStringRef operand, CFStringRef characters)
+{
+    // CGPDFStringGetBytePtr answers `const unsigned char *`, and the length comes from
+    // CGPDFStringGetLength - which is the length of the string in BYTES for the strings this walk sees,
+    // because it is the length the release's own parser counted.
+    const unsigned char *bytes = CGPDFStringGetBytePtr(operand);
+    size_t length = CGPDFStringGetLength(operand);
+    NSUInteger decoded = CFStringGetLength(characters);
+    if (bytes == NULL || length == 0 || decoded == 0 || (size_t)decoded != length)
+        // No bytes to read, or the decoder's own length does not match the byte count - a UTF-16BE string
+        // with a byte-order mark is two bytes per character and is the case that cannot be zipped this
+        // way.  Then the decoder's characters stand on their own, which is what they are for.
+        return (__bridge NSString *)characters;
+    // FE FF is the byte-order mark of a UTF-16BE string (PDF 1.7 Table 3.5): its bytes are not character
+    // codes at all, so the zip below would read half a character as a control byte.
+    if (length >= 2 && (unsigned char)bytes[0] == 0xFE && (unsigned char)bytes[1] == 0xFF)
+        return (__bridge NSString *)characters;
+    NSMutableString *answer = [NSMutableString stringWithCapacity:decoded];
+    for (NSUInteger i = 0; i < decoded; i++) {
+        unsigned char byte = (unsigned char)bytes[i];
+        if (byte < 0x20 || byte == 0x7F)
+            [answer appendFormat:@"%C", (unichar)0];
+        else
+            [answer appendFormat:@"%C", (unichar)CFStringGetCharacterAtIndex(characters, i)];
+    }
+    return answer;
+}
+
 // The show operators, as C functions.  Each pops ITS OWN operands: the callback signature carries none.
 static void charonAppendOperand(CGPDFScannerRef scanner, CharonTextWalk *walk, CGPDFStringRef operand)
 {
@@ -93,8 +141,9 @@ static void charonAppendOperand(CGPDFScannerRef scanner, CharonTextWalk *walk, C
     CFStringRef characters = CGPDFStringCopyTextString(operand);
     if (characters == NULL)
         return;
-    [walk->text appendString:(__bridge NSString *)characters];
-    collectRun(walk->runs, characters, walk->x, walk->y);
+    NSString *text = charonTextForOperand(operand, characters);
+    [walk->text appendString:text];
+    collectRun(walk->runs, (__bridge CFStringRef)text, walk->x, walk->y);
     CFRelease(characters);
 }
 
@@ -199,6 +248,56 @@ static void collectRun(NSMutableArray *runs, CFStringRef text, CGFloat x, CGFloa
 //
 // and cgfixture-lines.pdf, three runs at y = 360, 340, 320, answers "shared one\nshared two\nthird line"
 // - 32 characters, against the 30 this port answered before the fixture existed.
+//
+// WHITESPACE, which is the fourth thing a line does and the one this walk was missing.  Measured on the
+// host over five fixtures a conforming writer writes, and every one of them is a LINE and not a run:
+//
+//   cgfixture-gap.pdf       one line drawn "alpha  bravo"          answers "alpha bravo"   (11)
+//   cgfixture-lead.pdf      one line drawn " alpha bravo "         answers "alpha bravo"   (10)
+//   cgfixture-tail.pdf      one line drawn "alpha ", the next "bravo"  answers "alpha\nbravo" (11)
+//   cgfixture-tailpair.pdf  two runs at ONE y, "alpha " then "beta"    answers "alpha beta"  (10)
+//   bytes-space.pdf         one line drawn "a  b   c"             answers "a b c"         (5)
+//
+// So a line is TRIMMED at both ends and the runs of spaces INSIDE it are collapsed to one, and the two
+// halves are about the LINE: the space at the end of "alpha " survives in cgfixture-tailpair, where the
+// next run is on the same line, and is gone in cgfixture-tail, where the next run is on another line.  A
+// run is therefore not trimmed where it ends - it is trimmed where its LINE ends.  Only U+0020 is a
+// space here: a control byte in a run is a NUL (see charonTextForOperand) and is not collapsed.
+static NSString *charonTrimLine(NSString *line)
+{
+    NSUInteger length = line.length;
+    NSUInteger start = 0;
+    while (start < length && [line characterAtIndex:start] == ' ')
+        start++;
+    NSUInteger end = length;
+    while (end > start && [line characterAtIndex:end - 1] == ' ')
+        end--;
+    if (start == 0 && end == length)
+        return line;
+    return [line substringWithRange:NSMakeRange(start, end - start)];
+}
+
+static NSString *charonCollapseSpaces(NSString *line)
+{
+    NSUInteger length = line.length;
+    if (length == 0)
+        return line;
+    NSMutableString *answer = [NSMutableString stringWithCapacity:length];
+    BOOL afterSpace = NO;
+    for (NSUInteger i = 0; i < length; i++) {
+        unichar c = [line characterAtIndex:i];
+        if (c == ' ') {
+            if (!afterSpace)
+                [answer appendFormat:@"%C", c];
+            afterSpace = YES;
+            continue;
+        }
+        afterSpace = NO;
+        [answer appendFormat:@"%C", c];
+    }
+    return answer;
+}
+
 static NSString *charonJoinRuns(NSArray *runs)
 {
     if (runs.count == 0)
@@ -216,17 +315,36 @@ static NSString *charonJoinRuns(NSArray *runs)
         return NSOrderedSame;                // a tie keeps drawing order
     }];
     NSMutableString *answer = [NSMutableString string];
+    NSMutableString *line = [NSMutableString string];
     CGFloat previousY = 0;
     BOOL first = YES;
+    NSUInteger closedLines = 0;
+    // one LINE at a time, and a line is closed when the y changes: its own runs are joined with nothing,
+    // then the line is collapsed and trimmed, and only then does the newline go in.  Doing it in that
+    // order is what makes the space at the end of "alpha " survive on a shared line and not across two.
+    // The newline goes BETWEEN lines and never before the first: a one-line page answers its line and
+    // not a newline and then its line.
     for (NSValue *boxed in ordered) {
         CharonTextRun *run = (CharonTextRun *)[boxed pointerValue];
         if (run == NULL || run->text == NULL)
             continue;
-        if (!first && run->y != previousY)
-            [answer appendString:@"\n"];
-        [answer appendString:(__bridge NSString *)run->text];
+        if (!first && run->y != previousY) {
+            NSString *closed = charonTrimLine(charonCollapseSpaces(line));
+            if (closedLines > 0)
+                [answer appendString:@"\n"];
+            [answer appendString:closed];
+            closedLines++;
+            line = [NSMutableString string];
+        }
+        [line appendString:(__bridge NSString *)run->text];
         previousY = run->y;
         first = NO;
+    }
+    if (!first) {
+        NSString *closed = charonTrimLine(charonCollapseSpaces(line));
+        if (closedLines > 0)
+            [answer appendString:@"\n"];
+        [answer appendString:closed];
     }
     return answer;
 }
