@@ -444,6 +444,28 @@ API_AVAILABLE(ios(26.0))
 @property (nonatomic) BOOL supportColorAttachmentMapping;
 @end
 
+// ONE PROTOCOL, FORWARD-DECLARED ONLY: MTLLogState, which MTL4CommandBufferOptions's one member is
+// spelled in and which arrived with the SDK of 26. Nothing in this header reads its members - the
+// options only hold an id<MTLLogState> - so a forward declaration is the whole of it, and it belongs
+// here rather than in CharonMetalProtocols.h because that file is written by
+// tools/transcribe-protocols.py and a protocol written into it by hand is one a regeneration collides
+// with.
+@protocol MTLLogState;
+
+// THE TWO DESCRIPTORS AT THE TOP OF THE METAL 4 COMMAND CHAIN. The SDK of 16.4 declares neither, and
+// both are plain data holders: a queue's label and the dispatch queue its feedback goes on, and a
+// command buffer's log state.
+API_AVAILABLE(ios(26.0))
+@interface MTL4CommandQueueDescriptor : NSObject <NSCopying>
+@property (nullable, copy, nonatomic) NSString *label;
+@property (nullable, nonatomic, assign) dispatch_queue_t feedbackQueue;
+@end
+
+API_AVAILABLE(ios(26.0))
+@interface MTL4CommandBufferOptions : NSObject <NSCopying>
+@property (readwrite, nonatomic, nullable, retain) id<MTLLogState> logState;
+@end
+
 #endif
 
 NS_ASSUME_NONNULL_END
