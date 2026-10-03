@@ -683,6 +683,23 @@ EXTRA_METHODS = {
         "    return [super init];",
         "}",
     ],
+    # The second class of the same kind, and the reason the first entry is here at all rather than a
+    # rule in the loop above. INGetRideStatusIntent.h:17 reads `- (instancetype)init
+    # NS_DESIGNATED_INITIALIZER;` - declared, not marked unavailable - so its row was written as
+    # absent with "the header marks the initialiser unavailable, so a port cannot call it", which is
+    # false of this header. Its superclass is INIntent, which declares no -init of its own, so the
+    # answer is the same chain and the body is the same body.
+    ("INGetRideStatusIntent", "init"): [
+        "- (instancetype)init",
+        "{",
+        "    // INGetRideStatusIntent.h:17 declares this the class's designated initialiser and marks",
+        "    // nothing unavailable, so it is part of the class's API and not a marker on the way to",
+        "    // the superclass's. The class declares no property, so the whole of it is INIntent's",
+        "    // own -init, and INIntent declares none, so this reaches NSObject's - which nothing in",
+        "    // the chain marks unavailable, so the selector can be spelled here and no IMP is needed.",
+        "    return [super init];",
+        "}",
+    ],
     # INMediaDestination's two properties are readonly and its -init is NS_UNAVAILABLE, so the two
     # class methods below are the only way to make one and they fill these.
     "INMediaDestination": [

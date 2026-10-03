@@ -35,7 +35,7 @@
 // what keeps this file honest: both this file and expected.txt are written from here, so comparing
 // them with each other would only show that they agree.
 //
-// 111 classes, 6 of which synthesize no property: INIntentDonationMetadata, INListCarsIntent, INRelevanceProvider, INRelevantShortcutStore, INUserContext, INVoiceShortcutCenter
+// 112 classes, 7 of which synthesize no property: INGetRideStatusIntent, INIntentDonationMetadata, INListCarsIntent, INRelevanceProvider, INRelevantShortcutStore, INUserContext, INVoiceShortcutCenter
 
     { "INActivateCarSignalIntentResponse", { "code", "signals", NULL } },
     { "INAddMediaIntentResponse", { "code", NULL } },
@@ -73,6 +73,7 @@
     { "INGetCarLockStatusIntentResponse", { "code", "locked", NULL } },
     { "INGetCarPowerLevelStatusIntentResponse", { "activeConnector", "carIdentifier", "chargePercentRemaining", "charging", "chargingFormulaArguments", "code", "consumptionFormulaArguments", "currentBatteryCapacity", "dateOfLastStateUpdate", "distanceRemaining", "distanceRemainingElectric", "distanceRemainingFuel", "fuelPercentRemaining", "maximumBatteryCapacity", "maximumDistance", "maximumDistanceElectric", "maximumDistanceFuel", "minimumBatteryCapacity", "minutesToFull", NULL } },
     { "INGetReservationDetailsIntentResponse", { "code", "reservations", NULL } },
+    { "INGetRideStatusIntent", { NULL } },
     { "INGetRideStatusIntentResponse", { "code", "rideStatus", NULL } },
     { "INGetVisualCodeIntentResponse", { "code", "visualCodeImage", NULL } },
     { "INHangUpCallIntentResponse", { "code", NULL } },

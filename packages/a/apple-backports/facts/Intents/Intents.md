@@ -713,14 +713,14 @@ table and compares it against nothing: the other ninety were "the same rule appl
 header, which is a claim and not a measurement", and the `source` of their 73 registry rows said so
 in as many words — that the per-class harness "is OWED, and is not in the tree". That claim was
 false of the tree and is now discharged: `sh tests/backports/host/intents-init/run.sh` passes with
-111 golden lines and 0 differing, and the plant is red.
+112 golden lines and 0 differing, and the plant is red.
 
 `tests/backports/host/intents-init/` is the harness that measures all of them, and it is built to be
 checked rather than read. Three runs, each worthless if the one before it did not pass:
 
     $ sh tests/backports/host/intents-init/run.sh
     host   macOS 27.0 build 26A428, arm64
-    guard  111 implemented -init rows in registry/Intents, 111 in init-classes.inc, 111 in expected.txt
+    guard  112 implemented -init rows in registry/Intents, 112 in init-classes.inc, 112 in expected.txt
 
     provenance: the control, and what a zero looks like when it is real
     control, 4 classes a blind reader would miss or invent:
@@ -734,12 +734,12 @@ checked rather than read. Three runs, each worthless if the one before it did no
       -[INCar setMaximumPower:forChargingConnectorType:]     -[INCar setMaximumPower:...]  Intents
       -[INListCarsIntent init]                               -[INListCarsIntent init]      Intents
     provenance: ->  PASS every control found, so an absent class is the host's own
-    intents-init: 111 golden lines, 0 differ -> PASS
-    # intents-init: 111 classes, 108 answered, 0 absent, 0 no IMP, 1 raised, 2 nil;
-    #                -init own 63, inherited 48; 332 property reads, 5 classes with a non-nil property
-    # intents-init: PLANT=one-wrong on INPaymentRecord
+    intents-init: 112 golden lines, 0 differ -> PASS
+    # intents-init: 112 classes, 109 answered, 0 absent, 0 no IMP, 1 raised, 2 nil;
+    #                -init own 64, inherited 48; 332 property reads, 5 classes with a non-nil property
+    # intents-init: PLANT=one-wrong on INMediaSearch
     intents-init: PLANT=one-wrong forced one line to disagree
-    intents-init: 111 golden lines, 1 differ -> FAIL
+    intents-init: 112 golden lines, 1 differ -> FAIL
     intents-init: the plant is red, as it must be
     intents-init: ->  PASS on macOS 27.0 arm64
 
@@ -760,12 +760,12 @@ population — `-[INObjectCollection init]`'s carries
 
 What that population is, and it is not what the twenty-one showed:
 
-- **`-init` is declared by the class for 63 of the 111, and inherited from NSObject for 48.** The 63
+- **`-init` is declared by the class for 64 of the 112, and inherited from NSObject for 48.** The 64
   are the rows whose `implemented` status rests on a body that is *not* the answer the host gives,
   because the port's generated body always forwards to the superclass's IMP. That difference was
   invisible in the header and invisible in the registry, and it is the reason a row now names its own
   golden line instead of a shape.
-- **108 classes answer an object, 2 answer nil, 1 raises.** `INRelevanceProvider` **raises**, with the
+- **109 classes answer an object, 2 answer nil, 1 raises.** `INRelevanceProvider` **raises**, with the
   framework's own reason — *"INRelevanceProvider cannot be initialized directly with -init, initialize
   a subclass instead"* — which is `NS_UNAVAILABLE` in the header and a refusal in the body, in the
   same breath. The port answers with an object instead; that is the row's `effect` and a deliberate
@@ -781,7 +781,7 @@ What that population is, and it is not what the twenty-one showed:
   the 110 synthesize no property at all and are measured on the IMP and the call alone:
   `INIntentDonationMetadata`, `INRelevanceProvider`, `INRelevantShortcutStore`, `INUserContext` and
   `INVoiceShortcutCenter`.
-- **332 property reads over 106 classes**, which is the harness's own count of what it read off a
+- **332 property reads over 107 classes**, which is the harness's own count of what it read off a
   fresh object, and it fails if it and the `@synthesize` lines in the port's own objects disagree — so
   a row added to the registry cannot pass unmeasured. A row added to neither is invisible.
 
@@ -799,6 +799,27 @@ file was regenerated, so **110 of the 111 rows were being measured** and the gua
 110. It is the eleventh class now, with an empty property set and a golden line of
 `INListCarsIntent	ownobject	0	0` — the class declares its own `-init`, as
 `INListCarsIntent.h:17`'s `NS_DESIGNATED_INITIALIZER` says it does.
+
+`INGetRideStatusIntent` was the twelfth, and it is a false row rather than a missing measurement:
+its `-init` row read `absent` with the reason *"the header marks the initialiser unavailable, so a
+port cannot call it"*, and `INGetRideStatusIntent.h:17` reads
+`- (instancetype)init NS_DESIGNATED_INITIALIZER;` — declared, not marked. The generator has no case
+for a class whose own header declares a bare `-init`, so the member fell through to the group's
+reason and the reason was false. The body is now in the generator's `EXTRA_METHODS` beside
+`INListCarsIntent`'s, which is the same body for the same reason: the class declares no property, its
+superclass `INIntent` declares no `-init` of its own, and the chain ends at `NSObject`'s, which
+nothing marks unavailable, so `[super init]` is the whole of it and the selector can be spelled here.
+Measured on the host through this same harness: `INGetRideStatusIntent	ownobject	0	0`.
+
+**The class of that defect is still open, and it is one row wide today.** It was found by reading
+every `absent` bare-`-init` row in the five registry files against the SDK header of the class it
+names: six rows, one false. A general rule in `gen-intents.py` — a class whose OWN header declares
+`-init` and does not mark it unavailable gets a body — would make the false reason unreachable
+rather than absent, and would make both `EXTRA_METHODS` entries unnecessary. It is not landed here
+because changing what the generator emits means re-running `tools/intents/generate.sh`, which
+rewrites all six registry files and every `IN*.m`: the one operation the tree's trap forbids doing
+by hand, and one that wants the full gate beside it. That is a change of the generator's shape,
+not of a row, and it is written down here so it is not rediscovered as a new bug.
 
 The one thing the twenty-one measured that this one does not is the **zero case of an enumeration
 property**: `INMediaDestination`'s `mediaDestinationType` reads `NSNumber 0` rather than nil, and the

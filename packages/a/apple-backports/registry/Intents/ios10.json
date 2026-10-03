@@ -3128,10 +3128,11 @@
       "api": "-[INGetRideStatusIntent init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INGetRideStatusIntent, which answers it with a body written by hand in the generator's EXTRA_METHODS",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and for the -init, which the header marks unavailable on some of these classes and declares on others, the host's own answer, measured for every class this framework carries a -init row for by tests/backports/host/intents-init/run.sh: it reads class_getInstanceMethod(Cls, @selector(init)) and calls [[Cls alloc] init] through that IMP, because a compile-time call to the selector is unavailable and could not be the measurement; it looks up NSObject, NSString, INCar and INListCarsIntent first and fails if any is missing, and prints the forwarding trampoline beside three real IMPs, so a zero it reports is the host's answer and not the reader's; it compares every line against expected.txt and then re-runs itself with PLANT=one-wrong, which must FAIL. The IMP is how the answer was read, and is how the emitted body reaches the superclass, because the marker is what forbids naming the selector at compile time. Its golden line for this class is INGetRideStatusIntent\\townobject\\t0\\t0\\t, which says the class DECLARES -init and [[INGetRideStatusIntent alloc] init] through that IMP answered an object, so respondsToSelector:init is 1 by the same lookup, and the 0 properties the port synthesizes for this class were read off that fresh object: none of them read non-nil. The harness's own counts for the whole population, and the argument behind every figure here, are in facts/Intents/Intents.md"
     },
     {
       "api": "-[INGetRideStatusIntentResponse initWithCode:userActivity:]",

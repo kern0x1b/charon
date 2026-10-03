@@ -68,6 +68,7 @@ INFocusStatus	inheritobject	1	0
 INGetCarLockStatusIntentResponse	ownobject	2	0	
 INGetCarPowerLevelStatusIntentResponse	ownobject	19	0	
 INGetReservationDetailsIntentResponse	ownobject	2	0	
+INGetRideStatusIntent	ownobject	0	0	
 INGetRideStatusIntentResponse	ownobject	2	0	
 INGetVisualCodeIntentResponse	ownobject	2	0	
 INHangUpCallIntentResponse	ownobject	1	0	

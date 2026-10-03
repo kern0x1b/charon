@@ -1268,6 +1268,16 @@
 
 @implementation INGetRideStatusIntent
 
+- (instancetype)init
+{
+    // INGetRideStatusIntent.h:17 declares this the class's designated initialiser and marks
+    // nothing unavailable, so it is part of the class's API and not a marker on the way to
+    // the superclass's. The class declares no property, so the whole of it is INIntent's
+    // own -init, and INIntent declares none, so this reaches NSObject's - which nothing in
+    // the chain marks unavailable, so the selector can be spelled here and no IMP is needed.
+    return [super init];
+}
+
 + (BOOL)supportsSecureCoding
 {
     return YES;
