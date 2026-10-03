@@ -1084,7 +1084,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INAddTasksTargetTaskListResolutionResult, which answers it with a body written by hand in the generator's EXTRA_METHODS",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and the behaviour, from the host's own class rather than from the header: tests/backports/host/intents/factory-rows.m answers what the superclass's one-argument factory answers - resolutionResultCode NeedsConfirmation, the task list as the item to confirm, nothing else - and the reason is in no property either class declares, unsupportedReason staying 0, so it is kept where only this port can read it, which is the same answer +unsupportedForReason: already gives. For the absence at the band ends: no release this package is gated for carries any Intents class at all (tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0 - 0 of 11378 and of 7187 on the two armv7 rungs, control 1039 IN names on 11.0 and 12.0)"
     },
     {
       "api": "+[INAddTasksTemporalEventTriggerResolutionResult unsupportedForReason:]",
@@ -1224,7 +1224,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INFile, which answers it with a body written by hand in the generator's EXTRA_METHODS",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and the behaviour, from the host's own class rather than from the header: tests/backports/host/intents/factory-rows.m, run by tests/backports/host/intents/run-rows.sh, answers the bytes it was given, filename and typeIdentifier as given, fileURL nil, removedOnCompletion false, and a nil filename stays nil. For the absence at the band ends: no release this package is gated for carries any Intents class at all (tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0 - 0 of 11378 and of 7187 on the two armv7 rungs, control 1039 IN names on 11.0 and 12.0), so the port supplies the class itself"
     },
     {
       "api": "+[INFile fileWithFileURL:filename:typeIdentifier:]",
@@ -1234,7 +1234,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INFile, which answers it with a body written by hand in the generator's EXTRA_METHODS",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and the behaviour, from the host's own class rather than from the header: tests/backports/host/intents/factory-rows.m answers fileURL the URL it was given, filename the URL's last path component when the name is nil, typeIdentifier as given, removedOnCompletion false, and -data the file's own bytes - /etc/hosts came back as its 213 bytes and a path that does not exist as 0 - which is the header's own sentence that a file created with a URL has its contents memory mapped on access. For the absence at the band ends: no release this package is gated for carries any Intents class at all (tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0 - 0 of 11378 and of 7187 on the two armv7 rungs, control 1039 IN names on 11.0 and 12.0)"
     },
     {
       "api": "+[INFileResolutionResult confirmationRequiredWithFileToConfirm:]",
@@ -1354,7 +1354,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INMediaDestination, which answers it with a body written by hand in the generator's EXTRA_METHODS",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and the behaviour, from the host's own class rather than from the header: tests/backports/host/intents/factory-rows.m, run by tests/backports/host/intents/run-rows.sh, reads this factory through its real IMP because all four of these classes are API_UNAVAILABLE(macos) in the SDK and a compile-time call cannot be made; it answers mediaDestinationType 1 and no playlist name, and a second call is isEqual to the first. For the absence at the band ends: no release this package is gated for carries any Intents class at all, read with CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0 - the armv7 caches of 6.1.3 and 4.3 hold 0 of the 11378 and 7187 classes under the IN prefix, in a census whose own control found 1039 IN names on 11.0 and 12.0 (239 and 411 of them), so a zero is the release's and not the reader's. The framework arrived with iOS 10 and the armv7 ladder ends at 10.3.4, so the port has to supply the class itself"
     },
     {
       "api": "+[INMediaDestination playlistDestinationWithName:]",
@@ -1364,7 +1364,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INMediaDestination, which answers it with a body written by hand in the generator's EXTRA_METHODS",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and the behaviour, from the host's own class rather than from the header: tests/backports/host/intents/factory-rows.m answers mediaDestinationType 2 and the name it was given, and nil for a nil name, which is the header's own nullable. Read through the real IMP, with the four control classes and the forwarding trampoline beside it; the class is API_UNAVAILABLE(macos) in the SDK, so a compile-time call cannot be made. For the absence at the band ends: no release this package is gated for carries any Intents class at all (tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0 - 0 of 11378 and of 7187 on the two armv7 rungs, control 1039 IN names on 11.0 and 12.0), so the port supplies the class itself"
     },
     {
       "api": "+[INMediaDestinationResolutionResult confirmationRequiredWithMediaDestinationToConfirm:]",
@@ -2974,7 +2974,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INUserContext, which answers it with a body written by hand in the generator's EXTRA_METHODS",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and the behaviour, from the host's own class rather than from the header: tests/backports/host/intents/factory-rows.m reads the class present with superclass NSObject and 0 properties of its own, its seven declared methods are initWithCoder:, .cxx_destruct, becomeCurrent, encodeWithCoder:, _init, _becomeCurrentNoHelper and _setStore: with no -init among them, and -becomeCurrent returns with no exception. The class declares no reader of its own, so a body that remembered the object would answer that the context is current and nothing the SDK declares could ever see that it is; this is the same answer INImage's +systemImageNamed: gives, for the same reason - there is nothing on this release that could be asked for what the method names. For the absence at the band ends: no release this package is gated for carries any Intents class at all (tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0 - 0 of 11378 and of 7187 on the two armv7 rungs, control 1039 IN names on 11.0 and 12.0)"
     },
     {
       "api": "-[INUserContext init]",

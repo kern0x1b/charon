@@ -828,6 +828,63 @@ were non-nil and which, not what an enumeration read, so the 21 rows of `registr
 that quote the zero case keep citing `init-rows.m` for it. Two harnesses, one fact each — that is the
 debt, and it is written down here rather than settled by deleting whichever row is inconvenient.
 
+## The six hand-written bodies of this framework, and the census behind them
+
+Six rows of `registry/Intents/ios16.json` are `implemented` with a body written by hand in
+`tools/intents/gen-intents.py`'s `EXTRA_METHODS` rather than derived from the header: the two
+`INMediaDestination` factories, the two `INFile` factories,
+`+[INAddTasksTargetTaskListResolutionResult confirmationRequiredWithTaskListToConfirm:forReason:]`
+and `-[INUserContext becomeCurrent]`. A body written by hand is a decision, so each of their rows
+says where the decision came from instead of naming only the header — and what it names is the same
+two things for all six.
+
+**Neither band end carries any Intents class at all**, which is why the port has to supply these
+classes itself and why a caller that reaches one of these methods gets the class and not a release's
+own answer:
+
+    $ CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0
+
+    6.1.3   images 524,  classes 11378,  classes IN* 0,  protocols IN* 0
+    4.3     images 354,  classes 7187,   classes IN* 0,  protocols IN* 0
+    11.0    images 1258, classes 52768,  classes IN* 239, protocols IN* 171
+    12.0    images 1368, classes 63192,  classes IN* 411, protocols IN* 218
+    control: 1039 name(s) beginning IN found in this run, so a zero on another rung is the
+              release's and not the reader's
+
+The framework arrived with iOS 10 and the `armv7` ladder ends at 10.3.4, so no release this package
+is gated for has ever carried it. On a release that does carry it the band's own objects are dropped
+and the framework's class answers, which is what the rows' `effect` says.
+
+**And the host answers all six anyway**, which is the measurement each row's `source` quotes. All
+four classes are `API_UNAVAILABLE(macos)` in the SDK, so
+`tests/backports/host/intents/factory-rows.m` reaches every method by selector through
+`objc_msgSend` and reads every value through KVC, and `tests/backports/host/intents/run-rows.sh` runs
+it with its controls. Two findings from that harness are worth keeping, because both are ways of
+measuring nothing:
+
+- a program that read the four classes with `NSClassFromString` **without linking
+  `-framework Intents`** answers `ABSENT` for all four, and is wrong about every one;
+- a program that called them through a raw cast of `class_getMethodImplementation` to a C function pointer dies with
+  `EXC_ARM_DA_ALIGN` at the entry point — the crash report's symbol is
+  `_OBJC_$_CLASS_METHODS_INFile(Readable|INEnumerable|INJSONSerialization)`, so this host's Intents
+  compiles its Objective-C entry points as SVE and pointer-authenticated thunks that a C function
+  pointer reaches on the wrong convention.
+
+| row | what the host answers |
+|---|---|
+| `+[INMediaDestination libraryDestination]` | `mediaDestinationType` 1, `playlistName` nil, a second call `isEqual` the first |
+| `+[INMediaDestination playlistDestinationWithName:]` | `mediaDestinationType` 2 and the name given; nil for a nil name, which is the header's own nullable |
+| `+[INFile fileWithData:filename:typeIdentifier:]` | the bytes given, `filename` and `typeIdentifier` as given, `fileURL` nil, `removedOnCompletion` false, a nil `filename` stays nil, and `data` hands back a copy and not the same `NSData` |
+| `+[INFile fileWithFileURL:filename:typeIdentifier:]` | `fileURL` the URL given, `filename` the URL's last path component when the name is nil, `typeIdentifier` as given, and `data` the file's own bytes: `/etc/hosts` came back as its 213 bytes and a path that does not exist as 0 |
+| `+[INAddTasksTargetTaskListResolutionResult confirmationRequiredWithTaskListToConfirm:forReason:]` | what the superclass's one-argument factory answers — `resolutionResultCode = NeedsConfirmation`, the task list as the item to confirm, nothing else — and the reason in no property either class declares, `unsupportedReason` staying 0 |
+| `-[INUserContext becomeCurrent]` | returns with no exception; the class declares **no** property and no `-init` of its own, and its seven own methods are `initWithCoder:`, `.cxx_destruct`, `becomeCurrent`, `encodeWithCoder:`, `_init`, `_becomeCurrentNoHelper` and `_setStore:` — it hands the context to a store, and the store is the assistant's user-context store |
+
+The last one gets a body that does nothing observable, and that is the decision rather than a gap:
+the class declares no reader, so a body that remembered the object would answer that the context is
+current and nothing the SDK declares could ever see that it is. This is the same answer
+`INImage`'s `+systemImageNamed:` already gives, for the same reason — there is nothing on this
+release that could be asked for the thing the method names.
+
 ## What is NOT proven here, and is owed
 
 - **The ninety are measured now; the twenty-one's enumeration zero case is measured twice.** 74 rows'

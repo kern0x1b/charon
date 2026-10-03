@@ -301,6 +301,96 @@ def hand_written_bodies():
     return set(generator.EXTRA_METHODS)
 
 
+# A body written by hand in EXTRA_METHODS is a decision, not a derivation, and SOURCE names only the
+# header and the release caches - which is where the CONTRACT came from and not where the answer did.
+# A row whose behaviour was measured on the host says so, and says what it answered, so a reader can
+# run the harness and see the same numbers. Keyed the way EXTRA_METHODS is keyed.
+HAND_WRITTEN_SOURCE = {
+    ("INMediaDestination", "libraryDestination"):
+        SOURCE + (
+            "; and the behaviour, from the host's own class rather than from the header: "
+            "tests/backports/host/intents/factory-rows.m, run by "
+            "tests/backports/host/intents/run-rows.sh, reads this factory through its real IMP "
+            "because all four of these classes are API_UNAVAILABLE(macos) in the SDK and a "
+            "compile-time call cannot be made; it answers mediaDestinationType 1 and no playlist "
+            "name, and a second call is isEqual to the first. For the absence at the band ends: no "
+            "release this package is gated for carries any Intents class at all, read with "
+            "CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0 - the "
+            "armv7 caches of 6.1.3 and 4.3 hold 0 of the 11378 and 7187 classes under the IN prefix, "
+            "in a census whose own control found 1039 IN names on 11.0 and 12.0 (239 and 411 of "
+            "them), so a zero is the release's and not the reader's. The framework arrived with "
+            "iOS 10 and the armv7 ladder ends at 10.3.4, so the port has to supply the class itself"),
+    ("INMediaDestination", "playlistDestinationWithName:"):
+        SOURCE + (
+            "; and the behaviour, from the host's own class rather than from the header: "
+            "tests/backports/host/intents/factory-rows.m answers mediaDestinationType 2 and the "
+            "name it was given, and nil for a nil name, which is the header's own nullable. Read "
+            "through the real IMP, with the four control classes and the forwarding trampoline "
+            "beside it; the class is API_UNAVAILABLE(macos) in the SDK, so a compile-time call "
+            "cannot be made. For the absence at the band ends: no release this package is gated "
+            "for carries any Intents class at all (tools/corpus/cache-census.lua IN 6.1.3 4.3 "
+            "11.0 12.0 - 0 of 11378 and of 7187 on the two armv7 rungs, control 1039 IN names on "
+            "11.0 and 12.0), so the port supplies the class itself"),
+    ("INFile", "fileWithData:filename:typeIdentifier:"):
+        SOURCE + (
+            "; and the behaviour, from the host's own class rather than from the header: "
+            "tests/backports/host/intents/factory-rows.m, run by "
+            "tests/backports/host/intents/run-rows.sh, answers the bytes it was given, filename "
+            "and typeIdentifier as given, fileURL nil, removedOnCompletion false, and a nil "
+            "filename stays nil. For the absence at the band ends: no release this package is "
+            "gated for carries any Intents class at all (tools/corpus/cache-census.lua IN 6.1.3 "
+            "4.3 11.0 12.0 - 0 of 11378 and of 7187 on the two armv7 rungs, control 1039 IN names "
+            "on 11.0 and 12.0), so the port supplies the class itself"),
+    ("INFile", "fileWithFileURL:filename:typeIdentifier:"):
+        SOURCE + (
+            "; and the behaviour, from the host's own class rather than from the header: "
+            "tests/backports/host/intents/factory-rows.m answers fileURL the URL it was given, "
+            "filename the URL's last path component when the name is nil, typeIdentifier as given, "
+            "removedOnCompletion false, and -data the file's own bytes - /etc/hosts came back as "
+            "its 213 bytes and a path that does not exist as 0 - which is the header's own "
+            "sentence that a file created with a URL has its contents memory mapped on access. For "
+            "the absence at the band ends: no release this package is gated for carries any "
+            "Intents class at all (tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0 - 0 of "
+            "11378 and of 7187 on the two armv7 rungs, control 1039 IN names on 11.0 and 12.0)"),
+    ("INAddTasksTargetTaskListResolutionResult",
+     "confirmationRequiredWithTaskListToConfirm:forReason:"):
+        SOURCE + (
+            "; and the behaviour, from the host's own class rather than from the header: "
+            "tests/backports/host/intents/factory-rows.m answers what the superclass's "
+            "one-argument factory answers - resolutionResultCode NeedsConfirmation, the task list "
+            "as the item to confirm, nothing else - and the reason is in no property either class "
+            "declares, unsupportedReason staying 0, so it is kept where only this port can read "
+            "it, which is the same answer +unsupportedForReason: already gives. For the absence "
+            "at the band ends: no release this package is gated for carries any Intents class at "
+            "all (tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0 - 0 of 11378 and of 7187 "
+            "on the two armv7 rungs, control 1039 IN names on 11.0 and 12.0)"),
+    ("INUserContext", "becomeCurrent"):
+        SOURCE + (
+            "; and the behaviour, from the host's own class rather than from the header: "
+            "tests/backports/host/intents/factory-rows.m reads the class present with superclass "
+            "NSObject and 0 properties of its own, its seven declared methods are initWithCoder:, "
+            ".cxx_destruct, becomeCurrent, encodeWithCoder:, _init, _becomeCurrentNoHelper and "
+            "_setStore: with no -init among them, and -becomeCurrent returns with no exception. "
+            "The class declares no reader of its own, so a body that remembered the object would "
+            "answer that the context is current and nothing the SDK declares could ever see that "
+            "it is; this is the same answer INImage's +systemImageNamed: gives, for the same "
+            "reason - there is nothing on this release that could be asked for what the method "
+            "names. For the absence at the band ends: no release this package is gated for carries "
+            "any Intents class at all (tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0 - 0 of "
+            "11378 and of 7187 on the two armv7 rungs, control 1039 IN names on 11.0 and 12.0)"),
+}
+
+
+def hand_written_source(owner, member):
+    """The source of a row whose body EXTRA_METHODS writes, or None when it was not measured.
+
+    Keyed the way EXTRA_METHODS is keyed, and the key is the same (owner, member) the hand-written
+    test below builds, so a body and the measurement quoted for it cannot drift apart. None falls
+    back to SOURCE, which is what every hand-written body whose behaviour was not measured gets.
+    """
+    return HAND_WRITTEN_SOURCE.get((owner, member))
+
+
 def member_name(api):
     """The name the generator records a cause under, for a row of either shape.
 
@@ -661,7 +751,8 @@ def main():
                     entries.append(implemented(api, "method", intro, owner, options.facts,
                                                where="%s's own @implementation answers it"
                                                      % owner if owner in hand_written else None,
-                                               source=init_source(owner) if marked_init else None,
+                                               source=init_source(owner) if marked_init
+                                               else hand_written_source(owner, member_name(api)),
                                                hand=(owner, member_name(api)) in HAND_WRITTEN_BODIES))
                     continue
                 if api.endswith("] init") or api == "-[%s init]" % owner:
