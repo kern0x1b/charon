@@ -6,7 +6,7 @@
 // spaces inside a line collapse to one, a line ends with the break that joins it to the next) are the
 // walk's and are written down in facts/PDFKit/Document11.md.
 
-@implementation PDFTextRun
+@implementation CharonPDFTextRun
 @synthesize text = _text;
 @synthesize offset = _offset;
 @synthesize x = _x;
@@ -15,7 +15,7 @@
 @synthesize fontName = _fontName;
 @end
 
-@implementation PDFPageText {
+@implementation CharonPDFPageText {
     // The offsets of the line-break characters in _string, ascending.  Computed once, because a
     // selection asks for a line range per line and a page with many lines would otherwise walk them again.
     NSUInteger *_breaks;
@@ -68,14 +68,14 @@ static NSString *charonCloseLine(NSString *line, NSUInteger **mapping, NSUIntege
     return closed;
 }
 
-+ (instancetype)layoutWithRuns:(NSArray<PDFTextRun *> *)drawnRuns
++ (instancetype)layoutWithRuns:(NSArray<CharonPDFTextRun *> *)drawnRuns
 {
     if (drawnRuns == nil)
         return nil;
-    PDFPageText *layout = [[PDFPageText alloc] init];
-    NSArray<PDFTextRun *> *ordered = [drawnRuns sortedArrayWithOptions:NSSortStable
+    CharonPDFPageText *layout = [[CharonPDFPageText alloc] init];
+    NSArray<CharonPDFTextRun *> *ordered = [drawnRuns sortedArrayWithOptions:NSSortStable
                                                         usingComparator:^NSComparisonResult(id a, id b) {
-        PDFTextRun *left = a, *right = b;
+        CharonPDFTextRun *left = a, *right = b;
         if (left.y > right.y)
             return NSOrderedAscending;      // higher on the page first
         if (left.y < right.y)
@@ -83,12 +83,12 @@ static NSString *charonCloseLine(NSString *line, NSUInteger **mapping, NSUIntege
         return NSOrderedSame;                // a tie keeps drawing order
     }];
     NSMutableString *text = [NSMutableString string];
-    NSMutableArray<PDFTextRun *> *runs = [NSMutableArray arrayWithCapacity:ordered.count];
+    NSMutableArray<CharonPDFTextRun *> *runs = [NSMutableArray arrayWithCapacity:ordered.count];
     NSMutableArray<NSNumber *> *breaks = [NSMutableArray array];
     // The line being built, and the runs in it with their offsets INSIDE it - which are not their offsets
     // in the string, because the line is trimmed and collapsed when it closes.
     NSMutableString *line = [NSMutableString string];
-    NSMutableArray<PDFTextRun *> *lineRuns = [NSMutableArray array];
+    NSMutableArray<CharonPDFTextRun *> *lineRuns = [NSMutableArray array];
     CGFloat previousY = 0;
     BOOL first = YES;
     // Close the line, put it in the string, and hand every run in it the offset it ends up at.
@@ -99,18 +99,18 @@ static NSString *charonCloseLine(NSString *line, NSUInteger **mapping, NSUIntege
         NSUInteger lineStart = text.length;
         if (closed != nil) {
             [text appendString:closed];
-            for (PDFTextRun *run in lineRuns) {
+            for (CharonPDFTextRun *run in lineRuns) {
                 NSUInteger at = run.offset;
                 run.offset = mappingCount > at && at != NSUIntegerMax ? lineStart + mapping[at] : lineStart;
             }
             free(mapping);
         }
-        for (PDFTextRun *run in lineRuns)
+        for (CharonPDFTextRun *run in lineRuns)
             [runs addObject:run];
         [lineRuns removeAllObjects];
         [line setString:@""];
     };
-    for (PDFTextRun *run in ordered) {
+    for (CharonPDFTextRun *run in ordered) {
         if (run.text == nil || run.text.length == 0)
             continue;
         if (!first && run.y != previousY) {
@@ -191,11 +191,11 @@ static NSString *charonCloseLine(NSString *line, NSUInteger **mapping, NSUIntege
     return [_string substringWithRange:range];
 }
 
-- (PDFTextRun *)runForOffset:(NSUInteger)offset
+- (CharonPDFTextRun *)runForOffset:(NSUInteger)offset
 {
     if (_string == nil || offset >= _string.length)
         return nil;
-    for (PDFTextRun *run in _runs) {
+    for (CharonPDFTextRun *run in _runs) {
         if (offset >= run.offset && offset < run.offset + run.text.length)
             return run;
     }

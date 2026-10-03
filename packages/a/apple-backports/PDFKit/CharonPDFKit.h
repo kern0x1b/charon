@@ -16,7 +16,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class PDFPage;
-@class PDFPageText;
+@class CharonPDFPageText;
 @class PDFSelection;
 @class PDFBorder;
 @class UIColor;
@@ -130,7 +130,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable CGPDFPageRef)charon_CGPDFPage;
 // The page's own text layout, which PDFSelection reads: a selection's range is an offset into it, so the
 // two must not be two walks that can disagree.  See PDFPageText11.h.
-- (nullable PDFPageText *)charon_textLayout;
+- (nullable CharonPDFPageText *)charon_textLayout;
 @end
 
 // PDFAnnotation, over the annotation dictionary CoreGraphics already parsed out of a page's /Annots.

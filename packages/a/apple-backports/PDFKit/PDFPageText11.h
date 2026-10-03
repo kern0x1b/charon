@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 // Every property is @synthesize'd EXPLICITLY: the port's compile line carries
 // -Werror=objc-missing-property-synthesis, which is there because a member the port does not carry needs
 // @dynamic rather than a silent ivar, and auto-synthesis would give one whether it was asked for or not.
-@interface PDFTextRun : NSObject
+@interface CharonPDFTextRun : NSObject
 // The run's own characters, after the control-byte mapping the walk applies.
 @property (nonatomic, copy) NSString *text;
 // Where this run's text begins in the page's -string, which is what makes the string and the runs two
@@ -30,17 +30,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSString *fontName;
 @end
 
-@interface PDFPageText : NSObject
+@interface CharonPDFPageText : NSObject
 
 // The page's -[PDFPage string], or nil for a page whose walk was DISCARDED for taking fewer shows than
 // its content stream holds.  The runs and the lines are empty in that case too.
 @property (nonatomic, readonly, copy, nullable) NSString *string;
 // The runs, in the order the string is built from them: sorted by y DESCENDING, a tie in drawing order.
-@property (nonatomic, readonly, copy) NSArray<PDFTextRun *> *runs;
+@property (nonatomic, readonly, copy) NSArray<CharonPDFTextRun *> *runs;
 
 // Built from runs the walk already collected in DRAWING order; the ordering above is applied here, so the
 // walk does not care and the string is a property of the runs rather than a second thing to keep.
-+ (nullable instancetype)layoutWithRuns:(NSArray<PDFTextRun *> *)drawnRuns;
++ (nullable instancetype)layoutWithRuns:(NSArray<CharonPDFTextRun *> *)drawnRuns;
 
 // The page's text over a range, or nil for a range outside it.
 - (nullable NSString *)substringForRange:(NSRange)range;
@@ -55,13 +55,13 @@ NS_ASSUME_NONNULL_BEGIN
 // a range across two answers two.
 - (NSArray<NSValue *> *)lineRangesForRange:(NSRange)range;
 // The run a character came from, or nil for an offset the string does not have.
-- (nullable PDFTextRun *)runForOffset:(NSUInteger)offset;
+- (nullable CharonPDFTextRun *)runForOffset:(NSUInteger)offset;
 
 @end
 
 // THE LINE RULE, and where it lives.  A line is trimmed of U+0020 at both ends and every run of U+0020
 // inside it collapses to one - measured, and facts/PDFKit/Document11.md has the five fixtures.  It is
-// applied in -[PDFPageText layoutWithRuns:] rather than exposed, because the layout is the only thing that
+// applied in -[CharonPDFPageText layoutWithRuns:] rather than exposed, because the layout is the only thing that
 // builds page text out of runs and it needs the CHARACTER MAPPING as well as the string: a collapse or a
 // trim moves every character after it, so a run's offset into the finished string is not its offset into
 // the line it was drawn in.

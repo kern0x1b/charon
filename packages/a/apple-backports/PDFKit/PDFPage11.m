@@ -8,7 +8,7 @@
 @interface PDFPage ()
 - (CGPDFPageRef)charon_CGPDFPage;
 - (void)charon_buildAnnotations;
-- (PDFPageText *)charon_textLayout;
+- (CharonPDFPageText *)charon_textLayout;
 @end
 
 @implementation PDFPage {
@@ -25,7 +25,7 @@
     NSArray *_annotations;
     // The page's text layout, built once by -charon_textLayout and read by -string, by
     // -numberOfCharacters and by every PDFSelection over this page.
-    PDFPageText *_layout;
+    CharonPDFPageText *_layout;
 }
 
 @synthesize pageIndex = _index;
@@ -231,13 +231,13 @@ static void charonOpFontSize(CGPDFScannerRef scanner, void *info)
 }
 
 // One drawn run, as the layout's own object: the characters, where they were drawn, and the text state.
-// PDFTextRun is declared in PDFPageText11.h because a selection reads it for its font and its position.
+// CharonPDFTextRun is declared in PDFPageText11.h because a selection reads it for its font and its position.
 static void collectRun(NSMutableArray *runs, NSString *text, CGFloat x, CGFloat y, CGFloat size,
                        NSString *font)
 {
     if (text == nil || text.length == 0)
         return;
-    PDFTextRun *run = [[PDFTextRun alloc] init];
+    CharonPDFTextRun *run = [[CharonPDFTextRun alloc] init];
     run.text = text;
     run.x = x;
     run.y = y;
@@ -280,7 +280,7 @@ static void collectRun(NSMutableArray *runs, NSString *text, CGFloat x, CGFloat 
 // rows that depend on a position say so rather than inventing one.
 typedef struct { CGFloat x; CGFloat y; CGFloat size; } CharonTextState;
 
-static PDFPageText *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
+static CharonPDFPageText *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
 {
     if (state != NULL) {
         state->x = 0;
@@ -414,7 +414,7 @@ static PDFPageText *charonScanPageText(CGPDFPageRef page, CharonTextState *state
     if (exhausted) {
         return nil;
     }
-    PDFPageText *layout = [PDFPageText layoutWithRuns:runs];
+    CharonPDFPageText *layout = [CharonPDFPageText layoutWithRuns:runs];
     if (layout.string.length == 0)
         return nil;
     return layout;
@@ -424,7 +424,7 @@ static PDFPageText *charonScanPageText(CGPDFPageRef page, CharonTextState *state
 // read it, and they have to agree character for character because a selection's range is an offset into
 // it - so it is built here, once, rather than walked twice.  It is strong: it holds no reference back to
 // the page, and the page holding it is the same arrangement every other memoised array on this page uses.
-- (PDFPageText *)charon_textLayout
+- (CharonPDFPageText *)charon_textLayout
 {
     if (_layout == nil)
         _layout = charonScanPageText(_page, NULL);

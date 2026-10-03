@@ -20,7 +20,7 @@
 // "two\nthree" on cgfixture-lines2, -selectionsByLine answers line 0 with the range {4,4} and the string
 // "two" - the line's RANGE carries the newline that ends it and the line's STRING does not.  So a span
 // carries both, and a line's spans are built with the break left out of the text range only.
-@interface PDFSelectionSpan : NSObject
+@interface CharonPDFSelectionSpan : NSObject
 // The page, held STRONGLY: -pages answers the pages a selection covers, and PDFSelection.h:23 says so
 // without saying the array is a weak one.  The document above it is weak on the page, so page -> selection
 // -> page cannot close.
@@ -29,7 +29,7 @@
 @property (nonatomic) NSRange textRange;
 @end
 
-@implementation PDFSelectionSpan
+@implementation CharonPDFSelectionSpan
 @synthesize page = _page;
 @synthesize range = _range;
 @synthesize textRange = _textRange;
@@ -50,14 +50,14 @@
 // the shape -[PDFDocument initWithData:] uses with -charon_setUpWithData:, because a class whose header
 // declares its own initializer as the designated one has to reach [super init] from THAT one, and the spans
 // are a second thing to set afterwards.
-- (void)charon_setUpWithSpans:(nullable NSArray<PDFSelectionSpan *> *)spans
+- (void)charon_setUpWithSpans:(nullable NSArray<CharonPDFSelectionSpan *> *)spans
                       document:(nullable PDFDocument *)document;
 @end
 
 @implementation PDFSelection {
     // The spans, in page order and in range order within a page.  Ordered, because every member reads them
     // in that order and -string concatenates them in it.
-    NSMutableArray<PDFSelectionSpan *> *_spans;
+    NSMutableArray<CharonPDFSelectionSpan *> *_spans;
     // The document the selection was made over, WEAK: a selection that outlives its document keeps its
     // ranges, which are numbers, and its pages, which are objects; it does not keep the document alive.
     __weak PDFDocument *_document;
@@ -67,7 +67,7 @@
 // The port's own constructor, over spans the port's own searches and mutators built.  There is no other
 // way in: PDFSelection.h has no -initWithRange: of any kind, and the class exists to hold what a find or a
 // mutator produced.
-- (void)charon_setUpWithSpans:(NSArray<PDFSelectionSpan *> *)spans
+- (void)charon_setUpWithSpans:(NSArray<CharonPDFSelectionSpan *> *)spans
                       document:(PDFDocument *)document
 {
     _spans = spans != nil ? [spans mutableCopy] : [NSMutableArray array];
@@ -105,19 +105,19 @@
 {
     if (page == nil || range.location == NSNotFound || range.length == 0)
         return;
-    PDFSelectionSpan *span = [[PDFSelectionSpan alloc] init];
+    CharonPDFSelectionSpan *span = [[CharonPDFSelectionSpan alloc] init];
     span.page = page;
     span.range = range;
     span.textRange = charonTextRangeForRange(page, range);
     [_spans addObject:span];
 }
 
-- (NSArray<PDFSelectionSpan *> *)charon_spansOnPage:(PDFPage *)page
+- (NSArray<CharonPDFSelectionSpan *> *)charon_spansOnPage:(PDFPage *)page
 {
-    NSMutableArray<PDFSelectionSpan *> *answer = [NSMutableArray array];
+    NSMutableArray<CharonPDFSelectionSpan *> *answer = [NSMutableArray array];
     if (page == nil)
         return answer;
-    for (PDFSelectionSpan *span in _spans) {
+    for (CharonPDFSelectionSpan *span in _spans) {
         if (span.page == page)
             [answer addObject:span];
     }
@@ -152,7 +152,7 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
 {
     NSMutableArray<PDFPage *> *answer = [NSMutableArray array];
     PDFPage *last = nil;
-    for (PDFSelectionSpan *span in _spans) {
+    for (CharonPDFSelectionSpan *span in _spans) {
         if (span.page != last) {
             [answer addObject:span.page];
             last = span.page;
@@ -167,8 +167,8 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
         return nil;                    // measured: a fresh selection answers nil, not an empty string
     NSMutableString *answer = [NSMutableString string];
     PDFPage *page = nil;
-    for (PDFSelectionSpan *span in _spans) {
-        PDFPageText *layout = [span.page charon_textLayout];
+    for (CharonPDFSelectionSpan *span in _spans) {
+        CharonPDFPageText *layout = [span.page charon_textLayout];
         if (span.page != page) {
             // BETWEEN PAGES the texts are joined with a newline and WITHIN a page with nothing, both
             // measured: a selection over "page 2" and "page 3" answers "page 2\npage 3", and one over
@@ -196,9 +196,9 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
     // whole string.  It is applied per span, because a span knows the run its first character came from and
     // a selection can cross runs and pages.
     NSUInteger at = 0;
-    for (PDFSelectionSpan *span in _spans) {
-        PDFPageText *layout = [span.page charon_textLayout];
-        PDFTextRun *run = [layout runForOffset:span.textRange.location];
+    for (CharonPDFSelectionSpan *span in _spans) {
+        CharonPDFPageText *layout = [span.page charon_textLayout];
+        CharonPDFTextRun *run = [layout runForOffset:span.textRange.location];
         NSUInteger length = span.textRange.length;
         if (run == nil || length == 0)
             continue;
@@ -221,7 +221,7 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
 
 - (NSRange)rangeAtIndex:(NSUInteger)index onPage:(PDFPage *)page
 {
-    NSArray<PDFSelectionSpan *> *spans = [self charon_spansOnPage:page];
+    NSArray<CharonPDFSelectionSpan *> *spans = [self charon_spansOnPage:page];
     // Measured, both answers and neither of them a raise: an index past the end of a page's ranges, and any
     // index on a page the selection does not cover, answer {NSNotFound, 0}.
     if (index >= spans.count)
@@ -232,12 +232,12 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
 - (NSArray<PDFSelection *> *)selectionsByLine
 {
     NSMutableArray<PDFSelection *> *answer = [NSMutableArray array];
-    for (PDFSelectionSpan *span in _spans) {
-        PDFPageText *layout = [span.page charon_textLayout];
+    for (CharonPDFSelectionSpan *span in _spans) {
+        CharonPDFPageText *layout = [span.page charon_textLayout];
         NSArray<NSValue *> *lines = [layout lineRangesForRange:span.range];
         for (NSValue *boxed in lines) {
             NSRange hit = [boxed rangeValue];
-            PDFSelectionSpan *line = [[PDFSelectionSpan alloc] init];
+            CharonPDFSelectionSpan *line = [[CharonPDFSelectionSpan alloc] init];
             line.page = span.page;
             line.range = hit;
             // The line's STRING stops before the break that ends it, while its RANGE carries it: measured,
@@ -267,13 +267,13 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
 // says happens: "If the selection added overlaps with this selection, overlaps are removed" (PDFSelection.h:67).
 // Measured over five shapes: an added span INSIDE one of these is dropped, a crossing one is kept whole, and
 // two spans with a space between them stay two spans - so the merge is by OVERLAP and not by adjacency.
-- (void)charon_unionWith:(NSArray<PDFSelectionSpan *> *)other
+- (void)charon_unionWith:(NSArray<CharonPDFSelectionSpan *> *)other
 {
     if (other.count == 0)
         return;
-    NSMutableArray<PDFSelectionSpan *> *merged = [NSMutableArray arrayWithArray:_spans];
+    NSMutableArray<CharonPDFSelectionSpan *> *merged = [NSMutableArray arrayWithArray:_spans];
     [merged addObjectsFromArray:other];
-    [merged sortUsingComparator:^NSComparisonResult(PDFSelectionSpan *a, PDFSelectionSpan *b) {
+    [merged sortUsingComparator:^NSComparisonResult(CharonPDFSelectionSpan *a, CharonPDFSelectionSpan *b) {
         NSUInteger left = [self charon_pageIndexOf:a.page];
         NSUInteger right = [self charon_pageIndexOf:b.page];
         if (left != right)
@@ -284,9 +284,9 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
             return NSOrderedDescending;
         return NSOrderedSame;
     }];
-    NSMutableArray<PDFSelectionSpan *> *answer = [NSMutableArray array];
-    for (PDFSelectionSpan *span in merged) {
-        PDFSelectionSpan *last = answer.lastObject;
+    NSMutableArray<CharonPDFSelectionSpan *> *answer = [NSMutableArray array];
+    for (CharonPDFSelectionSpan *span in merged) {
+        CharonPDFSelectionSpan *last = answer.lastObject;
         if (last != nil && last.page == span.page && NSMaxRange(last.range) >= span.range.location &&
             span.range.location <= NSMaxRange(last.range)) {
             // OVERLAPPING or touching on the SAME page: the union is the wider range, and its text range is
@@ -321,7 +321,7 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
     // All of them are added and the overlaps are removed ONCE at the end, which is the whole difference
     // -addSelections: names over a loop of -addSelection: (PDFSelection.h:73).  Measured: three selections in
     // one call all land.
-    NSMutableArray<PDFSelectionSpan *> *spans = [NSMutableArray array];
+    NSMutableArray<CharonPDFSelectionSpan *> *spans = [NSMutableArray array];
     for (PDFSelection *selection in selections) {
         if (selection == nil)
             continue;
@@ -360,7 +360,7 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
 
 // A selection's last span's end, or its first span's start, and WHICH PAGE they are on - the two facts every
 // extend needs, because an extend can run off the end of a page onto the next one.
-- (PDFSelectionSpan *)charon_lastSpan
+- (CharonPDFSelectionSpan *)charon_lastSpan
 {
     return _spans.lastObject;
 }
@@ -370,10 +370,10 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
     if (_spans.count == 0 || count == 0)
         return;
     while (count != 0) {
-        PDFSelectionSpan *last = [self charon_lastSpan];
+        CharonPDFSelectionSpan *last = [self charon_lastSpan];
         if (last == nil)
             return;
-        PDFPageText *layout = [last.page charon_textLayout];
+        CharonPDFPageText *layout = [last.page charon_textLayout];
         NSUInteger length = layout.string.length;
         NSInteger room = (NSInteger)(length - NSMaxRange(last.range));
         if (count > 0) {
@@ -386,7 +386,7 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
             PDFPage *next = [self charon_pageAfter:last.page];
             if (next == nil)
                 return;                          // the last page: measured, nothing changes
-            PDFSelectionSpan *span = [[PDFSelectionSpan alloc] init];
+            CharonPDFSelectionSpan *span = [[CharonPDFSelectionSpan alloc] init];
             span.page = next;
             span.range = NSMakeRange(0, 0);
             span.textRange = NSMakeRange(0, 0);
@@ -412,7 +412,7 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
     if (_spans.count == 0 || count == 0)
         return;
     while (count != 0) {
-        PDFSelectionSpan *first = _spans.firstObject;
+        CharonPDFSelectionSpan *first = _spans.firstObject;
         if (first == nil)
             return;
         if (count > 0) {
@@ -426,8 +426,8 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
             PDFPage *previous = [self charon_pageBefore:first.page];
             if (previous == nil)
                 return;                          // the first page: measured, nothing changes
-            PDFPageText *layout = [previous charon_textLayout];
-            PDFSelectionSpan *span = [[PDFSelectionSpan alloc] init];
+            CharonPDFPageText *layout = [previous charon_textLayout];
+            CharonPDFSelectionSpan *span = [[CharonPDFSelectionSpan alloc] init];
             span.page = previous;
             NSUInteger end = layout.string.length;
             span.range = NSMakeRange(end, 0);
@@ -467,20 +467,20 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
     // rows of text, no change at all.
     if (_spans.count == 0)
         return;
-    PDFSelectionSpan *first = _spans.firstObject;
-    PDFPageText *firstLayout = [first.page charon_textLayout];
+    CharonPDFSelectionSpan *first = _spans.firstObject;
+    CharonPDFPageText *firstLayout = [first.page charon_textLayout];
     NSArray<NSValue *> *firstLines = [firstLayout lineRangesForRange:first.range];
     if (firstLines.count > 0)
         first.range = [[firstLines firstObject] rangeValue];
-    PDFSelectionSpan *last = [self charon_lastSpan];
-    PDFPageText *lastLayout = [last.page charon_textLayout];
+    CharonPDFSelectionSpan *last = [self charon_lastSpan];
+    CharonPDFPageText *lastLayout = [last.page charon_textLayout];
     NSArray<NSValue *> *lastLines = [lastLayout lineRangesForRange:last.range];
     if (lastLines.count > 0)
         last.range = [[lastLines lastObject] rangeValue];
     // The text ranges follow the ranges, EXCEPT at a line's trailing break: a line's string stops before it,
     // which is the same rule -selectionsByLine answers with.
-    for (PDFSelectionSpan *span in _spans) {
-        PDFPageText *layout = [span.page charon_textLayout];
+    for (CharonPDFSelectionSpan *span in _spans) {
+        CharonPDFPageText *layout = [span.page charon_textLayout];
         NSRange textRange = span.range;
         NSUInteger last2 = NSMaxRange(textRange);
         if (last2 > textRange.location && last2 <= layout.string.length &&
@@ -496,9 +496,9 @@ static NSRange charonTextRangeForRange(PDFPage *page, NSRange range)
 // {5,5} and moved the copy to {5,8}, and two copies are two objects (measured).
 - (id)copyWithZone:(NSZone *)zone
 {
-    NSMutableArray<PDFSelectionSpan *> *spans = [NSMutableArray arrayWithCapacity:_spans.count];
-    for (PDFSelectionSpan *span in _spans) {
-        PDFSelectionSpan *copy = [[PDFSelectionSpan alloc] init];
+    NSMutableArray<CharonPDFSelectionSpan *> *spans = [NSMutableArray arrayWithCapacity:_spans.count];
+    for (CharonPDFSelectionSpan *span in _spans) {
+        CharonPDFSelectionSpan *copy = [[CharonPDFSelectionSpan alloc] init];
         copy.page = span.page;
         copy.range = span.range;
         copy.textRange = span.textRange;

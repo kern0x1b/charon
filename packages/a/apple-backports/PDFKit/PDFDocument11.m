@@ -319,7 +319,7 @@ static NSArray<PDFSelection *> *charonMatchesOnPage(PDFPage *page, NSString *nee
                                                     NSUInteger to)
 {
     NSMutableArray<PDFSelection *> *answer = [NSMutableArray array];
-    PDFPageText *layout = [page charon_textLayout];
+    CharonPDFPageText *layout = [page charon_textLayout];
     NSString *text = layout.string;
     if (text == nil || needle == nil || needle.length == 0)
         return answer;
@@ -393,7 +393,7 @@ static NSArray<PDFSelection *> *charonMatchesOnPage(PDFPage *page, NSString *nee
         PDFPage *first = [pages firstObject];
         PDFPage *last = [pages lastObject];
         startPage = backwards ? first : last;
-        PDFPageText *layout = [startPage charon_textLayout];
+        CharonPDFPageText *layout = [startPage charon_textLayout];
         NSUInteger count = [selection numberOfTextRangesOnPage:startPage];
         NSRange range = [selection rangeAtIndex:backwards ? 0 : (count > 0 ? count - 1 : 0)
                                     onPage:startPage];
