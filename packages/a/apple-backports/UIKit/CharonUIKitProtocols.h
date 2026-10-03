@@ -5,7 +5,19 @@
 // @required and @optional as sections, and API_AVAILABLE(ios(<introduced>)). Facts only.
 // This file has a forward-declared protocol in it, so it imports <UIKit/UIKit.h> for that body, and
 //
-// THE FOUR AT THE END ARE BODIES, not forward declarations, and that is the difference the compiler
+// Each of those four is GUARDED on __has_include, keyed on the header it is declared in -
+// UITabBarControllerSidebar.h for the two sidebar protocols, UITextFormattingViewController.h for the
+// formatting delegate, UICalendarSelectionWeekOfYear.h for the calendar one - for the same reason the
+// other 89 entries in this file are forward declarations rather than bodies: on an SDK that ships one of
+// these names, that SDK's own declaration is the one to use, and a transcription would be a second
+// declaration of a name that already exists.  Three guards and not one, because a single guard keyed on
+// UITab.h would let UITabBarControllerSidebar.h through on an SDK that has UITab and not the sidebar -
+// this package keys a guard on the header a name actually lives in, which is what CharonUIKit26.h,
+// CharonCMTag26.h and CharonUIKit18.h do for the classes they declare, each on the header 26.2 puts the
+// name in.  All three are OPEN on the 16.4 SDK this package compiles against, which has
+// none of the three headers, which is why the generated UIKitBackportsProtocols18.0.m still sees the four
+// bodies: measured by tests/addon/protocol-sources.sh, 57 of 57 protocol sources compile.
+// THE FOUR ARE BODIES, not forward declarations, and that is the difference the compiler
 // makes: tests/addon/protocol-sources.sh says it plainly - "a forward declaration is correct when the
 // SDK supplies the body and a compile error when it does not: error: @protocol is using a forward
 // protocol declaration".  No SDK this package compiles against declares these four - they are
@@ -43,10 +55,14 @@
 // --- The last of the four.  Its one signature names UICalendarSelectionWeekOfYear, which CharonUIKit18.h
 // --- above declares, like the sidebar protocols'.
 
+#if !__has_include(<UIKit/UICalendarSelectionWeekOfYear.h>)
+
 // What a week-of-year calendar selection tells its delegate when the user picks one.
 @protocol UICalendarSelectionWeekOfYearDelegate <NSObject>
 - (void)weekOfYearSelection:(UICalendarSelectionWeekOfYear *)selection didSelectWeekOfYear:(NSDateComponents *)weekOfYearComponents;
 @end
+
+#endif   // !__has_include(<UIKit/UICalendarSelectionWeekOfYear.h>)
 
 @protocol UICGFloatTraitDefinition;
 
@@ -122,44 +138,18 @@
 
 @protocol UISheetPresentationControllerDetentResolutionContext;
 
-// --- The four protocols of UIKit's 18.0 band, transcribed with their members because no SDK this package
-// --- compiles against declares them.  Where a signature names an 18.0 class, that class is declared by
-// --- CharonUIKit18.h, imported above.  Each keeps the SDK's own @optional or @required split and its own
-// --- availability annotations, and nothing is added that 26.2 does not declare.
+// --- The two sidebar protocols of UIKit's 18.0 band, transcribed with their members because no SDK this
+// --- package compiles against declares them.  Where a signature names an 18.0 class, that class is
+// --- declared by CharonUIKit18.h, imported above.  Each keeps the SDK's own @optional or @required split
+// --- and its own availability annotations, and nothing is added that 26.2 does not declare.
 
-// --- The four protocols of UIKit's 18.0 band, transcribed with their members because no SDK this package
-// --- compiles against declares them.  Where each signature names an 18.0 class, that class is declared by
-// --- CharonUIKit18.h, imported above.  Each is @optional or @required exactly as 26.2 has it.
+#if !__has_include(<UIKit/UITabBarControllerSidebar.h>)
 
 // The animator a sidebar transition is handed: the panel adds its own animations and its completion.
 @protocol UITabBarControllerSidebarAnimating <NSObject>
 - (void)addAnimations:(void (^)(void))animations;
 - (void)addCompletion:(void (^)(void))completion;
 @end
-
-@protocol UITableViewDataSourcePrefetching;
-
-@protocol UITableViewDragDelegate;
-
-@protocol UITableViewDropCoordinator;
-
-@protocol UITableViewDropDelegate;
-
-@protocol UITableViewDropItem;
-
-@protocol UITableViewDropPlaceholderContext;
-
-@protocol UITextDragDelegate;
-
-@protocol UITextDragRequest;
-
-@protocol UITextDraggable;
-
-@protocol UITextDropDelegate;
-
-@protocol UITextDropRequest;
-
-@protocol UITextDroppable;
 
 // What the sidebar asks its delegate: which item a request becomes, what to show for a tab, the swipe
 // and context menus of one, the drag and drop of one, and the two availability callbacks.  The 27.0
@@ -204,6 +194,37 @@
 acceptItemsFromDropSession:(id<UIDropSession>)session API_AVAILABLE(ios(18.4));
 @end
 
+#endif   // !__has_include(<UIKit/UITabBarControllerSidebar.h>)
+
+@protocol UITableViewDataSourcePrefetching;
+
+@protocol UITableViewDragDelegate;
+
+@protocol UITableViewDropCoordinator;
+
+@protocol UITableViewDropDelegate;
+
+@protocol UITableViewDropItem;
+
+@protocol UITableViewDropPlaceholderContext;
+
+@protocol UITextDragDelegate;
+
+@protocol UITextDragRequest;
+
+@protocol UITextDraggable;
+
+@protocol UITextDropDelegate;
+
+@protocol UITextDropRequest;
+
+@protocol UITextDroppable;
+
+// --- The formatting panel's delegate, likewise transcribed.  Its signatures name two 18.0 classes of
+// --- CharonUIKit18.h, which is why that header is imported above.
+
+#if !__has_include(<UIKit/UITextFormattingViewController.h>)
+
 // What the formatting panel tells its delegate, and the three questions it may ask first.
 @protocol UITextFormattingViewControllerDelegate <NSObject>
 - (void)textFormattingViewController:(UITextFormattingViewController *)viewController didChangeValue:(UITextFormattingViewControllerChangeValue *)changeValue;
@@ -212,6 +233,8 @@ acceptItemsFromDropSession:(id<UIDropSession>)session API_AVAILABLE(ios(18.4));
 - (BOOL)textFormattingViewController:(UITextFormattingViewController *)viewController shouldPresentColorPicker:(UIColorPickerViewController *)colorPicker;
 - (void)textFormattingDidFinish:(UITextFormattingViewController *)viewController;
 @end
+
+#endif   // !__has_include(<UIKit/UITextFormattingViewController.h>)
 
 @protocol UITextInputTraits;
 
