@@ -150,3 +150,36 @@ The port applies **every** add, which is `PDFSelection.h:69`'s own sentence ("Ad
 selection"), so the two sides differ from the second add onwards and the rows say so. The differential
 compares ONE add per selection for that reason and the reason is written next to the comparison, not left
 for a reader to infer.
+
+## `-[PDFSelection boundsForPage:]`: what is already accounted for, and the one number that is not
+
+The row is still `missing` and is NOT registered. These are the measurements the next piece of work starts
+from, all of them arithmetic over the FILE rather than over a table.
+
+The host's answer for `page 1` on cgfixture-1.pdf is `20.0000,357.2400,36.7080,12.0000`, and that fixture's
+font dictionary carries everything needed to reproduce three of the four numbers exactly:
+
+    /Subtype /TrueType /BaseFont /AAAAAB+Helvetica /FirstChar 32 /LastChar 112
+    /Widths [ 278 0 ... 556 ... ]   and   /FontDescriptor << /Ascent 770 /Descent -230 /CapHeight 717 ... >>
+
+  **the height is the font size**, 12, which is `Tf`'s own operand.
+  **the y is the baseline plus the font's own DESCENT**: the text matrix puts the baseline at 360 and
+  `/Descent -230` gives 360 - 230 * 12 / 1000 = 357.24, the host's answer to every digit.  It is not the
+  ascent (that would be 350.76), not the cap height (351.40), not the x-height and not the font bounding box
+  (346.54), which is what makes it worth writing down: the rect runs from the DESCENDER line up by the size.
+  **the x is the text matrix's translation**, 20, which is the run's own pen position.
+  **the width is the sum of the /Widths**, 556 + 556 + 556 + 556 + 278 + 556 = 3058 per 1000 em, which at
+  12pt is 36.696 - and the host answers **36.7080**, which is one unit per 1000 em more.
+
+That last 0.012pt is the open measurement, and it is a real difference rather than arithmetic: the
+descriptor carries `/FontFile2`, an EMBEDDED TrueType program, and a font's own `hmtx` advances and the
+`/Widths` a writer computed from them differ by a unit now and then. So the width may come from the embedded
+program rather than from `/Widths`, and the release has both readers: `CGFontCreateWithDataProvider` over
+`/FontFile2` and `CGFontCreateWithFontName` for a font with no program of its own, then
+`CGFontGetGlyphAdvances` and `CGFontGetUnitsPerEm` (`CGFont.h`, iOS 2.0). Which of the two the host reads is
+what the next session measures, with a fixture whose `/Widths` and embedded program disagree by more than one
+unit - the current one differs by one, which is a poor instrument.
+
+NOT measured and not claimed: the horizontal scaling (`Tz`), a CID font's `/W`, an ascent-bearing
+descriptor where `/Descent` is absent, and what the host answers for a selection over a page it does not
+cover beyond the `+inf,+inf,0,0` already in the table above.
