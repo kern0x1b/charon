@@ -102,3 +102,42 @@ port carries neither yet, so a case that asks one of them on the port's side wou
 difference where there is nothing to compare. The one case that would have asked an inference graph's
 `deviceMemorySize` (measured: 0 before a compile) is left out for that reason and is in this family's place
 when those two classes are written.
+
+## The inference and training graphs: measured, not yet written
+
+`.agent-work/runs/probe/mlc-inference.m`, kept in the tree as `tests/backports/host/mlcompute/probes/`,
+measures both. What it answers on this host, over one graph with one ReLU node over a 2x3 float32 tensor:
+
+| | `MLCInferenceGraph` | `MLCTrainingGraph` |
+| --- | --- | --- |
+| `addInputs:`, with a name the graph knows, one it does not, an empty dictionary, or nil | **YES, YES, YES, YES** | - |
+| `addInputs:lossLabels:` and `addInputs:lossLabels:lossLabelWeights:` | - | **YES** and **YES** |
+| `addOutputs:`, known, unknown, nil | **YES, YES, YES** | **YES** |
+| `linkWithGraphs:`, empty, itself, another | **YES, YES, YES** | **NO, NO, NO** |
+| `compileWithOptions:device:` | **YES**, and **YES** again on a second call, and **YES** with a nil device | **NO** |
+| `compileOptimizer:` | - | **NO** |
+| `deviceMemorySize` before a compile / after | 0 / **24** | 0 / **24** |
+| `stopGradientForTensors:`, known and unknown | - | **YES** and **YES** |
+| `setTrainingTensorParameters:` | - | **YES** |
+| `bindOptimizerData:deviceData:withTensor:`, known and unknown tensor | - | **YES** and **YES** |
+| `executeForward…`, `executeGradient…`, `executeOptimizerUpdate…`, the two `executeWithInputsData:…` forms | **YES** | **NO** for every one of them |
+| `gradientTensorForInput:`, for the input, for an output, for an unknown tensor | - | **nil, nil, nil** |
+| `sourceGradientTensorsForLayer:` / `resultGradientTensorsForLayer:` | - | **1** / **0** |
+| `gradientDataForParameter:layer:` | - | **nil** |
+| `allocateUserGradientForTensor:`, known and unknown | - | **nil** and **nil** |
+| `optimizer` of a graph made with one / with nil | - | kept / **nil** |
+| `compileWithOptions:device:` and `executeForward…` with a nil loss layer and a nil optimizer | - | **NO** and **NO** |
+
+So the shape of both classes is measured and is not a guess: the inference graph answers YES to everything it
+is asked and the training graph answers NO to everything that needs an engine, and the two are different
+answers rather than one of them being unimplemented.
+
+**One number is not yet pinned down, and it is `deviceMemorySize`.** It is 0 before a compile and 24 after
+one over a graph with a single 2x3 float32 tensor, and a second graph with a single **one-element**
+float32 tensor answers **4** after its compile - so it is not a constant, and 24 is that tensor's six
+elements of four bytes. Whether it is the output's bytes, the input's, or a sum over something, was not
+settled: the third shape in the sweep raised inside the host (`-[__PlaceholderDictionary
+initWithObjects:forKeys:count:]`, a nil result for the second node over a graph's own result) and the run
+stopped there. **That is the one measurement left before `MLCInferenceGraph` and `MLCTrainingGraph` can be
+written**, and it is not guessed at here: a port that answered 24 for every graph would be right on the one
+graph measured and wrong on every other.
