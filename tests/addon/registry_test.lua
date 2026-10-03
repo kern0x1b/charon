@@ -289,11 +289,15 @@ local function member_and_protocol_rows(backports, found)
     -- a property whose name starts with a lower-case acronym, read through the getter its header declares:
     -- NSProcessInfo.iOSAppOnVision is getter=isiOSAppOnVision, and the gate of land-w5 (2026-10-03) read the
     -- built -isiOSAppOnVision as rowless and the row as unbuilt, because "is" + lower-case was not an accessor
-    rows(class .. ',{"api": "FixClass.iOSAppOnFix", "kind": "property", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}')
-    said = asked({["-[FixClass isiOSAppOnFix]"] = true})
-    if said:find("FixClass", 1, true) then
-        table.insert(found, "a getter=isiOSAppOnFix accessor must answer the row FixClass.iOSAppOnFix, and it is red: " .. said)
+    -- Both directions, on a class the port only adds a category to (so the owner being built answers nothing):
+    -- the built selector must find the row, and the row must find the built selector.
+    inventory.classes.FixCategory = {image = true, instance = {}, ["+"] = {}}
+    rows(class .. ',{"api": "FixCategory.iOSAppOnFix", "kind": "property", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}')
+    said = asked({["-[FixCategory isiOSAppOnFix]"] = true})
+    if said:find("FixCategory", 1, true) then
+        table.insert(found, "a getter=isiOSAppOnFix accessor must answer the row FixCategory.iOSAppOnFix both ways, and it is red: " .. said)
     end
+    inventory.classes.FixCategory = nil
     rows(protocol)
     -- the metadata symbol is one the object *defines*, so the rule reads the defined set: with the symbol in
     -- the imported set instead - where a class's names live - the row stays unbuilt, which is how 73 rows

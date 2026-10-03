@@ -1702,6 +1702,12 @@ spellings = function(api)
         if member:match("^[%a][%w_]*$") and not member:match("^is%u") then
             table.insert(accessors, "is" .. member:sub(1, 1):upper() .. member:sub(2))
         end
+        -- and a name that begins with a lower-case acronym keeps its case after "is": NSProcessInfo.h:247-248
+        -- declare iOSAppOnMac and iOSAppOnVision with getter=isiOSAppOnMac and getter=isiOSAppOnVision, the
+        -- spelling property_of() reads back the other way
+        if member:match("^%l%u[%w_]*$") then
+            table.insert(accessors, "is" .. member)
+        end
         for _, selector in ipairs(accessors) do
             found[string.format("-[%s %s]", class, selector)] = true
             found[string.format("+[%s %s]", class, selector)] = true
