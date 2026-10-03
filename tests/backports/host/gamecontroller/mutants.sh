@@ -226,6 +226,15 @@ check_in_7 \
     '@"Button Y": @(fields->buttonX)' \
     'snapshot-extended-field-read-from-the-wrong-element'
 
+# And the -[GCExtendedGamepad saveSnapshot] the split made writable. A field read out of its
+# neighbour's element is the mistake that has actually been made twice in this library, so it is the
+# one held here too: the read-back group compares the port's method against the host's own encoder for
+# the same values, byte for byte, and a crossed field moves four bytes.
+check_in_7 \
+    'fields.buttonB = charon_gc_button_value([self charon_elementNamed:@"Button B"]);' \
+    'fields.buttonB = charon_gc_button_value([self charon_elementNamed:@"Button A"]);' \
+    'extended-save-snapshot-reads-the-wrong-button'
+
 # The 7.0 object's extended half, held the same way as the 10.0.1 one.
 snap7_rel=packages/a/apple-backports/GameController/GCSnapshots7.m
 snap7_file="$tree/$snap7_rel"
@@ -335,5 +344,5 @@ if ! git -C "$tree" diff --quiet -- "$rel" "$touchpad_rel" "$objects_rel" "$trig
     failures=$((failures + 1))
 fi
 
-echo "mutants: 14 run, $failures not noticed"
+echo "mutants: 15 run, $failures not noticed"
 [ "$failures" -eq 0 ]

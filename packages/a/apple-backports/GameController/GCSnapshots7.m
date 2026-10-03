@@ -177,6 +177,63 @@ BOOL GCExtendedGamepadSnapShotDataV100FromNSData(GCExtendedGamepadSnapShotDataV1
 
 @end
 
+// -[GCExtendedGamepad saveSnapshot] is 7.0 (GCExtendedGamepad.h:65) and returns
+// GCExtendedGamepadSnapshot, which first-rung.py also places at 7.0, so both live in this object and
+// the method's IMP has its class-ref answered inside it. That is the whole of what the wall recorded
+// in coordination/api-queue.md was: the method's IMP emits an objc-class-ref for its return type, and
+// while the class sat at 9.0 the 6.1.3 band had no 9.0 object to satisfy it. Measured on this object,
+// before and after, with nm -u: before it names GCExtendedGamepad, GCGamepad, NSData, NSDictionary and
+// NSNumber; after, those five plus GCExtendedGamepadSnapshot - which this same object defines, so the
+// reference resolves here and the dylib links.
+//
+// It is the same two steps as the plain game's method below: read the current values into the
+// structure, hand the structure to the encoder this file's header holds. The values are the extended
+// game's own elements, and the layout is the structure GCExtendedGamepadSnapshot.h:41-78 documents.
+@implementation GCExtendedGamepad (CharonGCSnapshot7)
+
+- (GCExtendedGamepadSnapshot *)saveSnapshot
+{
+    GCExtendedGamepadSnapshotData fields;
+    memset(&fields, 0, sizeof(fields));
+    GCControllerDirectionPad *dpad = (GCControllerDirectionPad *)[self charon_elementNamed:@"Direction Pad"];
+    fields.dpadX = charon_gc_pad_axis(dpad, @selector(xAxis));
+    fields.dpadY = charon_gc_pad_axis(dpad, @selector(yAxis));
+    // The two thumbsticks' four axes, read through each stick's own axes.
+    GCControllerDirectionPad *left = (GCControllerDirectionPad *)[self charon_elementNamed:@"Left Thumbstick"];
+    if (left != nil) {
+        fields.leftThumbstickX = charon_gc_pad_axis(left, @selector(xAxis));
+        fields.leftThumbstickY = charon_gc_pad_axis(left, @selector(yAxis));
+    }
+    GCControllerDirectionPad *right = (GCControllerDirectionPad *)[self charon_elementNamed:@"Right Thumbstick"];
+    if (right != nil) {
+        fields.rightThumbstickX = charon_gc_pad_axis(right, @selector(xAxis));
+        fields.rightThumbstickY = charon_gc_pad_axis(right, @selector(yAxis));
+    }
+    // The header's own byte 60: the structure says the thumbsticks act as buttons, and the host writes
+    // 01 for a controller nothing has touched, which is what a zeroed structure does not. It is set
+    // from the profile's own elements - a stick that carries its button is one that can be pressed -
+    // and not to a constant, so a profile without them encodes 0.
+    fields.supportsClickableThumbsticks =
+        [self charon_elementNamed:@"Left Thumbstick Button"] != nil
+        && [self charon_elementNamed:@"Right Thumbstick Button"] != nil;
+    // A button's own value, and the trigger's: the two are read here and written into the structure
+    // rather than being the zero a memset leaves, so a controller with a held button encodes it.
+    fields.buttonA = charon_gc_button_value([self charon_elementNamed:@"Button A"]);
+    fields.buttonB = charon_gc_button_value([self charon_elementNamed:@"Button B"]);
+    fields.buttonX = charon_gc_button_value([self charon_elementNamed:@"Button X"]);
+    fields.buttonY = charon_gc_button_value([self charon_elementNamed:@"Button Y"]);
+    fields.leftShoulder = charon_gc_button_value([self charon_elementNamed:@"Left Shoulder"]);
+    fields.rightShoulder = charon_gc_button_value([self charon_elementNamed:@"Right Shoulder"]);
+    fields.leftTrigger = charon_gc_button_value([self charon_elementNamed:@"Left Trigger"]);
+    fields.rightTrigger = charon_gc_button_value([self charon_elementNamed:@"Right Trigger"]);
+    fields.leftThumbstickButton = charon_gc_button_value([self charon_elementNamed:@"Left Thumbstick Button"]);
+    fields.rightThumbstickButton = charon_gc_button_value([self charon_elementNamed:@"Right Thumbstick Button"]);
+    return [[GCExtendedGamepadSnapshot alloc]
+               initWithSnapshotData:charon_gc_snapshot_data(&fields, sizeof(fields),
+                                                            GCExtendedGamepadSnapshotDataVersion2)];
+}
+
+@end
 
 @implementation GCGamepad (CharonGCSnapshot7)
 

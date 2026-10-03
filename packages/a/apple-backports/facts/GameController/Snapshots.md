@@ -84,7 +84,42 @@ Two more were added with the objects, and both are the shape of the defect the o
 one changes the element a field is read from (`Button X` takes `buttonY`), the other reads the
 direction pad as if it were an axis. Neither breaks the build and neither survives.
 
-## What `-[GCExtendedGamepad saveSnapshot]` is waiting for now
+## `-[GCExtendedGamepad saveSnapshot]`: the wall, and what removed it
+
+It was absent for a measured reason, recorded in `coordination/api-queue.md`: the method is 7.0
+(`GCExtendedGamepad.h:65`), its return type was believed to be 9.0, and a method's IMP emits an
+`objc-class-ref` for its return type, so the 6.1.3 band had nothing to satisfy it. The measurement
+stands; **the premise did not**. The class was placed at 9.0 from the header's `API_AVAILABLE(ios(9.0))`
+rather than off the ladder, and `first-rung.py` answers 7.0. So the class and the method now share a
+rung and an object, `GCSnapshots7.m`.
+
+Measured on the port's own object, before and after, with `nm -u`:
+
+| | undefined class references |
+| --- | --- |
+| `GCSnapshots7.o` without the method | `GCExtendedGamepad`, `GCGamepad`, `NSData`, `NSDictionary`, `NSNumber` |
+| `GCSnapshots7.o` with it | the same five, and the object **defines** `GCExtendedGamepadSnapshot` |
+
+That is the whole of the wall: the reference the method adds is answered inside the object that adds
+it, so the dylib links.
+
+**The oracle for the method is this Mac's own GameController, and it is the strongest the suite has.**
+`+[GCController controllerWithExtendedGamepad].gamepad` is a real extended gamepad whose `-saveSnapshot`
+returns a real `GCExtendedGamepadSnapshot` whose `snapshotData` is 63 bytes beginning `01 01 3f 00` with
+byte 60 written `01`. So:
+
+- `extended untouched saveSnapshot` -- the host's own **method** over its own untouched gamepad against
+  the port's own **method** over the port's. An object against an object, and the only line in the
+  suite that is one.
+- Per matrix row, the host has no factory that writes values into a gamepad, so the port's method over
+  a gamepad holding those values is held in the port-only `snapshot read back` group against the host's
+  own `NSDataFromGCExtendedGamepadSnapshotData` for the same values, byte for byte, `MISMATCH` failing
+  the run. An earlier draft of that line put the host's untouched gamepad on the host side and the port's
+  written one on the port side; the harness answered `9420 checks, 2 different` and the diff showed the
+  host encoding zeros against the port encoding the matrix -- a comparison that could never have passed,
+  because there is no host factory that writes values.
+
+## What it was waiting for while it was waiting
 
 It was refused for a measured reason, recorded in `coordination/api-queue.md`: the method is 7.0, its
 return type was believed to be 9.0, and a method's IMP emits an `objc-class-ref` for its return type,

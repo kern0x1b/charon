@@ -1048,17 +1048,22 @@ static NSArray *snapshotObjectGroup(BOOL port)
     Class controllerClass = NSClassFromString(port ? @"CharonHostGCController" : @"GCController");
     NSString *what = nil;
 
-    // The extended case. The host's own untouched -saveSnapshot is not a line here: it is an object's
-    // save and the port has no -[GCExtendedGamepad saveSnapshot] to ask (its row stays absent, and the
-    // read-back group below checks that it is absent), so the two sides would be comparing an object
-    // with an encoder. What that measurement is - 63 bytes beginning 0101 3f00, and byte 60 written 01
-    // for a controller nothing has touched - is in facts/GameController/Snapshots.md, where it is a
-    // statement about the host and not a comparison.
+    // The extended case, untouched. Both sides have a -[GCExtendedGamepad saveSnapshot] to ask, so
+    // this is the one line that is an object's save against an object's save: the host's own method
+    // over its own untouched gamepad, and the port's own method over the port's. It measures 63 bytes
+    // beginning 0101 3f00 with byte 60 written 01 on both.
     id<LProfile> extended = [controllerClass controllerWithExtendedGamepad].extendedGamepad;
+    [log addObject:[NSString stringWithFormat:@"extended untouched saveSnapshot %@",
+                     hexData([(id<LSnapshot>)saveSnapshotOf(extended, &what) snapshotData])]];
 
-    // The extended matrix. The reference is the host's own encoder for each set of field values, and
-    // the port's own encoder for the same values must print the same bytes; the read-back group below
-    // is what holds the port's class to those bytes, field by field.
+    // The extended matrix: the same field values through the host's encoder and through the port's,
+    // byte for byte. A field read from the wrong element moves a byte. This is the strongest per-row
+    // comparison there is, and it is an encoder against an encoder - the host's own
+    // -saveSnapshot cannot be the other side here, because there is no host factory that writes values
+    // into a gamepad, so a per-row object against an object line would be comparing the host's zeros
+    // with the port's values. The object against an object comparison is the untouched line above,
+    // where both sides are untouched; what the port's own method encodes for the matrix rows is held
+    // in the port-only read-back group below, against the host encoder's reference for those rows.
     NSUInteger index = 0;
     for (NSDictionary *values in extendedSnapshotValues()) {
         GCExtendedGamepadSnapshotData fields;
@@ -1120,13 +1125,13 @@ static NSArray *snapshotReadBackLines(void)
     NSString *snapshotName = @"CharonHostGCExtendedGamepadSnapshot";
     NSString *microSnapshotName = @"CharonHostGCMicroGamepadSnapshot";
 
-    // The row -[GCExtendedGamepad saveSnapshot] stays absent on, and its own words are that
-    // respondsToSelector: answers honestly and an unchecked call raises. So the port must NOT answer
-    // it, and MISMATCH on this line is the method appearing.
-    id<LProfile> extended = [NSClassFromString(@"CharonHostGCController") controllerWithExtendedGamepad].extendedGamepad;
-    [log addObject:[NSString stringWithFormat:@"extended -saveSnapshot is absent: %@%@",
-                     [extended respondsToSelector:@selector(saveSnapshot)] ? @"NO" : @"yes",
-                     [extended respondsToSelector:@selector(saveSnapshot)] ? @" MISMATCH" : @""]];
+    // -[GCExtendedGamepad saveSnapshot] is 7.0 and its class is 7.0, so both are carried and the
+    // method must be there: MISMATCH on this line is the method missing, which is the state the row
+    // was in until the split put the class on the method's own rung.
+    id<LProfile> extendedExtended = [NSClassFromString(@"CharonHostGCController") controllerWithExtendedGamepad].extendedGamepad;
+    [log addObject:[NSString stringWithFormat:@"extended -saveSnapshot is present: %@%@",
+                     [extendedExtended respondsToSelector:@selector(saveSnapshot)] ? @"yes" : @"NO",
+                     [extendedExtended respondsToSelector:@selector(saveSnapshot)] ? @"" : @" MISMATCH"]];
 
     {
         NSArray *names = @[@"Direction Pad", @"Button A", @"Button B", @"Button X", @"Button Y",
@@ -1155,6 +1160,17 @@ static NSArray *snapshotReadBackLines(void)
             fields.leftThumbstickButton = [values[@"Left Thumbstick Button"][0] floatValue] > 0;
             fields.rightThumbstickButton = [values[@"Right Thumbstick Button"][0] floatValue] > 0;
 
+            // The port's own -saveSnapshot over a gamepad holding these values must encode the same
+            // bytes the host's encoder gives for them. This is the per-row object check the compared
+            // group above cannot make, because the host has no game to write values into.
+            id<LProfile> live = [NSClassFromString(@"CharonHostGCController") controllerWithExtendedGamepad].extendedGamepad;
+            writeValues(live, values);
+            NSString *why = nil;
+            NSString *reference = hexData(NSDataFromGCExtendedGamepadSnapshotData(&fields));
+            NSString *encoded = hexData([(id<LSnapshot>)saveSnapshotOf(live, &why) snapshotData]);
+            [log addObject:[NSString stringWithFormat:@"extended round trip %lu saveSnapshot %@ the host encoder says %@%@",
+                             (unsigned long)round, encoded, reference,
+                             [reference isEqualToString:encoded] ? @"" : @" MISMATCH"]];
             id rebuilt = [(id<LSnapshot>)[NSClassFromString(snapshotName) alloc]
                 initWithSnapshotData:NSDataFromGCExtendedGamepadSnapshotData(&fields)];
             [log addObject:[NSString stringWithFormat:@"extended round trip %lu class %@",
