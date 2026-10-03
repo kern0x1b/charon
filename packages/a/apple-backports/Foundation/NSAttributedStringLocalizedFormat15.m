@@ -129,10 +129,13 @@ static BOOL CharonUses(unichar c)
     return c != 0 && strchr("diouxXeEfFgGaAcCsSpn@", c) != NULL;
 }
 
-/* One conversion, starting at its '%'. What it returns is where the scan stopped, whether or not it
-   found a conversion: a '%' whose last character is not one is consumed whole and emits nothing, which
-   is the measured answer, so the caller never has to look at a character the scan already passed. */
-static BOOL CharonConversionAt(NSString *format, NSUInteger percent, CharonConversion *out)
+/* One conversion, starting at its '%', with where the scan stopped left in the struct. A '%' whose last
+   character is not one is consumed whole and emits nothing, which is the measured answer, so the caller
+   never has to look at a character the scan already passed. The two walks both consume what this one
+   consumed, which is what a conversion character of zero says: that character was read and it stands
+   for nothing. There is no answer here beyond the struct - a '%' that opens no conversion is a
+   conversion as far as both walks are concerned. */
+static void CharonConversionAt(NSString *format, NSUInteger percent, CharonConversion *out)
 {
     NSUInteger length = format.length, index = percent + 1, digits;
     memset(out, 0, sizeof *out);
@@ -141,12 +144,12 @@ static BOOL CharonConversionAt(NSString *format, NSUInteger percent, CharonConve
     out->start = percent;
     if (index >= length) {
         out->end = percent + 1;         /* a trailing '%' is consumed and emits nothing */
-        return NO;
+        return;
     }
     if ([format characterAtIndex:index] == '%') {
         out->conversion = '%';
         out->end = index + 1;
-        return YES;
+        return;
     }
     /* The digits a conversion may open with are its argument's index when a '$' follows them and the
        width otherwise, which is C's rule and the system's: "%2$@ then %1$@" answers "two then one" and
@@ -204,23 +207,21 @@ static BOOL CharonConversionAt(NSString *format, NSUInteger percent, CharonConve
     if (index < length && CharonUses([format characterAtIndex:index])) {
         out->conversion = [format characterAtIndex:index];
         out->end = index + 1;
-        return YES;
+        return;
     }
     /* A '%' that opens no conversion is consumed together with the flags, the width and the length the
        scan read, and the character that is not a conversion is text again - unless it is the last
        character of the format and the scan read nothing, which is the whole of it: "a % b" answers
        "a  b" and "a %1 b" answers "a 1 b" with the space and the "1" kept, "x %q y" answers "x q y",
        and "%q", "%0", "%-" and the "%q" at the end of "100%% %@ %q" answer nothing at all (all
-       measured). A conversion character of zero is how the second walk is told to skip what this one
-       consumed, which is why this returns YES for it: the two walks have to consume the same
-       characters, and only this one knows which they are. */
+       measured). The conversion character stays zero, which is how the second walk is told to skip
+       what this one consumed. */
     if (index >= length)
         out->end = length;
     else if (index + 1 == length && index == percent + 1)
         out->end = length;
     else
         out->end = percent + 1;
-    return YES;
 }
 
 /* The type the argument of this conversion comes off the list as. */

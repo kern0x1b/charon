@@ -230,7 +230,8 @@ static NSString *CharonLanguage(NSAttributedString *source, NSRange range)
     NSMutableString *subtag = [NSMutableString string];
     NSUInteger i;
     if (![tag isKindOfClass:[NSString class]])
-        return nil;
+        return nil;                            /* no tag at all is English, measured */
+
     for (i = 0; i < [(NSString *)tag length]; i++) {
         unichar c = [(NSString *)tag characterAtIndex:i];
         if (![letters characterIsMember:c])
@@ -271,7 +272,7 @@ static NSString *CharonFollow(NSAttributedString *source, NSRange range, id rule
     NSString *word;
     NSInteger partOfSpeech;
     if (![rule isKindOfClass:[NSInflectionRuleExplicit class]])
-        return nil;
+        return nil;                            /* the automatic rule is not followed, measured */
     morphology = [(NSInflectionRuleExplicit *)rule morphology];
     /* Letter, Verb, Numeral and Preposition: the four of the fifteen the system does not follow, and
        the other eleven answer the plural. */
@@ -302,7 +303,7 @@ static NSString *CharonFollow(NSAttributedString *source, NSRange range, id rule
     if (morphology.number == NSGrammaticalNumberPlural || morphology.number == NSGrammaticalNumberPluralFew ||
         morphology.number == NSGrammaticalNumberPluralMany)
         return CharonPlural(word);
-    return nil;
+    return nil;            /* NotSet, Zero and PluralTwo answer the text as it stood, measured */
 }
 
 /* One run the pass answered, with where its answer goes. Back to front, so an earlier range's location is
