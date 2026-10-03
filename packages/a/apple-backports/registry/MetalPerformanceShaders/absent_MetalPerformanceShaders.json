@@ -640,9 +640,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 as one of the MPSCNNPoolingNode subclasses (MPSNNGraphNodes.h:1534) and differs from its base by the kernel class it stands for: MPSCNNPoolingAverage, whose -initWithDevice:kernelWidth:kernelHeight:strideInPixelsX:strideInPixelsY: MPSCNNPooling.h:488 declares on the concrete class and marks unavailable only on the base. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "a 2x2 or larger window over one source, averaged by the MPSCNNPoolingAverage kernel this port's MPSCNNPooling10.m carries. What this object decides is the window, the stride and the destination's shape, and the shape is compared with the release's own in the run above (3x3x1 over a 3x3 source and a 2x2 window under SizeSame, both sides). The divisor is the kernel's, on MPSCNNPooling10.m's row and not this object's",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -670,9 +671,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 as one of the MPSCNNPoolingNode subclasses (MPSNNGraphNodes.h:1546) and differs from its base by the kernel class it stands for: MPSCNNPoolingMax, whose -initWithDevice:kernelWidth:kernelHeight:strideInPixelsX:strideInPixelsY: MPSCNNPooling.h:758 declares on the concrete class and marks unavailable only on the base. The third subclass at :1540, MPSCNNPoolingL2NormNode, carries ios(12.0) and is not this object's. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "a window over one source, maximised by the MPSCNNPoolingMax kernel this port's MPSCNNPooling10.m carries. What this object decides is the window, the stride and the destination's shape, and the shape is compared with the release's own in the run above. A KNOWN DEFECT, in another object's row and measured: the release's MPSCNNPoolingMax answers 1 2 3 4 5 6 7 8 9 over this shape and this port's MPSCNNPoolingMax answers the identity, while MPSCNNPoolingAverage over the same window answers its measured table - so the fault is localised to that kernel and not to the node, the graph, the image or the walk. It is not fixed here: the kernel is MPSCNNPooling10.m's, and a node written in this object cannot repair a kernel in another object's file",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -680,9 +682,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 as an abstract base that \"does not correspond with any particular MPSCNNKernel\" (MPSNNGraphNodes.h:1467-1471), so MPSNNGraph11.m carries the window, the stride and the kernel class its subclasses name and nothing else. The four accessors the base declares at :1472-1475 are ios(12.0) and are NOT here. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "the base of the pooling filter nodes: a source, a kernel window and a stride, handed to the MPSCNNPooling kernel the subclass names. An abstract pooling node names no kernel, so it refuses in the log rather than running a window over nothing. The pooling ARITHMETIC is the kernel's and not this node's - the divisor is the window's area whatever of it lies outside the image, measured on facts/MetalPerformanceShaders/Cnn.md:75-76 for the 10.0 object - and this object hands the window to the kernel that has it rather than repeating a divisor. What this object does decide, and what the run above compares with the release, is the destination's shape: the two shape cases agree with the release's own MPSNNDefaultPadding over a 3x3 source and a 2x2 window under SizeSame",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -908,9 +911,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 as one of the four MPSNNBinaryArithmeticNode subclasses (MPSNNGraphNodes.h:2184) and it differs from its base by one line here, the kernel class it stands for: MPSImageAdd, whose -initWithDevice: MPSImageMath.h:112 declares on the concrete class and marks unavailable only on the base. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "two images added channel by channel into the destination the graph allocated, with the base's primary and secondary scale, bias and clamp applied as MPSImageMath.h:34-37 states. The case above gives 11 22 33 44 for (1,2,3,4)+(10,20,30,40), the release's own answer on the same inputs",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -928,9 +932,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 as the base of the four elementwise operations, over the two images MPSImageMath.h:34-37 names: \"result = ((primaryScale * x) + (secondaryScale * y)) + bias\". MPSNNGraph11.m runs the operation through the MPSImage kernel this package already carries (MPSImageArithmetic13.m) rather than repeating the arithmetic, and it defaults primaryScale and secondaryScale to the 1.0f MPSImageMath.h:31-32 states - a zero ivar answers zero however correct the kernel underneath is, which is what the four cases in the run above would have caught. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "the base of the four elementwise filter nodes: two sources, the primary and secondary scale, bias and clamp, and the strides of both operands, handed straight to the kernel the node holds. -initWithSources: refuses a count that is not two, as MPSNNGraphNodes.h:2139 states. Two methods of the class's own @interface are NOT implemented and both are the training half: -gradientClass at MPSNNGraphNodes.h:2158 and -gradientFiltersWithSources: at :2162, which carries ios(11.3) and returns MPSNNGradientFilterNode*",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -938,9 +943,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 as the feature-channel join of several kernels' results, and MPSNNGraphNodes.h:2443-2446 states the rule it implements exactly: with M, N and O feature channels \"feature channels [0,M-1] will be drawn from image M, [M, M+N-1] from image N\", and \"As all images are padded out to a multiple of four feature channels, M, N and O here are also multiples of four, even when the MPSImages are not\". What goes IN the padding is not stated there and is measured: tests/backports/host/mpsnn/probe-concat.m sweeps the release's own node over five channel widths and gets zeros with a 1 in the block's fourth channel for a source of one or two channels, and a zero for a source of three; MPSNNGraph11.m writes that. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "the sources' channels laid end to end in the destination, each in a block of a multiple of four channels, through CharonMPSImageConcatRows in MPSImageWalk13.m, which takes the source and the destination as separate buffers because a concatenation's destination is wider than every source and joining in place walks off the end of the read buffer (measured, a SIGSEGV). The cases above give 1 0 0 1 and 1 2 0 1, the release's own answers. NOT CLAIMED: a two-source concatenation. Each source is padded out to a multiple of four, so two one-channel sources make an eight-channel destination, and MPSImage13.m holds one, two and four channels and refuses the rest - the release answers 1x1x8 and the port refuses in the log. That limit is MPSImage's row",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -948,9 +954,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 as the framework's own padding policy, and this object carries it whole: +paddingWithMethod:, -label, the coding pair MPSNNPadding's base list requires (MPSNeuralNetworkTypes.h:363 names NSSecureCoding) and -destinationImageDescriptorForSourceImages:... - the optional sizing method of the protocol, MPSNeuralNetworkTypes.h:449. The size arithmetic is the header's own DestSize and Offset from MPSNeuralNetworkTypes.h:379-431, transcribed one for one, and the two shape cases in the run above compare this object's arithmetic with the release's own compiled arithmetic over a 3x3 source and a 2x2 window under SizeSame. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "a padding policy carrying an MPSNNPaddingMethod and a label, which sets the destination image's size and the MPSCNNKernel offset from the kernel's own window and stride. The coding pair round-trips within this port under the key paddingMethod, as MPSKernel9.m's label does: the release's own archive keys for a padding policy are in no header. NOT implemented and not invented: +paddingForTensorflowAveragePooling and +paddingForTensorflowAveragePoolingValidOnly, which carry ios(11.3), and -inverse, which carries the same date and whose row -[MPSNNPadding inverse] already says introduced 11.3. An earlier form of this object also defined +paddingForTensorflowMaxPooling, +paddingForTensorflowConvolution, +paddingForCaffePooling, +paddingForCaffeConvolution and +paddingForMXNetPadding; no Apple header in the SDKs of 16.4 or 26.2 declares any of the five, and a public class method no release ever had is API the port would be inventing",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -958,9 +965,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 as one of the four MPSNNBinaryArithmeticNode subclasses (MPSNNGraphNodes.h:2199) and differs from its base by the kernel class: MPSImageDivide, whose -initWithDevice: MPSImageMath.h:172 declares on the concrete class. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "the first image divided by the second channel by channel into the destination the graph allocated, with the base's scale, bias and clamp. The case above gives 0.1 0.1 0.1 0.1 for (1,2,3,4)/(10,20,30,40), the release's own answer on the same inputs",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -968,9 +976,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 and is a virtual base: MPSNNGraphNodes.h:340 says \"This is a virtual base class. Make MPSNNFilterNode subclass objects instead\", and :341 marks -init NS_UNAVAILABLE. MPSNNGraph11.m carries the edges every subclass in the file shares - sources, result node, kernel, the device the kernel is made against, the shape the result takes - and the result-node pairing a walk reads, which is registered where the result node is made because a caller wires the filters before the graph exists. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "the base of every filter node in a graph: its sources, its one result image position, the kernel it stands for, and -initWithDevice: as this package's own way to build one since -init is unavailable. An abstract node in a graph says so once in the log and the walk carries on, because the release asserts and an API in this port never crashes its caller. The five methods of the class's own @interface that this object does not implement are the gradient and training half - gradientFilterWithSource:, gradientFilterWithSources:, gradientFiltersWithSources:, gradientFiltersWithSource: and trainingGraphWithSourceGradient:nodeHandler: - each with its header line and release named at the @implementation; MPSNNGradientFilterNode is 12.0 by the same first-rung.py run, so implementing any of them would put a 12.0 name in an 11.0 object",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -978,9 +987,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 and the release carries no graph, filter or protocol of MPS at either band end, so nothing in iOS 6 does this work or stands in for it. MPSNNGraph is a walk: MPSNNGraph.h:64-68 says the constructor \"will start with the indicated result image, and look to see what MPSNNFilterNode produced it, then look to its dependencies and so forth to reveal the subsection of the graph necessary to compute the image\", and :60-61 that nodes not on the way back to a source are ignored. MPSNNGraph11.m implements that walk over the node table the release keeps internally, allocates each node's result image from the shape its padding policy gives for the shape it reads, and hands each node the kernel object the node holds. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "the graph walks backwards from the result node to the filters that produced it and to their sources, in dependency order, and -encodeToCommandBuffer: walks them forwards; each node runs the MPSImage kernel it holds over the port's CPU-side images, so a result is in the image when the encode returns, which is at least as strong as the release's \"valid once the command buffer completes\". sourceImageHandles reports the caller's images in the order the walk first met them. resultImageIsNeeded:NO answers nil on the left of the encode, per MPSNNGraph.h:72. Seventeen methods of the class are NOT implemented and each one's release is named at the @implementation: thirteen are API of a later release (11.3, 12.0, 12.1, 13.0), two are the gradient half, and two are the pre-11.3 deprecated spellings of the two initializers this object does implement. -initWithCoder:device: is MPSKernel's, and a graph from an archive has no result node, so its encode refuses in one line rather than answering with an image nothing produced",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -988,9 +998,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 and is the graph's POSITION rather than its work: MPSNNGraphNodes.h:161-163 has the caller's own image nodes as the graph's inputs, and a filter's result node is the position that filter's output occupies. -init is NS_UNAVAILABLE, so the release never builds one by name, and MPSNNGraph11.m holds the node's handle, format, allocator and export flag at the defaults MPSNNGraphNodes.h:174/:182/:205 state. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "a position in a graph carrying an id<MPSHandle>, a format, an image allocator and the exportFromGraph flag, with +nodeWithHandle: and +exportedNodeWithHandle: to make one; -init is unavailable in the release and nothing here calls it. The image currently bound to the position is the port's own edge to it, under a prefixed selector, and the walk is what fills it",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -1008,9 +1019,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 as one of the four MPSNNBinaryArithmeticNode subclasses (MPSNNGraphNodes.h:2194) and differs from its base by the kernel class: MPSImageMultiply, whose -initWithDevice: MPSImageMath.h:152 declares on the concrete class. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "the two images multiplied channel by channel into the destination the graph allocated, with the base's scale, bias and clamp. The case above gives 10 40 90 160 for (1,2,3,4)x(10,20,30,40), the release's own answer on the same inputs",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -1028,9 +1040,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 and is the graph's state position, of which this port's graph carries none: MPSNNGraph.h:183-184 has the source states be the MPSState objects the caller passes in, and the nodes of MPSNNGraph11.m run image kernels and take no state, so a graph of them produces no state of its own. The class is still built, because it is the base of the 12.0 gradient half the object does not carry and a caller holding an MPSNNStateNode* needs the base to exist. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "a position in a graph carrying an id<MPSHandle> and the exportFromGraph flag, with -init unavailable in the release. A graph of this object's nodes reports no source states, no intermediate images and no result states, and nil rather than an empty array for each, because there is nothing to report",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -1038,9 +1051,10 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 11 as one of the four MPSNNBinaryArithmeticNode subclasses (MPSNNGraphNodes.h:2189) and differs from its base by the kernel class: MPSImageSubtract, whose -initWithDevice: MPSImageMath.h:132 declares on the concrete class. Measured 2026-10-03 on this host by tests/backports/host/mpsnn/run.sh: 13 cases, 11 of them the release's own MPSNNGraph and this port's on the same inputs, case for case and value for value, in two builds of one case file where the port's classes are renamed and the transcript's class lines say which class answered. The oracle is the release's own graph, which builds, walks, encodes and answers here: MTLCreateSystemDefaultDevice is AGXG16SDevice on an Apple M4 Pro, a queue's command buffer commits and completes with status 4, all 24 Apple-spelled node class names are present, and Apple's MPSNNGraph answers 11 22 33 44 for (1,2,3,4)+(10,20,30,40) - tests/backports/host/mpsnn/probe.txt. What earlier work recorded about this host, that its Metal cannot commit a command buffer and that nine of the graph's node classes are absent, was measured by a probe that built its buffer with -[MTLDevice newCommandBuffer] (MTLDevice.h:507-518 declares no such selector; -commandBuffer belongs to MTLCommandQueue) and asked NSClassFromString for four names no Apple header declares, MPSNNAddNode, MPSNNConvolutionNode, MPSNNPoolingMaxNode and MPSNNActivationNode. The object is MPSNNGraph11.m, whose fourteen classes first-rung.py places at 11.0",
+      "effect": "the second image subtracted from the first channel by channel into the destination the graph allocated, with the base's scale, bias and clamp. The case above gives -9 -18 -27 -36 for (1,2,3,4)-(10,20,30,40), the release's own answer on the same inputs",
+      "facts": "facts/MetalPerformanceShaders/Graph.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
