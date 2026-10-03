@@ -1,6 +1,5 @@
 #import "CharonGCSnapshot.h"
 #import "CharonGC.h"
-#import <objc/message.h>
 
 // The two V100 structures of iOS 7.0: the plain game's and the extended game's. They are one object
 // because both symbols of each pair are first exported by the same release - release-split reads the
@@ -41,28 +40,6 @@ BOOL GCExtendedGamepadSnapShotDataV100FromNSData(GCExtendedGamepadSnapShotDataV1
 
 @class GCExtendedGamepadSnapshot;
 
-// The value a button reads, and an axis, on a machine where nothing is attached. There is no controller
-// and no element, so every value is zero - and a zeroed structure is exactly what the encoder above
-// was measured on: 36 bytes beginning 0001 2400 for the plain game and 60 beginning 0001 3c00 for the
-// extended one. A nil element reads zero rather than being sent a message it cannot answer.
-// The read is a typed send rather than [element value], because several classes the port declares answer
-// a selector of that name with a different type and the compiler refuses to pick one. Asking the
-// element whether it answers the selector first is what makes a missing element read zero.
-static float CharonGCReadFloat(id element, SEL which);
-
-static float CharonGCButtonValue(id element)
-{
-    return CharonGCReadFloat(element, @selector(value));
-}
-
-static float CharonGCReadFloat(id element, SEL which)
-{
-    if (element == nil || ![element respondsToSelector:which])
-        return 0.0f;
-    float (*read)(id, SEL) = (float (*)(id, SEL))objc_msgSend;
-    return read(element, which);
-}
-
 @implementation GCGamepadSnapshot {
     NSData *_snapshotData;
 }
@@ -97,13 +74,15 @@ static float CharonGCReadFloat(id element, SEL which)
 }
 
 // The decoded values become the gamepad's own elements, so a snapshot read back answers the same
-// numbers the data holds.
+// numbers the data holds. The direction pad's two axes are two elements of their own - GCElements7.m
+// gives a pad its xAxis and yAxis, and `charon_setValue:` is declared on GCControllerAxisInput, which
+// a pad does not answer - so each value goes to the axis it names.
 - (void)charon_applyV100:(GCGamepadSnapShotDataV100 *)v100
 {
     GCControllerDirectionPad *dpad = (GCControllerDirectionPad *)[self charon_elementNamed:@"Direction Pad"];
     if (dpad != nil) {
-        [(GCControllerAxisInput *)dpad charon_setValue:v100->dpadX];
-        [(GCControllerAxisInput *)dpad charon_setValue:v100->dpadY];
+        [(GCControllerAxisInput *)dpad.xAxis charon_setValue:v100->dpadX];
+        [(GCControllerAxisInput *)dpad.yAxis charon_setValue:v100->dpadY];
     }
     NSDictionary *buttons = @{@"Button A": @(v100->buttonA), @"Button B": @(v100->buttonB),
                               @"Button X": @(v100->buttonX), @"Button Y": @(v100->buttonY),
@@ -128,15 +107,15 @@ static float CharonGCReadFloat(id element, SEL which)
     memset(&v100, 0, sizeof(v100));
     v100.version = CHARON_GCGAMEPAD_SNAPSHOT_VERSION_V100;
     v100.size = (uint16_t)sizeof(v100);
-    id dpad = [self charon_elementNamed:@"Direction Pad"];
-    v100.dpadX = CharonGCReadFloat(dpad, @selector(xAxis));
-    v100.dpadY = CharonGCReadFloat(dpad, @selector(yAxis));
-    v100.buttonA = CharonGCButtonValue([self charon_elementNamed:@"Button A"]);
-    v100.buttonB = CharonGCButtonValue([self charon_elementNamed:@"Button B"]);
-    v100.buttonX = CharonGCButtonValue([self charon_elementNamed:@"Button X"]);
-    v100.buttonY = CharonGCButtonValue([self charon_elementNamed:@"Button Y"]);
-    v100.leftShoulder = CharonGCButtonValue([self charon_elementNamed:@"Left Shoulder"]);
-    v100.rightShoulder = CharonGCButtonValue([self charon_elementNamed:@"Right Shoulder"]);
+    GCControllerDirectionPad *dpad = (GCControllerDirectionPad *)[self charon_elementNamed:@"Direction Pad"];
+    v100.dpadX = charon_gc_pad_axis(dpad, @selector(xAxis));
+    v100.dpadY = charon_gc_pad_axis(dpad, @selector(yAxis));
+    v100.buttonA = charon_gc_button_value([self charon_elementNamed:@"Button A"]);
+    v100.buttonB = charon_gc_button_value([self charon_elementNamed:@"Button B"]);
+    v100.buttonX = charon_gc_button_value([self charon_elementNamed:@"Button X"]);
+    v100.buttonY = charon_gc_button_value([self charon_elementNamed:@"Button Y"]);
+    v100.leftShoulder = charon_gc_button_value([self charon_elementNamed:@"Left Shoulder"]);
+    v100.rightShoulder = charon_gc_button_value([self charon_elementNamed:@"Right Shoulder"]);
     return [[GCGamepadSnapshot alloc] initWithSnapshotData:NSDataFromGCGamepadSnapShotDataV100(&v100)];
 }
 

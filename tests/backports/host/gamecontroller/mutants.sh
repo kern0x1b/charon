@@ -161,16 +161,72 @@ check_touchpad '    GCTouchState state;
     if (touchDown)' \
            'touchpad-inverts-the-down-flag'
 
+# The two snapshot objects of the 9.0 rung. Each mutant is the shape of a defect the objects group
+# actually found, so both of them are silent in the source and loud in the bytes: one reads a field
+# out of its neighbour's element, the other reads the direction pad as if it were an axis. A mutant
+# that stops the build is RUN FAILED and never counted as noticed.
+objects_rel=packages/a/apple-backports/GameController/GCSnapshotObjects9.m
+objects_file="$tree/$objects_rel"
+restore_objects() {
+    git -C "$tree" show "HEAD:$objects_rel" > "$objects_file"
+}
+mutate_objects() {
+    python3 -c '
+import sys
+path, old, new = sys.argv[1], sys.argv[2], sys.argv[3]
+text = open(path).read()
+if old not in text:
+    sys.exit(3)
+open(path, "w").write(text.replace(old, new, 1))
+' "$objects_file" "$1" "$2"
+}
+check_objects() {
+    old=$1
+    new=$2
+    name=$3
+    if ! mutate_objects "$old" "$new"; then
+        printf 'MUTANT %-52s RUN FAILED (the text to mutate is not in the file: the mutation is wrong, not the code)\n' "$name"
+        restore_objects
+        failures=$((failures + 1))
+        return 0
+    fi
+    mkdir -p "$out/$name"
+    if BUILD="$out/$name" sh "$here/run.sh" > "$out/$name.log" 2>&1; then
+        printf 'MUTANT %-52s NOTICED=no (the differential passed with the mutant in place)\n' "$name"
+        failures=$((failures + 1))
+    else
+        lines=$(grep -c MISMATCH "$out/$name.log" || true)
+        lines=$((lines + $(grep -c DIFFERENT "$out/$name.log" || true)))
+        if [ "$lines" -gt 0 ]; then
+            printf 'MUTANT %-52s NOTICED=yes (%s differing lines, the run exited non-zero)\n' "$name" "$lines"
+            grep -E 'MISMATCH|DIFFERENT' "$out/$name.log" | head -3 | sed 's/^/    /'
+        else
+            printf 'MUTANT %-52s RUN FAILED (non-zero exit and no differing line: the build broke, which is not notice)\n' "$name"
+            tail -3 "$out/$name.log" | sed 's/^/    /'
+            failures=$((failures + 1))
+        fi
+    fi
+    restore_objects
+}
+
+check_objects '@"Button X": @(fields->buttonY)' \
+             '@"Button X": @(fields->buttonX)' \
+             'snapshot-field-read-from-the-wrong-element'
+
+check_objects 'fields.dpadX = charon_gc_pad_axis(dpad, @selector(xAxis));' \
+             'fields.dpadX = charon_gc_read_float(dpad, @selector(xAxis));' \
+             'snapshot-direction-pad-read-as-an-axis'
+
 # The header's own default is the other thing both copies are held to, and it contradicts the
 # header's comment.
 check_touchpad '_reportsAbsoluteTouchSurfaceValues = NO;' \
            '_reportsAbsoluteTouchSurfaceValues = YES;' \
            'touchpad-default-follows-the-header-comment'
 
-if ! git -C "$tree" diff --quiet -- "$rel" "$touchpad_rel"; then
+if ! git -C "$tree" diff --quiet -- "$rel" "$touchpad_rel" "$objects_rel"; then
     echo "MUTANTS: the source is left changed; a mutation was not put back"
     failures=$((failures + 1))
 fi
 
-echo "mutants: 10 run, $failures not noticed"
+echo "mutants: 12 run, $failures not noticed"
 [ "$failures" -eq 0 ]

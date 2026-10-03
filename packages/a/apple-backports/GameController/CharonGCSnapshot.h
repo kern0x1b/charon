@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <GameController/GameController.h>
+#import <objc/message.h>
 
 // The encoding and the decoding the three snapshot objects share, written once as static inline so
 // that each object holds its own copy and no object names a symbol another one defines.
@@ -81,4 +82,41 @@ static inline BOOL charon_gc_snapshot_read(void *out, NSData *data, size_t lengt
     if (take > 0)
         [data getBytes:out length:take];
     return YES;
+}
+
+// What a button or an axis reads on a machine where nothing is attached. There is no controller and no
+// element, so every value is zero - and a zeroed structure is exactly what the encoders above were
+// measured on. A nil element reads zero rather than being sent a message it cannot answer.
+//
+// The read is a typed send through objc_msgSend rather than [element value], because several classes
+// the port declares answer a selector of that name with a different type and the compiler refuses to
+// pick one. Asking the element whether it answers the selector first is what makes a missing element
+// read zero. This lives here and not in the object that first needed it because both snapshot objects
+// read their live values through it, and a C function shared between two backport files is the trap
+// `A C function shared between backport files` describes.
+static inline float charon_gc_read_float(id element, SEL which)
+{
+    if (element == nil || ![element respondsToSelector:which])
+        return 0.0f;
+    float (*read)(id, SEL) = (float (*)(id, SEL))objc_msgSend;
+    return read(element, which);
+}
+
+static inline float charon_gc_button_value(id element)
+{
+    return charon_gc_read_float(element, @selector(value));
+}
+
+// One of a direction pad's two axes, read as the float it is. It is a read of its own because a pad
+// is not an axis: `xAxis` and `yAxis` answer an element, and asking the pad for a float through
+// charon_gc_read_float sends `xAxis` to the axis and reads nothing, which is silent - the answer is
+// zero and zero is what a released stick reads, so a dpad written that way looks right and holds no
+// value. Measured by the `snapshot objects` group of tests/backports/host/gamecontroller, where a
+// dpadX of -0.5 in the port's own bytes against the host encoder's is what found it.
+static inline float charon_gc_pad_axis(id pad, SEL axis)
+{
+    if (pad == nil || ![pad respondsToSelector:axis])
+        return 0.0f;
+    id element = ((id (*)(id, SEL))objc_msgSend)(pad, axis);
+    return charon_gc_read_float(element, @selector(value));
 }

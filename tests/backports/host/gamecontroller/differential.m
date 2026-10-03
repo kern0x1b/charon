@@ -95,6 +95,18 @@
 - (id<LController>)capture;
 @end
 
+// -saveSnapshot is a method and not a property, so it is reached through this one and not through
+// valueForKey:, which would look for an ivar of that name and raise. The snapshot classes and their
+// own initialiser are here for the same reason.
+@protocol LSaves <NSObject>
+- (id)saveSnapshot;
+@end
+
+@protocol LSnapshot <NSObject>
+@property (readonly) NSData *snapshotData;
+- (instancetype)initWithSnapshotData:(NSData *)data;
+@end
+
 @interface NSObject (LFactory)
 + (id<LController>)controllerWithExtendedGamepad;
 + (id<LController>)controllerWithMicroGamepad;
@@ -888,6 +900,274 @@ static NSArray *gamepadInfo(NSString *name)
     return log;
 }
 
+// The two snapshot classes of 9.0 and the one -saveSnapshot that shares their release, against the
+// host's own encoder rather than against the port's round trip.
+//
+// Two oracles, and which one a line uses is said in the line:
+//
+//   - the host's `-saveSnapshot` on an untouched controller, which is the only answer the host's own
+//     class can give: `+[GCController controllerWithExtendedGamepad].gamepad -saveSnapshot` measures
+//     63 bytes beginning 0101 3f00. The port's own -saveSnapshot over an untouched gamepad must
+//     encode the same 63 bytes.
+//   - the host's `NSDataFromGCExtendedGamepadSnapshotData` and `NSDataFromGCMicroGamepadSnapshotData`
+//     over the SAME field values, which is the oracle that can see a field read from the wrong
+//     element: the port's -saveSnapshot reads the values out of its own elements, the host's encoder
+//     is handed the values directly, and the two byte strings must be equal.
+//
+// The read-back lines are the port's alone. `-[GCGamepadSnapshot setSnapshotData:]` on the host
+// reaches -[GCControllerAxisInput _setValue:queue:] through the profile's own setDpad:x:y: and
+// raises, so the host cannot be the other side of an initialiser; every read-back line names the
+// value that went in and the value that came back, and a field read from the wrong element prints
+// MISMATCH.
+//
+// There is no host micro game: `+[GCController controllerWithMicroGamepad].gamepad` answers nil on
+// this host and there is no `+controllerWithGamepad`, so the micro case is the port's -saveSnapshot
+// against the host's own encoder for the same values, which needs no host game.
+static void writeValues(id<LProfile> gamepad, NSDictionary *values)
+{
+    for (NSString *name in values) {
+        id element = gamepad.elements[name];
+        if (element == nil)
+            continue;
+        if ([element respondsToSelector:@selector(setValueForXAxis:yAxis:)])
+            [(id<LDpad>)element setValueForXAxis:[values[name][0] floatValue] yAxis:[values[name][1] floatValue]];
+        else
+            [(id<LButton>)element setValue:[values[name][0] floatValue]];
+    }
+}
+
+// What one element of a rebuilt snapshot reads, in the one shape the matrix above is written in: a
+// direction pad is its two axes, everything else is its value. `f()` is the harness's own float
+// spelling, so the two sides of the comparison print the same number the same way.
+// What one element of a rebuilt snapshot must read: the value(s) that went in, in the one shape
+// elementReading below prints them in, so "want" and "got" are comparable as text.
+static NSString *elementWant(NSArray *values)
+{
+    NSMutableArray *out = [NSMutableArray array];
+    for (NSNumber *value in values)
+        [out addObject:[NSString stringWithFormat:@"%f", [value floatValue]]];
+    return [out componentsJoinedByString:@","];
+}
+
+static NSString *elementReading(id element)
+{
+    if (element == nil)
+        return @"(no element)";
+    if ([kind(element) isEqual:@"dpad"]) {
+        id<LDpad> d = element;
+        return [NSString stringWithFormat:@"%f,%f", ((id<LAxis>)d.xAxis).value, ((id<LAxis>)d.yAxis).value];
+    }
+    return [NSString stringWithFormat:@"%f", ((id<LAxis>)element).value];
+}
+
+// The snapshot a game makes, or nil where it makes none. `attemptOut` around it, because the host's
+// own answers raise for some of the calls and a raise must be recorded rather than take the run down.
+static id saveSnapshotOf(id gamepad, NSString **what)
+{
+    if (![gamepad respondsToSelector:@selector(saveSnapshot)]) {
+        *what = @"no saveSnapshot";
+        return nil;
+    }
+    return attemptOut(^id { return [(id<LSaves>)gamepad saveSnapshot]; }, what);
+}
+
+static NSString *hexData(NSData *data)
+{
+    if (data == nil)
+        return @"(nil)";
+    const unsigned char *bytes = (const unsigned char *)[data bytes];
+    NSMutableString *out = [NSMutableString stringWithFormat:@"%lu:", (unsigned long)[data length]];
+    for (NSUInteger i = 0; i < [data length]; i++)
+        [out appendFormat:@" %02x", bytes[i]];
+    return out;
+}
+
+static NSArray *extendedSnapshotValues(void)
+{
+    // A matrix of values, each one on its own and two at a time, so a field read from its neighbour's
+    // element moves a byte. The first is all zero, which is the untouched controller.
+    return @[@{@"Direction Pad": @[@0.0f, @0.0f], @"Button A": @[@0.0f], @"Button B": @[@0.0f],
+               @"Button X": @[@0.0f], @"Button Y": @[@0.0f], @"Left Shoulder": @[@0.0f],
+               @"Right Shoulder": @[@0.0f], @"Left Thumbstick": @[@0.0f, @0.0f],
+               @"Right Thumbstick": @[@0.0f, @0.0f], @"Left Trigger": @[@0.0f],
+               @"Right Trigger": @[@0.0f], @"Left Thumbstick Button": @[@0.0f],
+               @"Right Thumbstick Button": @[@0.0f]},
+            @{@"Direction Pad": @[@0.5f, @(-0.25f)], @"Button A": @[@0.25f], @"Button B": @[@0.5f],
+              @"Button X": @[@0.75f], @"Button Y": @[@1.0f], @"Left Shoulder": @[@0.125f],
+              @"Right Shoulder": @[@0.375f], @"Left Thumbstick": @[@(-1.0f), @0.25f],
+              @"Right Thumbstick": @[@0.5f, @(-0.5f)], @"Left Trigger": @[@0.625f],
+              @"Right Trigger": @[@0.875f], @"Left Thumbstick Button": @[@1.0f],
+              @"Right Thumbstick Button": @[@1.0f]},
+            @{@"Direction Pad": @[@(-1.0f), @1.0f], @"Button A": @[@1.0f], @"Button B": @[@0.0f],
+              @"Button X": @[@0.0f], @"Button Y": @[@0.5f], @"Left Shoulder": @[@0.5f],
+              @"Right Shoulder": @[@0.0f], @"Left Thumbstick": @[@0.75f, @(-0.75f)],
+              @"Right Thumbstick": @[@(-0.25f), @1.0f], @"Left Trigger": @[@0.0f],
+              @"Right Trigger": @[@1.0f], @"Left Thumbstick Button": @[@1.0f],
+              @"Right Thumbstick Button": @[@0.0f]}];
+}
+
+static NSArray *microSnapshotValues(void)
+{
+    return @[@{@"Direction Pad": @[@0.0f, @0.0f], @"Button A": @[@0.0f], @"Button X": @[@0.0f]},
+            @{@"Direction Pad": @[@(-0.5f), @0.75f], @"Button A": @[@0.25f], @"Button X": @[@1.0f]},
+            @{@"Direction Pad": @[@1.0f, @(-1.0f)], @"Button A": @[@1.0f], @"Button X": @[@0.0f]}];
+}
+
+static NSArray *snapshotObjectGroup(BOOL port)
+{
+    NSMutableArray *log = [NSMutableArray array];
+    Class controllerClass = NSClassFromString(port ? @"CharonHostGCController" : @"GCController");
+    NSString *what = nil;
+
+    // The extended case. The host's own untouched -saveSnapshot is not a line here: it is an object's
+    // save and the port has no -[GCExtendedGamepad saveSnapshot] to ask (its row stays absent, and the
+    // read-back group below checks that it is absent), so the two sides would be comparing an object
+    // with an encoder. What that measurement is - 63 bytes beginning 0101 3f00, and byte 60 written 01
+    // for a controller nothing has touched - is in facts/GameController/Snapshots.md, where it is a
+    // statement about the host and not a comparison.
+    id<LProfile> extended = [controllerClass controllerWithExtendedGamepad].extendedGamepad;
+
+    // The extended matrix. The reference is the host's own encoder for each set of field values, and
+    // the port's own encoder for the same values must print the same bytes; the read-back group below
+    // is what holds the port's class to those bytes, field by field.
+    NSUInteger index = 0;
+    for (NSDictionary *values in extendedSnapshotValues()) {
+        GCExtendedGamepadSnapshotData fields;
+        memset(&fields, 0, sizeof(fields));
+        fields.dpadX = [values[@"Direction Pad"][0] floatValue];
+        fields.dpadY = [values[@"Direction Pad"][1] floatValue];
+        fields.buttonA = [values[@"Button A"][0] floatValue];
+        fields.buttonB = [values[@"Button B"][0] floatValue];
+        fields.buttonX = [values[@"Button X"][0] floatValue];
+        fields.buttonY = [values[@"Button Y"][0] floatValue];
+        fields.leftShoulder = [values[@"Left Shoulder"][0] floatValue];
+        fields.rightShoulder = [values[@"Right Shoulder"][0] floatValue];
+        fields.leftThumbstickX = [values[@"Left Thumbstick"][0] floatValue];
+        fields.leftThumbstickY = [values[@"Left Thumbstick"][1] floatValue];
+        fields.rightThumbstickX = [values[@"Right Thumbstick"][0] floatValue];
+        fields.rightThumbstickY = [values[@"Right Thumbstick"][1] floatValue];
+        fields.leftTrigger = [values[@"Left Trigger"][0] floatValue];
+        fields.rightTrigger = [values[@"Right Trigger"][0] floatValue];
+        fields.supportsClickableThumbsticks = YES;
+        fields.leftThumbstickButton = [values[@"Left Thumbstick Button"][0] floatValue] > 0;
+        fields.rightThumbstickButton = [values[@"Right Thumbstick Button"][0] floatValue] > 0;
+        NSData *encoded = port ? charonHost_NSDataFromGCExtendedGamepadSnapshotData(&fields)
+                               : NSDataFromGCExtendedGamepadSnapshotData(&fields);
+        [log addObject:[NSString stringWithFormat:@"extended set %lu encoder %@", (unsigned long)index, hexData(encoded)]];
+        index++;
+    }
+
+    // The micro case. Here the port has its own -saveSnapshot and the host's own encoder is the
+    // oracle for the same values, so the two byte strings are the port's object against the host's:
+    // a field read from the wrong element moves a byte. There is no host micro game to save -
+    // +[GCController controllerWithMicroGamepad].gamepad answers nil on this host - so the host side
+    // of this line is the encoder alone, and the port's own game is what carries the values.
+    index = 0;
+    for (NSDictionary *values in microSnapshotValues()) {
+        GCMicroGamepadSnapshotData fields;
+        memset(&fields, 0, sizeof(fields));
+        fields.dpadX = [values[@"Direction Pad"][0] floatValue];
+        fields.dpadY = [values[@"Direction Pad"][1] floatValue];
+        fields.buttonA = [values[@"Button A"][0] floatValue];
+        fields.buttonX = [values[@"Button X"][0] floatValue];
+        NSData *reference = NSDataFromGCMicroGamepadSnapshotData(&fields);
+        [log addObject:[NSString stringWithFormat:@"micro set %lu host encoder %@", (unsigned long)index, hexData(reference)]];
+
+        NSString *built = @"no micro gamepad to save on this side";
+        id<LProfile> live = [controllerClass controllerWithMicroGamepad].microGamepad;
+        if (live != nil) {
+            writeValues(live, values);
+            built = [NSString stringWithFormat:@"%@", hexData([(id<LSnapshot>)saveSnapshotOf(live, &what) snapshotData])];
+        }
+        [log addObject:[NSString stringWithFormat:@"micro set %lu saveSnapshot %@", (unsigned long)index, built]];
+        index++;
+    }
+    return log;
+}
+
+static NSArray *snapshotReadBackLines(void)
+{
+    NSMutableArray *log = [NSMutableArray array];
+    NSString *snapshotName = @"CharonHostGCExtendedGamepadSnapshot";
+    NSString *microSnapshotName = @"CharonHostGCMicroGamepadSnapshot";
+
+    // The row -[GCExtendedGamepad saveSnapshot] stays absent on, and its own words are that
+    // respondsToSelector: answers honestly and an unchecked call raises. So the port must NOT answer
+    // it, and MISMATCH on this line is the method appearing.
+    id<LProfile> extended = [NSClassFromString(@"CharonHostGCController") controllerWithExtendedGamepad].extendedGamepad;
+    [log addObject:[NSString stringWithFormat:@"extended -saveSnapshot is absent: %@%@",
+                     [extended respondsToSelector:@selector(saveSnapshot)] ? @"NO" : @"yes",
+                     [extended respondsToSelector:@selector(saveSnapshot)] ? @" MISMATCH" : @""]];
+
+    {
+        NSArray *names = @[@"Direction Pad", @"Button A", @"Button B", @"Button X", @"Button Y",
+                           @"Left Shoulder", @"Right Shoulder", @"Left Thumbstick", @"Right Thumbstick",
+                           @"Left Trigger", @"Right Trigger", @"Left Thumbstick Button",
+                           @"Right Thumbstick Button"];
+        NSUInteger round = 0;
+        for (NSDictionary *values in extendedSnapshotValues()) {
+            GCExtendedGamepadSnapshotData fields;
+            memset(&fields, 0, sizeof(fields));
+            fields.dpadX = [values[@"Direction Pad"][0] floatValue];
+            fields.dpadY = [values[@"Direction Pad"][1] floatValue];
+            fields.buttonA = [values[@"Button A"][0] floatValue];
+            fields.buttonB = [values[@"Button B"][0] floatValue];
+            fields.buttonX = [values[@"Button X"][0] floatValue];
+            fields.buttonY = [values[@"Button Y"][0] floatValue];
+            fields.leftShoulder = [values[@"Left Shoulder"][0] floatValue];
+            fields.rightShoulder = [values[@"Right Shoulder"][0] floatValue];
+            fields.leftThumbstickX = [values[@"Left Thumbstick"][0] floatValue];
+            fields.leftThumbstickY = [values[@"Left Thumbstick"][1] floatValue];
+            fields.rightThumbstickX = [values[@"Right Thumbstick"][0] floatValue];
+            fields.rightThumbstickY = [values[@"Right Thumbstick"][1] floatValue];
+            fields.leftTrigger = [values[@"Left Trigger"][0] floatValue];
+            fields.rightTrigger = [values[@"Right Trigger"][0] floatValue];
+            fields.supportsClickableThumbsticks = YES;
+            fields.leftThumbstickButton = [values[@"Left Thumbstick Button"][0] floatValue] > 0;
+            fields.rightThumbstickButton = [values[@"Right Thumbstick Button"][0] floatValue] > 0;
+
+            id rebuilt = [(id<LSnapshot>)[NSClassFromString(snapshotName) alloc]
+                initWithSnapshotData:NSDataFromGCExtendedGamepadSnapshotData(&fields)];
+            [log addObject:[NSString stringWithFormat:@"extended round trip %lu class %@",
+                             (unsigned long)round, rebuilt ? NSStringFromClass([(NSObject *)rebuilt class]) : @"(nil)"]];
+            for (NSString *name in names) {
+                id element = [(id<LProfile>)rebuilt elements][name];
+                NSString *want = elementWant(values[name]);
+                NSString *got = elementReading(element);
+                [log addObject:[NSString stringWithFormat:@"extended round trip %lu %@ want %@ got %@%@",
+                                 (unsigned long)round, name, want, got,
+                                 [got isEqualToString:want] ? @"" : @" MISMATCH"]];
+            }
+            round++;
+        }
+
+        NSUInteger microRound = 0;
+        for (NSDictionary *values in microSnapshotValues()) {
+            GCMicroGamepadSnapshotData fields;
+            memset(&fields, 0, sizeof(fields));
+            fields.dpadX = [values[@"Direction Pad"][0] floatValue];
+            fields.dpadY = [values[@"Direction Pad"][1] floatValue];
+            fields.buttonA = [values[@"Button A"][0] floatValue];
+            fields.buttonX = [values[@"Button X"][0] floatValue];
+
+            id rebuilt = [(id<LSnapshot>)[NSClassFromString(microSnapshotName) alloc]
+                initWithSnapshotData:NSDataFromGCMicroGamepadSnapshotData(&fields)];
+            [log addObject:[NSString stringWithFormat:@"micro round trip %lu class %@",
+                             (unsigned long)microRound, rebuilt ? NSStringFromClass([(NSObject *)rebuilt class]) : @"(nil)"]];
+            for (NSString *name in @[@"Direction Pad", @"Button A", @"Button X"]) {
+                id element = [(id<LProfile>)rebuilt elements][name];
+                NSString *want = elementWant(values[name]);
+                NSString *got = elementReading(element);
+                [log addObject:[NSString stringWithFormat:@"micro round trip %lu %@ want %@ got %@%@",
+                                 (unsigned long)microRound, name, want, got,
+                                 [got isEqualToString:want] ? @"" : @" MISMATCH"]];
+            }
+            microRound++;
+        }
+    }
+    return log;
+}
+
 int main(void)
 {
     // unbuffered, so a line measured before a crash is not lost with it
@@ -997,6 +1277,34 @@ int main(void)
                     failures++;
                     if (shown++ < 20)
                         printf("DIFFERENT snapshot function line %lu:\n  host %s\n  port %s\n", (unsigned long)i, x.UTF8String, y.UTF8String);
+                }
+            }
+        }
+        {
+            NSArray *a = snapshotObjectGroup(false), *b = snapshotObjectGroup(true);
+            printf("snapshot objects: %lu lines from the host, %lu from the port\n", (unsigned long)a.count, (unsigned long)b.count);
+            int shown = 0;
+            for (NSUInteger i = 0; i < MAX(a.count, b.count); i++) {
+                checks++;
+                NSString *x = i < a.count ? a[i] : @"(none)", *y = i < b.count ? b[i] : @"(none)";
+                if (![x isEqual:y]) {
+                    failures++;
+                    if (shown++ < 20)
+                        printf("DIFFERENT snapshot object line %lu:\n  host %s\n  port %s\n", (unsigned long)i, x.UTF8String, y.UTF8String);
+                }
+            }
+        }
+        {
+            // The read-back is the port's alone, so it is held against the value that went in rather
+            // than against a host line that does not exist. A line carrying MISMATCH is a failure of
+            // the run, which is what makes the group a check and not a print.
+            NSArray *lines = snapshotReadBackLines();
+            printf("snapshot read back: %lu lines from the port\n", (unsigned long)lines.count);
+            for (NSString *line in lines) {
+                checks++;
+                if ([line rangeOfString:@" MISMATCH"].location != NSNotFound) {
+                    failures++;
+                    printf("  %s\n", line.UTF8String);
                 }
             }
         }
