@@ -47,6 +47,19 @@ NS_ASSUME_NONNULL_BEGIN
 // same arrangement CharonMediaPlayerProtocols.h and CharonWebExtension.h use for the same reason.
 @protocol MTLCommandBuffer;
 
+// kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder, which VTIsHardwareDecodeSupported asks
+// the release by.
+//
+// It is not missing from the 16.4 SDK's VTDecompressionProperties.h: that file puts the whole
+// kVTVideoDecoderSpecification_* block inside `#if !TARGET_OS_IPHONE` (lines 140 to 184), so an armv7 build
+// cannot see the declaration at all, while SDK 26.2's copy of the same file declares it at line 172 with no
+// such guard and says `API_AVAILABLE(macos(10.9), ios(17.0), tvos(17.0), visionos(1.0))`. The SYMBOL is the
+// release's own well before either SDK date - `_kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder`
+// is in the 4.3 and the 6.1.3 armv7 caches (tools/corpus/dump-cache.lua, 2026-10-03) - so this DECLARES it
+// and does not define it, with the availability attribute left out because the port builds for
+// armv7-apple-ios6.0 and an ios(17.0) attribute would hide the declaration from that target.
+extern const CFStringRef kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder;
+
 // The error domain VTFrameProcessor.h and VTFrameProcessorErrors.h of SDK 26.2 declare, and the codes
 // the second of them enumerates, transcribed with Apple's own values: a caller compares a code against
 // these names, so they are part of the surface the port carries and not an implementation detail. The
