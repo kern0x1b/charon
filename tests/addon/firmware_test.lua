@@ -129,6 +129,33 @@ function failures(opt)
         }
     }
 
+    -- A tree unpacked from an IPS image carries the image's own permissions, and `dev` in a 6.1.3
+    -- root filesystem is dr-xr-xr-x: a removal cannot empty it, because unlinking an entry inside a
+    -- directory needs write permission on that directory. So the tree the libraries are taken into
+    -- cannot be removed, and moving the staged tree onto its name nests it inside instead -- which is
+    -- what left this machine's own 6.1.3 root filesystem holding a 6.1.3_10B329.partial/ inside
+    -- 6.1.3_10B329/ on 2026-10-03. The libraries must land in the folder itself.
+    os.tryrm(outside)
+    os.mkdir(path.join(outside, "dev"))
+    io.writefile(path.join(outside, "dev", "placeholder"), "an entry a removal cannot unlink")
+    os.vrunv("chmod", {"555", path.join(outside, "dev")}) -- dr-xr-xr-x, as the image has it
+    local readonly = image(folder, "readonly", "the cache of one firmware")
+    -- a library beside the cache, and a real one: the same Mach-O the HFS case above built and
+    -- macho.is_macho and shared_library both accept, because bytes that are not a Mach-O are not
+    -- taken and this case would pass for the wrong reason.
+    io.writefile(path.join(readonly, "usr", "lib", "libInside.dylib"),
+                 io.readfile(plain, {encoding = "binary"}), {encoding = "binary"})
+    taken = firmware.harvest(readonly, "9.9", first, "armv7")
+    local landed = path.join(outside, "usr", "lib", "libInside.dylib")
+    if not taken or not os.isfile(landed) then
+        table.insert(found, "a folder that cannot be removed is replaced and not nested into: the library is at "
+                    .. landed .. " and not below a staged tree inside it")
+    end
+    if os.exists(outside .. ".partial") or os.exists(outside .. ".replaced") then
+        table.insert(found, "a folder replaced through a tree that cannot be removed leaves no staging tree beside it")
+    end
+    os.tryrm(outside)
+
     -- A held armv7s cache of iOS 10 came with the arm64 one from a 64-bit device's image: its
     -- libraries come from that firmware, found among the architectures the folder holds, though the
     -- armv7s devices are listed first; neither needs a download while both root filesystems are here.

@@ -443,6 +443,48 @@ end
 -- The libraries a system image carries as files beside its shared cache, for each architecture the
 -- cache was taken for: on a cache image every library in the cache is gone from the disk, so the
 -- shared libraries copy_libraries finds there are exactly what the cache lacks.
+-- Empties a tree unpacked from an IPS image, and says whether it could. Those trees carry the
+-- permissions the image gave them and `dev` in a 6.1.3 root filesystem is dr-xr-xr-x, so a removal
+-- cannot empty it: unlinking an entry inside a directory needs write permission on the directory
+-- itself, which that one does not give. Everything is made writable first and only then removed,
+-- and the answer is the removal's own, so a caller can say what is left instead of stepping over it.
+local function empty_tree(folder)
+    -- chmod(1) and not os.chmod, which this xmake does not carry. Everything is made writable by its
+    -- owner first, recursively, because a removal cannot unlink an entry inside a directory that does
+    -- not give write permission, and one directory in the tree is enough for the whole removal to
+    -- stop at it.
+    os.vrunv("chmod", {"-R", "u+w", folder})
+    os.tryrm(folder)
+    return not os.exists(folder)
+end
+
+-- Puts a staged tree where a tree is expected, over whatever is there. The obvious pair of calls is
+-- wrong here on this machine's own store, measured 2026-10-03, where 6.1.3_10B329/ held a nested
+-- 6.1.3_10B329.partial/ and a System/ but no SystemVersion.plist:
+--
+--   * a tree unpacked from an IPS image carries the image's own permissions and `dev` in a 6.1.3 root
+--     filesystem is dr-xr-xr-x, so os.tryrm(folder) stops at it and says nothing;
+--   * os.mv(staging, folder) with `folder` a directory that is still there moves the staged tree
+--     INSIDE it, which is the nesting that was measured -- and the run after that unpacked every
+--     image again and nested it once more;
+--   * and os.mv of the whole folder is no way out either: measured, moving a tree that holds a
+--     read-only directory fails the same way a removal of it does.
+--
+-- So the tree that is there is emptied FIRST, and the staged tree is moved in only once the folder is
+-- gone. A removal that stops half way therefore leaves the store holding what it held, rather than
+-- half of one tree beside another or the new one inside the old; and both steps are checked by what
+-- the store holds afterwards, because os.mv and os.tryrm answer nothing worth asking.
+local function place_tree(staging, folder)
+    if os.exists(folder) and not empty_tree(folder) then
+        raise("%s could not be cleared, so %s is not put in place and the store still holds what it held",
+              folder, staging)
+    end
+    os.mv(staging, folder)
+    if os.exists(staging) or not os.isdir(folder) then
+        raise("cannot move %s into place at %s, so the store holds neither", staging, folder)
+    end
+end
+
 local function take_outside(root, folder, architectures)
     for _, architecture in ipairs(architectures) do
         local outside = dyld.outside_source(folder, architecture)
@@ -450,8 +492,7 @@ local function take_outside(root, folder, architectures)
         os.tryrm(staging)
         os.mkdir(staging)
         copy_libraries(root, staging, shared_library)
-        os.tryrm(outside)
-        os.mv(staging, outside)
+        place_tree(staging, outside)
     end
 end
 
@@ -776,6 +817,16 @@ function rootfs(identifier, minimum, opt)
     cprint("${bright}unpacking the root filesystem of %s %s (%s)${clear} from %s", firmware.identifier, firmware.version, firmware.build, firmware.url)
     local work = path.join(home(), "firmware", "work", firmware.identifier .. "_" .. firmware.build)
     local staging = folder .. ".partial"
+    -- A staged tree that already holds the release's own SystemVersion.plist is one this store
+    -- unpacked and a run did not move into place, which is what an interrupted run and the nesting
+    -- above both leave. Unpacking every image of the firmware again to arrive at the same tree is the
+    -- whole cost of repairing one, and the images are hundreds of megabytes.
+    if os.isfile(path.join(staging, "System", "Library", "CoreServices", "SystemVersion.plist")) then
+        print("note the staged root filesystem of %s %s is already unpacked at %s; it is put in place as it is",
+              firmware.identifier, firmware.build, staging)
+        place_tree(staging, folder)
+        return folder, firmware
+    end
     os.tryrm(staging)
     os.mkdir(work)
     local members = zip_members(firmware.url)
@@ -800,7 +851,14 @@ function rootfs(identifier, minimum, opt)
     if not os.isfile(path.join(staging, "System", "Library", "CoreServices", "SystemVersion.plist")) then
         raise("the system image of %s %s holds no System/Library/CoreServices/SystemVersion.plist", firmware.identifier, firmware.build)
     end
-    os.tryrm(folder)
-    os.mv(staging, folder)
+    place_tree(staging, folder)
+    if not os.isfile(path.join(folder, "System", "Library", "CoreServices", "SystemVersion.plist")) then
+        -- the completeness check again, on the folder rather than on the staged tree: a move that
+        -- nested instead of replacing leaves the staged tree inside the folder and the folder's own
+        -- tree beside it, which passes every check made before the move and is a store nothing can
+        -- read. Named here, where the store is, instead of by the next run's symptoms.
+        raise("the root filesystem of %s %s is not in place at %s after the move, so the store holds a tree nothing can read",
+              firmware.identifier, firmware.build, folder)
+    end
     return folder, firmware
 end
