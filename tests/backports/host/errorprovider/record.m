@@ -5,7 +5,9 @@ int main(void)
 {
     @autoreleasepool {
         NSMutableDictionary *records = [NSMutableDictionary dictionary];
-        errorprovider_run(^(NSString *name, NSString *value) {
+        errorprovider_run([NSError class], ^(Class error_class, NSString *domain, id provider) {
+            [NSError setUserInfoValueProviderForDomain:domain provider:provider];
+        }, ^(NSString *name, NSString *value) {
             records[name] = value;
             printf("%s: %s\n", name.UTF8String, value.UTF8String);
         });

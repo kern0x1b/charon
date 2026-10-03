@@ -22,7 +22,9 @@ static NSString *const results_folder = @"/private/var/backports";
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSDictionary *expected = [NSJSONSerialization JSONObjectWithData:[NSData dataWithBytes:errorprovider_expectations length:strlen(errorprovider_expectations)] options:0 error:NULL];
         NSMutableDictionary *records = [NSMutableDictionary dictionary];
-        errorprovider_run(^(NSString *name, NSString *value) {
+        errorprovider_run([NSError class], ^(Class error_class, NSString *domain, id provider) {
+            [NSError setUserInfoValueProviderForDomain:domain provider:provider];
+        }, ^(NSString *name, NSString *value) {
             records[name] = value;
             printf("record %s: %s\n", name.UTF8String, value.UTF8String);
         });

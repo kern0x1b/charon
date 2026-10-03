@@ -79,15 +79,15 @@ static id charon_provided(NSError *error, NSErrorUserInfoKey key)
 
 @end
 
-@interface CharonErrorProviderInstaller : NSObject
-@end
-
-@implementation CharonErrorProviderInstaller
-
-+ (void)load
+/* The install of the six methods the provider answers, on the class it is given. Every one of them is NSError's
+   own since 10.0, so a category's copy of it is never attached (attach.c adds a category's method only where
+   the class does not answer the selector) and this is what puts the provider in front of the release's own
+   method. +load below calls it with NSError itself, where the method being replaced is the release's own; a
+   host differential calls it with a class of its own, because a host's Foundation has carried the provider
+   API since 10.11 and its +load returns without touching anything. class_replaceMethod covers both: it
+   replaces the method where the class has one and adds it where the class only inherits it. */
+void charon_install_user_info_value_provider(Class cls)
 {
-    if ([NSError respondsToSelector:@selector(setUserInfoValueProviderForDomain:provider:)])
-        return;
     NSDictionary *keys = @{
         @"localizedDescription": NSLocalizedDescriptionKey,
         @"localizedFailureReason": NSLocalizedFailureReasonErrorKey,
@@ -99,12 +99,12 @@ static id charon_provided(NSError *error, NSErrorUserInfoKey key)
     for (NSString *name in keys) {
         NSErrorUserInfoKey key = keys[name];
         SEL selector = NSSelectorFromString(name);
-        Method method = class_getInstanceMethod([NSError class], selector);
+        Method method = class_getInstanceMethod(cls, selector);
         if (!method)
             continue;
         id (*original)(id, SEL) = (id (*)(id, SEL))method_getImplementation(method);
         BOOL description = [name isEqualToString:@"localizedDescription"];
-        method_setImplementation(method, imp_implementationWithBlock(^id(NSError *self_) {
+        class_replaceMethod(cls, selector, imp_implementationWithBlock(^id(NSError *self_) {
             id value = charon_provided(self_, key);
             if (value)
                 return value;
@@ -116,8 +116,23 @@ static id charon_provided(NSError *error, NSErrorUserInfoKey key)
                 }
             }
             return original(self_, selector);
-        }));
+        }), method_getTypeEncoding(method));
     }
+}
+
+@interface CharonErrorProviderInstaller : NSObject
+@end
+
+@implementation CharonErrorProviderInstaller
+
+/* The release decides, and the release alone: +load runs before attach.c's constructor attaches the library's
+   own categories, so what answers +setUserInfoValueProviderForDomain:provider: here is what iOS 9.0 and
+   later have of their own and what the releases before do not. The provider's API is 9.0. */
++ (void)load
+{
+    if ([NSError respondsToSelector:@selector(setUserInfoValueProviderForDomain:provider:)])
+        return;
+    charon_install_user_info_value_provider([NSError class]);
 }
 
 @end

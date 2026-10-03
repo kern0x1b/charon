@@ -9,14 +9,14 @@ static NSString *show(id value)
     return [NSString stringWithFormat:@"%@", value];
 }
 
-void errorprovider_run(ErrorProviderRecorder record)
+void errorprovider_run(Class error_class, ErrorProviderSetter set_provider, ErrorProviderRecorder record)
 {
     NSMutableArray *asked = [NSMutableArray array];
     NSString *domain = @"charon.provider";
-    NSError *(^plain)(void) = ^NSError *{ return [NSError errorWithDomain:domain code:7 userInfo:nil]; };
+    NSError *(^plain)(void) = ^NSError *{ return [error_class errorWithDomain:domain code:7 userInfo:nil]; };
     record(@"no provider description", show(plain().localizedDescription));
     record(@"no provider reason", show(plain().localizedFailureReason));
-    [NSError setUserInfoValueProviderForDomain:domain provider:^id(NSError *error, NSErrorUserInfoKey key) {
+    set_provider(error_class, domain, ^id(NSError *error, NSErrorUserInfoKey key) {
         [asked addObject:key];
         if ([key isEqualToString:NSLocalizedDescriptionKey])
             return [NSString stringWithFormat:@"description of %ld", (long)error.code];
@@ -29,7 +29,7 @@ void errorprovider_run(ErrorProviderRecorder record)
         if ([key isEqualToString:NSHelpAnchorErrorKey])
             return @"an anchor";
         return nil;
-    }];
+    });
     NSError *error = plain();
     NSArray *getters = @[@"localizedDescription", @"localizedFailureReason", @"localizedRecoverySuggestion", @"localizedRecoveryOptions", @"recoveryAttempter", @"helpAnchor"];
     for (NSString *getter in getters) {
@@ -45,26 +45,26 @@ void errorprovider_run(ErrorProviderRecorder record)
     record(@"user info lookup", [NSString stringWithFormat:@"%@ | asked %@", show(direct), [asked componentsJoinedByString:@","]]);
     record(@"description text", [show(error.description) rangeOfString:@"description of 7"].location != NSNotFound ? @"uses the provider" : show(error.description));
     [asked removeAllObjects];
-    NSError *given = [NSError errorWithDomain:domain code:8 userInfo:@{NSLocalizedDescriptionKey: @"given", NSLocalizedFailureReasonErrorKey: @"given reason"}];
+    NSError *given = [error_class errorWithDomain:domain code:8 userInfo:@{NSLocalizedDescriptionKey: @"given", NSLocalizedFailureReasonErrorKey: @"given reason"}];
     record(@"user info wins", [NSString stringWithFormat:@"%@ / %@ | asked %@", given.localizedDescription, given.localizedFailureReason, [asked componentsJoinedByString:@","]]);
-    NSError *other = [NSError errorWithDomain:@"charon.other" code:7 userInfo:nil];
+    NSError *other = [error_class errorWithDomain:@"charon.other" code:7 userInfo:nil];
     [asked removeAllObjects];
     record(@"other domain", [NSString stringWithFormat:@"%@ | asked %lu", show(other.localizedDescription), (unsigned long)asked.count]);
-    NSError *reasoned = [NSError errorWithDomain:domain code:9 userInfo:@{NSLocalizedFailureReasonErrorKey: @"only a reason"}];
+    NSError *reasoned = [error_class errorWithDomain:domain code:9 userInfo:@{NSLocalizedFailureReasonErrorKey: @"only a reason"}];
     record(@"reason in user info, description from provider", show(reasoned.localizedDescription));
-    [NSError setUserInfoValueProviderForDomain:domain provider:^id(NSError *error, NSErrorUserInfoKey key) {
+    set_provider(error_class, domain, ^id(NSError *error, NSErrorUserInfoKey key) {
         return [key isEqualToString:NSLocalizedFailureReasonErrorKey] ? @"second" : nil;
-    }];
+    });
     record(@"replaced provider", [NSString stringWithFormat:@"%@ / %@", show(plain().localizedFailureReason), show(plain().localizedDescription)]);
-    [NSError setUserInfoValueProviderForDomain:domain provider:nil];
+    set_provider(error_class, domain, nil);
     record(@"removed provider", [NSString stringWithFormat:@"%@ / %@", show(plain().localizedFailureReason), show(plain().localizedDescription)]);
-    [NSError setUserInfoValueProviderForDomain:@"charon.retained" provider:^id(NSError *error, NSErrorUserInfoKey key) {
+    set_provider(error_class, @"charon.retained", ^id(NSError *error, NSErrorUserInfoKey key) {
         return [key isEqualToString:NSLocalizedDescriptionKey] ? [NSString stringWithFormat:@"%@:%ld", error.domain, (long)error.code] : nil;
-    }];
-    NSError *retained = [NSError errorWithDomain:@"charon.retained" code:3 userInfo:nil];
+    });
+    NSError *retained = [error_class errorWithDomain:@"charon.retained" code:3 userInfo:nil];
     NSError *copy = [retained copy];
     record(@"copied error", show(copy.localizedDescription));
     record(@"retained domain", show(retained.localizedDescription));
-    NSError *underlying = [NSError errorWithDomain:@"charon.outer" code:1 userInfo:@{NSUnderlyingErrorKey: retained}];
+    NSError *underlying = [error_class errorWithDomain:@"charon.outer" code:1 userInfo:@{NSUnderlyingErrorKey: retained}];
     record(@"underlying not consulted", show(underlying.localizedDescription));
 }
