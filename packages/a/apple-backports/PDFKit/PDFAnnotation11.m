@@ -26,10 +26,15 @@ static const CGFloat kTextAnnotationSize = 24.0;
     NSString *_contents;
     NSString *_userName;
     NSDate *_modificationDate;
-    // The border, built once over the dictionary below.  Held strongly: a border is a value of this
-    // annotation, and the dictionary it reads is the annotation's own, so a border outliving its
-    // annotation reads nothing that has moved.
+    // The border, built once over the dictionary below, and REPLACEABLE by -setBorder:.  Held strongly:
+    // a border is a value of this annotation, and a border handed to -setBorder: is held by reference,
+    // so a change to it is visible through this annotation - which is what the host does.
     PDFBorder *_border;
+    // Whether -setBorder: has been called at all, INCLUDING with nil.  It has to be its own flag and
+    // not a test of _border: on a /Square, whose dictionary answers a border, the host answers nil after
+    // -setBorder:nil and does NOT build one again - measured, annot-square answers border.set.nil = 1
+    // where a rebuild would answer 0.  So a border that was set, to an object or to nil, is final.
+    BOOL _borderSet;
 }
 
 // The port's own constructor, over the dictionary CoreGraphics already parsed out of the page's
@@ -59,7 +64,6 @@ static const CGFloat kTextAnnotationSize = 24.0;
 // touches it - the same trap PDFPage11.m records for -label and -numberOfCharacters.
 @dynamic bounds;
 @dynamic shouldPrint;
-@dynamic border;
 
 // The other five ARE ivar-backed, and each is bound to its own ivar explicitly.  The gate compiles with
 // -Werror=objc-missing-property-synthesis, which fires on a property that has a hand-written accessor and
@@ -72,6 +76,7 @@ static const CGFloat kTextAnnotationSize = 24.0;
 @synthesize userName = _userName;
 @synthesize modificationDate = _modificationDate;
 @synthesize page = _page;
+@synthesize border = _border;
 
 // The /SUBTYPE, as the name the header's PDFAnnotationSubtype is: "Text", "Link", "Square",
 // "Highlight" - the dictionary's name object without its leading slash.
@@ -306,10 +311,22 @@ static const CGFloat kTextAnnotationSize = 24.0;
 //     noborder-text, noborder-underline, noborder-strikeout).
 //
 // A /Border of the wrong type - neither array nor dictionary - takes the first branch, because the KEY
-// is present; a /Border that is a dictionary is not measured here and would be read by PDFBorder11.m
-// as "no array", which is the default width.
+// is present; PDFBorder11.m then finds no array and answers the default width, which is what
+// border-on-nontype's five subtypes answer for a /Border that is an array.
+//
+// -setBorder: stores the object BY REFERENCE, measured: -border answers the very object that was set,
+// a change made to that object afterwards is visible through -border, and setting nil makes -border
+// answer nil again.  So the annotation holds the object and does not copy it, and a border that was
+// set is not rebuilt from the dictionary.
+- (void)setBorder:(PDFBorder *)border
+{
+    _border = border;
+    _borderSet = YES;
+}
 - (PDFBorder *)border
 {
+    if (_borderSet)
+        return _border;
     if (_annotation == NULL)
         return nil;
     if (_border != nil)

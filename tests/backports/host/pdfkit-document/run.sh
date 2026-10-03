@@ -376,7 +376,20 @@ for key in \
     appearance.full.key.BG \
     appearance.fresh.key.R \
     appearance.cleared.keys \
-    appearance.controlType2.keys
+    appearance.controlType2.keys \
+    border.fresh.lineWidth \
+    border.fresh.keys \
+    border.all.lineWidth \
+    border.all.keys \
+    border.pattern.style \
+    border.empty.keys \
+    border.cleared.lineWidth \
+    border.styleonly.keys \
+    border.widthzero.keys \
+    border-plain.pdf.page0.border.identity.same \
+    border-plain.pdf.page0.border.set.same \
+    border-plain.pdf.page0.border.set.mutated \
+    border-plain.pdf.page0.border.set.nil
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then

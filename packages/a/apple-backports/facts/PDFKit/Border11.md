@@ -8,12 +8,18 @@
 `CGPDFDictionaryGetDictionary`, `CGPDFDictionaryGetArray`, `CGPDFDictionaryGetNumber`,
 `CGPDFArrayGetCount`, `CGPDFArrayGetNumber`, all exported by both bands.
 
-`PDFBorder.h` declares **no initializer at all**. So the object is not built by a program that wants a
-border; it is read out of an annotation, and `-[PDFAnnotation border]` is the only path to it. That is
-also why `-[PDFAnnotation border]` is the row that had to be implemented before this family could be:
-it was `inert` on main with the reason "the absent answer is subtype-dependent here too: a /Square with
-no /Border answers a DEFAULT border (solid, lineWidth 1.0) and a /Link with none answers nil". Both
-halves of that sentence are now measured and the row is `implemented`.
+**`PDFBorder.h:28` declares no initializer of its own**, so `-init` is `NSObject`'s — and the object it
+makes is the host's fresh object: style 0, lineWidth 1, a nil pattern and a key-values dictionary of
+`{S = 0, W = 1}`. Measured, and the first version of this page said the opposite ("declares no
+initializer at all", with the corollary that `-[PDFAnnotation border]` is the only path), which the
+coordinator's own measurement on this Mac contradicts: `[[PDFBorder alloc] init]` works and answers
+those values. The class is therefore a **mutable value object**, not a window onto the file, and its
+three setters are implemented — see "The setters" below.
+
+`-[PDFAnnotation border]` is still how a border is reached from a document, and its absent answer is
+still subtype-dependent: it was `inert` on main with the reason "a /Square with no /Border answers a
+DEFAULT border (solid, lineWidth 1.0) and a /Link with none answers nil", and both halves of that
+sentence are now measured, so the row is `implemented`.
 
 ## The oracle, and the three binaries
 
@@ -117,14 +123,59 @@ answers solid on all of them (`border-plain`, `border-radii`, `border-zero`, `bo
 `-dashPattern` answers one. `border-plain` (`/Border [0 0 3]`, no `/BS`) and `bs-dash-solid` answer two
 keys each; `bs-d` and `border-bs` answer three.
 
+## The setters
+
+The host's `PDFBorder` is a value object and its setters change **the object**. Measured, each with the
+sequence that fixes it:
+
+| sequence | answered |
+| --- | --- |
+| `[[PDFBorder alloc] init]`, nothing set | `style` 0, `lineWidth` 1, `dashPattern` nil, `{S = 0, W = 1}` |
+| `style = Inset` only | `S = 3`, `W = 1`, no `D` |
+| `lineWidth = 7` only | `W = 7`, `S = 0`; and `0` and `-3.5` are both kept, not clamped |
+| `style = Dashed; lineWidth = 5; dashPattern = @[@7, @5]` | reads back `1`, `5`, `(7 5)`, `{D = (7,5); S = 1; W = 5}` |
+| `dashPattern = @[@7, @5]` alone | **`style` becomes 1** — a pattern means a dashed border |
+| `dashPattern = @[]` | **`style` becomes 0**, `dashPattern` answers an empty array, `D = ()` |
+| `dashPattern = @[]` on a border whose style was dashed | `style` becomes 0 as well, so the setter SETS the style rather than leaving it |
+| `dashPattern = nil` on a fresh object | the same as `@[]`: `style` 0, `D = ()`, and `-dashPattern` answers an **empty array, not nil** |
+| any of the three, then `dashPattern = nil` | `lineWidth` is **untouched** |
+
+That last row is worth the detail, because the width was the one thing this page first got wrong: an
+early probe appeared to show `setDashPattern:` resetting the width to 1. It does not. The probe's own
+source had lost its `lineWidth = 5` line, and with it restored the width reads 5 in every arrangement —
+four arrangements measured, `W = 5` then a pattern then `nil`; a pattern with no style set then `nil`;
+a style then `W = 5` then a pattern then `nil`; and a style then `W = 5` with no pattern, then a pattern,
+then `nil`. Ten runs of the same sequence in one process and ten across processes agree.
+
+So the object is one dictionary in the header's own key names — `S` and `W` from `-init`, `D` when a
+pattern is set — and `-setDashPattern:` is the only setter that touches more than its own key: it
+publishes `D` (an empty array for both `@[]` and `nil`) **and** sets `S` to dashed for a non-empty array
+and to solid for an empty one or nil.
+
+## `-[PDFAnnotation border]` identity, and `-[PDFAnnotation setBorder:]`
+
+`PDFAnnotation.h:167` declares the property readwrite, and the host's setter stores the object **by
+reference**:
+
+* `-border` answers the **same object** on every call (measured on every fixture, `identity.same` 1).
+* A change made through that object is visible through `-border` (`identity.mutated` 9).
+* `-setBorder:` makes `-border` answer the very object that was set, `==` (`set.same` 1), a change to that
+  object afterwards is visible through the annotation (`set.mutated` 12), and `nil` makes it answer nil
+  (`set.nil` 1).
+* And a border that was set is **final**: on a `/Square`, whose dictionary answers a default border, the
+  host answers nil after `-setBorder:nil` and does not build one again. So the port keeps a flag for
+  "a border was set", including to nil, rather than testing the pointer.
+
+**Which needs `-annotations` to hand back stable objects.** Two calls to `-[PDFPage annotations]` answer
+two **different arrays** whose elements are the **same objects** (`arrays-same` 0, `objects-same` 1 on
+every fixture), and a change made through one is visible through the other. The port rebuilt the whole
+array of `PDFAnnotation` objects on every call, which made `-setBorder:` unobservable through the API:
+the harness set a border on one array's annotation and read a freshly built, untouched one back. So
+`PDFPage11.m` builds the annotations once and hands out a copy of the array each call, which is the host's
+own shape rather than a new rule.
+
 ## What is NOT here, and why
 
-* **The two setters.** `PDFBorder.h:19-20` declares `style` and `lineWidth` readwrite. Only their
-  getters are implemented. This port reads documents; a setter here would answer without changing the
-  file behind it, which is the same boundary `-[PDFAnnotation bounds]` has and the same reason its
-  `@dynamic` line exists. `@dynamic` is used for all four members, so the compiler is told the accessors
-  are hand-written rather than auto-synthesized, and the harness's
-  `-Werror=incomplete-implementation` still proves each one has a body.
 * **`-drawInRect:`.** It draws, and this port has no context to draw into.
 * **`-copyWithZone:` and `-initWithCoder:`** (the `NSCopying`/`NSCoding` conformances). Neither release
   asks for them; nothing in the port copies or codes a border.
@@ -173,8 +224,8 @@ were wrong on main. All three are measured, all three are fixed, and none of the
       RED CONTROL ok for appearance.controlType2.keys:
 
 The automatic control plants on the first key the two sides agree on, which is a *document* fact and
-would go red even if the border comparison were blind. So the ten named controls are the ones that say
-something about this family: each names a border or appearance key, `compare()` refuses any key the two
+would go red even if the border comparison were blind. So the named controls are the ones that say
+something about this family — twenty-four of them now, eleven of them border or appearance keys: each names a border or appearance key, `compare()` refuses any key the two
 sides do not already agree on, and the mutation is written into a **scratch copy of whichever side
 printed that key** - the macOS port side for the border keys, the Catalyst side for the appearance ones
 - because a mutation written into `port.txt` would never be read for a key `port.txt` does not hold.

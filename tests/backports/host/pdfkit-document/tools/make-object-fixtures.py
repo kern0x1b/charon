@@ -124,6 +124,9 @@ BS_DASH_SOLID = square([(b"BS", b"<< /S /S /W 2 /D [4 1] >>")])
 BS_NO_WIDTH = square([(b"BS", b"<< /S /I >>")])
 # /BS with a width but no /S, and /Border's third element present: which of the two answers -lineWidth
 BS_WIDTH_ONLY = square([(b"Border", b"[0 0 7]"), (b"BS", b"<< /W 5 >>")])
+# and the other way round: a /BS with a STYLE and no /W beside a /Border that has a third element, which
+# is the fixture that says whether /Border's third element is the fallback for a /BS that has no /W
+BS_STYLE_ONLY = square([(b"Border", b"[0 0 9]"), (b"BS", b"<< /S /D /D [4 4] >>")])
 # a dash pattern that is NOT the default: a dashed border with no /D answers [3 2], so only a /D the
 # reader demonstrably takes can tell "reads /D" from "answers a default"
 BS_DASH_CUSTOM = square([(b"BS", b"<< /S /D /W 2 /D [7 5] >>")])
@@ -271,6 +274,83 @@ SQUARE_T = annot(b"Square", [(b"Rect", b"[40 40 140 140]"), (b"F", b"4"), (b"T",
                              (b"MK", b"<< /BC [0 0 1] >>")])
 
 
+# ---- /A, the action dictionary of PDF 1.7 Table 8.44, and the /Dest of Table 8.42 --------------
+#
+# The five /S names the six action classes of the 26.2 headers are built from - /GoTo, /Named, /URI,
+# /GoToR and /ResetForm - plus an /S the format does not list and an action with no /S at all, because
+# the class -[PDFAction type] answers and the class the host hands back for an unknown /S are both
+# questions an action family has to have measured.
+#
+# Every explicit destination here is an ARRAY, [page /XYZ left top zoom], which is one of the two
+# spellings PDF 1.7 Table 8.42 gives; the other, a dictionary naming /D, is what ann-dest-dict writes.
+# The page is object 3 unless the fixture says otherwise, and the two-page fixture points at object 4 so
+# that "the destination's page" is an index rather than a constant.
+def link(extra):
+    return annot(b"Link", [(b"Rect", b"[20 700 220 720]"), (b"Contents", b"(link)"), (b"F", b"4")]
+                 + extra)
+
+
+ACT_GOTO_XYZ = link([(b"A", b"<< /S /GoTo /D [3 0 R /XYZ 100 200 1.5] >>")])
+ACT_GOTO_FIT = link([(b"A", b"<< /S /GoTo /D [3 0 R /Fit] >>")])
+ACT_GOTO_FITB = link([(b"A", b"<< /S /GoTo /D [3 0 R /FitB 0 0 612 792] >>")])
+ACT_GOTO_FITH = link([(b"A", b"<< /S /GoTo /D [3 0 R /FitH 700] >>")])
+ACT_GOTO_FITBH = link([(b"A", b"<< /S /GoTo /D [3 0 R /FitBH 12 34] >>")])
+ACT_GOTO_FITBV = link([(b"A", b"<< /S /GoTo /D [3 0 R /FitBV 56 78] >>")])
+# a zoom written as an integer, and a destination whose page is the SECOND page: the port's pages are
+# objects 3 and 4 on a two-page fixture, so the index it must answer is 1
+ACT_GOTO_ZOOM_INT = link([(b"A", b"<< /S /GoTo /D [3 0 R /XYZ 0 0 2] >>")])
+# the destination's page as an INDEX rather than a constant: on the two-page fixture the pages are
+# objects 3 and 4, so a /D naming object 4 is the second page
+ACT_GOTO_PAGE2 = link([(b"A", b"<< /S /GoTo /D [4 0 R /XYZ 0 0 1] >>")])
+ACT_GOTO_BAD_PAGE = link([(b"A", b"<< /S /GoTo /D [99 0 R /Fit] >>")])
+# the NAMED destination spelling: the catalog's /Dests names it and the action names the name
+ACT_GOTO_NAMED = link([(b"A", b"<< /S /GoTo /D (chapter1) >>")])
+# an action with no /S, an /S the format does not list, and an /S whose own payload is missing
+ACT_NO_S = link([(b"A", b"<< /Type /Action /D [3 0 R /Fit] >>")])
+ACT_UNKNOWN_S = link([(b"A", b"<< /S /Bogus /X 1 >>")])
+ACT_GOTO_NO_D = link([(b"A", b"<< /S /GoTo >>")])
+# the named actions, one per /N the header's enum names, and one the enum does not
+ACT_NAMED_NEXT = link([(b"A", b"<< /S /Named /N /NextPage >>")])
+ACT_NAMED_FIRST = link([(b"A", b"<< /S /Named /N /FirstPage >>")])
+ACT_NAMED_ZOOMIN = link([(b"A", b"<< /S /Named /N /ZoomIn >>")])
+ACT_NAMED_NONSENSE = link([(b"A", b"<< /S /Named /N /NotAName >>")])
+ACT_URI = link([(b"A", b"<< /S /URI /URI (https://example.com/a b) >>")])
+ACT_URI_NO_URI = link([(b"A", b"<< /S /URI >>")])
+ACT_GOTOR = link([(b"A", b"<< /S /GoToR /F (other.pdf) /D [3 0 R /XYZ 5 6 2] >>")])
+ACT_GOTOR_NO_F = link([(b"A", b"<< /S /GoToR /D [3 0 R /Fit] >>")])
+ACT_GOTOR_F_DICT = link([(b"A", b"<< /S /GoToR /F (other.pdf) /D << /D [3 0 R /XYZ 7 8 1] /S /XYZ >> >>")])
+ACT_RESET = link([(b"A", b"<< /S /ResetForm /Fields [(f1) (f2)] >>")])
+ACT_RESET_NO_FIELDS = link([(b"A", b"<< /S /ResetForm >>")])
+ACT_RESET_FLAGS = link([(b"A", b"<< /S /ResetForm /Flags 1 /Fields [(f1)] >>")])
+
+# /Dest on the annotation itself, in both of the format's spellings and through the named one
+ANN_DEST_ARRAY = link([(b"Dest", b"[3 0 R /XYZ 11 22 0.5]")])
+ANN_DEST_DICT = link([(b"Dest", b"<< /D [3 0 R /XYZ 33 44 2.5] /S /XYZ >>")])
+ANN_DEST_FIT = link([(b"Dest", b"[3 0 R /Fit]")])
+ANN_DEST_NAMED = link([(b"Dest", b"(chapter1)")])
+ANN_DEST_AND_A = link([(b"Dest", b"[3 0 R /XYZ 1 2 3]"), (b"A", b"<< /S /GoTo /D [3 0 R /Fit] >>")])
+
+# The NAMED destination, in BOTH of the spellings PDF 1.7 Table 8.42 gives the catalog's /Dests: a
+# plain dictionary of name to destination, and a name tree.  The port's fixture puts /Dests at object 8,
+# which holds for a fixture carrying one annotation.
+DESTS_TREE = b"<< /Names [(chapter1) [3 0 R /XYZ 77 88 0]] >>"
+DESTS_DICT = b"<< /chapter1 [3 0 R /XYZ 77 88 0] >>"
+DESTS = DESTS_TREE
+
+# every name PDFActionNamed.h's enum declares, and one it does not: which of them the host builds an
+# action for is a measurement and not the enum, so all thirteen are here
+NAMED_NAMES = [None, b"NextPage", b"PreviousPage", b"FirstPage", b"LastPage", b"GoBack", b"GoForward",
+               b"GoToPage", b"Find", b"Print", b"ZoomIn", b"ZoomOut", b"NotAName"]
+NAMED_ACTIONS = [link([(b"A", b"<< /S /Named" + (b"" if name is None else b" /N /" + name)
+                        + b" >>")]) for name in NAMED_NAMES]
+
+# a /GoToR whose /D is a page INDEX rather than a page reference, which Table 8.44 allows for that
+# action, and the reset form's /Flags on its own
+ACT_GOTOR_INDEX = link([(b"A", b"<< /S /GoToR /F (other.pdf) /D 1 >>")])
+ACT_RESET_FLAGS_ONLY = link([(b"A", b"<< /S /ResetForm /Flags 1 >>")])
+ACT_RESET_EXCLUDE = link([(b"A", b"<< /S /ResetForm /Flags 2 /Fields [(f1)] >>")])
+
+
 def dest_array(page_number, tail):
     return b"[" + str(page_number).encode() + b" 0 R " + tail + b"]"
 
@@ -296,6 +376,7 @@ def main():
         ("bs-dash-solid.pdf", [BS_DASH_SOLID]),
         ("bs-no-width.pdf", [BS_NO_WIDTH]),
         ("bs-width-only.pdf", [BS_WIDTH_ONLY]),
+        ("bs-style-only.pdf", [BS_STYLE_ONLY]),
         ("bs-dash-custom.pdf", [BS_DASH_CUSTOM]),
         ("bs-dash-string.pdf", [BS_DASH_STRING]),
         ("bs-width-string.pdf", [BS_WIDTH_STRING]),
@@ -315,6 +396,32 @@ def main():
         ("noborder-widget-tm.pdf", [NOBORDER_WidgetTm]),
         ("border-on-nontype.pdf", BORDER_ON_NONTYPE),
         ("bs-on-nontype.pdf", BS_ON_NONTYPE),
+        ("act-goto-xyz.pdf", [ACT_GOTO_XYZ]),
+        ("act-goto-fit.pdf", [ACT_GOTO_FIT]),
+        ("act-goto-fitb.pdf", [ACT_GOTO_FITB]),
+        ("act-goto-fith.pdf", [ACT_GOTO_FITH]),
+        ("act-goto-fitbh.pdf", [ACT_GOTO_FITBH]),
+        ("act-goto-fitbv.pdf", [ACT_GOTO_FITBV]),
+        ("act-goto-zoom-int.pdf", [ACT_GOTO_ZOOM_INT]),
+        ("act-goto-named.pdf", [ACT_GOTO_NAMED], [("dests", DESTS_TREE)], b" /Dests 8 0 R"),
+        ("act-goto-named-dict.pdf", [ACT_GOTO_NAMED], [("dests", DESTS_DICT)], b" /Dests 8 0 R"),
+        ("act-named-all.pdf", NAMED_ACTIONS),
+        ("act-gotor-index.pdf", [ACT_GOTOR_INDEX, ACT_RESET_FLAGS_ONLY, ACT_RESET_EXCLUDE]),
+        ("act-no-s.pdf", [ACT_NO_S]),
+        ("act-unknown-s.pdf", [ACT_UNKNOWN_S]),
+        ("act-goto-no-d.pdf", [ACT_GOTO_NO_D]),
+        ("act-named.pdf", [ACT_NAMED_NEXT, ACT_NAMED_FIRST, ACT_NAMED_ZOOMIN, ACT_NAMED_NONSENSE]),
+        ("act-uri.pdf", [ACT_URI, ACT_URI_NO_URI]),
+        ("act-gotor.pdf", [ACT_GOTOR, ACT_GOTOR_NO_F, ACT_GOTOR_F_DICT]),
+        ("act-reset.pdf", [ACT_RESET, ACT_RESET_NO_FIELDS, ACT_RESET_FLAGS]),
+        ("act-goto-page2.pdf", [ACT_GOTO_PAGE2], (), b"", b"", 2),
+        ("act-goto-bad-page.pdf", [ACT_GOTO_BAD_PAGE], (), b"", b"", 2),
+        ("ann-dest-array.pdf", [ANN_DEST_ARRAY]),
+        ("ann-dest-dict.pdf", [ANN_DEST_DICT]),
+        ("ann-dest-fit.pdf", [ANN_DEST_FIT]),
+        ("ann-dest-named.pdf", [ANN_DEST_NAMED], [("dests", DESTS_TREE)], b" /Dests 8 0 R"),
+        ("ann-dest-named-dict.pdf", [ANN_DEST_NAMED], [("dests", DESTS_DICT)], b" /Dests 8 0 R"),
+        ("ann-dest-and-a.pdf", [ANN_DEST_AND_A]),
         ("drops.pdf", DROPS),
         ("widget-bc.pdf", [BC_CMYK, BC_STRING, BC_NUMBER, BC_RGB]),
         ("popup-flags.pdf", [POPUP_F4, POPUP_F0, POPUP_F2, POPUP_NOF, SQUARE_F4, STAMP_F4]),
@@ -330,8 +437,13 @@ def main():
         ("mk-rot-real.pdf", [MK_ROT_REAL]),
         ("mk-r-zero.pdf", [MK_R_ZERO]),
     ]
-    for name, annotations in shapes:
-        count, _ = build(os.path.join(directory, name), annotations)
+    for shape in shapes:
+        name, annotations = shape[0], shape[1]
+        extra = shape[2] if len(shape) > 2 else ()
+        catalog_extra = shape[3] if len(shape) > 3 else b""
+        page_count = shape[5] if len(shape) > 5 else 1
+        count, _ = build(os.path.join(directory, name), annotations, extra, catalog_extra,
+                         page_count=page_count)
         print("  wrote %-20s %d objects" % (name, count))
 
 

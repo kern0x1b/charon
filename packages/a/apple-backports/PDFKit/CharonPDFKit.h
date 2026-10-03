@@ -145,8 +145,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak, nullable) PDFPage *page;
 // The border, a PDFBorder of its own below, over this annotation's /Border array and its /BS
 // dictionary.  nil is a measured answer and not a missing one: see the rule on -border in
-// PDFAnnotation11.m, which is the whole of what the absent case is.
-@property (nonatomic, readonly, nullable) PDFBorder *border;
+// PDFAnnotation11.m, which is the whole of what the absent case is.  Readwrite, as PDFAnnotation.h:167
+// has it: -setBorder: stores the object BY REFERENCE, so -border hands back the same object it was
+// given and a later change to that object is visible through the annotation.
+@property (nonatomic, nullable) PDFBorder *border;
 @end
 
 // The port's own constructor, over a dictionary already in the object graph.  Not Apple's
@@ -197,11 +199,13 @@ extern NSString *const PDFAppearanceCharacteristicsKeyCaption;
 extern NSString *const PDFAppearanceCharacteristicsKeyRolloverCaption;
 extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 
-// PDFBorder, over an annotation's /Border array and its /BS dictionary.  The header declares four
-// members and no initializer, so the port reads a border out of the object graph rather than
-// building one; -style and -lineWidth are declared readwrite as PDFBorder.h:19-20 has them, and only
-// their getters are implemented, for the same reason PDFAnnotation's -bounds has no setter: this port
-// reads documents, and a setter here would answer without changing the file behind it.
+// PDFBorder, a value object over one border: three settable members and the dictionary they are read
+// out of.  PDFBorder.h:28 declares no initializer of its own, so -init is NSObject's - and what it
+// makes is the host's fresh object, measured: style 0, lineWidth 1, a nil pattern and the key values
+// {S = 0, W = 1}.  All three setters are implemented, because the host's setters change the OBJECT
+// rather than the file: -setStyle: and -setLineWidth: change their own member and nothing else, and
+// -setDashPattern: publishes the pattern AND sets the style - dashed for a non-empty array, solid for
+// an empty one and for nil - without touching the width.
 @interface PDFBorder : NSObject
 @property (nonatomic) PDFBorderStyle style;
 @property (nonatomic) CGFloat lineWidth;
@@ -209,9 +213,9 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 @property (nonatomic, readonly, copy) NSDictionary *borderKeyValues;
 @end
 
-// The port's own constructor, over the annotation dictionary the border was read out of.  Not
-// Apple's API: PDFBorder.h declares no initializer at all, so the object is reached through
-// -[PDFAnnotation border].
+// The port's own constructor, over the annotation dictionary a border is read out of.  Not Apple's
+// API: the dictionary is an implementation's, and -[PDFAnnotation border] is what reaches this from
+// the outside.
 @interface PDFBorder (CharonInternals)
 - (nullable instancetype)initWithCharonAnnotationDictionary:(CGPDFDictionaryRef)annotation;
 @end
