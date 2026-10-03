@@ -33,8 +33,14 @@ fails=0
 # The 16.4 SDK is picked by asking the store for an iPhoneOS16.4 and taking the first candidate that
 # really is one, by its own SDKSettings.json - the shape coordination/lift-remeasure.sh:152 uses. A
 # hardcoded digest is a path that stops existing.
-sdk16=""
-for candidate in "$HOME"/.xmake/packages/i/iphoneos-sdk/16.4/*/iPhoneOS16.4.sdk; do
+# The SDK the port's own target is measured against. CHARKIT_SDK_16 names one, as the message below
+# always promised; without it the shared store's iPhoneOS 16.4 is found by the path its recipe lays
+# down - .../16.4/<digest>/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs
+# /iPhoneOS16.4.sdk - which the glob here did not spell, so it matched nothing and the first stage of
+# this check reported "no 16.4 SDK with an SDKSettings.json naming it" over an SDK that is installed.
+sdk16=${CHARKIT_SDK_16:-}
+for candidate in "$HOME"/.xmake/packages/i/iphoneos-sdk/16.4/*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk; do
+    if [ -n "$sdk16" ]; then break; fi
     if [ -f "$candidate/SDKSettings.json" ] &&
        grep -q '"CanonicalName":"iphonesimulator16.4"\|"CanonicalName":"iphoneos16.4"' "$candidate/SDKSettings.json"; then
         sdk16="$candidate"; break
