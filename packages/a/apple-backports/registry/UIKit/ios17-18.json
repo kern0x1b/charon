@@ -2112,10 +2112,11 @@
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_NSAdaptiveImageGlyph needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: an adaptive image glyph; the 16.4 SDK has no such class, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface NSAdaptiveImageGlyph is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "NSObject.accessibilityExpandedStatus",
@@ -2192,10 +2193,11 @@
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UIActivityCollaborationModeRestriction needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the share sheet's collaboration restriction; 6.1.3 has no share sheet sections, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UIActivityCollaborationModeRestriction is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UIActivityViewController.excludedActivitySectionTypes",
@@ -2222,20 +2224,22 @@
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UICalendarSelectionWeekOfYear needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: a week of a year as a calendar selection; the port carries no UICalendarSelection either, and it inherits NSObject and NOT the UICalendarSelection 26.2 declares, because the port carries no UICalendarSelection and a class whose superclass the library does not export cannot be resolved by dyld at all - that would trade a missing symbol for a worse one. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UICalendarSelectionWeekOfYear is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UICalendarSelectionWeekOfYearDelegate",
    "kind": "protocol",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 18, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the protocol's metadata is a DYLD SYMBOL too - _OBJC_PROTOCOL_$_UICalendarSelectionWeekOfYearDelegate - and the generated source modules/apple/backports.lua writes for this release names it with @protocol(UICalendarSelectionWeekOfYearDelegate), so an absent row would be a symbol the build asks for and does not carry. Its declaration is transcribed into CharonUIKitProtocols.h with its members, because a week-of-year calendar selection and nothing here can be asked on a 6.1.3 release",
+   "effect": "the protocol's metadata is exported and its declaration compiles, so a conformer an application writes links; nothing in the port conforms to it and nothing dispatches it, because 6.1.3 has no tab sidebar, no formatting panel and no calendar selection to ask",
+   "source": "transcribed from the SDK that declares it, the host's own UIKit under Mac Catalyst, member for member and section for section (UITabBarControllerSidebar.h, UITextFormattingViewController.h, UICalendarSelectionWeekOfYear.h); the metadata comes from the source modules/apple/backports.lua writes for the band, UIKitBackportsProtocols18.0.m, compiled by tests/addon/protocol-sources.sh - facts/UIKit/UIKit18_0.md",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UICollectionLayoutListConfiguration.contentHuggingElements",
@@ -2262,10 +2266,11 @@
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UIDocumentViewControllerLaunchOptions needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the document controller's launch options, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UIDocumentViewControllerLaunchOptions is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UIListContentConfiguration.alpha",
@@ -2313,40 +2318,44 @@
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UISceneSystemProtectionManager needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: a scene's system-protection manager; 6.1.3 has no scenes, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UISceneSystemProtectionManager is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UISearchTab",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UISearchTab needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the search tab, so search is a tab rather than a bar button, and it inherits UITab, which this same object exports. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UISearchTab is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UIShadowProperties",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UIShadowProperties needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the object a background configuration shares its five shadow values with; 6.1.3 draws a shadow through CALayer, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UIShadowProperties is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITab",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITab needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: a tab in the bar, which is an object in 18.0 where it was a view controller, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITab is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITabBarController.compactTabIdentifiers",
@@ -2423,70 +2432,77 @@
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITabBarControllerSidebar needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the controller's own sidebar column, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITabBarControllerSidebar is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITabBarControllerSidebarAnimating",
    "kind": "protocol",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 18, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the protocol's metadata is a DYLD SYMBOL too - _OBJC_PROTOCOL_$_UITabBarControllerSidebarAnimating - and the generated source modules/apple/backports.lua writes for this release names it with @protocol(UITabBarControllerSidebarAnimating), so an absent row would be a symbol the build asks for and does not carry. Its declaration is transcribed into CharonUIKitProtocols.h with its members, because the animator a sidebar transition is handed and nothing here can be asked on a 6.1.3 release",
+   "effect": "the protocol's metadata is exported and its declaration compiles, so a conformer an application writes links; nothing in the port conforms to it and nothing dispatches it, because 6.1.3 has no tab sidebar, no formatting panel and no calendar selection to ask",
+   "source": "transcribed from the SDK that declares it, the host's own UIKit under Mac Catalyst, member for member and section for section (UITabBarControllerSidebar.h, UITextFormattingViewController.h, UICalendarSelectionWeekOfYear.h); the metadata comes from the source modules/apple/backports.lua writes for the band, UIKitBackportsProtocols18.0.m, compiled by tests/addon/protocol-sources.sh - facts/UIKit/UIKit18_0.md",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITabBarControllerSidebarDelegate",
    "kind": "protocol",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 18, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the protocol's metadata is a DYLD SYMBOL too - _OBJC_PROTOCOL_$_UITabBarControllerSidebarDelegate - and the generated source modules/apple/backports.lua writes for this release names it with @protocol(UITabBarControllerSidebarDelegate), so an absent row would be a symbol the build asks for and does not carry. Its declaration is transcribed into CharonUIKitProtocols.h with its members, because what the sidebar asks its delegate and nothing here can be asked on a 6.1.3 release",
+   "effect": "the protocol's metadata is exported and its declaration compiles, so a conformer an application writes links; nothing in the port conforms to it and nothing dispatches it, because 6.1.3 has no tab sidebar, no formatting panel and no calendar selection to ask",
+   "source": "transcribed from the SDK that declares it, the host's own UIKit under Mac Catalyst, member for member and section for section (UITabBarControllerSidebar.h, UITextFormattingViewController.h, UICalendarSelectionWeekOfYear.h); the metadata comes from the source modules/apple/backports.lua writes for the band, UIKitBackportsProtocols18.0.m, compiled by tests/addon/protocol-sources.sh - facts/UIKit/UIKit18_0.md",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITabGroup",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITabGroup needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: a group of tabs, and a tab itself, and it inherits UITab, which this same object exports. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITabGroup is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITabSidebarItem",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITabSidebarItem needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the row the sidebar shows for one request, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITabSidebarItem is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITabSidebarItemRequest",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITabSidebarItemRequest needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: what a sidebar row is asked to represent, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITabSidebarItemRequest is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITabSidebarScrollTarget",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITabSidebarScrollTarget needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: what the sidebar scrolls to, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITabSidebarScrollTarget is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITableView.contentHuggingElements",
@@ -2503,80 +2519,88 @@
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITextFormattingViewController needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the formatting panel itself; 6.1.3 presents no formatting panel, and it inherits UIViewController, which the port already carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITextFormattingViewController is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITextFormattingViewControllerChangeValue",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITextFormattingViewControllerChangeValue needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the value the panel reports changing, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITextFormattingViewControllerChangeValue is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITextFormattingViewControllerComponent",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITextFormattingViewControllerComponent needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: one component of a format, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITextFormattingViewControllerComponent is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITextFormattingViewControllerComponentGroup",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITextFormattingViewControllerComponentGroup needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: a group of components, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITextFormattingViewControllerComponentGroup is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITextFormattingViewControllerConfiguration",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITextFormattingViewControllerConfiguration needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the panel's configuration, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITextFormattingViewControllerConfiguration is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITextFormattingViewControllerDelegate",
    "kind": "protocol",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 18, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the protocol's metadata is a DYLD SYMBOL too - _OBJC_PROTOCOL_$_UITextFormattingViewControllerDelegate - and the generated source modules/apple/backports.lua writes for this release names it with @protocol(UITextFormattingViewControllerDelegate), so an absent row would be a symbol the build asks for and does not carry. Its declaration is transcribed into CharonUIKitProtocols.h with its members, because what the formatting panel tells its delegate and nothing here can be asked on a 6.1.3 release",
+   "effect": "the protocol's metadata is exported and its declaration compiles, so a conformer an application writes links; nothing in the port conforms to it and nothing dispatches it, because 6.1.3 has no tab sidebar, no formatting panel and no calendar selection to ask",
+   "source": "transcribed from the SDK that declares it, the host's own UIKit under Mac Catalyst, member for member and section for section (UITabBarControllerSidebar.h, UITextFormattingViewController.h, UICalendarSelectionWeekOfYear.h); the metadata comes from the source modules/apple/backports.lua writes for the band, UIKitBackportsProtocols18.0.m, compiled by tests/addon/protocol-sources.sh - facts/UIKit/UIKit18_0.md",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITextFormattingViewControllerFormattingDescriptor",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITextFormattingViewControllerFormattingDescriptor needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the descriptor that names a style, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITextFormattingViewControllerFormattingDescriptor is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITextFormattingViewControllerFormattingStyle",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UITextFormattingViewControllerFormattingStyle needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: one formatting style of the panel, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UITextFormattingViewControllerFormattingStyle is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UITextInput.editable",
@@ -2683,30 +2707,33 @@
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UIUpdateActionPhase needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: one phase of an update link, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UIUpdateActionPhase is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UIUpdateInfo",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UIUpdateInfo needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the information about one update, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UIUpdateInfo is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UIUpdateLink",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UIUpdateLink needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the update link; 6.1.3 has no update link, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UIUpdateLink is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UIViewController.preferredTransition",
@@ -2723,50 +2750,55 @@
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UIViewControllerTransition needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: a view controller transition; 6.1.3 runs its own, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UIViewControllerTransition is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UIZoomTransitionAlignmentRectContext",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UIZoomTransitionAlignmentRectContext needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: one of the three contexts a zoom transition hands its blocks, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UIZoomTransitionAlignmentRectContext is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UIZoomTransitionInteractionContext",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UIZoomTransitionInteractionContext needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: one of the three contexts a zoom transition hands its blocks, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UIZoomTransitionInteractionContext is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UIZoomTransitionOptions",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UIZoomTransitionOptions needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: the options a zoom transition is configured with, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UIZoomTransitionOptions is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "UIZoomTransitionSourceViewProviderContext",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the class is a DYLD SYMBOL and this port declares and exports it: an application that links strongly against _OBJC_CLASS_$_UIZoomTransitionSourceViewProviderContext needs dyld to resolve it before main runs, and an absent row would be that symbol missing - COORDINATION.md section 2, \"absent for a strong-imported class symbol is forbidden ... that is dyld killing the application at launch\", which is the same ground CharonUIKit26.h's twenty-one 26.0 classes stand on. What is carried is that symbol and nothing else: one of the three contexts a zoom transition hands its blocks, and it inherits NSObject, which the release carries. No member and no behaviour is claimed - a 6.1.3 release has nothing this belongs to",
+   "effect": "the name resolves and the class is allocatable, and it carries no member of its own, so a caller that sends it a selector of 18.0 gets doesNotRecognizeSelector: - which is what a class that exists and has no such method answers",
+   "source": "measured against the SDK that declares it, the host's own UIKit under Mac Catalyst: @interface UIZoomTransitionSourceViewProviderContext is in its UIKit.framework/Headers and in no header of the 16.4 SDK this package compiles against, so this declaration is the only thing in the tree that can make the name exist; the object UIKit18_0.m compiled for armv7-apple-ios6.1.3 and armv7-apple-ios4.3 and read with otool -v -s __TEXT __objc_classname, which is the count the registry check makes; the release side, for what it does not have, is facts/UIKit/UIKit18_0.md M1",
+   "facts": "facts/UIKit/UIKit18_0.md"
   },
   {
    "api": "CharonEdgeList",

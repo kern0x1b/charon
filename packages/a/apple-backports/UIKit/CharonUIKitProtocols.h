@@ -4,10 +4,25 @@
 // transcribed from the SDK that declares it: the base list, each member with its kind and types,
 // @required and @optional as sections, and API_AVAILABLE(ios(<introduced>)). Facts only.
 // This file has a forward-declared protocol in it, so it imports <UIKit/UIKit.h> for that body, and
+//
+// THE FOUR AT THE END ARE BODIES, not forward declarations, and that is the difference the compiler
+// makes: tests/addon/protocol-sources.sh says it plainly - "a forward declaration is correct when the
+// SDK supplies the body and a compile error when it does not: error: @protocol is using a forward
+// protocol declaration".  No SDK this package compiles against declares these four - they are
+// 18.0 - so a forward declaration here would leave UIKitBackportsProtocols18.0.m, the source
+// modules/apple/backports.lua writes for the band, naming a protocol with no metadata, and it would
+// not compile.  They are transcribed from the SDK that does declare them, the host's own UIKit under
+// Mac Catalyst (macOS 27.0), member for member and section for section, and the registry rows
+// name the same source.  Every other protocol in this file is a forward declaration because the
+// 16.4 SDK declares it.
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 #import "CharonTraits17.h"
+// CharonUIKit18.h for the four 18.0 protocols at the end of this file: their signatures name UITab,
+// UITabGroup, UITabSidebarItem, UITabBarControllerSidebar, UITextFormattingViewController and
+// UICalendarSelectionWeekOfYear, all of which that header declares.
+#import "CharonUIKit18.h"
 
 @protocol NSCollectionLayoutContainer;
 
@@ -24,6 +39,14 @@
 @protocol UIActivityItemsConfigurationReading;
 
 @protocol UIAdaptivePresentationControllerDelegate;
+
+// --- The last of the four.  Its one signature names UICalendarSelectionWeekOfYear, which CharonUIKit18.h
+// --- above declares, like the sidebar protocols'.
+
+// What a week-of-year calendar selection tells its delegate when the user picks one.
+@protocol UICalendarSelectionWeekOfYearDelegate <NSObject>
+- (void)weekOfYearSelection:(UICalendarSelectionWeekOfYear *)selection didSelectWeekOfYear:(NSDateComponents *)weekOfYearComponents;
+@end
 
 @protocol UICGFloatTraitDefinition;
 
@@ -99,6 +122,21 @@
 
 @protocol UISheetPresentationControllerDetentResolutionContext;
 
+// --- The four protocols of UIKit's 18.0 band, transcribed with their members because no SDK this package
+// --- compiles against declares them.  Where a signature names an 18.0 class, that class is declared by
+// --- CharonUIKit18.h, imported above.  Each keeps the SDK's own @optional or @required split and its own
+// --- availability annotations, and nothing is added that 26.2 does not declare.
+
+// --- The four protocols of UIKit's 18.0 band, transcribed with their members because no SDK this package
+// --- compiles against declares them.  Where each signature names an 18.0 class, that class is declared by
+// --- CharonUIKit18.h, imported above.  Each is @optional or @required exactly as 26.2 has it.
+
+// The animator a sidebar transition is handed: the panel adds its own animations and its completion.
+@protocol UITabBarControllerSidebarAnimating <NSObject>
+- (void)addAnimations:(void (^)(void))animations;
+- (void)addCompletion:(void (^)(void))completion;
+@end
+
 @protocol UITableViewDataSourcePrefetching;
 
 @protocol UITableViewDragDelegate;
@@ -122,6 +160,58 @@
 @protocol UITextDropRequest;
 
 @protocol UITextDroppable;
+
+// What the sidebar asks its delegate: which item a request becomes, what to show for a tab, the swipe
+// and context menus of one, the drag and drop of one, and the two availability callbacks.  The 27.0
+// members carry the SDK's own annotations, as the protocol spans releases.
+@protocol UITabBarControllerSidebarDelegate <NSObject>
+@optional
+- (void)tabBarController:(UITabBarController *)tabBarController sidebarAvailabilityDidChange:(UITabBarControllerSidebar *)sidebar API_AVAILABLE(ios(27.0));
+- (void)tabBarController:(UITabBarController *)tabBarController sidebarVisibilityWillChange:(UITabBarControllerSidebar *)sidebar animator:(id<UITabBarControllerSidebarAnimating>)animator;
+- (UITabSidebarItem *)tabBarController:(UITabBarController *)tabBarController
+                               sidebar:(UITabBarControllerSidebar *)sidebar
+                        itemForRequest:(UITabSidebarItemRequest *)request;
+- (void)tabBarController:(UITabBarController *)tabBarController
+                 sidebar:(UITabBarControllerSidebar *)sidebar
+              updateItem:(UITabSidebarItem *)item;
+- (void)tabBarController:(UITabBarController *)tabBarController sidebar:(UITabBarControllerSidebar *)sidebar willBeginDisplayingTab:(__kindof UITab *)tab;
+- (void)tabBarController:(UITabBarController *)tabBarController sidebar:(UITabBarControllerSidebar *)sidebar didEndDisplayingTab:(__kindof UITab *)tab;
+- (UISwipeActionsConfiguration *)tabBarController:(UITabBarController *)tabBarController
+                                          sidebar:(UITabBarControllerSidebar *)sidebar
+                   leadingSwipeActionsConfigurationForTab:(__kindof UITab *)tab;
+- (UISwipeActionsConfiguration *)tabBarController:(UITabBarController *)tabBarController
+                                          sidebar:(UITabBarControllerSidebar *)sidebar
+                   trailingSwipeActionsConfigurationForTab:(__kindof UITab *)tab;
+- (UIContextMenuConfiguration *)tabBarController:(UITabBarController *)tabBarController
+                                         sidebar:(UITabBarControllerSidebar *)sidebar
+                          contextMenuConfigurationForTab:(__kindof UITab *)tab;
+- (NSArray<UIDragItem *> *)tabBarController:(UITabBarController *)tabBarController
+                                    sidebar:(UITabBarControllerSidebar *)sidebar
+               itemsForBeginningDragSession:(id<UIDragSession>)dragSession
+                                        tab:(UITab *)tab API_AVAILABLE(ios(18.4));
+- (NSArray<UIDragItem *> *)tabBarController:(UITabBarController *)tabBarController
+                                    sidebar:(UITabBarControllerSidebar *)sidebar
+                itemsForAddingToDragSession:(id<UIDragSession>)dragSession tab:(UITab *)tab API_AVAILABLE(ios(18.4));
+- (UIDropOperation)tabBarController:(UITabBarController *)tabBarController
+                            sidebar:(UITabBarControllerSidebar *)sidebar
+                             sidebarAction:(UIAction *)sidebarAction
+                                    group:(UITabGroup *)group
+            operationForAcceptingItemsFromDropSession:(id<UIDropSession>)session API_AVAILABLE(ios(18.4));
+- (void)tabBarController:(UITabBarController *)tabBarController
+                 sidebar:(UITabBarControllerSidebar *)sidebar
+           sidebarAction:(UIAction *)sidebarAction
+                   group:(UITabGroup *)group
+acceptItemsFromDropSession:(id<UIDropSession>)session API_AVAILABLE(ios(18.4));
+@end
+
+// What the formatting panel tells its delegate, and the three questions it may ask first.
+@protocol UITextFormattingViewControllerDelegate <NSObject>
+- (void)textFormattingViewController:(UITextFormattingViewController *)viewController didChangeValue:(UITextFormattingViewControllerChangeValue *)changeValue;
+@optional
+- (BOOL)textFormattingViewController:(UITextFormattingViewController *)viewController shouldPresentFontPicker:(UIFontPickerViewController *)fontPicker;
+- (BOOL)textFormattingViewController:(UITextFormattingViewController *)viewController shouldPresentColorPicker:(UIColorPickerViewController *)colorPicker;
+- (void)textFormattingDidFinish:(UITextFormattingViewController *)viewController;
+@end
 
 @protocol UITextInputTraits;
 

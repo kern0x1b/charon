@@ -1,9 +1,9 @@
-# UIKit's 18.0 band in this port: the ladder, the one member, and the question this page does not answer
+# UIKit's 18.0 band in this port: the ladder, the one member with substrate, and the 32 names
 
 Every row of `registry/UIKit/ios17-18.json` whose `introduced` is 18.0 is one of 103: 28 classes,
 4 protocols, 37 methods and 34 properties. This page holds the measurement all of them rest on, the
-one member the port carries, and - stated plainly, because a reader of the registry will want to
-know - the one question about the band that is not settled here.
+one member the port answers with behaviour, and the 32 rows that are carried as names and what that
+carries - which is the symbol and nothing else, and saying so is the point of M3.
 
 ## M1. Both band ends, class-scoped, with the controls in the same run
 
@@ -112,25 +112,79 @@ guard - the same reason, and the same shape, as `UITraitCollection+TraitConstruc
 matching ` error: `**, and the two warnings each prints are the nullability notes from
 `CharonTraits17.h` that the 17.0 constructors file beside it prints in the same run.
 
-## M3. What this page does not settle: the 28 class rows and the 4 protocol rows
+## M3. The 28 class rows and the 4 protocol rows: carried as names, and why that is not a fake
 
-The band also carries 28 classes and 4 protocols as names only. main's registry has all 32 at
-`absent`, with the reason "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands
-in for it". Two other bands on this tree have taken the opposite position for the same shape of
-name - `CharonUIKit26.h`'s twenty-one 26.0 classes and `CharonUIKit18.h`'s 18.2 and 18.4 classes are
-declared, given empty implementations and marked `implemented`, on the argument that an application
-linking strongly against the name needs dyld to resolve it.
+These 32 rows are `implemented`, and the whole of what they carry is the dyld symbol. An application
+that links strongly against `UITab` names `_OBJC_CLASS_$_UITab`, and dyld has to resolve it before
+`main` runs; a row that said `absent` for that name would be describing an application that does not
+launch. `COORDINATION.md` section 2 says it in one line - "**`absent` for a strong-imported class
+symbol is forbidden** - that is not a missing feature, that is dyld killing the application at launch"
+- and the same ground already carries `CharonUIKit26.h`'s twenty-one 26.0 classes and the 18.2 and
+18.4 classes of `CharonUIKit18.h`.
 
-**This page does not claim those 32 rows either way**, and nothing here changes them. They are one
-question - whether a name-only class with no measurement of the release behind it is `implemented`
-or `absent` - and the two answers are both on this tree today, the `absent` one being the newer.
-Whoever settles it settles all three bands at once, and the decision belongs to the owner.
+**What is carried, measured on the object the band build produces:**
 
-What *is* settled here, and is not in question: the 71 absent member rows of the band are measured
-(M1) and say what the release does not have; the one member with substrate is carried (M2); and the
-other 32 member rows are the list-configuration and delegate rows whose reasons name the port's own
-classes and styles - main's, kept as they are.
+```
+$ clang -c -fobjc-arc -target armv7-apple-ios6.1.3 -isysroot <16.4 SDK> UIKit18_0.m -o UIKit18_0.o
+$ otool -v -s __TEXT __objc_classname UIKit18_0.o | grep -cE '^[0-9a-f]{8}  '
+28
+$ otool -s __TEXT __objc_methname UIKit18_0.o
+(section empty)
+```
+
+28 class names, and **no selector at all** - which is the point stated as a measurement rather than as
+a claim: the object carries the twenty-eight symbols and nothing else. The same run at
+`armv7-apple-ios4.3` prints 0 lines matching ` error: `, and so does the compile at 6.1.3.
+
+**No conformance is declared, and that is a decision with a reason.** 26.2 gives these classes
+`NSCopying`, `NSSecureCoding` and `CTAdaptiveImageProviding`. Transcribing a conformance without its
+method is a promise about a method, and its first caller would crash on `copyWithZone:` - the
+opposite of what a name-only class is for. So none is declared, and no row claims one.
+
+**Three superclasses are transcribed, because an inheritance is what a caller compiles against and
+both parents resolve:** `UITabGroup` and `UISearchTab` inherit `UITab`, which this same object
+exports, and `UITextFormattingViewController` inherits `UIViewController`, which the port already
+carries. An instance of the child answers everything the parent answers.
+
+**`UICalendarSelectionWeekOfYear` is the exception and the row says so:** 26.2 declares it over
+`UICalendarSelection`, the port carries no `UICalendarSelection` (`registry/UIKit/ios15-16.json` has
+that row `absent`), and a class whose superclass the library does not export cannot be resolved by dyld
+at all. It is declared over `NSObject` rather than trade a missing symbol for a worse one.
+
+**The four protocols** are carried by the source `modules/apple/backports.lua` writes for the band -
+`UIKitBackportsProtocols18.0.m` - and their declarations are transcribed into `CharonUIKitProtocols.h`
+with their members, because a forward declaration is not enough there and the check says so:
+
+```
+$ sh tests/addon/protocol-sources.sh <16.4 SDK> .agent-work/runs/w-uikit-18/protocols
+57 protocol sources over 24 libraries, each at the triple of its rows' minimum
+protocol-sources: OK - 57 of 57 protocol sources compile for armv7 against the 16.4 SDK
+$ otool -v -s __TEXT __objc_classname UIKitBackportsProtocols18.0.o
+00000002  UICalendarSelectionWeekOfYearDelegate
+00000028  NSObject
+00000031  UITabBarControllerSidebarAnimating
+00000054  UITabBarControllerSidebarDelegate
+00000076  UITextFormattingViewControllerDelegate
+```
+
+**What a caller gets, and what it does not:** the names resolve, the classes allocate, and a selector
+of 18.0 sent to an instance gets `doesNotRecognizeSelector:` - which is what a class that exists and
+has no such method answers, and the honest end on a release that has no tab sidebar, no formatting
+panel, no zoom transition and no update link. Nothing here is stored, believed for nothing, or claimed
+to steer anything: the difference from the case COORDINATION.md also forbids - a quietly-different
+answer - is that this one makes no answer at all.
+
+The transcription is read from the SDK that declares these names, the host's own UIKit under Mac
+Catalyst (`$(xcrun --show-sdk-path)/System/iOSSupport/System/Library/Frameworks/UIKit.framework/Headers`):
+all twenty-eight `@interface` declarations are there, and so are the four protocols with their members
+(`UITabBarControllerSidebar.h`, `UITextFormattingViewController.h`, `UICalendarSelectionWeekOfYear.h`).
+No SDK this package compiles against declares any of the 32 - the 16.4 build SDK has no `UITab.h`, no
+`UITrait.h` and no 18.0 protocol - which is why the declarations are here at all.
+
+The other 71 member rows of the band are the `absent` ones of M1, and they are untouched by this.
 
 **Not claimed:** that a 6.1.3 or 4.3 release could have displayed a list environment had it carried
 the constructor. Neither does: M1 measured the class out of both band ends. What M2 measures is what
-the constructor has to agree with where one exists, which is the host's own UIKit.
+the constructor has to agree with where one exists, which is the host's own UIKit. And not claimed of
+M3 either: that any of the twenty-eight classes can do anything. They resolve, they allocate, and a
+selector of 18.0 sent to one gets `doesNotRecognizeSelector:`.
