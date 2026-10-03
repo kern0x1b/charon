@@ -527,7 +527,7 @@
    "status": "implemented",
    "effect": "the border of this annotation, a PDFBorder of its own over the dictionary this annotation was built from: a /Border array or a /BS dictionary in the dictionary answers one for EVERY subtype - measured on border-on-nontype, where /Highlight, /Text, /Link, /Stamp and /Popup, the five that answer nil without one, all answer W 6 when the file names a /Border - and with neither, a DEFAULT border (solid, lineWidth 1) is answered for the geometry subtypes /Circle /FreeText /Ink /Line /Square and for a /Widget whose /MK names a border colour the format's four component counts allow, and nil for every other subtype",
    "facts": "facts/PDFKit/Document11.md",
-   "source": "the host's own PDFKit under macOS in a process that contains no port object, against the port's objects in a process that contains no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 5329 MISMATCHES 0 over 100 fixtures, and eleven red controls name a border or identity key",
+   "source": "the host's own PDFKit under macOS in a process that contains no port object, against the port's objects in a process that contains no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7904 MISMATCHES 0 over 100 fixtures, and eleven red controls name a border or identity key",
    "ledger": "?"
   },
   {
