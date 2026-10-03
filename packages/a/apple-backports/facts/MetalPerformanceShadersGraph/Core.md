@@ -611,14 +611,33 @@ answer a NaN each and the four ordinary ones answer exactly what 14.0's pair ans
 secondary of (+0, -0, +inf, -inf, NaN, -NaN, 1.4e-45, 2)), so the four NaNs are the whole difference between
 the two pairs.
 
-**An integer operand is refused, and the port refuses it the same way.** Measured: over an int32 operand both
-of them raise `NSInvalidArgumentException` from inside the framework's own kernel table -
-`-[__NSDictionaryM setObject:forKey:]: object cannot be nil (key: isNaN_i_i8)` - before a single element is
-written, because there is no NaN kernel for an integer type to ask with. The port raises
-`NSInvalidArgumentException` at the same point (the graph is built, and the answer never happens), and the
-case asks both through `@try` and compares the exception's name: `raised-NSInvalidArgumentException` on both
-sides. This is the second place in this family where the port is not the release's answer in form, and it is
-named in the row of both methods.
+**Every data type that is not a floating point one is refused, and the port refuses exactly that set.**
+Measured on this host's own MPSGraph, one type at a time, over a feed of eight ascending bytes against eight
+descending ones (which every one of these types reads as the same two numbers), both operations:
+
+| operand type | the release over `minimumWithNaNPropagation` and over `maximumWithNaNPropagation` | the kernel it reaches for |
+| --- | --- | --- |
+| `MPSDataTypeFloat32`, `MPSDataTypeFloat16` | **answers** | - |
+| `MPSDataTypeInt8` | raises `NSInvalidArgumentException` | `isNaN_i8` |
+| `MPSDataTypeInt16` | raises | `isNaN_i16_i8` |
+| `MPSDataTypeInt32` | raises | `isNaN_i_i8` |
+| `MPSDataTypeInt64` | raises | `isNaN_i64_i8` |
+| `MPSDataTypeUInt8` | raises | `isNaN_u8_i8` |
+| `MPSDataTypeUInt16` | raises | `isNaN_u16_i8` |
+| `MPSDataTypeUInt32` | raises | `isNaN_u_i8` |
+| `MPSDataTypeUInt64` | raises | `isNaN_u64_i8` |
+| `MPSDataTypeBool` | raises | `isNaN_i8` |
+
+Every refusal is `-[__NSDictionaryM setObject:forKey:]: object cannot be nil (key: ...)` from inside the
+framework's own kernel table, raised before a single element is written, and the key names the type it
+wanted: there is no NaN kernel for an integer type, and a boolean is an integer type to it. So the port's
+rule - refuse every data type that is not `MPSDataTypeFloat32` or `MPSDataTypeFloat16` - is the measured set
+and not a guess, and it is asked of both operations over all nine types in
+`tests/backports/host/mpsgraph/graph-cases.m`, each case built and run inside an `@try` because that is where
+the release raises: `raised-NSInvalidArgumentException` on both sides of all eighteen.
+
+This is the second place in this family where the port is not the release's answer in form, and it is named
+in the row of both methods.
 
 **In float16 this pair keeps the sign of a zero where 14.0's does not.** Measured over the same sixteen
 classes: `maximumWithNaNPropagation` answers `8000` for a maximum of -1.0 and -0.0 and `8000` for a maximum

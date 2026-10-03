@@ -63,11 +63,14 @@
 // ordinary ones answer what 14.0's pair answers over the same feeds (0, -1, -0, -inf), so the only
 // difference between the two pairs is the four NaNs. In float16 the same four answer a NaN as well.
 //
-// An integer operand is the one thing this release does not answer at all: measured, the two of them
-// over an int32 operand raise NSInvalidArgumentException from inside the framework's own kernel table
-// ("-[__NSDictionaryM setObject:forKey:]: object cannot be nil", key "isNaN_i_i8") before any element is
-// written - there is no NaN kernel for an integer type to ask for. This port has no kernel table to
-// miss an entry in, so the refusal is the same one raised and named, which is the only answer there is.
+// A data type that is not a floating point one is the one thing this release does not answer at all, and
+// the set is measured rather than guessed: int8, int16, int32, int64, uint8, uint16, uint32, uint64 and
+// bool each raise NSInvalidArgumentException from inside the framework's own kernel table before any
+// element is written, and float16 and float32 each answer. The key it is reaching for names the type it
+// wanted - isNaN_i8, isNaN_i16_i8, isNaN_i_i8, isNaN_i64_i8, isNaN_u8_i8, isNaN_u16_i8, isNaN_u_i8,
+// isNaN_u64_i8, and for a boolean isNaN_i8 again - because there is no NaN kernel for an integer type and a
+// boolean is an integer type to it. This port has no kernel table to miss an entry in, so the refusal is
+// the same one raised and named, over exactly the nine types measured and no other.
 - (MPSGraphTensor *)minimumWithNaNPropagationWithPrimaryTensor:(MPSGraphTensor *)primaryTensor
                                               secondaryTensor:(MPSGraphTensor *)secondaryTensor
                                                          name:(NSString *)name
@@ -91,8 +94,7 @@
 // What the two of them share. The arithmetic is 14.0's minimum and maximum, which the interpreter
 // already walks, and the one thing that is this release's own is that a NaN latches - so the operation
 // is 14.0's operation with @latchNaN set, and no name of this release appears in any object but this
-// one. The data type is asked first because it is the data type the refusal is about: an integer has no
-// NaN to look for and the release has no kernel to look for it with, which is what it measured.
+// one. The data type is asked first because it is the data type the refusal is about.
 - (MPSGraphTensor *)charon_mps_nanPropagatingExtreme:(MPSGraphTensor *)primaryTensor
                                    secondaryTensor:(MPSGraphTensor *)secondaryTensor
                                             lesser:(BOOL)lesser
@@ -102,9 +104,9 @@
     if (type != MPSDataTypeFloat32 && type != MPSDataTypeFloat16) {
         [NSException raise:NSInvalidArgumentException
                     format:@"MPSGraph: %@ was asked of an operand of data type 0x%x, and the release "
-                           @"answers it over float16 and float32 alone: measured, over an int32 operand it "
-                           @"raises out of its own kernel table, which has no NaN kernel for an integer "
-                           @"type to ask with",
+                           @"answers it over float16 and float32 alone: measured, every integer type and a "
+                           @"boolean raise out of its own kernel table, which has no NaN kernel for an "
+                           @"integer type to ask with",
                             name, (unsigned)type];
     }
     return [self charon_mps_operation:lesser ? CharonMPSGraphOperationKindMinimum
