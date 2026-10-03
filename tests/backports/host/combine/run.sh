@@ -29,10 +29,13 @@ if [ -z "$sources" ]; then
     sources=$(ls -d "$HOME"/.xmake/cache/packages/*/s/styx/*/source/styx/Sources 2>/dev/null | head -1 || true)
 fi
 if [ -z "$sources" ] || [ ! -d "$sources/Combine" ]; then
-    echo "COMBINE_SOURCES names $sources, which has no Combine/ directory in it."
-    echo "It must be the top-level Sources/ directory of kern0x1b/styx at the commit"
-    echo "packages/s/styx/xmake.lua pins - the one that holds Combine/ and CombineHelpers/."
-    echo "Build charon@styx once, and the xmake source cache is found without being named."
+    # Said in the words the host sweep reads. Without a line beginning FAIL/note/skip a run that exits 1
+    # is counted DEAD, which reads as "nobody has run this lately" rather than "the input is not on this
+    # machine" - and this test's input genuinely is not here: neither ~/.xmake/packages/s/styx nor the
+    # package cache holds styx on this machine (measured, both globs match nothing).
+    echo "FAIL: styx sources not found - set COMBINE_SOURCES to the top-level Sources/ directory of"
+    echo "      kern0x1b/styx at the commit packages/s/styx/xmake.lua pins, the one holding Combine/ and"
+    echo "      CombineHelpers/, or build charon@styx once so the xmake package cache holds it"
     exit 1
 fi
 if [ ! -d "$repo/packages/s/styx/files/CombineKit" ]; then

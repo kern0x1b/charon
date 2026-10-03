@@ -17,7 +17,8 @@ PICOTLS_COMMIT=d6c3da61b47cc3ccecaf9aa093c24e4aafebd52a
 build=${PICOTLS_BUILD:-${TMPDIR:-/tmp}/charon-picotls-tls13}
 
 # the sources: the installed package's, or a checkout at the commit the recipe pins
-source_root=$(ls -d "$HOME"/.xmake/packages/p/picotls/*/ 2>/dev/null | head -1 || true)
+# PICOTLS_SOURCES names a checkout of the pinned commit, and the installed package is used otherwise.
+source_root=${PICOTLS_SOURCES:-$(ls -d "$HOME"/.xmake/packages/p/picotls/*/ 2>/dev/null | head -1 || true)}
 if [ -n "$source_root" ] && [ -d "${source_root}include/picotls.h" ]; then
     sources="$source_root"
     echo "picotls: the installed package"
@@ -25,9 +26,24 @@ else
     sources="$build/picotls"
     rm -rf "$build"
     mkdir -p "$build"
-    git clone --quiet --depth 1 "$PICOTLS_URL" "$sources"
-    git -C "$sources" checkout --quiet "$PICOTLS_COMMIT"
-    echo "picotls: $PICOTLS_COMMIT checked out"
+    # The PINNED COMMIT is fetched, not a branch tip and hoped for. `git clone --depth 1` brings HEAD
+    # and nothing else, so `checkout <sha>` for any older commit has nothing to check out and says
+    # "fatal: unable to read tree (<sha>)" - which is what this test did on a machine with no picotls
+    # package installed, every time. `git fetch origin <sha>` asks for that one object by name, which is
+    # what a pin needs, and the checkout is of FETCH_HEAD so nothing depends on which branch it came from.
+    mkdir -p "$sources"
+    git -C "$sources" init --quiet
+    git -C "$sources" remote add origin "$PICOTLS_URL"
+    if ! git -C "$sources" fetch --quiet --depth 1 origin "$PICOTLS_COMMIT" 2>"$build/fetch.log"; then
+        echo "FAIL: picotls $PICOTLS_COMMIT could not be fetched from $PICOTLS_URL - the sources this"
+        echo "      checks the port's TLS stack against are not on this machine. Build the package once"
+        echo "      (xmake require --extra package=p/picotls), or set PICOTLS_SOURCES to a checkout of"
+        echo "      that commit."
+        sed 's/^/      /' "$build/fetch.log"
+        exit 1
+    fi
+    git -C "$sources" checkout --quiet FETCH_HEAD
+    echo "picotls: $PICOTLS_COMMIT fetched and checked out"
 fi
 
 mkdir -p "$build/obj"

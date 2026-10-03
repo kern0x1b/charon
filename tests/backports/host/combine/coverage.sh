@@ -27,9 +27,13 @@ if [ -z "$sources" ]; then
     sources=$(ls -d "$HOME"/.xmake/cache/packages/*/s/styx/*/source/styx/Sources 2>/dev/null | head -1 || true)
 fi
 if [ -z "$sources" ] || [ ! -d "$sources/Combine" ]; then
-    echo "COMBINE_SOURCES names $sources, which has no Combine/ directory in it."
-    echo "It must be the top-level Sources/ directory of kern0x1b/styx at the commit"
-    echo "packages/s/styx/xmake.lua pins - the one that holds Combine/ and CombineHelpers/."
+    # Said in the words the host sweep reads, because otherwise this is invisible there: a script that
+    # exits 1 with no line beginning FAIL/note/skip is counted DEAD, which reads as "nobody has run this
+    # lately" rather than "the input is not on this machine". The name of the missing input is the whole
+    # point of the line, so it is one line and it names the input.
+    echo "FAIL: styx sources not found - set COMBINE_SOURCES to the top-level Sources/ directory of"
+    echo "      kern0x1b/styx at the commit packages/s/styx/xmake.lua pins, the one holding Combine/ and"
+    echo "      CombineHelpers/, or build the package once so the xmake package cache holds it"
     exit 1
 fi
 for needed in "$corpus" "$tools/swiftinterface-surface.py" "$facts"; do
