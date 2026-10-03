@@ -219,68 +219,148 @@ echo "comparison: $verdict"
 #    input of any model tools/coreml/make-models.py writes -- so a mutant of it would survive for a
 #    reason that is the corpus's and not the rule's. Writing a container with an optional input is
 #    what puts it back, and it is the first thing the next round does.
+#
+# A mutant is CAUGHT when its record is not the pristine one, and the three ways of arriving are
+# told apart and counted apart, because they are three different claims about the port and a single
+# number cannot tell a reader which one was made:
+#
+#   differing  it ran and answered something else. This is the kill mutation testing wants.
+#   aborted    it did not finish: killed by a signal or a non-zero exit. Counted caught, and only
+#              because the two binaries differ by the mutation and by nothing else -- the pristine
+#              build above wrote its own record and exited 0, and the guard below refuses to count
+#              any mutant without it. A crash is a kill in mutation testing only when the mutation
+#              is what crashes, so every aborting mutant is named on its own line here: an abort
+#              that was the harness's own, or the corpus's, is visible instead of hidden behind
+#              `|| true`. One used to be, and cases.m asked a ragged batch in a way that could only
+#              answer; it is asked through @try now (7e3e8f77), so this run reports none.
+#   did not build  the mutation did not compile, so the question was never asked. Counted as
+#              surviving: a mutant that cannot run is not a caught mutant.
 survived=0
 ran=0
+controls=0
+differing=0
+aborted=0
+misfit=0
+# The counting is refused without the pristine record to compare against, because then every
+# mutant's record differs from nothing and all eighteen are caught for no reason at all.
+[ -s "$build/port.json" ] || {
+    echo "no pristine record at $build/port.json: every mutant would count as caught for no reason"
+    exit 1
+}
 mutant() {
-    ran=$((ran + 1))
     file=$1
     from=$2
     to=$3
+    expect=$4
+    # A mutant declared `survived` is a control, not one of the rules: it is counted apart, because
+    # a run that says "18 run, 0 surviving" and has quietly added a nineteenth that did survive
+    # has said something false.
+    if [ "$expect" = survived ]; then controls=$((controls + 1)); else ran=$((ran + 1)); fi
     rm -rf "$build/mutant"
     mkdir -p "$build/mutant"
     cp "$coreml"/*.m "$coreml"/*.h "$coreml"/CharonML*.c "$coreml"/*.inc "$build/mutant/" 2>/dev/null || true
+    # The mutation is counted before it is applied: `text.replace` on a needle the file does not
+    # hold writes the file back unchanged and prints nothing, and a "planted" run over an
+    # unplanted file then reports the mutant as applied (2026-10-03).
     python3 - "$build/mutant/$file" "$from" "$to" <<'PY'
 import sys
 path, old, new = sys.argv[1:4]
 text = open(path).read()
-assert old in text, old
+assert text.count(old) == 1, "%d occurrences of %r in %s" % (text.count(old), old, path)
 open(path, "w").write(text.replace(old, new, 1))
 PY
-    port "$build/mutant" "$build/mutant" 2>/dev/null || { echo "mutant did not build: $file $from -> $to"; survived=$((survived + 1)); return; }
-    rm -f "$build/mutant.json"
-    COREML_RECORDS="$build/mutant.json" "$build/mutant/run" "$models" > /dev/null 2>&1 || true
-    if cmp -s "$build/port.json" "$build/mutant.json"; then
-        echo "MUTANT SURVIVED: $file $from -> $to"
+    outcome=planted
+    # Every mutant is named before it runs, so a line the run prints after one of them -- the
+    # shell's own report of a job killed by a signal -- belongs to a mutant the reader can see,
+    # instead of leaving eighteen mutations to be counted by hand.
+    echo "mutant: $file $from -> $to"
+    if ! port "$build/mutant" "$build/mutant" 2>/dev/null; then
+        outcome=unbuilt
+    else
+        rm -f "$build/mutant.json"
+        status=0
+        COREML_RECORDS="$build/mutant.json" "$build/mutant/run" "$models" > /dev/null 2>&1 || status=$?
+        if [ "$status" -ne 0 ]; then
+            outcome=aborted
+            echo "mutant aborted: $file $from -> $to (exit $status, and no complete record of its own)"
+        elif cmp -s "$build/port.json" "$build/mutant.json"; then
+            outcome=same
+        else
+            outcome=differing
+        fi
+    fi
+    case "$outcome" in
+        differing|aborted) caught=yes ;;
+        *) caught=no ;;
+    esac
+    # A control has to survive, and the run is red when it does not: that is the only thing here
+    # which shows the comparison can report "same" at all, so without it "0 surviving" would be a
+    # claim about these eighteen and about nothing else. A control is counted out of the rules'
+    # numbers, so the eighteen below stay eighteen whatever a control does.
+    if [ "$expect" = survived ]; then
+        if [ "$caught" = yes ]; then
+            echo "THE COUNTING IS BROKEN: a mutation that cannot change an answer was caught ($outcome): $file $from -> $to"
+            misfit=$((misfit + 1))
+        fi
+        return 0
+    fi
+    case "$outcome" in
+        differing) differing=$((differing + 1)) ;;
+        aborted) aborted=$((aborted + 1)) ;;
+    esac
+    if [ "$caught" = no ]; then
+        echo "MUTANT SURVIVED: $outcome: $file $from -> $to"
         survived=$((survived + 1))
     fi
 }
 mutant MLFeatureDescription.m "if (value.isUndefined) {
         return _optional;" "if (value.isUndefined) {
-        return YES;"
+        return YES;" differing
 mutant MLFeatureDescription.m "if (value.type != _type) {
         return NO;" "if (value.type == 12345) {
-        return NO;"
-mutant MLFeatureDescription.m "        if (_multiArrayConstraint.dataType != (MLMultiArrayDataType)0 &&" "        if (0 &&"
+        return NO;" differing
+mutant MLFeatureDescription.m "        if (_multiArrayConstraint.dataType != (MLMultiArrayDataType)0 &&" "        if (0 &&" differing
 mutant CharonMLConstraints.h "            if ([constraint.enumeratedShapes[index] isEqualToArray:shape]) {
                 return YES;
             }" "            if (YES) {
                 return YES;
-            }"
-mutant CharonMLConstraints.h "        return [[MLMultiArrayShapeConstraint alloc] charon_initWithType:MLMultiArrayShapeConstraintTypeEnumerated" "        return [[MLMultiArrayShapeConstraint alloc] charon_initWithType:MLMultiArrayShapeConstraintTypeRange"
-mutant MLModel.m "type = charon_ml_feature_type_of(described->type);" "type = MLFeatureTypeDouble;"
+            }" differing
+mutant CharonMLConstraints.h "        return [[MLMultiArrayShapeConstraint alloc] charon_initWithType:MLMultiArrayShapeConstraintTypeEnumerated" "        return [[MLMultiArrayShapeConstraint alloc] charon_initWithType:MLMultiArrayShapeConstraintTypeRange" differing
+mutant MLModel.m "type = charon_ml_feature_type_of(described->type);" "type = MLFeatureTypeDouble;" differing
 mutant MLModel.m "answer = [self predictionFromFeatures:one options:options error:error];" "answer = nil;
-        (void)options;"
+        (void)options;" differing
 mutant MLModel.m "charon_ml_error(error, CHARON_ML_ERROR_IO,
                         @\"a model is read from a file" "charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
-                        @\"a model is read from a file"
-mutant MLParameter.m "return [[[self class] alloc] charon_initWithName:name scope:nil];" "return [[[self class] alloc] charon_initWithName:[name uppercaseString] scope:nil];"
-mutant MLArrayBatchProvider12.m "        } else if ([dictionary[name] count] != count) {" "        } else if (0) {"
-mutant MLFeatureProvider.m "        return [MLFeatureValue featureValueWithInt64:[object longLongValue]];" "        return [MLFeatureValue featureValueWithDouble:[object doubleValue]];"
-mutant MLFeatureProvider.m "    if ([object isKindOfClass:[NSArray class]]) {" "    if (0) {"
-mutant MLFeatureValue.m "    if (_type != MLFeatureTypeInt64 || _value.kind != CHARON_ML_VALUE_NUMBER) {" "    if (_value.kind != CHARON_ML_VALUE_NUMBER) {"
+                        @\"a model is read from a file" differing
+mutant MLParameter.m "return [[[self class] alloc] charon_initWithName:name scope:nil];" "return [[[self class] alloc] charon_initWithName:[name uppercaseString] scope:nil];" differing
+mutant MLArrayBatchProvider12.m "        } else if ([dictionary[name] count] != count) {" "        } else if (0) {" differing
+mutant MLFeatureProvider.m "        return [MLFeatureValue featureValueWithInt64:[object longLongValue]];" "        return [MLFeatureValue featureValueWithDouble:[object doubleValue]];" differing
+mutant MLFeatureProvider.m "    if ([object isKindOfClass:[NSArray class]]) {" "    if (0) {" differing
+mutant MLFeatureValue.m "    if (_type != MLFeatureTypeInt64 || _value.kind != CHARON_ML_VALUE_NUMBER) {" "    if (_value.kind != CHARON_ML_VALUE_NUMBER) {" differing
 mutant MLFeatureValue.m "    if (_value.kind != CHARON_ML_VALUE_STRING) {
         return nil;
     }" "    if (_value.kind == CHARON_ML_VALUE_NONE) {
         return nil;
-    }"
-mutant MLFeatureValue.m "        _value = charon_ml_value_string_copy(text.UTF8String, strlen(text.UTF8String));" "        _value = charon_ml_value_string_copy(\"\", 0);"
-mutant MLFeatureValue.m "    [coder encodeObject:self.multiArrayValue forKey:@\"array\"];" "    [coder encodeObject:nil forKey:@\"array\"];"
-mutant MLFeatureValue.m "        _multiArray = array;" "        _multiArray = nil;"
-mutant MLConstants.m '@"com.apple.CoreML"' '@"CoreML"'
-echo "mutants: $ran run, $survived surviving"
+    }" differing
+mutant MLFeatureValue.m "        _value = charon_ml_value_string_copy(text.UTF8String, strlen(text.UTF8String));" "        _value = charon_ml_value_string_copy(\"\", 0);" differing
+mutant MLFeatureValue.m "    [coder encodeObject:self.multiArrayValue forKey:@\"array\"];" "    [coder encodeObject:nil forKey:@\"array\"];" differing
+mutant MLFeatureValue.m "        _multiArray = array;" "        _multiArray = nil;" differing
+mutant MLConstants.m '@"com.apple.CoreML"' '@"CoreML"' differing
+
+# The control: a mutation that cannot change an answer, and the counting has to report it as
+# surviving. "0 surviving" is a claim about the eighteen above, and a claim nothing can fail is
+# not a claim -- this is the shape the HARDWARE allowance above already has, where an allowance
+# that stops being needed fails the run. The change is a space after a colon in a call the port
+# makes once per batch, so the file really is recompiled and the record really is compared: the
+# compiler is given a different source and answers the same, which is what "cannot change an
+# answer" has to mean for the test to be worth anything.
+mutant MLArrayBatchProvider12.m "    providers = [NSMutableArray arrayWithCapacity:count];" "    providers = [NSMutableArray arrayWithCapacity: count];" survived
+
+echo "mutants: $ran run, $survived surviving, $differing caught by a differing record, $aborted by an abort, $misfit out of turn"
+echo "control: $controls run, and the one that cannot change an answer was reported as caught: $misfit (0 is the only answer that passes)"
 if [ "$verdict" = differs ]; then
     echo "port: DIFFERS"
 else
     echo "port: same as the system"
 fi
-[ "$verdict" = same ] && [ "$survived" -eq 0 ]
+[ "$verdict" = same ] && [ "$survived" -eq 0 ] && [ "$misfit" -eq 0 ]
