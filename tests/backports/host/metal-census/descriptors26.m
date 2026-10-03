@@ -18,6 +18,44 @@
 #import <Metal/Metal.h>
 
 /* The port's classes, under the names the harness compiles them with. */
+@interface charonHost_MTL4AccelerationStructureGeometryDescriptor : NSObject <NSCopying>
+@property (nonatomic) NSUInteger intersectionFunctionTableOffset;
+@property (nonatomic) BOOL opaque;
+@property (nonatomic) BOOL allowDuplicateIntersectionFunctionInvocation;
+@property (nonatomic, copy) id label;
+@property (nonatomic) NSUInteger primitiveDataStride;
+@property (nonatomic) NSUInteger primitiveDataElementSize;
+@end
+@interface charonHost_MTL4AccelerationStructureTriangleGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) MTLAttributeFormat vertexFormat;
+@property (nonatomic) NSUInteger vertexStride;
+@property (nonatomic) MTLIndexType indexType;
+@property (nonatomic) NSUInteger triangleCount;
+@property (nonatomic) MTLMatrixLayout transformationMatrixLayout;
+@end
+@interface charonHost_MTL4AccelerationStructureBoundingBoxGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) NSUInteger boundingBoxStride;
+@property (nonatomic) NSUInteger boundingBoxCount;
+@end
+@interface charonHost_MTL4AccelerationStructureCurveGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) MTLAttributeFormat controlPointFormat;
+@property (nonatomic) MTLAttributeFormat radiusFormat;
+@property (nonatomic) NSUInteger segmentCount;
+@property (nonatomic) MTLCurveType curveType;
+@property (nonatomic) MTLCurveBasis curveBasis;
+@property (nonatomic) MTLCurveEndCaps curveEndCaps;
+@end
+@interface charonHost_MTL4AccelerationStructureMotionTriangleGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) MTLAttributeFormat vertexFormat;
+@property (nonatomic) MTLIndexType indexType;
+@end
+@interface charonHost_MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) NSUInteger boundingBoxStride;
+@end
+@interface charonHost_MTL4AccelerationStructureMotionCurveGeometryDescriptor : charonHost_MTL4AccelerationStructureGeometryDescriptor
+@property (nonatomic) MTLAttributeFormat controlPointFormat;
+@property (nonatomic) MTLAttributeFormat radiusFormat;
+@end
 /* The base the three subclasses below extend: Apple's own declaration gives it no members, so the case
  * declares it the same way and what it compares is that a fresh one is an object, that two are equal and
  * that a copy equals its source. */
@@ -480,6 +518,73 @@ int main(void)
             MTL4FunctionDescriptor *host = [[MTL4FunctionDescriptor alloc] init];
             check(host != nil, @"fresh MTL4FunctionDescriptor is an object, and it has no members to compare");
             check([host isKindOfClass:[NSObject class]], @"and it is an NSObject, as its declaration says");
+        }
+
+        /* THE SEVEN GEOMETRY DESCRIPTORS, and the four defaults here are the ones a guess gets wrong:
+         * the duplicate-invocation flag is YES and not NO, a triangle's vertexFormat is
+         * MTLVertexFormatFloat3 and its indexType MTLIndexTypeUint32, a curve's radius format is
+         * MTLVertexFormatFloat - ONE component - while its control point format is Float3, and a
+         * bounding box's stride is 24 and not 0. */
+        printf("the acceleration structure geometry descriptors\n");
+        {
+            MTL4AccelerationStructureGeometryDescriptor *host = [[MTL4AccelerationStructureGeometryDescriptor alloc] init];
+            charonHost_MTL4AccelerationStructureGeometryDescriptor *port = [[charonHost_MTL4AccelerationStructureGeometryDescriptor alloc] init];
+            same_u((unsigned long)port.intersectionFunctionTableOffset, (unsigned long)host.intersectionFunctionTableOffset, @"fresh: intersectionFunctionTableOffset");
+            check(host.opaque == port.opaque, @"fresh: opaque");
+            check(host.allowDuplicateIntersectionFunctionInvocation == port.allowDuplicateIntersectionFunctionInvocation &&
+                  host.allowDuplicateIntersectionFunctionInvocation,
+                  @"fresh: allowDuplicateIntersectionFunctionInvocation is YES on both sides - Apple's own, not a NO");
+            check(host.label == nil && port.label == nil, @"fresh: label is nil on both sides");
+            same_u((unsigned long)port.primitiveDataStride, (unsigned long)host.primitiveDataStride, @"fresh: primitiveDataStride");
+            same_u((unsigned long)port.primitiveDataElementSize, (unsigned long)host.primitiveDataElementSize, @"fresh: primitiveDataElementSize");
+        }
+        {
+            MTL4AccelerationStructureTriangleGeometryDescriptor *host = [[MTL4AccelerationStructureTriangleGeometryDescriptor alloc] init];
+            charonHost_MTL4AccelerationStructureTriangleGeometryDescriptor *port = [[charonHost_MTL4AccelerationStructureTriangleGeometryDescriptor alloc] init];
+            same_l((long)port.vertexFormat, (long)host.vertexFormat, @"fresh: vertexFormat, and it is Apple's own Float3");
+            check(host.vertexFormat == MTLVertexFormatFloat3, @"that format is MTLVertexFormatFloat3, the enumeration's 30");
+            same_u((unsigned long)port.vertexStride, (unsigned long)host.vertexStride, @"fresh: vertexStride");
+            same_l((long)port.indexType, (long)host.indexType, @"fresh: indexType, and it is Apple's own Uint32");
+            check(host.indexType == MTLIndexTypeUInt32, @"that index type is MTLIndexTypeUint32, the enumeration's 1");
+            same_u((unsigned long)port.triangleCount, (unsigned long)host.triangleCount, @"fresh: triangleCount");
+            same_l((long)port.transformationMatrixLayout, (long)host.transformationMatrixLayout, @"fresh: transformationMatrixLayout");
+        }
+        {
+            MTL4AccelerationStructureBoundingBoxGeometryDescriptor *host = [[MTL4AccelerationStructureBoundingBoxGeometryDescriptor alloc] init];
+            charonHost_MTL4AccelerationStructureBoundingBoxGeometryDescriptor *port = [[charonHost_MTL4AccelerationStructureBoundingBoxGeometryDescriptor alloc] init];
+            same_u((unsigned long)port.boundingBoxStride, (unsigned long)host.boundingBoxStride, @"fresh: boundingBoxStride, and it is Apple's own 24");
+            check(host.boundingBoxStride == 24, @"that stride is 24, three float32s");
+            same_u((unsigned long)port.boundingBoxCount, (unsigned long)host.boundingBoxCount, @"fresh: boundingBoxCount");
+        }
+        {
+            MTL4AccelerationStructureCurveGeometryDescriptor *host = [[MTL4AccelerationStructureCurveGeometryDescriptor alloc] init];
+            charonHost_MTL4AccelerationStructureCurveGeometryDescriptor *port = [[charonHost_MTL4AccelerationStructureCurveGeometryDescriptor alloc] init];
+            same_l((long)port.controlPointFormat, (long)host.controlPointFormat, @"fresh: controlPointFormat");
+            check(host.controlPointFormat == MTLVertexFormatFloat3, @"a curve's control point format is MTLVertexFormatFloat3");
+            same_l((long)port.radiusFormat, (long)host.radiusFormat, @"fresh: radiusFormat, and it is NOT the control point's");
+            check(host.radiusFormat == MTLVertexFormatFloat,
+                  @"a curve's radius format is MTLVertexFormatFloat - ONE component, the enumeration's 28 - and this assertion said Float2 until the measurement corrected it");
+            same_u((unsigned long)port.segmentCount, (unsigned long)host.segmentCount, @"fresh: segmentCount");
+            same_l((long)port.curveType, (long)host.curveType, @"fresh: curveType");
+            same_l((long)port.curveBasis, (long)host.curveBasis, @"fresh: curveBasis");
+            same_l((long)port.curveEndCaps, (long)host.curveEndCaps, @"fresh: curveEndCaps");
+        }
+        {
+            MTL4AccelerationStructureMotionTriangleGeometryDescriptor *host = [[MTL4AccelerationStructureMotionTriangleGeometryDescriptor alloc] init];
+            charonHost_MTL4AccelerationStructureMotionTriangleGeometryDescriptor *port = [[charonHost_MTL4AccelerationStructureMotionTriangleGeometryDescriptor alloc] init];
+            same_l((long)port.vertexFormat, (long)host.vertexFormat, @"fresh motion triangle: vertexFormat");
+            same_l((long)port.indexType, (long)host.indexType, @"fresh motion triangle: indexType");
+        }
+        {
+            MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor *host = [[MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor alloc] init];
+            charonHost_MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor *port = [[charonHost_MTL4AccelerationStructureMotionBoundingBoxGeometryDescriptor alloc] init];
+            same_u((unsigned long)port.boundingBoxStride, (unsigned long)host.boundingBoxStride, @"fresh motion bounding box: boundingBoxStride");
+        }
+        {
+            MTL4AccelerationStructureMotionCurveGeometryDescriptor *host = [[MTL4AccelerationStructureMotionCurveGeometryDescriptor alloc] init];
+            charonHost_MTL4AccelerationStructureMotionCurveGeometryDescriptor *port = [[charonHost_MTL4AccelerationStructureMotionCurveGeometryDescriptor alloc] init];
+            same_l((long)port.controlPointFormat, (long)host.controlPointFormat, @"fresh motion curve: controlPointFormat");
+            same_l((long)port.radiusFormat, (long)host.radiusFormat, @"fresh motion curve: radiusFormat");
         }
 
         printf("%d checks, each one against Apple's own object\n", checks);
