@@ -118,6 +118,19 @@
                         (unsigned long)from.width, (unsigned long)from.height);
         return;
     }
+    // The element count of the region this reads, which is what CharonMPSImageLoad's guard is against and
+    // which every other caller of the read sets on its own layout before reading: MPSImage9.m:132,
+    // MPSImageConvolution13.m:68, MPSImageMorphology13.m:62, MPSImageReduceUnary16.m:191,
+    // MPSImageTranspose13.m:54, MPSImageStatistics11.m:108 and the walk's own three at
+    // MPSImageWalk13.m:296-305. CharonMPSImageLayoutOf leaves it at the zero its memset writes, because a
+    // count that stayed the whole image's would let an index past this region's buffer through the guard,
+    // so a caller that does not set it gets every element refused.
+    // Measured, macOS 27.0 build 26A428 over the 2x2 float32 image of
+    // tests/backports/host/mpsimage10/cases.m with a NULL conversionInfo and
+    // srcAlpha == destAlpha == AlphaIsOne: without it the read succeeded and loaded zeros - the log carried
+    // "the walk asked for element 0 of a region of 0 element(s) (2x2 pixels, 1 channel(s), elementSize 4)"
+    // four times - so the conversion wrote four zeros where the release copies the source's four values.
+    from.count = (NSUInteger)region.size.width * (NSUInteger)region.size.height * from.channels;
     void *source = CharonMPSImageReadRegion(sourceImage, &from, region, what);
     if (!source)
         return;

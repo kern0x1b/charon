@@ -59,16 +59,32 @@ print("the port's objects define all %d classes this harness compares" % len(wan
 PY
 
 printf '#import <MetalPerformanceShaders/MetalPerformanceShaders.h>\n#import "CharonMPSImage.h"\n#import <objc/runtime.h>\n#include <stdio.h>\n' > "$build/declarations.h"
-objects=""
-for source in "$mps"/*.m; do
-    name=$(basename "$source" .m)
-    xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -c "$source" -o "$build/$name.plain.o"
-    python3 "$here/../prefix_selectors.py" "$source" "$build/$name.m" ccharonHost_ \
-        --declarations="$build/declarations.h" -fobjc-arc $target $quiet -I"$mps" -include "$build/rename.h" -- "$build/$name.plain.o"
-    xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -I"$mps" -include "$build/rename.h" \
-        -include "$build/declarations.h" -c "$build/$name.m" -o "$build/$name.o"
-    objects="$objects $build/$name.o"
-done
+# The objects, in their own directory per plant, so a planted object cannot be handed back to the plain
+# run. The plant has to reach the objects and not only the case file: CharonMPS.h's store and
+# CharonMPSImageWriteRegion in MPSImageWalk13.m are where CHARON_PLANT is compiled in, and both are on
+# the way out of every number this harness reads, so a plant on the case file's own line would arm
+# nothing and the planted build would print what the plain one prints.
+build_objects() {
+    _plant=$1
+    _objdir="$build/obj-p$_plant"
+    rm -rf "$_objdir"
+    mkdir -p "$_objdir"
+    _objects=""
+    for source in "$mps"/*.m; do
+        name=$(basename "$source" .m)
+        xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -DCHARON_PLANT=$_plant \
+            -c "$source" -o "$_objdir/$name.plain.o"
+        python3 "$here/../prefix_selectors.py" "$source" "$_objdir/$name.m" ccharonHost_ \
+            --declarations="$build/declarations.h" -fobjc-arc $target $quiet -DCHARON_PLANT=$_plant \
+            -I"$mps" -include "$build/rename.h" -- "$_objdir/$name.plain.o"
+        xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -DCHARON_PLANT=$_plant -I"$mps" \
+            -include "$build/rename.h" -include "$build/declarations.h" \
+            -c "$_objdir/$name.m" -o "$_objdir/$name.o"
+        _objects="$_objects $_objdir/$name.o"
+    done
+    echo "$_objects"
+}
+objects=$(build_objects 0)
 echo "compiled: $(echo "$objects" | wc -w) objects"
 
 # -DCHARON_PORT_BUILD: this is the port's own build, and the guard below is a statement about it. The
@@ -77,6 +93,22 @@ echo "compiled: $(echo "$objects" | wc -w) objects"
 xcrun clang -fobjc-arc $target $quiet -DCHARON_PORT_BUILD=1 -include "$build/rename.h" "$here/cases.m" $objects \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -o "$build/port"
 "$build/port" > "$build/port.txt" 2> "$build/port.err" || true
+
+# The red control, built from the same sources with every stored element off by one. A comparison that
+# cannot see a wrong kernel is not a comparison: this harness read a port that wrote four zeros for four
+# values the release copies, and a difference of that size is exactly what a control has to be able to
+# see. It is judged here rather than trusted.
+plant_objects=$(build_objects 1)
+xcrun clang -fobjc-arc $target $quiet -DCHARON_PORT_BUILD=1 -include "$build/rename.h" "$here/cases.m" \
+    $plant_objects -framework Foundation -framework Metal -framework MetalPerformanceShaders \
+    -o "$build/port-plant1"
+"$build/port-plant1" > "$build/port-plant1.txt" 2> "$build/port-plant1.err" || true
+if cmp -s "$build/port.txt" "$build/port-plant1.txt"; then
+    echo "the red control did not fire: the planted build printed exactly what the plain build printed"
+    exit 1
+fi
+planted=$(diff "$build/port.txt" "$build/port-plant1.txt" | grep -c '^<')
+echo "red control: the planted build prints something else in $planted line(s)"
 
 # TOLERANCE, written down before the numbers were compared: a normalisation and an exponential
 # accumulate in a different order on the GPU than on the CPU, so the two are not expected to agree to
