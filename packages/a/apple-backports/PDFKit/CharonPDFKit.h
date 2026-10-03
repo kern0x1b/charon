@@ -16,6 +16,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class PDFPage;
+@class PDFPageText;
+@class PDFSelection;
 @class PDFBorder;
 @class UIColor;
 @class PDFAction;
@@ -27,6 +29,17 @@ NS_ASSUME_NONNULL_BEGIN
 // the same private setup the other two do.  That is why -[super init] appears in it at all.
 @interface PDFDocument : NSObject
 - (nullable instancetype)init NS_DESIGNATED_INITIALIZER;
+// The two find entry points PDFDocument.h:260 and :276 declare.  They are the ONLY way a caller reaches a
+// non-empty PDFSelection, which is why the class below is implemented over the page's own text rather than
+// over anything a selection could be handed from outside.
+//   -findString:withOptions:  searches the whole document and answers one selection per occurrence.  The
+//     options the header names are NSCaseInsensitiveSearch, NSLiteralSearch and NSBackwardsSearch.
+//   -findString:fromSelection:withOptions:  carries on from a selection, and a nil selection starts at the
+//     beginning of the document - or at its end when NSBackwardsSearch is set.
+- (NSArray<PDFSelection *> *)findString:(NSString *)string withOptions:(NSStringCompareOptions)options;
+- (nullable PDFSelection *)findString:(NSString *)string
+                       fromSelection:(nullable PDFSelection *)selection
+                        withOptions:(NSStringCompareOptions)options;
 // The 26.2 header declares NO class factory: grep for documentWithURL in
 // PDFDocument.h returns nothing, and its own comment says a document is made with "either the init
 // method, initWithURL:, or initWithData:" - PDFDocument.h:138 and :139, both designated
@@ -115,6 +128,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PDFPage (CharonInternals)
 - (nullable CGPDFPageRef)charon_CGPDFPage;
+// The page's own text layout, which PDFSelection reads: a selection's range is an offset into it, so the
+// two must not be two walks that can disagree.  See PDFPageText11.h.
+- (nullable PDFPageText *)charon_textLayout;
 @end
 
 // PDFAnnotation, over the annotation dictionary CoreGraphics already parsed out of a page's /Annots.
@@ -427,6 +443,56 @@ typedef NS_ENUM(NSInteger, PDFActionNamedName) {
                                   document:(nullable PDFDocument *)document
                                     parent:(nullable PDFOutline *)parent
                                      index:(NSUInteger)index;
+@end
+
+// ---- PDFSelection ---------------------------------------------------------------------------------
+//
+// A range of text over one or more pages, from PDF 1.7's own point of view a run of characters in a page's
+// text: the class is the port's, like PDFDocument and PDFPage, and its substrate is the text walk every
+// page already answers - `-[PDFPage charon_textLayout]`, which is the same object -[PDFPage string] reads.
+//
+// WHAT IS DECIDED AND NOT DECLARED, each for a reason its row repeats:
+//   -drawForPage:active: and -drawForPage:withBox:active:  a CGContext and a PDFDisplayBox, which a port
+//     that reads documents has no way to be handed.  Inert, as PDFOutline's two write paths are.
+//   -initWithDocument: IS declared and IS the container the mutators fill, which PDFSelection.h:20 says it
+//     is: "Returns and empty PDFSelection ... you can use this empty PDFSelection as a container into which
+//     you -[addSelection] or -[addSelections]".
+//
+// THE RANGE MODEL, which is the whole of the class: a selection is a list of spans, each a page and a
+// range in that page's text, kept in page order.  A find produces one span; -addSelection: unions two
+// lists and removes the overlaps; -extendSelectionAt{Start,End}: move the first or last span's ends, onto
+// the next page when they run off the end of one; -selectionsByLine splits the spans at the page's line
+// breaks.  -string is the spans' texts concatenated, with a newline BETWEEN PAGES and nothing between two
+// ranges of one page - both measured, and facts/PDFKit/Selection11.md has the table.
+@interface PDFSelection : NSObject <NSCopying>
+{
+}
+
+- (instancetype)initWithDocument:(nullable PDFDocument *)document NS_DESIGNATED_INITIALIZER;
+
+@property (nonatomic, readonly) NSArray<PDFPage *> *pages;
+@property (nonatomic, copy, nullable) UIColor *color;
+@property (nonatomic, readonly, nullable) NSString *string;
+@property (nonatomic, readonly, nullable) NSAttributedString *attributedString;
+
+- (NSUInteger)numberOfTextRangesOnPage:(PDFPage *)page;
+- (NSRange)rangeAtIndex:(NSUInteger)index onPage:(PDFPage *)page;
+- (NSArray<PDFSelection *> *)selectionsByLine;
+
+- (void)addSelection:(PDFSelection *)selection;
+- (void)addSelections:(NSArray<PDFSelection *> *)selections;
+- (void)extendSelectionAtEnd:(NSInteger)succeed;
+- (void)extendSelectionAtStart:(NSInteger)precede;
+- (void)extendSelectionForLineBoundaries;
+@end
+
+// The port's own way at a selection's ranges, which is what -[PDFDocument findString:withOptions:] builds
+// them with.  PDFSelection.h declares no initializer over a range at all - the header has no
+// -initWithRange: and no factory - so a search has to be able to hand one over.  It lives in this category
+// rather than in the @interface because it is not PDFKit's API, and both files that use it export PDFKit
+// symbols of their own, so they are left out of a band together or not at all (charon/AGENTS.md).
+@interface PDFSelection (CharonInternals)
+- (void)charon_addSpanOnPage:(PDFPage *)page range:(NSRange)range;
 @end
 
 NS_ASSUME_NONNULL_END

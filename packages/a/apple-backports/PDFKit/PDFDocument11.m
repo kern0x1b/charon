@@ -1,4 +1,5 @@
 #import "CharonPDFKit.h"
+#import "PDFPageText11.h"
 
 #import <dlfcn.h>
 
@@ -12,6 +13,10 @@
 @end
 
 @implementation PDFDocument {
+    // The array the last -findString:withOptions: answered, because that array IS the document's: measured,
+    // a second search on the same document replaces its contents, and a search on another document does not
+    // touch it.  Empty until a search runs, which is what a document nobody has searched answers.
+    NSMutableArray<PDFSelection *> *_lastFindResults;
 
     CGPDFDocumentRef _document;
     NSData *_data;
@@ -50,6 +55,9 @@
     if (_document == NULL)
         return nil;
     _pages = [NSMutableArray array];
+    // The array the search answers, which is the document's own and therefore made ONCE here: a search that
+    // replaced it would answer a new array each time, and the host answers the same one every time.
+    _lastFindResults = [NSMutableArray array];
     _data = [data copy];
     _attributes = [self charon_readAttributes];
     return self;
@@ -266,6 +274,162 @@
     if (!CGPDFDictionaryGetDictionary(catalog, "Outlines", &root) || root == NULL)
         return nil;
     return [[PDFOutline alloc] initWithCharonItem:root document:self parent:nil index:0];
+}
+
+// ---- find ---------------------------------------------------------------------------------------
+//
+// A search is the release's own substring search over the page's own text, which is the text -[PDFPage
+// string] answers, so a selection's range is an offset into something the two sides already agree about.
+// What is NOT the release's own is the extension: the host answers the match plus ONE character when the
+// character after it is a line break, and nothing else - measured over the 136 rows of the fixture family
+// facts/PDFKit/Selection11.md describes, and over the eight earlier observations that did not determine it.
+
+// The match, extended.  ONE line-break character and nothing else: the host answers {7,4} for "one" on
+// cgfixture-lines.pdf, whose fourth character is the newline the walk joins lines with, and {22,5} for
+// "third", whose next character is a space and is not taken.  A NUL is not a line break either, which is
+// what cgfixture-inline and cgfixture-tab measure - they answer {0,5} where the sixth character is one.
+static NSRange charonRangeForMatch(NSRange match, NSString *text)
+{
+    NSRange range = match;
+    NSUInteger after = NSMaxRange(match);
+    if (after < text.length && [text characterAtIndex:after] == '\n')
+        range.length += 1;
+    return range;
+}
+
+// One match, as the selection the host answers.  A page whose walk was DISCARDED has no text and so holds
+// no match, and the search stops there rather than answering a selection over nothing.
+static PDFSelection *charonSelectionForMatch(PDFDocument *document, PDFPage *page, NSRange match,
+                                             NSString *text)
+{
+    if (document == nil)
+        return nil;
+    PDFSelection *selection = [[PDFSelection alloc] initWithDocument:document];
+    [selection charon_addSpanOnPage:page range:charonRangeForMatch(match, text)];
+    return selection;
+}
+
+// The matches of ONE page inside [from, to), in the order the search finds them.  The search itself is the
+// RELEASE'S OWN: -rangeOfString:options:range: is Foundation's substring search, and the options the header
+// names - NSCaseInsensitiveSearch, NSLiteralSearch, NSBackwardsSearch - are its own.  A case-insensitive
+// match answers the DOCUMENT's spelling and not the needle's, which falls out of searching the document's
+// text and not the needle.
+static NSArray<PDFSelection *> *charonMatchesOnPage(PDFPage *page, NSString *needle,
+                                                    NSStringCompareOptions options, NSUInteger from,
+                                                    NSUInteger to)
+{
+    NSMutableArray<PDFSelection *> *answer = [NSMutableArray array];
+    PDFPageText *layout = [page charon_textLayout];
+    NSString *text = layout.string;
+    if (text == nil || needle == nil || needle.length == 0)
+        return answer;
+    if (from > text.length)
+        from = text.length;
+    if (to > text.length)
+        to = text.length;
+    if (from >= to)
+        return answer;
+    NSStringCompareOptions use = options & ~(NSStringCompareOptions)NSBackwardsSearch;
+    NSRange search = NSMakeRange(from, to - from);
+    NSRange hit = [text rangeOfString:needle options:use range:search];
+    while (hit.location != NSNotFound) {
+        PDFSelection *selection = charonSelectionForMatch(page.document, page, hit, text);
+        if (selection == nil)
+            break;
+        [answer addObject:selection];
+        NSUInteger next = NSMaxRange(hit);
+        if (next >= to)
+            break;
+        search = NSMakeRange(next, to - next);
+        hit = [text rangeOfString:needle options:use range:search];
+    }
+    return answer;
+}
+
+- (NSArray<PDFSelection *> *)findString:(NSString *)string withOptions:(NSStringCompareOptions)options
+{
+    // THE ARRAY IS THE DOCUMENT'S OWN, and the next search on the document REPLACES its contents - measured:
+    // a document searched for "alpha" answers an array of 3, and searching the same document for
+    // "alpha alpha" afterwards leaves that same array object holding 1.  So it is held here, emptied at the
+    // start of every search and answered as it stands: a caller that keeps the array across two searches of
+    // one document sees the second search's answers in it, which is what the host does.
+    [_lastFindResults removeAllObjects];
+    BOOL backwards = (options & NSBackwardsSearch) != 0;
+    for (NSUInteger page = 0; page < self.pageCount; page++)
+        [_lastFindResults addObjectsFromArray:charonMatchesOnPage([self pageAtIndex:page], string, options,
+                                                                 0, NSUIntegerMax)];
+    // NSBackwardsSearch answers the SAME matches in the other order - measured, and the ranges themselves do
+    // not change: "alpha" on cgfixture-words answers {31,5} {25,5} {5,5} and nothing else moves.  The
+    // reversal is over the WHOLE answer and not over one page's matches, which is what the first version did
+    // and what left a two-page document answering its matches in page order anyway.
+    if (backwards)
+        [_lastFindResults setArray:[[_lastFindResults reverseObjectEnumerator] allObjects]];
+    return _lastFindResults;
+}
+
+- (PDFSelection *)findString:(NSString *)string
+              fromSelection:(PDFSelection *)selection
+               withOptions:(NSStringCompareOptions)options
+{
+    if (string == nil || string.length == 0)
+        return nil;
+    BOOL backwards = (options & NSBackwardsSearch) != 0;
+    PDFPage *startPage = nil;
+    NSUInteger from = 0;
+    NSUInteger to = NSUIntegerMax;
+    if (selection == nil) {
+        // A nil selection starts at the BEGINNING of the document, or at its end when the search runs
+        // backwards - measured on a document nothing had been asked: {5,5} forward, {31,5} backwards, and a
+        // search before them changes nothing.
+        startPage = [self pageAtIndex:0];
+        if (backwards)
+            to = 0;
+    } else {
+        // "beginning after the last character of selection ... (or preceding the first character of the
+        // selection if NSBackwardsSearch is specified)" - PDFDocument.h:274, in its own words.
+        NSArray<PDFPage *> *pages = selection.pages;
+        if (pages.count == 0)
+            return nil;
+        PDFPage *first = [pages firstObject];
+        PDFPage *last = [pages lastObject];
+        startPage = backwards ? first : last;
+        PDFPageText *layout = [startPage charon_textLayout];
+        NSUInteger count = [selection numberOfTextRangesOnPage:startPage];
+        NSRange range = [selection rangeAtIndex:backwards ? 0 : (count > 0 ? count - 1 : 0)
+                                    onPage:startPage];
+        if (backwards) {
+            from = 0;
+            to = range.location == NSNotFound ? 0 : range.location;
+        } else {
+            from = range.location == NSNotFound ? 0 : NSMaxRange(range);
+            to = layout.string.length;
+        }
+    }
+    // The search walks the pages from the one it starts on, in the direction it runs, and it CROSSES onto the
+    // next page - measured: forward from page 1's "page" answers page 2's and backwards from page 1's answers
+    // page 0's, while a NEEDLE never spans a page.
+    // The page counter runs off the END of the document in the direction of travel, so the loop ends by its
+    // own bound and not by a test inside: backwards from page 0 it steps to pageCount, which is past the end,
+    // and forwards from the last page it steps to pageCount too.
+    NSUInteger first = startPage.pageIndex;
+    for (; first < self.pageCount;
+         first = backwards ? (first == 0 ? self.pageCount : first - 1) : first + 1) {
+        PDFPage *page = [self pageAtIndex:first];
+        NSArray<PDFSelection *> *matches = charonMatchesOnPage(page, string, options, from, to);
+        if (matches.count > 0)
+        {
+            // the LAST match going backwards and the FIRST going forwards, copied so the caller owns a
+            // selection of its own rather than the one the search is about to replace
+            PDFSelection *found = backwards ? [matches lastObject] : [matches firstObject];
+            return [found copy];
+        }
+        // Onto the next page: the whole of it, in the direction of travel.
+        from = 0;
+        to = NSUIntegerMax;
+    }
+    // Off the end of the document in the direction of travel: "NULL if the end of the document is reached"
+    // (PDFDocument.h:275).
+    return nil;
 }
 
 // The port's own way at the CGPDFDocument underneath, which Apple's API does not expose: the page's
