@@ -39,14 +39,29 @@ static void probe_class(const char *name)
     Class port = objc_getClass(prefixed);
     printf("CLASS\t%s\thost=%s\tport=%s\n", name,
            host ? "present" : "ABSENT", port ? "present" : "ABSENT");
+    /* The superclass is compared by its NAME WITH THE RENAME STRIPPED, because the two sides cannot be the
+       same object: the port's class is charon_host_AVMetricErrorEvent and its parent is
+       charon_host_AVMetricEvent, the host's is AVMetricErrorEvent and its parent is AVMetricEvent. Comparing
+       the two Class pointers, or comparing the raw names, calls every one of the sixteen rows DIFFERENT
+       after the hierarchy was finally right - which is what it did, and it is why the row below strips the
+       prefix rather than being loosened. */
     if (host && port) {
-        printf("SUPERCLASS\t%s\thost=%s\tport=%s\t%s\n", name,
-               class_getSuperclass(host) ? class_getName(class_getSuperclass(host)) : "(none)",
-               class_getSuperclass(port) ? class_getName(class_getSuperclass(port)) : "(none)",
-               (class_getSuperclass(host) == class_getSuperclass(port) ||
-                (class_getSuperclass(host) && class_getSuperclass(port) &&
-                 !strcmp(class_getName(class_getSuperclass(host)), class_getName(class_getSuperclass(port)))))
-               ? "same" : "DIFFERENT");
+        Class hostParent = class_getSuperclass(host);
+        Class portParent = class_getSuperclass(port);
+        const char *hostName = hostParent ? class_getName(hostParent) : "(none)";
+        char portStripped[256];
+        if (portParent) {
+            const char *raw = class_getName(portParent);
+            if (!strncmp(raw, "charon_host_", 12)) {
+                snprintf(portStripped, sizeof portStripped, "%s", raw + 12);
+            } else {
+                snprintf(portStripped, sizeof portStripped, "%s", raw);
+            }
+        } else {
+            snprintf(portStripped, sizeof portStripped, "(none)");
+        }
+        printf("SUPERCLASS\t%s\thost=%s\tport=%s\t%s\n", name, hostName, portStripped,
+               strcmp(hostName, portStripped) == 0 ? "same" : "DIFFERENT");
     }
 }
 

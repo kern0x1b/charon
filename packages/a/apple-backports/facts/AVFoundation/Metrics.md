@@ -47,17 +47,13 @@ exists with the members the header declares, and nothing here constructs one.
 `+new` and `-init` answer through `NSObject`, which the release has; the header marks them
 `AV_INIT_UNAVAILABLE`, so an application written against a newer SDK cannot reach them either.
 
-**`NSSecureCoding` is declared by the header and NOT implemented.** `+supportsSecureCoding`,
-`-encodeWithCoder:` and `-initWithCoder:` are not among the rows this worker's list holds, and an encoder
-this port cannot produce is not something to invent. clang says so at build time:
-
-```
-warning: method 'supportsSecureCoding' in protocol 'NSSecureCoding' not implemented
-warning: method 'encodeWithCoder:' in protocol 'NSCoding' not implemented
-```
-
-**`NSSecureCoding`'s absence is the one gap in this family** and it is stated rather than hidden. It is a
-warning, not an error, and the rows do not ask for it.
+**`NSSecureCoding` is implemented on both roots.** `+supportsSecureCoding`, `-encodeWithCoder:` and
+`-initWithCoder:` are on `AVMetricEvent` and on `AVMetricMediaRendition` - the roots of the two hierarchies,
+not seventeen copies - and every subclass inherits all three, because none of them declares the conformance
+itself. Encoding goes through `packages/c/charon-coding/files/CharonCoding.h`, whose walker reads each
+class's own ivar list from the object's class up to `NSObject`, so a subclass carries its parent's state
+without either naming it and a property added later is carried by the same code rather than by an edit to an
+archive method. All three objects build with **0 errors and 0 warnings**.
 
 ## Why the 26.0 part is a category, and why its storage is an association
 

@@ -175,17 +175,20 @@ static void check_subclass(void)
     NSArray *own2 = round_trip(own, @"AVMetricErrorEvent", @[@"date", @"mediaTime", @"didRecover"]);
     printf("AVMetricErrorEvent.date\twant=3000000\thost-carried=%s\n",
            (own2[0] != [NSNull null] && [(NSDate *)own2[0] timeIntervalSince1970] == 3000000.0) ? "yes" : "NO");
-    /* didRecover IS SET BEFORE THE ARCHIVE - measured on the port's own class: after
-       [own charonProbeSetDidRecover:YES], -valueForKey:@"didRecover" answers 1 - and the host's KVC boxes a
-       B-encoded BOOL ivar perfectly well, also measured. So the value that goes in is YES and what comes
-       out is nil, and the archive is where it is lost. That is OPEN, not a pass: the row is printed as
-       open, the run does not claim it, and coordination/wave-2026-10-03/v-avf-report.md says which of the
-       three places it could be (the walker's value branch, its key, or the secure-coding allowed set) has
-       not been isolated yet. It is a BOOL member of one class of nineteen and it does not affect the other
-       eleven archived values below. */
-    printf("AVMetricErrorEvent.didRecover\twant=1\theld=%s\tOPEN: set before the archive (measured), lost "
-           "across it, not yet isolated\n",
-           (own2[2] != [NSNull null] && [(NSNumber *)own2[2] boolValue]) ? "carried" : "LOST");
+    /* didRecover is the one value whose OWNING class is the port's own - every other value of this family
+       belongs to the root - and it was the one that went missing. The dump of the port's own class showed
+       why, and the cause was in this harness, not in the port: the host build's prologue renamed the class
+       but not its PARENT, so charon_host_AVMetricErrorEvent derived from Apple's AVMetricEvent and the
+       walker's [object class] walk reached Apple's ivars:
+
+         ivar _didRecover  owner=charon_host_AVMetricErrorEvent
+         ivar _date        owner=AVMetricEvent        <- Apple's class, at Apple's offsets
+
+       So the eight values that carried were read and written through Apple's offsets on a port object, and
+       they lined up by luck. With the parent renamed too, the owners are all charon_host_* and this value
+       carries. Nothing about the port's NSSecureCoding was wrong; the measurement of it was. */
+    printf("AVMetricErrorEvent.didRecover\twant=1\thost-carried=%s\n",
+           (own2[2] != [NSNull null] && [(NSNumber *)own2[2] boolValue]) ? "yes" : "NO");
 }
 
 int main(void)

@@ -543,14 +543,41 @@ for declaration, _body in blocks:
 for parent in sorted(parents):
     if parent != "NSObject":
         out.append("@class %s;" % parent)
+# THE PARENT IS RENAMED TOO, and not renaming it is what made one archived value disappear.
+#
+# `@interface AVMetricErrorEvent : AVMetricEvent` becomes `@interface charon_host_AVMetricErrorEvent : AVMetricEvent`
+# if only the class's own name is prefixed - and bare `AVMetricEvent` in the host build resolves to APPLE's
+# class, because the host framework is linked in. The port's error event then derives from Apple's event, and
+# packages/c/charon-coding's walker, which walks [object class] up to NSObject, reaches Apple's AVMetricEvent
+# and reads and writes ITS ivars at ITS offsets on a port object.
+#
+# The dump that showed it, from the port's own class:
+#
+#   ivar _didRecover   owner=charon_host_AVMetricErrorEvent   type=B    size=1
+#   ivar _error        owner=charon_host_AVMetricErrorEvent   type=@"NSError" size=8
+#   ivar _date         owner=AVMetricEvent                    <- Apple's class, not the port's
+#   ivar _mediaTime    owner=AVMetricEvent
+#   ivar _sessionID    owner=AVMetricEvent
+#
+# So `didRecover` is the one value whose OWNING class is the port's, and it was the one value that went
+# missing; the eight that carried were read and written through Apple's ivar offsets on a port object, which
+# lined up by luck. That is a defect in this harness and not in the port, and no value of it should have been
+# believed until the hierarchy was right.
 for declaration, body in blocks:
     name = declaration.split()[1]
     parent = declaration.split(":", 1)[1].strip().split()[0]
     if parent == "AVMetricEventStream":
         parent = "NSObject"
-    out.append(declaration.replace("@interface " + name, "@interface charon_host_" + name, 1))
+    if parent.startswith("AVMetric"):
+        parent = "charon_host_" + parent
+    out.append(declaration.replace("@interface " + name, "@interface charon_host_" + name, 1)
+                            .replace(" : " + declaration.split(":", 1)[1].strip().split()[0],
+                                     " : " + parent, 1))
     out.append(body.rstrip())
     out.append("@end")
+for parent in sorted(parents):
+    if parent != "NSObject" and parent.startswith("AVMetric"):
+        out.append("@class charon_host_%s;" % parent)
 open(sys.argv[2], "w").write("\n".join(out) + "\n")
 print("the host build's prologue declares %d renamed classes" % len(blocks))
 PROLOGUE
@@ -661,13 +688,31 @@ if out.count(before) != 0 or out.count(after) != 1:
 open(path, "w").write(out)
 print("# the mutation applied: -initWithCoder: no longer decodes, so the archive carries nothing")
 PERTURB
-    # the objects have to be rebuilt for the plant to be in the binary
-    mobjs=""
+    # REBUILD THE OBJECT THE PROBE LINKS, and show that the result is not the object that was there.
+    #
+    # The first version rebuilt with `mobjs="$mobjs $build/o/$obj"`, which APPENDS: the list then held the
+    # same path twice and the linker took the first, unplanted, object - so the values still arrived and the
+    # mutation did not fire. A rebuilt object that nothing relinks is not a rebuild.
     for pair in "metrics18.rn:metrics18.o" "metrics18b.rn:metrics18b.o" "metrics26.rn:metrics26.o"; do
         src=${pair%%:*}; obj=${pair##*:}
-        xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -c "$build/src/$src" -o "$build/o/$obj" \
-            > "$build/o/$obj.log" 2>&1 || { echo "RUN FAILED: $src did not build after the mutation"; head -6 "$build/o/$obj.log"; exit 1; }
-        mobjs="$mobjs $build/o/$obj"
+        before=$(shasum -a 256 "$build/o/$obj" | cut -d' ' -f1)
+        if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -c "$build/src/$src" -o "$build/o/$obj" \
+                > "$build/o/$obj.log" 2>&1; then
+            echo "RUN FAILED: $src did not build after the mutation"
+            head -6 "$build/o/$obj.log"
+            exit 1
+        fi
+        after=$(shasum -a 256 "$build/o/$obj" | cut -d' ' -f1)
+        # Only the object the plant was applied to has to differ. The other two are rebuilt so the link is
+        # consistent, and requiring them to differ would be requiring a mutation that was never made - the
+        # first version of this did that and reported a green object as a failure.
+        [ "$src" = metrics18.rn ] || { echo "rebuilt $obj (the plant is not in this one)"; continue; }
+        if [ "$before" = "$after" ]; then
+            echo "FAIL: $obj is byte-for-byte what it was before the mutation, so the probe below links the"
+            echo "      same object and this mutation can never be noticed"
+            exit 1
+        fi
+        echo "rebuilt $obj after the mutation, and it differs: ${before%????????????????????????????????????????????????} -> ${after%????????????????????????????????????????????????}"
     done
 fi
 if ! xcrun clang -fobjc-arc -w "$here/coding.m" $mobjs $coding -framework Foundation -framework CoreMedia \
