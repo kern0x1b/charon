@@ -6,11 +6,11 @@
       "kind": "function",
       "introduced": "6.0",
       "minimum": "4.3",
-      "status": "inert",
-      "reason": "TEMPORARY, and not a final state: the release's float answer differs from the port's by 1 ULP, and the cause is being measured on the guest. The goal is the release's float answer bit for bit. What is already excluded: the form, the coefficients, the delay layout (the Delay matches bit for bit), fused multiply-add (armv7 VFP before VFPv4 has none, and -ffp-contract=off changes nothing), and the host being wrong (the difference is on the target).",
-      "effect": "a one-section one-channel cascade, which is vDSP_biquadm_CreateSetup with N = 1 and the float flag set; or NULL for no coefficients and for a count that would overflow. A zero M is not a refusal: the host answers NULL-free setups of no sections",
+      "status": "implemented",
+      "reason": "the float form's five coefficients per section, narrowed to float where the release narrows them, so the kernel the run below measures is this one's arithmetic",
+      "effect": "a setup the port's own vDSP_biquad consumes, with one section count and five coefficients per section; the float answer it produces is the release's, bit for bit, on the guest the run below names",
       "facts": "facts/Accelerate/vDSPBiquad6.md",
-      "source": "the header of iOS 16.4, which declares all six at 6.0, and the guest run that shows the 1 ULP: the RELEASE'S OWN vDSP on the emulated iPhone2,1 6.1.3 (10B329) guest: samples and the Delay the call left behind, compared bit for bit, on one and three and four sections over two calls, on a stable filter (poles about 0.643) and an unstable one (a pole at -1.733)"
+      "source": "the RELEASE'S OWN vDSP on the emulated iPhone3,1 6.1.3 (10B329) guest, held against the port case by case by tests/backports/device/vdsp-probe, whose binary the image is checked against by LC_UUID (built and installed both 934B806B-7089-3CD0-A36C-D89E94774EDF) before it is run: 35 checks, 0 failures, with the float cases - one and four sections, a strided one, two calls each on one setup so the carried state is compared too - bit for bit on the samples AND on the Delay each call left behind, the double cases likewise, and a NaN and signed zeroes by bit pattern. **The comparison is over exactly the 32 samples a call writes**, with both answers zeroed first; an earlier version compared all 128 of a buffer sized for the strided case and was red on ten cases for that reason alone. The search inside the same run then asks which association the release uses, over 1681 trees and 26896 combine choices, and answers: **variant 0, the printed left-to-right unfused form, and the port differs from the release at 0 of 32 samples by at most 0 ULP on both filters**; the band's own floor measured on the object: compiled at armv7-apple-ios4.3 its undefined symbols are _calloc, _free, _malloc and _memcpy, all of them libSystem's, read out of that release's own export trie"
     },
     {
       "api": "vDSP_biquad_CreateSetupD()",
@@ -21,18 +21,18 @@
       "reason": "the same with a double setup, whose coefficients do not approach their targets on a SetTargets call",
       "effect": "a one-section one-channel double cascade, the same call with the interpolates flag clear, so a SetTargets on it changes nothing",
       "facts": "facts/Accelerate/vDSPBiquad6.md",
-      "source": "the header of iOS 16.4, which declares all six at 6.0, and the RELEASE'S OWN vDSP on the emulated iPhone2,1 6.1.3 (10B329) guest: samples and the Delay the call left behind, compared bit for bit, on one and three and four sections over two calls, on a stable filter (poles about 0.643) and an unstable one (a pole at -1.733)"
+      "source": "the RELEASE'S OWN vDSP on the emulated iPhone3,1 6.1.3 (10B329) guest, held against the port case by case by tests/backports/device/vdsp-probe, whose binary the image is checked against by LC_UUID (built and installed both 934B806B-7089-3CD0-A36C-D89E94774EDF) before it is run: 35 checks, 0 failures, with the float cases - one and four sections, a strided one, two calls each on one setup so the carried state is compared too - bit for bit on the samples AND on the Delay each call left behind, the double cases likewise, and a NaN and signed zeroes by bit pattern. **The comparison is over exactly the 32 samples a call writes**, with both answers zeroed first; an earlier version compared all 128 of a buffer sized for the strided case and was red on ten cases for that reason alone. The search inside the same run then asks which association the release uses, over 1681 trees and 26896 combine choices, and answers: **variant 0, the printed left-to-right unfused form, and the port differs from the release at 0 of 32 samples by at most 0 ULP on both filters**; the band's own floor measured on the object: compiled at armv7-apple-ios4.3 its undefined symbols are _calloc, _free, _malloc and _memcpy, all of them libSystem's, read out of that release's own export trie"
     },
     {
       "api": "vDSP_biquad_DestroySetup()",
       "kind": "function",
       "introduced": "6.0",
       "minimum": "4.3",
-      "status": "inert",
-      "reason": "TEMPORARY, and not a final state: the release's float answer differs from the port's by 1 ULP, and the cause is being measured on the guest. The goal is the release's float answer bit for bit. What is already excluded: the form, the coefficients, the delay layout (the Delay matches bit for bit), fused multiply-add (armv7 VFP before VFPv4 has none, and -ffp-contract=off changes nothing), and the host being wrong (the difference is on the target).",
-      "effect": "the same free vDSP_biquadm_DestroySetup does, and a NULL setup is not a crash",
+      "status": "implemented",
+      "reason": "frees the setup vDSP_biquad_CreateSetup returned, and refuses nothing and answers nothing",
+      "effect": "the setup freed and no answer, which is what the release gives",
       "facts": "facts/Accelerate/vDSPBiquad6.md",
-      "source": "the header of iOS 16.4, which declares all six at 6.0, and the guest run that shows the 1 ULP: the RELEASE'S OWN vDSP on the emulated iPhone2,1 6.1.3 (10B329) guest: samples and the Delay the call left behind, compared bit for bit, on one and three and four sections over two calls, on a stable filter (poles about 0.643) and an unstable one (a pole at -1.733)"
+      "source": "the RELEASE'S OWN vDSP on the emulated iPhone3,1 6.1.3 (10B329) guest, held against the port case by case by tests/backports/device/vdsp-probe, whose binary the image is checked against by LC_UUID (built and installed both 934B806B-7089-3CD0-A36C-D89E94774EDF) before it is run: 35 checks, 0 failures, with the float cases - one and four sections, a strided one, two calls each on one setup so the carried state is compared too - bit for bit on the samples AND on the Delay each call left behind, the double cases likewise, and a NaN and signed zeroes by bit pattern. **The comparison is over exactly the 32 samples a call writes**, with both answers zeroed first; an earlier version compared all 128 of a buffer sized for the strided case and was red on ten cases for that reason alone. The search inside the same run then asks which association the release uses, over 1681 trees and 26896 combine choices, and answers: **variant 0, the printed left-to-right unfused form, and the port differs from the release at 0 of 32 samples by at most 0 ULP on both filters**; the band's own floor measured on the object: compiled at armv7-apple-ios4.3 its undefined symbols are _calloc, _free, _malloc and _memcpy, all of them libSystem's, read out of that release's own export trie"
     },
     {
       "api": "vDSP_biquad_DestroySetupD()",
@@ -43,18 +43,18 @@
       "reason": "frees the setup vDSP_biquad_CreateSetupD returned",
       "effect": "the same free, and a NULL setup is not a crash",
       "facts": "facts/Accelerate/vDSPBiquad6.md",
-      "source": "the header of iOS 16.4, which declares all six at 6.0, and the RELEASE'S OWN vDSP on the emulated iPhone2,1 6.1.3 (10B329) guest: samples and the Delay the call left behind, compared bit for bit, on one and three and four sections over two calls, on a stable filter (poles about 0.643) and an unstable one (a pole at -1.733)"
+      "source": "the RELEASE'S OWN vDSP on the emulated iPhone3,1 6.1.3 (10B329) guest, held against the port case by case by tests/backports/device/vdsp-probe, whose binary the image is checked against by LC_UUID (built and installed both 934B806B-7089-3CD0-A36C-D89E94774EDF) before it is run: 35 checks, 0 failures, with the float cases - one and four sections, a strided one, two calls each on one setup so the carried state is compared too - bit for bit on the samples AND on the Delay each call left behind, the double cases likewise, and a NaN and signed zeroes by bit pattern. **The comparison is over exactly the 32 samples a call writes**, with both answers zeroed first; an earlier version compared all 128 of a buffer sized for the strided case and was red on ten cases for that reason alone. The search inside the same run then asks which association the release uses, over 1681 trees and 26896 combine choices, and answers: **variant 0, the printed left-to-right unfused form, and the port differs from the release at 0 of 32 samples by at most 0 ULP on both filters**; the band's own floor measured on the object: compiled at armv7-apple-ios4.3 its undefined symbols are _calloc, _free, _malloc and _memcpy, all of them libSystem's, read out of that release's own export trie"
     },
     {
       "api": "vDSP_biquad()",
       "kind": "function",
       "introduced": "6.0",
       "minimum": "4.3",
-      "status": "inert",
-      "reason": "TEMPORARY, and not a final state: the release's float answer differs from the port's by 1 ULP, and the cause is being measured on the guest. The goal is the release's float answer bit for bit. What is already excluded: the form, the coefficients, the delay layout (the Delay matches bit for bit), fused multiply-add (armv7 VFP before VFPv4 has none, and -ffp-contract=off changes nothing), and the host being wrong (the difference is on the target).",
-      "effect": "the multi-section loop over one section and one channel, so the state advances once per sample and nothing crosses between channels",
+      "status": "implemented",
+      "reason": "the float cascade itself, Direct Form II transposed as the header's pseudocode writes it, over the caller's own delay buffer of 2*(M+1) elements",
+      "effect": "the cascade's answer, bit for bit the release's on one and four sections, strided and not, over two calls on one setup so the carried delay state is compared too; the samples are compared over exactly the N a call writes and the Delay over exactly 2*(M+1), both after being zeroed",
       "facts": "facts/Accelerate/vDSPBiquad6.md",
-      "source": "the header of iOS 16.4, which declares all six at 6.0, and the guest run that shows the 1 ULP: the RELEASE'S OWN vDSP on the emulated iPhone2,1 6.1.3 (10B329) guest: samples and the Delay the call left behind, compared bit for bit, on one and three and four sections over two calls, on a stable filter (poles about 0.643) and an unstable one (a pole at -1.733)"
+      "source": "the RELEASE'S OWN vDSP on the emulated iPhone3,1 6.1.3 (10B329) guest, held against the port case by case by tests/backports/device/vdsp-probe, whose binary the image is checked against by LC_UUID (built and installed both 934B806B-7089-3CD0-A36C-D89E94774EDF) before it is run: 35 checks, 0 failures, with the float cases - one and four sections, a strided one, two calls each on one setup so the carried state is compared too - bit for bit on the samples AND on the Delay each call left behind, the double cases likewise, and a NaN and signed zeroes by bit pattern. **The comparison is over exactly the 32 samples a call writes**, with both answers zeroed first; an earlier version compared all 128 of a buffer sized for the strided case and was red on ten cases for that reason alone. The search inside the same run then asks which association the release uses, over 1681 trees and 26896 combine choices, and answers: **variant 0, the printed left-to-right unfused form, and the port differs from the release at 0 of 32 samples by at most 0 ULP on both filters**; the band's own floor measured on the object: compiled at armv7-apple-ios4.3 its undefined symbols are _calloc, _free, _malloc and _memcpy, all of them libSystem's, read out of that release's own export trie"
     },
     {
       "api": "vDSP_biquadD()",
@@ -65,7 +65,7 @@
       "reason": "the same in double precision",
       "effect": "the multi-section double loop over one section and one channel",
       "facts": "facts/Accelerate/vDSPBiquad6.md",
-      "source": "the header of iOS 16.4, which declares all six at 6.0, and the RELEASE'S OWN vDSP on the emulated iPhone2,1 6.1.3 (10B329) guest: samples and the Delay the call left behind, compared bit for bit, on one and three and four sections over two calls, on a stable filter (poles about 0.643) and an unstable one (a pole at -1.733)"
+      "source": "the RELEASE'S OWN vDSP on the emulated iPhone3,1 6.1.3 (10B329) guest, held against the port case by case by tests/backports/device/vdsp-probe, whose binary the image is checked against by LC_UUID (built and installed both 934B806B-7089-3CD0-A36C-D89E94774EDF) before it is run: 35 checks, 0 failures, with the float cases - one and four sections, a strided one, two calls each on one setup so the carried state is compared too - bit for bit on the samples AND on the Delay each call left behind, the double cases likewise, and a NaN and signed zeroes by bit pattern. **The comparison is over exactly the 32 samples a call writes**, with both answers zeroed first; an earlier version compared all 128 of a buffer sized for the strided case and was red on ten cases for that reason alone. The search inside the same run then asks which association the release uses, over 1681 trees and 26896 combine choices, and answers: **variant 0, the printed left-to-right unfused form, and the port differs from the release at 0 of 32 samples by at most 0 ULP on both filters**; the band's own floor measured on the object: compiled at armv7-apple-ios4.3 its undefined symbols are _calloc, _free, _malloc and _memcpy, all of them libSystem's, read out of that release's own export trie"
     }
   ]
 }

@@ -190,8 +190,79 @@ differential's own layout case uses two samples for that reason rather than by p
 armv7, and that is the implementation a 4.3-5.x application calls. armv7 VFP before VFPv4 has no fused
 multiply-add, so an answer only a fused combine can produce is one the real target cannot give - and this
 macOS host has one. On top of that, and measured above, this host's answer is not a function of its inputs.
-Until the 6.0 armv7 implementation is run through the emulator, this shape cannot be gated bit-exact and the
-six rows stay out of the registry. **That emulator run is the open item.**
+Until the 6.0 armv7 implementation is run through the emulator, this shape cannot be gated bit-exact. **That
+emulator run is now done** - and its answer is below.
+
+## The guest run, and the verdict that carries the three float rows
+
+`sh tests/backports/device/vdsp-probe/run.sh`, through `heavy.sh`, on the emulated **iPhone3,1 6.1.3
+(10B329)** guest. The image is checked against the binary before the run, by LC_UUID, and both were
+`934B806B-7089-3CD0-A36C-D89E94774EDF`:
+
+```
+    the two carry the same LC_UUID, so the image holds this build
+    HASHES MATCH
+    probe: minimum = Version 6.1.3 (Build 10B329)
+    ok the stable filter, 1 sections, stride 1, call 0 - the samples, bit for bit
+    ok the stable filter, 1 sections, call 0 - the Delay the call left behind, bit for bit
+    ... 20 float cases (one and four sections, a strided one, two calls each on one setup),
+        8 double cases, a NaN and signed zeroes by bit pattern
+    the port differs from the release at 0 of 32 samples, by at most 0 ULP
+    probe: 35 checks, 0 failures
+```
+
+**The float form is the release's, bit for bit, on this guest, and the association is the printed one.** The
+search over 1681 trees and 26896 combine choices answers **variant 0**, `(((t0 + t1) + t2) + t3) + t4`, the
+left-to-right unfused form, and reports 0 of 32 samples differing at 0 ULP on both the well-conditioned and
+the amplifying filter. So the earlier finding - that the release's float answer differed by one ULP - was an
+artefact of the probe's comparison, and the three float rows' `inert` reason ("the release's float answer
+differs from the port's by 1 ULP, and the cause is being measured on the guest") is withdrawn.
+
+And note what the guest settled about the comment at the top of this section: on armv7 **with NEON** the
+machine is VFPv3 and has `VFMA.f32`, so a fused answer was never impossible here - but the association the
+release actually computes is the unfused printed form, which is the one the port writes.
+
+### The ten red cases were the comparison, and the fix is at the cause
+
+An earlier run of this same probe reported ten failures, all of the float `the samples, bit for bit` case.
+`run_float` declares `host_y[SAMPLES * 4]` because the strided case reads four times as far into `x`, calls
+each side with `N = 32`, and compared `sizeof host_y` - 128 floats. Ninety-six per side were never written,
+they are uninitialised stack, and they differ between the two arrays. What said so, at the time:
+
+- every comparison sized exactly to what the call writes passed, including all ten Delay comparisons;
+- the search's own per-sample comparison over exactly the 32 written samples reported 0 of 32 differing.
+
+The probe now zeroes both answers before every call, compares `SAMPLES * sizeof(float)`, and `report` prints
+the first differing index **in elements** with both values at it, always - it printed a byte only when the two
+sides were the same length and at most 64 bytes, which for two 512-byte arrays meant it could not say where
+anything was.
+
+**The red control** is `VDSPPROBE_PLANT_ULP=<n>`: it moves the port's float answer at sample `n` by one unit
+in the last place, after the call and before the comparison, so the float case has to go red and name that
+index. It is the comparison's sensitivity and not the port's arithmetic - the bytes the port wrote are
+untouched and the plant moves them in the probe's own copy. Measured on this Mac:
+
+```
+    $ VDSPPROBE_PLANT_ULP=7 .agent-work/runs/probe-host2/probe
+    probe: the red control's plant is on: sample 7 of the port's float answer is moved by one ULP before it is compared
+    FAIL the stable filter, 1 sections, stride 1, call 0 - the samples, bit for bit
+         first differs at index 7: the release 0x3efa43ed, the port 0x3efa43ee
+         the red control's plant moved the port's sample 7 by one ULP before this comparison
+```
+
+and the same index named on every float case, exit 1; unplanted, the same binary is `35 checks, 0 failures`.
+
+## The band's floor, measured on the object
+
+`vDSPBiquad6.m` compiled at `armv7-apple-ios4.3` has four undefined symbols and no others:
+
+```
+    _calloc _free _malloc _memcpy
+```
+
+All four are libSystem's, and each is read out of that release's own armv7 export trie with
+`tools/image-exports.lua`: `_malloc` and `_calloc` in `/usr/lib/libSystem.B.dylib`'s 4155 exports, `_memcpy`
+and `_free` in the same image. No import the 4.3 release lacks, and nothing from a later SDK.
 
 ## How to run this
 
