@@ -72,7 +72,7 @@ with -101. QUADPACK's `dqagie` answers `ier = 1` ("the number of subintervals re
 ("the integral is divergent, or the absolute error is maximal") for exactly that, which the header maps to -101
 and -102, and the port answers -101 and -102. The case asserts the error and records both answers.
 
-## The estimate cannot be compared between two builds, and is not
+## The 1e-6 estimate rule, and the cases it failed on
 
 The differential used to require the port's `abs_error` to agree with the host's to 1e-6 relative. It cannot,
 and the measurement is on both sides of the claim.
@@ -94,12 +94,52 @@ port                                                       0.14711276428245135  
 host                                                       0.14711276428245137   0.00020524906934901214
 ```
 
-so the host's `resk` is one ULP above QUADPACK's and everything else follows from that one ULP.
+so the host's `resk` is one ULP above QUADPACK's and everything else follows from that one ULP. On that one
+pass the two estimates differ by 4.4e-12 relative, which is inside the 1e-6 the differential used to ask for
+- so that pass is not where the old rule failed, and the cases it did fail on are these.
 
-**The host does not agree with itself.** Over the same integrand from -1 to 1 at 1e-12, its QAG reports
-`0.29422553486074693` with an estimate of `3.276688748373941e-15` and its QAGS `0.29422553486074687` with
-`3.2661123246874664e-15` - two values two ULP apart and two estimates 3.2e-3 relative apart, over one integral.
-Over 1/(1+x^2) from -1 to 1 the values agree and the estimates differ by 4.4e-10 relative.
+### The cases the 1e-6 rule actually failed on, and why
+
+Twelve of the 86. Both numbers below are the `abs_error` each side answered, and the relative column is the
+ratio the old rule compared. `50 * DBL_EPSILON` is `1.1102230246251565e-14`, which is the floor `dq21.f`'s last
+line sets - `if (resabs > uflow/(50*epmach)) abserr = dmax((epmach*50)*resabs, abserr)` - and `resabs` is the
+pass's own estimate of the integral of `|f|`.
+
+**Four where the answer is that floor, so what is compared is each side's estimate of an integral of `|f|`.**
+
+| case | port | host | rel | each answer as a multiple of `50*epmach` |
+| --- | --- | --- | --- | --- |
+| QAG over 1/(1+100 x^2), 0..1 at 1e-10 | 1.6332739290855878e-15 | 1.6332757290306007e-15 | 1.10e-6 | 0.999996 / 0.999997 of `50*epmach*atan(10)/10` |
+| QAGS over the same | 1.6332739290855878e-15 | 1.6332798271532124e-15 | 3.61e-6 | 0.999996 / 1.000000 |
+| QAG over 1/(1+100 x^2), -1..1 at 1e-12 | 3.2919181890073365e-15 | 3.276688748373941e-15 | 4.65e-3 | 1.00776 / 1.00310 of `50*epmach*2*atan(10)/10` |
+| QAGS over the same | 3.2919181890073365e-15 | 3.2661123246874664e-15 | 7.90e-3 | 1.00776 / 0.999863 |
+
+Dividing the answers by `50*DBL_EPSILON` gives the `resabs` each side used: `0.14711223716847599` (port) and
+`0.14711239929310976` for the QAG host over 0..1, against `atan(10)/10 = 0.14711276743037344`; and
+`0.29650963058695196` (port) and `0.29513788452371953` for the QAG host over -1..1, against
+`2*atan(10)/10 = 0.29422553486074687`; and `0.14711276841917911` for the QAGS host over 0..1.
+**Each answer is 50*epmach times its own side's estimate of `integral |f|`, and the two sides' estimates of
+that integral differ by three to four parts in 10^6.** A Gauss-Kronrod estimate of an integral carries that
+much error - the rule integrates `1/(1+100 x^2)` over halves whose peak sits on the boundary - and it is not
+a rounding difference of any kind, so no two estimates of it agree to 1e-6 for a reason that has anything to
+do with the port. Each row compares port against host within one integrator; the two integrators are
+different algorithms and their estimates are not evidence about anything but themselves. The clearest case
+is the last one: **QAGS over x^2 from 0 to 1 at a 1e-300 tolerance answers exactly `50 * DBL_EPSILON` times
+its own result**, `3.7007434154171879e-15` against `0.33333333333333326`, to the last bit.
+
+**Two where the answer is the epsilon algorithm's estimate, not the floor.** `dqelg.f`'s label 90 sets
+`abserr = |result - res3la(3)| + |result - res3la(2)| + |result - res3la(1)|`, a sum of differences of three
+nearly-equal extrapolated results, and there the floor is not what is being compared: QAG over 1/(1+100 x^2)
+from 0 to pi at 1e-8 answers 1.9826964368318921e-12 against the host's 1.9827010893721131e-12 (2.35e-6) and
+QAGS the same against 1.982709764529438e-12 (6.72e-6), and both are 1160 times `50*epmach*resabs`. A
+difference of nearly-equal numbers has no relative floor either.
+
+**Five over a bound at infinity**, where the port's `errsum` is compared with the host's over a different
+subdivision: 1/(1+x^2) from 0 to infinity 2.5777915205519274e-10 against 1.2889829570119306e-10, exp(-x)
+5.8426073533229445e-11 against 1.5819972718420146e-14, 1/(1+100 x^2) 1.0470614186761094e-09 against
+7.1670722844071974e-10, and the two whose integral diverges - x^2 at 0.00052797455531516935 against
+3.9107969434932113e+26 and sin at 51576303.658001751 against 155619.58445671707, where there is no estimate
+to compare at all.
 
 So the case asserts the header's own statement instead, with the exact integral computed in the same program
 from the integrand's antiderivative: on success `fabs(result - exact) <= fmax(abs_tolerance,
