@@ -29,18 +29,92 @@ What the host's camera answers, all measured by the harness:
 | `reactionEffectsInProgress` | 0 running | 0 running | they agree |
 | `reactionEffectsEnabled` (class) | 1 | 0 with an empty plist, 1 with voip, 1 with the opt-in key | macOS's rule is "enabled by default for all applications" (:2447); iOS's is the application's own (:2448) |
 | `reactionEffectGesturesEnabled` (class) | 0 | 1 by default, 0 with `NSCameraReactionEffectGesturesEnabledDefault` false | the host reflects this Mac's Control Center Gestures setting (:2458) |
-| `systemPreferredCamera` | nil | nil | they agree: nothing to prefer between on either |
-| `userPreferredCamera` | nil until set | nil until set, then what it was given | the host does not answer nil again after a nil is set (measured): a fallback to a system default on a release with several cameras, and there is nothing to fall back to here |
+| `systemPreferredCamera` | nil | the release's own best camera: the back one | **the host's nil here is not Apple's answer for this row** - this process's camera authorization is `notDetermined` and a process that was never granted access answers nil (measured, below) |
+| `userPreferredCamera` | nil until set | nil until set, then the most recent still-present choice, kept across launches | the host has one camera, so its history has nothing to fall back to; measured on the host: the value that was set reads back, and a nil after it changes nothing |
 | `performEffectForReaction:` | returned | raises NSInvalidArgumentException | the host's camera has the type in `availableReactionTypes`; this one has none |
 | Format `reactionEffectsSupported` | 1 for all seven formats | 0 | hardware |
 | Format `videoFrameRateRangeForReactionEffectsInProgress` | a 15-30 `AVFrameRateRange` on all seven | nil | a format runs reactions only where it reports support; the NO case cannot be read off this host, so the pairing is the header's `nullable` |
 | Format `supportedVideoZoomRangesForDepthDataDelivery` | 0 ranges | 0 ranges | they agree: this host's camera has no depth sensor either |
 | Format `zoomFactorsOutsideOfVideoZoomRangesForDepthDeliverySupported` | 0 | 0 | they agree |
 
-So **four of the twelve rows have the host's own answer identical to the port's**, and the rest differ for a
+So **four of the twelve rows have the host's own answer identical to the port's** (`reactionEffectsInProgress`,
+`userPreferredCamera` before a choice is made, and the two depth-delivery members), and the rest differ for a
 hardware reason that is stated per row. That is a weaker differential than the controls family, and the
 report says so rather than dressing it up: for a reaction effect there is nothing on this machine to measure
 the *absence* of, because the only camera available to the host has the feature.
+
+## The preferred-camera pair: what the host's nil is, measured
+
+`+systemPreferredCamera` answers nil on this host, and the previous version of this page read that as the
+host's answer for the row. It is not. **Measured:** `+[AVCaptureDevice authorizationStatusForMediaType:
+AVMediaTypeVideo]` is `notDetermined` (0) in this harness's process, and asking for access from a bundle
+carrying `NSCameraUsageDescription` returns `granted=0` without changing the status - there is no GUI session
+to answer the prompt. So the host's nil is the answer of a process with no camera access, not of a host with
+a camera, and the row has no host oracle here. The harness prints it beside the authorization on every run:
+
+```
+note: PREFCAM	host	auth=0 (notDetermined)	user=[nil]	system=[nil]	default=[a camera]
+```
+
+What the same run measured on the host, and these are measurements this port's answers come from:
+
+- `+userPreferredCamera` is **nil until an application sets one**, with a camera present (measured).
+- after `+setUserPreferredCamera:` with the host's own camera, the getter answers **the very object that was
+  set** (measured, `user is the object that was set? 1`).
+- after `+setUserPreferredCamera: nil` the getter **still answers that camera** - which is the header's rule
+  "Setting the property to nil has no effect" (`AVCaptureDevice.h:663`), not a fallback to a system default.
+  (The previous version of this page called it a fallback to a system default on a release with several
+  cameras; that reading is withdrawn - it is the nil rule, on a release with one camera.)
+- setting the property **adds 0 keys to the bundle's own `NSUserDefaults`** and writes nothing into its
+  persistent domain (measured). The release's store for the choice is the system's and is not in the
+  application's domain, which is what decides where the port keeps it (below).
+
+### Where the port keeps the choice, and what key
+
+`CharonCaptureUserPreferredCameraHistory`, in the application's own `NSUserDefaults`, holding the
+`-uniqueID` of the devices that were set, most recent first, at most three of them.
+
+- **that store**, because the header's promise is "across app launches and reboots" (`:661`) and
+  `NSUserDefaults` is the only store a program has for it; and because the release's own store is measurably
+  not in the application's domain (above).
+- **identifiers, not devices**, because an `AVCaptureDevice` does not outlive the process that made it.
+- **a short history, depth 3**, because the header keeps a short history (`:662`) and three is enough for
+  "if your user's most recent preferred camera is not currently connected, it still reports the next best
+  choice" to have a next choice to report.
+
+### The rules, and what each one is checked against
+
+| rule (header) | the port | checked by |
+| --- | --- | --- |
+| the most recent still-connected choice answers (`:662`) | the first entry of the history that is in `+devicesWithMediaType:` now | the step `most-recent-gone-next-best-answers` |
+| "always returns a device that is present" (`:663`) | an entry that is not in the list now is never answered | the same step, and `no-camera-at-all` |
+| "If no camera is available nil is returned" (`:663`, `:674`) | nil with no camera, through `+defaultDeviceWithMediaType:`'s own nil | the step `no-camera-at-all` |
+| "Setting the property to nil has no effect" (`:663`) | a nil set adds nothing to the history | the step `after-nil-is-set`, and the host measurement above |
+| "persist ... across app launches and reboots" (`:661`) | the defaults key, read on every call rather than a static | two launches of one bundle, and a bundle of its own |
+| "incorporates userPreferredCamera as well as other factors" (`:674`) | the user's answer, else `+defaultDeviceWithMediaType:` | every step: the `system=` column |
+
+### Why `+defaultDeviceWithMediaType:` and not "the back camera"
+
+The port writes the call, not a position. On the devices of this port's bands that call answers the camera on
+the back: the release's own words for it are "for AVMediaTypeVideo, this method will return the built in
+camera that is primarily used for capture and recording" (`AVCaptureDevice.h:120`), and this tree's own device
+measurement puts the back camera first in that list (`tests/backports/device/avcapture.m:91`, with the order
+recorded in `AVCaptureDeviceDiscovery.md`, "Finding devices"). Writing the call keeps the port from drifting
+away from the release's own choice on hardware where the release would choose something else.
+
+### How the harness gets two cameras to choose between
+
+`tests/backports/host/avf-capabilities` compiles the port's two objects with the class name renamed **everywhere
+the sources spell it, in a method body as well as at an `@implementation` line** (two macros in the harness's
+own prologue). So the port's `[AVCaptureDevice devicesWithMediaType:]` and `[AVCaptureDevice
+defaultDeviceWithMediaType:]` reach a stand-in class this build hands a list of two cameras, and "the most
+recent camera is gone" is askable at all - which no host with one camera can answer. The control that this is
+happening, and not the probe reading the stand-in behind the port's back, is that the steps below change with
+the list: every one of them is a different list.
+
+Two mutants, both green through `CONTROL=1`: `AVFCAPSMUTANT=1` (a camera answers it has reactions) and
+`AVFCAPSMUTANT=prefcam` (the setter stops persisting, which is the promise of `:661` and which the step model
+and the two launches both catch).
 
 ## The two class properties are rules, not constants
 
@@ -84,9 +158,21 @@ makes the whole surface drop out of the 18.0 and later bands.)
 sh tests/backports/host/avf-capabilities/run.sh        exit 0
   ok  11 members are answered by both sides
   ok  11 answers are the ones expectations.tsv names, the host's and the port's columns both
-  ok  +userPreferredCamera keeps the value it was given and reads it back
+      across two launches of one bundle: the first chose [front-camera], the second read [front-camera]
+      a bundle of its own reads [nil], so what is kept is one application's own choice
+  ok  the choice survives a launch and stays in the application that made it
+  ok  8 preferred-camera steps are the ones the header's four rules give, computed here
+      from the fixture each step used
   ok  over four Info.plists ... (the four lines above)
-AVFCAPSMUTANT=1 sh .../run.sh                          ok  the mutation was noticed: 1 of 11 answers differ
-    from the table / DIFFERS AVCaptureDevice.canPerformReactionEffects want port=[0] got port=[1]
-CONTROL=1 AVFCAPSMUTANT=1 sh .../run.sh                 ok  the control is clean
+AVFCAPSMUTANT=1 sh .../run.sh       ok  the mutation was noticed: 1 of 11 table answers, 0 of 8
+    preferred-camera steps, and 0 of the two checks around surviving a launch differ
+AVFCAPSMUTANT=prefcam sh .../run.sh ok  the mutation was noticed: 0 of 11 table answers, 6 of 8
+    preferred-camera steps, and 1 of the two checks around surviving a launch differ
+CONTROL=1 AVFCAPSMUTANT=1 sh .../run.sh / CONTROL=1 AVFCAPSMUTANT=prefcam  ok  the control is clean
 ```
+
+The eight steps of the preferred-camera phase, and what each one is:
+`before-any-set` (nil, and the release's own best camera for the system property), `after-front-is-chosen`,
+`after-back-is-chosen` (two entries of history), `after-nil-is-set` (unchanged), `most-recent-gone-next-best-answers`
+(the entry before it answers), `no-camera-at-all` (nil both), `history-exhausted` (the release's own best
+camera), `nothing-ever-chosen` (nil, and the best camera for the system property).

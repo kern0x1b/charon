@@ -92,7 +92,8 @@ static void class_answer_of(Class cls, SEL selector, char *out, size_t room)
         @try {
             if (selector == @selector(systemPreferredCamera) || selector == @selector(userPreferredCamera)) {
                 id camera = ((id (*)(Class, SEL))objc_msgSend)(cls, selector);
-                snprintf(out, room, "%s", camera ? "a camera" : "nil");
+                /* named, not just "a camera": which camera answers is the whole content of these two rows. */
+                snprintf(out, room, "%s", camera ? [(NSString *)[camera valueForKey:@"uniqueID"] UTF8String] : "nil");
             } else {
                 snprintf(out, room, "%d", (int)((BOOL (*)(Class, SEL))objc_msgSend)(cls, selector));
             }
@@ -109,6 +110,156 @@ static void print_class_answer(Class host, Class port, const char *label, SEL se
     class_answer_of(host, selector, hostAnswer, sizeof hostAnswer);
     class_answer_of(port, selector, portAnswer, sizeof portAnswer);
     printf("ANSWER\t%s\thost=[%s]\tport=[%s]\n", label, hostAnswer, portAnswer);
+}
+
+/* THE PREFERRED-CAMERA PAIR, and the five rules of the header that shape it
+   (AVCaptureDevice.h:661-663 for the user's choice, :674 for the system's):
+     persists "across app launches and reboots"; a "short history", so a camera that is not connected now still
+     reports "the next best choice"; "always returns a device that is present"; nil only "if no camera is
+     available"; and "Setting the property to nil has no effect".
+   None of the four is a constant, so each is asked as its own step below with its own expectation, computed in
+   run.sh from the step it belongs to.
+
+   The PORT's device list is the stand-in's, not Apple's: the copy run.sh compiles renames the class name in the
+   port's SOURCES as well, so the `[AVCaptureDevice devicesWithMediaType:]` and
+   `[AVCaptureDevice defaultDeviceWithMediaType:]` inside the port's code reach the stand-in class and this run
+   decides which cameras are present by handing it a list. The HOST's column is asked of Apple's own camera and
+   carries the process's camera authorization beside it, because a nil from a process that was never granted
+   access is the answer for that process and not Apple's answer for the row. */
+
+/* Which cameras the port's class is to see. The seam belongs to this build: it is declared in the harness's own
+   prologue, never in the port's sources, so nothing the library carries depends on it. */
+static void set_present(Class portDevice, NSArray *devices)
+{
+    ((void (*)(Class, SEL, id))objc_msgSend)(portDevice, @selector(charon_host_setPresentDevices:), devices);
+}
+
+static id make_device(Class portDevice, NSString *identifier, NSString *name, long position)
+{
+    id device = [portDevice new];
+    ((void (*)(id, SEL, id))objc_msgSend)(device, @selector(setUniqueID:), identifier);
+    ((void (*)(id, SEL, id))objc_msgSend)(device, @selector(setLocalizedName:), name);
+    ((void (*)(id, SEL, long))objc_msgSend)(device, @selector(setPosition:), position);
+    ((void (*)(id, SEL, BOOL))objc_msgSend)(device, @selector(setConnected:), YES);
+    return device;
+}
+
+/* The two cameras of a device of this port's bands, on each side (facts/AVFoundation/
+   AVCaptureDeviceDiscovery.md, "What the hardware has", measured on an iPhone 4S and an iPad 2). */
+static id prefcam_back, prefcam_front;
+
+static void prefcam_setup(Class portDevice)
+{
+    /* AVCaptureDevicePositionUnspecified 0, Back 1, Front 2 - the release's own numbering (AVFoundation.h). */
+    prefcam_back = make_device(portDevice, @"back-camera", @"Back Camera", 1);
+    prefcam_front = make_device(portDevice, @"front-camera", @"Front Camera", 2);
+    set_present(portDevice, @[prefcam_back, prefcam_front]);
+}
+
+/* What the application's own defaults hold for the history, in one string, so a run that persisted nothing
+   reads "0 entries []" and not an empty string: the comparison in run.sh is a string comparison. */
+static NSString *stored_history(void)
+{
+    id history = [[NSUserDefaults standardUserDefaults]
+        objectForKey:@"CharonCaptureUserPreferredCameraHistory"];
+    NSArray *entries = [history isKindOfClass:[NSArray class]] ? history : [NSArray array];
+    return [NSString stringWithFormat:@"%lu entr%s [%@]", (unsigned long)entries.count,
+                                      entries.count == 1 ? "y" : "ies",
+                                      entries.count ? [entries componentsJoinedByString:@","] : @""];
+}
+
+static void prefcam_step(Class portDevice, const char *label)
+{
+    char user[512], system[512], stored[512];
+    class_answer_of(portDevice, @selector(userPreferredCamera), user, sizeof user);
+    class_answer_of(portDevice, @selector(systemPreferredCamera), system, sizeof system);
+    /* What the application's own defaults hold, so a run that persisted nothing shows an empty history and a
+       second launch over the same bundle can be compared against the first one's. */
+    snprintf(stored, sizeof stored, "%s", stored_history().UTF8String);
+    printf("PREFCAM\t%s\tuser=[%s]\tsystem=[%s]\tdefaults=[%s]\n", label, user, system, stored);
+}
+
+/* ACROSS LAUNCHES. argv[2] = "persist" makes this a launch of the persistence pair instead: "set" chooses the
+   front camera and leaves it, "read" chooses nothing and only reports what this process finds. The header's
+   promise is "across app launches and reboots" (AVCaptureDevice.h:661), which one process's own memory cannot
+   answer, so run.sh runs two of these over one bundle and a third over a bundle of its own. */
+static void persist_phase(Class portDevice, const char *mode)
+{
+    if (!strcmp(mode, "set")) {
+        /* A launch that MAKES the choice starts by forgetting any earlier one, so the pair does not inherit a
+           domain an earlier run of this harness left behind: the count printed below is this launch's own. */
+        [[NSUserDefaults standardUserDefaults]
+            removeObjectForKey:@"CharonCaptureUserPreferredCameraHistory"];
+        ((void (*)(Class, SEL, id))objc_msgSend)(portDevice, @selector(setUserPreferredCamera:), prefcam_front);
+    }
+    char user[512], system[512];
+    class_answer_of(portDevice, @selector(userPreferredCamera), user, sizeof user);
+    class_answer_of(portDevice, @selector(systemPreferredCamera), system, sizeof system);
+    id history = [[NSUserDefaults standardUserDefaults]
+        objectForKey:@"CharonCaptureUserPreferredCameraHistory"];
+    NSArray *entries = [history isKindOfClass:[NSArray class]] ? history : [NSArray array];
+    printf("PERSIST\t%s\t%s\tsystem=[%s]\t%lu entr%s in this bundle's own defaults\n",
+           strcmp(mode, "set") ? "second-launch" : "first-launch", user, system, (unsigned long)entries.count,
+           entries.count == 1 ? "y" : "ies");
+}
+
+static void prefcam_phase(Class hostDevice, Class portDevice, const char *mode)
+{
+    /* The host's own answer, with the authorization printed beside it - the measurement the coordinator asked
+       for after a run read the host's nil as Apple's answer for the row. */
+    long auth = (long)[AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    const char *authName = auth == 0 ? "notDetermined" : auth == 1 ? "restricted" : auth == 2 ? "denied" : "authorized";
+    char hostSystem[512];
+    class_answer_of(hostDevice, @selector(systemPreferredCamera), hostSystem, sizeof hostSystem);
+    char hostUser[512];
+    class_answer_of(hostDevice, @selector(userPreferredCamera), hostUser, sizeof hostUser);
+    printf("PREFCAM\thost\tauth=%ld (%s)\tuser=[%s]\tsystem=[%s]\tdefault=[%s]\n", auth, authName, hostUser,
+           hostSystem,
+           [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] ? "a camera" : "nil");
+
+/* Nothing was ever chosen: the measured host answer for a property that has not been set is nil, with a
+       camera present. */
+    prefcam_step(portDevice, "before-any-set");
+
+    if (mode) {
+        /* One launch of the persistence pair: nothing else, and no step that would clear the history. */
+        persist_phase(portDevice, mode);
+        return;
+    }
+
+    /* The choice, then the getter, and a second choice, so the history holds two entries. */
+    ((void (*)(Class, SEL, id))objc_msgSend)(portDevice, @selector(setUserPreferredCamera:), prefcam_front);
+    prefcam_step(portDevice, "after-front-is-chosen");
+    ((void (*)(Class, SEL, id))objc_msgSend)(portDevice, @selector(setUserPreferredCamera:), prefcam_back);
+    prefcam_step(portDevice, "after-back-is-chosen");
+
+    /* "Setting the property to nil has no effect" (:663): a nil adds nothing, so the choice survives it. */
+    ((void (*)(Class, SEL, id))objc_msgSend)(portDevice, @selector(setUserPreferredCamera:), nil);
+    prefcam_step(portDevice, "after-nil-is-set");
+
+    /* "if your user's most recent preferred camera is not currently connected, it still reports the next best
+       choice" (:662): the back is the most recent and it goes, so the front - the entry before it - answers. */
+    set_present(portDevice, @[prefcam_front]);
+    prefcam_step(portDevice, "most-recent-gone-next-best-answers");
+
+    /* No camera at all: nil is the header's own answer for both properties (:663, :674). */
+    set_present(portDevice, @[]);
+    prefcam_step(portDevice, "no-camera-at-all");
+
+    /* Only the front was ever chosen and it is gone: the history is exhausted, and the release's own best
+       camera is the next best choice one step further - the back, which is what +defaultDeviceWithMediaType:
+       answers over the list this run handed the stand-in. */
+    set_present(portDevice, @[prefcam_back, prefcam_front]);
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"CharonCaptureUserPreferredCameraHistory"];
+    ((void (*)(Class, SEL, id))objc_msgSend)(portDevice, @selector(setUserPreferredCamera:), prefcam_front);
+    set_present(portDevice, @[prefcam_back]);
+    prefcam_step(portDevice, "history-exhausted");
+
+    /* And a launch that chooses nothing: the measured host answer for a property that has not been set is nil,
+       while the system's answer is the release's own best camera. */
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"CharonCaptureUserPreferredCameraHistory"];
+    set_present(portDevice, @[prefcam_back, prefcam_front]);
+    prefcam_step(portDevice, "nothing-ever-chosen");
 }
 
 int main(int argc, char **argv)
@@ -148,6 +299,14 @@ int main(int argc, char **argv)
            and not of Apple's, which is what the rename is for. */
         id portCamera = [portDevice new];
         id portFormatObject = [portFormat new];
+        /* The preferred-camera pair reads a device list, so the stand-in is given one before anything is asked:
+           two cameras, on each side. And the history is cleared here rather than in the phase that writes it,
+           because the member loop below asks +userPreferredCamera too and must not see a previous run's choice. */
+        prefcam_setup(portDevice);
+        /* Not in a launch of the persistence pair: clearing the key there would erase what the launch before
+           this one left, which is the only thing that launch is there to leave. */
+        if (argc <= 2)
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"CharonCaptureUserPreferredCameraHistory"];
 
         FILE *list = fopen(argv[1], "r");
         if (list == NULL) {
@@ -213,11 +372,7 @@ int main(int argc, char **argv)
                            @selector(systemPreferredCamera));
         print_class_answer(hostDevice, portDevice, "AVCaptureDevice.userPreferredCamera",
                            @selector(userPreferredCamera));
-        /* and the setter, then the getter: what the port stores is what it reads back. */
-        ((void (*)(Class, SEL, id))objc_msgSend)(portDevice, @selector(setUserPreferredCamera:), portCamera);
-        char after[512];
-        class_answer_of(portDevice, @selector(userPreferredCamera), after, sizeof after);
-        printf("ANSWER\tAVCaptureDevice.userPreferredCamera after the port is set\tport=[%s]\n", after);
+        prefcam_phase(hostDevice, portDevice, argc > 2 ? argv[2] : NULL);
 
         printf("members probed: %u  answers emitted: %u\n", members, answers);
     }

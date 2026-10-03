@@ -32,14 +32,34 @@
 //                                    NSCameraReactionEffectGesturesEnabledDefault in its Info.plist. The
 //                                    host answers NO because it reflects this Mac's Control Center Gestures
 //                                    setting (:2458); a release with no such setting stays at its default.
-//   +systemPreferredCamera           nil, measured on the host as nil as well: the camera the system
-//                                    prefers is a choice between several cameras, and this release's
-//                                    devices have one.
-//   +userPreferredCamera             nil until an application sets it, and the setter's value is read
-//                                    back. The host answers nil until set and then reads its own set value
-//                                    back (measured); it does not answer nil again after a nil is set, which
-//                                    is a system-default fallback of a release with several cameras and is
-//                                    not reproduced here, since there is nothing to fall back to.
+//   +systemPreferredCamera           the user's choice when there is one, and the release's own best camera
+//                                    otherwise. "This property incorporates userPreferredCamera as well as other
+//                                    factors, such as camera suspension and Apple cameras appearing that should
+//                                    be automatically chosen ... This property always returns a device that is
+//                                    present. If no camera is available nil is returned." (AVCaptureDevice.h:674).
+//                                    The "other factors" this release has are the ones its own
+//                                    +defaultDeviceWithMediaType: answers, and nothing invented: the devices of
+//                                    this port's bands have a camera on each side and the release's answer for
+//                                    AVMediaTypeVideo is "the built in camera that is primarily used for capture
+//                                    and recording" (AVCaptureDevice.h:120), which is the one on the back. The
+//                                    call, not a position, is what is written here, so the port cannot drift
+//                                    from the release's own choice.
+//   +userPreferredCamera             the camera an application chose, kept across launches, and only ever a
+//                                    camera that is present. Four rules, all of the header's own:
+//                                      "Setting this property allows an application to persist its user's
+//                                       preferred camera across app launches and reboots. The property internally
+//                                       maintains a short history, so if your user's most recent preferred camera
+//                                       is not currently connected, it still reports the next best choice. This
+//                                       property always returns a device that is present. If no camera is
+//                                       available nil is returned. Setting the property to nil has no effect."
+//                                       (AVCaptureDevice.h:661-663)
+//                                    So: the most recent entry of the history that is in the device list NOW; nil
+//                                    while the history is empty (measured on the host, which answers nil until an
+//                                    application sets one); the release's own best camera once the history is
+//                                    exhausted, which is the same "next best choice" one step further and is nil
+//                                    itself when the device has no camera at all; and a nil set adds nothing, so
+//                                    the choice survives it (measured on the host: after setting nil the getter
+//                                    still answers the camera it was given).
 //   -performEffectForReaction:        raises. "The reactionType requested must be one of those listed in
 //                                    availableReactionTypes or an exception will be thrown" (:2496): the
 //                                    list is empty, so every type is one that must not be passed. The
@@ -71,10 +91,44 @@
 // devices do not have, and the release's own would be the ones for hardware they do.
 #import "CharonAVCaptureDeviceReactions17.h"
 
-// The camera an application chose. A class property, so one value for the process, and it is kept here
-// rather than in an ivar for the same reason: the release's class cannot be given one by a category.
-static AVCaptureDevice *charon_user_preferred_camera;
+// THE PREFERRED-CAMERA PAIR. The choice an application made is kept in the application's own NSUserDefaults,
+// under one key, as the identifiers of the devices that were set, most recent first.
+//
+// The key and why that store, measured rather than assumed:
+//   * NSUserDefaults is the only store a program can use to keep a value "across app launches and reboots",
+//     which is what the header says this property is for (:661). The release's own store is the system's and
+//     is not in the application's domain - MEASURED on this host: setting +userPreferredCamera adds 0 keys to
+//     the bundle's own defaults and writes nothing at all into its persistent domain. So the port keeps the
+//     choice where it can, and says which key, rather than pretending to reach the system's.
+//   * identifiers, not devices: an AVCaptureDevice does not outlive the process that made it, and the header's
+//     promise is across launches. -uniqueID is the release's own name for a device across the process boundary.
+//   * a short history, not one value, because the header keeps a short history (:662). Three entries is the
+//     depth here: enough for the "most recent ... is not currently connected, it still reports the next best
+//     choice" case to have a next choice to report, and bounded, which is what "short" says.
+#define CHARON_CAPTURE_USER_PREFERRED_HISTORY_KEY @"CharonCaptureUserPreferredCameraHistory"
+#define CHARON_CAPTURE_USER_PREFERRED_HISTORY_DEPTH 3
 
+// The history as it stands, most recent first, deduplicated and never longer than the depth. Read out of the
+// application's defaults every time rather than kept in a static: the getter has to answer what another launch
+// left behind, and one process's static is not what survives.
+static NSArray<NSString *> *charon_user_preferred_history(void)
+{
+    id stored = [[NSUserDefaults standardUserDefaults] objectForKey:CHARON_CAPTURE_USER_PREFERRED_HISTORY_KEY];
+    if (![stored isKindOfClass:[NSArray class]])
+        return [NSArray array];
+    NSMutableArray<NSString *> *identifiers = [NSMutableArray array];
+    for (id entry in (NSArray *)stored) {
+        if ([entry isKindOfClass:[NSString class]] && [entry length] && ![identifiers containsObject:entry])
+            [identifiers addObject:entry];
+        if (identifiers.count >= CHARON_CAPTURE_USER_PREFERRED_HISTORY_DEPTH)
+            break;
+    }
+    return identifiers;
+}
+
+// The camera an application chose. A class property, so one value for the process, and it is not kept in an ivar
+// for the same reason: the release's class cannot be given one by a category, and a value in a static would not
+// survive the next launch, which is the half of the header's promise this row is about.
 @implementation AVCaptureDevice (CharonCaptureDeviceReactions17)
 
 - (NSSet<AVCaptureReactionType> *)availableReactionTypes
@@ -124,17 +178,56 @@ static AVCaptureDevice *charon_user_preferred_camera;
 
 + (AVCaptureDevice *)systemPreferredCamera
 {
-    return nil;
+    // "incorporates userPreferredCamera as well as other factors ... always returns a device that is present. If
+    // no camera is available nil is returned" (:674): the user's choice first, and otherwise the release's own
+    // best camera, which is what +defaultDeviceWithMediaType: answers and what it answers nil for on a device
+    // with no camera. The choice is asked for through its own property rather than through the history, so the
+    // "next best choice" the two properties share is one piece of code.
+    return [AVCaptureDevice userPreferredCamera] ?: [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
 }
 
 + (AVCaptureDevice *)userPreferredCamera
 {
-    return charon_user_preferred_camera;
+    NSArray<NSString *> *history = charon_user_preferred_history();
+    NSArray<AVCaptureDevice *> *present = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    // "The property internally maintains a short history, so if your user's most recent preferred camera is not
+    // currently connected, it still reports the next best choice. This property always returns a device that is
+    // present" (:662-663): the most recent entry of the history that is in the device list now, and never an
+    // entry that is not.
+    for (NSString *identifier in history) {
+        for (AVCaptureDevice *device in present) {
+            if ([device.uniqueID isEqualToString:identifier])
+                return device;
+        }
+    }
+    // Nothing was ever chosen. The measured host answer for a property that has not been set is nil, with a
+    // camera present (:663 reserves nil for a device with no camera at all, and a choice that was never made is
+    // not a camera).
+    if (history.count == 0)
+        return nil;
+    // The history is exhausted and the device has a camera: the same "next best choice" one step further is the
+    // release's own best present one, and that call answers nil itself when there is no camera (:663).
+    return [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
 }
 
 + (void)setUserPreferredCamera:(AVCaptureDevice *)userPreferredCamera
 {
-    charon_user_preferred_camera = userPreferredCamera;
+    // "Setting the property to nil has no effect" (:663), measured on the host: after a nil the getter still
+    // answers the camera that was set before it. A nil therefore adds nothing to the history, rather than
+    // clearing it.
+    if (!userPreferredCamera)
+        return;
+    NSString *identifier = userPreferredCamera.uniqueID;
+    if (![identifier length])
+        return;
+    NSMutableArray<NSString *> *history = [charon_user_preferred_history() mutableCopy];
+    [history removeObject:identifier];
+    [history insertObject:identifier atIndex:0];
+    if (history.count > CHARON_CAPTURE_USER_PREFERRED_HISTORY_DEPTH)
+        [history removeObjectsInRange:NSMakeRange(CHARON_CAPTURE_USER_PREFERRED_HISTORY_DEPTH,
+                                                  history.count - CHARON_CAPTURE_USER_PREFERRED_HISTORY_DEPTH)];
+    [[NSUserDefaults standardUserDefaults] setObject:[history copy]
+                                              forKey:CHARON_CAPTURE_USER_PREFERRED_HISTORY_KEY];
 }
 
 - (void)performEffectForReaction:(AVCaptureReactionType)reactionType
