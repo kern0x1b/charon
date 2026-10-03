@@ -691,6 +691,62 @@ function failures(opt)
         os.tryrm(root)
     end
 
+    -- A type the registry names itself, and a case of a type the registry names, are not types the headers alone
+    -- declare, and a name the registry does not implement keeps its release: the rule a class entry already follows
+    -- for the members of its surface. CoreML's MLMultiArrayDataType is what the rule is measured on - the 16.4 lift
+    -- refused "MLMultiArrayDataTypeFloat is inert and was lowered from iOS 14.0 to 6.1.3", and the type and its other
+    -- three cases beside it. The fixture declares two enumerations above the port's release and one implemented
+    -- function that names both, so the lift looks at both types: FixOpen has no row of its own and comes down whole
+    -- except the case a row keeps, and FixKind has a row of its own and nothing of it moves.
+    if not clang or not swiftc then
+        print("skipped: a type the registry names needs both clang under " .. path.join(store, "l/llvm") ..
+              " and swiftc under " .. path.join(store, "s/swift"))
+    else
+        local fixture = {"#define ios(version) ios, introduced=version\n" ..
+                         "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n",
+                         "@protocol NSObject @end\n@protocol NSCopying @end\n" ..
+                         "__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\n",
+                         "#import <Fix/Avail.h>\ntypedef enum FixOpen FixOpen;\nenum FixOpen {\n" ..
+                         "FixOpenPlain API_AVAILABLE(ios(9.0)),\nFixOpenHeld API_AVAILABLE(ios(9.0))\n};\n" ..
+                         "typedef enum FixKind FixKind;\nenum FixKind {\n" ..
+                         "FixKindPlain API_AVAILABLE(ios(9.0)),\nFixKindOne API_AVAILABLE(ios(9.0))\n};\n" ..
+                         "void FixTake(FixOpen open, FixKind kind) API_AVAILABLE(ios(9.0));\n",
+                         '[{"api": "FixTake", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented",' ..
+                         ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"},' ..
+                         '{"api": "FixOpenHeld", "kind": "constant", "introduced": "9.0", "minimum": "6.0", "status": "inert",' ..
+                         ' "effect": "a fixture entry", "reason": "a header-only enumerator the port carries"},' ..
+                         '{"api": "FixKind", "kind": "enum", "introduced": "9.0", "minimum": "6.0", "status": "inert",' ..
+                         ' "effect": "a fixture entry", "reason": "a header-only enumeration the port carries"},' ..
+                         '{"api": "FixKindOne", "kind": "constant", "introduced": "9.0", "minimum": "6.0", "status": "inert",' ..
+                         ' "effect": "a fixture entry", "reason": "a header-only enumerator the port carries"}]'}
+        local root = path.join(os.tmpdir(), "charon-lift-types-" .. hash.strhash128(table.concat(fixture, "")))
+        os.tryrm(root)
+        local headers = path.join(root, "sdk", "System", "Library", "Frameworks")
+        local fix = path.join(headers, "Fix.framework", "Headers")
+        io.writefile(path.join(headers, "Foundation.framework", "Headers", "Foundation.h"), fixture[2])
+        io.writefile(path.join(fix, "Avail.h"), fixture[1])
+        io.writefile(path.join(fix, "Fix.h"), fixture[3])
+        io.writefile(path.join(root, "registry", "Fix.json"), fixture[4])
+        local failure
+        try {function ()
+            lift.lift({clang = clang, swiftc = swiftc, sdk = path.join(root, "sdk"), triple = "armv7-apple-ios6.1.3",
+                       minimum = "6.1.3", registry = root, outputdir = path.join(root, "out"), expected = false})
+        end, catch {function (why) failure = tostring(why) end}}
+        expect_equal(found, "a lift of a fixture SDK whose registry names a type and a case of one", failure, nil)
+        -- the staged header is the answer: what came down and what kept its release
+        local staged = io.readfile(path.join(root, "out", "headers", "System", "Library", "Frameworks", "Fix.framework",
+                                            "Headers", "Fix.h")) or ""
+        local function at(name)
+            return staged:match(name .. " API_AVAILABLE%(ios%(([%d%.]+)%)%)") or "(no mark)"
+        end
+        expect_equal(found, "a type no row names comes down", at("FixOpenPlain"), "6.1.3")
+        expect_equal(found, "and the case of it a row keeps keeps its release", at("FixOpenHeld"), "9.0")
+        expect_equal(found, "a type the registry names itself does not come down",
+                     at("FixKindPlain"), "9.0")
+        expect_equal(found, "and neither does its case a row names", at("FixKindOne"), "9.0")
+        os.tryrm(root)
+    end
+
     -- The three spellings that name a carried property, and the case that is the whole of this change: a row
     -- spelled with the getter the SDK declares for the property - UITextField.isTextDragActive, which names
     -- UITextDraggable's textDragActive whose getter is isTextDragActive - carries the property, where before

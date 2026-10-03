@@ -1235,10 +1235,14 @@ end
 -- A type the headers alone declare - an enumeration, a set of options, a structure - has no entry in the registry: the
 -- backports carry nothing of it. It comes down when every API of the SDK that uses it and is above the port's release is
 -- implemented, to the latest minimum among those; one that is not, or a use that cannot be told, keeps it where it is.
-local function type_marks(node)
+--
+-- A case or a field the registry names is a member of its type, and it follows the rule a class entry already follows for
+-- the members of its surface: one with an entry of its own that is not implemented keeps its own mark, and only that
+-- one. kept is the registry's non-implemented names, as computed() holds them.
+local function type_marks(node, kept)
     local found = marks(node)
     for _, child in ipairs(node.inner or {}) do
-        if child.kind == "EnumConstantDecl" or child.kind == "FieldDecl" then
+        if (child.kind == "EnumConstantDecl" or child.kind == "FieldDecl") and not (kept and kept[child.name]) then
             table.join2(found, marks(child))
         end
     end
@@ -2634,7 +2638,7 @@ local function computed(opt)
         end
         local above = false
         for _, node in ipairs(declared) do
-            for _, mark in ipairs(type_marks(node)) do
+            for _, mark in ipairs(type_marks(node, kept)) do
                 above = above or later(mark.introduced, opt.minimum)
             end
         end
@@ -2653,16 +2657,21 @@ local function computed(opt)
         end
         local above = false
         for _, node in ipairs(declared) do
-            for _, mark in ipairs(type_marks(node)) do
+            for _, mark in ipairs(type_marks(node, kept)) do
                 above = above or later(mark.introduced, opt.minimum)
             end
         end
-        if above then
+        -- A type the registry names itself is not a type the headers alone declare, and a name that is not implemented
+        -- keeps its release and everything it owns: the check over the overlay refuses a kept name that moved, which is
+        -- what CoreML's MLMultiArrayDataType is (iPhoneOS16.4.sdk, measured: "MLMultiArrayDataTypeFloat is inert and
+        -- was lowered from iOS 14.0 to 6.1.3", and the type and its other three cases beside it).
+        local own = listed[name]
+        if above and (not own or own.status == "implemented") then
             local blocking, target = users(name, declared, {})
             if #blocking == 0 then
                 lowered_types[name] = target
                 for _, node in ipairs(declared) do
-                    for _, mark in ipairs(type_marks(node)) do
+                    for _, mark in ipairs(type_marks(node, kept)) do
                         place(mark, target)
                     end
                 end
@@ -2866,7 +2875,7 @@ local function computed(opt)
     for name, target in pairs(lowered_types) do
         for _, node in ipairs(latest(dump(name, vfs))) do
             if (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and (node.name or node._qualified) == name then
-                for _, mark in ipairs(type_marks(node)) do
+                for _, mark in ipairs(type_marks(node, kept)) do
                     if later(mark.introduced, target) then
                         table.insert(failures, string.format("the type %s still says iOS %s", name, mark.introduced))
                     end
