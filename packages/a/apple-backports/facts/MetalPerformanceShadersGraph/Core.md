@@ -294,14 +294,20 @@ answers `0x00000000` for every numerator, and a NaN divisor answers the arithmet
 four kinds and none of them is a tolerance:
 
 * **58 float32 cells, all in the transcendental family and in the two sigmoid gradients.** The release's
-  transcendentals are not the C library's: measured cell by cell over the sixteen classes, `sin`, `tan`,
-  `sinh`, `asinh`, `atanh`, `logBase10`, `expBase10`, `atan2` and `power` agree with the *float32*
-  function where the port computes in double and rounds once (`sin` of `1.0` is `0x3f576aa5` where
-  `sin` in double rounded to float is `0x3f576aa4`), while `asin`, `acos` and `atan` agree with the double
-  one, and `cosh`, `erf`, `tanh` and `sigmoid` agree with neither by one unit in the last place. Choosing
-  per operation between the float32 and the double spelling would make most of these cells agree, and is
-  not done: it fits twenty measurements rather than stating a rule, and the release's kernels are Metal's
-  own approximations, whose coefficients are not derivable from the specification.
+  transcendentals are not the C library's, in either precision. Measured cell by cell over the sixteen
+  classes: the release's `sin` of `1.0` is `0x3f576aa5`, this machine's own `sinf(1.0f)` is `0x3f576aa4`
+  and `(float)sin(1.0)` is `0x3f576aa4` as well, and `0x3f576aa4` is the correctly rounded one - the exact
+  value `0.8414709848` is nearer `0x3f576aa4` than `0x3f576aa5` - so the release's kernel is an
+  approximation and neither spelling of the C function is it. The same holds for the rest of the family:
+  `coshf(1.0f)` is `0x3fc583ab` and the release answers `0x3fc583aa`, `erff(1.0f)` is `0x3f57bb3d` against
+  the release's `0x3f57bb3c`, and `tanhf(1.0f)` is `0x3f42f7d6` against the release's `0x3f42f7d5`.
+  **Attempted and rejected**: giving each transcendental the float32 spelling when its operand is a
+  float32, which is the one thing the measurement suggests a reader would try. Measured by building it
+  and running the whole file: it fixes **no** cell and makes **five** differ - `acos` 0 to 1, `asin` 4 to
+  5, `atan` 2 to 4, `atan2` 1 to 3 and `sigmoid` 1 to 2, 196 to 203 recorded. The tree therefore keeps one
+  spelling, the double one, and the transcendental family's float32 cells stay recorded. What would remove
+  them is the release's own polynomial, which is not in any header and is not derivable from the
+  specification of the operation.
 * **140 float16 cells.** The same four kinds in `MPSDataTypeFloat16`, where the release's half kernels
   answer the special classes by rules of their own - the ones already measured for the arithmetic family
   are the table above - and where a per-operation half rule has not been derived yet. The families with
