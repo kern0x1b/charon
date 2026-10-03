@@ -66,6 +66,25 @@ extension `zzqq`). This library now carries both functions (`UIKit/UTTypeDynamic
 `tags` only ever reports `UTTagClassFilenameExtension` and `UTTagClassMIMEType`, the two tag
 classes `charon_acceptsPath:` and the constants above already need; the release's real registry
 of additional tag classes (`com.apple.nspboard-type`, `com.apple.ostype`, and so on) is not read.
-`version` and `referenceURL` are not carried - no call site was found asking for either, and iOS
-6's UTI database was never asked to declare a version or a reference URL for a type in the first
-place.
+`version`, `referenceURL` and `supertypes` are now carried, in `facts/UIKit/UTTypeDeclarations.md`: a
+type's version and reference URL are properties of the type's declaration, so they are read out of the
+process's own UTI declarations, and `supertypes` is the release's own conformance test run over the
+catalogue.
+
+## The three properties whose getter the SDK spells `is`
+
+`dynamic`, `declared` and `publicType` are declared by SDK 26.2's own `UTType.h` as
+
+    @property (readonly, getter=isDynamic) BOOL dynamic;
+    @property (readonly, getter=isDeclared) BOOL declared;
+    @property (readonly, getter=isPublicType) BOOL publicType;
+
+so the selectors an application calls are `-isDynamic`, `-isDeclared` and `-isPublicType`, which is what
+this class has answered since it was written. No SDK header declares a `-dynamic`, `-declared` or
+`-publicType` selector, and none is added here: adding one would be API no release has, carrying it for
+no caller. `modules/apple/backports.lua`'s own check_registry reads a row spelled with the property's own
+name against the `is` getter as well -- its own comment names that case (`getter=isPreviewing`) -- and the
+corpus names the row with the property's spelling, which is the spelling the check pairs.
+
+`tests/backports/host/uttypeconstants` reads the host's own `isDeclared`, `isDynamic` and `isPublicType`
+for four system types and prints them on every run.

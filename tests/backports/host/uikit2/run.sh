@@ -518,7 +518,7 @@ control "--no-plant" 2
 control "no such key" 2
 
 
-group contentunavailable "UIContentUnavailableProperties.m" contentunavailable_test.m
+group contentunavailable "UIContentUnavailableProperties.m UIContentUnavailableConfiguration.m" contentunavailable_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
 xcrun clang $target -fobjc-arc -Wall -w -I"$harness" "$here/spring_uikit.m" $frameworks -o "$build/spring_uikit"

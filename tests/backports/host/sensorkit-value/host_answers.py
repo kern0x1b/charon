@@ -9,10 +9,11 @@ Reads the ten COUNT lines, the two PROPERTY lines and the INIT line, and holds t
     answers an integer, and a count of nothing typed in a category is zero.
   - both speech properties must be nil for a metrics object with no session, which is what the header's
     own nullable means with nothing behind it.
-  - -[SRSensorReader init] must raise. That row is absent, so this line is not a value the port
-    produces; it is here because it is the measured reason that row stays absent, and a harness that
-    quoted the header's NS_UNAVAILABLE without measuring what the framework does about it would be
-    quoting rather than checking.
+  - -[SRSensorReader init] must raise. The port produces that raise, in SRSensorReader.m, and this
+    line is the measurement it is held to; the whole of the eighteen classes whose headers close the
+    pair is in tests/backports/host/unavailable-init, which is where that one is now held twice - to
+    the source and to the compiled object - so a harness that quoted the header's NS_UNAVAILABLE
+    without measuring what the framework does about it would be quoting rather than checking.
 
 Prints the three verdicts and a summary; exits non-zero if the host answered something else, because a
 golden file that no longer matches what the host says is a harness that has stopped being evidence.

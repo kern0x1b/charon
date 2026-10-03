@@ -9,7 +9,8 @@
 //   - both counts answer 0 for all ten SRKeyboardMetricsSentimentCategory cases,
 //   - both speech properties answer nil for a metrics object with no session,
 //   - and -[SRSensorReader init] RAISES NSInternalInconsistencyException with the message
-//     "Use initWithSensor:", which is Apple's own text and the reason that row stays absent.
+//     "Use initWithSensor:", which is Apple's own text. The port raises it too, and all eighteen
+//     classes whose headers close the pair are measured and held in tests/backports/host/unavailable-init.
 //
 // The interfaces are written here rather than imported because the imported ones are unavailable, and
 // the receiver comes from objc_getClass for the same reason. performSelector: is NOT used for the

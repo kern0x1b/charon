@@ -22,10 +22,6 @@
 @implementation MDLAnimationBindComponent
 @end
 
-// MDLMatrix4x4Array first appears at 11.0, so the class is declared here and is CALLABLE.
-@implementation MDLMatrix4x4Array
-@end
-
 // MDLPackedJointAnimation first appears at 11.0, so the class is declared here and is CALLABLE.
 @implementation MDLPackedJointAnimation
 @end
@@ -99,11 +95,6 @@
 - (id)getFloat4Array:(id)a0 maxCount:(id)a1 { return nil; }
 - (id)resetWithDouble4Array:(id)a0 atTimes:(id)a1 count:(id)a2 { return nil; }
 - (id)resetWithFloat4Array:(id)a0 atTimes:(id)a1 count:(id)a2 { return nil; }
-@end
-@implementation MDLMatrix4x4Array (CharonMissing110)
-- (id)getDouble4x4Array:(id)a0 maxCount:(id)a1 { return nil; }
-- (id)getFloat4x4Array:(id)a0 maxCount:(id)a1 { return nil; }
-- (id)setDouble4x4Array:(id)a0 count:(id)a1 { return nil; }
 @end
 @implementation MDLMesh (CharonMissing110)
 - (id)addNormalsWithAttributeNamed:(id)a0 creaseThreshold:(id)a1 { return nil; }
@@ -210,14 +201,6 @@
 - (id)getFloat4Array:(id)a0 maxCount:(id)a1 { return nil; }
 - (id)resetWithDouble4Array:(id)a0 atTimes:(id)a1 count:(id)a2 { return nil; }
 - (id)resetWithFloat4Array:(id)a0 atTimes:(id)a1 count:(id)a2 { return nil; }
-@end
-@implementation MDLMatrix4x4Array (CharonPerClass110)
-- (id)clear { return nil; }
-- (id)getDouble4x4Array:(id)a0 maxCount:(id)a1 { return nil; }
-- (id)getFloat4x4Array:(id)a0 maxCount:(id)a1 { return nil; }
-- (id)initWithElementCount:(id)a0 { return nil; }
-- (id)setDouble4x4Array:(id)a0 count:(id)a1 { return nil; }
-
 @end
 @implementation MDLMesh (CharonPerClass110)
 - (id)addNormalsWithAttributeNamed:(id)a0 creaseThreshold:(id)a1 { return nil; }

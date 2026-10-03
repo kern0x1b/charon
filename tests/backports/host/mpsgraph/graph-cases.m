@@ -28,9 +28,13 @@
 static id<MTLDevice> gDevice;
 static MPSGraphDevice *gGraphDevice;
 
-// Every matrix a case builds from a C array, and the result buffer it reads back out of.
+// Every matrix a case builds from a C array, and the result buffer it reads back out of. Sixty-four was
+// enough for the twenty-four cases this file had; there are a hundred and more now, so the table is
+// sized by the case count and not by the number of cases there were when it was written - a table one
+// entry short writes past its own end, which is a crash in the middle of a run and not a failed
+// comparison.
 typedef struct { id<MTLBuffer> buffer; void *source; size_t bytes; } Source;
-static Source gSources[64];
+static Source gSources[512];
 static NSUInteger gSourceCount;
 static void remember(id<MTLBuffer> buffer, void *source, size_t bytes)
 {
@@ -42,10 +46,17 @@ static void pullResults(void)
         if (gSources[i].buffer) memcpy(gSources[i].source, [gSources[i].buffer contents], gSources[i].bytes);
     }
 }
+// Every line of a case carries the marker "#case ", because the framework this file runs against writes
+// diagnostics of its own to the same standard output: building one of the predicates prints a warning
+// about the operand the comparison kernel was handed ("ConvertBinaryCompareToZero expects the second
+// operand to be zero", MPSGraphUtilities.mm:254), and a boolean result printed through the same stream
+// makes it print another ("ANE I/O op can only do F16 MemRef <-> F32 Tensor cast"). Those are the
+// framework talking to itself and not a case, so run.sh compares only the marked lines and the count it
+// compares is the count of cases rather than of lines of output.
 static void put(const char *name, const void *bytes, size_t length)
 {
     pullResults();
-    printf("%s %zu ", name, length);
+    printf("#case %s %zu ", name, length);
     const unsigned char *p = (const unsigned char *)bytes;
     for (size_t i = 0; i < length; i++) printf("%02x", p[i]);
     printf("\n");
@@ -86,6 +97,12 @@ static float rightValues[16] = {
 };
 static unsigned char resultBytes[64];
 static float constantValues[4] = {0.25f, -0.25f, 0.5f, 2};
+// The bounds a clamp case is asked over: a pair of ordinary values either side of zero, so that every
+// class of the operand decides which of the two it is clamped to.
+static float bounds[16] = {
+    -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
+    -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
+};
 static int32_t integerValues[4] = {7, -3, 11, 0};
 static int32_t integerDivisors[4] = {2, 2, 4, -4};
 static int32_t integerResult[4];
@@ -130,17 +147,102 @@ static struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphT
     {"subtract", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g subtractionWithPrimaryTensor:a secondaryTensor:b name:@"sub"]; }},
     {"multiply", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g multiplicationWithPrimaryTensor:a secondaryTensor:b name:@"mul"]; }},
     {"divide", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g divisionWithPrimaryTensor:a secondaryTensor:b name:@"div"]; }},
+    {"modulo", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g moduloWithPrimaryTensor:a secondaryTensor:b name:@"mod"]; }},
+    {"floorModulo", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g floorModuloWithPrimaryTensor:a secondaryTensor:b name:@"fmod"]; }},
+    {"power", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g powerWithPrimaryTensor:a secondaryTensor:b name:@"pow"]; }},
+    {"atan2", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g atan2WithPrimaryTensor:a secondaryTensor:b name:@"atan2"]; }},
+    {"divisionNoNaN", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g divisionNoNaNWithPrimaryTensor:a secondaryTensor:b name:@"divn"]; }},
+    {"minimum", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g minimumWithPrimaryTensor:a secondaryTensor:b name:@"min"]; }},
+    {"maximum", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g maximumWithPrimaryTensor:a secondaryTensor:b name:@"max"]; }},
+    {"logicalAND", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g logicalANDWithPrimaryTensor:a secondaryTensor:b name:@"and"]; }},
+    {"logicalOR", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g logicalORWithPrimaryTensor:a secondaryTensor:b name:@"or"]; }},
+    {"logicalNAND", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g logicalNANDWithPrimaryTensor:a secondaryTensor:b name:@"nand"]; }},
+    {"logicalNOR", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g logicalNORWithPrimaryTensor:a secondaryTensor:b name:@"nor"]; }},
+    {"logicalXOR", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g logicalXORWithPrimaryTensor:a secondaryTensor:b name:@"xor"]; }},
+    {"logicalXNOR", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g logicalXNORWithPrimaryTensor:a secondaryTensor:b name:@"xnor"]; }},
 };
 
-static void run(MPSGraph *graph, NSArray<MPSGraphTensor *> *feeds, NSArray<MPSGraphTensorData *> *values, MPSGraphTensor *target, void *out, size_t bytes, MPSDataType type)
+// The family of unary operations that are a rounding or a transcendental, asked over the same sixteen
+// classes as the arithmetic above: each of them is a different question of a NaN, a zero and an
+// infinity, and a case that only ever saw ordinary values would say nothing about the classes that
+// decide the answer.
+static struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *); } transcendental[] = {
+    {"expBase2", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g exponentBase2WithTensor:a name:@"e2"]; }},
+    {"expBase10", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g exponentBase10WithTensor:a name:@"e10"]; }},
+    {"logBase2", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g logarithmBase2WithTensor:a name:@"l2"]; }},
+    {"logBase10", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g logarithmBase10WithTensor:a name:@"l10"]; }},
+    {"negative", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g negativeWithTensor:a name:@"neg"]; }},
+    {"signbit", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g signbitWithTensor:a name:@"sb"]; }},
+    {"ceil", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g ceilWithTensor:a name:@"ceil"]; }},
+    {"floor", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g floorWithTensor:a name:@"floor"]; }},
+    {"round", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g roundWithTensor:a name:@"round"]; }},
+    {"rint", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g rintWithTensor:a name:@"rint"]; }},
+    {"sin", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g sinWithTensor:a name:@"sin"]; }},
+    {"cos", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g cosWithTensor:a name:@"cos"]; }},
+    {"tan", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g tanWithTensor:a name:@"tan"]; }},
+    {"sinh", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g sinhWithTensor:a name:@"sinh"]; }},
+    {"cosh", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g coshWithTensor:a name:@"cosh"]; }},
+    {"tanh", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g tanhWithTensor:a name:@"tanh"]; }},
+    {"asin", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g asinWithTensor:a name:@"asin"]; }},
+    {"acos", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g acosWithTensor:a name:@"acos"]; }},
+    {"atan", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g atanWithTensor:a name:@"atan"]; }},
+    {"asinh", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g asinhWithTensor:a name:@"asinh"]; }},
+    {"acosh", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g acoshWithTensor:a name:@"acosh"]; }},
+    {"atanh", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g atanhWithTensor:a name:@"atanh"]; }},
+    {"erf", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g erfWithTensor:a name:@"erf"]; }},
+    {"not", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g notWithTensor:a name:@"not"]; }},
+    {"reLU", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reLUWithTensor:a name:@"relu"]; }},
+    {"sigmoid", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g sigmoidWithTensor:a name:@"sig"]; }},
+};
+
+// The unary predicates, whose result is a boolean and not a number: measured on this host's own MPSGraph,
+// isNaN of a rank-3 float32 operand is MPSDataTypeBool where not of the same operand is MPSDataTypeFloat32.
+// Their results are therefore one byte an element, and the case name carries that as its own data type.
+static struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *); } unaryPredicate[] = {
+    {"isNaN", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g isNaNWithTensor:a name:@"nan"]; }},
+    {"isFinite", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g isFiniteWithTensor:a name:@"fin"]; }},
+    {"isInfinite", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g isInfiniteWithTensor:a name:@"inf"]; }},
+};
+
+// The two predicates over two operands, which are booleans on the same measurement.
+static struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *, MPSGraphTensor *); } binaryPredicate[] = {
+    {"equal", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g equalWithPrimaryTensor:a secondaryTensor:b name:@"eq"]; }},
+    {"notEqual", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g notEqualWithPrimaryTensor:a secondaryTensor:b name:@"ne"]; }},
+    {"lessThan", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g lessThanWithPrimaryTensor:a secondaryTensor:b name:@"lt"]; }},
+    {"lessThanOrEqualTo", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g lessThanOrEqualToWithPrimaryTensor:a secondaryTensor:b name:@"le"]; }},
+    {"greaterThan", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g greaterThanWithPrimaryTensor:a secondaryTensor:b name:@"gt"]; }},
+    {"greaterThanOrEqualTo", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g greaterThanOrEqualToWithPrimaryTensor:a secondaryTensor:b name:@"ge"]; }},
+};
+
+// The operations with a third operand: a select takes the predicate, the value where it is true and the
+// value where it is false, and a clamp takes the value and its two bounds. Both answer the first
+// operand's type, measured on this host's own MPSGraph.
+static struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *, MPSGraphTensor *, MPSGraphTensor *); } ternary[] = {
+    {"select", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b, MPSGraphTensor *c) { return [g selectWithPredicateTensor:a truePredicateTensor:b falsePredicateTensor:c name:@"sel"]; }},
+    {"clamp", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b, MPSGraphTensor *c) { return [g clampWithTensor:a minValueTensor:b maxValueTensor:c name:@"clamp"]; }},
+};
+
+// The two activations that take the value that was activated as well as the incoming gradient. The
+// source of a sigmoid's gradient is the sigmoid's own answer, so the third feed is what a sigmoid of the
+// left operand is, computed here in C: that is an input both sides are given, not an expectation.
+static struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *, MPSGraphTensor *); } gradient[] = {
+    {"reLUGradient", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g reLUGradientWithIncomingGradient:a sourceTensor:b name:@"drelu"]; }},
+    {"sigmoidGradient", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) { return [g sigmoidGradientWithIncomingGradient:a sourceTensor:b name:@"dsig"]; }},
+};
+
+// The data type of a feed and the data type of a result are two questions, and a predicate's are two
+// answers: the feed is the type its placeholder is, and the result is a boolean. The shaped type that
+// describes a feed is the feed's own type, and the shaped type the result is read into is the result's.
+static void run(MPSGraph *graph, NSArray<MPSGraphTensor *> *feeds, NSArray<MPSGraphTensorData *> *values,
+                MPSGraphTensor *target, void *out, size_t bytes, MPSDataType feedType, MPSDataType resultType)
 {
-    NSUInteger count = (NSUInteger)(bytes / MPSSizeofMPSDataType(type));
+    NSUInteger count = (NSUInteger)(bytes / MPSSizeofMPSDataType(resultType));
     id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
-    MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:target.shape dataType:type];
+    MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:target.shape dataType:resultType];
     remember(buffer, out, bytes);
-    MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:target.shape dataType:type];
+    MPSGraphShapedType *feedShape = [[MPSGraphShapedType alloc] initWithShape:target.shape dataType:feedType];
     NSMutableDictionary *shapedFeeds = [NSMutableDictionary dictionary];
-    for (MPSGraphTensor *tensor in feeds) shapedFeeds[tensor] = shaped;
+    for (MPSGraphTensor *tensor in feeds) shapedFeeds[tensor] = feedShape;
     MPSGraphExecutable *executable = [graph compileWithDevice:gGraphDevice feeds:shapedFeeds
                                                  targetTensors:@[target] targetOperations:@[] compilationDescriptor:nil];
     [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
@@ -158,7 +260,7 @@ static void unary_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, MP
     MPSGraphTensor *t = build(one, a);
     size_t bytes = 16 * MPSSizeofMPSDataType(type);
     memset(resultBytes, 0, sizeof(resultBytes));
-    run(one, @[a], @[feed(values, @[@4, @4], type)], t, resultBytes, bytes, type);
+    run(one, @[a], @[feed(values, @[@4, @4], type)], t, resultBytes, bytes, type, type);
     put(name, resultBytes, bytes);
 }
 
@@ -172,7 +274,49 @@ static void binary_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, M
     MPSGraphTensor *t = build(one, a, b);
     size_t bytes = 16 * MPSSizeofMPSDataType(type);
     memset(resultBytes, 0, sizeof(resultBytes));
-    run(one, @[a, b], @[feed(left, @[@4, @4], type), feed(right, @[@4, @4], type)], t, resultBytes, bytes, type);
+    run(one, @[a, b], @[feed(left, @[@4, @4], type), feed(right, @[@4, @4], type)], t, resultBytes, bytes, type, type);
+    put(name, resultBytes, bytes);
+}
+
+// A case whose result is not the operand's own type: a predicate's is a boolean, one byte an element,
+// measured on this host's own MPSGraph (MPSSizeofMPSDataType(MPSDataTypeBool) is 1). The result buffer is
+// the operand's sixteen elements in the result's type, so a byte per element is the whole of it.
+static void predicate_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *),
+                           MPSDataType operandType, const void *values)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:operandType name:@"a"];
+    MPSGraphTensor *t = build(one, a);
+    memset(resultBytes, 0, sizeof(resultBytes));
+    run(one, @[a], @[feed(values, @[@4, @4], operandType)], t, resultBytes, 16, operandType, MPSDataTypeBool);
+    put(name, resultBytes, 16);
+}
+
+static void binary_predicate_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *, MPSGraphTensor *),
+                                  MPSDataType operandType, const void *left, const void *right)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:operandType name:@"a"];
+    MPSGraphTensor *b = [one placeholderWithShape:@[@4, @4] dataType:operandType name:@"b"];
+    MPSGraphTensor *t = build(one, a, b);
+    memset(resultBytes, 0, sizeof(resultBytes));
+    run(one, @[a, b], @[feed(left, @[@4, @4], operandType), feed(right, @[@4, @4], operandType)], t, resultBytes, 16, operandType, MPSDataTypeBool);
+    put(name, resultBytes, 16);
+}
+
+// A case with three operands, which the select and the clamp are.
+static void ternary_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *, MPSGraphTensor *, MPSGraphTensor *),
+                         MPSDataType type, const void *first, const void *second, const void *third)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:type name:@"a"];
+    MPSGraphTensor *b = [one placeholderWithShape:@[@4, @4] dataType:type name:@"b"];
+    MPSGraphTensor *c = [one placeholderWithShape:@[@4, @4] dataType:type name:@"c"];
+    MPSGraphTensor *t = build(one, a, b, c);
+    size_t bytes = 16 * MPSSizeofMPSDataType(type);
+    memset(resultBytes, 0, sizeof(resultBytes));
+    run(one, @[a, b, c], @[feed(first, @[@4, @4], type), feed(second, @[@4, @4], type),
+                          feed(third, @[@4, @4], type)], t, resultBytes, bytes, type, type);
     put(name, resultBytes, bytes);
 }
 
@@ -184,14 +328,49 @@ static void families(MPSDataType type, const void *left, const void *right, cons
         snprintf(name, sizeof name, "%s %s", unary[i].name, label);
         unary_case(name, unary[i].build, type, left);
     }
+    for (i = 0; i < sizeof(transcendental) / sizeof(transcendental[0]); i++) {
+        snprintf(name, sizeof name, "%s %s", transcendental[i].name, label);
+        unary_case(name, transcendental[i].build, type, left);
+    }
     for (i = 0; i < sizeof(binary) / sizeof(binary[0]); i++) {
         snprintf(name, sizeof name, "%s %s", binary[i].name, label);
         binary_case(name, binary[i].build, type, left, right);
+    }
+    // The predicates carry their own data type in the case name, because their result is not the
+    // operand's: "equal bool-from-float32" is a boolean over the float32 classes above.
+    for (i = 0; i < sizeof(unaryPredicate) / sizeof(unaryPredicate[0]); i++) {
+        snprintf(name, sizeof name, "%s bool-from-%s", unaryPredicate[i].name, label);
+        predicate_case(name, unaryPredicate[i].build, type, left);
+    }
+    for (i = 0; i < sizeof(binaryPredicate) / sizeof(binaryPredicate[0]); i++) {
+        snprintf(name, sizeof name, "%s bool-from-%s", binaryPredicate[i].name, label);
+        binary_predicate_case(name, binaryPredicate[i].build, type, left, right);
+    }
+    // The select and the clamp read a third operand, and the bounds of a clamp are a third tensor of the
+    // operand's own shape here: a clamp over the classes above with the bounds at -0.5 and 0.5 answers
+    // something for every class, and a select over the left operand as the predicate answers the right
+    // operand where the class is true and the third where it is false.
+    snprintf(name, sizeof name, "select %s", label);
+    ternary_case(name, ternary[0].build, type, left, right, right);
+    snprintf(name, sizeof name, "clamp %s", label);
+    ternary_case(name, ternary[1].build, type, left, bounds, bounds);
+    // The two gradients read the incoming gradient and the value that was activated, in that order, so
+    // the class vectors are given as both operands: a ReLU's branch is decided by the source and a
+    // sigmoid's by the source's own value, and every class of the second vector decides one of them.
+    for (i = 0; i < sizeof(gradient) / sizeof(gradient[0]); i++) {
+        snprintf(name, sizeof name, "%s %s", gradient[i].name, label);
+        binary_case(name, gradient[i].build, type, left, right);
     }
 }
 
 int main(void)
 {
+    // Line buffering, and it is what makes the comparison trustworthy: the framework this file runs
+    // against writes its own diagnostics to this same standard output, and with a block-buffered stream
+    // one of them landed in the middle of a case line - a flush boundary split a line of sixteen halves
+    // and "subtract float16" ended up carrying the tail of a warning and sixteen characters less. A line
+    // buffered stream hands the whole line to one write, so a case is one line or nothing.
+    setvbuf(stdout, NULL, _IOLBF, 0);
     @autoreleasepool {
         gDevice = MTLCreateSystemDefaultDevice();
         gGraphDevice = [MPSGraphDevice deviceWithMTLDevice:gDevice];
@@ -217,7 +396,7 @@ int main(void)
             MPSGraphTensor *t = [one divisionWithPrimaryTensor:a secondaryTensor:b name:@"idiv"];
             memset(integerResult, 0, sizeof(integerResult));
             run(one, @[a, b], @[feed(&integerValues[0], @[@2, @2], MPSDataTypeInt32),
-                                feed(&integerDivisors[0], @[@2, @2], MPSDataTypeInt32)], t, &integerResult[0], sizeof(integerResult), MPSDataTypeInt32);
+                                feed(&integerDivisors[0], @[@2, @2], MPSDataTypeInt32)], t, &integerResult[0], sizeof(integerResult), MPSDataTypeInt32, MPSDataTypeInt32);
             put("integer-divide", &integerResult[0], sizeof(integerResult));
         }
         // A chain, so the walk over the operations in order is checked too.
@@ -229,7 +408,7 @@ int main(void)
             MPSGraphTensor *doubled = [one multiplicationWithPrimaryTensor:sum secondaryTensor:sum name:@"doubled"];
             MPSGraphTensor *root = [one squareRootWithTensor:doubled name:@"root"];
             memset(resultBytes, 0, sizeof(resultBytes));
-            run(one, @[a, b], @[feed(&leftValues[0], @[@4, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@4, @4], MPSDataTypeFloat32)], root, resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32);
+            run(one, @[a, b], @[feed(&leftValues[0], @[@4, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@4, @4], MPSDataTypeFloat32)], root, resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
             put("chain", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
         }
         // Last, and on its own: -constantWithShape:dataType:values:name: aborts the host of this
@@ -242,7 +421,7 @@ int main(void)
                                              values:[NSData dataWithBytes:&constantValues[0] length:sizeof(constantValues)] name:@"c"];
             MPSGraphTensor *t = [one additionWithPrimaryTensor:a secondaryTensor:c name:@"withConstant"];
             memset(resultBytes, 0, sizeof(resultBytes));
-            run(one, @[a], @[feed(&leftValues[0], @[@4, @4], MPSDataTypeFloat32)], t, resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32);
+            run(one, @[a], @[feed(&leftValues[0], @[@4, @4], MPSDataTypeFloat32)], t, resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
             put("constant", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
         }
 

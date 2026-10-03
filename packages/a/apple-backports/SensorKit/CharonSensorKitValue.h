@@ -75,4 +75,55 @@ CHARON_DECLARE_SENSORKIT_VALUE_CLASS(SRWristTemperatureSession)
         else [CharonValueStore(self) removeObjectForKey:key];                             \
     }
 
+// -init and +new, the pair the 26.2 headers of these classes close: every one of the eighteen
+// declares `- (instancetype)init NS_UNAVAILABLE;` and `+ (instancetype)new NS_UNAVAILABLE;`
+// immediately before its @end - SRSleepSession.h:17 and :18, SRDeviceUsageCategories.h:67 and :68
+// for the two the corpus dates at 16.4, and the same two lines in each of the other sixteen headers.
+//
+// NS_UNAVAILABLE is a promise about source and adds nothing at run time, so what the framework does
+// with the pair is a separate question and it has two answers, not one. Measured on the host's own
+// SensorKit over all eighteen classes, in tests/backports/host/sensorkit-value/host-answers.m:
+//
+//   - fourteen classes implement BOTH, and both raise NSInternalInconsistencyException. The reason
+//     string differs per class and is carried here as it was measured: "Not available" for the four
+//     that have no other door (SRFaceMetrics, SRFaceMetricsExpression, SRFetchResult and
+//     SRSupplementalCategory), "Use initWithSensor:" for SRSensorReader, which has one, and the empty
+//     string for the other nine.
+//   - four classes implement NEITHER - SRAcousticSettings, SRSleepSession, and the two
+//     photoplethysmogram samples that are channels of the sample their parent already guards - so a
+//     caller that reaches the pair reaches NSObject's and gets a new empty value object.
+//
+// The pair is carried either way, and that is the reason these two macros exist rather than the
+// inheritance being left to speak: a corpus row asks whether the SELECTOR is in the class's own
+// method list, and an inherited selector is in no class's list, so the row reads missing against a
+// class that answers it at run time. The second macro's body is what this port already answered with;
+// the first carries NSObject's own, spelled out, which is what the four classes reach there.
+
+// The four whose own class carries neither: NSObject's pair, in NSObject's own words.
+#define CHARON_SENSORKIT_INHERITED_NEW_AND_INIT                                          \
+    -(instancetype)init                                                                   \
+    {                                                                                    \
+        return [super init];                                                             \
+    }                                                                                    \
+                                                                                         \
+    +(instancetype)new                                                                   \
+    {                                                                                    \
+        return [[self alloc] init];                                                      \
+    }
+
+// The fourteen that refuse. `reason_text` is the host's own reason string for that class, which is
+// what the exception carries: the name is NSInternalInconsistencyException for all fourteen, and
+// +new is +alloc/-init, so the one raise answers both rows.
+#define CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(reason_text)                           \
+    -(instancetype)init                                                                   \
+    {                                                                                    \
+        [NSException raise:NSInternalInconsistencyException format:reason_text];          \
+        return nil;                                                                      \
+    }                                                                                    \
+                                                                                         \
+    +(instancetype)new                                                                   \
+    {                                                                                    \
+        return [[self alloc] init];                                                      \
+    }
+
 #endif

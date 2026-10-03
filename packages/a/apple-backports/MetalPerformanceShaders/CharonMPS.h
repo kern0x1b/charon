@@ -146,6 +146,11 @@ static inline double CharonMPSLoad(const void *bytes, MPSDataType type, size_t i
         return (double)((const uint16_t *)bytes)[index];
     case MPSDataTypeUInt32:
         return (double)((const uint32_t *)bytes)[index];
+    // A boolean is one byte, measured: MPSSizeofMPSDataType(MPSDataTypeBool) is 1 on this host, and
+    // MPSDataTypeBool is MPSDataTypeAlternateEncodingBit | 8 (MPSCoreTypes.h:260), so the alternate
+    // encoding's eight bits are a byte and not a bit.
+    case MPSDataTypeBool:
+        return (double)((const uint8_t *)bytes)[index];
     default:
         return 0.0;
     }
@@ -198,6 +203,10 @@ static inline void CharonMPSStoreRounded(void *bytes, MPSDataType type, size_t i
         break;
     case MPSDataTypeUInt32:
         ((uint32_t *)bytes)[index] = (uint32_t)value;
+        break;
+    // The alternate encoding a comparison answers, one byte per element: see CharonMPSLoad.
+    case MPSDataTypeBool:
+        ((uint8_t *)bytes)[index] = value != 0.0 ? 1 : 0;
         break;
     default:
         break;

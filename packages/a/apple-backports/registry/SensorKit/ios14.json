@@ -1077,10 +1077,10 @@
       "introduced": "26.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRAcousticSettings.h:260 and the framework's own class implements NEITHER selector, so a caller that reaches them reaches NSObject's - measured the same way, and the two selectors are carried here in NSObject's own words so that the class's own method list holds them rather than leaving the row to an inherited implementation",
+      "effect": "-init is NSObject's own and +new is +alloc/-init, so a caller gets a new empty value object, which is the true state of a reading nobody has put a value into",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRAcousticSettings.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRAudioLevel new]",
@@ -1088,10 +1088,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRSpeechMetrics.h:85, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRElectrocardiogramData new]",
@@ -1099,10 +1099,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRElectrocardiogramSample.h:43, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRElectrocardiogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRElectrocardiogramSample new]",
@@ -1110,10 +1110,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRElectrocardiogramSample.h:69, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRElectrocardiogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRElectrocardiogramSession new]",
@@ -1121,10 +1121,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRElectrocardiogramSession.h:47, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRElectrocardiogramSession.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRFaceMetrics new]",
@@ -1132,10 +1132,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRFaceMetrics.h:46, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with the reason \"Not available\" - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException with the reason \"Not available\", and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRFaceMetrics.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRFaceMetricsExpression new]",
@@ -1143,10 +1143,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRFaceMetrics.h:26, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with the reason \"Not available\" - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException with the reason \"Not available\", and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRFaceMetrics.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRFetchResult new]",
@@ -1154,10 +1154,10 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRFetchResult.h:28, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with the reason \"Not available\" - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException with the reason \"Not available\", and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRFetchResult.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors; and iOS 16.0's own cache carries -init in the class's own list and inherits +new, which reaches the same -init and raises the same exception"
     },
     {
       "api": "+[SRPhotoplethysmogramAccelerometerSample new]",
@@ -1165,10 +1165,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRPhotoplethysmogramSample.h:158 and the framework's own class implements NEITHER selector, so a caller that reaches them reaches NSObject's - measured the same way, and the two selectors are carried here in NSObject's own words so that the class's own method list holds them rather than leaving the row to an inherited implementation",
+      "effect": "-init is NSObject's own and +new is +alloc/-init, so a caller gets a new empty value object, which is the true state of a reading nobody has put a value into",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRPhotoplethysmogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRPhotoplethysmogramOpticalSample new]",
@@ -1176,10 +1176,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRPhotoplethysmogramSample.h:20 and the framework's own class implements NEITHER selector, so a caller that reaches them reaches NSObject's - measured the same way, and the two selectors are carried here in NSObject's own words so that the class's own method list holds them rather than leaving the row to an inherited implementation",
+      "effect": "-init is NSObject's own and +new is +alloc/-init, so a caller gets a new empty value object, which is the true state of a reading nobody has put a value into",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRPhotoplethysmogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRPhotoplethysmogramSample new]",
@@ -1187,10 +1187,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRPhotoplethysmogramSample.h:247, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRPhotoplethysmogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRSensorReader new]",
@@ -1198,10 +1198,10 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRSensorReader.h:98, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with the reason \"Use initWithSensor:\" - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException with the reason \"Use initWithSensor:\", and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors; and iOS 16.0's own cache carries -init and +new in the class's own lists"
     },
     {
       "api": "+[SRSensorReader requestAuthorizationForSensors:completion:]",
@@ -1220,10 +1220,10 @@
       "introduced": "26.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRSleepSession.h:16 and the framework's own class implements NEITHER selector, so a caller that reaches them reaches NSObject's - measured the same way, and the two selectors are carried here in NSObject's own words so that the class's own method list holds them rather than leaving the row to an inherited implementation",
+      "effect": "-init is NSObject's own and +new is +alloc/-init, so a caller gets a new empty value object, which is the true state of a reading nobody has put a value into",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRSleepSession.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRSpeechExpression new]",
@@ -1231,10 +1231,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRSpeechMetrics.h:19, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRSpeechMetrics new]",
@@ -1242,10 +1242,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRSpeechMetrics.h:122, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRSupplementalCategory new]",
@@ -1253,10 +1253,10 @@
       "introduced": "16.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRDeviceUsageCategories.h:67, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with the reason \"Not available\" - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException with the reason \"Not available\", and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRDeviceUsageCategories.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRWristTemperature new]",
@@ -1264,10 +1264,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRWristTemperature.h:35, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRWristTemperature.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "+[SRWristTemperatureSession new]",
@@ -1275,10 +1275,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a message of the reader or of its delegate's shape, and the port sends it or answers it",
-      "effect": "the reader answers what the SDK documents for a device with no permission - denied, every fetch refused with SensorKit's own SRErrorDataInaccessible, and an authorization request whose completion is RUN with that error rather than left waiting",
+      "reason": "the header closes it at SRWristTemperatureSession.h:17, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRWristTemperatureSession.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[NSDate initWithSRAbsoluteTime:]",
@@ -1307,10 +1307,10 @@
       "introduced": "26.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRAcousticSettings.h:260 and the framework's own class implements NEITHER selector, so a caller that reaches them reaches NSObject's - measured the same way, and the two selectors are carried here in NSObject's own words so that the class's own method list holds them rather than leaving the row to an inherited implementation",
+      "effect": "-init is NSObject's own and +new is +alloc/-init, so a caller gets a new empty value object, which is the true state of a reading nobody has put a value into",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRAcousticSettings.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRAudioLevel init]",
@@ -1318,10 +1318,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRSpeechMetrics.h:85, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRElectrocardiogramData init]",
@@ -1329,10 +1329,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRElectrocardiogramSample.h:43, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRElectrocardiogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRElectrocardiogramSample init]",
@@ -1340,10 +1340,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRElectrocardiogramSample.h:69, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRElectrocardiogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRElectrocardiogramSession init]",
@@ -1351,10 +1351,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRElectrocardiogramSession.h:47, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRElectrocardiogramSession.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRFaceMetrics init]",
@@ -1362,10 +1362,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRFaceMetrics.h:46, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with the reason \"Not available\" - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException with the reason \"Not available\", and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRFaceMetrics.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRFaceMetricsExpression init]",
@@ -1373,10 +1373,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRFaceMetrics.h:26, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with the reason \"Not available\" - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException with the reason \"Not available\", and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRFaceMetrics.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRFetchResult init]",
@@ -1384,10 +1384,10 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRFetchResult.h:28, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with the reason \"Not available\" - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException with the reason \"Not available\", and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRFetchResult.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors; and iOS 16.0's own cache carries -init in the class's own list and inherits +new, which reaches the same -init and raises the same exception"
     },
     {
       "api": "-[SRKeyboardMetrics emojiCountForSentimentCategory:]",
@@ -1417,10 +1417,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRPhotoplethysmogramSample.h:158 and the framework's own class implements NEITHER selector, so a caller that reaches them reaches NSObject's - measured the same way, and the two selectors are carried here in NSObject's own words so that the class's own method list holds them rather than leaving the row to an inherited implementation",
+      "effect": "-init is NSObject's own and +new is +alloc/-init, so a caller gets a new empty value object, which is the true state of a reading nobody has put a value into",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRPhotoplethysmogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRPhotoplethysmogramOpticalSample init]",
@@ -1428,10 +1428,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRPhotoplethysmogramSample.h:20 and the framework's own class implements NEITHER selector, so a caller that reaches them reaches NSObject's - measured the same way, and the two selectors are carried here in NSObject's own words so that the class's own method list holds them rather than leaving the row to an inherited implementation",
+      "effect": "-init is NSObject's own and +new is +alloc/-init, so a caller gets a new empty value object, which is the true state of a reading nobody has put a value into",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRPhotoplethysmogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRPhotoplethysmogramSample init]",
@@ -1439,10 +1439,10 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRPhotoplethysmogramSample.h:247, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRPhotoplethysmogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRSensorReader fetch:]",
@@ -1482,10 +1482,11 @@
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "absent is a claim about the RELEASE, and the release carries no SensorKit at all: binary_inventory at modules/apple/objc.lua:395 over the armv7 6.1.3 cache finds no SR* class and no SR* symbol, so nothing the release has answers this name. Independently, SRSensorReader.h:53 marks it NS_UNAVAILABLE, so it is not API a caller writes",
-      "effect": "not carried, and the port implements no -init, so the class inherits NSObject's and a call produces a reader with NO SENSOR IN IT and raises nothing. That is precisely what SRSensorReader.h:53 forbids by marking it NS_UNAVAILABLE. It stays absent rather than becoming an implementation that raises because +[SRSensorReader new] is already implemented in this file and +new calls -init, so a raising -init would change what that row answers. The host's own answer is on record and is Apple's own text - NSInternalInconsistencyException, \"Use initWithSensor:\" - read by tests/backports/host/sensorkit-value",
-      "source": "modules/apple/objc.lua for the release's inventory; SRSensorReader.h of SDK 26.2 for the declaration; the host's SensorKit.framework for what -init raises, read by tests/backports/host/sensorkit-value"
+      "status": "implemented",
+      "reason": "the header closes it at SRSensorReader.h:98, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with the reason \"Use initWithSensor:\" - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException with the reason \"Use initWithSensor:\", and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors; and iOS 16.0's own cache carries -init and +new in the class's own lists",
+      "facts": "facts/SensorKit/SensorKit.md"
     },
     {
       "api": "-[SRSensorReader startRecording]",
@@ -1636,10 +1637,10 @@
       "introduced": "26.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRSleepSession.h:16 and the framework's own class implements NEITHER selector, so a caller that reaches them reaches NSObject's - measured the same way, and the two selectors are carried here in NSObject's own words so that the class's own method list holds them rather than leaving the row to an inherited implementation",
+      "effect": "-init is NSObject's own and +new is +alloc/-init, so a caller gets a new empty value object, which is the true state of a reading nobody has put a value into",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRSleepSession.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRSpeechExpression init]",
@@ -1647,10 +1648,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRSpeechMetrics.h:19, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRSpeechMetrics init]",
@@ -1658,10 +1659,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRSpeechMetrics.h:122, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRSupplementalCategory init]",
@@ -1669,10 +1670,10 @@
       "introduced": "16.4",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRDeviceUsageCategories.h:67, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with the reason \"Not available\" - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException with the reason \"Not available\", and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRDeviceUsageCategories.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRWristTemperature init]",
@@ -1680,10 +1681,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRWristTemperature.h:35, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRWristTemperature.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "-[SRWristTemperatureSession init]",
@@ -1691,10 +1692,10 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header marks neither of these unavailable, and an object needs no initialiser of its own: NSObject's +new is alloc and -init, and the class inherits them, so a value class is made exactly the way the SDK's is",
-      "effect": "answered by NSObject's own: +new allocates and sends -init, and a fresh value object is empty, which is the true state of a reading nobody has put a value into",
+      "reason": "the header closes it at SRWristTemperatureSession.h:17, and NS_UNAVAILABLE is a promise about source that decides nothing at run time, so what the framework's own class does is the question: it implements -init and raises NSInternalInconsistencyException with a reason of zero length - measured over all eighteen classes whose headers close the pair, on the host's own SensorKit.framework, and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises NSInternalInconsistencyException, and +new is +alloc/-init, so both rows raise what the framework raises; nothing in the port creates one of these classes any other way, and a copy of one goes through the class's own door rather than through -init",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "source": "SRWristTemperatureSession.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the compiled armv7 objects for the two selectors"
     },
     {
       "api": "NSDate.srAbsoluteTime",
@@ -4256,6 +4257,28 @@
       "effect": "kept and read back, and archived with the rest; it reads nil until something puts a value there, because on this release nothing samples the sensor - the 6.1.3 cache carries no SensorKit symbol at all",
       "facts": "facts/SensorKit/SensorKit.md",
       "source": "the headers of SensorKit.framework in SDK 26.2; the release's armv7 6.1.3 cache, which has no SR* symbol"
+    },
+    {
+      "api": "-[SRFetchResult initWithCharonValues:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the door this class keeps for itself, because its own framework refuses -init and -copyWithZone: still has to hand back a new object",
+      "effect": "makes a new object of the class holding the store it is given, each held value that conforms to NSCopying copied, and is called only by -copyWithZone:",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "this package's own file, CharonValueStore.h's CHARON_VALUE_COPY_INITIALISER, shared by the two classes whose -copyWithZone: cannot go through -init"
+    },
+    {
+      "api": "-[SRSupplementalCategory initWithCharonValues:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the door this class keeps for itself, because its own framework refuses -init and -copyWithZone: still has to hand back a new object",
+      "effect": "makes a new object of the class holding the store it is given, each held value that conforms to NSCopying copied, and is called only by -copyWithZone:",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "this package's own file, CharonValueStore.h's CHARON_VALUE_COPY_INITIALISER, shared by the two classes whose -copyWithZone: cannot go through -init"
     }
   ]
 }

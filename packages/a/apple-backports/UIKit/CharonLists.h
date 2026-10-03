@@ -44,9 +44,30 @@ typedef NS_ENUM(NSInteger, CharonSemanticColor) {
 
 UIColor *charon_semantic_color(CharonSemanticColor which);
 NSString *charon_elided_text(NSString *text);
-CGFloat charon_pixel_ceil(CGFloat value, CGFloat scale);
-CGFloat charon_pixel_round(CGFloat value, CGFloat scale);
-CGFloat charon_screen_scale(void);
+// These three are `static inline` in the header and not functions in CharonLists.m, and that is a
+// deliberate change: a C function a file that DEFINES A CLASS calls has to be linked from a file that
+// exports no API symbol of its own, because a file whose exports a band's release already has is left
+// out of that band and the call is then undefined symbols in exactly those bands (AGENTS.md, "A C
+// function shared between backport files").  UIListContentView.m, UICellAccessory.m and
+// UICollectionViewListCell.m already called all three, and a host differential that compiles one of them
+// with its own sources alone - tests/backports/host/uikit2/run.sh's group dispatcher - could not link them
+// at all.  `static inline` gives every translation unit its own copy and no cross-file symbol to miss.
+// The bodies are the ones CharonLists.m had, unchanged.
+static inline CGFloat charon_screen_scale(void)
+{
+    CGFloat scale = [UIScreen mainScreen].scale;
+    return scale > 0 ? scale : 1;
+}
+
+static inline CGFloat charon_pixel_ceil(CGFloat value, CGFloat scale)
+{
+    return ceil(value * scale - 0.0001) / scale;
+}
+
+static inline CGFloat charon_pixel_round(CGFloat value, CGFloat scale)
+{
+    return round(value * scale) / scale;
+}
 UIFont *charon_medium_font(CGFloat pointSize);
 UIFont *charon_medium_body_font(void);
 
