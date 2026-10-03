@@ -1,37 +1,63 @@
-# The two 11.0 sample-buffer render classes: the substrate is there, and the oracle is not on this machine
+# The two 11.0 sample-buffer render classes: one cannot be timed on 6.1.3, the other can be built
 
 Two rows of `registry/AVFoundation/absent_AVFoundation.json`, `AVSampleBufferAudioRenderer` and
 `AVSampleBufferRenderSynchronizer`, plus the protocol `AVQueuedSampleBufferRendering` named in
-`Release11.md`. They stay `absent` and this page says what is measured, because what the row's `reason`
-implied - that no 6.x buffer path can time a `CMSampleBuffer` - is wrong, and the correction matters more
-than the row's status does.
+`Release11.md`. Both stay `absent`. What changed is that each row's reason is now a measurement instead of
+an impression, and the two point in OPPOSITE directions: the renderer is a wall, the synchronizer is not.
 
-## The substrate is on 6.1.3, measured from the images' own export tries
+## The renderer: a wall, and the wall is the queue
 
-`xmake l tools/image-exports.lua 6.1.3 armv7 <image> <substring>`, which reads each image's export trie
-rather than searching the cache's strings:
+`AVSampleBufferAudioRenderer` must play a buffer "at sampleBuffer's output presentation timestamp, as
+interpreted by the timebase" (`AVQueuedSampleBufferRendering.h:60`). 6.1.3's AudioQueue cannot do that, and
+the three places that could have said otherwise all say the same thing:
 
-| symbol | image | on 6.1.3 armv7 |
-| --- | --- | --- |
-| `_AudioQueueNewOutput`, `_AudioQueueAllocateBuffer`, `_AudioQueueEnqueueBuffer`, `_AudioQueueDispose`, `_AudioQueueStart`, `_AudioQueueStop`, `_AudioQueueSetProperty`, `_AudioQueueGetProperty` | AudioToolbox | **all exported** (337 exports, 43 matching `AudioQueue`) |
-| `_CMTimebaseCreate`, `_CMTimebaseSetTime`, `_CMTimebaseGetTime`, `_CMTimebaseSetRate` | CoreMedia | **all exported** (1819 exports, 62 matching `Timebase`) |
-| `_CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer` | CoreMedia | **exported** (2 matching `AudioBufferList`) |
+- **`AudioQueueBuffer` has no time field.** Its members are `mAudioDataBytesCapacity`, `mAudioData`,
+  `mAudioDataByteSize`, `mUserData`, `mPacketDescriptionCapacity`, `mPacketDescriptions` and
+  `mPacketDescriptionCount` - read from the SDK header the release's own AudioToolbox is built against.
+- **`AudioStreamPacketDescription` has three fields and none is a time**: `mStartOffset`,
+  `mVariableFramesInPacket`, `mDataByteSize`.
+- **Of the 43 exports matching `AudioQueue` in 6.1.3's AudioToolbox, the three time members all READ a
+  time**: `_AudioQueueGetCurrentTime`, `_AudioQueueDeviceGetNearestStartTime`,
+  `_AudioQueueDeviceTranslateTime`. Not one of them schedules a buffer at one, and there is no
+  `AudioQueueEnqueueBufferAtTime` among the 43.
 
-So everything a renderer of this shape needs is the release's own: an output queue to push buffers
-through, a timebase to push them at a rate, and a way to get the audio out of a `CMSampleBuffer`. The two
-class names themselves are nowhere near 6.1.3 - 0 hits for `AVSampleBufferAudioRenderer`,
-`AVSampleBufferRenderSynchronizer` and `AVSampleBufferAudioRendererInternal` in the release's own
-113 981-name selector set - which is what the row's `status` says and is not in dispute.
+A queue that can only play from now cannot honour a timestamp, so this class is not carried, and its row
+now says exactly that instead of saying the release has no renderer. The release's own way to push
+buffers at a rate - `AVAudioEngine` with `AVAudioPlayerNode` and `AVAudioPCMBuffer`, which the port
+already carries - takes an `AVAudioPCMBuffer`, not a `CMSampleBuffer`.
 
-**What this changes.** `COORDINATION.md` section 2: "`absent` for a **strong-imported class symbol is
-forbidden** - that is not a missing feature, that is dyld killing the application at launch." These two
-are class symbols an app can strong-import, so on a release where the port does not carry them an app that
-names them does not launch. They are the port's debt and they are landable; the measurement above is what
-says so.
+## The synchronizer: NOT a wall, and here is the two-step that builds its clock
 
-**What this does not change.** They are still `absent` here, because nobody has written them, and a row
-whose status says `implemented` with nothing built is the failure mode the registry check exists to catch.
-The `reason` is corrected to stop claiming there is no path, and the debt is written down.
+This is the correction, and it is the one that matters for what a next session does. The plain
+`_CMTimebaseCreate` is **not** exported by 6.1.3's CoreMedia. The two-step form is:
+
+    CMTimebaseCreateWithMasterClock(kCFAllocatorDefault, CMClockGetHostTimeClock(), &timebase)
+
+and **both halves are exported on this release**, read from CoreMedia's own export trie
+(1819 exports, 62 matching `Timebase`):
+
+| symbol | on 6.1.3 armv7 |
+| --- | --- |
+| `_CMTimebaseCreate` | **0** |
+| `_CMTimebaseCreateWithMasterClock` | 1 |
+| `_CMClockGetHostTimeClock` | 1 |
+| `_CMTimebaseAddTimer`, `_CMTimebaseRemoveTimer` | 1 each |
+| `_CMTimebaseSetTime`, `_CMTimebaseGetTime`, `_CMTimebaseGetTimeAndRate` | 1 each |
+| `_CMTimebaseSetRate`, `_CMTimebaseGetRate` | 1 each |
+| `_CMTimebaseDispose` | 1 |
+| `_FigTimebaseCreateWithMasterClock`, `_FigClockRetain` | 1 each - the pre-4.0 spellings, private, and not to be used |
+
+So every member `AVSampleBufferRenderSynchronizer` declares - `-timebase`, `-rate`/`-setRate:`,
+`-setRate:time:`, `-currentTime`, `-addPeriodicTimeObserverForInterval:queue:usingBlock:`,
+`-addBoundaryTimeObserverForTimes:queue:usingBlock:`, `-removeTimeObserver:` - is one `CMTimebase`
+operation the release exports, and the clock itself is two exported calls. This class is the port's debt
+and it is buildable, which is what the earlier reading of the row got wrong.
+
+**What it is worth on 6.1.3, measured**: the release's own `AVSampleBufferDisplayLayer` carries
+`-enqueueSampleBuffer:` and `-flush` (first-rung 6.0, and the port carries the class in
+`AVFoundation/AVSampleBufferDisplayLayer8.m`), so a client puts the RELEASE'S display layer on this clock
+and gets video frames timed against audio it plays itself. Without the renderer there is no CMSampleBuffer
+sink, so the synchronizer's other end is the display layer and not this pair.
 
 ## The oracle the coordinator pointed at is not available on this machine
 

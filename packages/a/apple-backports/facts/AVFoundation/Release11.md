@@ -239,11 +239,17 @@ capability the release cannot have, carried as the truthful constant.
   `_AudioQueueAllocateBuffer`, `_AudioQueueEnqueueBuffer` and `_AudioQueueFlush`, `CoreMedia`
   exports `_CMTimebaseCreate`, `_CMTimebaseSetTime` and `_CMTimebaseGetTime`, and
   `_CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer` is there to get the audio out of a
-  sample buffer. So these three rows are the port's own debt and not a wall, they are class symbols
-  and `absent` for a strong-imported one is what COORDINATION.md section 2 forbids, and what is left
-  to write is in [`SampleBufferRender11.md`](SampleBufferRender11.md) - which also records that this
-  machine's own AVFoundation cannot be the oracle for them, because its SDK no longer declares the
-  11.0 API and its class carries 51 own instance methods of a later surface.
+  sample buffer. Measured further, the three rows split: **`AVSampleBufferAudioRenderer` is a wall**,
+  because `AudioQueueBuffer` has no time field and `AudioStreamPacketDescription` has none either, so
+  6.1.3's queue can only play from now and cannot honour a buffer's timestamp - while
+  **`AVSampleBufferRenderSynchronizer` is not**, because
+  `CMTimebaseCreateWithMasterClock(kCFAllocatorDefault, CMClockGetHostTimeClock(), &timebase)` is two
+  exported calls on this release and every member the synchronizer declares is a `CMTimebase` operation
+  beside it. The renderer stays absent; the synchronizer is buildable debt. Both rows' reasons now carry
+  their own measurement and [`SampleBufferRender11.md`](SampleBufferRender11.md) has the numbers, the
+  two-step that builds the clock, and the note that this machine's own AVFoundation cannot be the
+  oracle for either class - its SDK no longer declares the 11.0 API and the class there carries 51 own
+  instance methods of a later surface.
 - `AVCapturePhoto`: 6.1.3 captures a still through `AVCaptureStillImageOutput` and delivers a
   `CMSampleBufferRef` (`captureStillImageAsynchronouslyFromConnection:completionHandler:`,
   `availableImageDataCodecTypes`, `imageDataFormatType`, `previewImageSize`). There is no photo
