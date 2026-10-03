@@ -462,7 +462,6 @@ for key in \
     initoutline.class \
     initoutline.dest \
     initoutline.root \
-    initoutline.root \
     outline-collapsed.pdf.outline.label \
     outline-collapsed.pdf.outline.children \
     outline-collapsed.pdf.outline.isOpen \
@@ -533,6 +532,17 @@ for key in \
     button-ap-states.pdf.page0.annotation4.state.onName \
     button-as-alone.pdf.page0.annotation0.state.onName \
     widget-flags.pdf.page0.annotation0.state.onName \
+    button-as-and-v.pdf.page0.annotation1.state.on \
+    button-as-and-v.pdf.page0.annotation2.state.on \
+    button-asoff-von.pdf.page0.annotation0.state.on \
+    button-asoff-von.pdf.page0.annotation3.state.on \
+    button-v-only.pdf.page0.annotation3.state.on \
+    button-v-only.pdf.page0.annotation2.state.on \
+    button-ap-states.pdf.page0.annotation1.state.on \
+    button-ap-states.pdf.page0.annotation3.state.on \
+    button-ap-states.pdf.page0.annotation4.state.on \
+    text-as.pdf.page0.annotation3.state.on \
+    button-merged-vyes-asyes.pdf.page0.annotation0.state.on \
     cgfixture-lines2.pdf.page0.string \
     cgfixture-lines2.pdf.page0.numberOfCharacters \
     cgfixture-words.pdf.page0.string \

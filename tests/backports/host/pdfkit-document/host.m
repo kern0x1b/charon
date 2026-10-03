@@ -158,6 +158,7 @@ static void printAnnotationFlagFacts(const char *prefix, PDFAnnotation *annotati
     // -buttonWidgetStateString is compared on EVERY annotation: it is the /AP /N on-state name, or "Yes"
     // when there is no /AP, and the harness's button-ap-states.pdf is what tells those apart.
     printf("%s.state.onName=%s\n", prefix, annotation.buttonWidgetStateString.UTF8String ?: "(nil)");
+    printf("%s.state.on=%ld\n", prefix, (long)annotation.buttonWidgetState);
 }
 
 // ---- the action family and PDFDestination -------------------------------------------------------

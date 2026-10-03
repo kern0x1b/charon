@@ -2,8 +2,12 @@
 
 ## What is here
 
-Nine of the 38 members `PDFAnnotation (PDFAnnotationUtilities)` declares, and they are the nine that are
-**`/Ff` bit reads**. Every one is measured on the host over `widget-flags.pdf`, which carries **one
+`PDFAnnotation (PDFAnnotationUtilities)` declares 38 members. `annotation11.json` carries **36 rows, 11
+implemented and 25 inert** for the batch whose keys are known and whose absent answer is measurable. The
+eleven implemented are the nine **`/Ff` bit reads**, plus `-buttonWidgetStateString` and
+`-buttonWidgetState`. (The 38 is the category's total; `PDFAnnotation.destination` landed with the action
+family as the 37th, and the 36th of the remainder is `-drawWithBox:inContext:`, which belongs to the draw
+family.) Every one is measured on the host over `widget-flags.pdf`, which carries **one
 annotation per bit with only that bit set** - thirteen bits, thirteen annotations - plus
 `widget-allflags.pdf`, which carries every bit at once. That shape is the whole reason these are
 measurable: a fixture with all the bits set answers every member YES and proves nothing.
@@ -153,17 +157,17 @@ list is spelled out in `host.m` rather than being a prefix test. A prefix test s
 `widget-t-name.pdf`, whose `/T` is a NAME and so names nothing, and the differential caught it - the same
 way it catches everything else here.
 
-## The /AS matrix: the on-state NAME is readable, the state is not
+## The /AS matrix: BOTH members are implemented, and the hypothesis needed one more clause
 
-`-buttonWidgetStateString` is **implemented** and `-buttonWidgetState` is **inert**, and the difference
-between them is the whole of this section.
+`-buttonWidgetStateString` is the NAME of the widget's on-state and `-buttonWidgetState` is whether it is
+ON. Both are implemented, and the second took the coordinator's hypothesis plus a clause.
 
-**The string is the /AP /N on-state name.** Eighteen fixtures that carry no `/AP` answer `"Yes"` -
-every `/Btn` and every `/Tx` shape in the widget fixtures, whatever `/AS` and `/V` say - so `"Yes"` is the
+**The string is the /AP /N on-state name.** Eighteen fixtures that carry no `/AP` answer `"Yes"` - every
+`/Btn` and every `/Tx` shape in the widget fixtures, whatever `/AS` and `/V` say - so `"Yes"` is the
 DEFAULT and not the answer. `button-ap-states.pdf` has five annotations whose `/AP` `/N` is keyed on
 `/On`, `/Yes` and `/Marked`, and it answers those names:
 
-| `/AS` | `/AP /N` keys | answered |
+| `/AS` | `/AP /N` keys | the string |
 | --- | --- | --- |
 | `/Off` | `/On`, `/Off` | `On` |
 | `/On` | `/On`, `/Off` | `On` |
@@ -174,46 +178,52 @@ DEFAULT and not the answer. `button-ap-states.pdf` has five annotations whose `/
 The last two are what make it a rule and not an echo of `/AS`: an `/N` keyed `/Marked` answers `"Marked"`
 beside an `/AS` `/Yes` AND beside an `/AS` `/Marked`. The `/N` keys are walked with
 `CGPDFDictionaryApplyFunction` and **not** with `CGPDFDictionaryApplyBlock`, which is
-`CG_AVAILABLE_STARTING(10.14, 12.0)` and in neither band of this port - the first version of this used
-the block form and would not have linked on 6.1.3.
+`CG_AVAILABLE_STARTING(10.14, 12.0)` and in neither band of this port - the first version of this used the
+block form and would not have linked on 6.1.3.
 
-**The state is 1 when `/AS` or `/V` names that on-state, and one combination does not derive.** Measured
-over twenty-two fixtures, and the part that IS a rule:
+**The state is 1 when `/AS` or `/V` names that on-state, or when BOTH name a state that is not `/Off`; and
+-1 for a widget that is not a BUTTON.** Tested as a table of all 31 shapes before any code:
 
-| fixture | `/AS` | `/V` | `/AP /N` | state |
-| --- | --- | --- | --- | --- |
-| `button-as-alone` | absent | - | "Yes" | 0 |
-| `button-as-alone` | `/Off` | - | "Yes" | 0 |
-| `button-as-alone` | `/On` | - | "Yes" | 0 |
-| `button-as-alone` | `/Yes` | - | "Yes" | **1** |
-| `button-v-only` | - | `/Off` | "Yes" | 0 |
-| `button-v-only` | - | `/On` | "Yes" | 0 |
-| `button-v-only` | - | `/Yes` | "Yes" | **1** |
-| `button-as-and-v` | `/On` | `/On` | "Yes" | **1** |
-| `button-asoff-von` | `/Off` | `/On` | "Yes" | 0 |
-| `button-asoff-von` | `/On` | `/Off` | "Yes" | 0 |
-| `button-asoff-von` | `/Yes` | `/On` | "Yes" | **1** |
-| `button-asoff-von` | `/On` | `/Yes` | "Yes" | **1** |
-| `text-as` (a `/Tx`) | all four | - | - | **-1** |
-| `button-merged-*` (a `/Btn` FIELD with a widget that has no `/FT` of its own) | all three | on the field | - | **-1** |
+    1  /AS names the on-state, OR /V names it.
+         /AS /Yes with no /V is 1        (button-as-alone)
+         /V /Yes with no /AS is ALSO 1    (button-v-only)  <- so neither key may be the only one
 
-So `/AS` or `/V` naming the on-state gives 1, and a `/Tx` answers -1 whatever it carries. And **the field
-type has to be on the WIDGET**: the six `button-merged-*` fixtures put `/FT /Btn` on the *field* and have
-the widget reach it through `/Parent`, and all six answer **-1** - which is also what makes the merged
-shape useless for the other half of this member.
+    2  BOTH name a state that is not /Off.
+         /AS /On with /V /On is 1         (button-as-and-v)
+         /AS /On with /V /Yes is 1        (button-asoff-von)
+         /AS /On with /V /Off is 0        (button-asoff-von)  <- a /V of /Off does not count
 
-**The row stays inert on one line of that table.** `/AS /On` beside `/V /On` with no `/AP` answers **1**,
-while `/AS /On` alone answers 0 and `/AS /On` beside `/V /Off` answers 0. So `/V /On` counts only when
-`/AS` is already `/On`, and neither a disjunction nor a conjunction of the two keys produces that. The
-row's reason carries the whole table and names this line as the open question, rather than the
-implementation carrying a special case for one combination.
+    3  the widget must be a BUTTON, and the /FT must be ON THE WIDGET.
+         every /Tx answers -1 whatever it carries           (text-as, four states)
+         all six button-merged-* answer -1                  (the /Btn FIELD carries the /FT and the
+                                                            widget reaches it through /Parent)
 
-## The 27 rows that are not implemented, and why each one waits
+**The coordinator's hypothesis is right in two clauses and short by one, and two fixtures say where.** The
+hypothesis - "1 when `/AS` names the on-state, or when `/V` names the same state `/AS` names and that
+state is not `/Off`" - is refuted by
+
+* **`button-v-only.pdf`'s fourth annotation**, `/V /Yes` with no `/AS`: measured **1**, and the hypothesis
+  says 0 because `/AS` names nothing. Clause 1's second half is the fix.
+* **`button-asoff-von.pdf`'s fourth annotation**, `/AS /On` with `/V /Yes`: measured **1**, and the two do
+  not name the same state. Clause 2 is the fix, and it is what that fixture is for.
+
+So the implemented rule is the hypothesis with "`/V` names **the** on-state" and "`/AS` and `/V` each name a
+state that is not `/Off`" - and both additions are measurements, not repairs.
+
+**One thing this cost, and the differential caught all three at once.** Names carry **no leading slash**:
+`CGPDFDictionaryGetName` strips it and `CGPDFDictionaryApplyFunction`'s key has none either, which is why
+the string member answers `Yes` and `Marked` and not `/Yes`. The first version of the `/Off` test compared
+against `@"/Off"`, never matched, and answered 1 for the three shapes where one of the two keys is `/Off`.
+
+
+## The 25 rows that are not implemented, and why each one waits
 
 Each of the 27 carries the host's measured answer in its `reason` in
 `registry/PDFKit/annotation11.json`. Grouped:
 
 * **`buttonWidgetState`**, above - the /AS matrix is measured and one combination does not derive.
+* **`buttonWidgetState`** is NOT in this list any more: the hypothesis and one more clause now predict all
+  31 shapes, and it is implemented above.
 * **the `/V` and `/DV` pair.** `widget-values.pdf`'s first annotation carries `/V (typed)` and `/DV
   (preset)`; the host answers **nil** for the string value and an **empty string** for the default. One
   fixture, two different shapes, neither of them a reading of the key - so these wait for a measurement
@@ -241,10 +251,10 @@ Each of the 27 carries the host's measured answer in its `reason` in
     $ sh tests/backports/host/pdfkit-document/run.sh
       images differ by construction: host=/System/.../PDFKit.framework/.../PDFKit
                                       port=.../runs/pdfkit-document/port-side
-      COMPARED 13273 MISMATCHES 0  (not compared: 175, expected to differ: 525, of which 72 compared from the Catalyst side)
+      COMPARED 13518 MISMATCHES 0  (not compared: 175, expected to differ: 525, of which 72 compared from the Catalyst side)
       RED CONTROL ok: the comparison goes red on a mutated port, and names the key
 
-133 fixtures. **Twenty-three named red controls name a flag or skip key**, among them one per member over
+175 fixtures. **Forty-seven named red controls name a flag, skip, fieldName or state key**, among them one per member over
 `widget-flags.pdf`'s first annotation, the three fixtures that pin `widgetControlType`'s priority
 (`noflags`, bit 16, bit 17, `allflags`), the two that pin the inversions (bit 15 and bit 18), the one that
 pins `radiosInUnison` off bit 26, the field-type fixtures that pin `activatableTextField`, and the three

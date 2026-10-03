@@ -347,6 +347,10 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 // and beside an /AS /Marked, and an /N keyed /On answers "On" beside an /AS /Off.  So this is the /AP's
 // own key, and the "Yes" of the nameless fixtures is the DEFAULT rather than the answer.
 @property (nonatomic, readonly, copy) NSString *buttonWidgetStateString;
+// Whether this widget is ON: 1 when /AS or /V names its on-state, or when BOTH name a state that is not
+// /Off; and -1 for a widget that is not a BUTTON.  Three clauses and 31 measured shapes, with each
+// fixture that discriminates one of them named in PDFAnnotation11.m.
+@property (nonatomic, readonly) NSInteger buttonWidgetState;
 @end
 
 // ---- PDFDestination, and the action family --------------------------------------------------

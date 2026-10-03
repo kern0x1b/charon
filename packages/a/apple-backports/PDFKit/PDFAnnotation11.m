@@ -547,6 +547,7 @@ static const CGFloat kTextAnnotationSize = 24.0;
 @dynamic activatableTextField;
 @dynamic fieldName;
 @dynamic buttonWidgetStateString;
+@dynamic buttonWidgetState;
 
 // The /AP /N walk's context, and the applier itself.  C rather than a block because the release's block
 // form of this call is iOS 12 and neither band carries it - see the note at the call.
@@ -597,6 +598,65 @@ static void charonTakeOnState(const char *key, CGPDFObjectRef value, void *info)
     CharonOnState state = {nil};
     CGPDFDictionaryApplyFunction(normal, charonTakeOnState, &state);
     return state.onState ?: @"Yes";
+}
+
+// Whether this widget is ON.  Three clauses, and the 31 measured shapes they predict are:
+//
+//   1  /AS names the on-state, OR /V names it.  Each half is needed and each has a fixture that says so:
+//      /AS /Yes with no /V is 1 (button-as-alone), and /V /Yes with no /AS is ALSO 1 (button-v-only), and
+//      a reading in which only /AS counts is refuted by that second fixture.
+//
+//   2  BOTH name a state that is not /Off.  Needed for the two shapes where neither names the on-state
+//      and the answer is still 1: /AS /On with /V /On (button-as-and-v) and /AS /On with /V /Yes
+//      (button-asoff-von).  The coordinator's hypothesis - "/V names the SAME state /AS names" - is
+//      REFUTED by the second of those, where /AS names /On and /V names /Yes, and the two do not match.
+//      A /V of /Off does not count, which button-asoff-von's /AS /On with /V /Off (0) fixes.
+//
+//   3  the widget must be a BUTTON, and the /FT must be ON THE WIDGET.  Every /Tx answers -1 whatever it
+//      carries (text-as, four states), and so do all six button-merged-* shapes, whose /Btn FIELD carries
+//      the /FT while the widget reaches it through /Parent.  So the field type is not inherited.
+//
+// and the on-state itself is -buttonWidgetStateString's answer, which is the /AP /N key that is not /Off
+// and "/Yes" when there is no /AP.
+- (NSInteger)buttonWidgetState
+{
+    if (_annotation == NULL)
+        return -1;
+    const char *fieldType = NULL;
+    if (!CGPDFDictionaryGetName(_annotation, "FT", &fieldType) || fieldType == NULL)
+        return -1;
+    if (strcmp(fieldType, "Btn") != 0)
+        return -1;
+    NSString *onState = [self buttonWidgetStateString];
+    NSString *appearance = nil;
+    NSString *value = nil;
+    CGPDFObjectRef object = NULL;
+    if (CGPDFDictionaryGetObject(_annotation, "AS", &object) && object != NULL
+        && CGPDFObjectGetType(object) == kCGPDFObjectTypeName) {
+        const char *name = NULL;
+        if (CGPDFObjectGetValue(object, kCGPDFObjectTypeName, &name) && name != NULL)
+            appearance = [[NSString alloc] initWithUTF8String:name];
+    }
+    object = NULL;
+    if (CGPDFDictionaryGetObject(_annotation, "V", &object) && object != NULL
+        && CGPDFObjectGetType(object) == kCGPDFObjectTypeName) {
+        const char *name = NULL;
+        if (CGPDFObjectGetValue(object, kCGPDFObjectTypeName, &name) && name != NULL)
+            value = [[NSString alloc] initWithUTF8String:name];
+    }
+    if (appearance != nil && [appearance isEqualToString:onState])
+        return 1;
+    if (value != nil && [value isEqualToString:onState])
+        return 1;
+    // NAMES CARRY NO LEADING SLASH: CGPDFDictionaryGetName strips it and CGPDFDictionaryApplyFunction's
+    // key has none either, which is why -buttonWidgetStateString answers "Yes" and "Marked" and not
+    // "/Yes".  The first version compared against @"/Off" and so never matched it, and the three shapes
+    // where one of the two keys is /Off came out 1 where the host answers 0 - the differential found all
+    // three at once.
+    if (appearance != nil && ![appearance isEqualToString:@"Off"] && value != nil
+        && ![value isEqualToString:@"Off"])
+        return 1;
+    return 0;
 }
 
 // The dictionary the harness reads to decide which keys are comparable - see CharonPDFKit.h.
