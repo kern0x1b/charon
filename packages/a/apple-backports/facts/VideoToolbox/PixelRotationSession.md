@@ -77,7 +77,7 @@ port creates has a type ID the release's table does not have, so every set is re
 at the header's default, `kVTRotation_0`.**
 
 The port cannot replace the function either, and this is mechanical rather than a matter of taste.
-`modules/apple/backports.lua`'s `band()` (line 786) puts an object into one of three answers:
+`modules/apple/backports.lua`'s `band()` (line 787) puts an object into one of three answers:
 
 - every exported symbol already exported by the band' release: the object is **dropped** and its symbols go
   into `-reexported_symbols_list` - the release's own implementations are re-exported instead;
