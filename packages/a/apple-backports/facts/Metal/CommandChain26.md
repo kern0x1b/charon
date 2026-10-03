@@ -280,17 +280,25 @@ them. **There is no `-waitForCommandBuffers:`**, because Metal 4's queue has non
 
 ### What is NOT verified, and it is not a small thing
 
-**The device case is WRITTEN AND HAS NOT BEEN RUN.** `tests/backports/device/metalchain-expectations.h`
-holds Apple's fourteen measured answers as constants, each naming the header line it came from, and
-`tests/backports/device/metalchain.m` holds the port to them — the same shape
-`tests/backports/host/metalblit/` records into `tests/backports/device/metalblit-expectations.h`.
+**There is no device case yet.** `tests/backports/device/metalchain-expectations.h` holds Apple's
+fourteen measured answers as constants, each naming the header line it came from — the same shape
+`tests/backports/host/metalblit/` records into `tests/backports/device/metalblit-expectations.h` — and the
+case that would READ it and hold the port to it, `tests/backports/device/metalchain.m`, **has not been
+written**.
 
-It has not been run because **no device is attached** (`idevice_id -l` prints nothing) and I did not
-start an emulator run: a gate is using this machine, and an emulator run is a heavy job that goes
-through `heavy.sh` and takes a slot from the gate. So the five queue rows carry the honest wording:
+An earlier commit said it had. It had not: the word "WRITTEN" was in the five rows' `effect` and in this
+page, and no such file existed. A row that names a test which is not there is worse than a row that says
+nothing, because a reader checks the file, finds nothing, and then has to decide how much else to
+believe. The rows now say the check has not been run and do not claim it.
 
-> the CHECK against those expectations is the device case `tests/backports/device/metalchain.m` — and that
-> case is WRITTEN AND NOT YET RUN, so nothing here claims it green
+The runner is `xmake emulate` (`.agents/skills/emulate-port/SKILL.md`), and the port's rows are checked
+on the emulator's iPhone3,1 6.1.3 through `coordination/heavy.sh`, which queues behind the gate by
+itself. No device is attached (`idevice_id -l` prints nothing), so the emulator is the only route. The
+five queue rows carry the honest wording:
+
+> the CHECK against those expectations has NOT been run yet: the device case that would hold the port to
+> them is not written, no device is attached, and an emulator run is a heavy job that queues behind the
+> gate. So the port's queue is NOT verified against Apple's answers yet, and this row does not claim it is
 
 `Metal/MTL4CommandChain26.m` and `Metal/MTL4CommandQueue26.m` compile clean, the host differential over
 the two descriptors is green with its two mutants red, and release-split puts each object in one
