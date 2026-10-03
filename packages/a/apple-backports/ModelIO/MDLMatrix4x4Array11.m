@@ -2,8 +2,6 @@
 #import <ModelIO/MDLValueTypes.h>
 #import <simd/simd.h>
 
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
-
 // A flat array of matrices, one of the four MDLAnimated*Array shapes. It is not the animated value:
 // an MDLAnimatedMatrix4x4 carries a time per sample and interpolates between samples, while this one
 // carries `elementCount` matrices and nothing else, and its header gives it no time at all. So the
