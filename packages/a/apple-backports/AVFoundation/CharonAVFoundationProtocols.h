@@ -8,3 +8,8 @@
 #import <objc/NSObject.h>
 
 @protocol AVCaptureDataOutputSynchronizerDelegate;
+// The queue the two 11.0 render classes share. The 16.4 SDK this package compiles against declares
+// it (AVQueuedSampleBufferRendering.h, the 11.0 protocol the generated sources name), and this is the
+// forward declaration that makes their @protocol(...) name resolve. The port supplies the protocol
+// OBJECT itself, which is the part no release below 11.0 has.
+@protocol AVQueuedSampleBufferRendering;
