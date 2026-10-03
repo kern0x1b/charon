@@ -312,21 +312,30 @@ static void charon_call(CharonIntegrand fun, void *arg, const double *x, double 
 // ---------------------------------------------------------------- one Gauss-Kronrod pass
 
 // dqk15, dqk21, dqk31, dqk41, dqk51 and dqk61 are the same routine with three different tables, so they are
-// one here. `n` is the Kronrod order; the Gauss weights cover the first (n + 1) / 2 of them.
+// one here. Each table runs from the outermost pair down to the centre, so the array holds (n + 1) / 2
+// abscissae and as many Kronrod weights.
+//
+// Which of those abscissae the Gauss rule takes is dqk21's own statement about its table: "xgk(2), xgk(4),
+// ... abscissae of the 10-point gauss rule, xgk(1), xgk(3), ... abscissae which are optimally added". Its
+// indices are 1-based, so the Gauss pairs are the odd 0-based ones and the added ones are the even. The Gauss
+// weights wg(1..) run from the largest Gauss abscissa inwards, and where the Gauss order is odd - 7, 15, 25 -
+// its centre point is the Kronrod rule's own, which is why dqk15 and dqk31 start resg from fc and dqk21,
+// dqk41 and dqk61 start it from zero. `gauss_pairs` is how many pairs it takes and `gauss_centre` says
+// whether wg[gauss_pairs] is the centre point's weight.
 typedef struct CharonRule {
     const double *wg;
     const double *wgk;
     const double *xgk;
-    int n;            // the Kronrod order: xgk and wgk have this many
-    int gauss_pairs;  // the Gauss weights that multiply a symmetric pair
-    int gauss_centre; // 1 when the centre point carries a Gauss weight too, which the 15-point rule's does
+    int n;            // the Kronrod order
+    int gauss_pairs;  // the Gauss rule's pairs, at the odd abscissa indices
+    int gauss_centre; // 1 when the Gauss rule also has a weight for the centre point
 } CharonRule;
 
 static const CharonRule charon_k15 = {k15_wg, k15_wgk, k15_xgk, 15, 3, 1};
 static const CharonRule charon_k21 = {k21_wg, k21_wgk, k21_xgk, 21, 5, 0};
-static const CharonRule charon_k31 = {k31_wg, k31_wgk, k31_xgk, 31, 8, 0};
+static const CharonRule charon_k31 = {k31_wg, k31_wgk, k31_xgk, 31, 7, 1};
 static const CharonRule charon_k41 = {k41_wg, k41_wgk, k41_xgk, 41, 10, 0};
-static const CharonRule charon_k51 = {k51_wg, k51_wgk, k51_xgk, 51, 13, 0};
+static const CharonRule charon_k51 = {k51_wg, k51_wgk, k51_xgk, 51, 12, 1};
 static const CharonRule charon_k61 = {k61_wg, k61_wgk, k61_xgk, 61, 15, 0};
 
 static void charon_dqk(const CharonRule *rule, CharonIntegrand fun, void *arg, double a, double b, double *result,
@@ -336,10 +345,11 @@ static void charon_dqk(const CharonRule *rule, CharonIntegrand fun, void *arg, d
     double centr = 0.5 * (b + a);
     double dhlgth = fabs(hlgth);
     const int n = rule->n;
-    const int centre = (n - 1) / 2;   // the Kronrod rule's own centre abscissa, 0 based
-    const int pairs = (n - 1) / 2;     // the symmetric pairs, which is every other point
+    const int pairs = (n - 1) / 2;        // the symmetric pairs; the centre point is the last of the n
+    const int gp = rule->gauss_pairs;     // how many of them the Gauss rule takes, the odd table indices
+    const int added = pairs - gp;         // and how many only the Kronrod rule takes, the even ones
     double fv1[32], fv2[32];
-    double resg = 0.0, resk, resabs_value, resasc, reskh, fsum, absc;
+    double resg = 0.0, resk, resabs_value, resasc, reskh, fsum, absc, fval1, fval2;
     double *x = (double *)malloc(sizeof(double) * (size_t)n);
     double *y = (double *)malloc(sizeof(double) * (size_t)n);
     if (!x || !y) {
@@ -355,39 +365,56 @@ static void charon_dqk(const CharonRule *rule, CharonIntegrand fun, void *arg, d
         }
         return;
     }
-    // The n abscissae, in the table's own order, and one call for all of them - which is what the host makes
-    // (measured: one call of 21, 15 or 61 points per pass).
-    // Pair p is the two points 2p and 2p+1 at the table's own abscissa p, and the centre is its own point:
-    // the tables run from the largest abscissa down to the centre, which is dqk21's own layout.
-    for (int p = 0; p < centre; p++) {
-        absc = hlgth * rule->xgk[p];
-        x[2 * p] = centr - absc;
-        x[2 * p + 1] = centr + absc;
+    // The n abscissae in one array and one call, which is what the host makes (measured, one call per pass,
+    // over the whole integral and over each subinterval alike: 15, 21, 31, 41, 51 or 61 points each time).
+    // The order is the host's own, measured by asking which point of which table each one is: the Gauss
+    // pairs above the centre in table order, then the pairs only the Kronrod rule takes above it, then the
+    // same two groups below the centre, then the centre itself. So point k of the array is
+    // centr + hlgth * xgk[2k + 1] for k < gp, centr + hlgth * xgk[2(k - gp)] for gp <= k < pairs, and the
+    // same two groups mirrored from index pairs on.
+    for (int k = 0; k < gp; k++) {
+        absc = hlgth * rule->xgk[2 * k + 1];
+        x[k] = centr + absc;
+        x[pairs + k] = centr - absc;
     }
-    x[centre] = centr;
+    for (int k = 0; k < added; k++) {
+        absc = hlgth * rule->xgk[2 * k];
+        x[gp + k] = centr + absc;
+        x[pairs + gp + k] = centr - absc;
+    }
+    x[n - 1] = centr;
     charon_call(fun, arg, x, y, n);
-    resk = rule->wgk[centre] * y[centre];
+    resk = rule->wgk[pairs] * y[n - 1];
     resabs_value = fabs(resk);
     if (rule->gauss_centre) {
-        resg = rule->wg[rule->gauss_pairs] * y[centre];
+        resg = rule->wg[gp] * y[n - 1];
     }
-    // The pairs the Gauss rule takes, which are the first ones, so resg is the 10-, 7- or 15-point answer.
-    for (int j = 0; j < rule->gauss_pairs; j++) {
-        double fval1 = y[2 * j], fval2 = y[2 * j + 1];
-        fv1[j] = fval1;
-        fv2[j] = fval2;
+    // The pairs the Gauss rule takes, so resg is the 7-, 10-, 15-, 21-, 25- or 31-point answer. dqk21 calls
+    // the pair's own table index jtw = 2 * j and weighs it with wgk(jtw); its 1-based jtw is the odd 0-based
+    // index here.
+    for (int k = 0; k < gp; k++) {
+        fval1 = y[k];
+        fval2 = y[pairs + k];
+        fv1[2 * k + 1] = fval1;
+        fv2[2 * k + 1] = fval2;
         fsum = fval1 + fval2;
-        resg += rule->wg[j] * fsum;
-        resk += rule->wgk[2 * j] * fsum;
-        resabs_value += rule->wgk[2 * j] * (fabs(fval1) + fabs(fval2));
+        resg += rule->wg[k] * fsum;
+        resk += rule->wgk[2 * k + 1] * fsum;
+        resabs_value += rule->wgk[2 * k + 1] * (fabs(fval1) + fabs(fval2));
     }
-    // And every point the Gauss rule does not take, which only the Kronrod rule needs.
-    for (int p = rule->gauss_pairs; p < pairs; p++) {
-        resk += rule->wgk[p] * (y[2 * p] + y[2 * p + 1]);
-        resabs_value += rule->wgk[p] * (fabs(y[2 * p]) + fabs(y[2 * p + 1]));
+    // And the pairs only the Kronrod rule takes, which dqk21 reaches with jtwm1 = 2 * j - 1. fv1 and fv2 are
+    // filled here too, because resasc below reads every one of them.
+    for (int k = 0; k < added; k++) {
+        fval1 = y[gp + k];
+        fval2 = y[pairs + gp + k];
+        fv1[2 * k] = fval1;
+        fv2[2 * k] = fval2;
+        fsum = fval1 + fval2;
+        resk += rule->wgk[2 * k] * fsum;
+        resabs_value += rule->wgk[2 * k] * (fabs(fval1) + fabs(fval2));
     }
     reskh = resk * 0.5;
-    resasc = rule->wgk[centre] * fabs(y[centre] - reskh);
+    resasc = rule->wgk[pairs] * fabs(y[n - 1] - reskh);
     for (int j = 0; j < pairs; j++) {
         resasc += rule->wgk[j] * (fabs(fv1[j] - reskh) + fabs(fv2[j] - reskh));
     }
@@ -415,18 +442,23 @@ static void charon_dqk(const CharonRule *rule, CharonIntegrand fun, void *arg, d
 
 // dqng: the 10-, 21-, 43- and 87-point rules over the whole interval, escalating until the error is inside
 // the tolerance. `savfun` is the array of sums already computed, which is what makes the 43- and 87-point
-// passes ask only for the points the 21-point one did not - and what the host's own call sizes show it doing
-// (21 then 22, measured).
+// passes ask only for the points the 21-point one did not.
+//
+// The callback is asked for one pass's abscissae in one call, which is what the host does (measured: over
+// 1/(1+x^2) from 0 to 1 at 1e-8 the host's calls are 21 then 22, and at 1e-10 they are 21, 22 and 44 - the
+// 43-point rule reuses the 21 the first pass already had and asks for the 22 it does not, and the 87-point
+// rule the 44 it does not). QUADPACK itself evaluates the integrand one point at a time, so the batches here
+// are the port's own arrangement of the same points.
 static int charon_dqng(CharonIntegrand fun, void *arg, double a, double b, double epsabs, double epsrel,
                        double *result, double *abserr, int *neval)
 {
     double savfun[87], fv1[5], fv2[5], fv3[5], fv4[5];
-    double x[22], y[22];
+    double x[44], y[44];
     double hlgth = 0.5 * (b - a);
     double dhlgth = fabs(hlgth);
     double centr = 0.5 * (b + a);
     double fcentr, absc, fval1, fval2, fval;
-    double res10, res21, res43, res87, resabs, resasc, reskh;
+    double res10, res21, res43, res87, resabs, resasc = 0.0, reskh;
     int ipx, ier = 1;
     *result = 0.0;
     *abserr = 0.0;
@@ -434,25 +466,30 @@ static int charon_dqng(CharonIntegrand fun, void *arg, double a, double b, doubl
     if (epsabs <= 0.0 && epsrel < fmax(50.0 * CHARON_EPMACH, 0.5e-28)) {
         return 6;
     }
-    x[0] = centr;
-    y[0] = 0.0;
-    charon_call(fun, arg, x, y, 1);
-    fcentr = y[0];
     *neval = 21;
     for (int pass = 1; pass <= 3; pass++) {
         if (pass == 1) {
             res10 = 0.0;
-            res21 = x1[4] * 0 + w21b[5] * fcentr;
-            resabs = w21b[5] * fabs(fcentr);
+            // The 21 points of the first pass: the centre, then the ten of x1 and the ten of x2, which is
+            // one call of 21 where QUADPACK walks them one at a time.
+            x[0] = centr;
             for (int k = 0; k < 5; k++) {
                 absc = hlgth * x1[k];
-                x[2 * k] = centr + absc;
-                x[2 * k + 1] = centr - absc;
+                x[1 + 2 * k] = centr + absc;
+                x[2 + 2 * k] = centr - absc;
             }
-            charon_call(fun, arg, x, y, 10);
             for (int k = 0; k < 5; k++) {
-                fval1 = y[2 * k];
-                fval2 = y[2 * k + 1];
+                absc = hlgth * x2[k];
+                x[11 + 2 * k] = centr + absc;
+                x[12 + 2 * k] = centr - absc;
+            }
+            charon_call(fun, arg, x, y, 21);
+            fcentr = y[0];
+            res21 = w21b[5] * fcentr;
+            resabs = w21b[5] * fabs(fcentr);
+            for (int k = 0; k < 5; k++) {
+                fval1 = y[1 + 2 * k];
+                fval2 = y[2 + 2 * k];
                 fval = fval1 + fval2;
                 res10 += w10[k] * fval;
                 res21 += w21a[k] * fval;
@@ -461,19 +498,16 @@ static int charon_dqng(CharonIntegrand fun, void *arg, double a, double b, doubl
                 fv1[k] = fval1;
                 fv2[k] = fval2;
             }
+            // dqng.f's ipx is 1-based and is incremented before each store, so the five x2 pairs land in
+            // savfun(6..10) and the eleven x3 pairs in savfun(11..21) - 0-based 5..9 and 10..20 here.
             ipx = 5;
             for (int k = 0; k < 5; k++) {
-                x[2 * k] = centr + hlgth * x2[k];
-                x[2 * k + 1] = centr - hlgth * x2[k];
-            }
-            charon_call(fun, arg, x, y, 10);
-            for (int k = 0; k < 5; k++) {
-                fval1 = y[2 * k];
-                fval2 = y[2 * k + 1];
+                fval1 = y[11 + 2 * k];
+                fval2 = y[12 + 2 * k];
                 fval = fval1 + fval2;
                 res21 += w21b[k] * fval;
                 resabs += w21b[k] * (fabs(fval1) + fabs(fval2));
-                savfun[++ipx] = fval;
+                savfun[ipx++] = fval;
                 fv3[k] = fval1;
                 fv4[k] = fval2;
             }
@@ -501,11 +535,13 @@ static int charon_dqng(CharonIntegrand fun, void *arg, double a, double b, doubl
             for (int k = 0; k < 11; k++) {
                 fval = y[2 * k] + y[2 * k + 1];
                 res43 += fval * w43b[k];
-                savfun[++ipx] = fval;
+                savfun[ipx++] = fval;
             }
             *result = res43 * hlgth;
             *abserr = fabs((res43 - res21) * hlgth);
-            resasc = 0.0;
+            // resasc is the first pass's, and dqng.f leaves it there: its label 65 shrinks every pass's error
+            // estimate with it, which is where the quadratic reduction comes from. Zeroing it here made the
+            // 43- and 87-point passes report the raw difference and escalate past what the host stops at.
         } else {
             res87 = w87b[22] * fcentr;
             *neval = 87;
@@ -522,7 +558,6 @@ static int charon_dqng(CharonIntegrand fun, void *arg, double a, double b, doubl
             }
             *result = res87 * hlgth;
             *abserr = fabs((res87 - res43) * hlgth);
-            resasc = 0.0;
         }
         if (resasc != 0.0 && *abserr != 0.0) {
             *abserr = resasc * fmin(1.0, pow(200.0 * (*abserr) / resasc, 1.5));
@@ -539,28 +574,34 @@ static int charon_dqng(CharonIntegrand fun, void *arg, double a, double b, doubl
 
 // ---------------------------------------------------------------- the two pieces the adaptive driver calls
 
-// dqpsrt: keep the error estimates in descending order and say which subinterval to bisect next.
+// dqpsrt: keep the error estimates in descending order and say which subinterval to bisect next. The shape
+// is dqpsrt.f's, labels and all: the indices it names are 0-based, and iord holds interval numbers 1-based, so
+// iord[i] is the interval i + 1.
 static void charon_dqpsrt(int limit, int last, int *maxerr, double *errmax, const double *elist, int *iord, int *nrmax)
 {
-    int ido, isucc, i, jupbn, jbnd, ibeg;
+    int ido, isucc, i, j, k, jupbn, jbnd, ibeg;
     double errmin;
     if (last <= 2) {
         iord[0] = 1;
         iord[1] = 2;
-        return;
+        goto done;
     }
+    // This part runs only when subdivision raised the error estimate. Normally the insertion below starts
+    // after the nrmax-th largest, and this takes errmax back to where it belongs.
     *errmax = elist[*maxerr - 1];
     if (*nrmax != 1) {
         ido = *nrmax - 1;
         for (i = 0; i < ido; i++) {
-            isucc = iord[*nrmax - 2 - i];
+            isucc = iord[*nrmax - 2];
             if (*errmax <= elist[isucc - 1]) {
-                break;
+                goto count_kept;
             }
             iord[*nrmax - 1] = isucc;
             *nrmax -= 1;
         }
     }
+count_kept:
+    // How many estimates stay in descending order, which depends on the subdivisions still allowed.
     jupbn = last;
     if (last > (limit / 2 + 2)) {
         jupbn = limit + 3 - last;
@@ -568,65 +609,62 @@ static void charon_dqpsrt(int limit, int last, int *maxerr, double *errmax, cons
     errmin = elist[last - 1];
     jbnd = jupbn - 1;
     ibeg = *nrmax + 1;
-    int inserted = 0;
-    if (ibeg <= jbnd) {
-        for (i = ibeg - 1; i <= jbnd - 1; i++) {
-            isucc = iord[i];
-            if (*errmax >= elist[isucc - 1]) {
-                iord[i - 1] = *maxerr;
-                for (int j = jbnd - 1; j >= i; j--) {
-                    iord[j] = iord[j - 1];
-                }
-                iord[i - 1] = last;
-                inserted = 1;
-                break;
-            }
-            iord[i - 1] = isucc;
+    if (ibeg > jbnd) {
+        goto insert_both_at_the_end;
+    }
+    // Insert errmax top down, comparing from elist(iord(nrmax+1)).
+    for (i = ibeg; i <= jbnd; i++) {
+        isucc = iord[i - 1];
+        if (*errmax >= elist[isucc - 1]) {
+            goto insert_errmax;
         }
+        iord[i - 2] = isucc;
     }
-    if (!inserted) {
-        iord[jbnd - 1] = *maxerr;
-        iord[jupbn - 1] = last;
-    }
-    if (errmin < elist[iord[jupbn - 1] - 1]) {
-        for (i = jupbn - 2; i >= 0; i--) {
-            iord[i] = iord[i + 1];
+    goto insert_both_at_the_end;
+insert_errmax:
+    iord[i - 2] = *maxerr;
+    // Make room for last, walking the list from the bottom up.
+    k = jbnd;
+    for (j = i; j <= jbnd; j++) {
+        isucc = iord[k - 1];
+        if (errmin < elist[isucc - 1]) {
+            iord[k] = last;
+            goto done;
         }
-        iord[0] = last;
+        iord[k] = isucc;
+        k -= 1;
     }
-    *nrmax = 1;
-    for (i = 0; i < last - 1; i++) {
-        if (elist[iord[i] - 1] > elist[iord[i + 1] - 1] || i == last - 2) {
-            *nrmax = i + 1;
-            break;
-        }
-    }
-    if (last == 2) {
-        *nrmax = 1;
-    }
+    iord[i - 1] = last;
+    goto done;
+insert_both_at_the_end:
+    iord[jbnd - 1] = *maxerr;
+    iord[jupbn - 1] = last;
+ done:  // dqpsrt.f's 90
+    *maxerr = iord[*nrmax - 1];
     *errmax = elist[*maxerr - 1];
-    if (*nrmax == 0) {
-        *nrmax = 1;
-    }
 }
 
 // dqelg: Peter Wynn's epsilon algorithm over the table of results, which is the "acceleration by Peter
 // Wynn's epsilon algorithm" the header names for QAGS.
 static void charon_dqelg(int n, double *epstab, double *result, double *abserr, double *res3la, int *nres)
 {
-    int limexp = 50, newelm, num, k1, i, k2, k3, ib, ie, indx;
+    const int limexp = 50;
+    int newelm, num, k1, i, k2, k3, ib, ie, indx, drop;
     double e0, e1, e2, e3, res, e1abs, delta2, delta3, err2, err3, tol2, tol3, delta1, err1, tol1, ss, epsinf, error;
     *nres += 1;
     *abserr = CHARON_OFLOW;
     *result = epstab[n - 1];
     if (n < 3) {
-        return;
+        goto final;
     }
     epstab[n + 1] = epstab[n - 1];
     newelm = (n - 1) / 2;
     epstab[n - 1] = CHARON_OFLOW;
     num = n;
     k1 = n;
+    // `drop` is dqelg.f's label 20: the table is irregular at this step, so n is shortened and the shift
+    // below runs. `conv` is its `go to 100` from the convergence test, which leaves without shifting.
+    drop = 0;
     for (i = 0; i < newelm; i++) {
         k2 = k1 - 1;
         k3 = k1 - 2;
@@ -641,69 +679,76 @@ static void charon_dqelg(int n, double *epstab, double *result, double *abserr, 
         delta3 = e1 - e0;
         err3 = fabs(delta3);
         tol3 = fmax(e1abs, fabs(e0)) * CHARON_EPMACH;
-        if (err2 > tol2 || err3 > tol3) {
-            e3 = epstab[k1 - 1];
-            epstab[k1 - 1] = e1;
-            delta1 = e1 - e3;
-            err1 = fabs(delta1);
-            tol1 = fmax(e1abs, fabs(e3)) * CHARON_EPMACH;
-            if (!(err1 <= tol1 || err2 <= tol2 || err3 <= tol3)) {
-                ss = 1.0 / delta1 + 1.0 / delta2 - 1.0 / delta3;
-                epsinf = fabs(ss * e1);
-                if (epsinf > 1e-3) {
-                    res = e1 + 1.0 / ss;
-                    epstab[k1 - 1] = res;
-                    k1 -= 2;
-                    error = err2 + fabs(res - e2) + err3;
-                    if (error > *abserr) {
-                        continue;
-                    }
-                    *abserr = error;
-                    *result = res;
-                }
-            }
-        }
-        // Convergence within machine accuracy, or an irregular table: result = e2, abserr = err2 + err3.
-        else {
+        if (err2 <= tol2 && err3 <= tol3) {
+            // e0, e1 and e2 agree to within machine accuracy: the table has converged.
             *result = res;
             *abserr = err2 + err3;
+            goto final;
+        }
+        e3 = epstab[k1 - 1];
+        epstab[k1 - 1] = e1;
+        delta1 = e1 - e3;
+        err1 = fabs(delta1);
+        tol1 = fmax(e1abs, fabs(e3)) * CHARON_EPMACH;
+        if (err1 <= tol1 || err2 <= tol2 || err3 <= tol3) {
+            drop = 1;  // two elements too close: omit part of the table
             break;
         }
+        ss = 1.0 / delta1 + 1.0 / delta2 - 1.0 / delta3;
+        epsinf = fabs(ss * e1);
+        if (epsinf <= 1e-3) {
+            drop = 1;  // an irregular table
+            break;
+        }
+        res = e1 + 1.0 / ss;
+        epstab[k1 - 1] = res;
+        k1 -= 2;
+        error = err2 + fabs(res - e2) + err3;
+        if (error > *abserr) {
+            continue;
+        }
+        *abserr = error;
+        *result = res;
     }
-    if (i < newelm) {
-        n = 2 * i;
-    } else {
+    // dqelg.f's label 50, the shift. It is reached from label 20 and from the end of the loop, and n is
+    // whatever the loop left: shortened at label 20, or 2 * newelm when the loop ran out.
+    if (!drop) {
         n = 2 * newelm;
-        if (n == limexp) {
-            n = 2 * (limexp / 2) - 1;
-        }
-        ib = 1;
-        if ((num / 2) * 2 == num) {
-            ib = 2;
-        }
-        ie = newelm + 1;
-        for (i = 0; i < ie; i++) {
-            epstab[ib - 1] = epstab[ib + 1];
-            ib += 2;
-        }
-        if (num != n) {
-            indx = num - n + 1;
-            for (i = 0; i < n; i++) {
-                epstab[i] = epstab[indx - 1];
-                indx += 1;
-            }
-        }
-        if (*nres < 4) {
-            res3la[*nres - 1] = *result;
-            *abserr = CHARON_OFLOW;
-            goto done;
-        }
+    } else {
+        n = 2 * i;
     }
+    if (n == limexp) {
+        n = 2 * (limexp / 2) - 1;
+    }
+    ib = 1;
+    if ((num / 2) * 2 == num) {
+        ib = 2;
+    }
+    ie = newelm + 1;
+    for (i = 0; i < ie; i++) {
+        ib = ib + 2;
+        epstab[ib - 3] = epstab[ib - 1];
+    }
+    if (num == n) {
+        goto last;
+    }
+    indx = num - n + 1;
+    for (i = 0; i < n; i++) {
+        epstab[i] = epstab[indx - 1];
+        indx += 1;
+    }
+ last:  // dqelg.f's 80
+    if (*nres < 4) {
+        res3la[*nres - 1] = *result;
+        *abserr = CHARON_OFLOW;
+        goto final;
+    }
+    // dqelg.f's 90: the error estimate from the last three results.
     *abserr = fabs(*result - res3la[2]) + fabs(*result - res3la[1]) + fabs(*result - res3la[0]);
     res3la[0] = res3la[1];
     res3la[1] = res3la[2];
     res3la[2] = *result;
-done:
+ final:  // dqelg.f's 100
     *abserr = fmax(*abserr, 5.0 * CHARON_EPMACH * fabs(*result));
 }
 
@@ -716,14 +761,13 @@ static void charon_dqk15i(CharonIntegrand fun, void *arg, double boun, int inf, 
 {
     double hlgth = 0.5 * (b - a);
     double centr = 0.5 * (b + a);
-    // dinf is 1 for a finite side of the interval and 0 for an infinite one, so the transformation below is
-    // the identity where the caller's bound is finite and x = boun + (1 - t) / t where it is not.
+    // dqelg's dinf is min(1, inf): 1 where the caller's bound is finite, so the mapping below is the identity,
+    // and 0 where it is infinite, so the point at t is boun + (1 - t) / t.
     double dinf = inf == 1 ? 0.0 : 1.0;
     double fv1[8], fv2[8];
-    double resg = 0.0, resk, resabs_value, resasc, fc, reskh, fsum, absc, absc1, absc2;
-    double fval1, fval2, tabsc1;
-    double xs[14], ys[14], mirrored;
-    const int centre = 7;
+    double resg = 0.0, resk, resabs_value, resasc, fc, reskh, fsum, absc, absc1, absc2, tabsc1, tabsc2;
+    double fval1, fval2;
+    double xs[16], ys[16];
     const int pairs = 7;
     tabsc1 = boun + dinf * (1.0 - centr) / centr;
     xs[0] = tabsc1;
@@ -735,29 +779,35 @@ static void charon_dqk15i(CharonIntegrand fun, void *arg, double boun, int inf, 
         fval1 += ys[0];
     }
     fc = (fval1 / centr) / centr;
+    // dqk15i.f has its own xgk and wgk - the 15-point rule's, which it spells out again - and its own wg,
+    // with the 7-point Gauss weights at the even indices so that `resg = wg(8)*fc` is the centre and
+    // `resg = resg + wg(j)*fsum` weighs the pair at abscissa xgk(j) directly. So the Gauss pairs are the odd
+    // j here, as in charon_dqk, and the centre weight is wg[3].
+    resg = k15_wg[3] * fc;
+    resk = k15_wgk[pairs] * fc;
+    resabs_value = fabs(resk);
     for (int j = 0; j < pairs; j++) {
         absc = hlgth * k15_xgk[j];
         absc1 = centr - absc;
         absc2 = centr + absc;
-        xs[2 * j] = boun + dinf * (1.0 - absc1) / absc1;
-        xs[2 * j + 1] = boun + dinf * (1.0 - absc2) / absc2;
+        tabsc1 = boun + dinf * (1.0 - absc1) / absc1;
+        tabsc2 = boun + dinf * (1.0 - absc2) / absc2;
+        xs[2 * j] = tabsc1;
+        xs[2 * j + 1] = tabsc2;
     }
     charon_call(fun, arg, xs, ys, 2 * pairs);
-    resk = k15_wgk[centre] * fc;
-    resabs_value = fabs(resk);
-    resg = k15_wg[7] * fc;
-    for (int j = 0; j < 3; j++) {
+    for (int j = 0; j < pairs; j++) {
         absc1 = centr - hlgth * k15_xgk[j];
         absc2 = centr + hlgth * k15_xgk[j];
         fval1 = ys[2 * j];
         fval2 = ys[2 * j + 1];
         if (inf == 2) {
-            mirrored = boun + dinf * (1.0 - absc1) / absc1;
-            xs[0] = -mirrored;
+            tabsc1 = boun + dinf * (1.0 - absc1) / absc1;
+            xs[0] = -tabsc1;
             charon_call(fun, arg, xs, ys, 1);
             fval1 += ys[0];
-            mirrored = boun + dinf * (1.0 - absc2) / absc2;
-            xs[0] = -mirrored;
+            tabsc2 = boun + dinf * (1.0 - absc2) / absc2;
+            xs[0] = -tabsc2;
             charon_call(fun, arg, xs, ys, 1);
             fval2 += ys[0];
         }
@@ -766,36 +816,16 @@ static void charon_dqk15i(CharonIntegrand fun, void *arg, double boun, int inf, 
         fv1[j] = fval1;
         fv2[j] = fval2;
         fsum = fval1 + fval2;
-        resg += k15_wg[j] * fsum;
-        resk += k15_wgk[2 * j + 1] * fsum;
-        resabs_value += k15_wgk[2 * j + 1] * (fabs(fval1) + fabs(fval2));
-    }
-    // The four points the 7-point Gauss rule does not take: the odd-indexed ones below the centre.
-    for (int i = 2; i < pairs; i += 2) {
-        absc = hlgth * k15_xgk[i];
-        absc1 = centr - absc;
-        absc2 = centr + absc;
-        fval1 = ys[2 * i];
-        fval2 = ys[2 * i + 1];
-        if (inf == 2) {
-            mirrored = boun + dinf * (1.0 - absc1) / absc1;
-            xs[0] = -mirrored;
-            charon_call(fun, arg, xs, ys, 1);
-            fval1 += ys[0];
-            mirrored = boun + dinf * (1.0 - absc2) / absc2;
-            xs[0] = -mirrored;
-            charon_call(fun, arg, xs, ys, 1);
-            fval2 += ys[0];
+        if (j % 2 == 1) {
+            resg += k15_wg[j / 2] * fsum;
         }
-        fval1 = (fval1 / absc1) / absc1;
-        fval2 = (fval2 / absc2) / absc2;
-        resk += k15_wgk[2 * i + 1] * (fval1 + fval2);
-        resabs_value += k15_wgk[2 * i + 1] * (fabs(fval1) + fabs(fval2));
+        resk += k15_wgk[j] * fsum;
+        resabs_value += k15_wgk[j] * (fabs(fval1) + fabs(fval2));
     }
     reskh = resk * 0.5;
-    resasc = k15_wgk[centre] * fabs(fc - reskh);
-    for (int j = 0; j < 3; j++) {
-        resasc += k15_wgk[2 * j + 1] * (fabs(fv1[j] - reskh) + fabs(fv2[j] - reskh));
+    resasc = k15_wgk[pairs] * fabs(fc - reskh);
+    for (int j = 0; j < pairs; j++) {
+        resasc += k15_wgk[j] * (fabs(fv1[j] - reskh) + fabs(fv2[j] - reskh));
     }
     *result = resk * hlgth;
     resasc *= hlgth;
@@ -819,8 +849,8 @@ static void charon_dqk15i(CharonIntegrand fun, void *arg, double boun, int inf, 
 // extrapolation, over either the caller's interval with the chosen rule or (0,1) with dqk15i. `inf` is
 // 0 for the finite case and 1 or 2 for a bound at infinity, as dqagie names it.
 static int charon_dqags(CharonIntegrand fun, void *arg, double a, double b, double epsabs, double epsrel,
-                        size_t limit, const CharonRule *rule, int inf, double *result, double *abserr, int *neval,
-                        double *work, int *iwork)
+                        size_t limit, const CharonRule *rule, int inf, int extrapolate, double *result,
+                        double *abserr, int *neval, double *work, int *iwork)
 {
     double alist[2 * 1000], blist[2 * 1000], rlist[2 * 1000], elist[2 * 1000];
     double rlist2[53], res3la[3], epstab[52];
@@ -872,8 +902,19 @@ static int charon_dqags(CharonIntegrand fun, void *arg, double a, double b, doub
     if (limit == 1) {
         ier = 1;
     }
-    if (ier != 0 || !(*abserr <= errbnd && *abserr != resabs) || *abserr == 0.0) {
-        goto finish;
+    // dqagse.f stops here when ier is set, or when the first pass's error estimate is zero. It asks for more
+    // than that: `if (ier.ne.0.or.(abserr.le.errbnd.and.abserr.ne.resabs).or.abserr.eq.0.0d+00) go to 140`,
+    // so a first pass whose estimate is already inside the tolerance still subdivides once, because
+    // abserr.ne.resabs is nearly always true - resabs is the integral of |f|, and abserr is 1e-13 beside it.
+    // The host does not ask it, and does stop. Measured over 1/(1+x^2) from -1 to 1 at 1e-12: the 21-point
+    // rule's first pass estimates 7.1215e-08 and the host subdivides once, three calls of 21 points; the
+    // 31-point rule's estimates 1.30239e-13 and the host stops there, one call of 31; the 51-point rule's
+    // estimates 1.74393e-14 and the host stops there, one call of 51. At 1e-14, where the tolerance is
+    // below all three estimates, the host subdivides on the 21- and 31-point rules (fifteen calls) and stops
+    // on the 51-point one, which is the roundoff test above firing: 1.74393e-14 is inside
+    // 100 * DBL_EPSILON * 1.5707963267948966 = 3.4885e-14 and outside 1.5708e-14.
+    if (ier != 0 || *abserr <= errbnd || *abserr == 0.0) {
+        goto exit;
     }
     rlist2[0] = *result;
     errmax = *abserr;
@@ -930,7 +971,12 @@ static int charon_dqags(CharonIntegrand fun, void *arg, double a, double b, doub
         if (iroff2 >= 5) {
             ierro = 3;
         }
-        if ((size_t)last == limit) {
+        // Reaching the limit answers QUADRATURE_INTEGRATE_MAX_EVAL_ERROR. dqagse.f raises the flag here,
+        // before the tolerance test further down, and the host does for QAGS: over 1/(1+x^2) from -1 to 1 at
+        // 1e-12 with max_intervals 2 QAGS makes the same three calls of 21 points, ends inside the tolerance
+        // with an error of 1.74393e-14, and still answers -101. For QAG the host answers 0 on the same call,
+        // so its flag is raised after the tolerance test - see the other site below.
+        if (extrapolate && (size_t)last == limit) {
             ier = 1;
         }
         if (fmax(fabs(a1), fabs(b2)) <= (1.0 + 1000.0 * CHARON_EPMACH) * (fabs(a2) + 10000.0 * uflow)) {
@@ -955,8 +1001,16 @@ static int charon_dqags(CharonIntegrand fun, void *arg, double a, double b, doub
         if (errsum <= errbnd) {
             goto sum_up;
         }
+        // QAG's own limit flag, after the tolerance test rather than before it. Measured over 1/(1+x^2) from
+        // -1 to 1 at 1e-12: at max_intervals 1 it makes one call of 21 and answers -101, at 2 and at 3 three
+        // calls of 63 and answers 0, ending at an error of 1.74393e-14 inside a tolerance of 1.5708e-12. Over
+        // 1/(1+100 x^2) on the same interval, where the error stays outside, it answers -101 at every limit
+        // from 1 to 4 with 1, 3, 5 and 7 calls and errors 0.347449, 0.000410498, 0.000205763 and 1.028e-06.
+        if (!extrapolate && last == (int)limit) {
+            ier = 1;
+        }
         if (ier != 0) {
-            goto finish;
+            goto final;
         }
         if (last == 2) {
             small = fabs(b - a) * 0.375;
@@ -1012,14 +1066,14 @@ do_extrapolate:
             correc = erlarg;
             ertest = fmax(epsabs, epsrel * fabs(reseps));
             if (*abserr <= ertest) {
-                goto finish;
+                goto final;
             }
         }
         if (numrl2 == 1) {
             noext = 1;
         }
         if (ier == 5) {
-            goto finish;
+            goto final;
         }
         maxerr = iord[0];
         errmax = elist[maxerr - 1];
@@ -1029,16 +1083,21 @@ do_extrapolate:
         erlarg = errsum;
     next_interval:;
     }
+    // dqagse.f's final block, label for label. Its 100 is `if (abserr == oflow) go to 115`, so arriving at
+    // sum_up with anything else comes back here; its 115 computes the total and then falls into 130, the
+    // exit, and NOT back into 100 - which is the difference between a run that ends and a run that never
+    // does. Its 140 is the exit too, and the accuracy test above jumps there directly.
 sum_up:
     if (*abserr != oflow) {
-        goto finish;
+        goto final;
     }
     *result = 0.0;
     for (k = 0; k < last; k++) {
         *result += rlist[k];
     }
     *abserr = errsum;
-finish:
+    goto exit;
+final:
     if (ier + ierro == 0) {
         goto divergence;
     }
@@ -1049,25 +1108,28 @@ finish:
         ier = 3;
     }
     if (*result != 0.0 && area != 0.0) {
-        if (!(*abserr / fabs(*result) > errsum / fabs(area))) {
-            goto done;
-        }
-        goto sum_up;
+        goto compare;
     }
     if (*abserr > errsum) {
         goto sum_up;
     }
     if (area == 0.0) {
-        goto done;
+        goto exit;
+    }
+    goto divergence;
+compare:  // dqagse.f's 105
+    if (*abserr / fabs(*result) > errsum / fabs(area)) {
+        goto sum_up;
     }
 divergence:
     if (ksgn == -1 && fmax(fabs(*result), fabs(area)) <= defabs * 0.01) {
-        goto done;
+        goto exit;
     }
     if (0.01 > (*result / area) || (*result / area) > 1000.0 || errsum > fabs(area)) {
         ier = 6;
     }
-done:
+    goto exit;
+exit:
     if (ier > 2) {
         ier -= 1;
     }
@@ -1209,7 +1271,8 @@ double quadrature_integrate(const quadrature_integrate_function *__f, double __a
             limit = 1000;
         }
         ier = charon_dqags(fun, arg, a, b, __options->abs_tolerance, __options->rel_tolerance, limit, rule, inf,
-                           &result, &abserr, &neval, (double *)__workspace, NULL);
+                           __options->integrator == QUADRATURE_INTEGRATE_QAGS, &result, &abserr, &neval,
+                           (double *)__workspace, NULL);
     }
     if (__status) {
         *__status = charon_status_of(ier);
