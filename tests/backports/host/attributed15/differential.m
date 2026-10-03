@@ -154,6 +154,27 @@ static void compare(NSString *name, NSString *system, NSString *port)
                  [NSString stringWithFormat:@"system %@\n           port   %@", system, port]);
 }
 
+/* -[NSAttributedString initWithFormat:options:locale:arguments:] has to be called through a variadic
+   helper on both sides: the list is handed on in a register the caller cannot name, so the only way to
+   have one is to build it, and the two helpers build theirs the same way and from the same literals. */
+static NSAttributedString *systemVaList(NSAttributedString *format, NSLocale *locale, ...)
+{
+    va_list arguments;
+    va_start(arguments, locale);
+    NSAttributedString *answer = [[NSAttributedString alloc] initWithFormat:format options:0 locale:locale arguments:arguments];
+    va_end(arguments);
+    return answer;
+}
+
+static NSAttributedString *portVaList(NSAttributedString *format, NSLocale *locale, ...)
+{
+    va_list arguments;
+    va_start(arguments, locale);
+    NSAttributedString *answer = [plain(@"x") initCharonHostWithFormat:format options:0 locale:locale arguments:arguments];
+    va_end(arguments);
+    return answer;
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -231,6 +252,107 @@ int main(void)
             compare(@"format.currentLocale",
                     shape([NSAttributedString localizedAttributedStringWithFormat:numbers, 1234, 1234.5]),
                     shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:numbers, 1234, 1234.5]));
+            /* The other spelling of the initialiser. A va_list parameter is a copy, so a case cannot
+               hand one to a member directly - va_start is the only way to have one - so each side is
+               called from its own helper below with a list built the same way, and the two answers are
+               what is compared. */
+            for (NSString *identifier in @[ @"de_DE", @"fr_FR" ]) {
+                NSLocale *locale = [NSLocale localeWithLocaleIdentifier:identifier];
+                compare([NSString stringWithFormat:@"format.argumentList.%@", identifier],
+                        shape(systemVaList(numbers, locale, 1234, 1234.5)),
+                        shape(portVaList(numbers, locale, 1234, 1234.5)));
+            }
+            compare(@"format.argumentList.nilLocale",
+                    shape(systemVaList(numbers, nil, 1234, 1234.5)),
+                    shape(portVaList(numbers, nil, 1234, 1234.5)));
+            compare(@"format.argumentList.currentLocale",
+                    shape(systemVaList(numbers, [NSLocale currentLocale], 1234, 1234.5)),
+                    shape(portVaList(numbers, [NSLocale currentLocale], 1234, 1234.5)));
+            /* A conversion that names its argument by position, which is what makes one argument be
+               substituted twice and one conversion be answered by an argument the format reached out
+               of order. Each case is written out with the arguments its own format stands for: a
+               positional conversion reads the argument it names, so a case whose first argument is not
+               the one its first conversion names reads something else entirely, which is undefined on
+               this side and on the system's and so is not a case. */
+            compare(@"format.positional.0",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%1$@ and %1$@ and %2$@"), @"one", @"two"]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%1$@ and %1$@ and %2$@"), @"one", @"two"]));
+            compare(@"format.positional.1",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%2$@ then %1$@"), @"one", @"two"]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%2$@ then %1$@"), @"one", @"two"]));
+            compare(@"format.positional.2",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%1$d apples and %1$d oranges"), 3]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%1$d apples and %1$d oranges"), 3]));
+            compare(@"format.positional.3",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%@ %2$@"), @"one", @"two"]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%@ %2$@"), @"one", @"two"]));
+            compare(@"format.positional.4",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%3$@ %1$@ %2$@"), @"one", @"two", @"three"]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%3$@ %1$@ %2$@"), @"one", @"two", @"three"]));
+            compare(@"format.positional.5",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%1$ld"), 7L]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%1$ld"), 7L]));
+            compare(@"format.positional.6",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%1$10d"), 3]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%1$10d"), 3]));
+            compare(@"format.positional.7",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%1$@ and %@"), @"one", @"two"]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%1$@ and %@"), @"one", @"two"]));
+            /* the same with the replacement index asked for, which numbers each substituted run by the
+               argument its conversion stands for and not by the order the runs appear in */
+            compare(@"format.positional.indexOption",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%1$@ and %1$@ and %2$@") options:2, @"one", @"two"]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%1$@ and %1$@ and %2$@") options:2, @"one", @"two"]));
+            compare(@"format.positional.outOfOrder.indexOption",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%3$@ %1$@ %2$@") options:2, @"one", @"two", @"three"]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%3$@ %1$@ %2$@") options:2, @"one", @"two", @"three"]));
+            /* A width and a precision written '*': arguments of their own, read before the conversion's,
+               and a negative one of those is the '-' flag with its magnitude. */
+            compare(@"format.star.width",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"[%*d]"), 6, 42]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"[%*d]"), 6, 42]));
+            compare(@"format.star.left",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"[%-*d]"), 6, 42]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"[%-*d]"), 6, 42]));
+            compare(@"format.star.negative",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"[%*d]"), -6, 42]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"[%*d]"), -6, 42]));
+            compare(@"format.star.zero",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"[%*d]"), 0, 42]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"[%*d]"), 0, 42]));
+            compare(@"format.star.precision",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"[%.*f]"), 2, 3.14159]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"[%.*f]"), 2, 3.14159]));
+            compare(@"format.star.both",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"[%*.*f]"), 8, 2, 3.14159]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"[%*.*f]"), 8, 2, 3.14159]));
+            compare(@"format.star.bothNegative",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"[%*.*f]"), -8, 2, 3.14159]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"[%*.*f]"), -8, 2, 3.14159]));
+            /* The one shape of this family the port does not carry, printed rather than compared: a
+               negative precision on a LOCALIZED value is the value's own digits and not the default
+               six, which is a search over the precisions rather than a rule, and facts/
+               Foundation/AttributedStrings15.md carries the measurement and the reason. The canonical
+               family answers the default six, which is what this object does with it, so the case
+               beside it is a comparison and this one is a note. */
+            NSAttributedString *systemShortest = [NSAttributedString localizedAttributedStringWithFormat:plain(@"[%.*f]"), -2, 3.14159];
+            NSAttributedString *portShortest = [NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"[%.*f]"), -2, 3.14159];
+            printf("note format.star.negativePrecision: the system answers <%s> and the port <%s> - a negative\n"
+                   "           precision on a localized value is the value's own digits, which is not carried; the\n"
+                   "           canonical family answers the default six, which is the case beside it\n",
+                   systemShortest.string.UTF8String, portShortest.string.UTF8String);
+            compare(@"format.star.negativePrecision.canonical",
+                    shape(systemVaList(plain(@"[%.*f]"), nil, -2, 3.14159)),
+                    shape(portVaList(plain(@"[%.*f]"), nil, -2, 3.14159)));
+            /* A width off the list is an argument, so the conversion behind it is the third and the
+               replacement index says so; and the width is padded onto the LOCALIZED spelling, so the
+               two have to agree about the locale as well as about the width. */
+            compare(@"format.star.indexOption",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"[%*.*f]") options:2, 8, 2, 3.14159]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"[%*.*f]") options:2, 8, 2, 3.14159]));
+            compare(@"format.star.localizedWidth",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"[%*.*f]"), 8, 2, 1234.5]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"[%*.*f]"), 8, 2, 1234.5]));
             /* a '%' that opens no conversion is consumed, and the shapes of the arguments */
             /* A format whose conversion has no argument behind it reads past the end of the list on both
                sides - "50% off" answers "505ff" on one run and "500ff" on the next, from a slot nobody

@@ -4,16 +4,16 @@ Markdown, the attributed formatting of a format string, the language a table's t
 inflection pass — one object for one release, six files and the rows they carry.
 
     sh tests/backports/host/attributed15/run.sh
-    bytes 159616
-    checks=48 failures=0
+    bytes 176544
+    checks=72 failures=0
 
 The port's selectors are prefixed (`tests/backports/host/prefix_selectors.py`, the mechanism `appgroup`
 and `uikit2` use) and its Markdown class is renamed with a `-D` from its own object's symbols
 (`tests/backports/host/uikit2/renames.sh`, the mechanism `presentationintent` uses), so the system's five
 members and the port's five answer in one process and every case compares the two. The whole verdict is
-48 checks and no failures: four constants, twenty-two formatting cases, the bundle lookup, five
-inflection cases, fourteen Markdown cases, the task delegate's four, and four cases that ask the
-*release* what it answers for the members of an abstract class.
+72 checks and no failures: three constants, forty-five formatting cases, the bundle lookup, five
+inflection cases, ten Markdown cases, the task delegate's four, and four cases that ask the *release*
+what it answers for the members of an abstract class.
 
 Two things had to be measured before any of it could be written, and both are the kind of thing a header
 does not say.
@@ -29,13 +29,62 @@ substituted text is drawn with:
 | `pre %@ mid %@ post`, the colour over `%@ ` (4,3) | `ARG` bold, then `plain` | `ARG` coloured **and** bold, the space after it coloured, `mid ` and `plain` not |
 | the same with `NSAttributedStringFormattingInsertArgumentAttributesWithoutMerging` | the same | `ARG` bold alone: the format's attributes are dropped |
 | the same with `…ApplyReplacementIndexAttribute` | the same | both, and `NSReplacementIndexAttributeName` 1 and 2 on the two runs |
-| `%d and %.2f` with de_DE, with fr_FR, with nil | `1234`, `1234.5` | `1234 and 1234.50` — **canonical**, whatever locale the initialiser was handed |
+| `%d and %.2f` with de_DE, through the **variadic** initialiser | `1234`, `1234.5` | `1234 and 1234.50` — **canonical**, whatever locale it was handed |
+| the same through the **va_list** initialiser, with de_DE, with fr_FR, with the current locale | the same | `1.234 and 1.234,50` — **localized**, whatever the numbers look like |
+| the same through the va_list initialiser, with **nil** | the same | `1234 and 1234.50` — nil is the canonical one |
 | `%d and %.2f` through `+localizedAttributedStringWithFormat:` | the same | `1.234 and 1.234,50` — the machine's `en_US@rg=plzzzz` |
 
-So the explicit-locale initialisers format canonically and the two `localized` methods format with the
-current locale. The port passes `nil` to the release's own formatter from the first family and
-`[NSLocale currentLocale]` from the second; that is the whole of the difference and it is in
-`NSAttributedStringLocalizedFormat15.m`.
+So the two spellings of one initialiser disagree, and the two `localized` methods format with the
+current locale. The port passes the caller's locale to the release's own formatter from the va_list
+member, `nil` from the variadic one, and `[NSLocale currentLocale]` from the two class methods; that is
+the whole of the difference and it is in `NSAttributedStringLocalizedFormat15.m`. The header's own
+comment says the va_list member takes the canonical spelling for a nil locale and the localized one
+otherwise, which is what it answers; it says nothing of the sort about the variadic member, which is
+canonical whatever locale it is handed, and that is what it answers.
+
+### Three rules of the format language the header does not describe
+
+| the format | the arguments | the answer |
+| --- | --- | --- |
+| `%1$@ and %1$@ and %2$@` | `one`, `two` | `one and one and two` — one argument, substituted twice |
+| `%2$@ then %1$@` | `one`, `two` | `two then one` |
+| `%1$d apples and %1$d oranges` | `3` | `3 apples and 3 oranges` |
+| `%3$@ %1$@ %2$@` | `one`, `two`, `three` | `three one two` |
+| `%1$ld` | `(long)7` | `7` — the length modifier is read as part of the conversion |
+| `%1$10d` | `3` | `       3` — an index and a width are two different things |
+| `%1$@ and %@` | `one`, `two` | `one and one` — a positional conversion still takes the list with it |
+| `[%*d]` of 6, 42 | | `[    42]` — a width written `*` is an argument of its own, read before the conversion's |
+| `[%-*d]` of 6, 42 | | `[42    ]` |
+| `[%.*f]` of 2, 3.14159 | | `[ 3,14]` |
+| `[%*.*f]` of 8, 2, 1234.5 | | `[1.234,50]` — the width is padded onto the **localized** spelling |
+| `[%*d]` of -6, 42 | | `[42]` localized, `[42    ]` canonical — see below |
+| `[%.*f]` of -2, 3.14159 | | `[3,14159]` localized, `[3.141590]` canonical — see below |
+
+All of these need the argument list read **once**, into the argument each conversion stands for, and every
+conversion then reading its own slot out of it: that is what makes one argument be substituted twice, and
+what lets a width be an argument rather than digits. `CharonScan` walks the format first and says which
+argument each conversion stands for, `CharonRead` takes them off the list with the type C promotes them
+to, and the walk that substitutes reads the slots. The count the list is read by is the largest number
+any conversion asked for: a `n$` reads the argument it names and leaves the list at least there, and a
+conversion that names none takes the next one.
+
+**The replacement index is the argument, not the run.** With
+`NSAttributedStringFormattingApplyReplacementIndexAttribute`, `NSReplacementIndexAttributeName` is the
+number of the argument the conversion stands for, so `%1$@ and %1$@ and %2$@` is numbered 1, 1, 2 and
+`%3$@ %1$@ %2$@` is numbered 3, 1, 2 — and a width off the list pushes the conversion's own number along,
+because the width is an argument: `[%*.*f]` of 8, 2 and 3.14159 puts **3** on the eight characters the
+value occupies. The number covers the padding too.
+
+Two shapes of a negative `*` are the two families disagreeing with each other, and both are measured:
+
+* **A negative width.** The canonical family takes the magnitude with the `-` flag (C's rule) and the
+  localized family takes no width at all, for every width from -1 to -12. The port answers each of them
+  as measured, which is why `CharonApplyStars` reads the locale.
+* **A negative precision.** The canonical family answers the default six, which is C's "no precision",
+  and the localized family answers the value's own digits — the shortest decimal that reads back as the
+  same double. That one is **not carried**: it is a search over the precisions rather than a rule, and
+  the differential prints both answers beside each other as a note instead of comparing them, so the
+  difference is on the output and not folded into a pass.
 
 A `%` that opens no conversion is consumed and what it read is text again: `a % b` answers `a  b` and
 `a %1 b` answers `a 1 b`, while `x %q y` answers `x q y`; a format that is nothing but such a specifier
@@ -148,9 +197,9 @@ our own — and the reason is the one `NSLanguageIdentifierAttributeName` alread
   are the system's own private choices; no API fixes them, and the port does not invent sizes. What the
   release's own documentation says an attributed string from Markdown is *for* — an application that lays
   the text out by hand reading the intents instead of parsing the Markdown — is answered in full.
-* **A positional conversion, `%1$@`, is not carried.** The system takes its argument from the position
-  the format names (`%2$@-%1$@` answers `two-one`); the port consumes the specifier and leaves nothing in
-  its place. It needs an argument table the port does not keep.
+* **A negative precision on a localized value.** Named and measured above, under the three rules: the
+  system answers the value's own digits and the port answers the default six, which is what the canonical
+  family answers for the same format. The differential prints the two answers as a note.
 * **An HTML block and an entity reference are the source's own text.** The system marks them
   (`NSInlinePresentationIntentBlockHTML`, 512) and the port keeps the characters without the mark.
 

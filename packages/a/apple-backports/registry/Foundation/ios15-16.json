@@ -2,21 +2,21 @@
   "entries": [
     {
       "api": "+[NSAttributedString localizedAttributedStringWithFormat:]",
-      "effect": "the format is walked conversion by conversion and each substituted run is drawn with the format's own attributes merged with the argument's, the argument winning, and the text is the argument's own string for an attributed argument and its -description for anything else, (null) for a nil one; the numbers come out in the current locale, which is what this family does where the initialisers are canonical",
+      "effect": "the format is walked conversion by conversion and each substituted run is drawn with the format's own attributes merged with the argument's, the argument winning, and the text is the argument's own string for an attributed argument and its -description for anything else, (null) for a nil one; the format language's own three rules are answered as well - a positional conversion \"n$\" takes its argument from the position it names, so one argument can be substituted twice, a width or precision written \"*\" is an argument of its own read before the conversion's, and a '%' that opens no conversion is consumed and leaves nothing; the numbers come out in the current locale, which is what this family does",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case format.classMethod",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the eight format.positional cases, the ten format.star cases and format.classMethod",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "+[NSAttributedString localizedAttributedStringWithFormat:options:]",
-      "effect": "as the class method, and the options decide the two things they name: InsertArgumentAttributesWithoutMerging keeps the argument's attributes alone and ApplyReplacementIndexAttribute puts NSReplacementIndexAttributeName on each substituted run, numbered from 1",
+      "effect": "as the class method, and the options decide the two things they name: InsertArgumentAttributesWithoutMerging keeps the argument's attributes alone and ApplyReplacementIndexAttribute puts NSReplacementIndexAttributeName on each substituted run, numbered by the ARGUMENT the conversion stands for rather than by the order the runs appear in - so \"%1$@ and %1$@ and %2$@\" is numbered 1, 1 and 2, \"%3$@ %1$@ %2$@\" is numbered 3, 1 and 2, and a width off the list pushes the conversion's own number along because the width is an argument",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the cases format.classMethod.options1 and format.classMethod.options2",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the cases format.classMethod.options1 and format.classMethod.options2 and in the two format.positional cases with the replacement index asked for",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
@@ -26,7 +26,7 @@
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the five cases inflect.explicitRule, inflect.automaticRule, inflect.whole, inflect.number and inflect.untagged",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the five cases inflect.explicitRule, inflect.automaticRule, inflect.whole, inflect.number and inflect.untagged",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
@@ -37,27 +37,27 @@
       "kind": "method",
       "minimum": "6.0",
       "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case markdown.file",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case markdown.file",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "-[NSAttributedString initWithFormat:options:locale:]",
-      "effect": "the format is walked and substituted the way the class method is, and the numbers are CANONICAL whatever locale the initialiser was handed: de_DE, fr_FR and nil all answer \"1234 and 1234.50\", measured",
+      "effect": "the format is walked and substituted the way the class method is, and the numbers are CANONICAL whatever locale the initialiser was handed: de_DE, fr_FR, the current locale and nil all answer \"1234 and 1234.50\", measured. This is the variadic spelling and it is the one that ignores the locale - the va_list spelling below formats with it",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case format.options0 and the three format.canonical cases",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case format.options0 and the three format.canonical cases",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "-[NSAttributedString initWithFormat:options:locale:arguments:]",
-      "effect": "the list is the whole of the difference and it is read one argument at a time: a list handed to the release's formatter twice reads its floating point register area as spent and answers 0.00 where it answered 1234.50, so each argument is taken out with the type C promotes it to and formatted on its own",
+      "effect": "this spelling takes the locale the caller names and the canonical one for nil, which is what its own comment in the header says: de_DE, fr_FR and the current locale answer \"1.234 and 1.234,50\" and nil answers \"1234 and 1234.50\", all measured. The list is read one argument at a time: a list handed to the release's formatter twice reads its floating point register area as spent and answers 0.00 where it answered 1234.50, so each argument is taken out with the type C promotes it to and formatted on its own",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case format.widths, which passes a double, a long, an int and a string",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case format.widths, which passes a double, a long, an int and a string, and the four format.argumentList cases, one per locale and one for nil, which is the family that tells the two spellings apart",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
@@ -68,7 +68,7 @@
       "kind": "method",
       "minimum": "6.0",
       "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the cases markdown.data and markdown.notText",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the cases markdown.data and markdown.notText",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
@@ -79,7 +79,7 @@
       "kind": "method",
       "minimum": "6.0",
       "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the three cases markdown.document.0, .1 and .2 and in markdown.languageCode",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the three cases markdown.document.0, .1 and .2 and in markdown.languageCode",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
@@ -89,7 +89,7 @@
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case bundle.missingKey, which prints the attribute name the system itself used",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case bundle.missingKey, which prints the attribute name the system itself used",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
@@ -99,7 +99,7 @@
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case format.append",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case format.append",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
@@ -110,7 +110,7 @@
       "kind": "constant",
       "minimum": "6.0",
       "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case constant.NSAlternateDescriptionAttributeName",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case constant.NSAlternateDescriptionAttributeName",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
@@ -121,7 +121,7 @@
       "kind": "class",
       "minimum": "6.0",
       "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the three cases markdown.optionsClass, markdown.options.defaults and markdown.options.copy",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the three cases markdown.optionsClass, markdown.options.defaults and markdown.options.copy",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
@@ -132,7 +132,7 @@
       "kind": "constant",
       "minimum": "6.0",
       "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case constant.NSImageURLAttributeName",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case constant.NSImageURLAttributeName",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },
@@ -182,7 +182,7 @@
       "kind": "constant",
       "minimum": "6.0",
       "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case constant.NSInlinePresentationIntentAttributeName and in the three markdown.document cases",
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=72 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case constant.NSInlinePresentationIntentAttributeName and in the three markdown.document cases",
       "status": "implemented",
       "facts": "facts/Foundation/AttributedStrings15.md"
     },

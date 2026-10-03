@@ -6,12 +6,17 @@
 // non-variadic prototype is not a call, it is a misread - measured, with a member that answers
 // "Ann 3" when it is given "Bob 7" - so the members that are variadic in the SDK are variadic here.
 #import <Foundation/Foundation.h>
+#import <stdarg.h>
 
 // NSAttributedStringLocalizedFormat15.m
 @interface NSAttributedString (CharonPortedFormat)
 - (instancetype)initCharonHostWithFormat:(NSAttributedString *)format
                                  options:(NSAttributedStringFormattingOptions)options
                                   locale:(NSLocale *)locale, ...;
+- (instancetype)initCharonHostWithFormat:(NSAttributedString *)format
+                                 options:(NSAttributedStringFormattingOptions)options
+                                  locale:(NSLocale *)locale
+                               arguments:(va_list)arguments;
 + (instancetype)charonHost_localizedAttributedStringWithFormat:(NSAttributedString *)format, ...;
 + (instancetype)charonHost_localizedAttributedStringWithFormat:(NSAttributedString *)format
                                                        options:(NSAttributedStringFormattingOptions)options, ...;
