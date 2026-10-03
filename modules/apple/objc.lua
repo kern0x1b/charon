@@ -679,3 +679,62 @@ function code_map(cachefile)
     cache.close()
     return {architecture = header.architecture, images = images}
 end
+
+-- The code address of every method the named classes define themselves, keyed by class then selector,
+-- with the bytes sitting at that address. inventory() answers WHICH selectors a class carries and drops
+-- the address, because a corpus row asks that; a question about what a method DOES needs the code, and
+-- the code is in the cache beside the metadata - measured 2026-10-03 on the arm64e cache of iOS 16.0 for
+-- the ten HomeKit classes whose -init the port had to decide by.
+--
+-- One pass for the whole set of names: a pass over an arm64e cache costs minutes (8 measured on the cache
+-- of iOS 18.0), so ten classes must not be ten passes. `count` is how many bytes to carry per method.
+function method_imps(source, asked, count)
+    count = count or 512
+    local wanted = {}
+    for _, name in ipairs(asked) do
+        wanted[name] = true
+    end
+    local cache = dyld.open_cache(source)
+    local read = reader(cache)
+    function read.raw(address, bytes)
+        return cache.read_address(address, bytes)
+    end
+    local found, order = {}, {}
+    local function gather(methods, into)
+        method_entries(read, methods, function (name, imp)
+            if name and imp then
+                into[name] = imp
+            end
+        end)
+    end
+    for _, loaded in ipairs(cache.images) do
+        for _, class in ipairs(section_entries(read, loaded.image, "__objc_classlist")) do
+            local data = class_data(read, class)
+            if data.name and wanted[data.name] and not found[data.name] then
+                local methods = {}
+                gather(data.methods, methods)
+                local metaclass = read.pointer(class)
+                if metaclass ~= 0 then
+                    gather(class_data(read, metaclass).methods, methods)
+                end
+                found[data.name] = {image = loaded.install, methods = methods}
+                table.insert(order, data.name)
+            end
+        end
+    end
+    local named = {}
+    for _, name in ipairs(order) do
+        local entry = found[name]
+        local bytes = {}
+        for selector, imp in pairs(entry.methods) do
+            if read.mapped(imp, 4) then
+                bytes[selector] = read.raw(imp, count) or ""
+            else
+                bytes[selector] = ""
+            end
+        end
+        named[name] = {image = entry.image, methods = entry.methods, bytes = bytes}
+    end
+    cache.close()
+    return named
+end
