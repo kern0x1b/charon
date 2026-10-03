@@ -344,13 +344,25 @@ static void providers(CoreMLRecorder record)
                                                                      raised.reason ?: @"(no reason)"]);
         }
     }
-    /* A batch whose features are not of one length is refused, and the message names the one. */
+    /* A batch whose features are not of one length is refused, and the message names the one. The
+     * construction is asked through @try for the reason the index past the end above is: which of
+     * the two answers a framework gives for a batch that is not a rectangle is a measurement and
+     * not something the corpus may assume, and a corpus that dies on an answer it did not expect
+     * records nothing at all -- not the difference, and not the rest of the run. Measured on this
+     * host: a nil and an error, which is what the port answers. The name of a raise is recorded
+     * and not its reason, for the reason the coding round trip above gives. */
     {
-        MLArrayBatchProvider *ragged = [[MLArrayBatchProvider alloc]
-            initWithDictionary:@{ @"x" : @[@1.0, @2.0], @"y" : @[@3.0] }
-                         error:&failure];
-        record(@"batch/ragged", ragged == nil ? @"nil" : @"not nil");
-        record(@"batch/ragged.error", error_of(failure));
+        MLArrayBatchProvider *ragged = nil;
+        NSString *raised = nil;
+        @try {
+            ragged = [[MLArrayBatchProvider alloc]
+                initWithDictionary:@{ @"x" : @[@1.0, @2.0], @"y" : @[@3.0] }
+                             error:&failure];
+        } @catch (NSException *exception) {
+            raised = [NSString stringWithFormat:@"raised %@", exception.name];
+        }
+        record(@"batch/ragged", raised ?: (ragged == nil ? @"nil" : @"not nil"));
+        record(@"batch/ragged.error", raised ? @"(raised)" : error_of(failure));
     }
 }
 
