@@ -95,7 +95,35 @@ MPSDataType CharonMPSImageDataTypeOf(MPSImageFeatureChannelFormat format);
 // The two region helpers a kernel outside the walk file needs. They are static in
 // MPSImageWalk13.m, so a kernel that calls them has to be able to see them; MPSImageTranspose
 // is the one, because the permutation it performs is in the index.
-void *CharonMPSImageReadRegion(MPSImage *image, const CharonMPSImageLayout *layout, MTLRegion region, NSString *what);
+//
+// THE READ IS _Nullable, AND NIL IS ITS ANSWER IN THREE NAMED CASES, not a stand-in for something the
+// release returns. It answers the region's elements as a buffer, and there are three times there is no
+// such buffer:
+//
+//   * the region names no pixel. There is nothing to read and no row to lay out, so an empty run has no
+//     buffer. The release's own -[MPSImage readBytes:...] over a zero-size region is a no-op with no
+//     output pointer, so nil is what it answers too.
+//   * the channel format names no element width - MPSImageFeatureChannelFormatNone, or any format the
+//     26.2 surface's planar and alpha encodings name and this one does not. There is no element size to
+//     multiply by, so no buffer. The refusal in CharonMPSRefuse says which format.
+//   * calloc failed. There is no memory for the region.
+//
+// The declaration sat inside NS_ASSUME_NONNULL_BEGIN with no annotation, so all three reads of NULL were
+// diagnosed: the host compile of MPSImageWalk13.m stopped at :181, :188 and :197 with "null returned
+// from function that requires a non-null return value [-Werror,-Wnonnull]", which is how
+// `sh tests/backports/host/run-all.sh --seconds 120 mpsmatrix` came to be DEAD - and DEAD on origin/main
+// itself, not only here.
+//
+// EVERY CALLER ALREADY HANDLED IT, which is the measurement that says nil is the intended answer rather
+// than an accident: twelve call sites in ten files, and several of them distinguish the two cases
+// explicitly with the count they set on the layout - `if (slice.count && !from) return;` at
+// MPSImageConvolution13.m:69, MPSImageMorphology13.m:63, MPSNNReduce16.m:298 and
+// MPSImageReduceUnary16.m:192, and `if (region.size.width && !primary) return NO;` at
+// MPSImageWalk13.m:299 - which is only correct if a nil that means "empty region" and a nil that means
+// "failed" are the same nil and the caller has the count to tell them apart. So the callers were written
+// against a nullable read and the header was the one place that disagreed. Nothing here needed changing
+// but the annotation.
+void *_Nullable CharonMPSImageReadRegion(MPSImage *image, const CharonMPSImageLayout *layout, MTLRegion region, NSString *what);
 BOOL CharonMPSImageWriteRegion(MPSImage *image, const CharonMPSImageLayout *layout, MTLRegion region, const void *buffer, NSString *what);
 
 // Lay one image's channels into another's at a feature channel offset, the source and the destination in

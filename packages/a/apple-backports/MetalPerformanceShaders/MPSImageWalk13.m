@@ -170,13 +170,21 @@ BOOL CharonMPSImageRegionIsEmpty(MTLRegion region)
 // A region of one image as a row-major run of its elements, in the image's own element width. A
 // region that names no pixel is an empty run and nothing was read.
 //
+// NULL is a real answer here and there are three of them - an empty region, a channel format with no
+// element width, and a failed allocation - and CharonMPSImage.h:95-124 says so where the declaration is
+// and names the twelve callers that already handle it. The declaration is `_Nullable`; this definition
+// says so too, so that the two cannot drift apart without clang saying which one is wrong.
+//
 // Not static: `MPSImageTranspose` reads a source region and writes a destination one itself, because the
 // permutation it performs is in the index - destination(row, column) is source(column, row) - which the
 // walk's unary map cannot express. The declarations are in CharonMPSImage.h.
-void *CharonMPSImageReadRegion(MPSImage *image, const CharonMPSImageLayout *layout,
-                               MTLRegion region, NSString *what)
+void *_Nullable CharonMPSImageReadRegion(MPSImage *image, const CharonMPSImageLayout *layout,
+                                        MTLRegion region, NSString *what)
 {
     NSUInteger w = region.size.width, h = region.size.height;
+    // An empty region: there is no element to return. A caller tells this apart from a failure by the
+    // count it put on its own layout copy, which is why the tests below are guarded on the width and the
+    // ones at the two refusals below are not - those two are failures whatever the region says.
     if (!w || !h)
         return NULL;
     NSUInteger perRow = w * layout->channels;
