@@ -28,14 +28,23 @@
 //   -_isAlternateTrackGroup, -_isKeyValueGroup, -_mediaType.
 //
 // The two "automatic" accessors are the one place this file answers rather than stores, and the answer
-// is computed from the option's own stored identity. MPNowPlayingInfoLanguageOption.h:66-73 documents
-// each as "a special case that is used to represent the best legible/audible language option based on
-// system preferences", and distinguishes them by TYPE: the automatic option for a group is the one whose
-// type is Legible or Audible. So type is the discriminator, and the file says so rather than inventing
-// a tag constant to compare against: the header's comment at :68 names MPLangaugeOptionAutoLangaugeTag
-// but the SDK declares no such symbol anywhere (measured: grep over the 26.2 MediaPlayer headers finds
-// the name in that one comment and no declaration), so an extern for it would not link. The type test
-// needs no such constant and is the documented distinction.
+// is NO. MPNowPlayingInfoLanguageOption.h:56-63 documents each as "a special case that is used to
+// represent the best legible/audible language option based on system preferences", each pointing at
+// AVPlayerItem-selectMediaOptionAutomaticallyInMediaSelectionGroup: - so what each asks is whether the
+// receiver IS that special case, an option the system inserts into a group to mean "choose for me", and
+// not whether it is an ordinary option of a kind. The system's own class says the same thing: Apple's
+// MediaPlayer on this machine answers NO to both accessors for every option its own designated
+// initialiser can build - 34 options over both types (the type round-trips, so the grid measured
+// something), thirteen languageTag values including the literal MPLangaugeOptionAutoLangaugeTag the
+// header's comment names, a nil tag, nil and empty characteristics, displayName and identifier, and the
+// same option installed as a group's default. Zero YES. The measurement, its control and the table are
+// in tests/backports/host/mp-language-option and facts/MediaPlayer/LanguageOptions.md.
+//
+// This port has no system-created option either: the class is defined here, so every option that exists
+// is one the application built, and none of those is the special case. An earlier version of this file
+// answered from the stored TYPE on the strength of the header's comment; the measurement above is what
+// refutes it, and an application that gates on these accessors is told the truth instead of being handed
+// an option Apple would not call automatic.
 //
 // One object per release: this file is the 9.0 API of these two classes. MPChangeLanguageOptionCommandEvent90.m,
 // already on main, declares an `MPNowPlayingInfoLanguageOption *` property; this file is what makes
@@ -116,22 +125,23 @@
     return _identifier;
 }
 
-// The two "automatic" accessors, quoted from the header at :56-73, each documented as "a special case
+// The two "automatic" accessors, quoted from the header at :56-63, each documented as "a special case
 // that is used to represent the best legible/audible language option based on system preferences" and
-// each pointing at AVPlayerItem-selectMediaOptionAutomaticallyInMediaSelectionGroup.
+// each pointing at AVPlayerItem-selectMediaOptionAutomaticallyInMediaSelectionGroup:.
 //
-// Answered from the option's own stored type, which is the distinction the header's own comment draws:
-// an automatic option is the automatic option FOR A TYPE, so an Audible-typed option is the automatic
-// audible one and a Legible-typed one the automatic legible one. A tag is not the discriminator - a nil
-// tag means the option is DISABLED (header:57-58), which is the opposite of automatic, and the
-// automatic value would have been a constant this file would then have to invent, since the SDK declares
-// none (measured above).
+// NO, because the receiver is never that special case: it is an option the application built through
+// the designated initialiser above, and the option the system inserts to mean "choose for me" is not one
+// a caller can build. Measured, not assumed - Apple's own class answers NO for all 34 options its own
+// initialiser can build, over both types and thirteen tags and the nil tag (the table is in the header
+// of this file and in facts/MediaPlayer/LanguageOptions.md). A caller that wants the release's own
+// "choose for me" is served by -[AVPlayerItem selectMediaOptionAutomaticallyInMediaSelectionGroup:],
+// which this port carries at its own release.
 - (BOOL)isAutomaticLegibleLanguageOption {
-    return self.languageOptionType == MPNowPlayingInfoLanguageOptionTypeLegible;
+    return NO;
 }
 
 - (BOOL)isAutomaticAudibleLanguageOption {
-    return self.languageOptionType == MPNowPlayingInfoLanguageOptionTypeAudible;
+    return NO;
 }
 
 @end

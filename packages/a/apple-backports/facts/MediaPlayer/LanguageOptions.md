@@ -98,11 +98,48 @@ true - so a host-side check would have passed while the device build failed. Tha
 `MPLanguageOptionCharacteristic*` rows there are `implemented` against values read out of the framework
 rather than spelled from their names.
 
-The shipped object does not compare a tag. It answers the two `isAutomatic...` accessors from the
-option's own stored **type**, which is the distinction the header's own comment draws at :56-73 - the
-automatic option is the automatic option *for a type*. The header also says at :57-58 that a **nil** tag
-means the option is **disabled**, which is the opposite of automatic, so a tag could not have been the
-discriminator even had the constant existed.
+The shipped object answers **NO** to the two `isAutomatic...` accessors, and that is now measured rather
+than argued. The header documents each as "a special case that is used to represent the best
+legible/audible language option based on system preferences" (:56-63) and says at :57-59 that a tag
+"with the value of MPLangaugeOptionAutoLangaugeTag" is that special case - a constant the SDK declares
+nowhere, so its value cannot be written down from the headers. **What Apple's own class answers was
+therefore asked directly**, by building every option its designated initialiser can build:
+
+    $ sh tests/backports/host/mp-language-option/run.sh
+
+`tests/backports/host/mp-language-option/probe.m`, linked against this Mac's own MediaPlayer. It is a
+read of Apple's behaviour, not a check of the port: the port's own check is
+`tests/backports/host/mediaplayeritem/languageoption90.m`, which compiles the port's source against
+`MPMediaItemStandin.h` so that what is measured is the port.
+
+**Two controls, because a table of NOs is what a broken probe also prints.** The probe exits non-zero
+and `run.sh` fails if either is missing:
+
+| control | answer | what it rules out |
+| --- | --- | --- |
+| the class declares `initWithType:languageTag:characteristics:displayName:identifier:` | yes | a framework without it would answer through an inherited `-init`, and every row below would be about nothing |
+| the **type round-trips**: given 0 reads back 0, given 1 reads back 1 | yes | an initialiser that dropped the type would answer NO on every row, and that is indistinguishable from a refutation of the type rule unless the round-trip is shown first |
+
+**The run.** 34 options built, **0** answering YES:
+
+| what varies | rows | `automatic` |
+| --- | --- | --- |
+| 13 `languageTag` values (`en`, `""`, `auto`, `und`, `mul`, `zxx`, `-auto-`, `x-auto`, `*`, the literal `MPLangaugeOptionAutoLangaugeTag`, `auto-langauge`, `system`) x both types | 26 | 0 |
+| the **nil** tag, which :57-58 says disables the option, x both types | 2 | 0 |
+| `characteristics`, `displayName` and `identifier` as nil, as empty and as filled, x both types | 6 | 0 |
+| the same option installed as a group's `defaultLanguageOption` | 2 | 0 |
+
+So the discriminator is **none** of the five arguments the initialiser takes, and in particular it is not
+the type. An earlier version of this file answered from the stored type, on the reading that "the
+automatic option is the automatic option *for a type*"; this table is what refutes it, and the port now
+answers what Apple answers.
+
+What is **not** established, and is not claimed: what tag the system's own special option carries. The
+option that means "choose for me" is inserted by `-selectMediaOptionAutomaticallyInMediaSelectionGroup:`
+and is not one a caller can build, so neither Apple's class nor this port can be asked about it. The
+misspelled constant appears in Apple's own binary only twice in this machine's arm64e shared cache, and
+neither occurrence is that name - measured with `strings -a` over the cache's subcaches, which is why
+the sentinel's value could not be read out and is not written down here.
 
 ## The exclusivity the group does not enforce
 
@@ -144,9 +181,15 @@ Three mutants of the object, each shown to turn the check RED rather than assumi
 | mutation | verdict |
 | --- | --- |
 | retain the characteristics array instead of copying it | `RED characteristics were copied, not retained: 2` |
-| `isAutomaticLegibleLanguageOption` answers YES without reading the type | `RED an Audible-typed option is the automatic AUDIBLE one: audible only` |
+| `isAutomaticAudibleLanguageOption` answers YES | `RED neither 'automatic' accessor fires on an ordinary option: NO for both types` |
 | drop the caller's `allowEmptySelection` flag | `RED allowEmptySelection reads back: YES` |
 | retain the languageTag instead of copying it | **`OK (0 failures)` — the check is blind here, and is not asserted** |
+
+The second row used to be "`isAutomaticLegibleLanguageOption` answers YES without reading the type", and
+it was a real mutant while the accessors read the type. They hold no state now, so there is nothing left
+to perturb in that direction and the row names the only mutation left for them: an accessor that starts
+answering YES. The expectation it is compared against is Apple's, from the table above - not the port's
+own output, which is what makes the check worth having.
 
 ## The stand-in header is the only place these two classes are declared
 

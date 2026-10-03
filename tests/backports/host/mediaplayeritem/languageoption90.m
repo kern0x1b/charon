@@ -3,14 +3,17 @@
 //
 // Compiled against MPMediaItemStandin.h rather than this Mac's own MediaPlayer, so the check measures
 // the port's source and not a framework that has the classes for a different reason. The designated
-// initializers store what they were given, the two "automatic" accessors answer from the stored TYPE -
-// which is the distinction MPNowPlayingInfoLanguageOption.h:56-73 draws - and the group holds the set it
-// was built with.
+// initializers store what they were given, the two "automatic" accessors answer NO - the option the
+// system inserts to mean "choose for me" is not one an application can build, and Apple's own class
+// answers NO to all 34 options its initialiser can build, measured in tests/backports/host/mp-language-option
+// - and the group holds the set it was built with.
 //
 // Every assertion here has been shown to FAIL on a mutation of the object it covers: retaining instead
-// of copying the characteristics array, answering the automatic accessors without reading the type, and
-// dropping the caller's allowEmptySelection flag each turn one line RED. The languageTag copy is
-// deliberately NOT asserted, and the reason is written below where a reader will meet it.
+// of copying the characteristics array and dropping the caller's allowEmptySelection flag each turn one
+// line RED, and the mutation of the type-reading accessor is what the "automatic" case can no longer
+// be - the accessors hold no state to perturb, so what is asserted instead is that they read nothing,
+// which is a RED if either ever starts answering YES. The languageTag copy is deliberately NOT asserted,
+// and the reason is written below where a reader will meet it.
 #import <Foundation/Foundation.h>
 #import "MPMediaItemStandin.h"
 
@@ -43,12 +46,21 @@ int main(void) {
                                              characteristics:nil
                                                  displayName:@"English"
                                                   identifier:@"aud-en"];
-    check("a Legible-typed option is the automatic LEGIBLE one",
-          [legible isAutomaticLegibleLanguageOption] &&
-          ![legible isAutomaticAudibleLanguageOption], "legible only");
-    check("an Audible-typed option is the automatic AUDIBLE one",
-          [audible isAutomaticAudibleLanguageOption] &&
-          ![audible isAutomaticLegibleLanguageOption], "audible only");
+    // The two "automatic" accessors are NO for an option the application built, and the oracle for
+    // that is Apple's own class rather than a reading of the header's comment:
+    // tests/backports/host/mp-language-option builds 34 options through Apple's designated initialiser
+    // - both types (the type round-trips), thirteen tags including the literal MPLangaugeOptionAutoLangaugeTag
+    // the header names, a nil tag, nil and empty characteristics, displayName and identifier, and the
+    // option installed as a group's default - and Apple's MediaPlayer answers NO to all 34. This port has
+    // no system-created option either, so NO is what it answers. The expectation is Apple's, not the
+    // port's own: an earlier version of this file asserted the type rule and the measurement is what
+    // refuted it.
+    check("neither 'automatic' accessor fires on an ordinary option",
+          ![legible isAutomaticLegibleLanguageOption] && ![legible isAutomaticAudibleLanguageOption] &&
+          ![audible isAutomaticAudibleLanguageOption] && ![audible isAutomaticLegibleLanguageOption],
+          "NO for both types");
+    check("the type reads back for an Audible option, so the accessor is not reading it",
+          audible.languageOptionType == MPNowPlayingInfoLanguageOptionTypeAudible, "Audible");
 
     // The array is copied, so a later mutation of the caller's array cannot change what the option
     // reads. This is the ONE copy check that can fail: -languageTag is also copied, but an NSString is
