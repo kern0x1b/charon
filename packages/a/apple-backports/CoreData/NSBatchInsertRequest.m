@@ -71,11 +71,41 @@
     return nil;
 }
 
+/* The release refuses -entity on a request that was made with a name, and the port answers what the
+   release answers rather than what it finds convenient. Measured on the host, CoreData 120: a request
+   built by +batchInsertRequestWithEntityName:objects: raises NSObjectInaccessibleException out of
+   -entity, with the reason
+
+       This batch insert request (0x78df0a4000) was created with a string name (Row), and cannot
+       respond to -entity until used by an NSManagedObjectContext
+
+   word for word, the address and the name being the request's own. So the reason is a format over
+   this object and its name and NOT over the class name, which is what lets a binary that renames
+   the class (see -init above) keep Apple's own words. A request made with an entity answers it --
+   the host's answer for that form is entity=Row -- and a request with nothing to insert answers nil,
+   because it has no name to have been made with either. */
+- (NSEntityDescription *)entity
+{
+    if (!_charonEntity && _charonEntityName) {
+        [NSException raise:NSObjectInaccessibleException
+                    format:@"This batch insert request (%p) was created with a string name (%@), and cannot respond to -entity until used by an NSManagedObjectContext",
+                           (void *)self, _charonEntityName];
+    }
+    return _charonEntity;
+}
+
 - (instancetype)initWithEntityName:(NSString *)entityName
                           objects:(NSArray<NSDictionary<NSString *, id> *> *)dictionaries
 {
     self = [super init];
-    if (self) {
+    /* A request with nothing to insert keeps neither the name nor the rows. Measured on the host,
+       CoreData 120, both forms of this initialiser with one row, two rows, an empty array and nil:
+       the rows answer the count and NOTHING else is set -- entityName=(nil), entity=(null) -- while
+       one row or more gives entityName=Row. So the release drops what there is nothing to insert
+       into, and a port that kept the name would answer a question the release answers differently.
+       The handler forms below keep their name because they take no rows at all and the host's answer
+       for them is entityName=Row (reference-host.tsv). */
+    if (self && dictionaries.count) {
         _charonEntityName = [entityName copy];
         _charonObjectsToInsert = [dictionaries copy];
     }
@@ -86,11 +116,11 @@
                        objects:(NSArray<NSDictionary<NSString *, id> *> *)dictionaries
 {
     self = [super init];
-    if (self) {
+    // The same rule as the name form above, and measured the same way: no rows, no entity and no
+    // name. With rows the host's answer is entityName=Row entity=Row objects=2, so the NAME is set
+    // from the entity's and not only the entity.
+    if (self && dictionaries.count) {
         _charonEntity = entity;
-        // Measured on the host: initWithEntity:objects: answers entityName=Row, so the NAME is set
-        // from the entity's and not only the entity. The dictionaryHandler and managedObjectHandler
-        // entity forms are checked the same way by the per-initialiser listing.
         _charonEntityName = [entity.name copy];
         _charonObjectsToInsert = [dictionaries copy];
     }
@@ -126,9 +156,12 @@
 {
     self = [self initWithEntity:entity objects:@[]];
     if (self) {
-        // ONE block, ONE assignment. This carried three, and the first put the handler in the
+        // ONE block, ONE assignment, and the entity beside it. This carried three, and the first put the handler in the
         // OTHER ivar, so a request built here had BOTH handler ivars set and nothing said so.
-        // initWithEntity:objects: has already stored the entity and its name.
+        // initWithEntity:objects: stores the entity and its name when there are rows, and this form
+        // has none by construction, so it stores them here: the host's answer for it is entity=Row.
+        _charonEntity = entity;
+        _charonEntityName = [entity.name copy];
         _charonDictionaryHandler = [handler copy];
     }
     return self;
@@ -141,7 +174,10 @@
     if (self) {
         // ONE block, ONE assignment. This carried three, and the first put the handler in the
         // OTHER ivar, so a request built here had BOTH handler ivars set and nothing said so.
-        // initWithEntity:objects: has already stored the entity and its name.
+        // initWithEntity:objects: stores the entity and its name when there are rows, and this form
+        // has none by construction, so it stores them here: the host's answer for it is entity=Row.
+        _charonEntity = entity;
+        _charonEntityName = [entity.name copy];
         _charonManagedObjectHandler = [handler copy];
     }
     return self;

@@ -55,8 +55,34 @@ class-name substitution would spell the renamed class where Apple spells `NSBatc
 which the diff caught as a divergence that was not one.
 
 **`initWithEntity:objects:` sets `entityName`** from the entity's name — the host's answer is
-`entityName=Row  entity=Row  objects=2  resultType=0` — and so do the two handler forms with an
-entity, which route through it.
+`entityName=Row  entity=Row  objects=2  resultType=0`. The two handler forms with an entity answer
+`entity=Row` as well, and they now store it themselves rather than routing through this initialiser,
+which is what the next paragraph made necessary.
+
+**A request with nothing to insert keeps neither the name nor the entity.** Measured on the host,
+CoreData 120, over both initialiser forms with one row, two rows, an empty array and `nil`: the rows
+answer their count whatever else is asked, and with no rows every other answer is `entityName=(nil)`
+and `entity=(null)`. The port stores both fields only when there is something to insert. The four
+handler and constructor forms take no rows at all, so they are not this case: the host's answer for
+them is `entityName=Row` or `entity=Row` (`reference-host.tsv`), and each stores its own field.
+
+**`-entity` refuses a request that was made with a name.** Measured on the host, a request built by
+`+batchInsertRequestWithEntityName:objects:` raises `NSObjectInaccessibleException` out of `-entity`,
+with the reason
+
+    This batch insert request (0x78df0a4000) was created with a string name (Row), and cannot
+    respond to -entity until used by an NSManagedObjectContext
+
+word for word, the address and the name being the request's own. The port raises the same exception
+with the same sentence, built from its own address and its own name, which is also why the reason is a
+format over those two and not over the class name: a binary that renames the class keeps Apple's words.
+A request made with an entity answers `-entity`, and one with nothing to insert answers `nil` — it has
+no name to have been made with either.
+
+`tests/backports/host/coredata-batchinsert/run.sh` asks all of it — both forms with an empty array and
+with `nil`, and `-entity` on a name-made request — and `run.sh mutant` mutates each of the two rules
+in turn and requires both to go red. The address is taken out of the reason by shape before the two
+answers are compared, because an address is not an answer.
 
 **The two handler forms had both handler ivars set.** Each carried three consecutive
 `if (self)` blocks, and the first of the three put the handler in the **other** ivar, so a request

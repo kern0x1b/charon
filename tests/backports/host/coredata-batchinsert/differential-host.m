@@ -75,21 +75,61 @@ int main(void) { @autoreleasepool {
     // 3. The entity form, with the ROWS it is for: both sides answer entityName=Row and entity=Row,
     //    which is what the committed twenty-two-line reference (reference-host.tsv, CoreData 120)
     //    records for this initialiser and what the port stores.
-    //
-    //    The rows are what this question is about. Asked with an EMPTY array -- as this probe stood
-    //    until now -- Apple's own class answers entityName=(nil) and entity=(null), measured over both
-    //    forms and over a detached entity, one in a model and one in a model with a store, one row and
-    //    two: a request built with nothing to insert keeps neither. The comment that stood here said
-    //    "entityName is nil and the entity is the one", which is Apple's answer for the empty case and
-    //    not for a request with rows in it, so the probe was asserting a claim of its own and calling
-    //    the difference a port defect. The empty-array behaviour is a real difference from the port and
-    //    is handed on rather than folded in here: it is a question about what the port should store for
-    //    a request with no rows, which is the owner's call and not this probe's.
     NSBatchInsertRequest *byEntity = [[NSBatchInsertRequest alloc] initWithEntity:entity
                                                                          objects:@[@{@"name": @"one"},
                                                                                    @{@"name": @"two"}]];
     printf("byEntity.entityName\t%s\n", byEntity.entityName ? byEntity.entityName.UTF8String : "(nil)");
     printf("byEntity.entity\t%s\n", byEntity.entity.name.UTF8String);
+
+    // 4. A request with NOTHING to insert, asked four ways: both initialiser forms with an empty
+    //    array and with nil. Apple's own class keeps neither the name nor the entity then, and the
+    //    port keeps neither either -- measured on the host over one row, two rows, an empty array and
+    //    nil, and the port's own storage is what this compares. The rows answer their count whatever
+    //    the rest is, so that line is here too.
+    NSArray *rows = @[@{@"name": @"one"}, @{@"name": @"two"}];
+    NSArray *none = @[];
+    struct { const char *label; NSArray *objects; NSString *name; NSEntityDescription *by; } empty[] = {
+        {"name.empty", none, @"Row", nil}, {"name.nil", nil, @"Row", nil},
+        {"entity.empty", none, nil, entity}, {"entity.nil", nil, nil, entity},
+    };
+    for (size_t index = 0; index < sizeof(empty) / sizeof(empty[0]); index++) {
+        NSBatchInsertRequest *request = empty[index].by
+            ? [[NSBatchInsertRequest alloc] initWithEntity:empty[index].by objects:empty[index].objects]
+            : [[NSBatchInsertRequest alloc] initWithEntityName:empty[index].name objects:empty[index].objects];
+        printf("%s.entityName\t%s\n", empty[index].label,
+               request.entityName ? request.entityName.UTF8String : "(nil)");
+        @try {
+            NSEntityDescription *held = request.entity;
+            printf("%s.entity\t%s\n", empty[index].label,
+                   held ? (held.name ? held.name.UTF8String : "(nil)") : "(null)");
+        } @catch (NSException *exception) {
+            // The release's own refusal, by name: the address and the name in the reason are the
+            // request's, so the two runs differ in that line and the diff says so on every line it
+            // should -- a bare "raised" would hide a port that raised something else.
+            printf("%s.entity\traised=%s\n", empty[index].label, exception.reason.UTF8String);
+        }
+        printf("%s.objects\t%lu\n", empty[index].label, (unsigned long)request.objectsToInsert.count);
+    }
+
+    // 5. -entity on a request that was made with a NAME and rows: the release raises, and the reason
+    //    carries this request's own address and the name it was given, so the two runs differ in that
+    //    one line by construction. What is compared is the refusal itself -- the exception's name and
+    //    the reason with the address taken out of it -- because an address is not an answer.
+    @try {
+        NSEntityDescription *refused = byName.entity;
+        printf("nameMade.entity\t%s\n", refused ? "answered" : "(null)");
+    } @catch (NSException *exception) {
+        // The address is the request's own and is not an answer, so it is taken out of the reason by
+        // shape -- every 0x and the digits after it -- and what is left is Apple's own sentence.
+        NSRegularExpression *address = [NSRegularExpression regularExpressionWithPattern:@"0x[0-9a-f]+"
+                                                                                 options:0
+                                                                                   error:NULL];
+        NSString *reason = [address stringByReplacingMatchesInString:exception.reason
+                                                              options:0
+                                                                range:NSMakeRange(0, exception.reason.length)
+                                                         withTemplate:@"0xADDRESS"];
+        printf("nameMade.entity\traised=%s\treason=%s\n", exception.name.UTF8String, reason.UTF8String);
+    }
 
     // 4. The handlers: both exist, and both RETURN BOOL. The block is stored, not called.
     __block NSUInteger called = 0;
