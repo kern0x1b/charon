@@ -312,3 +312,74 @@ Nothing here rests on the hardware. The release carries no ARKit at all - 0 of t
 of the 6.1.3 armv7 cache begin `AR`, as this file's `ARDepthData` row records - so what these rows
 answer is the port's own metadata against Apple's, and Apple's answer is now read off Apple's own
 image rather than off a header.
+
+## The skeleton joint names, read out of a held cache with charon's own reader
+
+`ARSkeletonDefinition`'s table is **data inside `ARKitCore`**, not symbols and not in any header, so
+the ObjC inventory cannot reach it. Read here with `modules/apple/dyld.lua`'s `open_cache` through a
+new reader, `tools/corpus/cfstring-run.lua` - one 32-byte record at a time, bounded memory, in
+process, no `ipsw`:
+
+```
+CHARON_ROOT=$PWD xmake l tools/corpus/cfstring-run.lua \
+    ~/.charon/dyld/16.0/dyld_shared_cache_arm64e 1e0be3550 20
+```
+
+### The eight exported constants, and their values
+
+`tools/corpus/cache-value.lua` over the same cache, one line per symbol, naming the image it found
+each in:
+
+| symbol | image | value |
+| --- | --- | --- |
+| `ARSkeletonJointNameRoot` | `ARKitCore.framework/ARKitCore` | `root` |
+| `ARSkeletonJointNameHead` | same | `head_joint` |
+| `ARSkeletonJointNameLeftHand` | same | `left_hand_joint` |
+| `ARSkeletonJointNameRightHand` | same | `right_hand_joint` |
+| `ARSkeletonJointNameLeftFoot` | same | `left_foot_joint` |
+| `ARSkeletonJointNameRightFoot` | same | `right_foot_joint` |
+| `ARSkeletonJointNameLeftShoulder` | same | `left_shoulder_1_joint` |
+| `ARSkeletonJointNameRightShoulder` | same | `right_shoulder_1_joint` |
+
+**The `_1` in both shoulders is the part only the measurement gives.** The header names the constants
+`LeftShoulder` and `RightShoulder` with no ordinal, and there is no way to guess that the value is the
+`..._1_joint` of a numbered family.
+
+### The run those eight sit in
+
+They are 32 bytes apart, `0x1e0be3550` through `0x1e0be3630`, every record the same `isa`
+(`0x80156ae15cedfba0`, the constant-string class) and the same `flags` (`0x7c8`). Reading past them,
+the run continues with more joint names and then stops being joint names:
+
+```
+root   head_joint   left_hand_joint   right_hand_joint
+left_foot_joint   right_foot_joint   left_shoulder_1_joint   right_shoulder_1_joint
+neck_1_joint   right_forearm_joint   left_forearm_joint   right_upLeg_joint
+right_leg_joint   left_upLeg_joint   left_leg_joint   right_eye_joint
+left_eye_joint   Warning   Critical   interpolateBicubic   maxFilter
+```
+
+**Seventeen joint names, then the constant pool carries on with strings that are not joints.** So the
+91-entry table is NOT one contiguous run of this array: the rest is elsewhere in `ARKitCore`'s constant
+pool, in one or more further runs. A fresh session should scan the whole `__DATA_CONST` for that `isa`
+and collect every value matching `^root$|^[a-z][A-Za-z0-9_]*_joint$` - the `_1` family shows the
+numbering is per joint and there are more members of it than this run holds.
+
+### What is NOT measured, and it is the half that matters
+
+`parentIndices` is not a string and not a symbol: it is an `NSArray` of `NSNumber` reached through
+`-[ARSkeletonDefinition parentIndices]`, whose backing array is found by disassembling the getter's
+`adrp`/`add` in `ARKitCore` and reading the `__data` it names. **That was not done.** So the table's
+names are partly measured and its hierarchy is not measured at all, and a half-measured skeleton is
+worse than an unmeasured one, because the port would ship a hierarchy guessed from the names. The 44
+rows of the body-tracking family stay open.
+
+### The three mistakes this cost, written down so they are not repeated
+
+1. `dyld.load(cachefile)` returns a **summary** - `{architecture, count, exports, images, libraries}` -
+   and has no `read_address`. `dyld.open_cache(cachefile)` is the reader. `assertion failed!` with no
+   line is what the summary gives.
+2. `__CFConstantString`'s `str` is at **+16**, not +8. +8 is `flags`, which is the same small constant
+   (`0x7c8`) in every record, so the mistake reads as "every record points at 0x7c8".
+3. A stored pointer carries slide and tag above the address bits and must be masked with `0xFFFFFFFFF`
+   before it is read - the rule `tools/cache-value.lua` already applies (its line 107).
