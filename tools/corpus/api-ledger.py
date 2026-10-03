@@ -485,6 +485,31 @@ def classify_symbol(api, built_exports, release_exports):
 STORAGE_KINDS = ("VarDecl", "FunctionDecl")
 TYPEDEF_KIND = "TypedefDecl"
 QUOTED_RE = re.compile(r"'([^']*)'")
+# What decides internal linkage, and where the answer is read from. clang prints the entity's linkage
+# on EVERY line it prints for it, whether or not that line repeated the source's keyword, and that is
+# the compiler's own answer rather than a keyword this tool happens to spell. Measured 2026-10-03 with
+# clang 23.1.1 (`charon@llvm`, the one the ledger's own clang_command resolves) over link.c, one
+# declaration per storage form:
+#   int extern_fn(void);                          -> "extern external-linkage"
+#   static int static_fn(void);                  -> "static internal-linkage"
+#   static inline int inline_fn(void) {...}       -> "static inline internal-linkage"
+#   inline int plain_inline_fn(void) {...}        -> "inline external-linkage"
+# The CLT's /usr/bin/clang prints NO linkage token at all -- the same four declarations come out as
+# "extern", "static", "static inline", "inline" and nothing more -- so the keyword stays as the
+# fallback and the answer is the same under either compiler.
+#
+# Neither answer alone was enough, because the defect was not the spelling but WHICH LINE was read.
+# A function declared `static inline` through a macro and DEFINED later without repeating it is
+# printed `implicit-inline internal-linkage` on its definition and `static inline internal-linkage`
+# on its declaration: no `static` token anywhere on the definition line, and `implicit-inline` has a
+# hyphen where `" inline"` looks for a space. That is every one of Spatial's 640 C functions -
+# Spatial/Base.h:34 `#define SPATIAL_INLINE static inline`, and the definition at
+# SPAffineTransform3D.h:879 is preceded by SPATIAL_REFINED_FOR_SWIFT and SPATIAL_OVERLOADABLE only.
+# The scan kept the LAST line per name, so all 640 read (extern, static) as (false, false) and the
+# classification's `if is_extern or not is_static` placed every one of them `missing`, "the port has
+# to export it", for an API no Apple binary exports and every caller inlines.
+INTERNAL_LINKAGE = "internal-linkage"
+EXTERNAL_LINKAGE = "external-linkage"
 
 
 def scan_storage(lines, flags, typedefs=None):
@@ -493,7 +518,11 @@ def scan_storage(lines, flags, typedefs=None):
     skipped on a prefix test instead of a regex. An enum case is a depth-1 EnumConstantDecl and so
     is absent here -- which is how the classification tells a case (header-only) from an extern
     variable. The declared type is the first quoted token after the name, and it is what says how
-    wide the constant's value is when const-values.py reads it out of a dyld cache."""
+    wide the constant's value is when const-values.py reads it out of a dyld cache.
+
+    The flags MERGE across every line that names the same entity rather than the last one winning: a
+    declaration and its definition are one function, so a later line that omits what an earlier one
+    carried must not uncarry it."""
     for line in lines:
         if not line.startswith("|-"):
             continue
@@ -519,8 +548,18 @@ def scan_storage(lines, flags, typedefs=None):
         # walk reads, CGFloat's canonical type is a 4-byte float, and a value read out of a 64-bit
         # cache is 8 bytes wide.
         quoted = QUOTED_RE.findall(rest)
-        flags[name] = (" extern" in rest, " static" in rest, " inline" in rest,
-                       quoted[0] if quoted else "", quoted[-1] if quoted else "")
+        found = (EXTERNAL_LINKAGE in rest or " extern" in rest,
+                 INTERNAL_LINKAGE in rest or " static" in rest,
+                 " inline" in rest or " implicit-inline" in rest,
+                 quoted[0] if quoted else "", quoted[-1] if quoted else "")
+        seen = flags.get(name)
+        if seen is None:
+            flags[name] = found
+        else:
+            # the wider answer stands: a name one entity carries keeps what any of its lines said,
+            # and the types are the first line's, which is the declaration rather than the definition
+            flags[name] = (seen[0] or found[0], seen[1] or found[1], seen[2] or found[2],
+                           seen[3] or found[3], seen[4] or found[4])
 
 
 class _HeaderSurface:
