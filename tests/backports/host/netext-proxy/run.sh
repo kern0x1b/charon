@@ -1,5 +1,5 @@
 #!/bin/sh
-# run.sh — the proxy and the IPv4 and IPv6 settings objects, compared against Apple's own answers in two binaries.
+# run.sh - the proxy and the IPv4 and IPv6 settings objects, compared against Apple's own answers in two binaries.
 #
 #     sh tests/backports/host/netext-proxy/run.sh [--mutation]
 #
