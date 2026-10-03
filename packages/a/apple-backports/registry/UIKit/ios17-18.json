@@ -929,7 +929,7 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "16.0 introduced this class, not 17.0: the SDK's annotation says 17.0 but the 16.0 arm64e cache carries it with 33 instance methods and 6 class methods. Nothing in 6.1.3 or 4.3 has it, and the port cannot carry it either because it has a button and a secondaryButton of type UIButtonConfiguration, which this library does not carry.",
+   "reason": "16.0 introduced this class, not 17.0: the SDK's annotation says 17.0 but the 16.0 arm64e cache carries it with 33 instance methods and 6 class methods. Nothing in 6.1.3 or 4.3 has it. The port does not carry it yet, and the reason is not its buttons: UIButtonConfiguration is carried (packages/a/apple-backports/UIKit/UIButtonConfiguration.m, its row in registry/UIKit/ios15-16.json), and so is UIContentConfiguration, the protocol the class conforms to (registry/UIKit/ios13rest.json). What is missing is measured values: the defaults of imageToTextPadding, textToSecondaryTextPadding, textToButtonPadding, buttonToSecondaryButtonPadding, alignment, axesPreservingSuperviewLayoutMargins and directionalLayoutMargins are host answers nobody has measured yet, and the class is not written with invented ones (coordination/api-queue.md, owed since 2026-09-30).",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "the 4.3, 6.1.3 and 12.0 caches, 0 carried with an 8/8 control in the same run (facts/UIKit/UIKit17Absence.md M9, M12); the 16.0 arm64e cache is the exception and is recorded in M13 rather than smoothed over"
   },
@@ -969,7 +969,7 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "16.0 introduced this view, not 17.0: the SDK's annotation says 17.0 but the 16.0 arm64e cache carries it with 36 instance methods. Nothing in 6.1.3 or 4.3 has it, and the port cannot carry it either because it is built over UIContentUnavailableConfiguration, which needs UIButtonConfiguration.",
+   "reason": "16.0 introduced this view, not 17.0: the SDK's annotation says 17.0 but the 16.0 arm64e cache carries it with 36 instance methods. Nothing in 6.1.3 or 4.3 has it, and the port cannot carry it either because it is built over UIContentUnavailableConfiguration, which waits for its layout defaults to be measured. UIButtonConfiguration is carried and is not the obstacle.",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "the 4.3, 6.1.3 and 12.0 caches, 0 carried with an 8/8 control in the same run (facts/UIKit/UIKit17Absence.md M9, M12); the 16.0 arm64e cache is the exception and is recorded in M13 rather than smoothed over"
   },

@@ -74,6 +74,16 @@ here. Both initialisers are `NS_DESIGNATED_INITIALIZER` in the header, which is 
 over the configuration. Both rows are `absent` on that, and both land when `UIButtonConfiguration`
 does.
 
+**Corrected 2026-10-03: the paragraph above is stale.** `UIButtonConfiguration` is carried
+(`UIKit/UIButtonConfiguration.m`, class row `implemented` in `registry/UIKit/ios15-16.json`), and so is
+`UIContentConfiguration`, the protocol the configuration conforms to (`registry/UIKit/ios13rest.json`).
+Neither class is blocked on substrate. What the configuration still waits for is seven host defaults
+nobody has measured - `imageToTextPadding`, `textToSecondaryTextPadding`, `textToButtonPadding`,
+`buttonToSecondaryButtonPadding`, `alignment`, `axesPreservingSuperviewLayoutMargins` and
+`directionalLayoutMargins` (`coordination/api-queue.md`, owed since 2026-09-30) - and the view waits for
+the configuration. Both rows' `reason` now say this; `UIKit17Absence.md`, "A stale blocker in M3,
+corrected", is the same correction from the absence side.
+
 ## Not measured
 
 - `supportsSecureCoding` on the port's copies answers yes, which is what the port has always answered for
