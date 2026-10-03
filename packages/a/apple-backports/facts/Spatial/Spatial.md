@@ -66,15 +66,21 @@ caller stops at the call.
 
 ## What is NOT measured here
 
-- **No host differential has been taken.** It can be, and the oracle is on this machine:
-  `/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Spatial/` carries Apple's own
-  Spatial headers for the host, with the same `SPATIAL_INLINE` and the same definitions. Compiling
-  the same generated calls twice - once against those and once against the 26.2 iOS headers - and
-  comparing the printed results is a real differential between two Apple sources, and it is the next
-  step. What there is **not** is a `Spatial.framework` to `dlsym`: `ls /System/Library/Frameworks |
+- **No host differential has been taken, and none is available - measured, not assumed.** The oracle
+  on this machine is `/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Spatial/`, and
+  the proposal was to compile the same generated calls twice, once against those headers and once
+  against the 26.2 iOS ones, and compare. That comparison cannot fail, because **the two header sets
+  are the same bytes**: all 35 files of `usr/include/Spatial/` sha256 identically between the macOS
+  CLT SDK and `iPhoneOS26.2.sdk`, 0 differ. A differential of a file against itself measures the
+  reader, not the code, so it is not run and not reported as a pass.
+  What there is **not** either is a `Spatial.framework` to `dlsym`: `ls /System/Library/Frameworks |
   grep -i spatial` returns only `SpatialPreview.framework`, `find / -maxdepth 6 -name
-  Spatial.framework` returns nothing, and the CLT SDK's `System/Library/Frameworks` has no
-  `Spatial`.
+  Spatial.framework` returns nothing, and the CLT SDK's `System/Library/Frameworks` has no `Spatial`.
+- **So what the 582 `header-ok` rows rest on, and it is a compile, not a number.** `header-ok` claims
+  a translation unit naming the row compiles for the release and that no code is needed. The 640
+  functions' arithmetic is Apple's own, carried byte-identically into the port, so there is no port
+  arithmetic for a numeric oracle to check. What can be checked, and is, is that the headers parse and
+  name at both bands - see the next bullet.
 - **No link of a 640-function unit yet.** A generated TU naming all 640 with the ledger's own
   `naming_line` shape, at `-target armv7-apple-ios6.0` and `armv7-apple-ios4.3` against the 26.2 SDK,
   gives **19 errors on both targets** and 0 on the other 621 lines; all 19 are the
