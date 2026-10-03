@@ -86,14 +86,24 @@ static BOOL CharonMTKFormatForMDL(MDLTexture *texture, MTLPixelFormat *out)
         } else {
             size_t width = (size_t)MAX(texture.dimensions.x, 0);
             size_t height = (size_t)MAX(texture.dimensions.y, 0);
-            // The origin option picks the accessor, which is what the metadata of an MDLTexture is:
-            // its own top-left form when the caller says the source is top-left, its own bottom-left
-            // form otherwise. This port's textures are GL textures, so the bottom-left form is the one
-            // -replaceRegion: wants.
+            // THE ROW ORDER, MEASURED against Apple's own loader rather than reasoned about.
+            //
+            // An MDLTexture carries its origin and exposes the two orders as two accessors. A Metal
+            // texture's row 0 is its top row, so the top-left form is the one that puts the image the
+            // right way up in it - and that is also what Apple's own loader produces, measured by
+            // tests/backports/host/metal-census/mdltexture.sh on a real device: with no
+            // MTKTextureLoaderOptionOrigin, with MTKTextureLoaderOptionOriginTopLeft and with
+            // MTKTextureLoaderOptionOriginBottomLeft, all three against Apple's own answer byte for
+            // byte. The default is therefore the TOP-LEFT form and MTKTextureLoaderOptionOriginBottomLeft
+            // is the one that asks for the other; TopLeft and FlippedVertically ask for the default.
+            //
+            // This port's textures are OpenGL ES textures, whose row 0 is the bottom one, and
+            // -replaceRegion: writes the bytes it is handed in the driver's own order, which is the
+            // same rule MTKTextureLoader9.m states for the file path.
             NSString *origin = options[MTKTextureLoaderOptionOrigin];
-            BOOL topLeft = [origin isEqualToString:MTKTextureLoaderOriginTopLeft] ||
-                           [origin isEqualToString:MTKTextureLoaderOriginFlippedVertically];
-            NSData *texels = topLeft ? [texture texelDataWithTopLeftOrigin] : [texture texelDataWithBottomLeftOrigin];
+            BOOL bottomLeft = [origin isEqualToString:MTKTextureLoaderOriginBottomLeft];
+            BOOL topLeft = !bottomLeft;
+            NSData *texels = bottomLeft ? [texture texelDataWithBottomLeftOrigin] : [texture texelDataWithTopLeftOrigin];
             if (width == 0 || height == 0 || !texels) {
                 why = @"the MDLTexture has no texels to load";
             } else {
@@ -118,11 +128,14 @@ static BOOL CharonMTKFormatForMDL(MDLTexture *texture, MTLPixelFormat *out)
                            @"the device could not create a texture of Metal pixel format %lu, the format this MDLTexture's texels have",
                            (unsigned long)format];
                 } else {
-                    // The MDLTexture's own row stride, and not width times the texel size: an MDLTexture
-                    // may pad its rows, and -replaceRegion: is told the distance between two of them.
-                    NSUInteger stride = (NSUInteger)texture.rowStride > 0
-                        ? (NSUInteger)texture.rowStride
-                        : (NSUInteger)(texels.length / height);
+                    // THE ROW STRIDE IS THE ONE THE ACCESSOR'S OWN DATA HAS, and not the MDLTexture's
+                    // rowStride property. Measured: with an MDLTexture built with 40-byte rows over a
+                    // 16-byte row, -texelDataWithTopLeftOrigin hands back data whose rows are 16 bytes,
+                    // and -replaceRegion: told 40 writes a texture whose rows carry the padding. The
+                    // stride that goes to the device is therefore the distance between two rows of the
+                    // bytes actually in hand, which is what an MDLTexture may pad and what this port's
+                    // textures, like Metal's, do not.
+                    NSUInteger stride = (NSUInteger)(texels.length / height);
                     [built replaceRegion:MTLRegionMake2D(0, 0, width, height) mipmapLevel:0
                                withBytes:texels.bytes bytesPerRow:stride];
                     made = built;

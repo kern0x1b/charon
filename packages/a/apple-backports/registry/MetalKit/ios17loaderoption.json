@@ -18,9 +18,9 @@
    "introduced": "10.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the MDLTexture's channel count and channel encoding are mapped onto one of the nine Metal pixel formats this port holds, the texels are read in the row order this port's textures are written in - which MTKTextureLoaderOptionOrigin picks between the MDLTexture's own two accessors, so no rows are copied - and the bytes are written through -replaceRegion:; a channel count or encoding with no format of that shape, an sRGB request, a cube layout and a cube are each refused with the reason as the error's description",
-   "effect": "an MDLTexture of one, two or four 8-bit, 16-bit float or 32-bit float channels becomes a real Metal texture of the matching format with the texels the MDLTexture holds; anything this port cannot hold answers nil and an NSError in MTKTextureLoaderErrorDomain naming what it was given",
-   "source": "SDK 26.2, MetalKit, MTKTextureLoader.h:330; the format table is facts/Metal/PixelFormats.md",
+   "reason": "the MDLTexture's channel count and channel encoding are mapped onto one of the nine Metal pixel formats this port holds and the texels are written through -replaceRegion: at the stride the data in hand has; the row order is measured against Apple's own loader on a real device and is the top-left form by default, with MTKTextureLoaderOptionOriginBottomLeft asking for the other, and the stride is the distance between two rows of the bytes in hand rather than the MDLTexture's rowStride property because a padded MDLTexture hands back unpadded rows; a channel count or encoding with no format of that shape, an sRGB request, a cube layout and a cube are each refused with the reason as the error's description",
+   "effect": "an MDLTexture of one, two or four 8-bit, 16-bit float or 32-bit float channels becomes a real Metal texture of the matching format, byte for byte what Apple's own loader produces from the same MDLTexture on a real device, measured by tests/backports/host/metal-census/mdltexture.sh; anything this port cannot hold answers nil and an NSError in MTKTextureLoaderErrorDomain naming what it was given",
+   "source": "SDK 26.2, MetalKit, MTKTextureLoader.h:330; the format table is facts/Metal/PixelFormats.md; the row order and the stride are measured against Apple's own loader by tests/backports/host/metal-census/mdltexture.sh",
    "facts": "facts/MetalKit/TextureLoaderMDL.md"
   },
   {

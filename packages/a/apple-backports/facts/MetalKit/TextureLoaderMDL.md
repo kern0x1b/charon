@@ -86,15 +86,56 @@ copied - `MTKTextureLoaderOptionOrigin` picks the accessor, with `BottomLeft` an
   missing extension; the loader repeats the format number in its own error so the caller has it
   without a second call.
 
+## Where Apple accepts what this port refuses, measured
+
+Three of the cases below are inputs Apple's own loader answers and this port does not. That is the
+port's nine formats and not a claim about the input, and the differential prints Apple's answer beside
+the port's on every run:
+
+| input | Apple's own loader | this port |
+|---|---|---|
+| `MTKTextureLoaderOptionSRGB: @YES` | a texture | nil - the port holds no sRGB format |
+| four channels of `UInt16` | a texture | nil - no 16-bit-integer Metal format is held |
+| an MDLTexture that is a cube | (not exercised: an MDLTexture's `isCube` is set by its initializer and the case builds one that is not) | nil - six faces, and this port's textures are 2D |
+| three channels of `UInt8` | nil, "Textures must have 1, 2, or 4 channels" | nil, naming the channel count |
+| `UInt24` | nil, "Textures must use 8 or 16 bits per channel" | nil, naming the channel encoding |
+
 Every one of these is an `NSError` in `MTKTextureLoaderErrorDomain` with the reason as its
 `NSLocalizedDescriptionKey`, and the completion-handler form calls the handler with the same pair -
 `(nil, error)` on a refusal and `(texture, nil)` on a texture. The header's `completionHandler` is
 `nonnull`, so a caller that passes nil gets nothing called, which is what passing nil means.
 
-## What is not measured here
+## The differential, and what it does not reach
 
-The texels that come out. This is a device path: it builds an `MTLTextureDescriptor`, asks the device
-for a texture and writes into it, and `MTLCreateSystemDefaultDevice()` HANGS on a machine with no GPU
-(the same wall `tests/backports/host/metal-census/descriptors16.sh` writes down). So the format table,
-the origin choice and the refusals are what this file claims, and the pixels a real device produces
-are held to the device test, not to a host case that would have to fake a device to get there.
+```
+sh tests/backports/host/metal-census/mdltexture.sh
+```
+
+```
+  ok   the control: MTLCreateSystemDefaultDevice() answers on this machine
+  ok   four 8-bit channels, packed rows: pixel format, the port 70 and Apple's own 70
+  ok   four 8-bit channels, packed rows: every byte of the texels, 48 of them
+  ok   four 16-bit float channels: every byte of the texels, 96 of them
+  ok   one 32-bit float channel: every byte of the texels, 80 of them
+  ok   four 8-bit channels, rows padded to 40 bytes: every byte of the texels, 48 of them
+  ok   four 8-bit channels, MTKTextureLoaderOptionOriginTopLeft: every byte of the texels, 48 of them
+  ok   four 8-bit channels, MTKTextureLoaderOptionOriginBottomLeft: every byte of the texels, 48 of them
+  ok   an sRGB request, which this port holds no format for: the port answers nil in MTKTextureLoaderErrorDomain
+  ok   a texture: the handler is called once with the texture and no error
+  mdltexture: 39 check(s), 0 failure(s)
+  red  the two-channel entry of the format table:   two 8-bit channels: pixel format, the port 70 and Apple's own 30
+  red  the origin option's choice of accessor:   four 8-bit channels, packed rows: every byte of the texels, 48 of them
+  red  the sRGB refusal:   an sRGB request, which this port holds no format for: the port answers nil in MTKTextureLoaderErrorDomain
+```
+
+39 checks and three mutants, one per thing the loader decides. **The seam is one line**: the port's
+loader is compiled under another class name together with the port's own `MTKTextureLoader9.m`, and
+handed Apple's device through the port's own `-initWithDevice:`. The port's real device object is an
+EAGL context over OpenGL ES 2.0 and cannot be built on a host; every other line under test - the format
+table, the origin choice, the refusals, the completion handler - is the port's own. The `MDLTexture`
+is Apple's and ONE of them, given to both sides, because it is the input and not the thing under test.
+
+**What it does not reach**: the port's own `-replaceRegion:` on the port's own GL texture. The device
+here is Apple's, so the bytes travel by Apple's path. What the port does with those bytes on a real
+iPhone 4S at 6.1.3 is the device test's, and `facts/Metal/PixelFormats.md` is where the format
+support of that device is measured.
