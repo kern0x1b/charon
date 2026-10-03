@@ -120,6 +120,29 @@ cat > "$work/port/port.m" <<'PORTTU'
 PORTTU
 cp "$work/port/port.m" "$work/port/port-pristine.m"
 
+# THE VALUE BINARY: the value case with the port's object beside it. M8 and M9 are the equality
+# mutations and they are red against THIS binary, because the questions they break are asked here and not
+# in the big case - which is why asking them there was not enough.
+build_value() {   # $1 output name, then the port objects to link
+    rm -f "$work/$1" "$work/$1-case.o"
+    # shellcheck disable=SC2086
+    xcrun clang $common -c "$here/descriptors26-value.m" -o "$work/$1-case.o" > "$work/$1.log" 2>&1 || {
+        echo "RUN FAILED  $1 (the value case) does not build" >&2
+        sed -n '/error:/,$p' "$work/$1.log" | head -3 | sed 's/^/    /' >&2
+        exit 1
+    }
+    # shellcheck disable=SC2086
+    # ONE port object, and the comment is worth having: build() compiles BOTH port files into ONE
+    # translation unit, so this object carries the tile classes as well as the 26.0 ones and a second
+    # object was a link error rather than a link line.
+    # shellcheck disable=SC2086
+    xcrun clang $common $frameworks -o "$work/$1" "$work/$1-case.o" "$2" >> "$work/$1.log" 2>&1 || {
+        echo "RUN FAILED  $1 does not link" >&2
+        sed -n '/Undefined symbols/,$p' "$work/$1.log" | sed -n '2,6p' | sed 's/^/    /' >&2
+        exit 1
+    }
+}
+
 build() {   # $1 output name
     rm -f "$work/$1" "$work/$1-case.o" "$work/$1-port.o"
     # shellcheck disable=SC2086
@@ -239,10 +262,29 @@ PY
     fi
     cp "$work/port/port-$1.m" "$work/port/port.m"
     build "$1"
+    # The 11.0 object of this mutant under a stable name, because the value binary links it beside the
+    # mutant 26.0 one: the value case asks the tile attachment, which lives in the other file.
+    # The port OBJECT of this mutant, kept for build_value: the equality mutants are measured against the
+    # value binary, and that binary links this object rather than the big case's.
 }
 # $1 the mutant name, $2 what it broke. The BINARY is named by the mutant, not by the sentence: an
 # earlier spelling passed the sentence as $1 and then tried to run a binary of that name, which does
 # not exist, and reported it as "no assertion line" - a harness defect that reads as a red mutation.
+# A red for the VALUE binary, which the equality mutations are measured against.
+expect_red_value() {   # $1 mutant name, $2 what it broke
+    if timeout 120 "$work/$1" > "$work/$1.out" 2>&1; then
+        echo "FAIL  $1 ($2) is NOT red - this equality is measured by nothing" >&2
+        exit 1
+    fi
+    line=$(grep -m1 'FAIL' "$work/$1.out" | sed 's/^ *FAIL /  /')
+    if [ -z "$line" ]; then
+        echo "FAIL  $1 ($2) produced no assertion line - see $work/$1.out" >&2
+        sed -n 1,4p "$work/$1.out" | sed 's/^/    /' >&2
+        exit 1
+    fi
+    echo "  red  $2: $line"
+}
+
 expect_red() {   # $1 mutant name, $2 what it broke
     if timeout 120 "$work/$1" > "$work/$1.out" 2>&1; then
         echo "FAIL  $1 ($2) is NOT red - this class is measured by nothing" >&2
@@ -298,6 +340,58 @@ mutate m7 MTLTileRenderPipelineAttachments11.m MTLTileRenderPipelineColorAttachm
         _slots[attachmentIndex] = nil;"
 expect_red m7 "the tile array's getter"
 
-echo "descriptors26: the differential is green, the control is RUN FAILED, and all seven mutants are red"
+# M8 AND M9 ARE THE EQUALITY ONES, and they are the mutations a reader cannot do without: a class that
+# compared NOTHING answers "equal" to everything and every question above except the fourth; a class that
+# compared every member but ONE answers equal on exactly the member it forgot.
+mutate m8 MTL4Descriptors26.m MTL4PipelineOptions \
+    "    if (self.shaderReflection != ((MTL4PipelineOptions *)object).shaderReflection) return NO;" "" 1
+build_value m8 "$work/m8-port.o"
+expect_red_value m8 "the options' equality forgetting shaderReflection"
+
+mutate m9 MTL4Descriptors26.m MTL4ComputePipelineDescriptor \
+    "    if (self.requiredThreadsPerThreadgroup.depth != ((MTL4ComputePipelineDescriptor *)object).requiredThreadsPerThreadgroup.depth) return NO;" "" 1
+build_value m9 "$work/m9-port.o"
+expect_red_value m9 "the compute descriptor's equality forgetting the depth of the threadgroup size"
+
+# APPLE'S OWN ANSWERS TO THE SAME QUESTIONS, IN A BINARY WITH NO PORT CLASS IN IT, and the diff of the two
+# runs. Asking Apple's -isEqual: inside the differential TRAPS - measured, a Trace/BPT trap in
+# objc_opt_respondsToSelector at the first call, with the port's classes linked the only difference - so
+# the Apple side has its own case here and the comparison is a diff of two measured runs.
+echo "Apple's own answers to the value-equality questions, in a binary of their own:"
+# shellcheck disable=SC2086
+xcrun clang $common -framework Foundation -framework Metal -o "$work/apple" "$here/descriptors26-apple.m" \
+    > "$work/apple.log" 2>&1 || {
+    echo "RUN FAILED  the Apple-side case does not build" >&2
+    sed -n '/error:/,$p' "$work/apple.log" | head -3 | sed 's/^/    /' >&2
+    exit 1
+}
+timeout 120 "$work/apple" > "$work/apple.out" 2>&1 || { echo "FAIL: the Apple-side measurement failed" >&2; exit 1; }
+timeout 120 "$work/real" > "$work/port.out" 2>&1 || { echo "FAIL: the port-side case failed" >&2; exit 1; }
+grep 'fresh-equal\|fresh-hash-same\|copy-equal' "$work/apple.out" > "$work/apple.value"
+# THE PORT'S SIDE IS ITS OWN CASE AND ITS OWN BINARY, for the same reason: asking these questions in the
+# big case's binary traps as well, and a small binary is where the trap is either gone or obvious.
+# shellcheck disable=SC2086
+xcrun clang $common -c "$here/descriptors26-value.m" -o "$work/value-case.o" > "$work/value.log" 2>&1 || {
+    echo "RUN FAILED  the port-side value case does not build" >&2
+    sed -n '/error:/,$p' "$work/value.log" | head -3 | sed 's/^/    /' >&2
+    exit 1
+}
+# shellcheck disable=SC2086
+xcrun clang $common $frameworks -o "$work/value" "$work/value-case.o" "$work/real-port.o" >> "$work/value.log" 2>&1 || {
+    echo "RUN FAILED  the port-side value case does not link" >&2
+    sed -n '/Undefined symbols/,$p' "$work/value.log" | sed -n '2,6p' | sed 's/^/    /' >&2
+    exit 1
+}
+timeout 120 "$work/value" > "$work/port.out" 2>&1 || { echo "FAIL: the port-side value measurement failed" >&2; tail -5 "$work/port.out" | sed 's/^/    /' >&2; exit 1; }
+grep 'fresh-equal\|fresh-hash-same\|copy-equal' "$work/port.out" > "$work/port.value"
+if ! diff -u "$work/apple.value" "$work/port.value" > "$work/value.diff"; then
+    echo "FAIL: the port's value equality differs from Apple's own, and the diff names it:" >&2
+    head -20 "$work/value.diff" | sed 's/^/    /' >&2
+    exit 1
+fi
+echo "  the port's value equality IS Apple's own, member for member: $(wc -l < "$work/apple.value" | tr -d ' ') answers agree"
+sed -n '1,3p' "$work/apple.value" | sed 's/^/    /'
+
+echo "descriptors26: the differential is green, the Apple-side answers agree, the control is RUN FAILED, and all nine mutants are red"
 # THE SCRATCH IS REMOVED HERE.
 rm -rf "$work"

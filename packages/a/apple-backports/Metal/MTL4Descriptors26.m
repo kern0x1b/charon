@@ -4,10 +4,9 @@
 // imported for nothing is a header that will be missed when something is added that needs it.
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
+#import <objc/runtime.h>
 #import "CharonMetal26Types.h"
 #import "CharonMetalProtocols.h"
-
-#pragma clang diagnostic ignored "-Wprotocol"
 
 // THE PIPELINE DESCRIPTORS OF METAL 4, and they are the same kind of thing as the twenty in
 // MTLDescriptors16.m: plain data holders that say what a pipeline is built FROM and ask the device
@@ -57,6 +56,28 @@ static void CharonMetal4ResetBlendState(MTL4RenderPipelineColorAttachmentDescrip
     return copy;
 }
 
+
+// VALUE EQUALITY, MEMBER BY MEMBER, because Apple's own object has an -isEqual: and an -hash of its own and that
+// changes what an application can do with two of them: two descriptors that describe the same thing are the same
+// value. Measured against Apple's own object: two fresh ones are equal, their hashes agree, and a copy equals its
+// source.
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4PipelineOptions class]]) return NO;
+    if (self.shaderValidation != ((MTL4PipelineOptions *)object).shaderValidation) return NO;
+    if (self.shaderReflection != ((MTL4PipelineOptions *)object).shaderReflection) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)self.shaderValidation;
+    hash = hash * 31u + (uint32_t)self.shaderReflection;
+    return hash;
+}
+
 @end
 
 @implementation MTL4StaticLinkingDescriptor {
@@ -76,6 +97,26 @@ static void CharonMetal4ResetBlendState(MTL4RenderPipelineColorAttachmentDescrip
     copy.privateFunctionDescriptors = _privateFunctionDescriptors;
     copy.groups = _groups;
     return copy;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4StaticLinkingDescriptor class]]) return NO;
+    if (self.functionDescriptors != ((MTL4StaticLinkingDescriptor *)object).functionDescriptors && ![self.functionDescriptors isEqual:((MTL4StaticLinkingDescriptor *)object).functionDescriptors]) return NO;
+    if (self.privateFunctionDescriptors != ((MTL4StaticLinkingDescriptor *)object).privateFunctionDescriptors && ![self.privateFunctionDescriptors isEqual:((MTL4StaticLinkingDescriptor *)object).privateFunctionDescriptors]) return NO;
+    if (self.groups != ((MTL4StaticLinkingDescriptor *)object).groups && ![self.groups isEqual:((MTL4StaticLinkingDescriptor *)object).groups]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)[self.functionDescriptors hash];
+    hash = hash * 31u + (uint32_t)[self.privateFunctionDescriptors hash];
+    hash = hash * 31u + (uint32_t)[self.groups hash];
+    return hash;
 }
 
 @end
@@ -105,6 +146,26 @@ static void CharonMetal4ResetBlendState(MTL4RenderPipelineColorAttachmentDescrip
     copy.binaryLinkedFunctions = _binaryLinkedFunctions;
     copy.preloadedLibraries = _preloadedLibraries;
     return copy;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4PipelineStageDynamicLinkingDescriptor class]]) return NO;
+    if (self.maxCallStackDepth != ((MTL4PipelineStageDynamicLinkingDescriptor *)object).maxCallStackDepth) return NO;
+    if (self.binaryLinkedFunctions != ((MTL4PipelineStageDynamicLinkingDescriptor *)object).binaryLinkedFunctions && ![self.binaryLinkedFunctions isEqual:((MTL4PipelineStageDynamicLinkingDescriptor *)object).binaryLinkedFunctions]) return NO;
+    if (self.preloadedLibraries != ((MTL4PipelineStageDynamicLinkingDescriptor *)object).preloadedLibraries && ![self.preloadedLibraries isEqual:((MTL4PipelineStageDynamicLinkingDescriptor *)object).preloadedLibraries]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)self.maxCallStackDepth;
+    hash = hash * 31u + (uint32_t)[self.binaryLinkedFunctions hash];
+    hash = hash * 31u + (uint32_t)[self.preloadedLibraries hash];
+    return hash;
 }
 
 @end
@@ -152,6 +213,30 @@ static void CharonMetal4ResetBlendState(MTL4RenderPipelineColorAttachmentDescrip
     return copy;
 }
 
+
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4RenderPipelineDynamicLinkingDescriptor class]]) return NO;
+    if (self.vertexLinkingDescriptor != ((MTL4RenderPipelineDynamicLinkingDescriptor *)object).vertexLinkingDescriptor && ![self.vertexLinkingDescriptor isEqual:((MTL4RenderPipelineDynamicLinkingDescriptor *)object).vertexLinkingDescriptor]) return NO;
+    if (self.fragmentLinkingDescriptor != ((MTL4RenderPipelineDynamicLinkingDescriptor *)object).fragmentLinkingDescriptor && ![self.fragmentLinkingDescriptor isEqual:((MTL4RenderPipelineDynamicLinkingDescriptor *)object).fragmentLinkingDescriptor]) return NO;
+    if (self.tileLinkingDescriptor != ((MTL4RenderPipelineDynamicLinkingDescriptor *)object).tileLinkingDescriptor && ![self.tileLinkingDescriptor isEqual:((MTL4RenderPipelineDynamicLinkingDescriptor *)object).tileLinkingDescriptor]) return NO;
+    if (self.objectLinkingDescriptor != ((MTL4RenderPipelineDynamicLinkingDescriptor *)object).objectLinkingDescriptor && ![self.objectLinkingDescriptor isEqual:((MTL4RenderPipelineDynamicLinkingDescriptor *)object).objectLinkingDescriptor]) return NO;
+    if (self.meshLinkingDescriptor != ((MTL4RenderPipelineDynamicLinkingDescriptor *)object).meshLinkingDescriptor && ![self.meshLinkingDescriptor isEqual:((MTL4RenderPipelineDynamicLinkingDescriptor *)object).meshLinkingDescriptor]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)[self.vertexLinkingDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.fragmentLinkingDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.tileLinkingDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.objectLinkingDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.meshLinkingDescriptor hash];
+    return hash;
+}
+
 @end
 
 @implementation MTL4RenderPipelineBinaryFunctionsDescriptor {
@@ -186,6 +271,30 @@ static void CharonMetal4ResetBlendState(MTL4RenderPipelineColorAttachmentDescrip
     copy.objectAdditionalBinaryFunctions = _objectAdditionalBinaryFunctions;
     copy.meshAdditionalBinaryFunctions = _meshAdditionalBinaryFunctions;
     return copy;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4RenderPipelineBinaryFunctionsDescriptor class]]) return NO;
+    if (self.vertexAdditionalBinaryFunctions != ((MTL4RenderPipelineBinaryFunctionsDescriptor *)object).vertexAdditionalBinaryFunctions && ![self.vertexAdditionalBinaryFunctions isEqual:((MTL4RenderPipelineBinaryFunctionsDescriptor *)object).vertexAdditionalBinaryFunctions]) return NO;
+    if (self.fragmentAdditionalBinaryFunctions != ((MTL4RenderPipelineBinaryFunctionsDescriptor *)object).fragmentAdditionalBinaryFunctions && ![self.fragmentAdditionalBinaryFunctions isEqual:((MTL4RenderPipelineBinaryFunctionsDescriptor *)object).fragmentAdditionalBinaryFunctions]) return NO;
+    if (self.tileAdditionalBinaryFunctions != ((MTL4RenderPipelineBinaryFunctionsDescriptor *)object).tileAdditionalBinaryFunctions && ![self.tileAdditionalBinaryFunctions isEqual:((MTL4RenderPipelineBinaryFunctionsDescriptor *)object).tileAdditionalBinaryFunctions]) return NO;
+    if (self.objectAdditionalBinaryFunctions != ((MTL4RenderPipelineBinaryFunctionsDescriptor *)object).objectAdditionalBinaryFunctions && ![self.objectAdditionalBinaryFunctions isEqual:((MTL4RenderPipelineBinaryFunctionsDescriptor *)object).objectAdditionalBinaryFunctions]) return NO;
+    if (self.meshAdditionalBinaryFunctions != ((MTL4RenderPipelineBinaryFunctionsDescriptor *)object).meshAdditionalBinaryFunctions && ![self.meshAdditionalBinaryFunctions isEqual:((MTL4RenderPipelineBinaryFunctionsDescriptor *)object).meshAdditionalBinaryFunctions]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)[self.vertexAdditionalBinaryFunctions hash];
+    hash = hash * 31u + (uint32_t)[self.fragmentAdditionalBinaryFunctions hash];
+    hash = hash * 31u + (uint32_t)[self.tileAdditionalBinaryFunctions hash];
+    hash = hash * 31u + (uint32_t)[self.objectAdditionalBinaryFunctions hash];
+    hash = hash * 31u + (uint32_t)[self.meshAdditionalBinaryFunctions hash];
+    return hash;
 }
 
 @end
@@ -250,6 +359,41 @@ static void CharonMetal4ResetBlendState(MTL4RenderPipelineColorAttachmentDescrip
     copy.alphaBlendOperation = _alphaBlendOperation;
     copy.writeMask = _writeMask;
     return copy;
+}
+
+
+// VALUE EQUALITY, MEMBER BY MEMBER, and the ninth member is the one a differential can watch: measured against
+// Apple's own object, two fresh attachments are equal, one whose write mask is MTLColorWriteMaskRed against one
+// whose is MTLColorWriteMaskAll is not, and Red against Red is.
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4RenderPipelineColorAttachmentDescriptor class]]) return NO;
+    if (self.pixelFormat != ((MTL4RenderPipelineColorAttachmentDescriptor *)object).pixelFormat) return NO;
+    if (self.blendingState != ((MTL4RenderPipelineColorAttachmentDescriptor *)object).blendingState) return NO;
+    if (self.sourceRGBBlendFactor != ((MTL4RenderPipelineColorAttachmentDescriptor *)object).sourceRGBBlendFactor) return NO;
+    if (self.destinationRGBBlendFactor != ((MTL4RenderPipelineColorAttachmentDescriptor *)object).destinationRGBBlendFactor) return NO;
+    if (self.rgbBlendOperation != ((MTL4RenderPipelineColorAttachmentDescriptor *)object).rgbBlendOperation) return NO;
+    if (self.sourceAlphaBlendFactor != ((MTL4RenderPipelineColorAttachmentDescriptor *)object).sourceAlphaBlendFactor) return NO;
+    if (self.destinationAlphaBlendFactor != ((MTL4RenderPipelineColorAttachmentDescriptor *)object).destinationAlphaBlendFactor) return NO;
+    if (self.alphaBlendOperation != ((MTL4RenderPipelineColorAttachmentDescriptor *)object).alphaBlendOperation) return NO;
+    if (self.writeMask != ((MTL4RenderPipelineColorAttachmentDescriptor *)object).writeMask) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)self.pixelFormat;
+    hash = hash * 31u + (uint32_t)self.blendingState;
+    hash = hash * 31u + (uint32_t)self.sourceRGBBlendFactor;
+    hash = hash * 31u + (uint32_t)self.destinationRGBBlendFactor;
+    hash = hash * 31u + (uint32_t)self.rgbBlendOperation;
+    hash = hash * 31u + (uint32_t)self.sourceAlphaBlendFactor;
+    hash = hash * 31u + (uint32_t)self.destinationAlphaBlendFactor;
+    hash = hash * 31u + (uint32_t)self.alphaBlendOperation;
+    hash = hash * 31u + (uint32_t)self.writeMask;
+    return hash;
 }
 
 @end
@@ -340,6 +484,31 @@ enum { CharonMetal4TileColorAttachmentSlots = 8 };
     return copy;
 }
 
+// VALUE EQUALITY, SLOT BY SLOT, over the eight slots there are. Two fresh arrays are equal because
+// both make a descriptor at an index on first read and those descriptors are equal; an array whose slot
+// 2 holds a different descriptor is not equal to one whose does. This is the member the three pipeline
+// descriptors' own equality asks, so a pipeline whose colour attachments differ is not equal to one
+// whose do not.
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4RenderPipelineColorAttachmentDescriptorArray class]]) return NO;
+    for (NSUInteger index = 0; index < CharonMetal4ColorAttachmentSlots; index++) {
+        id mine = _slots[index];
+        id theirs = ((MTL4RenderPipelineColorAttachmentDescriptorArray *)object)->_slots[index];
+        if (mine != theirs && ![mine isEqual:theirs]) return NO;
+    }
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    for (NSUInteger index = 0; index < CharonMetal4ColorAttachmentSlots; index++)
+        hash = hash * 31u + (uint32_t)[_slots[index] hash];
+    return hash;
+}
+
 @end
 
 // THE BASE OF THREE, and its two members are the header's: a label and a set of options. A fresh
@@ -369,6 +538,27 @@ enum { CharonMetal4TileColorAttachmentSlots = 8 };
     copy.label = _label;
     copy.options = _options;
     return copy;
+}
+
+
+// VALUE EQUALITY, MEMBER BY MEMBER, and the LABEL is one of the two. Measured against Apple's own object: two
+// fresh descriptors whose labels are both nil are equal, nil against "x" are not, "x" against "x" are, and
+// "x" against "y" are not.
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4PipelineDescriptor class]]) return NO;
+    if (self.label != ((MTL4PipelineDescriptor *)object).label && ![self.label isEqual:((MTL4PipelineDescriptor *)object).label]) return NO;
+    if (self.options != ((MTL4PipelineDescriptor *)object).options && ![self.options isEqual:((MTL4PipelineDescriptor *)object).options]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)[self.label hash];
+    hash = hash * 31u + (uint32_t)[self.options hash];
+    return hash;
 }
 
 @end
@@ -512,6 +702,58 @@ static MTL4StaticLinkingDescriptor *CharonMetal4NullResettable(MTL4StaticLinking
     return copy;
 }
 
+
+// VALUE EQUALITY, MEMBER BY MEMBER, THE COLOUR ATTACHMENTS INCLUDED: two render descriptors are equal only when
+// their attachment ARRAYS are equal too, and an array is equal only when its slots are - which is why the array's
+// own equality is below and this one asks it. The base's label and options are the last two members.
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4RenderPipelineDescriptor class]]) return NO;
+    if (self.vertexFunctionDescriptor != ((MTL4RenderPipelineDescriptor *)object).vertexFunctionDescriptor && ![self.vertexFunctionDescriptor isEqual:((MTL4RenderPipelineDescriptor *)object).vertexFunctionDescriptor]) return NO;
+    if (self.fragmentFunctionDescriptor != ((MTL4RenderPipelineDescriptor *)object).fragmentFunctionDescriptor && ![self.fragmentFunctionDescriptor isEqual:((MTL4RenderPipelineDescriptor *)object).fragmentFunctionDescriptor]) return NO;
+    if (self.vertexDescriptor != ((MTL4RenderPipelineDescriptor *)object).vertexDescriptor && ![self.vertexDescriptor isEqual:((MTL4RenderPipelineDescriptor *)object).vertexDescriptor]) return NO;
+    if (self.rasterSampleCount != ((MTL4RenderPipelineDescriptor *)object).rasterSampleCount) return NO;
+    if (self.alphaToCoverageState != ((MTL4RenderPipelineDescriptor *)object).alphaToCoverageState) return NO;
+    if (self.alphaToOneState != ((MTL4RenderPipelineDescriptor *)object).alphaToOneState) return NO;
+    if (self.rasterizationEnabled != ((MTL4RenderPipelineDescriptor *)object).rasterizationEnabled) return NO;
+    if (self.maxVertexAmplificationCount != ((MTL4RenderPipelineDescriptor *)object).maxVertexAmplificationCount) return NO;
+    if (self.colorAttachments != ((MTL4RenderPipelineDescriptor *)object).colorAttachments && ![self.colorAttachments isEqual:((MTL4RenderPipelineDescriptor *)object).colorAttachments]) return NO;
+    if (self.inputPrimitiveTopology != ((MTL4RenderPipelineDescriptor *)object).inputPrimitiveTopology) return NO;
+    if (self.vertexStaticLinkingDescriptor != ((MTL4RenderPipelineDescriptor *)object).vertexStaticLinkingDescriptor && ![self.vertexStaticLinkingDescriptor isEqual:((MTL4RenderPipelineDescriptor *)object).vertexStaticLinkingDescriptor]) return NO;
+    if (self.fragmentStaticLinkingDescriptor != ((MTL4RenderPipelineDescriptor *)object).fragmentStaticLinkingDescriptor && ![self.fragmentStaticLinkingDescriptor isEqual:((MTL4RenderPipelineDescriptor *)object).fragmentStaticLinkingDescriptor]) return NO;
+    if (self.supportVertexBinaryLinking != ((MTL4RenderPipelineDescriptor *)object).supportVertexBinaryLinking) return NO;
+    if (self.supportFragmentBinaryLinking != ((MTL4RenderPipelineDescriptor *)object).supportFragmentBinaryLinking) return NO;
+    if (self.colorAttachmentMappingState != ((MTL4RenderPipelineDescriptor *)object).colorAttachmentMappingState) return NO;
+    if (self.supportIndirectCommandBuffers != ((MTL4RenderPipelineDescriptor *)object).supportIndirectCommandBuffers) return NO;
+    if (self.label != ((MTL4RenderPipelineDescriptor *)object).label && ![self.label isEqual:((MTL4RenderPipelineDescriptor *)object).label]) return NO;
+    if (self.options != ((MTL4RenderPipelineDescriptor *)object).options && ![self.options isEqual:((MTL4RenderPipelineDescriptor *)object).options]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)[self.vertexFunctionDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.fragmentFunctionDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.vertexDescriptor hash];
+    hash = hash * 31u + (uint32_t)self.rasterSampleCount;
+    hash = hash * 31u + (uint32_t)self.alphaToCoverageState;
+    hash = hash * 31u + (uint32_t)self.alphaToOneState;
+    hash = hash * 31u + (uint32_t)self.rasterizationEnabled;
+    hash = hash * 31u + (uint32_t)self.maxVertexAmplificationCount;
+    hash = hash * 31u + (uint32_t)self.inputPrimitiveTopology;
+    hash = hash * 31u + (uint32_t)[self.vertexStaticLinkingDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.fragmentStaticLinkingDescriptor hash];
+    hash = hash * 31u + (uint32_t)self.supportVertexBinaryLinking;
+    hash = hash * 31u + (uint32_t)self.supportFragmentBinaryLinking;
+    hash = hash * 31u + (uint32_t)self.colorAttachmentMappingState;
+    hash = hash * 31u + (uint32_t)self.supportIndirectCommandBuffers;
+    hash = hash * 31u + (uint32_t)[self.label hash];
+    hash = hash * 31u + (uint32_t)[self.options hash];
+    return hash;
+}
+
 @end
 
 @implementation MTL4ComputePipelineDescriptor {
@@ -588,8 +830,54 @@ static MTL4StaticLinkingDescriptor *CharonMetal4NullResettable(MTL4StaticLinking
     return copy;
 }
 
+
+// VALUE EQUALITY MEMBER BY MEMBER, AND THE THREADGROUP SIZE IS THREE MEMBERS: measured, two fresh descriptors are
+// equal and one whose required size is 1x2x3 against one whose is 0x0x0 is not, so MTLSize is compared by its three
+// components rather than as one number - which a memcmp of the struct would have got wrong on padding.
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4ComputePipelineDescriptor class]]) return NO;
+    if (self.computeFunctionDescriptor != ((MTL4ComputePipelineDescriptor *)object).computeFunctionDescriptor && ![self.computeFunctionDescriptor isEqual:((MTL4ComputePipelineDescriptor *)object).computeFunctionDescriptor]) return NO;
+    if (self.threadGroupSizeIsMultipleOfThreadExecutionWidth != ((MTL4ComputePipelineDescriptor *)object).threadGroupSizeIsMultipleOfThreadExecutionWidth) return NO;
+    if (self.maxTotalThreadsPerThreadgroup != ((MTL4ComputePipelineDescriptor *)object).maxTotalThreadsPerThreadgroup) return NO;
+    if (self.requiredThreadsPerThreadgroup.width != ((MTL4ComputePipelineDescriptor *)object).requiredThreadsPerThreadgroup.width) return NO;
+    if (self.requiredThreadsPerThreadgroup.height != ((MTL4ComputePipelineDescriptor *)object).requiredThreadsPerThreadgroup.height) return NO;
+    if (self.requiredThreadsPerThreadgroup.depth != ((MTL4ComputePipelineDescriptor *)object).requiredThreadsPerThreadgroup.depth) return NO;
+    if (self.supportBinaryLinking != ((MTL4ComputePipelineDescriptor *)object).supportBinaryLinking) return NO;
+    if (self.staticLinkingDescriptor != ((MTL4ComputePipelineDescriptor *)object).staticLinkingDescriptor && ![self.staticLinkingDescriptor isEqual:((MTL4ComputePipelineDescriptor *)object).staticLinkingDescriptor]) return NO;
+    if (self.supportIndirectCommandBuffers != ((MTL4ComputePipelineDescriptor *)object).supportIndirectCommandBuffers) return NO;
+    if (self.label != ((MTL4ComputePipelineDescriptor *)object).label && ![self.label isEqual:((MTL4ComputePipelineDescriptor *)object).label]) return NO;
+    if (self.options != ((MTL4ComputePipelineDescriptor *)object).options && ![self.options isEqual:((MTL4ComputePipelineDescriptor *)object).options]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)[self.computeFunctionDescriptor hash];
+    hash = hash * 31u + (uint32_t)self.threadGroupSizeIsMultipleOfThreadExecutionWidth;
+    hash = hash * 31u + (uint32_t)self.maxTotalThreadsPerThreadgroup;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerThreadgroup.width;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerThreadgroup.height;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerThreadgroup.depth;
+    hash = hash * 31u + (uint32_t)self.supportBinaryLinking;
+    hash = hash * 31u + (uint32_t)[self.staticLinkingDescriptor hash];
+    hash = hash * 31u + (uint32_t)self.supportIndirectCommandBuffers;
+    hash = hash * 31u + (uint32_t)[self.label hash];
+    hash = hash * 31u + (uint32_t)[self.options hash];
+    return hash;
+}
+
 @end
 
+// ONE MEMBER OF THIS CLASS IS NOT IN ITS EQUALITY, and the reason is a measurement: the colour
+// attachments. Apple's own MTLTileRenderPipelineColorAttachmentDescriptorArray carries NO -isEqual: of
+// its own - measured, its own method list has neither isEqual: nor hash - so two fresh arrays are two
+// objects that are not equal, and yet two fresh MTL4TileRenderPipelineDescriptors on Apple's side ARE
+// equal, also measured. An equality that compared the attachments could not answer that. The render and
+// mesh descriptors beside it DO compare theirs, because their array is MTL4RenderPipelineColorAttachment
+// DescriptorArray and that one carries an -isEqual: of its own, measured.
 @implementation MTL4TileRenderPipelineDescriptor {
     MTL4FunctionDescriptor *_tileFunctionDescriptor;
     NSUInteger _rasterSampleCount;
@@ -673,6 +961,42 @@ static MTL4StaticLinkingDescriptor *CharonMetal4NullResettable(MTL4StaticLinking
     copy.label = self.label;
     copy.options = self.options;
     return copy;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4TileRenderPipelineDescriptor class]]) return NO;
+    if (self.tileFunctionDescriptor != ((MTL4TileRenderPipelineDescriptor *)object).tileFunctionDescriptor && ![self.tileFunctionDescriptor isEqual:((MTL4TileRenderPipelineDescriptor *)object).tileFunctionDescriptor]) return NO;
+    if (self.rasterSampleCount != ((MTL4TileRenderPipelineDescriptor *)object).rasterSampleCount) return NO;
+    if (self.threadgroupSizeMatchesTileSize != ((MTL4TileRenderPipelineDescriptor *)object).threadgroupSizeMatchesTileSize) return NO;
+    if (self.maxTotalThreadsPerThreadgroup != ((MTL4TileRenderPipelineDescriptor *)object).maxTotalThreadsPerThreadgroup) return NO;
+    if (self.requiredThreadsPerThreadgroup.width != ((MTL4TileRenderPipelineDescriptor *)object).requiredThreadsPerThreadgroup.width) return NO;
+    if (self.requiredThreadsPerThreadgroup.height != ((MTL4TileRenderPipelineDescriptor *)object).requiredThreadsPerThreadgroup.height) return NO;
+    if (self.requiredThreadsPerThreadgroup.depth != ((MTL4TileRenderPipelineDescriptor *)object).requiredThreadsPerThreadgroup.depth) return NO;
+    if (self.staticLinkingDescriptor != ((MTL4TileRenderPipelineDescriptor *)object).staticLinkingDescriptor && ![self.staticLinkingDescriptor isEqual:((MTL4TileRenderPipelineDescriptor *)object).staticLinkingDescriptor]) return NO;
+    if (self.supportBinaryLinking != ((MTL4TileRenderPipelineDescriptor *)object).supportBinaryLinking) return NO;
+    if (self.label != ((MTL4TileRenderPipelineDescriptor *)object).label && ![self.label isEqual:((MTL4TileRenderPipelineDescriptor *)object).label]) return NO;
+    if (self.options != ((MTL4TileRenderPipelineDescriptor *)object).options && ![self.options isEqual:((MTL4TileRenderPipelineDescriptor *)object).options]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)[self.tileFunctionDescriptor hash];
+    hash = hash * 31u + (uint32_t)self.rasterSampleCount;
+    hash = hash * 31u + (uint32_t)self.threadgroupSizeMatchesTileSize;
+    hash = hash * 31u + (uint32_t)self.maxTotalThreadsPerThreadgroup;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerThreadgroup.width;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerThreadgroup.height;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerThreadgroup.depth;
+    hash = hash * 31u + (uint32_t)[self.staticLinkingDescriptor hash];
+    hash = hash * 31u + (uint32_t)self.supportBinaryLinking;
+    hash = hash * 31u + (uint32_t)[self.label hash];
+    hash = hash * 31u + (uint32_t)[self.options hash];
+    return hash;
 }
 
 @end
@@ -850,6 +1174,81 @@ static MTL4StaticLinkingDescriptor *CharonMetal4NullResettable(MTL4StaticLinking
     return copy;
 }
 
+
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4MeshRenderPipelineDescriptor class]]) return NO;
+    if (self.objectFunctionDescriptor != ((MTL4MeshRenderPipelineDescriptor *)object).objectFunctionDescriptor && ![self.objectFunctionDescriptor isEqual:((MTL4MeshRenderPipelineDescriptor *)object).objectFunctionDescriptor]) return NO;
+    if (self.meshFunctionDescriptor != ((MTL4MeshRenderPipelineDescriptor *)object).meshFunctionDescriptor && ![self.meshFunctionDescriptor isEqual:((MTL4MeshRenderPipelineDescriptor *)object).meshFunctionDescriptor]) return NO;
+    if (self.fragmentFunctionDescriptor != ((MTL4MeshRenderPipelineDescriptor *)object).fragmentFunctionDescriptor && ![self.fragmentFunctionDescriptor isEqual:((MTL4MeshRenderPipelineDescriptor *)object).fragmentFunctionDescriptor]) return NO;
+    if (self.maxTotalThreadsPerObjectThreadgroup != ((MTL4MeshRenderPipelineDescriptor *)object).maxTotalThreadsPerObjectThreadgroup) return NO;
+    if (self.maxTotalThreadsPerMeshThreadgroup != ((MTL4MeshRenderPipelineDescriptor *)object).maxTotalThreadsPerMeshThreadgroup) return NO;
+    if (self.requiredThreadsPerObjectThreadgroup.width != ((MTL4MeshRenderPipelineDescriptor *)object).requiredThreadsPerObjectThreadgroup.width) return NO;
+    if (self.requiredThreadsPerObjectThreadgroup.height != ((MTL4MeshRenderPipelineDescriptor *)object).requiredThreadsPerObjectThreadgroup.height) return NO;
+    if (self.requiredThreadsPerObjectThreadgroup.depth != ((MTL4MeshRenderPipelineDescriptor *)object).requiredThreadsPerObjectThreadgroup.depth) return NO;
+    if (self.requiredThreadsPerMeshThreadgroup.width != ((MTL4MeshRenderPipelineDescriptor *)object).requiredThreadsPerMeshThreadgroup.width) return NO;
+    if (self.requiredThreadsPerMeshThreadgroup.height != ((MTL4MeshRenderPipelineDescriptor *)object).requiredThreadsPerMeshThreadgroup.height) return NO;
+    if (self.requiredThreadsPerMeshThreadgroup.depth != ((MTL4MeshRenderPipelineDescriptor *)object).requiredThreadsPerMeshThreadgroup.depth) return NO;
+    if (self.objectThreadgroupSizeIsMultipleOfThreadExecutionWidth != ((MTL4MeshRenderPipelineDescriptor *)object).objectThreadgroupSizeIsMultipleOfThreadExecutionWidth) return NO;
+    if (self.meshThreadgroupSizeIsMultipleOfThreadExecutionWidth != ((MTL4MeshRenderPipelineDescriptor *)object).meshThreadgroupSizeIsMultipleOfThreadExecutionWidth) return NO;
+    if (self.payloadMemoryLength != ((MTL4MeshRenderPipelineDescriptor *)object).payloadMemoryLength) return NO;
+    if (self.maxTotalThreadgroupsPerMeshGrid != ((MTL4MeshRenderPipelineDescriptor *)object).maxTotalThreadgroupsPerMeshGrid) return NO;
+    if (self.rasterSampleCount != ((MTL4MeshRenderPipelineDescriptor *)object).rasterSampleCount) return NO;
+    if (self.alphaToCoverageState != ((MTL4MeshRenderPipelineDescriptor *)object).alphaToCoverageState) return NO;
+    if (self.alphaToOneState != ((MTL4MeshRenderPipelineDescriptor *)object).alphaToOneState) return NO;
+    if (self.rasterizationEnabled != ((MTL4MeshRenderPipelineDescriptor *)object).rasterizationEnabled) return NO;
+    if (self.maxVertexAmplificationCount != ((MTL4MeshRenderPipelineDescriptor *)object).maxVertexAmplificationCount) return NO;
+    if (self.colorAttachments != ((MTL4MeshRenderPipelineDescriptor *)object).colorAttachments && ![self.colorAttachments isEqual:((MTL4MeshRenderPipelineDescriptor *)object).colorAttachments]) return NO;
+    if (self.objectStaticLinkingDescriptor != ((MTL4MeshRenderPipelineDescriptor *)object).objectStaticLinkingDescriptor && ![self.objectStaticLinkingDescriptor isEqual:((MTL4MeshRenderPipelineDescriptor *)object).objectStaticLinkingDescriptor]) return NO;
+    if (self.meshStaticLinkingDescriptor != ((MTL4MeshRenderPipelineDescriptor *)object).meshStaticLinkingDescriptor && ![self.meshStaticLinkingDescriptor isEqual:((MTL4MeshRenderPipelineDescriptor *)object).meshStaticLinkingDescriptor]) return NO;
+    if (self.fragmentStaticLinkingDescriptor != ((MTL4MeshRenderPipelineDescriptor *)object).fragmentStaticLinkingDescriptor && ![self.fragmentStaticLinkingDescriptor isEqual:((MTL4MeshRenderPipelineDescriptor *)object).fragmentStaticLinkingDescriptor]) return NO;
+    if (self.supportObjectBinaryLinking != ((MTL4MeshRenderPipelineDescriptor *)object).supportObjectBinaryLinking) return NO;
+    if (self.supportMeshBinaryLinking != ((MTL4MeshRenderPipelineDescriptor *)object).supportMeshBinaryLinking) return NO;
+    if (self.supportFragmentBinaryLinking != ((MTL4MeshRenderPipelineDescriptor *)object).supportFragmentBinaryLinking) return NO;
+    if (self.colorAttachmentMappingState != ((MTL4MeshRenderPipelineDescriptor *)object).colorAttachmentMappingState) return NO;
+    if (self.supportIndirectCommandBuffers != ((MTL4MeshRenderPipelineDescriptor *)object).supportIndirectCommandBuffers) return NO;
+    if (self.label != ((MTL4MeshRenderPipelineDescriptor *)object).label && ![self.label isEqual:((MTL4MeshRenderPipelineDescriptor *)object).label]) return NO;
+    if (self.options != ((MTL4MeshRenderPipelineDescriptor *)object).options && ![self.options isEqual:((MTL4MeshRenderPipelineDescriptor *)object).options]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)[self.objectFunctionDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.meshFunctionDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.fragmentFunctionDescriptor hash];
+    hash = hash * 31u + (uint32_t)self.maxTotalThreadsPerObjectThreadgroup;
+    hash = hash * 31u + (uint32_t)self.maxTotalThreadsPerMeshThreadgroup;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerObjectThreadgroup.width;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerObjectThreadgroup.height;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerObjectThreadgroup.depth;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerMeshThreadgroup.width;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerMeshThreadgroup.height;
+    hash = hash * 31u + (uint32_t)self.requiredThreadsPerMeshThreadgroup.depth;
+    hash = hash * 31u + (uint32_t)self.objectThreadgroupSizeIsMultipleOfThreadExecutionWidth;
+    hash = hash * 31u + (uint32_t)self.meshThreadgroupSizeIsMultipleOfThreadExecutionWidth;
+    hash = hash * 31u + (uint32_t)self.payloadMemoryLength;
+    hash = hash * 31u + (uint32_t)self.maxTotalThreadgroupsPerMeshGrid;
+    hash = hash * 31u + (uint32_t)self.rasterSampleCount;
+    hash = hash * 31u + (uint32_t)self.alphaToCoverageState;
+    hash = hash * 31u + (uint32_t)self.alphaToOneState;
+    hash = hash * 31u + (uint32_t)self.rasterizationEnabled;
+    hash = hash * 31u + (uint32_t)self.maxVertexAmplificationCount;
+    hash = hash * 31u + (uint32_t)[self.objectStaticLinkingDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.meshStaticLinkingDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.fragmentStaticLinkingDescriptor hash];
+    hash = hash * 31u + (uint32_t)self.supportObjectBinaryLinking;
+    hash = hash * 31u + (uint32_t)self.supportMeshBinaryLinking;
+    hash = hash * 31u + (uint32_t)self.supportFragmentBinaryLinking;
+    hash = hash * 31u + (uint32_t)self.colorAttachmentMappingState;
+    hash = hash * 31u + (uint32_t)self.supportIndirectCommandBuffers;
+    hash = hash * 31u + (uint32_t)[self.label hash];
+    hash = hash * 31u + (uint32_t)[self.options hash];
+    return hash;
+}
+
 @end
 
 // THE FUNCTION DESCRIPTORS: the base, which MTL4FunctionDescriptor.h declares and ends - no members
@@ -862,6 +1261,35 @@ static MTL4StaticLinkingDescriptor *CharonMetal4NullResettable(MTL4StaticLinking
 // and a name inside it. This port carries the values; what a pipeline would be built from them is the
 // half that is not there, and it is at the end of this file.
 @implementation MTL4FunctionDescriptor
+// NSCOPYING, AND IT IS THE ONE -Wprotocol WAS HIDING. The 26.2 header declares this class as
+// NSObject <NSCopying> and gives it no members of its own, and the file-level
+// `#pragma clang diagnostic ignored "-Wprotocol"` made the missing -copyWithZone: a silence instead of
+// a warning. THE PRAGMA IS GONE: every class in this file implements the protocol its own declaration
+// names, and this file builds with no diagnostic silenced.
+//
+// The copy is a fresh instance of THIS class. The three subclasses add members and override
+// -copyWithZone: to carry them, so a copy of one of those never reaches this.
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[MTL4FunctionDescriptor alloc] init];
+}
+
+// AND VALUE EQUALITY, which this class has on Apple's side with no member of its own to compare:
+// measured, two fresh ones are equal, their hashes agree, and a copy equals its source. There is
+// nothing else to compare here; each subclass's equality below adds that subclass's own members to it,
+// which is what makes a specialised function different from a plain one.
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4FunctionDescriptor class]]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    return (NSUInteger)object_getClass(self);
+}
+
 @end
 
 @implementation MTL4SpecializedFunctionDescriptor {
@@ -908,6 +1336,26 @@ static MTL4StaticLinkingDescriptor *CharonMetal4NullResettable(MTL4StaticLinking
     return copy;
 }
 
+
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4SpecializedFunctionDescriptor class]]) return NO;
+    if (self.functionDescriptor != ((MTL4SpecializedFunctionDescriptor *)object).functionDescriptor && ![self.functionDescriptor isEqual:((MTL4SpecializedFunctionDescriptor *)object).functionDescriptor]) return NO;
+    if (self.specializedName != ((MTL4SpecializedFunctionDescriptor *)object).specializedName && ![self.specializedName isEqual:((MTL4SpecializedFunctionDescriptor *)object).specializedName]) return NO;
+    if (self.constantValues != ((MTL4SpecializedFunctionDescriptor *)object).constantValues && ![self.constantValues isEqual:((MTL4SpecializedFunctionDescriptor *)object).constantValues]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)[self.functionDescriptor hash];
+    hash = hash * 31u + (uint32_t)[self.specializedName hash];
+    hash = hash * 31u + (uint32_t)[self.constantValues hash];
+    return hash;
+}
+
 @end
 
 @implementation MTL4StitchedFunctionDescriptor {
@@ -929,6 +1377,24 @@ static MTL4StaticLinkingDescriptor *CharonMetal4NullResettable(MTL4StaticLinking
     copy.functionGraph = _functionGraph;
     copy.functionDescriptors = _functionDescriptors;
     return copy;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4StitchedFunctionDescriptor class]]) return NO;
+    if (self.functionGraph != ((MTL4StitchedFunctionDescriptor *)object).functionGraph && ![self.functionGraph isEqual:((MTL4StitchedFunctionDescriptor *)object).functionGraph]) return NO;
+    if (self.functionDescriptors != ((MTL4StitchedFunctionDescriptor *)object).functionDescriptors && ![self.functionDescriptors isEqual:((MTL4StitchedFunctionDescriptor *)object).functionDescriptors]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)[self.functionGraph hash];
+    hash = hash * 31u + (uint32_t)[self.functionDescriptors hash];
+    return hash;
 }
 
 @end
@@ -964,6 +1430,24 @@ static MTL4StaticLinkingDescriptor *CharonMetal4NullResettable(MTL4StaticLinking
     copy.name = _name;
     copy.library = _library;
     return copy;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTL4LibraryFunctionDescriptor class]]) return NO;
+    if (self.name != ((MTL4LibraryFunctionDescriptor *)object).name && ![self.name isEqual:((MTL4LibraryFunctionDescriptor *)object).name]) return NO;
+    if (self.library != ((MTL4LibraryFunctionDescriptor *)object).library && ![self.library isEqual:((MTL4LibraryFunctionDescriptor *)object).library]) return NO;
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    hash = hash * 31u + (uint32_t)[self.name hash];
+    hash = hash * 31u + (uint32_t)[self.library hash];
+    return hash;
 }
 
 @end

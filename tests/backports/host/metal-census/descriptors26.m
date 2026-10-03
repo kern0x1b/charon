@@ -18,6 +18,24 @@
 #import <Metal/Metal.h>
 
 /* The port's classes, under the names the harness compiles them with. */
+/* The base the three subclasses below extend: Apple's own declaration gives it no members, so the case
+ * declares it the same way and what it compares is that a fresh one is an object, that two are equal and
+ * that a copy equals its source. */
+@interface charonHost_MTL4FunctionDescriptor : NSObject <NSCopying>
+@end
+@interface charonHost_MTL4SpecializedFunctionDescriptor : charonHost_MTL4FunctionDescriptor
+@property (nonatomic, copy) id functionDescriptor;
+@property (nonatomic, copy) id specializedName;
+@property (nonatomic, copy) id constantValues;
+@end
+@interface charonHost_MTL4StitchedFunctionDescriptor : charonHost_MTL4FunctionDescriptor
+@property (nonatomic, copy) id functionGraph;
+@property (nonatomic, copy) NSArray *functionDescriptors;
+@end
+@interface charonHost_MTL4LibraryFunctionDescriptor : charonHost_MTL4FunctionDescriptor
+@property (nonatomic, copy) id name;
+@property (nonatomic, retain) id library;
+@end
 @interface charonHost_MTL4PipelineOptions : NSObject
 @property (nonatomic) MTLShaderValidation shaderValidation;
 @property (nonatomic) MTL4ShaderReflection shaderReflection;
