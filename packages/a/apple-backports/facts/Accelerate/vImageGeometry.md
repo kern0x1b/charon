@@ -2003,3 +2003,135 @@ into a nine-wide destination:
     and in both precisions**, `frac*phases` is exactly 32, and the host's own bytes name row **31**. No rule
     that is a function of `frac*phases` alone produces that and is right at a scale of 0.5 at the same time,
     **so the term still missing is in the ARRANGEMENT of the position and not in the phase.**
+
+## The release's own position arithmetic, read instruction by instruction (2026-10-04, v-tail-a16)
+
+**The 6.1.3 armv7 mapping is a Q32 FIXED-POINT ACCUMULATOR, and the previous four bands' search of
+"arrangements" could never have found it, because no arrangement is a function of x at all.** Read with
+`tools/corpus/disasm.sh` and `tools/dyldcache.py`'s own export walk, no emulator:
+
+    _vImageHorizontalShear_ARGB8888   0x303d2865   -> worker 0x3040f220
+    _vImageVerticalShear_ARGB8888     0x303d2b51   -> worker 0x30413ce8
+
+`0x3040f220` is THUMB (`bl` from a Thumb wrapper; bit 0 of the target is the release's own marker), and
+disassembling it in ARM mode gives plausible nonsense - the trap `tools/corpus/disasm.sh`'s own header
+warns about, paid once here and named here so a reader does not pay it again.
+
+### 1. The position is a 64-bit Q32 accumulator, advanced by an integer add
+
+The vertical worker's prologue, in the release's own order (`0x30413d3c` .. `0x30413e44`):
+
+    0x30413d3c  vldr     d11, [pc, #0x258]     ; 0x30413f98 = 4294967296.0, i.e. 2^32, read as a double
+    0x30413d40  vldr     d8, [sl]              ; d8 = *(double *)filter, the release's own stored 1/scale
+    0x30413d44  vldr     d10, [pc, #0x258]     ; 0x30413fa0 = 2^63
+    0x30413d48  vmul.f64 d13, d8, d11          ; d13 = recip * 2^32
+    0x30413d5c  vmovgt.f64 d13, d10            ; saturated at 2^63
+    0x30413d64  blx     0x30436bd8             ; __aeabi_d2lz: a 64-bit integer in r0:r1
+    0x30413d70  vcmpe.f64 d13, d12             ; 0x30413fa8 = -2^63, the same saturation from below
+
+**`blx 0x30436bd8` is the compiler-rt soft-float stub for `__aeabi_d2lz`**, and the AEABI interface passes a
+double in r0:r1 - which is why the code hands it the double's own bits with `vmov r0, r1, d13` and reads a
+64-bit answer back. `0x30436bd8` is a 12-byte `__picsymbolstub4` inside the vImage image, at image offset
+0xcabd8.
+
+So the step is `S = (int64)(min(recip * 2^32, 2^63))`, and it is an INTEGER from then on. At a scale of 0.75
+`recip` is the double 1.3333333333333333, so `S = 5726623061 = 0x155555555`.
+
+The start, same worker (`0x30413df8` .. `0x30413e44`), with the two integers the prologue puts into `s0` with
+`VDUP.32`:
+
+    0x30413df8  vmov.f64 d17, #1.0
+    0x30413e0a  vsub.f64  d18, d17, d8          ; d18 = 1 - recip
+    0x30413e0e  vcvt.f64.s32 d21, s0            ; d21 = (double) s0   <- VDUP.32 at 0x30413e04
+    0x30413e12  vmul.f64  d19, d8, d9           ; d19 = recip * xTranslate
+    0x30413e16  vmul.f64  d18, d21, d18         ; d18 = C * (1 - recip)
+    0x30413e1a  vmov.f64  d20, #-0.5
+    0x30413e1e  vmul.f64  d16, d16, d20         ; d16 = -0.5 * T      <- VDUP.32 at 0x30413d9c
+    0x30413e22  vadd.f64  d18, d18, d19
+    0x30413e26  vadd.f64  d16, d18, d16
+    0x30413e2a  vadd.f64  d16, d16, d17         ; + 1.0
+    0x30413e2e  vmul.f64  d9, d16, d11          ; * 2^32
+    0x30413e3c  vmovgt.f64 d9, d10
+    0x30413e44  blx     0x30436bd8              ; A0 = (int64)(centre_start * 2^32)
+
+    centre_start = 1 + recip*xTranslate + C*(1 - recip) - 0.5*T
+
+`T` is the filter's own `numTaps` (`ldr r1, [sl, #8]` at `0x30413d84`, the armv7 header's byte 8).
+**`C` is the DESTINATION'S EXTENT ALONG THE SHEAR** - `dest->height` on the vertical, `dest->width` on the
+horizontal - because the wrapper passes the along count in the slot the worker reads at `0x30413e04` (the
+vertical wrapper's `ldr.w r8, [r5, #8]` at `0x303d2c6e` is the destination's `height`).
+
+### 2. The per-sample loop is an accumulator, and phase and base come out of it
+
+The vertical worker's sample loop, `0x30414306` .. `0x3041435a`, which is the whole of the mapping:
+
+    0x3041430c  ldr      r6, [sp, #0x68]        ; the accumulator's LOW word
+    0x30414314  adds     r6, r6, r0            ; A_lo += S_lo      (r0 = S_lo, from [sp+0x74])
+    0x3041431c  adcs     r1, r0                ; A_hi += S_hi + carry
+    0x30414326  add.w    ip, r1, r0            ; base = A_hi + srcOffsetToROI_along
+    0x30414338  ldr      r5, [sp, #0x64]       ; (numTaps + 1) & ~1, the row's own width
+    0x30414344  ldr      r2, [sp, #0x34]       ; 32 - exponent
+    0x30414356  lsr.w    r2, r6, r2            ; the top `exponent` bits of the 32-bit fraction
+    0x3041435a  and      sl, r2, r3            ; & (phases - 1):  THE PHASE
+    0x304143c4  mla      r3, sl, r5, r3        ; row = table + phase * int16Stride
+
+**So:**
+
+* `base` is the accumulator's own integer part, `A >> 32`, plus the caller's offset - the source index of the
+  row's **FIRST** tap. The port's `base` is the source index of the row's **CENTRE** tap, so the two differ by
+  `K0 = (numTaps - 2) / 2`, which is the whole of the "they disagree about the base" reading at a scale of
+  one and nothing else.
+* `phase = (A & 0xffffffff) >> (32 - exponent) & (phases - 1)`, i.e. **the top `log2(phases)` bits of the 32-bit
+  fraction - a TRUNCATION of `frac(centre)*phases`, with no rounding and no carry.** `exponent` is the
+  filter's own field (byte 24 armv7 / byte 40 arm64) and equals `log2(phases)` on every shape measured: the
+  guest's 6.1.3 filter has `exponent 6` and `phases 64`.
+* the horizontal is the same accumulator with the `C` term ABSENT and a per-row slope term instead
+  (`0x3040f668` .. `0x3040f690`: `1 + (destRow - srcHeight)*recip*shearSlope - recip*xTranslate - 0.5*Y`),
+  which is v-tail-a13's measured mirror - the horizontal anchors at the NEAR edge, the vertical at the
+  destination's FAR edge.
+
+### 3. The divisor is the WHOLE row's sum, and the store is round-half-up over 16384
+
+`0x3041437c` sums the row's out-of-picture HEAD (`ldrsh` from the row's own base, `-base` entries),
+`0x304143a0` sums its TAIL (from the in-picture window's end to `(numTaps+1)&~1`), and the in-picture loop
+`mla`s the weights in. **The three together are the sum of every entry of the row**, so the divisor is the
+row's own sum and not 16384 - which is what the port already does, and what the guest run settles (the two
+name different pairs on 12 of 19 samples at a 0.75 vertical).
+
+The store is `(sum + 8192) >> 14`, clamped to the channel: `add.w r3, r0, #8192` then `asr r0, r0, #14`
+(`0x3040f54e` and the vertical's own store), with `+8192 == 16384/2` - round HALF UP, as the port has it.
+
+### 4. THE PREDICTION at a scale of 0.75 on the vertical, made from that reading alone
+
+`srcAlong 24`, `srcCross 9`, `dstAlong = ceil(0.75*24) + 8 = 26`, translate 0, slope 0, `phases 64`,
+`exponent 6`. `centre_start = 1 + 0 + 26*(1 - 4/3) - 0.5*numTaps`, and `T` shifts the start by whole
+pixels, so the phase sequence does not depend on it:
+
+    along          0   1   2   3   4   5   6   7   8   9  10  11
+    phase         21  42  63  21  42  63  21  42  63  21  42  63
+    step in 1/64  21  21  22  21  21  22  21  21  22  21  21  22
+
+**The twenty-one/twenty-one/twenty-two wobble is `4/3` truncated to Q32 and nothing else**: `S mod 2^32` is
+`1431655765 = 0x55555555`, whose fraction is `0.3333333333` rather than `1/3`, and reading the top six bits
+of that running fraction is an accumulator with a three-step cycle. Reconstructed as `base + phase/64` - which
+is how v-tail-a15 read the pairs off the guest - the centre advances by `85/64, 85/64, 86/64`, i.e. an average
+of exactly `4/3` with the `+-1/192` wobble a15 reported.
+
+**The one binary in this reading that decides the third sample is whether the Q32 conversion FLOORS or
+truncates toward zero.** Truncating puts `along 2` exactly on an integer and answers phase 0; flooring puts
+it a hundred-millionth below and answers 63. **v-tail-a15's run says 63** (`21, 42, 63, 21, 42, 63`), so the
+release's conversion FLOORS, and the port must floor too.
+
+### 5. What this retires, and what it does not
+
+* **It retires the twenty-four arrangements and the whole `+0.5 / -0.5` half-pixel question for the armv7
+  releases.** There is no half pixel in the release's position at all: the start is
+  `1 + recip*translate + C*(1 - recip) - numTaps/2`, with the `1.0` and the `-0.5*numTaps` doing what a half
+  pixel does elsewhere. The `-0.5` in the port's `centre` and the `+0.5` in its `position` are a macOS
+  arrangement.
+* **It explains a15's "eleven sixty-fourths below the port".** The release's start fraction is `1/3` less a
+  hundred-millionth and the port's is `1/2`; `32 - 21 = 11`. The offset is a CONSTANT because both sides step
+  by the same `4/3` - which is why four bands of fitting never found it.
+* **It does NOT close the family.** The engine, the 36 rows, the band files and the registry are untouched by
+  this section: the change to `CharonResampling.h` and `CharonShear.h` that this reading implies is the next
+  unit of work, and it is measured against the guest rather than here.
