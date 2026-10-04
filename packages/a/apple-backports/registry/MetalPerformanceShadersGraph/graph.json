@@ -2073,7 +2073,7 @@
     "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
   },
   {
-    "api": "-[MPSGraph concatTensor:withTensor:dimension:]",
+    "api": "-[MPSGraph concatTensor:withTensor:dimension:name:]",
     "kind": "method",
     "introduced": "14.0",
     "minimum": "6.0",
@@ -2083,7 +2083,7 @@
     "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
   },
   {
-    "api": "-[MPSGraph concatTensors:dimension:]",
+    "api": "-[MPSGraph concatTensors:dimension:name:]",
     "kind": "method",
     "introduced": "14.0",
     "minimum": "6.0",
@@ -2093,7 +2093,7 @@
     "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
   },
   {
-    "api": "-[MPSGraph concatTensors:dimension:interleave:]",
+    "api": "-[MPSGraph concatTensors:dimension:interleave:name:]",
     "kind": "method",
     "introduced": "14.0",
     "minimum": "6.0",
