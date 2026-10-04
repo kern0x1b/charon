@@ -37,6 +37,7 @@
    A scenario whose child ends on a signal says so, and names the signal: WEXITSTATUS of a signalled child
    is 0, so a probe that reads only the exit status reports a clean end for a process that died. */
 
+#include <Block.h>
 #include <dispatch/dispatch.h>
 #include <pthread.h>
 #include <signal.h>
@@ -332,6 +333,11 @@ static int scenario(const char *which, int isSerial, int api, int gapMs)
        libdispatch reads no block's flags, so a block literal is exactly what a caller here hands to
        dispatch_source_set_event_handler, and the shim's own test for a barrier block reads the bit this
        package's dispatch_block_create puts there. */
+    /* Block_copy is this package's own public call on a block and lives in <Block.h>, which this file
+       includes for it: it used to arrive through dispatch_source_state.h, which carried the include for
+       the records those blocks belonged to, and that header no longer does. Measured 2026-10-04: with the
+       include only transitive, building this file on a tree without those records ends at
+       "call to undeclared function 'Block_copy'" and the probe does not build at all. */
     handler = ordinaryEvent ? Block_copy(^{ note_handler_ran(); })
                             : dispatch_block_create(DISPATCH_BLOCK_BARRIER, ^{ note_handler_ran(); });
 
