@@ -1520,10 +1520,36 @@ end
 -- member the port adds to a class the release already carries is API the port carries, and check_registry asks
 -- whether a row says so. The port's own classes are its machinery and it names them. This is the set 2fde39f4
 -- widened, kept for that reader alone.
+--
+-- **AND THE PROTOCOLS THE PORT EMITS, which is the same blindness the branch above records for classes, and
+-- for the same reason: a protocol is not a class.** collect() keeps the two in separate tables
+-- (`modules/apple/objc.lua:251` returns `classes` and `protocols` apart), so a method of `@protocol P` was in
+-- neither `found.classes` nor `found.members` and every row spelled `-[P method]` was unbuildable however
+-- much of P there was. Measured 2026-10-04 on the Metal 4 queue: the protocol transcribed, the class
+-- conforming, `__OBJC_PROTOCOL_$_MTL4CommandQueue` emitted with its method list, and check_registry still
+-- answered "listed as implemented, but nothing of that name is built" for all eight members and both
+-- properties - the same finding the branch above records for a protocol with no image, and the same answer:
+-- the row was right and the CHECK was blind.
+--
+-- `added_members()` above is deliberately NOT changed: it places an OBJECT by the members a category adds to
+-- a class, and a protocol is not an object and carries no band.
 function carried_api(inventory)
-    return members_of(inventory, function (name)
+    local found = members_of(inventory, function (name)
         return not name:startswith("Charon")
     end)
+    for name, protocol in pairs(inventory and inventory.protocols or {}) do
+        if not name:startswith("Charon") then
+            for kind, sign in pairs({instance = "-", class = "+"}) do
+                for selector in pairs(protocol[kind] or {}) do
+                    local plain = selector:sub(2)
+                    if not plain:startswith(".cxx_") and plain ~= "load" and not internal_symbol(plain) then
+                        table.insert(found, string.format("%s[%s %s]", sign, name, plain))
+                    end
+                end
+            end
+        end
+    end
+    return found
 end
 
 
