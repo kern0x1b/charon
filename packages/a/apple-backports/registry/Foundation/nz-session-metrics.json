@@ -162,26 +162,6 @@
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
     },
     {
-      "api": "-[NSURLSessionTaskTransactionMetrics cellular]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "5.0",
-      "maximum": "13.0",
-      "status": "implemented",
-      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
-    },
-    {
-      "api": "-[NSURLSessionTaskTransactionMetrics constrained]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "5.0",
-      "maximum": "13.0",
-      "status": "implemented",
-      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
-    },
-    {
       "api": "-[NSURLSessionTaskTransactionMetrics countOfRequestBodyBytesBeforeEncoding]",
       "kind": "method",
       "introduced": "13.0",
@@ -223,46 +203,6 @@
     },
     {
       "api": "-[NSURLSessionTaskTransactionMetrics domainResolutionProtocol]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "5.0",
-      "maximum": "13.0",
-      "status": "implemented",
-      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
-    },
-    {
-      "api": "-[NSURLSessionTaskTransactionMetrics expensive]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "5.0",
-      "maximum": "13.0",
-      "status": "implemented",
-      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
-    },
-    {
-      "api": "-[NSURLSessionTaskTransactionMetrics multipath]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "5.0",
-      "maximum": "13.0",
-      "status": "implemented",
-      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
-    },
-    {
-      "api": "-[NSURLSessionTaskTransactionMetrics proxyConnection]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "5.0",
-      "maximum": "13.0",
-      "status": "implemented",
-      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
-    },
-    {
-      "api": "-[NSURLSessionTaskTransactionMetrics reusedConnection]",
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
@@ -359,7 +299,7 @@
       "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values. The getter is the one the SDK's own header names: NSURLSession.h:1415 declares the property `cellular` with `getter=isCellular`, so the selector is -isCellular and not -cellular, and that is what Foundation/NSURLSessionTaskTransactionMetrics+Counts13.m:106 implements, reading the flag -charon_noteInterfaceFlags:expensive:constrained:proxy: stored. Measured in the 6.1.3 build: the class's own method list carries -isCellular and no -cellular.",
       "measured": "read through the port's own note call -charon_noteInterfaceFlags:expensive:constrained:proxy:, which charon_metrics_response makes at NSURLSession.m:676 out of SystemConfiguration, the same question the session already asks before it enqueues. It is the port's own reading of the interface, not a value the release reports about a connection. Not watched on a release either: the only level that could is the 6.1.3 emulator, whose [super resume] is the release's own class, and that probe does not exist."
     },
     {
@@ -370,7 +310,7 @@
       "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values. The getter is the one the SDK's own header names: NSURLSession.h:1425 declares the property `constrained` with `getter=isConstrained`, so the selector is -isConstrained and not -constrained, and that is what Foundation/NSURLSessionTaskTransactionMetrics+Counts13.m:108 implements, reading the flag -charon_noteInterfaceFlags:expensive:constrained:proxy: stored. Measured in the 6.1.3 build: the class's own method list carries -isConstrained and no -constrained.",
       "reason": "a literal, by design: the release gives nothing to observe it from. 6.1.3 has no API that reports whether a link is expensive or constrained -- those two arrived with iOS 13 and are the *session configuration's* to say, not the connection's to report -- and whether a connection went through a proxy is the release's own NSURLConnection, which does not say. So the port answers NO, which is the value a release without the signal has, and says so here rather than leaving a reader to believe a measurement was taken"
     },
     {
@@ -460,7 +400,7 @@
       "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values. The getter is the one the SDK's own header names: NSURLSession.h:1420 declares the property `expensive` with `getter=isExpensive`, so the selector is -isExpensive and not -expensive, and that is what Foundation/NSURLSessionTaskTransactionMetrics+Counts13.m:107 implements, reading the flag -charon_noteInterfaceFlags:expensive:constrained:proxy: stored. Measured in the 6.1.3 build: the class's own method list carries -isExpensive and no -expensive.",
       "reason": "a literal, by design: the release gives nothing to observe it from. 6.1.3 has no API that reports whether a link is expensive or constrained -- those two arrived with iOS 13 and are the *session configuration's* to say, not the connection's to report -- and whether a connection went through a proxy is the release's own NSURLConnection, which does not say. So the port answers NO, which is the value a release without the signal has, and says so here rather than leaving a reader to believe a measurement was taken"
     },
     {
@@ -493,7 +433,7 @@
       "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values. The getter is the one the SDK's own header names: NSURLSession.h:1430 declares the property `multipath` with `getter=isMultipath`, so the selector is -isMultipath and not -multipath, and that is what Foundation/NSURLSessionTaskTransactionMetrics+Counts13.m:114 implements. Measured in the 6.1.3 build: the class's own method list carries -isMultipath and no -multipath.",
       "measured": "a literal, by design, and not read through a note call: 6.1.3 has no multipath, so nothing here is one and a system without the feature answers the default, false."
     },
     {
@@ -526,7 +466,7 @@
       "maximum": "10.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values. The getter is the one the SDK's own header names: NSURLSession.h:1312 declares the property `proxyConnection` with `getter=isProxyConnection`, so the selector is -isProxyConnection and not -proxyConnection, and that is what Foundation/NSURLSessionTaskMetrics.m:77 implements, answering NO as this row's own reason says. Measured in the 6.1.3 build: the class's own method list carries -isProxyConnection and no -proxyConnection.",
       "reason": "a literal, by design: the release gives nothing to observe it from. 6.1.3 has no API that reports whether a link is expensive or constrained -- those two arrived with iOS 13 and are the *session configuration's* to say, not the connection's to report -- and whether a connection went through a proxy is the release's own NSURLConnection, which does not say. So the port answers NO, which is the value a release without the signal has, and says so here rather than leaving a reader to believe a measurement was taken"
     },
     {
@@ -559,7 +499,7 @@
       "maximum": "10.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
-      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values. The getter is the one the SDK's own header names: NSURLSession.h:1317 declares the property `reusedConnection` with `getter=isReusedConnection`, so the selector is -isReusedConnection and not -reusedConnection, and that is what Foundation/NSURLSessionTaskMetrics.m:78 implements, answering NO as this row's own reason says. Measured in the 6.1.3 build: the class's own method list carries -isReusedConnection and no -reusedConnection.",
       "measured": "read through the port's own note call -charon_noteConnectionReused:, which charon_task_release_slot makes at NSURLSession.m:652 out of the session's own per-host table: whether a connection to that host was already open when this task needed one. Not watched on a release either: the only level that could is the 6.1.3 emulator, whose [super resume] is the release's own class, and that probe does not exist."
     }
   ]
