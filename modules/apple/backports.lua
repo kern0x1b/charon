@@ -2323,6 +2323,60 @@ local function lower(a, b)
     return dyld.compare_versions(a, b) <= 0 and a or b
 end
 
+local LADDERS = {}
+
+-- The cache ladder for one architecture, oldest release first: dyld.held_ladder(), which
+-- release-split.lua walks as well, so this check answers to the same measurement instead of a
+-- second copy of it.
+local function ladder(architecture)
+    LADDERS[architecture] = LADDERS[architecture] or dyld.held_ladder(compatible(architecture))
+    return LADDERS[architecture]
+end
+
+-- The release each of symbols first-appears exporting, walking the real cache ladder oldest to newest --
+-- the same measurement release-split.lua makes, not the SDK header's own availability annotation.
+-- A header can name a later release than the one that actually already exports the symbol (measured
+-- for UIKeyboardIsLocalUserInfoKey: the SDK 16.4 header says ios(9.0), the real armv7 cache of 8.0
+-- already exports it), and this function exists so the same object-splitting rule answers to the
+-- fact, not the annotation. A symbol counts only where a client binds it, in the library the SDK
+-- puts it in (dyld.exported_at). {symbol = release}, with no entry for a symbol no held release
+-- exports, where the header/registry fallback in releases_in() below is the only source left.
+local function measured_introduced(opt, symbols)
+    return dyld.first_releases(ladder(opt.architecture), opt.sdkdir, symbols)
+end
+
+-- The release from which a band links no object of a file although the registry places that file at
+-- or below the deployment: band() re-exports the release's own symbols and leaves the object out
+-- from the release that first exports ALL of its API on, and no registry field says so. Defined
+-- below, beside the measurement it is made of.
+local reexported_from
+
+-- The latest release a band can be opened on: the last one the firmware catalog holds for the
+-- architectures an armv7 build is compatible with, which is the same list band_plan() picks a band's
+-- first release out of. A release past it has no band, so band() is never asked about it and a build
+-- of this machine never links one.
+local function last_openable(architecture)
+    local last
+    for _, one in ipairs(compatible(architecture)) do
+        for _, version in ipairs(firmware.versions(one)) do
+            if not last or dyld.compare_versions(version, last) > 0 then
+                last = version
+            end
+        end
+    end
+    return last
+end
+
+local function latest(a, b)
+    if a == nil or a == "" then
+        return b
+    end
+    if b == nil or b == "" then
+        return a
+    end
+    return dyld.compare_versions(a, b) >= 0 and a or b
+end
+
 -- The release each object is carried from, {object = version}: the `minimum` of the registry entries
 -- its API answers to, and no key for an object without one. An object whose entries name different
 -- minimums (an entry without one names none) is refused, as misplaced() refuses mixed releases: the
@@ -2335,7 +2389,14 @@ end
 -- from, symbol}}. With nothing to take, every band keeps it. An object the registry or its callers
 -- place below an object it names is refused as well: it would not link in the bands between. A minimum
 -- at or below the deployment bounds nothing, so it mixes with none.
-function minimums(listed, objects, architecture, deployment)
+--
+-- The floor is the registry's `minimum` or, where the registry says none, the release from which
+-- band() itself leaves the object out, which is what a definer this build's callers reach actually
+-- is: the definer's API is what the release exports, so no band links it from that release on while
+-- every band still links its callers. A definer the release exports nothing of is in every band, as
+-- before, and a name the release binds at or before the same release is nothing for the definer to
+-- provide, so neither is a trap.
+function minimums(listed, objects, architecture, deployment, opt)
     local found, problems, bounds, helpers = {}, {}, {}, {}
     for _, object in ipairs(objects) do
         local names = carried_names(object, architecture)
@@ -2422,14 +2483,72 @@ function minimums(listed, objects, architecture, deployment)
             end
         end
     end
+
+    -- The release every object of this build stops being linked from, and the release each name is
+    -- bound by itself from, both measured over the held ladder the way band() decides the same
+    -- question. An object the release exports none of the API of is in every band, which is what a
+    -- nil answer here means, and a definer's floor alone says nothing about whether its callers are
+    -- still linked to reach it.
+    local dropped, exported = {}, {}
+    local openable = opt and last_openable(architecture) or nil
+    if opt then
+        local wanted = {}
+        for _, object in ipairs(objects) do
+            if bounds[object] ~= nil then
+                for _, symbol in ipairs(exported_symbols(object)) do
+                    wanted[symbol] = true
+                end
+                for _, symbol in ipairs(needs[object] or undefined_symbols(object)) do
+                    local other = definer[symbol]
+                    if other and other ~= object then
+                        wanted[symbol] = true
+                    end
+                end
+            end
+        end
+        exported = measured_introduced(opt, table.orderkeys(wanted))
+        for _, object in ipairs(objects) do
+            if bounds[object] ~= nil then
+                dropped[object] = reexported_from(exported, object)
+            end
+        end
+    end
+
+    local unreachable = {}
     for _, object in ipairs(objects) do
-        if bounds[object] ~= nil then
-            for _, symbol in ipairs(needs[object] or undefined_symbols(object)) do
-                local named = definer[symbol]
-                local minimum = named and named ~= object and found[named]
-                if minimum and (not found[object] or dyld.compare_versions(minimum, found[object]) > 0) then
-                    table.insert(problems, string.format("%s is carried %s and names %s, which %s defines only from %s on; it would not link below that, so give its entries that minimum or move the symbol to a file of its own",
-                                                         path.filename(object), found[object] and ("from " .. found[object]) or "by every band", symbol, path.filename(named), minimum))
+        local minimum_of = found[object]
+        local dropped_from = dropped[object]
+        for _, symbol in ipairs(needs[object] or undefined_symbols(object)) do
+            local named = definer[symbol]
+            local minimum = named and named ~= object and found[named]
+            local from
+            if not minimum and named and named ~= object then
+                from = dropped[named]
+                local bound = exported[symbol]
+                if from and bound and dyld.compare_versions(bound, from) <= 0 then
+                    from = nil
+                end
+            end
+            if minimum and (not minimum_of or dyld.compare_versions(minimum, minimum_of) > 0) then
+                table.insert(problems, string.format("%s is carried %s and names %s, which %s defines only from %s on; it would not link below that, so give its entries that minimum or move the symbol to a file of its own",
+                                                     path.filename(object), minimum_of and ("from " .. minimum_of) or "by every band", symbol, path.filename(named), minimum))
+            end
+            -- The same refusal where the registry places the definer nowhere, and for the
+            -- objects the registry places nowhere either - a helper is carried by every band, so
+            -- this is the caller it usually is. A band from the release the definer stops being
+            -- linked from, and below the release this caller stops being linked from, would link the
+            -- caller without it. A caller the release exports all of its API from below that release
+            -- is never linked there, which is what a nil dropped[object] or an empty interval says.
+            if from and deployment then
+                local first = latest(minimum_of, from)
+                if not dropped_from or dyld.compare_versions(first, dropped_from) < 0 then
+                    if not openable or dyld.compare_versions(first, openable) <= 0 then
+                        table.insert(problems, string.format("%s is carried %s and names %s, which %s defines only from %s on, the release it exports itself from; a band at or above that release would link this object without it, so give its entries that minimum or move the symbol to a file of its own",
+                                                             path.filename(object), minimum_of and ("from " .. minimum_of) or "by every band", symbol, path.filename(named), from))
+                    else
+                        table.insert(unreachable, string.format("%s names %s, which %s defines only from %s on, and the band that would link this object without it starts at iOS %s, past the last firmware in the catalog for %s",
+                                                                 path.filename(object), symbol, path.filename(named), from, first, architecture))
+                    end
                 end
             end
         end
@@ -2440,7 +2559,7 @@ function minimums(listed, objects, architecture, deployment)
             table.insert(kept, object)
         end
     end
-    return found, problems, kept, inherited
+    return found, problems, kept, inherited, unreachable
 end
 
 function build(opt)
@@ -2538,6 +2657,14 @@ end
 -- release first; a deployment at or above it has every source in range and compiles nothing extra.
 -- The libraries this run keeps, for the reason keeps() gives: a source of a library the run drops
 -- is not this run's to place.
+--
+-- WHAT THIS FUNCTION IS ALSO THE ONLY PLACE minimums() IS ASKED, and therefore where its refusals are
+-- made: a run whose deployment is at or above the highest minimum the registry names returns at the
+-- top of this function, compiles nothing for a floor and asks nothing. That is this function's own
+-- scope since before the release-export floor was added to minimums() (a band-placement check needs
+-- objects placed at a floor to have anything to say), and the deployment such a run builds is a band
+-- no trap below it reaches - but it is a hole, and it is named here rather than left for a reader to
+-- find: a build at or above the highest registry minimum runs no placement check of any kind.
 function floors(opt)
     local top
     for _, entry in pairs(listed(opt.root)) do
@@ -2562,9 +2689,13 @@ function floors(opt)
         end
     end
     compile_all(opt, pending)
-    local found, problems, unreached, inherited = minimums(listed(opt.root), objects, opt.architecture, opt.deployment)
+    local found, problems, unreached, inherited, unreachable = minimums(listed(opt.root), objects, opt.architecture, opt.deployment, opt)
     if #problems > 0 then
         raise("%d objects cannot be placed by their registry minimum above iOS %s:\n  %s", #problems, opt.deployment, table.concat(problems, "\n  "))
+    end
+    if #unreachable > 0 then
+        cprint("${color.warning}note:${clear} %d object(s) name a definition no band of this machine links, the release that exports the definers' API having no firmware in the catalog: %s",
+               #unreachable, table.concat(unreachable, "\n  "))
     end
     local taken = {}
     for _, object in ipairs(objects) do
@@ -2602,26 +2733,24 @@ function floors(opt)
     return placed
 end
 
-local LADDERS = {}
-
--- The cache ladder for one architecture, oldest release first: dyld.held_ladder(), which
--- release-split.lua walks as well, so this check answers to the same measurement instead of a
--- second copy of it.
-local function ladder(architecture)
-    LADDERS[architecture] = LADDERS[architecture] or dyld.held_ladder(compatible(architecture))
-    return LADDERS[architecture]
-end
-
--- The release each of symbols first-appears exporting, walking the real cache ladder oldest to newest --
--- the same measurement release-split.lua makes, not the SDK header's own availability annotation.
--- A header can name a later release than the one that actually already exports the symbol (measured
--- for UIKeyboardIsLocalUserInfoKey: the SDK 16.4 header says ios(9.0), the real armv7 cache of 8.0
--- already exports it), and this function exists so the same object-splitting rule answers to the
--- fact, not the annotation. A symbol counts only where a client binds it, in the library the SDK
--- puts it in (dyld.exported_at). {symbol = release}, with no entry for a symbol no held release
--- exports, where the header/registry fallback in releases_in() below is the only source left.
-local function measured_introduced(opt, symbols)
-    return dyld.first_releases(ladder(opt.architecture), opt.sdkdir, symbols)
+-- The release from which band() links no object of this one, and nil when it never does: the
+-- latest of the releases that first export each of the object's API symbols, since band() re-exports
+-- the release's own symbols and leaves the object out only where the release exports all of them
+-- (measured_introduced()'s own answer, the one tools/release-split.lua makes), and nothing at all
+-- for an object no held release exports anything of - an object with no API symbol is in every band
+-- by definition, which is the case where reexported_from() returns nil for want of a symbol.
+function reexported_from(first, object)
+    local from
+    for _, symbol in ipairs(exported_symbols(object)) do
+        local release = first[symbol]
+        if not release then
+            return nil
+        end
+        if not from or dyld.compare_versions(release, from) > 0 then
+            from = release
+        end
+    end
+    return from
 end
 
 -- The releases one object's exported API arrived in, {version = {names}}, and the names no source

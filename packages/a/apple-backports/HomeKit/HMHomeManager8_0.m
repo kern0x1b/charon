@@ -12,15 +12,19 @@
 
 // -init, as the release's own class answers it: the body read out of the arm64e cache of iOS 16.0
 // releases the receiver and answers nil, which the macro below carries. A home is made through the
-// port's own -charon_initWithStore:identifier: below, which is what CharonHomeKitHome() calls, and +new
-// is not defined here for the reason its comment in HMHomeManager gives.
+// port's own -charon_initWithStore:identifier: below, which is what CharonHomeKitModel.m's
+// CharonHomeKitHome() calls - that file and not this one, because a band from iOS 8.0 on does not link
+// this object and two files that no band drops (HMAccessoryHome10_0.m and CharonHomeKitDelegate.m)
+// call that function - and +new is not defined here for the reason its comment in HMHomeManager
+// gives.
 CHARON_HOMEKIT_NIL_INIT
 
 // The port's own designated initializer, and where a home's identity comes from: see
 // CharonHomeKitConstruction.h for why this is not -init and what the method-family attribute is for.
-// Every model call in this file and in HMHomeGraph8_0.m reaches a home through it - CharonHomeKitHome
-// and -addHomeWithName:completionHandler: among them - so it is here rather than in a +new the release
-// has no use for.
+// Every model call in this file and in HMHomeGraph8_0.m reaches a home through it, and so does
+// CharonHomeKitHome() in CharonHomeKitModel.m, which is where the graph's own entry point is built -
+// it is here rather than in a +new the release has no use for, and the entry point is there because
+// this object is not in every band.
 - (instancetype)charon_initWithStore:(CharonHomeKitStore *)store identifier:(NSUUID *)identifier __attribute__((objc_method_family(init)))
 {
     self = [super init];
@@ -604,11 +608,6 @@ CHARON_HOMEKIT_NIL_INIT
 }
 
 @end
-
-HMHome *CharonHomeKitHome(NSString *identifier)
-{
-    return [[HMHome alloc] charon_initWithStore:[CharonHomeKitStore shared] identifier:nil];
-}
 
 #pragma mark - HMHomeManager
 
