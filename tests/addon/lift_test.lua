@@ -1052,6 +1052,13 @@ function failures(opt)
                          .. "@end\n"
                          .. "API_AVAILABLE(ios(9.0))\n@interface FixSpelling : FixBase\n@end\n"
                          .. "API_AVAILABLE(ios(9.0))\n@interface FixSpelling2 : FixBase\n@end\n"
+                         .. "// a member of a class is not a member of its superclass: FixStays declares\n"
+                         .. "// -init NS_UNAVAILABLE and the row for its own -init is kept, FixGoes declares\n"
+                         .. "// -init NS_UNAVAILABLE too and the row for its own -init is implemented\n"
+                         .. "API_AVAILABLE(ios(9.0))\n@interface FixStays : NSObject\n"
+                         .. "- (instancetype)init NS_UNAVAILABLE;\n@end\n"
+                         .. "API_AVAILABLE(ios(9.0))\n@interface FixGoes : FixStays\n"
+                         .. "- (instancetype)init NS_UNAVAILABLE;\n@end\n"
                          .. "NS_UNAVAILABLE\nAPI_AVAILABLE(ios(9.0))\n@interface FixGone : NSObject <NSCopying>\n"
                          .. "@property (nonatomic, copy) NSString *label API_AVAILABLE(ios(9.0));\n@end\n"
                          -- and a class the registry does not implement, which keeps both of its marks
@@ -1076,6 +1083,14 @@ function failures(opt)
                          .. '{"api":"-[FixGone init]","kind":"method","introduced":"9.0","minimum":"6.0","status":"implemented",'
                          .. '"reason":"a fixture entry","effect":"a fixture entry"},'
                          .. '{"api":"FixGone.description","kind":"property","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"FixStays","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"-[FixStays init]","kind":"method","introduced":"9.0","minimum":"6.0","status":"absent",'
+                         .. '"reason":"the port does not answer it","effect":"a fixture entry"},'
+                         .. '{"api":"FixGoes","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"-[FixGoes init]","kind":"method","introduced":"9.0","minimum":"6.0","status":"implemented",'
                          .. '"reason":"a fixture entry","effect":"a fixture entry"},'
                          .. '{"api":"FixKept","kind":"class","introduced":"9.0","minimum":"6.0","status":"inert",'
                          .. '"reason":"a fixture entry the backports do not carry","effect":"a fixture entry"},'
@@ -1102,7 +1117,7 @@ function failures(opt)
                      "@property (nonatomic, readwrite, copy) NSString * name API_AVAILABLE(ios(6.1.3));")
         -- the member the SDK declares in a superclass and whose declaration has nothing to move is not written again
         expect_equal(found, "and the designated initializer it inherits is not written again",
-                     tostring(staged:find("init", 1, true) ~= nil), "false")
+                     tostring(staged:find("- (id)init API_AVAILABLE(ios(6.1.3));", 1, true) ~= nil), "false")
         -- a property whose getter the SDK gives a name of its own is redeclared on the deprecated spelling that
         -- inherits it, and the accessor it brings is not a second uncarried one: FixBase declares title with
         -- getter=getTitle, FixBase is carried, so -getTitle comes down with it and FixSpelling2 answers it
@@ -1122,6 +1137,17 @@ function failures(opt)
                      "true")
         expect_equal(found, "and so does the member of it",
                      tostring(staged:find("held API_AVAILABLE(ios(9.0));", 1, true) ~= nil), "true")
+        -- The unavailable mark of a member is the class's own business: FixStays declares -init NS_UNAVAILABLE and the
+        -- row for its own -init is kept, FixGoes declares -init NS_UNAVAILABLE too and the row for its own -init is
+        -- implemented. The kept row of the superclass must not take the mark off the subclass's own -init - measured on
+        -- iPhoneOS16.4.sdk, where -[HKObject init] and -[HMTrigger init] are absent while -[HKClinicalRecord init] and
+        -- -[HMTimerTrigger init] are implemented, and both subclasses' own marks were left in place.
+        expect_equal(found, "the superclass's own -init keeps the mark its kept row gives it",
+                     tostring(staged:find("@interface FixStays : NSObject\n- (instancetype)init NS_UNAVAILABLE;", 1, true) ~= nil), "true")
+        expect_equal(found, "and the subclass's own -init loses its own",
+                     tostring(staged:find("@interface FixGoes : FixStays\n- (instancetype)init NS_UNAVAILABLE;", 1, true) ~= nil), "false")
+        expect_equal(found, "and it is written at the port's release",
+                     tostring(staged:find("@interface FixGoes : FixStays\n- (instancetype)init ;", 1, true) ~= nil), "true")
         -- and the conformance question about it was still asked and answered: NSCopying's copyWithZone: is redeclared
         expect_equal(found, "the conformance probe answered about the class whose mark was taken away",
                      tostring(staged:find("- (id)copyWithZone:(void *)zone API_AVAILABLE(ios(6.1.3));", 1, true) ~= nil), "true")

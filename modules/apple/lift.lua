@@ -2256,14 +2256,27 @@ local function computed(opt)
                                 place(mark, target)
                             end
                         end
-                        -- the same rule for the members that carry no release: a member of an implemented class that a
-                        -- row keeps keeps its unavailable mark, and one no row keeps does not keep it
+                        -- The mark that carries no release, guarded by the class's OWN rows and not by the chain
+                        -- above, because the child is the class's own declaration and a member of a class is not a
+                        -- member of its superclass: HomeKit declares - (instancetype)init NS_UNAVAILABLE on both
+                        -- HMTrigger and HMTimerTrigger, -[HMTrigger init] is a row the port does not answer, and
+                        -- -[HMTimerTrigger init] is a row it does - so the superclass's kept row blocked the removal
+                        -- from the subclass's own -init and left a name the registry says is implemented forbidden
+                        -- (measured on iPhoneOS16.4.sdk: -[HKClinicalRecord init] and -[HMTimerTrigger init], whose
+                        -- chains hold -[HKObject init] and -[HMTrigger init], both absent).
+                        local own = false
+                        for _, name in ipairs(names) do
+                            if kept[entry.api .. "." .. name]
+                               or kept[string.format("%s[%s %s]", child.instance == false and "+" or "-", entry.api, child.name)] then
+                                own = true
+                            end
+                        end
                         for _, mark in ipairs(unavailables(child)) do
                             if mark.written then
-                                if not left then
+                                if not own then
                                     table.insert(unavailable_written, string.format("%s.%s is marked unavailable by an attribute the SDK writes out, which this cannot take away", entry.api, child.name or "?"))
                                 end
-                            elseif left then
+                            elseif own then
                                 blocked[mark.file .. ":" .. mark.line .. ":" .. mark.col] = true
                             else
                                 remove(mark)
