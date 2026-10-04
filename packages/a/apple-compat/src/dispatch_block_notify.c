@@ -24,5 +24,5 @@ void charon_dispatch_block_notify(dispatch_block_t block, dispatch_queue_t queue
     int performed = data->performed;
     if (performed > 1)
         charon_block_crash("A block object may not be both run more than once and observed", performed);
-    dispatch_group_notify(data->group, queue, notification);
+    charon_block_group_notify(data->group, queue, notification);
 }

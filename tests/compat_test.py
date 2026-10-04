@@ -849,6 +849,7 @@ DISPATCH_BLOCKS = r"""
 #include <dlfcn.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 /* The shim's own calls are the ones this program defines; Darwin's are the same calls in libdispatch, opened by path. Each
    scenario runs against both and the two must answer alike. */
@@ -875,6 +876,9 @@ struct api {
 
 static int fails;
 static int ran;
+/* How many ordinary blocks of the scenario are running, and whether the barrier notice is one of them: a barrier block runs
+   alone on its queue, an ordinary one does not. */
+static int inside, alone, broken;
 
 static void expect(int holds, const char *what)
 {
@@ -923,6 +927,43 @@ static char *scenario(const struct api *api, char *log, size_t size)
     /* Every notice is on the queue once the block's group is empty; a barrier behind them sees them all. */
     dispatch_barrier_sync(parallel, ^{ });
     LOG("notices=%d;", notices);
+    Block_release(work);
+
+    /* A notice that is a barrier work item of its own. The release's dispatch_group_notify runs what it is given on the
+       queue as an ordinary block, so below iOS 8 the shim hands such a notice to the queue's barrier call; the six ordinary
+       blocks below keep the queue busy across the notice, and the work item sleeps so that the notice lands among them. */
+    ran = inside = broken = 0;
+    dispatch_group_t busy = dispatch_group_create();
+    for (int index = 0; index < 6; index++) {
+        dispatch_block_t hold = Block_copy(^{
+            if (__atomic_load_n(&alone, __ATOMIC_SEQ_CST))
+                __atomic_add_fetch(&broken, 1, __ATOMIC_SEQ_CST);
+            __atomic_add_fetch(&inside, 1, __ATOMIC_SEQ_CST);
+            usleep(40000);
+            __atomic_sub_fetch(&inside, 1, __ATOMIC_SEQ_CST);
+        });
+        dispatch_group_async(busy, parallel, hold);
+        Block_release(hold);
+    }
+    work = api->create(0, ^{ usleep(20000); __atomic_add_fetch(&ran, 1, __ATOMIC_SEQ_CST); });
+    __block int barrier_notices = 0;
+    dispatch_block_t notice = api->create(DISPATCH_BLOCK_BARRIER, ^{
+        if (__atomic_load_n(&inside, __ATOMIC_SEQ_CST))
+            __atomic_add_fetch(&broken, 1, __ATOMIC_SEQ_CST);
+        __atomic_store_n(&alone, 1, __ATOMIC_SEQ_CST);
+        usleep(20000);
+        if (__atomic_load_n(&inside, __ATOMIC_SEQ_CST))
+            __atomic_add_fetch(&broken, 1, __ATOMIC_SEQ_CST);
+        __atomic_store_n(&alone, 0, __ATOMIC_SEQ_CST);
+        __atomic_add_fetch(&barrier_notices, 1, __ATOMIC_SEQ_CST);
+    });
+    api->notify(work, parallel, notice);
+    dispatch_async(queue, work);
+    dispatch_group_wait(busy, DISPATCH_TIME_FOREVER);
+    dispatch_barrier_sync(parallel, ^{ });
+    LOG("barrier-notify:notices=%d broken=%d;", barrier_notices, broken);
+    dispatch_release(busy);
+    Block_release(notice);
     Block_release(work);
 
     ran = 0;
@@ -991,6 +1032,191 @@ int main(void)
     scenario(&darwins, theirs, sizeof theirs);
     if (strcmp(mine, theirs)) {
         printf("FAIL  the shim and Darwin answer alike\n  shim:   %s\n  darwin: %s\n", mine, theirs);
+        fails++;
+    }
+    return fails != 0;
+}
+"""
+
+DISPATCH_BARRIER_SUBMITS = r"""
+#include <Block.h>
+#include <dispatch/dispatch.h>
+#include <dlfcn.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+/* A block made with DISPATCH_BLOCK_BARRIER, submitted to a concurrent queue by each call that submits one, among ordinary
+   blocks before and after it. Darwin's own calls read the flag; the shims' calls, built as for a release without
+   dispatch_block_create, must answer alike. SUBMIT_PLAIN builds the control: the shims' blocks handed to the plain calls, as
+   the release would run them, which must break the barrier or the scenario proves nothing. */
+typedef dispatch_block_t (*create_f)(unsigned long, dispatch_block_t);
+typedef void (*async_f)(dispatch_queue_t, dispatch_block_t);
+typedef void (*group_async_f)(dispatch_group_t, dispatch_queue_t, dispatch_block_t);
+typedef void (*after_f)(dispatch_time_t, dispatch_queue_t, dispatch_block_t);
+
+dispatch_block_t dispatch_block_create(unsigned long, dispatch_block_t);
+void charon_dispatch_async(dispatch_queue_t, dispatch_block_t);
+void charon_dispatch_sync(dispatch_queue_t, dispatch_block_t);
+void charon_dispatch_group_async(dispatch_group_t, dispatch_queue_t, dispatch_block_t);
+void charon_dispatch_group_notify(dispatch_group_t, dispatch_queue_t, dispatch_block_t);
+void charon_dispatch_after(dispatch_time_t, dispatch_queue_t, dispatch_block_t);
+
+struct api {
+    create_f create; async_f async; async_f sync; group_async_f group_async; group_async_f group_notify; after_f after;
+};
+
+static int fails;
+static int inside, alone, broken, barriers;
+
+static void expect(int holds, const char *what)
+{
+    if (!holds) {
+        printf("FAIL  %s\n", what);
+        fails++;
+    }
+}
+
+static dispatch_block_t ordinary(void)
+{
+    return Block_copy(^{
+        if (__atomic_load_n(&alone, __ATOMIC_SEQ_CST))
+            __atomic_add_fetch(&broken, 1, __ATOMIC_SEQ_CST);
+        __atomic_add_fetch(&inside, 1, __ATOMIC_SEQ_CST);
+        usleep(20000);
+        if (__atomic_load_n(&alone, __ATOMIC_SEQ_CST))
+            __atomic_add_fetch(&broken, 1, __ATOMIC_SEQ_CST);
+        __atomic_sub_fetch(&inside, 1, __ATOMIC_SEQ_CST);
+    });
+}
+
+static dispatch_block_t barrier(const struct api *api, dispatch_semaphore_t done)
+{
+    return api->create(DISPATCH_BLOCK_BARRIER, ^{
+        if (__atomic_load_n(&inside, __ATOMIC_SEQ_CST))
+            __atomic_add_fetch(&broken, 1, __ATOMIC_SEQ_CST);
+        __atomic_store_n(&alone, 1, __ATOMIC_SEQ_CST);
+        usleep(40000);
+        if (__atomic_load_n(&inside, __ATOMIC_SEQ_CST))
+            __atomic_add_fetch(&broken, 1, __ATOMIC_SEQ_CST);
+        __atomic_store_n(&alone, 0, __ATOMIC_SEQ_CST);
+        __atomic_add_fetch(&barriers, 1, __ATOMIC_SEQ_CST);
+        if (done)
+            dispatch_semaphore_signal(done);
+    });
+}
+
+static void around(dispatch_queue_t queue, dispatch_group_t all, int count)
+{
+    for (int index = 0; index < count; index++) {
+        dispatch_block_t work = ordinary();
+        dispatch_group_async(all, queue, work);
+        Block_release(work);
+    }
+}
+
+static char *scenario(const struct api *api, char *log, size_t size)
+{
+    dispatch_queue_t queue = dispatch_queue_create("barriers", DISPATCH_QUEUE_CONCURRENT);
+    dispatch_semaphore_t done = dispatch_semaphore_create(0);
+    size_t at = 0;
+#define LOG(...) at += snprintf(log + at, size - at, __VA_ARGS__)
+#define SETTLE(all) do { dispatch_group_wait(all, DISPATCH_TIME_FOREVER); dispatch_release(all); } while (0)
+
+    broken = barriers = 0;
+    dispatch_group_t all = dispatch_group_create();
+    around(queue, all, 3);
+    dispatch_block_t work = barrier(api, done);
+    api->async(queue, work);
+    around(queue, all, 3);
+    dispatch_semaphore_wait(done, DISPATCH_TIME_FOREVER);
+    SETTLE(all);
+    LOG("async:ran=%d broken=%d;", barriers, broken);
+    Block_release(work);
+
+    broken = barriers = 0;
+    all = dispatch_group_create();
+    around(queue, all, 3);
+    work = barrier(api, NULL);
+    api->sync(queue, work);
+    LOG("sync:ran-on-return=%d;", barriers);
+    around(queue, all, 3);
+    SETTLE(all);
+    LOG("broken=%d;", broken);
+    Block_release(work);
+
+    broken = barriers = 0;
+    all = dispatch_group_create();
+    dispatch_group_t group = dispatch_group_create();
+    around(queue, all, 3);
+    work = barrier(api, NULL);
+    api->group_async(group, queue, work);
+    around(queue, all, 3);
+    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    LOG("group:ran-on-wait=%d;", barriers);
+    SETTLE(all);
+    LOG("broken=%d;", broken);
+    dispatch_release(group);
+    Block_release(work);
+
+    /* The barrier's time comes while the first blocks run, and the later ones come after it is queued. */
+    broken = barriers = 0;
+    all = dispatch_group_create();
+    around(queue, all, 3);
+    work = barrier(api, done);
+    api->after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_MSEC), queue, work);
+    usleep(30000);
+    around(queue, all, 3);
+    dispatch_semaphore_wait(done, DISPATCH_TIME_FOREVER);
+    SETTLE(all);
+    LOG("after:ran=%d broken=%d;", barriers, broken);
+    Block_release(work);
+
+    /* The group empties while the queue's other blocks run. */
+    broken = barriers = 0;
+    all = dispatch_group_create();
+    group = dispatch_group_create();
+    dispatch_group_enter(group);
+    around(queue, all, 3);
+    work = barrier(api, done);
+    api->group_notify(group, queue, work);
+    dispatch_group_leave(group);
+    usleep(5000);
+    around(queue, all, 3);
+    dispatch_semaphore_wait(done, DISPATCH_TIME_FOREVER);
+    SETTLE(all);
+    LOG("notify:ran=%d broken=%d;", barriers, broken);
+    dispatch_release(group);
+    Block_release(work);
+
+    dispatch_release(queue);
+    return log;
+}
+
+int main(void)
+{
+#ifdef SUBMIT_PLAIN
+    struct api ours = {dispatch_block_create, dispatch_async, dispatch_sync, dispatch_group_async, dispatch_group_notify, dispatch_after};
+#else
+    struct api ours = {dispatch_block_create, charon_dispatch_async, charon_dispatch_sync, charon_dispatch_group_async,
+                       charon_dispatch_group_notify, charon_dispatch_after};
+#endif
+    void *libdispatch = dlopen("/usr/lib/system/libdispatch.dylib", RTLD_LAZY | RTLD_LOCAL);
+    expect(libdispatch != NULL, "the test reaches Darwin's libdispatch beside the shim");
+    struct api darwins = {dlsym(libdispatch, "dispatch_block_create"), dispatch_async, dispatch_sync, dispatch_group_async,
+                          dispatch_group_notify, dispatch_after};
+    expect(darwins.create && (void *)darwins.create != (void *)ours.create, "Darwin's dispatch_block_create is not the shim");
+    char mine[1024], theirs[1024];
+    scenario(&darwins, theirs, sizeof theirs);
+    const char *alone_every_time = "async:ran=1 broken=0;sync:ran-on-return=1;broken=0;group:ran-on-wait=1;broken=0;"
+                                   "after:ran=1 broken=0;notify:ran=1 broken=0;";
+    if (strcmp(theirs, alone_every_time)) {
+        printf("FAIL  Darwin keeps every barrier alone on its queue, or the scenario measures nothing: %s\n", theirs);
+        fails++;
+    }
+    scenario(&ours, mine, sizeof mine);
+    if (strcmp(mine, theirs)) {
+        printf("FAIL  the shims submit a barrier block as Darwin does\n  shim:   %s\n  darwin: %s\n", mine, theirs);
         fails++;
     }
     return fails != 0;
@@ -2115,6 +2341,16 @@ def failures():
                                       ("clock_getres", "struct timespec t; return clock_getres(CLOCK_MONOTONIC, &t);", "time.h"),
                                       ("clock_gettime_nsec_np", "return clock_gettime_nsec_np(CLOCK_MONOTONIC) != 0;", "time.h"),
                                       ("dispatch_get_global_queue", "return dispatch_get_global_queue(0x19, 0) != 0;",
+                                       "dispatch/dispatch.h"),
+                                      ("dispatch_async", "dispatch_async(dispatch_get_main_queue(), ^{ }); return 0;",
+                                       "dispatch/dispatch.h"),
+                                      ("dispatch_sync", "dispatch_sync(dispatch_get_main_queue(), ^{ }); return 0;",
+                                       "dispatch/dispatch.h"),
+                                      ("dispatch_group_async", "dispatch_group_async(0, dispatch_get_main_queue(), ^{ }); return 0;",
+                                       "dispatch/dispatch.h"),
+                                      ("dispatch_group_notify", "dispatch_group_notify(0, dispatch_get_main_queue(), ^{ }); return 0;",
+                                       "dispatch/dispatch.h"),
+                                      ("dispatch_after", "dispatch_after(0, dispatch_get_main_queue(), ^{ }); return 0;",
                                        "dispatch/dispatch.h")):
             header = SHIMS.parent / "include" / "charon" / "{}.h".format(symbol)
             (folder / "{}.c".format(symbol)).write_text("#include <{}>\nint call(void) {{ {} }}\n".format(include, call))
@@ -2291,6 +2527,24 @@ def failures():
             found.append("the dispatch_block shims must compile over the system's own: {}".format(built.stderr[-400:]))
         else:
             found += outcome("dispatch_block over the system's", run("./blocks-system", cwd=folder))
+        # A barrier block handed to each of the calls that submit one: the shims' calls beside Darwin's, and the plain calls
+        # as the control, which the release would use below iOS 8 and which must break the barrier.
+        submit_shims = [SHIMS / "{}.c".format(symbol) for symbol in ("dispatch_async", "dispatch_sync", "dispatch_group_async",
+                                                                     "dispatch_group_notify", "dispatch_after")]
+        (folder / "submits.c").write_text(DISPATCH_BARRIER_SUBMITS)
+        for name, flags in (("submits", ["-DCHARON_COMPAT_SYSTEM=0"]), ("submits-system", []),
+                            ("submits-plain", ["-DCHARON_COMPAT_SYSTEM=0", "-DSUBMIT_PLAIN"])):
+            built = run("xcrun", "clang", "-O2", "-w", "-fblocks", *flags, *blocks, *submit_shims, "submits.c", "-o", name, cwd=folder)
+            if built.returncode:
+                found.append("the shims that submit a block must compile{}: {}".format(
+                    "" if name == "submits" else " for " + name, built.stderr[-400:]))
+                continue
+            reported = outcome(name, run("./" + name, cwd=folder))
+            if name != "submits-plain":
+                found += reported
+            elif not any("submit a barrier block as Darwin does" in line for line in reported):
+                found.append("the release's own calls must break a barrier block, or the barrier scenario proves nothing: {}".format(
+                    reported))
         asserts = [SHIMS / "{}.c".format(symbol) for symbol in ("os_unfair_lock_assert_owner", "os_unfair_lock_assert_not_owner")]
         (folder / "asserts.c").write_text(UNFAIR_ASSERT)
         built = run("xcrun", "clang", "-O2", "-w", "-DCHARON_COMPAT_SYSTEM=0", *asserts, *locks, *waits, "asserts.c", "-o", "asserts", cwd=folder)
@@ -2410,7 +2664,7 @@ def failures():
         else:
             found += outcome("objc_allocWithZone", run("./alloc", cwd=folder))
 
-        for symbol in ([path.stem for path in locks] + later + [path.stem for path in blocks + asserts + queue_shims] +
+        for symbol in ([path.stem for path in locks] + later + [path.stem for path in blocks + submit_shims + asserts + queue_shims] +
                        [path.stem for path in barrier_shims[:3]] +
                        ["objc_allocWithZone", "objc_opt_self", "os_system_version_get_current_version"]):
             process_wide = symbol in ("os_unfair_lock_lock", "os_unfair_lock_trylock", "os_unfair_lock_unlock",
