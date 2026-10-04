@@ -1968,13 +1968,12 @@ static NSDictionary *CharonMPSGraphRunForm(MPSGraph *graph, NSDictionary *feeds,
     for (MPSGraphTensor *tensor in results.allKeys) {
         MPSGraphTensorData *destination = results[tensor];
         MPSGraphTensorData *value = computed[tensor];
-        void *to = [destination charon_mps_bytes];
-        void *from = [value charon_mps_bytes];
-        if (to == NULL || from == NULL) {
-            CharonMPSGraphRefuse(@"MPSGraph: a result could not be copied into the dictionary the caller gave, so that entry is left as it was");
+        if (value == nil) {
+            CharonMPSGraphRefuse(@"MPSGraph: the result named %@ was not computed, so the entry the caller gave "
+                                 @"it in is left as it was", tensor.operation.name);
             continue;
         }
-        memcpy(to, from, [value charon_mps_elementCount] * MPSSizeofMPSDataType(value.dataType));
+        CharonMPSGraphWriteInto(tensor, value, destination);
     }
     [descriptor charon_mps_applyEventsAtStage:MPSGraphExecutionStageCompleted named:@"a graph run"];
     // The descriptor's two handlers, which are the header's own notification points: the scheduled one is

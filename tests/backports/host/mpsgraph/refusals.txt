@@ -379,3 +379,16 @@ block-s2d-fed-axis-outside-at-run 134 invalid width_axis (3) for shape of rank 3
 block-s2d-fed-axis-int64-at-run 0 0000803f000040400000a0400000504100007041000088410000c8410000d8410000e84100001442
 block-s2d-fed-axis-degenerate-at-run 0 Invalid degenerate axes: depth_axis (1) height_axis (1) for shape of rank 3
 block-s2d-fed-axis-block3-at-run 0 block_size (3) must be multiple of height 4
+
+# The non-zero indices of 17.0, whose result is a list: the shape its own tensor carries is -1 by the
+# operand's rank whatever the operand's data type was, and a destination of NO ROWS is the one shape the
+# release cannot be given - the process goes down inside its own NDArray (MPSNDArray.mm:893) because the
+# answer cannot fit in it at all. A destination whose buffer is NO bytes at all is refused a line earlier
+# and with another of its own sentences ("Error: device may not be nil", MPSNDArray.mm:759), which is the
+# same refusal with nothing to write into.
+nonzero-result-shape 0 result-shape -1x3
+nonzero-destination-no-rows 134 buffer is not large enough. Must be 12 bytes
+# And the control: five rows is answered, and every one of them a written zero over a destination filled
+# with the byte 0xbd, because the [3, 4, 6] of 1 to 72 has no zero in it and so has no non-zero element to
+# answer.
+nonzero-destination-five-rows 0 00000000

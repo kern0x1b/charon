@@ -217,3 +217,20 @@ tanh float32 20 00feff37 00000038
 tanh float32 21 000100b8 000000b8
 tanh float32 22 c0fd3f38 00004038
 tanh float32 23 400240b8 000040b8
+
+# The 2026-10-04 non-zero family: four cells that the release writes and that are not this operation's
+# answer at all. Measured on macOS 27.0 build 26A428 (M4 Pro, Metal 4), over a [3, 4, 6] into a
+# seventy-two-row destination: with a count of two the release writes 3 at cell 197, with a count of three
+# it writes 2 there, and with a count of five it writes 3 at cell 203 and 2 at 206. Each of the four is
+# determinate - five runs of one process each print the same bytes - and none of the four is a coordinate
+# of any element of the operand, nor is any of them near the answer's rows. They appear only over a
+# seventy-two-row destination and only at a count of two, three or five: a count of one is written into
+# every row, a count of seventy-two fills every row with an index, and every destination of ten rows or
+# fewer, and of twelve, twenty-four and seventy-two with a smaller count, carries none of them. The port
+# writes the operation's own answer there, which is a zero, because that is the whole of what this
+# operation computes. facts/MetalPerformanceShadersGraph/Core.md carries the measurement and what was
+# tried against it.
+nonzero-two-ends int32-from-float32 197 03000000 00000000
+nonzero-three int32-from-float32 197 02000000 00000000
+nonzero-five int32-from-float32 203 03000000 00000000
+nonzero-five int32-from-float32 206 02000000 00000000

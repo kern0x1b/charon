@@ -118,15 +118,8 @@
     for (NSUInteger i = 0; i < _targetTensors.count; i++) {
         MPSGraphTensorData *computed = results[_targetTensors[i]];
         MPSGraphTensorData *destination = i < resultsArray.count ? resultsArray[i] : computed;
-        if (computed && destination && computed != destination) {
-            void *to = [destination charon_mps_bytes];
-            void *from = [computed charon_mps_bytes];
-            size_t n = [computed charon_mps_elementCount] * MPSSizeofMPSDataType(computed.dataType);
-            if (to && from)
-                memcpy(to, from, n);
-            else
-                CharonMPSGraphRefuse(@"MPSGraph: a result could not be copied into the destination, so the destination is left as it was");
-        }
+        if (computed && destination && computed != destination)
+            CharonMPSGraphWriteInto(_targetTensors[i], computed, destination);
         if (destination)
             [returned addObject:destination];
     }
