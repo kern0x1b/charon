@@ -2002,7 +2002,7 @@ local function computed(opt)
     end
     mark("accessor pairs")
 
-    local supers = {}
+    local supers, scoped, reachable = {}, {}, {}
     local function superclass(name)
         if supers[name] == nil then
             supers[name] = false
@@ -2351,6 +2351,45 @@ local function computed(opt)
         return CARRIED[(listed[api] or {}).status] or false
     end
 
+    -- The protocols a class adopts, and what those inherit, as names: the @interface's own list is in its AST node,
+    -- and a protocol's base protocols are in that protocol's, one dump each. This is the other half of what a use of a
+    -- class reaches - the class itself, its superclasses (superclasses() above) and the protocols it conforms to.
+    local protocols_of, scoped_of
+    protocols_of = function (name, into, seen)
+        into, seen = into or {}, seen or {}
+        if seen[name] then
+            return into
+        end
+        seen[name] = true
+        for _, node in ipairs(dump(name)) do
+            for _, adopted in ipairs(node.protocols or {}) do
+                if adopted.name and not into[adopted.name] then
+                    into[adopted.name] = true
+                    protocols_of(adopted.name, into, seen)
+                end
+            end
+        end
+        return into
+    end
+    scoped_of = function (owner)
+        if scoped[owner] then
+            return scoped[owner]
+        end
+        local names = {[owner] = true}
+        for _, above in ipairs(superclasses(owner)) do
+            names[above] = true
+        end
+        for name in pairs(protocols_of(owner)) do
+            names[name] = true
+        end
+        for name in pairs(names) do
+            for _, adopted in ipairs(protocols_of(name)) do
+                names[adopted] = true
+            end
+        end
+        scoped[owner] = table.orderkeys(names)
+        return scoped[owner]
+    end
     -- The accessors a class answers by inheritance, from the superclasses the backports carry: the accessors of a
     -- property one of them declares under the same name, with the same getter and the same setter. The chain and the
     -- class rows are what decide it, and the dumps are of the superclasses only, which is why this is asked here and
@@ -2387,43 +2426,25 @@ local function computed(opt)
     -- per member: the declarations a use of its owner reaches, those of protocols still to be asked about, and where else
     local pending, questions = {}, {}
     do
-        -- the owners of what is unmatched, the selectors asked for, and the superclasses a level at a time
-        local wave, asked, reached = {}, {}, {}
+        -- What a use of a member's owner reaches is that owner, its superclasses and the protocols it adopts -
+        -- scoped_of() - and that is what this block asks the dumper for, each by its own `Owner::` scope. What it must
+        -- NOT ask for is the member's bare selector or property name: an -ast-dump-filter of `init` is every
+        -- declaration in the whole SDK whose qualified name contains it, and the Matter family brought hundreds of
+        -- unmatched -[C init] and +[C new] rows, which is what turned a lift of 124-1083 s into 4-5 h (measured with
+        -- LIFT_PROFILE=1 on iPhoneOS16.4.sdk, full registry, 10 jobs: entries:waves 664.3 s of a 768 s lift, 4
+        -- prefetches, 3 parses, 534.9 s of decode, 10911.7 MB, 20 filters, 7057 recalled).
+        --
+        -- The bare name is what finds `elsewhere`: the owners that declare the member where the class does not reach
+        -- it. That is read only for a row that reaches nothing - it is what the "declared only by X" line of the set
+        -- is made of, and a row that reaches something never reads it - so it is asked after the scoped answer, and
+        -- for nothing else. The answer is the same either way, which is what the byte-identical comparison is over.
+        local wave, reached = {}, {}
         for _, api in ipairs(unmatched) do
             local member = member_api(api:gsub("%(%)$", ""))
             if member then
                 table.insert(wave, member.owner)
-                table.insert(asked, member.selector or member.property)
             end
         end
-        prefetch(asked)
-        -- what the loop below asks of what the selectors found: whether each owner is a protocol, and, for an owner that
-        -- only an implicit accessor names, its property by name
-        local owners = {}
-        for _, api in ipairs(unmatched) do
-            local member = member_api(api:gsub("%(%)$", ""))
-            if member then
-                local by_owner = {}
-                for _, node in ipairs(dump(member.selector or member.property)) do
-                    local by = owner_of(node)
-                    if by and member_matches(member, node) then
-                        by_owner[by] = by_owner[by] or {}
-                        table.insert(by_owner[by], node)
-                    end
-                end
-                for by, nodes in pairs(by_owner) do
-                    table.insert(owners, by)
-                    local accessor_only = true
-                    for _, node in ipairs(nodes) do
-                        accessor_only = accessor_only and node.kind ~= "ObjCPropertyDecl" and node.isImplicit
-                    end
-                    if accessor_only then
-                        table.insert(owners, setter_property(nodes[1].name) or nodes[1].name)
-                    end
-                end
-            end
-        end
-        prefetch(owners)
         while #wave > 0 do
             prefetch(wave)
             local up = {}
@@ -2436,6 +2457,50 @@ local function computed(opt)
             end
             wave = up
         end
+        -- every owner of a member's scope, by name and by its own scope, so both the walk above and the loop below are
+        -- answered from the cache: the protocols a scope adopts (scoped_of() reads them, which asks for them by name)
+        local scoped_names, scopes = {}, {}
+        for _, api in ipairs(unmatched) do
+            local member = member_api(api:gsub("%(%)$", ""))
+            if member then
+                for _, by in ipairs(scoped_of(member.owner)) do
+                    scoped_names[by] = true
+                    scopes[by .. "::"] = true
+                end
+            end
+        end
+        prefetch(table.orderkeys(scoped_names))
+        prefetch(table.orderkeys(scopes))
+        -- Which rows the owner's own scope answers, and the bare name of the ones it does not. The bare names go as
+        -- ONE batch, which is what they were before: asked one at a time each is a parse of the whole SDK, and the set
+        -- carries 12778 rows that reach nothing on this trim alone.
+        local bare, bare_names = {}, {}
+        for _, api in ipairs(unmatched) do
+            local member = member_api(api:gsub("%(%)$", ""))
+            if member then
+                local found = false
+                for _, by in ipairs(scoped_of(member.owner)) do
+                    for _, node in ipairs(dump(by .. "::")) do
+                        if member_matches(member, node) then
+                            found = true
+                            break
+                        end
+                    end
+                    if found then
+                        break
+                    end
+                end
+                reachable[api] = found
+                if not found then
+                    local name = member.selector or member.property
+                    if not bare[name] then
+                        bare[name] = true
+                        table.insert(bare_names, name)
+                    end
+                end
+            end
+        end
+        prefetch(bare_names)
     end
     mark("entries:waves")
     for _, api in ipairs(unmatched) do
@@ -2450,11 +2515,24 @@ local function computed(opt)
             end
             local found = {api = api, member = member, owner = owner, class = class, known = receiver ~= nil, reached = {}, asked = {}, elsewhere = {}}
             local by_owner = {}
-            for _, node in ipairs(dump(member.selector or member.property)) do
-                local by = owner_of(node)
-                if by and member_matches(member, node) then
-                    by_owner[by] = by_owner[by] or {}
-                    table.insert(by_owner[by], node)
+            -- What the owner's own scope declares, which is the only place a redeclaration can be written from, and
+            -- for the rows the scope does not reach the whole SDK by the bare name - which is where `elsewhere` comes
+            -- from, read only for a row that reaches nothing, which is what the pass above decided.
+            for _, by in ipairs(scoped_of(owner)) do
+                for _, node in ipairs(dump(by .. "::")) do
+                    if member_matches(member, node) then
+                        by_owner[by] = by_owner[by] or {}
+                        table.insert(by_owner[by], node)
+                    end
+                end
+            end
+            if reachable[api] == false then
+                for _, node in ipairs(dump(member.selector or member.property)) do
+                    local by = owner_of(node)
+                    if by and member_matches(member, node) then
+                        by_owner[by] = by_owner[by] or {}
+                        table.insert(by_owner[by], node)
+                    end
                 end
             end
             for _, by in ipairs(table.orderkeys(by_owner)) do
