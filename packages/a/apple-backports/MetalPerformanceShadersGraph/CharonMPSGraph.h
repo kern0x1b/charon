@@ -177,7 +177,14 @@ CharonMPSGraphOperationKindCumulativeSum,
     // its own, over every input of the operation, and the operation's own parameters say which of the two it
     // is: the axis of the result the operands are laid along, and whether they interleave along it.
     CharonMPSGraphOperationKindConcat,
-    CharonMPSGraphOperationKindStack
+    CharonMPSGraphOperationKindStack,
+    // The SPLIT, which is the one walk of this library whose result is SEVERAL TENSORS and the only one whose
+    // regions are cut OUT of one operand instead of being laid into a result: result i is the operand's own
+    // elements from the running total of the sizes before it along one axis. And the COORDINATE ALONG AN AXIS,
+    // which is the one walk with no operand at all - its value IS the coordinate, so the only thing the caller
+    // gives it is a shape and an axis.
+    CharonMPSGraphOperationKindSplit,
+    CharonMPSGraphOperationKindCoordinates
 };
 
 @class MPSGraph;
@@ -363,6 +370,47 @@ CharonMPSGraphOperationKindCumulativeSum,
                                               interleave:(BOOL)interleave
                                                 stacked:(BOOL)stacked
                                                    named:(NSString *)name;
+// The SPLIT, the one walk whose result is SEVERAL TENSORS, and the one whose regions are cut OUT of one
+// operand rather than laid into a result: result i is the operand's own elements from the running total of
+// the sizes before it to that total plus its own size, along the axis named, in the ORDER the caller wrote
+// them. So the operation takes the operand as its input, the parameters carry which axis the regions are cut
+// from (@"splitAxis") and either the sizes as they were written (@"splitSizes") or the count the caller named
+// instead (@"splitNumSplits"), and each output's shape is the operand's own with that one axis replaced -
+// which is why a release's factory fills in those three and names only its own methods, and why the shapes
+// are put on the output tensors here, at build time, which is what a caller reads off them before it runs
+// anything.
+//
+// The sizes come out of one function, CharonMPSGraphSplitSizes in MPSGraphInterpreter14.m, asked both here
+// and when the graph runs: the written ones as they are, and a count's by the release's own measured rule -
+// the first n-1 sizes are ceil(extent/n) and the last is what is left, and a count whose last size would not
+// be positive is refused there with the release's own words.
+- (NSArray<MPSGraphTensor *> *)charon_mps_split:(MPSGraphTensor *)tensor
+                                            axis:(NSInteger)axis
+                                           sizes:(NSArray<NSNumber *> *)sizes
+                                      numSplits:(NSUInteger)numSplits
+                                            name:(NSString *)name;
+// The sizes such a split cuts its regions by, asked of the interpreter - where the rule and the three
+// refusals live - both when the graph is built and when the operation runs, so a graph whose operand is fed
+// is cut the way its value says. `written` is the caller's own list or nil, `numSplits` the count they named
+// instead or zero, `axis` the axis the regions are cut from already counted from the end, and `operandShape`
+// the shape the sizes are measured against.
+- (NSArray<NSNumber *> *)charon_mps_splitSizes:(NSArray<NSNumber *> *)written
+                                    numSplits:(NSUInteger)numSplits
+                                         axis:(NSInteger)axis
+                                  ofShape:(NSArray<NSNumber *> *)operandShape
+                                       named:(NSString *)name;
+// The COORDINATE ALONG AN AXIS, which has NO OPERAND at all: its value IS the coordinate of the axis named,
+// so what the caller gives it is a shape and an axis, and the result is MPSDataTypeInt32 whatever the shape
+// is (measured, over ranks of one to three and extents of one to five). Each of the two may be written down
+// (`axis`, `shape`) or fed as a tensor (`fedAxis`, `fedShape`), and what decides what happens is whether the
+// graph HOLDS the fed tensor's value or the caller feeds it: a CONSTANT is read here, when the graph is
+// built, and a placeholder is refused here, because the release takes the process down over one (measured,
+// and named with the release's own words in the row of each method).
+- (MPSGraphTensor *)charon_mps_coordinates:(NSInteger)axis
+                                    fedAxis:(MPSGraphTensor *)fedAxis
+                                      shape:(NSArray<NSNumber *> *)shape
+                                   fedShape:(MPSGraphTensor *)fedShape
+                                       name:(NSString *)name;
 // The SLICE family in its three directions, which are one plan over the same arithmetic - a start, an end
 // and a stride per axis with the three masks applied - and three walks, because they go three ways:
 //   - the slice itself (@"slice") is a gather: the result's axis k reads the operand's axis k from the start,

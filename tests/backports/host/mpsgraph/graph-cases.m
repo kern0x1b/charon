@@ -2607,6 +2607,227 @@ typedef struct { const char *name; void (*cases)(void); } Family;
 
 // The table run.sh walks, and the one place a family is named: it prints the list on an unknown argument
 // so a family that is renamed here is renamed there or nowhere.
+// THE SPLIT, which is the one operation of this library whose result is SEVERAL TENSORS, and the coordinate
+// along an axis, which is the one walk of it with no operand at all. Both need a case of their own shape:
+// multi_case_filled reads ONE result buffer back, and a split has one buffer per output - so this helper
+// prints the shapes and data types of every target on one line and then every target's bytes on a line of
+// its own, each in a buffer the case owns and fills with the byte 0xbd first.
+//
+// The shapes are printed with the data type in hex beside them because a split's results all carry the
+// OPERAND's type (measured, 0x10000020 float32 for every case below) while a coordinate's is its own and not
+// the caller's at all (measured, MPSDataTypeInt32, 0x20000020, over every shape asked of it), and the two
+// lines are compared as they stand.
+static void multi_targets_case(const char *name,
+                               NSArray<MPSGraphTensor *> *(^build)(MPSGraph *, NSArray<MPSGraphTensor *> *),
+                               NSArray<NSArray<NSNumber *> *> *shapes, NSArray<NSData *> *values,
+                               NSArray<NSNumber *> *types, unsigned char fill)
+{
+    MPSGraph *one = [MPSGraph new];
+    NSMutableArray *operands = [NSMutableArray arrayWithCapacity:shapes.count];
+    NSMutableDictionary *feeds = [NSMutableDictionary dictionary];
+    NSMutableArray *inputs = [NSMutableArray arrayWithCapacity:shapes.count];
+    for (NSUInteger i = 0; i < shapes.count; i++) {
+        MPSDataType type = (MPSDataType)[types[i] unsignedIntValue];
+        MPSGraphTensor *operand = [one placeholderWithShape:shapes[i] dataType:type name:@"i"];
+        [operands addObject:operand];
+        feeds[operand] = [[MPSGraphShapedType alloc] initWithShape:shapes[i] dataType:type];
+        [inputs addObject:[[MPSGraphTensorData alloc] initWithMTLBuffer:
+                           [gDevice newBufferWithBytes:values[i].bytes length:values[i].length
+                                                options:MTLResourceStorageModeShared]
+                                                     shape:shapes[i] dataType:type]];
+    }
+    NSArray<MPSGraphTensor *> *targets = build(one, operands);
+    // The shapes of every target on ONE field, joined by a +: run.sh's comparison reads a case line of five
+    // fields as a case with a result buffer in it - the marker, the operation, the data type, the length and
+    // the bytes - and a line with two shapes as two fields would be read as one of those, with the length
+    // field holding a shape. So the shapes go in one field and the line is compared as the whole line it is,
+    // which is what a line without a result buffer is.
+    printf("#case %s-shape ", name);
+    for (NSUInteger i = 0; i < targets.count; i++)
+        printf("%s%s/0x%x", i ? "+" : "",
+               targets[i].shape ? [[targets[i].shape componentsJoinedByString:@"x"] UTF8String] : "nil",
+               (unsigned)targets[i].dataType);
+    printf("\n");
+    NSMutableArray *results = [NSMutableArray arrayWithCapacity:targets.count];
+    NSMutableArray *buffers = [NSMutableArray arrayWithCapacity:targets.count];
+    NSMutableArray *sizes = [NSMutableArray arrayWithCapacity:targets.count];
+    for (MPSGraphTensor *t in targets) {
+        NSUInteger count = 1;
+        for (NSNumber *d in t.shape) count *= (NSUInteger)d.integerValue;
+        size_t bytes = count * MPSSizeofMPSDataType(t.dataType);
+        id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+        if (fill) memset([buffer contents], fill, bytes);
+        [buffers addObject:buffer];
+        [sizes addObject:@(bytes)];
+        [results addObject:[[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:t.shape
+                                                                dataType:t.dataType]];
+    }
+    MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice feeds:feeds
+                                              targetTensors:targets targetOperations:@[]
+                                     compilationDescriptor:nil];
+    [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                          inputsArray:inputs resultsArray:results executionDescriptor:nil];
+    for (NSUInteger i = 0; i < buffers.count; i++) {
+        pullResults();
+        memcpy(resultBytes, [buffers[i] contents], (size_t)[sizes[i] unsignedIntegerValue]);
+        put(name, resultBytes, (size_t)[sizes[i] unsignedIntegerValue]);
+    }
+}
+
+// A coordinate has no operand, so its case hands the helper no operands at all: the shapes and values are
+// empty and the build block makes the whole graph itself.
+static void coordinate_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *))
+{
+    multi_targets_case(name, ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        (void)in;
+        return @[build(g)];
+    }, @[], @[], @[@(MPSDataTypeFloat32)], 0xbd);
+}
+
+// The four feeds the numSplits cases are asked over, each of an extent the count does NOT divide evenly,
+// because that is where the release's rule is not dividing evenly either: 5 into 3 is 2 2 1, 7 into 4 is
+// 2 2 2 1, and 8 into 3 is 3 3 2. Each element is its own index, so an answer says which of the operand's
+// elements each region holds.
+static float fiveWide[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+static float sevenWide[14] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+static float fiveValues[5] = { 1, 2, 3, 4, 5 };
+static float eightValues[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+static void family_gather_split(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+    NSArray<NSNumber *> *three = @[@3];
+    NSData *twoByFourFeed = [NSData dataWithBytes:rowFeed length:sizeof rowFeed];
+    NSData *cubeData = [NSData dataWithBytes:cubeFeed length:sizeof cubeFeed];
+    NSData *rankOneData = [NSData dataWithBytes:rankOneFeed length:sizeof rankOneFeed];
+
+    // THE SIZES FORM, which cuts the operand's own regions in the order the caller wrote them. Every case
+    // here is compared cell for cell, so the shapes line says how the regions were cut and the byte line
+    // which operand's elements each one holds.
+    multi_targets_case("split-sizes-axis0 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@1, @1] axis:0 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-sizes-axis1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@1, @3] axis:1 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-sizes-axisNeg1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@1, @3] axis:-1 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-sizes-axisNeg2 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@1, @1] axis:-2 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    // The regions follow the ORDER the sizes were written in, which is what makes them regions rather than
+    // equal parts: @[@3, @1] is a 2x3 of the first three columns and then a 2x1 of the fourth.
+    multi_targets_case("split-sizes-order float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@3, @1] axis:1 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-sizes-equal float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@2, @2] axis:1 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    // THREE regions, and the case that says a split is not a division: the sizes here are 1, 1 and 2.
+    multi_targets_case("split-sizes-three float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@1, @1, @2] axis:1 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    // ONE region is the operand itself, which is what the one-operand concatenation of 14.0 answers too.
+    multi_targets_case("split-sizes-one float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@4] axis:1 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    // A RANK OF ONE, and a rank of three on each of its axes.
+    multi_targets_case("split-sizes-rank1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@1, @2] axis:0 name:@"sp"]; },
+                      @[three], @[rankOneData], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-sizes-rank1Neg1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@1, @2] axis:-1 name:@"sp"]; },
+                      @[three], @[rankOneData], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-sizes-rank3-axis1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@1, @2] axis:1 name:@"sp"]; },
+                      @[twoByThreeByFour], @[cubeData], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-sizes-rank3-axis0 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@1, @1] axis:0 name:@"sp"]; },
+                      @[twoByThreeByFour], @[cubeData], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-sizes-rank3-axis2 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizes:@[@2, @1, @1] axis:2 name:@"sp"]; },
+                      @[twoByThreeByFour], @[cubeData], @[@(MPSDataTypeFloat32)], 0xbd);
+    // The sizes as a CONSTANT, which is the only fed form the release answers at all: these answer exactly
+    // what the written-down sizes above answer, over the same operand.
+    multi_targets_case("split-fedconst-axis1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizesTensor:forwardShapeConstant(g, @[@1, @3]) axis:1 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-fedconst-order float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizesTensor:forwardShapeConstant(g, @[@3, @1]) axis:1 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-fedconst-three float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizesTensor:forwardShapeConstant(g, @[@1, @1, @2]) axis:1 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-fedconst-axis0 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] splitSizesTensor:forwardShapeConstant(g, @[@1, @1]) axis:0 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+
+    // THE numSplits FORM, whose rule is measured and is not dividing evenly: over an extent E and a count N
+    // the first N-1 sizes are ceil(E/N) and the last is what is left. These four are the cases where the two
+    // rules differ - 4 into 3 is refused while 5 into 3 is 2 2 1, and 7 into 4 is 2 2 2 1 while 8 into 3 is
+    // 3 3 2 - so a walk that divided evenly would fail every one of them.
+    multi_targets_case("split-num2-axis1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] numSplits:2 axis:1 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-num2-axis0 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] numSplits:2 axis:0 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-num3-axis1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] numSplits:3 axis:1 name:@"sp"]; },
+                      @[@[@2, @5]], @[[NSData dataWithBytes:fiveWide length:sizeof fiveWide]],
+                      @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-num4-axis1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] numSplits:4 axis:1 name:@"sp"]; },
+                      @[@[@2, @7]], @[[NSData dataWithBytes:sevenWide length:sizeof sevenWide]],
+                      @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-num1-axis1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] numSplits:1 axis:1 name:@"sp"]; },
+                      @[twoByFour], @[twoByFourFeed], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-num3-rank1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] numSplits:3 axis:0 name:@"sp"]; },
+                      @[@[@5]], @[[NSData dataWithBytes:fiveValues length:sizeof fiveValues]],
+                      @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("split-num3-rank8 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g splitTensor:in[0] numSplits:3 axis:0 name:@"sp"]; },
+                      @[@[@8]], @[[NSData dataWithBytes:eightValues length:sizeof eightValues]],
+                      @[@(MPSDataTypeFloat32)], 0xbd);
+
+    // THE COORDINATE ALONG AN AXIS, whose value is the coordinate itself: the result's data type is int32
+    // whatever the shape is, which is on the shapes line of every case here, and the bytes are the
+    // coordinates in the result's own row-major order.
+    coordinate_case("coord-axis0-2x3 int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxis:0 withShape:@[@2, @3] name:@"c"]; });
+    coordinate_case("coord-axis1-2x3 int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxis:1 withShape:@[@2, @3] name:@"c"]; });
+    coordinate_case("coord-axisNeg1-2x3 int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxis:-1 withShape:@[@2, @3] name:@"c"]; });
+    coordinate_case("coord-axisNeg2-2x3 int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxis:-2 withShape:@[@2, @3] name:@"c"]; });
+    coordinate_case("coord-axis0-5 int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxis:0 withShape:@[@5] name:@"c"]; });
+    coordinate_case("coord-axis0-1x1 int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxis:0 withShape:@[@1, @1] name:@"c"]; });
+    coordinate_case("coord-axis1-1x1x1 int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxis:1 withShape:@[@1, @1, @1] name:@"c"]; });
+    coordinate_case("coord-axis0-2x3x4 int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxis:0 withShape:@[@2, @3, @4] name:@"c"]; });
+    coordinate_case("coord-axis1-2x3x4 int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxis:1 withShape:@[@2, @3, @4] name:@"c"]; });
+    coordinate_case("coord-axis2-2x3x4 int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxis:2 withShape:@[@2, @3, @4] name:@"c"]; });
+    // The shape as a CONSTANT, and the axis as a CONSTANT: the two fed forms the release answers, and they
+    // answer exactly what the written-down forms answer.
+    coordinate_case("coord-fedshape-const int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxis:1 withShapeTensor:forwardShapeConstant(g, @[@2, @4]) name:@"c"]; });
+    coordinate_case("coord-fedaxis-const int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxisTensor:forwardShapeConstant(g, @[@1]) withShape:@[@2, @4] name:@"c"]; });
+    coordinate_case("coord-fedaxis-const-neg int32", ^MPSGraphTensor *(MPSGraph *g) {
+        return [g coordinateAlongAxisTensor:forwardShapeConstant(g, @[@-1]) withShape:@[@2, @4] name:@"c"]; });
+    chain_case();
+}
+
 static const Family kFamilies[] = {
     { "misc", family_misc },
     { "arithmetic", family_arithmetic },
@@ -2625,6 +2846,7 @@ static const Family kFamilies[] = {
     { "gather_squeeze", family_gather_squeeze },
     { "gather_expand", family_gather_expand },
     { "gather_concat", family_gather_concat },
+    { "gather_split", family_gather_split },
 };
 
 static void family_names(void)

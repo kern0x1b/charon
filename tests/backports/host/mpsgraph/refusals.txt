@@ -196,3 +196,58 @@ stack-shapes-differ 134 invalid input tensor shapes, all input shapes must match
 # two cases of the differential instead (concat-empty and stack-empty in graph-cases.m), because the release
 # answers it - a result tensor of nil shape and float32 - and there was nothing to record as a refusal.
 concat-mixed-types 0 result-data-type 0x10000020
+# THE SPLIT AND THE COORDINATE ALONG AN AXIS, the two walks of 15.4 that are not gathers, and every question
+# of theirs that a case cannot ask - which is most of the refusals, because a split's result is SEVERAL
+# tensors and every one of them that the release will not answer takes the process down with it. What the
+# release DOES answer is in graph-cases.m's gather_split family: the regions cut in the order written, the
+# count's own measured rule, the rank of one and of three, and the coordinate's value at every axis asked of
+# it.
+#
+# The sizes must ADD UP to the extent of the axis they are cut from. The release builds the result tensors
+# first - the shape line prints two 2x1s and two 2x3s - and its own compiler refuses the graph afterwards.
+split-sizes-sum-short 134 sum of result dimension lengths along split axis must equal input dimension length along split axis
+split-sizes-sum-long 134 sum of result dimension lengths along split axis must equal input dimension length along split axis
+# A size of ZERO builds the result tensor of no elements (the shape line prints 2x0) and is refused as the
+# release assembles the results, from its own array. A NEGATIVE size takes the process down where the graph is
+# built with SIGSEGV and no word at all.
+split-sizes-zero 134 object cannot be nil
+split-sizes-negative 139 -
+# An axis outside the rank, positive or negative: the same sentence the concatenation's is, from the split's
+# own line of MPSGraphUtilities.mm.
+split-sizes-axis-outside 134 invalid axis tensor: [2], axis must be in range -rank <= axis < rank, rank = 2
+split-sizes-axis-negoutside 134 invalid axis tensor: [-3], axis must be in range -rank <= axis < rank, rank = 2
+# The sizes as a PLACEHOLDER, which is the form the header is written for: the release takes the process down
+# where the graph is BUILT, with SIGSEGV and nothing printed. The same value as a CONSTANT is answered - that
+# is three cases of gather_split - so what the release cannot do is read a value that is not in the graph.
+split-sizes-fed-placeholder 139 -
+# THE COUNT, whose rule is measured and is not dividing evenly: over an extent E and a count N the first N-1
+# sizes are ceil(E/N) and the last is what is left, so it is refused exactly when that last size would not be
+# positive. These three are the pairs where it is: 4 into 3, 6 into 4, and a count of zero at all.
+split-num-divisible 134 infer split sizes from total size=4 and num_splits=3 failed
+split-num-six-into-four 134 infer split sizes from total size=6 and num_splits=4 failed
+split-num0 134 infer split sizes from total size=4 and num_splits=0 failed
+# THE COORDINATE's axis outside the rank, positive or negative, and an axis of a rank of one. The sentence
+# carries the operation's own name, which is neither a split nor a gather.
+coord-axis-outside 134 'mps.get_coordinates' op invalid axis: 3.
+coord-axis-negoutside 134 'mps.get_coordinates' op invalid axis: -4.
+coord-rank-one-axis1 134 'mps.get_coordinates' op invalid axis: 1.
+# Its two FED parameters as PLACEHOLDERS, which is the only form the header spells, and the value is FED -
+# in the graph's feeds and in the run's inputs array, which is what a caller of the form does. An axis takes
+# the process down with SIGSEGV (the refusal writes nothing, so there is no text to match), and a shape builds
+# a result whose shape is -1x-1 and goes down with it. A FLOATING POINT axis is refused by the release's own
+# compiler, with the same sentence the fed gather parameters of this library raise. Each of the three is
+# answered as a CONSTANT instead - three cases of gather_split.
+#
+# One thing measured on the way, which is why the feed is paired with the caller's own PLACEHOLDER and not
+# with the operation's first input: the release holds the fed parameter as a constant of its own, and a value
+# paired with that one is refused at the run with "Input feed tensor not found in placeholders, tensor
+# corresponds to operation: mps_constant" (measured, exit 134).
+coord-fed-axis-placeholder 139 -
+coord-fed-shape-placeholder 134 -1x-1
+coord-fed-axis-float 134 operand #1 must be 0D tensor
+# A SHAPE WITH A ZERO EXTENT for a coordinate: the release BUILDS the result - a coordinate of a [0] is a [0]
+# and of a 2x0 is a 2x0, both MPSDataTypeInt32, which the shape line prints - and its own run then refuses
+# the destination with "object cannot be nil" from -[__NSArrayM insertObject:atIndex:], because a buffer of no
+# bytes does not exist (measured on this host: newBufferWithLength:0 and newBufferWithBytes:length:0 both
+# answer nil). So there is no run to answer and the port refuses the shape where the graph is built.
+coord-zero-extent 134 object cannot be nil

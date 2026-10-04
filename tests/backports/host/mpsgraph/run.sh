@@ -49,6 +49,7 @@ gather_reverse:0
 gather_squeeze:0
 gather_expand:0
 gather_concat:0
+gather_split:0
 "
 
 xcrun clang -fobjc-arc $target $quiet "$here/graph-cases.m" \
@@ -374,7 +375,7 @@ else
                 failed=1
                 continue
             fi
-        elif ! grep -aqF "$what" "$build/refusal.out" "$build/refusal.err"; then
+        elif ! grep -aqF -e "$what" "$build/refusal.out" "$build/refusal.err"; then
             echo "FAILED: $question is measured to carry '$what' and does not: $(tail -1 "$build/refusal.err" | cut -c1-160)"
             failed=1
             continue

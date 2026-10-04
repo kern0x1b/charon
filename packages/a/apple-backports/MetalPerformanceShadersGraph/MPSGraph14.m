@@ -957,6 +957,151 @@ typedef enum {
     return result;
 }
 
+#pragma mark - the split and the coordinate: the two seams of 15.4 whose result is not one operand's walk
+// The SPLIT's seam, which is the first seam in this library that answers with SEVERAL tensors: the operation
+// takes the operand as its only input, the parameters say which axis the regions are cut from and either the
+// sizes as they were written or the count the caller named instead, and each OUTPUT is built here from the
+// operand's own shape with that one axis replaced by that region's own size. So a caller reads every
+// result's shape off its tensor before it runs anything, which is what the release answers - it infers the
+// result's types when the graph is built - and the interpreter below builds the same regions when it runs.
+//
+// The sizes themselves, and every refusal about them, are in CharonMPSGraphSplitSizes in
+// MPSGraphInterpreter14.m: asked here with the operand's own shape and asked there again with the shape the
+// operand's value has, so a graph whose operand is fed is cut the way the value says and not the way the
+// tensor did.
+- (NSArray<MPSGraphTensor *> *)charon_mps_split:(MPSGraphTensor *)tensor
+                                            axis:(NSInteger)axis
+                                           sizes:(NSArray<NSNumber *> *)sizes
+                                      numSplits:(NSUInteger)numSplits
+                                            name:(NSString *)name
+{
+    NSArray<NSNumber *> *operandShape = tensor.shape;
+    NSInteger where = axis;
+    if (where < 0)
+        where += (NSInteger)operandShape.count;
+    NSArray<NSNumber *> *own = [self charon_mps_splitSizes:sizes numSplits:numSplits axis:where
+                                            ofShape:operandShape named:name];
+    MPSGraphOperation *operation = [self charon_mps_addOperationOfKind:CharonMPSGraphOperationKindSplit
+                                                                 name:name
+                                                                inputs:@[tensor]
+                                                               outputs:@[]
+                                                             parameters:@{@"splitAxis": @(where),
+                                                                          @"splitSizes": sizes ?: @[],
+                                                                          @"splitNumSplits": @(numSplits)}];
+    NSMutableArray<MPSGraphTensor *> *results = [NSMutableArray arrayWithCapacity:own.count];
+    for (NSUInteger i = 0; i < own.count; i++) {
+        NSMutableArray<NSNumber *> *shape = [operandShape mutableCopy];
+        shape[(NSUInteger)where] = own[i];
+        MPSGraphTensor *result = [[MPSGraphTensor alloc] initWithShape:shape dataType:tensor.dataType
+                                                              operation:operation index:i];
+        [results addObject:result];
+    }
+    [operation charon_mps_setOutputTensors:results];
+    return results;
+}
+
+// The COORDINATE ALONG AN AXIS's seam, which is the one walk with NO OPERAND: the operation's inputs are the
+// fed parameters the caller gave and nothing else, its result is MPSDataTypeInt32 whatever the shape is, and
+// the shape is the one the caller wrote down or the one the graph HOLDS in a constant - a fed parameter is
+// read here, when the graph is built, exactly as the slice's gradient reads the shape of its forward input.
+//
+// A fed parameter that is a PLACEHOLDER is refused here, and the reason is measured rather than chosen: the
+// release builds a graph over one and then takes the process down. An axis fed as a placeholder does it with
+// SIGSEGV where the graph is built, for an axis of 1, 0, -1 and 5 alike; a shape fed as one builds a result
+// whose shape is -1x-1 and goes down with it (exit 134), for an int32 and an int64 alike. A FLOATING POINT
+// fed parameter is refused with the release's own sentence, which is the one the fed gather parameters of this
+// library already raise.
+- (MPSGraphTensor *)charon_mps_coordinates:(NSInteger)axis
+                                    fedAxis:(MPSGraphTensor *)fedAxis
+                                      shape:(NSArray<NSNumber *> *)shape
+                                   fedShape:(MPSGraphTensor *)fedShape
+                                       name:(NSString *)name
+{
+    NSArray<NSNumber *> *own = shape;
+    if (fedShape != nil) {
+        own = [self charon_mps_constantShapeOfTensor:fedShape];
+        if (own == nil) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was given the shape of its result as a tensor the caller feeds, "
+                               @"and a shape that arrives as data is not a shape the release can build a graph "
+                               @"over: measured, its own result then carries the shape -1x-1 and the process "
+                               @"goes down with it (exit 134), for an int32 and an int64 alike", name];
+        }
+    }
+    NSInteger where = axis;
+    if (fedAxis != nil) {
+        NSArray<NSNumber *> *one = [self charon_mps_constantShapeOfTensor:fedAxis];
+        if (one == nil) {
+            MPSDataType type = fedAxis.dataType;
+            if (type == MPSDataTypeFloat32 || type == MPSDataTypeFloat16 || type == MPSDataTypeBool) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was given its axis as a tensor of data type 0x%x, and an axis "
+                                   @"is an index: measured, the release's own compiler refuses a floating "
+                                   @"point operand with \"'mps.get_coordinates' op operand #1 must be 0D "
+                                   @"tensor of mps index type values or static-shape defined tensor with shape "
+                                   @"equal to [1] or unranked tensor of mps index type values\"", name,
+                                    (unsigned)type];
+            }
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was given its axis as a tensor the caller feeds, and an axis that "
+                               @"arrives as data is not an axis the release can build a graph over: measured, it "
+                               @"takes the process down with SIGSEGV where the graph is built, for an axis of "
+                               @"1, of 0, of -1 and of 5 alike", name];
+        }
+        if (one.count != 1) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was given %lu numbers as its axis, and an axis is one of them: "
+                               @"measured, the release takes an axis as a 0D tensor or one of shape [1]", name,
+                        (unsigned long)one.count];
+        }
+        where = one.firstObject.integerValue;
+    }
+    // A SHAPE WITH NO ELEMENTS IN IT is refused where the graph is built, which is what this library does for
+    // every extent the release will not run and what the split's own zero size is two files away. Measured:
+    // the release BUILDS the result - a coordinate of a [0] is a [0] and of a 2x0 a 2x0, both int32 - and
+    // then its own run refuses the destination with "object cannot be nil" from -[__NSArrayM
+    // insertObject:atIndex:], because a tensor of no elements has no buffer to be given (measured on this
+    // host: newBufferWithLength:0 and newBufferWithBytes:length:0 both answer nil). So there is no run to
+    // answer here and the shape is refused instead of building a tensor nothing can be written into.
+    for (NSUInteger k = 0; k < own.count; k++) {
+        if (own[k].integerValue != 0)
+            continue;
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked for the coordinate of a shape whose axis %lu holds no "
+                           @"elements at all, and a result of no elements is a shape the release cannot run: "
+                           @"measured, it BUILDS the result (the shape line prints the shape) and its own run "
+                           @"then refuses the destination with \"object cannot be nil\" from "
+                           @"-[__NSArrayM insertObject:atIndex:], because a buffer of no bytes does not exist",
+                          name, (unsigned long)k];
+    }
+    // The axis is counted from the end of the rank, and an axis outside it is refused where the graph is
+    // built rather than left to be discovered as a wrong number: measured, the release's own compiler refuses
+    // it with "'mps.get_coordinates' op invalid axis: N." (MPSGraphUtilities.mm:1678) and takes the process
+    // down, and the refusal is the one an axis outside the rank is in every other family of this library.
+    NSInteger rank = (NSInteger)own.count;
+    if (where < 0)
+        where += rank;
+    if (where < 0 || where >= rank) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked for the coordinate of axis %ld of a rank-%ld shape, and axis "
+                           @"0 to %ld is all it has: measured, the release's own compiler refuses it with "
+                           "\"'mps.get_coordinates' op invalid axis: %ld.\" (MPSGraphUtilities.mm:1678) and "
+                           @"the process goes down",
+                          name, (long)axis, (long)rank, (long)rank - 1, (long)axis];
+    }
+    MPSGraphOperation *operation = [self charon_mps_addOperationOfKind:CharonMPSGraphOperationKindCoordinates
+                                                                 name:name
+                                                                inputs:@[]
+                                                               outputs:@[]
+                                                             parameters:@{@"coordinateAxis": @(where),
+                                                                          @"coordinateShape": own,
+                                                                          @"dataType": @(MPSDataTypeInt32)}];
+    MPSGraphTensor *result = [[MPSGraphTensor alloc] initWithShape:own dataType:MPSDataTypeInt32
+                                                          operation:operation index:0];
+    [operation charon_mps_setOutputTensors:@[result]];
+    return result;
+}
+
 #pragma mark - the gather family: the one seam every release's shape factory goes through
 // What a gather is: the result's shape, and the parameters that say which transformation produces it. The
 // walk in MPSGraphInterpreter14.m is one function for the whole family - the squeeze and the expanded
