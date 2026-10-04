@@ -1610,3 +1610,73 @@ from a sweep with that same shape, so the 1 and the matrix may share one cause.
 - that the **scale-1 and scale-2 Q14 tables are byte-identical** on the device (phase 32 is
   `[400, -2226, 10017, 10017, -2226, 400, 0, 0]` at both), which is what the phase rule's being a power of two
   predicts and what no host measurement had shown.
+
+## The header on every release the shears run on, and the one place it changes (2026-10-04, v-tail-a12)
+
+The section above read one release's writer, 6.1.3 armv7. **The port's rows run on armv7 6.x and on every
+arm64 release below each row's introduction, so a layout measured on one of them is not a layout.** Every
+writer below was read with the in-tree disassembler at the release's own address, found with the repository's
+own export-trie reader (`tools/dyldcache.py`'s `Cache.exports`, which answers `_vImageNewResamplingFilter` =
+`0x30418ef9`, `_vImageGetResamplingFilterSize` = `0x30419299` and
+`_vImageHorizontalShear_ARGB8888` = `0x303d2865` on the 6.1.3 armv7 cache, which are the addresses the section
+above used - so the reader and the disassembler agree before either is trusted on a release neither has read):
+
+    CHARON_ROOT=$PWD sh tools/corpus/disasm.sh ~/.charon/dyld/7.0/dyld_shared_cache_armv7 \
+        /Frameworks/vImage 2c4e4c19 2c4e4d10 armv7      # the 7.0 armv7 writer, found from _vImageGetResamplingFilterSize
+    CHARON_ROOT=$PWD sh tools/corpus/disasm.sh ~/.charon/dyld/7.0/dyld_shared_cache_arm64 \
+        /Frameworks/vImage 1804add2c 1804ade10 arm64e    # the 7.0 arm64 writer
+    CHARON_ROOT=$PWD sh tools/corpus/disasm.sh ~/.charon/dyld/12.0/dyld_shared_cache_arm64 \
+        /Frameworks/vImage 182712118 1827122c0 arm64e   # 12.0's writer, inlined into _vImageGetResamplingFilterSize
+
+**The fields are the same on every release read, and every one of them is computed the same way:**
+
+| what | the instruction, on every release read |
+| --- | --- |
+| the double `1.0/scale`, at the first slot | `vdiv.f64 d16, d20(1.0), d0` then `vstr d16, [r0]`; `fdiv d0, d3(1.0), d0` then `str d0, [x0]` |
+| `numTaps = (int)(2*min(lobes/scale, lobes) + 0.5)` | `vadd d18,d18,d18; vadd d18,d18,0.5; vcvt.s32.f64`; `fadd d0,d0,d0; fadd d0,d0,0.5; fcvtzs` |
+| `lobes` = 3.0 or 5.0 | `tst r2, #32` / `tst w2, #0x20` - `kvImageHighQualityResampling` - selecting one of two literal-pool doubles |
+| the float row stride `(15 + 4*numTaps) & ~15` | `add r2,15,r1,lsl #2; bic r12,r2,#15`; `lsl x11,x10,#2; add #15; and #~15` |
+| the int16 row stride `(((2 + 2*numTaps) & ~3) + 15) & ~15` | `mov r2,#2; add r9,r2,r1,lsl #1; bic r3,r9,#3; adds #15; bic #15`; arm64 the same in `x12` |
+| the phase exponent `clamp(133 - exponent(float(1/scale)), 0, 6)` | `ubfx r1,r3,#23,#8; rsb r1,r1,#133` then the two clamps; arm64 `lsr w8,w8,#23; sub w8,133,w8,uxtb` then `csel` twice |
+| the phase count `1 << exponent` | `lsl.w lr, 1, r1`; arm64 `lsl w9,w10,w9` |
+| the Q14 table's end, as an **offset from the object** | `sub r0, r12, r0` then `+ int16Stride<<exponent`; arm64 `sub x8,x10,x0` then `madd` |
+| the size | the offset `+ 16`, on every release |
+
+**Where it changes is the WIDTH of a field and the position of the last one, and both follow the
+architecture.** Every field is a 32-bit slot on armv7 and a 64-bit slot on arm64:
+
+| release | arch | the slots, by byte offset from the object |
+| --- | --- | --- |
+| 6.1.3, 7.0, 8.0, 9.3.6, 10.3.4 | armv7/armv7s | `0` scale (double), `8` numTaps, `12` floatStride, `16` int16Stride, `20` phases, `24` exponent, `28` **offset**, `32` Q14's first byte, `36` `(object+55)&~15` |
+| 7.0, 7.0.1 | arm64 | `0` scale, `8` numTaps, `16` floatStride, `24` int16Stride, `32` phases, `40` exponent, `48` **offset**, `56` `(object+87)&~15` |
+| 10.0.1, 11.0, 12.0 | arm64 | `0` scale, `8`, `16`, `24`, `32`, `40`, `48` **offset**, `56` **Q14's first byte**, `64` `(object+87)&~15` |
+
+**Three things follow, and each one is a refusal the port has to make.**
+
+1. **A "word N" on this page is an armv7 offset.** Byte 8 is `numTaps` on armv7 and on every arm64 release
+   too, but byte 20 is the phase count on armv7 and byte 32 is on arm64, and byte 32 on armv7 is the Q14
+   table's first byte while on arm64 it is the phase count. **A port that reads "word 8" and "word 20" gets
+   the phase count on a 6.1.3 iPhone and on an arm64 release only by accident, and gets everything after it
+   wrong.** The port therefore keys the layout on what the release is and accepts exactly the two measured
+   shapes - armv7/armv7s, and arm64 from 10.0.1 - refusing anything else.
+2. **The arm64 releases 7.0 and 7.0.1 do not store the Q14 table's first byte at all.** Their writer computes
+   the float table's end (`madd x10, x10, x12, x13`), stores it at byte 48, and then **overwrites byte 48
+   with the offset** (`str x8, [x0, #48]`); what survives at byte 56 is the base `(object+87)&~15`. So on
+   those two releases the first Q14 byte has to be *computed* - `base + floatStride*(phases+1)` - and reading
+   byte 56 as if it were the table's first byte reads the base and dereferences the object's own middle.
+   From 10.0.1 the writer keeps the value and a ninth slot appears at byte 64 holding the base, so byte 56 is
+   the table's first byte there.
+3. **The change is bounded by the held set and is not extrapolated.** Every held release with an armv7 slice
+   carries the armv7 shape and every one measured agrees - 6.1.3, 7.0, 8.0, 9.3.6, 10.3.4, which is both ends
+   and every architecture change point in the held armv7 ladder (6.1.3, 7.0, 7.0.6, 7.1, 7.1.1, 7.1.2, 8.0,
+   8.0.2, 8.1, 8.1.1, 8.1.2, 8.1.3, 8.2, 8.3, 8.4, 8.4.1, 9.0, 9.0.2, 9.1, 9.2, 9.2.1, 9.3, 9.3.5, 9.3.6,
+   10.0.1, 10.0.2, 10.1, 10.1.1, 10.2, 10.2.1, 10.3, 10.3.1, 10.3.2, 10.3.3, 10.3.4). **The held arm64
+   slices are 7.0, 7.0.1, 10.0.1, 11.0, 12.0, 16.0 and 18.0, and there is none between 7.0.1 and 10.0.1**,
+   which is exactly where the header changes. All five of the sub-15.0 ones were read; 16.0 and 18.0 are
+   above every row's introduction and are not read, and the 16.0 cache is split into 44 subcaches that
+   `tools/dyldcache.py` does not read, so nothing about it is claimed here.
+
+**One arithmetic difference, and it changes nothing.** 6.1.3's armv7 writer adds a `+1` to the int16 row
+stride under `kvImageHighQualityResampling` and 7.0 and later do not. For every tap count these two spellings
+round to the same multiple of 16 - `numTaps` 6, 8, 10, 12, 13, 20, 24 give 16, 16, 32, 32, 32, 48, 48 either
+way - so the branch is redundant on every shape measured and is recorded here rather than implemented.
