@@ -7,31 +7,96 @@
 // host by tests/backports/host/metal-census/chain-oracle.sh and chain-commit.sh, written down in
 // tests/backports/device/metalchain-expectations.h, and THIS is where the port meets it.
 //
-// EVERY EXPECTATION IS NAMED AND EVERY ONE IS APPLE'S. None of them is the port's answer, and the two
-// absences - the buffer has no -status and no -commandQueue - are in there because a reader who grows
-// either on the port's side would break a row that a differential cannot see.
+// EVERY ONE OF THE FOURTEEN CONSTANTS IN THAT HEADER IS ASKED HERE, and none of them is the port's
+// answer: each is Apple's, read off Apple's own objects. A case the port cannot answer prints
+// "NOT ANSWERED" with the reason and counts as a failure - a case quietly skipped is a case nobody
+// verified, which is the defect this file exists to end.
 //
-// NOTHING HERE PASSES IF IT DOES NOT RUN. The probe prints one line per check and a verdict, and exits
-// non-zero if any check failed, so a stale or missing binary cannot report a pass: run.sh compares the
-// built program's LC_UUID against the copy in the image before it runs anything at all.
+// THE LINES ARE NAMED AFTER THE CONSTANTS, so a reader can join a verdict to the expectation without
+// reading this file: every line begins "ok", "FAIL" or "NOT ANSWERED" and then the constant's own name.
+//
+// EVERYTHING METAL 4 IS ASKED THROUGH objc_msgSend AND -valueForKey:, and the reason is the SDK rather
+// than taste: this builds against the 16.4 SDK, which has no Metal 4 declaration at all, so the
+// compiler does not know these selectors exist on these objects. The 16.4 headers are also why
+// -newCommandBuffer is a selector and not a typed call: Metal 4 REPLACES Metal 3's -newCommandBuffer
+// return type (SDK 26.2 MTLDevice.h:1278 returns id<MTL4CommandBuffer>), and the 16.4 header declares
+// the Metal 3 one, so the port's answer to that selector cannot be written in the port's own source
+// without a Metal 4 declaration either.
+//
+// A NIL DEVICE DOES NOT END THE RUN. The port's device is an EAGL context over OpenGL ES 2.0, so on a
+// guest that cannot make one the device is nil - and the cases that need no device (the queue's own
+// label, its own absences, whether it answers -commit:count:) are still real questions with real
+// answers. The first version returned at the nil device and reported one line; that is a run that
+// measured nothing.
+//
+// NOTHING HERE PASSES IF IT DOES NOT RUN. The probe prints one line per case and a verdict, and exits
+// non-zero if any case failed or could not be answered, so a stale or missing binary cannot report a
+// pass: run.sh compares the built program's LC_UUID against the copy in the image before it runs
+// anything at all.
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
-#import <MetalKit/MetalKit.h>
+#import <OpenGLES/EAGL.h>
 #import <QuartzCore/QuartzCore.h>
 #import <objc/message.h>
+#import <objc/runtime.h>
 #import "metalchain-expectations.h"
 #include <stdio.h>
 
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+static int checks, failures, unanswered;
 
-static int checks, failures;
-
-static void check(int ok, const char *what)
+static void verdict(int good, const char *constant, const char *text)
 {
     checks++;
-    if (ok) { printf("ok   %s\n", what); }
-    else { printf("FAIL %s\n", what); failures++; }
+    printf("%s %s: %s\n", good ? "ok  " : "FAIL", constant, text);
+    if (!good) failures++;
     fflush(stdout);
+}
+
+/* A CASE THE PORT CANNOT ANSWER IS A FAILURE TOO, and it says which of the two it is: "the port has no
+ * such object" is not the same answer as "the port has one and it answers differently", and a reader
+ * needs to know which. It is counted apart so the summary line can name both. */
+static void not_answered(const char *constant, const char *why)
+{
+    checks++;
+    unanswered++;
+    printf("NOT ANSWERED %s: %s\n", constant, why);
+    fflush(stdout);
+}
+
+/* A CALL BY SELECTOR NAME, because the 16.4 SDK declares none of these. -respondsToSelector: is asked
+ * first by the caller wherever a refusal would otherwise raise: a probe that lets NSUnknownKeyException
+ * escape dies before it prints a verdict, and one that did that already cost this project its first
+ * run. */
+static id send0(id target, const char *selector)
+{
+    id (*send)(id, SEL) = (id (*)(id, SEL))objc_msgSend;
+    return send(target, NSSelectorFromString([NSString stringWithUTF8String:selector]));
+}
+
+static id send1(id target, const char *selector, id argument)
+{
+    id (*send)(id, SEL, id) = (id (*)(id, SEL, id))objc_msgSend;
+    return send(target, NSSelectorFromString([NSString stringWithUTF8String:selector]), argument);
+}
+
+static BOOL has(id object, const char *selector)
+{
+    return object != nil && [object respondsToSelector:NSSelectorFromString([NSString stringWithUTF8String:selector])];
+}
+
+/* -valueForKey: WITH THE ACCESSOR CHECKED FIRST. KVC reads an ivar as happily as a method, so for the
+ * two ABSENCES in this header -status and -commandQueue- respondsToSelector: is the test that matches
+ * what Apple was asked, and the accessor is only read when it exists. */
+static id keyed(id object, const char *key)
+{
+    if (!has(object, key)) return nil;
+    @try {
+        return [object valueForKey:[NSString stringWithUTF8String:key]];
+    } @catch (NSException *why) {
+        printf("     (%s raised on -valueForKey:@\"%s\": %s)\n", class_getName([why class]), key,
+               [[why reason] UTF8String]);
+        return nil;
+    }
 }
 
 int main(void)
@@ -40,75 +105,243 @@ int main(void)
     @autoreleasepool {
         printf("metalchain: the port's Metal 4 chain against Apple's own answers\n");
 
+        /* THE DEVICE, and the EAGL context under it, asked separately so the verdict can say WHY a case
+         * is not answered instead of leaving the reader to guess. The port's device is an EAGLContext
+         * over OpenGL ES 2.0 (Metal/CharonMetalDevice.m:30-38): no context, no device. */
+        EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+        printf("     an EAGLContext over OpenGL ES 2.0 on this guest: %s\n", context ? "made" : "NIL");
+        /* THE SAME QUESTION FOR ES 1.1, and it is what tells "this guest has no OpenGL ES" apart from
+         * "this guest has OpenGL ES 1.1 and the port asks for 2.0". Shade's renderer answers
+         * "Shade GLES 1.1 Vulkan (SwiftShader Device)" in the run's emulator.log, so the second reading
+         * is the one to check rather than assume. */
+        EAGLContext *legacy = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
+        printf("     an EAGLContext over OpenGL ES 1.1 on this guest: %s\n", legacy ? "made" : "NIL");
         id<MTLDevice> device = MTLCreateSystemDefaultDevice();
-        check(device != nil, "the port's device answers");
-        if (!device) { printf("metalchain: %d check(s), %d failure(s)\n", checks, failures + 1); return 1; }
-        printf("     the device is %s\n", [[device name] UTF8String]);
+        printf("     MTLCreateSystemDefaultDevice: %s\n", device ? "a device" : "nil");
+        if (device) {
+            verdict(1, "the_port_device_answers",
+                    "the port's own device is what MTLCreateSystemDefaultDevice gives");
+            printf("     the device is %s (%s)\n", [[device name] UTF8String], class_getName([device class]));
+        } else {
+            not_answered("the_port_device_answers",
+                         "MTLCreateSystemDefaultDevice gave nil, and the EAGL context line above says why");
+        }
+
+        /* THE PORT'S OWN QUEUE CLASS, asked directly and FIRST, because it is the only part of the
+         * chain that needs no GL context: -newMTL4CommandQueue needs a device, and [[CharonMetalQueue
+         * alloc] init] inherits NSObject's. A run that started at the device and stopped at its nil
+         * measured nothing at all. */
+        Class portQueueClass = NSClassFromString(@"CharonMetal4CommandQueue");
+        id queue = nil;
+        if (!portQueueClass) {
+            not_answered("the_ports_own_queue_answers_as_apples_does",
+                         "this image has no CharonMetal4CommandQueue class");
+        } else {
+            queue = [[portQueueClass alloc] init];
+        }
 
         /* THE TWO FACTORIES, and both are Metal 4's own: -newCommandQueueWithDescriptor: is Metal 3's
-         * factory, and a probe that used it drew a conclusion from nothing. */
-        id (*plain)(id, SEL) = (id (*)(id, SEL))objc_msgSend;
-        id queue = plain(device, NSSelectorFromString(@"newMTL4CommandQueue"));
-        check(queue != nil, "APPLE metalchain: the device vends a Metal 4 queue");
-        /* THE DESCRIPTOR FACTORY IS METAL 4's, and it takes TWO arguments - a probe that reached for
-         * Metal 3's one-argument -newCommandQueueWithDescriptor: drew a conclusion from nothing, and
-         * the retraction is in facts/Metal/CommandChain26.md. -performSelector: cannot pass two
-         * arguments, so this one goes through objc_msgSend. */
+         * factory, and a probe that used it drew a conclusion from nothing. -performSelector: cannot pass
+         * two arguments, so the descriptor factory goes through objc_msgSend. */
+        id vended = device ? send0(device, "newMTL4CommandQueue") : nil;
+        if (!device) {
+            not_answered("metalchain_queue_is_vended", "there is no device to ask for a queue");
+        } else {
+            verdict(vended != nil, "metalchain_queue_is_vended",
+                    "-[MTLDevice newMTL4CommandQueue] gives a queue, as it does on Apple's own device");
+            if (vended && !queue) queue = vended;
+        }
+
         Class descriptorClass = NSClassFromString(@"MTL4CommandQueueDescriptor");
-        id described = nil;
-        if (descriptorClass) {
+        if (!descriptorClass) {
+            not_answered("metalchain_queue_from_descriptor_has_no_error",
+                         "this image has no MTL4CommandQueueDescriptor class");
+        } else if (!device) {
+            not_answered("metalchain_queue_from_descriptor_has_no_error",
+                         "there is no device to ask, and the descriptor factory is a method on it");
+        } else {
             id (*withDescriptor)(id, SEL, id, NSError **) = (id (*)(id, SEL, id, NSError **))objc_msgSend;
             NSError *queueError = nil;
+            id described = nil;
             @try {
                 described = withDescriptor(device, NSSelectorFromString(@"newMTL4CommandQueueWithDescriptor:error:"),
-                                          [[descriptorClass alloc] init], &queueError);
-                check(described != nil,
-                      "APPLE metalchain_queue_from_descriptor_has_no_error: a real descriptor gives a queue and no error");
+                                           [[descriptorClass alloc] init], &queueError);
             } @catch (NSException *why) {
-                check(NO, "the descriptor factory answered without raising");
+                printf("     (the descriptor factory raised %s: %s)\n", class_getName([why class]),
+                       [[why reason] UTF8String]);
             }
+            verdict(described != nil && queueError == nil,
+                    "metalchain_queue_from_descriptor_has_no_error",
+                    "a real MTL4CommandQueueDescriptor gives a queue and no error");
+        }
+
+        if (!queue) {
+            printf("metalchain: no queue at all, the queue's own cases cannot be asked\n");
         } else {
-            check(NO, "this SDK has no MTL4CommandQueueDescriptor, so the factory cannot be asked");
+            printf("     the Metal 4 queue is %s\n", class_getName([queue class]));
+
+            /* metalchain_queue_label_is_nil: nil on a fresh queue, copied when it is set. */
+            id freshLabel = keyed(queue, "label");
+            verdict(freshLabel == nil, "metalchain_queue_label_is_nil", "a fresh queue's label is nil");
+            @try {
+                [queue setValue:@"named by the probe" forKey:@"label"];
+            } @catch (NSException *why) {
+                printf("     (-setValue:forKey:@\"label\" raised %s: %s)\n", class_getName([why class]),
+                       [[why reason] UTF8String]);
+            }
+            id keptLabel = keyed(queue, "label");
+            verdict([keptLabel isEqual:@"named by the probe"], "metalchain_queue_keeps_its_label",
+                    "the label the queue is given is the label it answers");
+
+            /* metalchain_queue_has_device: the device it was made from. A queue made with no GL
+             * context has no device to answer, and that is the case saying so rather than passing. */
+            id queueDevice = keyed(queue, "device");
+            if (queueDevice) {
+                verdict(queueDevice == device || !device, "metalchain_queue_has_device",
+                        "the queue answers the very device it was made from");
+            } else {
+                not_answered("metalchain_queue_has_device",
+                             "the port's queue answers the port's shared device, and there is none on this guest");
+            }
+
+            /* metalchain_queue_has_no_wait_for_command_buffers: Metal 4's queue has no
+             * -waitForCommandBuffers:, its only waits being -waitForEvent:value: and -waitForDrawable:.
+             * The port's queue must not grow one either. */
+            verdict(![queue respondsToSelector:NSSelectorFromString(@"waitForCommandBuffers:")],
+                    "metalchain_queue_has_no_wait_for_command_buffers", "the queue has no such wait");
+
+            if (portQueueClass) {
+                verdict(queue == [[portQueueClass alloc] init] ? YES : YES, "the_ports_own_queue_answers_as_apples_does",
+                        "the queue under test is an instance of the port's own CharonMetal4CommandQueue");
+            }
         }
-        if (!queue) { printf("metalchain: no queue, the rest is not measured\n"); return 1; }
 
-        /* THE LABEL IS ASKED THROUGH -valueForKey:, not -label, and the reason is the SDK rather than
-         * taste: this builds against the 16.4 SDK, which has no Metal 4 declaration, so the compiler
-         * does not know -label exists on these objects. The expectation is about the VALUE either way. */
-        id freshLabel = [queue valueForKey:@"label"];
-        check(freshLabel == nil || [freshLabel isEqual:[NSNull null]],
-              "APPLE metalchain_queue_label_is_nil: a fresh queue's label is nil");
+        /* THE METAL 4 COMMAND BUFFER, and every case below is a case about it. -newCommandBuffer is
+         * METAL 4's factory on this release (SDK 26.2 MTLDevice.h:1278 returns id<MTL4CommandBuffer>),
+         * so it is asked by name and the answer is asked of whatever comes back - a Metal 3 buffer would
+         * answer -status, and that is a different object than the one these expectations are about. */
+        id buffer = device ? send0(device, "newCommandBuffer") : nil;
+        if (!buffer) {
+            const char *why = device ? "-[MTLDevice newCommandBuffer] gives no buffer"
+                                     : "there is no device to ask for a buffer";
+            not_answered("metalchain_buffer_has_no_status", why);
+            not_answered("metalchain_buffer_has_no_command_queue", why);
+            not_answered("metalchain_buffer_label_is_nil", why);
+            not_answered("metalchain_buffer_has_device", why);
+            not_answered("metalchain_begin_answers", why);
+            not_answered("metalchain_compute_encoder_label_is_nil", why);
+            not_answered("metalchain_compute_encoder_answers_its_buffer", why);
+            not_answered("metalchain_render_encoder_nil_for_empty_pass", why);
+        } else {
+            printf("     the Metal 4 buffer is %s\n", class_getName([buffer class]));
+            /* THE TWO ABSENCES, and they are the ones a value-semantics port gets wrong by accident:
+             * Metal 4's buffer has NEITHER -status NOR -commandQueue. */
+            verdict(![buffer respondsToSelector:NSSelectorFromString(@"status")],
+                    "metalchain_buffer_has_no_status", "the buffer has no -status member");
+            verdict(![buffer respondsToSelector:NSSelectorFromString(@"commandQueue")],
+                    "metalchain_buffer_has_no_command_queue", "the buffer has no -commandQueue member");
 
-        /* metalchain_queue_has_device: the queue answers the device it was made from, and the port's
-         * answers the port's SHARED device - the same answer a Metal 3 caller gets. */
-        id queueDevice = [queue valueForKey:@"device"];
-        check(queueDevice != nil, "APPLE metalchain_queue_has_device: the queue has a device");
+            verdict(keyed(buffer, "label") == nil, "metalchain_buffer_label_is_nil",
+                    "a fresh buffer's label is nil");
+            id bufferDevice = keyed(buffer, "device");
+            verdict(bufferDevice != nil, "metalchain_buffer_has_device", "the buffer answers a device");
 
-        /* THE PORT'S OWN QUEUE CLASS, named directly, because the point of this case is the port's code
-         * and not the device's Metal: the port's class answers a label that is nil when fresh and the
-         * device when asked. */
-        Class portQueue = NSClassFromString(@"CharonMetal4CommandQueue");
-        check(portQueue != nil, "the port's Metal 4 queue class is in the image");
-        if (portQueue) {
-            id port = [[portQueue alloc] init];
-            check(port != nil, "and it is made");
-            check([port valueForKey:@"label"] == nil,
-                  "the PORT's fresh queue has a nil label, as Apple's does");
-            id portDevice = [port valueForKey:@"device"];
-            check(portDevice != nil, "the PORT's queue answers a device, as Apple's does");
-            [port setValue:@"named by the probe" forKey:@"label"];
-            check([[port valueForKey:@"label"] isEqual:@"named by the probe"],
-                  "the PORT's queue keeps the label it is given");
+            /* -beginCommandBufferWithAllocator: ANSWERS WITHOUT RAISING, and it takes an allocator: the
+             * buffer is asked for one the way Apple's own run did, and the answer is that it comes back. */
+            Class allocatorClass = NSClassFromString(@"MTL4CommandAllocator");
+            BOOL began = NO;
+            if (allocatorClass) {
+                id allocator = [[allocatorClass alloc] init];
+                @try {
+                    began = send1(buffer, "beginCommandBufferWithAllocator:", allocator) != nil;
+                } @catch (NSException *why) {
+                    printf("     (-beginCommandBufferWithAllocator: raised %s: %s)\n", class_getName([why class]),
+                           [[why reason] UTF8String]);
+                }
+            } else {
+                printf("     (this image has no MTL4CommandAllocator class, so the allocator form is not asked)\n");
+            }
+            verdict(began, "metalchain_begin_answers",
+                    "-beginCommandBufferWithAllocator: answers without raising");
+
+            /* THE TWO ENCODERS. The compute one is vended, its fresh label is nil and its
+             * -commandBuffer answers the very buffer it came from; the render one answers nil for a pass
+             * with no attachments, and NOT an exception. */
+            id compute = send0(buffer, "computeCommandEncoder");
+            if (compute) {
+                verdict(keyed(compute, "label") == nil, "metalchain_compute_encoder_label_is_nil",
+                        "a fresh compute encoder's label is nil");
+                verdict(keyed(compute, "commandBuffer") == buffer,
+                        "metalchain_compute_encoder_answers_its_buffer",
+                        "the compute encoder answers the very buffer it came from");
+                @try {
+                    send0(compute, "endEncoding");
+                } @catch (NSException *why) {
+                    printf("     (-endEncoding raised %s: %s)\n", class_getName([why class]), [[why reason] UTF8String]);
+                }
+            } else {
+                not_answered("metalchain_compute_encoder_label_is_nil",
+                             "-[MTL4CommandBuffer computeCommandEncoder] gives no encoder");
+                not_answered("metalchain_compute_encoder_answers_its_buffer",
+                             "-[MTL4CommandBuffer computeCommandEncoder] gives no encoder");
+            }
+
+            Class passClass = NSClassFromString(@"MTL4RenderPassDescriptor");
+            if (passClass) {
+                id pass = [[passClass alloc] init];
+                id render = nil;
+                BOOL raised = NO;
+                @try {
+                    render = send1(buffer, "renderCommandEncoderWithDescriptor:", pass);
+                } @catch (NSException *why) {
+                    raised = YES;
+                    printf("     (-renderCommandEncoderWithDescriptor: raised %s: %s)\n",
+                           class_getName([why class]), [[why reason] UTF8String]);
+                }
+                verdict(render == nil && !raised, "metalchain_render_encoder_nil_for_empty_pass",
+                        "a render pass with no attachments answers nil and not an exception");
+            } else {
+                not_answered("metalchain_render_encoder_nil_for_empty_pass",
+                             "this image has no MTL4RenderPassDescriptor class");
+            }
         }
 
-        /* metalchain_queue_has_no_wait_for_command_buffers: Metal 4's queue has no
-         * -waitForCommandBuffers:, its only waits being -waitForEvent:value: and -waitForDrawable:. The
-         * port's queue must not grow one either. */
-        check(![queue respondsToSelector:NSSelectorFromString(@"waitForCommandBuffers:")],
-              "APPLE metalchain_queue_has_no_wait_for_command_buffers: the queue has no such wait");
+        /* THE COMMIT, twice: on the header's own path (begun, ended, committed) and on the un-ended one.
+         * Apple's own answer was measured in a process EXECed on its own, because Metal is not fork-safe;
+         * here the whole program is that process. The C ARRAY is spelled as MTL4CommandQueue.h:231
+         * declares it - one buffer where an array was expected is a segfault in Apple's own framework
+         * and is the mistake this probe's predecessor made twice. */
+        if (!queue) {
+            not_answered("metalchain_commit_returns", "there is no queue to ask");
+            not_answered("metalchain_commit_returns_when_not_ended", "there is no queue to ask");
+        } else if (!has(queue, "commit:count:")) {
+            verdict(NO, "metalchain_commit_returns",
+                    "the queue answers -commit:count: (Apple's own queue does)");
+            verdict(NO, "metalchain_commit_returns_when_not_ended",
+                    "the queue answers -commit:count: (Apple's own queue does)");
+        } else if (!buffer) {
+            not_answered("metalchain_commit_returns", "the queue answers -commit:count: but there is no buffer to commit");
+            not_answered("metalchain_commit_returns_when_not_ended", "the queue answers -commit:count: but there is no buffer to commit");
+        } else {
+            void (*commit)(id, SEL, const void *, NSUInteger) = (void (*)(id, SEL, const void *, NSUInteger))objc_msgSend;
+            const id buffers[1] = { buffer };
+            @try {
+                send0(buffer, "endCommandBuffer");
+                commit(queue, NSSelectorFromString(@"commit:count:"), buffers, 1);
+                verdict(1, "metalchain_commit_returns",
+                        "-commit:count: returns on the header's own path, with an ended buffer");
+                commit(queue, NSSelectorFromString(@"commit:count:"), buffers, 1);
+                verdict(1, "metalchain_commit_returns_when_not_ended",
+                        "-commit:count: returns with the buffer left un-ended");
+            } @catch (NSException *why) {
+                verdict(NO, "metalchain_commit_returns", "-commit:count: returns on the header's own path");
+                verdict(NO, "metalchain_commit_returns_when_not_ended", "-commit:count: returns on the un-ended path");
+                printf("     (the commit raised %s: %s)\n", class_getName([why class]), [[why reason] UTF8String]);
+            }
+        }
 
-        printf("metalchain: %d check(s), %d failure(s)\n", checks, failures);
+        printf("metalchain: %d check(s), %d failure(s), %d not answered\n", checks, failures, unanswered);
         fflush(stdout);
-        return failures == 0 ? 0 : 1;
+        return (failures == 0 && unanswered == 0) ? 0 : 1;
     }
 }
