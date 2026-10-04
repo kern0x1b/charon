@@ -194,19 +194,56 @@ static inline int CharonResampleFilterOf(ResamplingFilter filter, CharonResample
 // advances the base while the phase wraps back to zero. The carry is not decoration - it is what makes row 0's
 // peak land on the next source pixel at the top of the range instead of one pixel behind it.
 //
+// **The two functions round the tie in OPPOSITE directions, and that is measured on their own bytes rather
+// than assumed.** `tiesUp` selects `floor(x + 0.5)` for `vImageHorizontalShear` and `ceil(x - 0.5)` for
+// `vImageVerticalShear`. The two spellings differ ONLY where `fraction * phases` is exactly `m + 0.5`, and
+// there the two release functions answer differently:
+//
+// | mapped centre (scale one, slope zero) | horizontal | vertical |
+// | --- | --- | --- |
+// | 0.0078125, `x = 0.5` | phase 1 | phase 0 |
+// | 0.0234375, `x = 1.5` | phase 2 | phase 1 |
+// | 0.0390625, `x = 2.5` | phase 3 | phase 2 |
+// | 0.9921875, `x = 63.5` | phase 0, **base carried** | phase 63, no carry |
+// | -0.0078125, `x = 63.5` | phase 0, **base carried** | phase 63, no carry |
+//
+// A ramp source along the axis and a zero backColor, with the two axes asked for the SAME centre - the
+// horizontal's centre is `along - translate` and the vertical's is `along + translate`, so horizontal translate
+// `-t` and vertical translate `+t` land on one centre (`tie8.m`, committed beside the harness because a claim
+// in this file rests on it). Every non-tie agrees between the axes and every tie disagrees, at the bottom of
+// the range, in the middle of it and at the top, where the tie is where a CARRY would show: `floor` reaches
+// `q == phases`, wraps the phase to zero and advances the base, and the horizontal does exactly that while the
+// vertical stays at `q == phases - 1`.
+//
+// **Neither rule serves both functions**, which is what makes this a measurement rather than a preference: the
+// vertical's eleven integer shears answer 1000 against the host on 264 checks with the tie up, and the
+// horizontal's fourteen answer 24 each with the tie down. `vImageHorizontalShear` and `vImageVerticalShear`
+// are two exported functions with two inner loops, and this is where their rounding expressions differ.
+//
+// A tie is reachable only where the translate is a dyadic rational that lands half a phase from a whole one,
+// which is why the sweep's off-grid translate 1/128 is the only one that reaches it: it is exactly half of one
+// of the 64 phases at a scale of one and half of one of the 32 at a scale of one half. **At a scale of two no
+// tie is reachable** - the reciprocal halves the translate, so the same position is a quarter of a phase -
+// and at 0.75 the reciprocal is inexact, so the product is not a tie either.
+//
+// `ceil` and `floor` are the right primitives rather than `floor` adjusted by hand because each is monotone
+// across its own tie from both sides: `x` a hair under 0.5 gives 0 and a hair over gives 1, with no epsilon and
+// no special case.
+//
 // Measured on iPhone3,1 6.1.3 10B329 against the release's own stored bytes, by exhaustion over all 64 rows
 // and every base tap for every destination column of a one-column delta: 1344 of 1344 at a scale of two, 768
 // of 768 at one, 480 of 480 at a half, 596 of 624 at 0.75, and 32 of 32 / 56 of 56 / 32 of 32 / 32 of 32 on a
 // ramp at translates 0, 0.5, 0.25 and 0.125 - where the four other spellings of the translate score 7, 7, 5
 // and 4 of the same 56. The translate is inside the parenthesis with the coordinate and the whole is divided
 // by the scale.
-static inline void CharonResamplePhase(const CharonResampleFilter *filter, double centre,
+static inline void CharonResamplePhase(const CharonResampleFilter *filter, double centre, int tiesUp,
                                        unsigned *phase, long *base)
 {
     double whole = floor(centre);
     double fraction = centre - whole;
     long low = (long)whole;
-    long q = (long)floor(fraction * (double)filter->phases + 0.5);
+    long q = tiesUp ? (long)floor(fraction * (double)filter->phases + 0.5)
+                    : (long)ceil(fraction * (double)filter->phases - 0.5);
     long carry = q / (long)filter->phases;
     *phase = (unsigned)(q - carry * (long)filter->phases);
     *base = low + carry;

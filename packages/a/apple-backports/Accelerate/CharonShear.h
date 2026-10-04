@@ -333,7 +333,9 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
                                          + (position - (double)dstAlong) * reciprocal - 0.5;
             unsigned phase;
             long base;
-            CharonResamplePhase(filter, centre, &phase, &base);
+            // The two functions round a tie in opposite directions, so the axis names the rule rather than the
+            // rule being assumed (CharonResampling.h carries the measurement and the table of what each answers).
+            CharonResamplePhase(filter, centre, horizontal, &phase, &base);
             const int16_t *row = filter->row + (size_t)phase * filter->width;
             long first = base - (long)filter->centre;
             double divisor = rowSum[phase];

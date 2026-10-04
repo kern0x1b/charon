@@ -392,6 +392,10 @@ static int readFilter(ResamplingFilter filter, ReadFilter *out)
 // at position `c`. The phase is the fraction rounded to NEAREST with a CARRY - `q` runs 0..phases as the
 // fraction runs 0..1, `q == phases` wraps the phase to zero and advances the base - and the row's own sum is
 // the divisor, which on this Mac is exactly 16384 and on 6.1.3 is within 5 of it.
+// **The tie goes UP on the horizontal and DOWN on the vertical**, which is what the host's own bytes say at
+// every tie and what neither rule alone can serve (CharonResampling.h carries the table; `tie8.m`, committed
+// beside this file, is the measurement). The two spellings differ only where `fraction * phases` is exactly
+// `m + 0.5`, which the off-grid translate 1/128 is at a scale of one and of one half.
 // The mapping's four open terms, as one struct so that SEARCH can sweep them against the host's own bytes.
 // `alongShift` is the constant the along coordinate carries, `translateSign` which way the translate goes,
 // `slopeShift` the slope's cross half pixel, and `halfPixel` whether the scale's bracket carries the `+0.5` /
@@ -417,12 +421,13 @@ static Mapping mapping = { 0.0, 1, 0.5, 1, 1 };
 
 static double expectSample(const Shear *shear, const uint8_t *srcRow, size_t srcStep, vImagePixelCount srcAlong,
                            const ReadFilter *filter, int extend, const double *back, unsigned channel,
-                           double centre)
+                           double centre, int tiesUp)
 {
     double whole = floor(centre);
     double fraction = centre - whole;
     long low = (long)whole;
-    long q = (long)floor(fraction * (double)filter->phases + 0.5);
+    long q = tiesUp ? (long)floor(fraction * (double)filter->phases + 0.5)
+                    : (long)ceil(fraction * (double)filter->phases - 0.5);
     long carry = q / (long)filter->phases;
     unsigned phase = (unsigned)(q - carry * (long)filter->phases);
     long base = low + carry;
@@ -491,7 +496,7 @@ static void expectDestination(const Shear *shear, const vImage_Buffer *src, cons
             for (unsigned channel = 0; channel < (unsigned)shear->channels; channel++) {
                 double sample = expectSample(shear, srcRow,
                                              shear->horizontal ? pixelBytes : src->rowBytes, srcAlong,
-                                             filter, extend, back, channel, centre);
+                                             filter, extend, back, channel, centre, shear->horizontal);
                 storeChannel(pixel, channel, sample, shear);
             }
         }
