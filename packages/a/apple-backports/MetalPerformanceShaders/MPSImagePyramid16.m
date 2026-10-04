@@ -25,6 +25,37 @@
 // and below 12.0 respectively - is below 16.0 and keeps this one too. What the three objects share is in
 // CharonMPSPyramid.h.
 //
+// AND THE NAME IS AN ALIAS, because from 10.0.1 the release carries this class without exporting it,
+// which is the window MPSImagePyramid10.m's own comment above describes: carried from 10.0.1 (measured
+// with apple.objc.inventory over the armv7s caches of 10.0.1, 10.1, 10.2, 10.3 and 10.3.4 - superclass
+// MPSUnaryImageKernel, seven own methods: -initWithDevice:, -initWithDevice:centerWeight:,
+// -initWithDevice:kernelWidth:kernelHeight:weights:, -kernelWidth, -kernelHeight, -dealloc and
+// -copyWithZone:device:) and exported by no image of any of them, measured with apple.dyld over the
+// same caches' export tries; 11.0 (arm64) carries it in MPSImage.framework and still exports no
+// symbol). So a band of 10.0.1 to 10.3.4 that linked a class implementation of this name held two
+// classes of one name in every process, and the runtime keeps the one it registered first. The name
+// goes through charon_alias.h, which is what modules/apple/backports.lua's own check_categories asks
+// for when it reads this reading ("the release carries MPSImagePyramid in MetalPerformanceShaders
+// without exporting it: alias it through charon_alias.h") and what MDLMeshBufferZoneDefault,
+// HKCDADocument, NSTextList and NSTextTab already are for the same one.
+//
+// What that costs this file, measured over the same caches and read out of attach.c:
+//
+//   * On a band below 10.0.1 the release has no class of this name at all, the proxy IS the class, and
+//     every member below answers out of the state beside it - which is what MPSImagePyramid10.m's
+//     Gaussian kernel and MPSImageLaplacianPyramid12.m's two inherit and read.
+//   * On 10.0.1 to 10.3.4 the release's class is found, the proxy is re-parented under it, and
+//     attach.c's charon_adopt_methods REPLACES the proxy's own copy of every member the release's class
+//     already has - which here is all five of them (the list above). So on those bands a subclass of
+//     ours that a program constructs gets the RELEASE's initializers, and the filter's weights are then
+//     in the release's own private storage, which no header declares and which this port therefore
+//     cannot read. MPSImageLaplacianPyramid12.m's two kernels read the weights through
+//     -charon_mps_filter, and they refuse there with that reason rather than reading weights this port
+//     never wrote. MPSImagePyramid10.m's Gaussian is not in those bands at all: the release exports
+//     MPSImageGaussianPyramid from 10.0.1, so band() reexports that object there.
+//   * From 16.0 the release exports the name and the band links neither this object nor the proxy. No
+//     band of this machine reaches 16.0: the armv7 ladder ends at 9.3.6 and armv7s at 10.3.4.
+//
 // THE FILTER, which every pyramid here uses and which the header gives three ways.
 //   the default (MPSImageConvolution.h:505-506)  "The filter kernel is the outer product of
 //     w = [ 1/16,  1/4,  3/8,  1/4,  1/16 ]^T, with itself"
@@ -40,6 +71,34 @@
 // armv7 link, that this object defines the class it says.
 
 #import "CharonMPSPyramid.h"
+#import "../charon_alias.h"
+
+// The filter's own weights, row major, and the two sizes, held beside the pyramid: a category cannot
+// add an instance variable and neither can the class behind an alias, because attach.c lays the proxy
+// out from the release's class and takes that write back when the two instance sizes differ. It is one
+// NSMutableData and two integers rather than the three ivars this object used to have, and the three
+// seams below are the same three readers either way.
+@interface CharonMPSPyramidFilter : NSObject
+@property (nonatomic, strong) NSMutableData *weights;
+@property (nonatomic, assign) NSUInteger width;
+@property (nonatomic, assign) NSUInteger height;
+@end
+
+@implementation CharonMPSPyramidFilter
+
+@synthesize weights = _weights;
+@synthesize width = _width;
+@synthesize height = _height;
+
+@end
+
+// The class the release's name stands for, and nothing else: its superclass is the SDK's own
+// MPSUnaryImageKernel, which is the port's own below 10.0.1 (the release exports MPSUnaryImageKernel
+// from 10.0.1, measured with apple.dyld over the armv7s caches of 10.0.1 and 10.3.4) and the release's
+// own above it, which is what CHARON_ALIAS_OF declares.
+CHARON_ALIAS_OF(MPSImagePyramid, MPSUnaryImageKernel)
+
+@implementation CharonMPSImagePyramid (CharonMPSPyramidFilter)
 
 // MPSImageConvolution.h marks -initWithDevice:kernelWidth:kernelHeight:weights: the designated
 // initializer of MPSImagePyramid (:578 area) and -initWithCoder:device: another, and this class refuses
@@ -47,9 +106,15 @@
 // designated initializer of its own. The same pragma MPSImage9.m carries for the same reason.
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
-@implementation MPSImagePyramid {
-    NSMutableData *_kernel;      // the filter's own weights, row major, kernelWidth * kernelHeight of them
-    NSUInteger _kernelWidth, _kernelHeight;
+static CharonMPSPyramidFilter *CharonMPSPyramidFilterOf(id pyramid)
+{
+    static const void *key = &key;
+    CharonMPSPyramidFilter *filter = objc_getAssociatedObject(pyramid, key);
+    if (!filter) {
+        filter = [[CharonMPSPyramidFilter alloc] init];
+        objc_setAssociatedObject(pyramid, key, filter, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return filter;
 }
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device kernelWidth:(NSUInteger)kernelWidth kernelHeight:(NSUInteger)kernelHeight weights:(const float *)kernelWeights
@@ -64,15 +129,16 @@
                         kernelWeights ? "given" : "not given");
         return nil;
     }
-    _kernelWidth = kernelWidth;
-    _kernelHeight = kernelHeight;
-    _kernel = [NSMutableData dataWithLength:kernelWidth * kernelHeight * sizeof(float)];
-    if (!_kernel) {
+    CharonMPSPyramidFilter *filter = CharonMPSPyramidFilterOf(self);
+    filter.width = kernelWidth;
+    filter.height = kernelHeight;
+    filter.weights = [NSMutableData dataWithLength:kernelWidth * kernelHeight * sizeof(float)];
+    if (!filter.weights) {
         CharonMPSRefuse(@"MPSImagePyramid: no memory for a %lux%lu kernel, so no object was made",
                         (unsigned long)kernelWidth, (unsigned long)kernelHeight);
         return nil;
     }
-    [_kernel replaceBytesInRange:NSMakeRange(0, kernelWidth * kernelHeight * sizeof(float)) withBytes:kernelWeights];
+    [filter.weights replaceBytesInRange:NSMakeRange(0, kernelWidth * kernelHeight * sizeof(float)) withBytes:kernelWeights];
     return self;
 }
 
@@ -87,7 +153,7 @@
     return [self initWithDevice:device kernelWidth:5 kernelHeight:5 weights:kernel];
 }
 
-// The centre weight of :527-528: w = [ (1/4 - a/2), 1/4, a, 1/4, (1/4 - a/2) ]^T as the outer product.
+// The centre weight of :527-528: w = [ (1/4 - a/2),  1/4,  a,  1/4,  (1/4 - a/2) ]^T as the outer product.
 - (instancetype)initWithDevice:(id<MTLDevice>)device centerWeight:(float)centerWeight
 {
     float edge = 1.0f / 4.0f - centerWeight / 2.0f;
@@ -111,14 +177,15 @@
     return nil;
 }
 
-- (NSUInteger)kernelWidth { return _kernelWidth; }
-- (NSUInteger)kernelHeight { return _kernelHeight; }
+- (NSUInteger)kernelWidth { return CharonMPSPyramidFilterOf(self).width; }
+- (NSUInteger)kernelHeight { return CharonMPSPyramidFilterOf(self).height; }
 
-// The three the kernels over this class read, out of the two ivars above, which a subclass's category
-// cannot see - the compiler says so outright ("instance variable '_kernel' is private"). The names are
-// Charon's own: no SDK header declares them.
-- (const float *)charon_mps_filter { return (const float *)[_kernel bytes]; }
-- (NSUInteger)charon_mps_filterWidth { return _kernelWidth; }
-- (NSUInteger)charon_mps_filterHeight { return _kernelHeight; }
+// The three the kernels over this class read. The names are Charon's own: no SDK header declares them.
+// A pyramid made on a band where the release's own class took over the initializers has no state here,
+// and its readers answer NULL and 0 - which is what MPSImageLaplacianPyramid12.m refuses on, by name,
+// rather than reading weights it never wrote.
+- (const float *)charon_mps_filter { return (const float *)[CharonMPSPyramidFilterOf(self).weights bytes]; }
+- (NSUInteger)charon_mps_filterWidth { return CharonMPSPyramidFilterOf(self).width; }
+- (NSUInteger)charon_mps_filterHeight { return CharonMPSPyramidFilterOf(self).height; }
 
 @end
