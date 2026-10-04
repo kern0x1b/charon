@@ -2201,14 +2201,29 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
         end
     end
     local unbuilt = {}
+    -- What the owner-class line below takes on trust, kept where a reader can see it: an `implemented` member
+    -- row that no member answers and that the class being exported answers on its own. It is right for the five
+    -- ways a port answers a member with no method of its own - the release's own class above the port's
+    -- (-init and +new are NSObject's), a member inherited from a superclass, a class the port publishes by
+    -- alias and lays no metadata of out, a protocol's requirement answered by its declaration, a type or a case
+    -- a header declares - and wrong for the sixth, a row with nothing behind it. Measured 2026-10-04 over the 69
+    -- libraries of the 6.1.3 gate on land-w26: 213 rows stand in that state, 128 of them -init and +new, and 43
+    -- name a selector no source file of the tree spells at all. So every run names them, and the count is what
+    -- says whether the five ways are being read as the sixth: a note and not a refusal, because the population
+    -- belongs to the frameworks that own those rows - Metal, MPSGraph, UIKit, Vision, CoreImage, Foundation,
+    -- AVFoundation, HomeKit - and a refusal would refuse their next gate rather than this row's. Each of them is
+    -- a row to make true or a status to set, and the list says which, once per run, by name.
+    local class_only = {}
     if complete ~= false then
         for name, entry in pairs(listed) do
-            local built = false
+            local built, by_member = false, false
             for spelling in pairs(spellings(name)) do
                 built = built or found.classes[spelling] or found.members[spelling] or found.symbols[spelling] or false
+                by_member = by_member or (found.members[spelling] or false)
             end
             local owner = name:match("^[-+]%[([%w_]+) ") or name:match("^([%u][%w_]*)%.")
-            built = built or (owner and found.classes[owner]) or false
+            local by_owner = (owner and found.classes[owner]) or false
+            built = built or by_owner or false
             built = built or (entry.kind == "class" and (found.registered or {})[name]) or false
             local carried = deployment and entry.introduced and dyld.compare_versions(entry.introduced, deployment) <= 0
             carried = carried or (exports and exports["_" .. name:gsub("%(%)$", "")]) or false
@@ -2221,6 +2236,11 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
                 (owner and listed[owner] and listed[owner].kind == "protocol" and
                  protocol_declared(root, owner, inventory, sdkdir)) or
                 (owner and inventory and inventory.protocols and inventory.protocols[owner] ~= nil) or false
+            -- where the three answers below did not answer it and the class did, which is the one case the note
+            -- is for: a row the check asked about, in this band, that no member and no declaration carries
+            if entry.status == "implemented" and by_owner and by_member == false and ours and not carried and not declared then
+                table.insert(class_only, name)
+            end
             if entry.kind == "function" and not built then
                 -- the port's own body, in a header of the package: a symbol will never answer for an inline,
                 -- and Apple's own inlines are not counted - an SDK inline is Apple's code in the consumer
@@ -2247,6 +2267,7 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
     table.sort(answered)
     table.sort(held)
     table.sort(missing)
+    table.sort(class_only)
     if #unlisted > 0 or #unbuilt > 0 or #answered > 0 or #held > 0 or #missing > 0 or #incomplete > 0 then
         local lines = {"the registry does not describe what the backports carry:"}
         for _, described in ipairs(incomplete) do
@@ -2269,7 +2290,9 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
         end
         raise(table.concat(lines, "\n"))
     end
-    return #undocumented
+    -- two counts, and the second is the note the owner-class line above earns its place with: the entries with
+    -- no file of facts, and the member rows only their exported class answers
+    return #undocumented, #class_only, class_only
 end
 
 
@@ -2453,11 +2476,20 @@ function build(opt)
         check_band_caches(opt, objects)
         -- registry_step, not check_registry: it hands the check the SDK the objects were compiled against and the
         -- protocols the headers declare, without which every member of a protocol the SDK declares reads unbuilt
-        local undocumented = registry_step(opt, surface(built, opt.architecture, declared_protocols(opt.root),
-                                                         documented_names(opt.root)),
-                                          opt.registry, release.exports)
+        local undocumented, class_only, class_only_names = registry_step(opt, surface(built, opt.architecture,
+            declared_protocols(opt.root), documented_names(opt.root)), opt.registry, release.exports)
         if undocumented > 0 then
             cprint("${color.warning}note:${clear} %d of the registry's entries name no file of facts yet", undocumented)
+        end
+        if class_only > 0 then
+            -- in full, one per line and sorted: every name here is a row whose owner class is exported and whose
+            -- member nothing in the build carries, so the class alone is what answers it. The count is the trend
+            -- and the names are the work, and neither is a failure until the frameworks that own them say so.
+            cprint("${color.warning}note:${clear} %d implemented member row(s) are answered by their owner class alone," ..
+                   " with no member of that name in the build:", class_only)
+            for _, name in ipairs(class_only_names or {}) do
+                cprint("  ${color.warning}%s${clear}", name)
+            end
         end
     end
     print(string.format("build: %s compiled %d of %d objects in %.1fs, measured their releases in %.1fs, linked %d libraries in %.1fs, checked in %.1fs",

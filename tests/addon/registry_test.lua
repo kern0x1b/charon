@@ -286,6 +286,33 @@ local function member_and_protocol_rows(backports, found)
     if said:find("FixClass") then
         table.insert(found, "a category method with a row of its own must pass, and it is red: " .. said)
     end
+    -- The member row that only its owner class answers. check_registry counts an exported class as an answer
+    -- for every member row naming it, which is right for -init and +new (NSObject's, above the port's own
+    -- class) and wrong for a row with nothing behind it - the CarPlay case of 2026-09-30, and 205 rows of the
+    -- 6.1.3 gate on land-w26 measured on 2026-10-04. The second value check_registry returns is that list, and
+    -- this case is what says the list is not empty where it should be: with a member behind the row it must
+    -- not name the row, and without one it must name it, which is the whole difference the note reports on.
+    local function named(members)
+        local named_rows = {}
+        local message
+        local ok = try {
+            function ()
+                local _, _, class_only = backports.check_registry(root, {classes = {FixClass = true}, members = members or {}, symbols = {}},
+                                                                  true, "6.1.3", {}, inventory)
+                for _, name in ipairs(class_only or {}) do table.insert(named_rows, name) end
+                return true
+            end,
+            catch {function (errors) message = tostring(errors) end}
+        }
+        return (ok and table.concat(named_rows, " ") or ("raised: " .. tostring(message)))
+    end
+    local with_member, without = named(member), named({})
+    if with_member:find("-[FixClass extra]", 1, true) then
+        table.insert(found, "a member row a member answers must not be named as answered by its class alone, and it is: " .. with_member)
+    end
+    if not without:find("-[FixClass extra]", 1, true) then
+        table.insert(found, "a member row with no member behind it must be named in the class-alone list, and it is not: " .. without)
+    end
     -- a property whose name starts with a lower-case acronym, read through the getter its header declares:
     -- NSProcessInfo.iOSAppOnVision is getter=isiOSAppOnVision, and the gate of land-w5 (2026-10-03) read the
     -- built -isiOSAppOnVision as rowless and the row as unbuilt, because "is" + lower-case was not an accessor
