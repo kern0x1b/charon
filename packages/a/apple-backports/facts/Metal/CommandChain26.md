@@ -240,6 +240,57 @@ compiled nothing, reported success, and the control passed because no compiler r
 `broken.m` now, and the control also requires an `error:` line in the log - a control that fails because
 nothing ran is the same defect as one that fails for the wrong reason.
 
+## What the landing gate of 2026-10-04 found, and the conformance that answers it
+
+The gate for the 6.1.3 band on `land-w19` failed with
+
+```
+error: the registry does not describe what the backports carry:
+  listed as implemented, but nothing of that name is built: -[MTL4CommandQueue addResidencySet:]; ...
+  MTL4CommandQueue.device; MTL4CommandQueue.label
+```
+
+**All ten are rows whose spelling names the PROTOCOL, and the check counts a member row from the protocol
+object's method list** - `carried_api()` over `objc.binary_inventory` (`modules/apple/backports.lua:1523`) - and
+not from a `Charon*` class's own methods, the port's own classes being its machinery and not names it carries.
+The methods were on `CharonMetal4CommandQueue` and the protocol was nowhere, so ten rows had nothing to answer
+for. The four `inert` rows did not fail because only `implemented` rows are held to it.
+
+**THE FIX IS THE CONFORMANCE, and the corpus asked for it**: `MTL4CommandQueue` in
+`coordination/corpus/ledger-2026-10-03/Metal.tsv` is a `protocol` row at 26.0 with status `header-ok` and
+`needs lift`. `@protocol MTL4CommandQueue` is transcribed into `CharonMetalProtocols.h` by
+`tools/transcribe-protocols.py` - facts only: the base list, every member with its types, `@required` and
+`@optional` as sections, and `API_AVAILABLE(ios(26.0))` - and `CharonMetal4CommandQueue` declares conformance,
+which is the only thing that makes clang emit `__OBJC_PROTOCOL_$_MTL4CommandQueue` and its method list. That
+tool's own comment carries the measurement: importing the header, using `id<name>` and naming it in
+`@protocol()` each emit none of it, and only a declaration that adopts it emits the object.
+`conforming_protocols()` then finds this file as the emitter, so the generated per-band source
+`MetalBackportsProtocols26.m` does not force the object a second time - the duplicate that
+`modules/apple/backports.lua` refuses.
+
+**THE TRANSCRIPTION NEEDED TWO THINGS THE TOOL DID NOT DO**, both measured on 2026-10-04 and both fixed in the
+tool rather than in a header written by hand:
+
+* **a type only the 26.2 SDK declares that is not a class.** `MTL4UpdateSparseTextureMappingOperation` and its
+  three siblings are typedefs of anonymous structs, and `gather()` returned only ObjC interfaces as the 26.2
+  class set, so the tool refused the whole protocol by name for them: `refused: MTL4CommandQueue.
+  updateTextureMappings:heap:operations:count: needs MTL4UpdateSparseTextureMappingOperation, which
+  iPhoneOS16.4.sdk does not declare`. It keeps the kind of every non-class type now, and writes the declaration
+  C needs.
+* **a protocol a member's type names that the 16.4 SDK declares nowhere.** `id<MTL4CommandBuffer>` in the two
+  commits and `id<MTLResidencySet>` in the four residency members: the 16.4 SDK has no Metal 4 and
+  `MTLResidencySet` arrived after it, so the header did not compile at all - "cannot find protocol declaration
+  for 'MTL4CommandBuffer'", "no type or protocol named 'MTLResidencySet'". Those are forward declarations now,
+  and only those: a protocol the SDK declares is not declared again, and one this file declares with a body is
+  not declared twice.
+
+**AND THE TRANSCRIPTION FOUND A SELECTOR THE PORT HAD WRONG**: `heap:operations:count:` over four parameters
+for the two update-mapping members, where the port and its rows said `heap:count:` over three. The corpus named
+the header's spelling all along - `-[MTL4CommandQueue updateBufferMappings:heap:operations:count:]` - and
+nothing compared it, because a `Charon*` class's methods are what the gate does not count. The same
+transcription is what says Metal 4's `label` is `@property (readonly, nullable)` and atomic, so the queue's own
+is readonly and atomic too, and the descriptor factory reaches it through `-charonSetLabel:` - the port's own
+seam, in the shape of `-[UIPasteboard charonRecordOptions:]`, with a row of its own.
 ## Two more, both in the assertions rather than the code
 
 * **A COPY CARRIES WHAT THE DESCRIPTOR HOLDS.** The case first compared a copy against the caller's
@@ -427,12 +478,12 @@ what it measures, and printing the number it got is what turned this from "the s
   `metalchain-probe[12:203] Metal: a residency set is refused: ...` for each member. The rows and the
   comment in `metalchain.m` said the opposite and both are corrected here.
 * **AN ARITY GUESSED FROM A SELECTOR CRASHED THE GUEST, and the fault says exactly which argument was
-  wrong.** The first version of the refusal loop sent `updateBufferMappings:heap:count:` - three arguments
+  wrong.** The first version of the refusal loop sent `updateBufferMappings:heap:operations:count:` - three arguments
   after the selector - through the two-argument call, so `heap` arrived as the integer `1`, and ARC's
   `objc_storeStrong` for the parameter retained it as an object. The guest died with
   `[cpu] fatal pid=12 pc=0x38dcc522 lr=0x38ddab87 fault=0x1 access=0x1 size=0x4` and
   `[control] thread ... frames=0x1d7f7,...`, and `0x1d7f7` is inside
-  `-[CharonMetal4CommandQueue updateBufferMappings:heap:count:]` in the probe binary. A SIGBUS or a SIGSEGV
+  `-[CharonMetal4CommandQueue updateBufferMappings:heap:operations:count:]` in the probe binary. A SIGBUS or a SIGSEGV
   on an address that is a small integer is an argument-count mistake before anything else, and the table of
   members in `metalchain.m` now carries each one's arity rather than matching on `:count:`.
 
