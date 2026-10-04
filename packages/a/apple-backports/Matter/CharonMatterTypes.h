@@ -22,8 +22,8 @@
 #import <Matter/Matter.h>
 
 // The types the interfaces below name that the SDK this library builds against does
-// not declare: 324 of them, forward-declared here because pointer uses need only this.
-@class MTRAccessControlClusterReviewFabricRestrictionsParams, MTRAccessControlClusterReviewFabricRestrictionsResponseParams, MTRActivatedCarbonFilterMonitoringClusterResetConditionParams, MTRBasicInformationClusterProductAppearanceStruct, MTRBooleanStateConfigurationClusterEnableDisableAlarmParams, MTRBooleanStateConfigurationClusterSuppressAlarmParams, MTRBridgedDeviceBasicInformationClusterKeepActiveParams, MTRBridgedDeviceBasicInformationClusterProductAppearanceStruct, MTRCameraAVSettingsUserLevelManagementClusterDPTZRelativeMoveParams, MTRCameraAVSettingsUserLevelManagementClusterDPTZSetViewportParams, MTRCameraAVSettingsUserLevelManagementClusterMPTZMoveToPresetParams, MTRCameraAVSettingsUserLevelManagementClusterMPTZRelativeMoveParams, MTRCameraAVSettingsUserLevelManagementClusterMPTZRemovePresetParams, MTRCameraAVSettingsUserLevelManagementClusterMPTZSavePresetParams, MTRCameraAVSettingsUserLevelManagementClusterMPTZSetPositionParams, MTRCameraAVSettingsUserLevelManagementClusterMPTZStruct, MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct, MTRCameraAVStreamManagementClusterAudioStreamAllocateParams, MTRCameraAVStreamManagementClusterAudioStreamAllocateResponseParams, MTRCameraAVStreamManagementClusterAudioStreamDeallocateParams, MTRCameraAVStreamManagementClusterCaptureSnapshotParams, MTRCameraAVStreamManagementClusterCaptureSnapshotResponseParams, MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams, MTRCameraAVStreamManagementClusterSnapshotStreamAllocateParams, MTRCameraAVStreamManagementClusterSnapshotStreamAllocateResponseParams, MTRCameraAVStreamManagementClusterSnapshotStreamDeallocateParams, MTRCameraAVStreamManagementClusterSnapshotStreamModifyParams, MTRCameraAVStreamManagementClusterVideoResolutionStruct, MTRCameraAVStreamManagementClusterVideoSensorParamsStruct, MTRCameraAVStreamManagementClusterVideoStreamAllocateParams, MTRCameraAVStreamManagementClusterVideoStreamAllocateResponseParams, MTRCameraAVStreamManagementClusterVideoStreamDeallocateParams, MTRCameraAVStreamManagementClusterVideoStreamModifyParams, MTRChannelClusterCancelRecordProgramParams, MTRChannelClusterGetProgramGuideParams, MTRChannelClusterProgramGuideResponseParams, MTRChannelClusterRecordProgramParams, MTRChimeClusterPlayChimeSoundParams, MTRClosureControlClusterCalibrateParams, MTRClosureControlClusterMoveToParams, MTRClosureControlClusterOverallCurrentStateStruct, MTRClosureControlClusterOverallTargetStateStruct, MTRClosureControlClusterStopParams, MTRClosureDimensionClusterDimensionStateStruct, MTRClosureDimensionClusterRangePercent100thsStruct, MTRClosureDimensionClusterSetTargetParams, MTRClosureDimensionClusterStepParams, MTRClosureDimensionClusterUnitRangeStruct, MTRCommissionerControlClusterCommissionNodeParams, MTRCommissionerControlClusterRequestCommissioningApprovalParams, MTRCommissionerControlClusterReverseOpenCommissioningWindowParams, MTRCommodityPriceClusterCommodityPriceStruct, MTRCommodityPriceClusterGetDetailedForecastRequestParams, MTRCommodityPriceClusterGetDetailedForecastResponseParams, MTRCommodityPriceClusterGetDetailedPriceRequestParams, MTRCommodityPriceClusterGetDetailedPriceResponseParams, MTRCommodityTariffClusterDayEntryStruct, MTRCommodityTariffClusterDayStruct, MTRCommodityTariffClusterGetDayEntryParams, MTRCommodityTariffClusterGetDayEntryResponseParams, MTRCommodityTariffClusterGetTariffComponentParams, MTRCommodityTariffClusterGetTariffComponentResponseParams, MTRCommodityTariffClusterTariffInformationStruct, MTRContentAppObserverClusterContentAppMessageParams, MTRContentAppObserverClusterContentAppMessageResponseParams, MTRContentControlClusterAddBonusTimeParams, MTRContentControlClusterBlockUnratedContentParams, MTRContentControlClusterDisableParams, MTRContentControlClusterEnableParams, MTRContentControlClusterResetPINParams, MTRContentControlClusterResetPINResponseParams, MTRContentControlClusterSetOnDemandRatingThresholdParams, MTRContentControlClusterSetScheduledContentRatingThresholdParams, MTRContentControlClusterSetScreenDailyTimeParams, MTRContentControlClusterUnblockUnratedContentParams, MTRContentControlClusterUpdatePINParams, MTRDataTypeCurrencyStruct, MTRDataTypeMeasurementAccuracyStruct, MTRDataTypePowerThresholdStruct, MTRDataTypeTestGlobalStruct, MTRDataTypeViewportStruct, MTRDeviceEnergyManagementClusterCancelPowerAdjustRequestParams, MTRDeviceEnergyManagementClusterCancelRequestParams, MTRDeviceEnergyManagementClusterForecastStruct, MTRDeviceEnergyManagementClusterModifyForecastRequestParams, MTRDeviceEnergyManagementClusterPauseRequestParams, MTRDeviceEnergyManagementClusterPowerAdjustCapabilityStruct, MTRDeviceEnergyManagementClusterPowerAdjustRequestParams, MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams, MTRDeviceEnergyManagementClusterResumeRequestParams, MTRDeviceEnergyManagementClusterStartTimeAdjustRequestParams, MTRDeviceEnergyManagementModeClusterChangeToModeParams, MTRDeviceEnergyManagementModeClusterChangeToModeResponseParams, MTRDishwasherAlarmClusterModifyEnabledAlarmsParams, MTRDishwasherAlarmClusterResetParams, MTRDishwasherModeClusterChangeToModeParams, MTRDishwasherModeClusterChangeToModeResponseParams, MTRDoorLockClusterAppleClearAliroCredentialParams, MTRDoorLockClusterAppleClearAliroReaderConfigParams, MTRDoorLockClusterAppleGetAliroCredentialStatusParams, MTRDoorLockClusterAppleSetAliroCredentialParams, MTRDoorLockClusterAppleSetAliroReaderConfigParams, MTRDoorLockClusterClearAliroReaderConfigParams, MTRDoorLockClusterSetAliroReaderConfigParams, MTRDoorLockClusterUnboltDoorParams, MTRElectricalEnergyMeasurementClusterCumulativeEnergyResetStruct, MTRElectricalEnergyMeasurementClusterEnergyMeasurementStruct, MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct, MTRElectricalGridConditionsClusterElectricalGridConditionsStruct, MTREnergyEVSEClusterClearTargetsParams, MTREnergyEVSEClusterDisableParams, MTREnergyEVSEClusterEnableChargingParams, MTREnergyEVSEClusterEnableDischargingParams, MTREnergyEVSEClusterGetTargetsParams, MTREnergyEVSEClusterGetTargetsResponseParams, MTREnergyEVSEClusterSetTargetsParams, MTREnergyEVSEClusterStartDiagnosticsParams, MTREnergyEVSEModeClusterChangeToModeParams, MTREnergyEVSEModeClusterChangeToModeResponseParams, MTRFanControlClusterStepParams, MTRGeneralCommissioningClusterSetTCAcknowledgementsParams, MTRGeneralCommissioningClusterSetTCAcknowledgementsResponseParams, MTRGeneralDiagnosticsClusterPayloadTestRequestParams, MTRGeneralDiagnosticsClusterPayloadTestResponseParams, MTRGeneralDiagnosticsClusterTimeSnapshotParams, MTRGeneralDiagnosticsClusterTimeSnapshotResponseParams, MTRGenericBaseCluster, MTRGroupcastClusterConfigureAuxiliaryACLParams, MTRGroupcastClusterExpireGracePeriodParams, MTRGroupcastClusterJoinGroupParams, MTRGroupcastClusterLeaveGroupParams, MTRGroupcastClusterLeaveGroupResponseParams, MTRGroupcastClusterUpdateGroupKeyParams, MTRHEPAFilterMonitoringClusterResetConditionParams, MTRICDManagementClusterRegisterClientParams, MTRICDManagementClusterRegisterClientResponseParams, MTRICDManagementClusterStayActiveRequestParams, MTRICDManagementClusterStayActiveResponseParams, MTRICDManagementClusterUnregisterClientParams, MTRJointFabricAdministratorClusterAddICACParams, MTRJointFabricAdministratorClusterAnnounceJointFabricAdministratorParams, MTRJointFabricAdministratorClusterICACCSRRequestParams, MTRJointFabricAdministratorClusterICACCSRResponseParams, MTRJointFabricAdministratorClusterICACResponseParams, MTRJointFabricAdministratorClusterOpenJointCommissioningWindowParams, MTRJointFabricAdministratorClusterTransferAnchorCompleteParams, MTRJointFabricAdministratorClusterTransferAnchorRequestParams, MTRJointFabricAdministratorClusterTransferAnchorResponseParams, MTRJointFabricDatastoreClusterAddACLToNodeParams, MTRJointFabricDatastoreClusterAddAdminParams, MTRJointFabricDatastoreClusterAddBindingToEndpointForNodeParams, MTRJointFabricDatastoreClusterAddGroupIDToEndpointForNodeParams, MTRJointFabricDatastoreClusterAddGroupParams, MTRJointFabricDatastoreClusterAddKeySetParams, MTRJointFabricDatastoreClusterAddPendingNodeParams, MTRJointFabricDatastoreClusterDatastoreStatusEntryStruct, MTRJointFabricDatastoreClusterRefreshNodeParams, MTRJointFabricDatastoreClusterRemoveACLFromNodeParams, MTRJointFabricDatastoreClusterRemoveAdminParams, MTRJointFabricDatastoreClusterRemoveBindingFromEndpointForNodeParams, MTRJointFabricDatastoreClusterRemoveGroupIDFromEndpointForNodeParams, MTRJointFabricDatastoreClusterRemoveGroupParams, MTRJointFabricDatastoreClusterRemoveKeySetParams, MTRJointFabricDatastoreClusterRemoveNodeParams, MTRJointFabricDatastoreClusterUpdateAdminParams, MTRJointFabricDatastoreClusterUpdateEndpointForNodeParams, MTRJointFabricDatastoreClusterUpdateGroupParams, MTRJointFabricDatastoreClusterUpdateKeySetParams, MTRJointFabricDatastoreClusterUpdateNodeParams, MTRLaundryWasherModeClusterChangeToModeParams, MTRLaundryWasherModeClusterChangeToModeResponseParams, MTRMediaPlaybackClusterActivateAudioTrackParams, MTRMediaPlaybackClusterActivateTextTrackParams, MTRMediaPlaybackClusterDeactivateTextTrackParams, MTRMediaPlaybackClusterTrackStruct, MTRMessagesClusterCancelMessagesRequestParams, MTRMessagesClusterPresentMessagesRequestParams, MTRMicrowaveOvenControlClusterAddMoreTimeParams, MTRMicrowaveOvenControlClusterSetCookingParametersParams, MTRNetworkCommissioningClusterQueryIdentityParams, MTRNetworkCommissioningClusterQueryIdentityResponseParams, MTROccupancySensingClusterHoldTimeLimitsStruct, MTROperationalCredentialsClusterSetVIDVerificationStatementParams, MTROperationalCredentialsClusterSignVIDVerificationRequestParams, MTROperationalCredentialsClusterSignVIDVerificationResponseParams, MTROperationalStateClusterErrorStateStruct, MTROperationalStateClusterOperationalCommandResponseParams, MTROperationalStateClusterPauseParams, MTROperationalStateClusterResumeParams, MTROperationalStateClusterStartParams, MTROperationalStateClusterStopParams, MTROvenCavityOperationalStateClusterErrorStateStruct, MTROvenCavityOperationalStateClusterOperationalCommandResponseParams, MTROvenCavityOperationalStateClusterStartParams, MTROvenCavityOperationalStateClusterStopParams, MTROvenModeClusterChangeToModeParams, MTROvenModeClusterChangeToModeResponseParams, MTRPushAVStreamTransportClusterAllocatePushTransportParams, MTRPushAVStreamTransportClusterAllocatePushTransportResponseParams, MTRPushAVStreamTransportClusterDeallocatePushTransportParams, MTRPushAVStreamTransportClusterFindTransportParams, MTRPushAVStreamTransportClusterFindTransportResponseParams, MTRPushAVStreamTransportClusterManuallyTriggerTransportParams, MTRPushAVStreamTransportClusterModifyPushTransportParams, MTRPushAVStreamTransportClusterSetTransportStatusParams, MTRRVCCleanModeClusterChangeToModeParams, MTRRVCCleanModeClusterChangeToModeResponseParams, MTRRVCOperationalStateClusterErrorStateStruct, MTRRVCOperationalStateClusterGoHomeParams, MTRRVCOperationalStateClusterOperationalCommandResponseParams, MTRRVCOperationalStateClusterPauseParams, MTRRVCOperationalStateClusterResumeParams, MTRRVCRunModeClusterChangeToModeParams, MTRRVCRunModeClusterChangeToModeResponseParams, MTRRefrigeratorAndTemperatureControlledCabinetModeClusterChangeToModeParams, MTRRefrigeratorAndTemperatureControlledCabinetModeClusterChangeToModeResponseParams, MTRSampleMEIClusterAddArgumentsParams, MTRSampleMEIClusterAddArgumentsResponseParams, MTRSampleMEIClusterPingParams, MTRScenesManagementClusterAddSceneParams, MTRScenesManagementClusterAddSceneResponseParams, MTRScenesManagementClusterCopySceneParams, MTRScenesManagementClusterCopySceneResponseParams, MTRScenesManagementClusterGetSceneMembershipParams, MTRScenesManagementClusterGetSceneMembershipResponseParams, MTRScenesManagementClusterRecallSceneParams, MTRScenesManagementClusterRemoveAllScenesParams, MTRScenesManagementClusterRemoveAllScenesResponseParams, MTRScenesManagementClusterRemoveSceneParams, MTRScenesManagementClusterRemoveSceneResponseParams, MTRScenesManagementClusterStoreSceneParams, MTRScenesManagementClusterStoreSceneResponseParams, MTRScenesManagementClusterViewSceneParams, MTRScenesManagementClusterViewSceneResponseParams, MTRServiceAreaClusterSelectAreasParams, MTRServiceAreaClusterSelectAreasResponseParams, MTRServiceAreaClusterSkipAreaParams, MTRServiceAreaClusterSkipAreaResponseParams, MTRSmokeCOAlarmClusterSelfTestRequestParams, MTRTLSCertificateManagementClusterClientCSRParams, MTRTLSCertificateManagementClusterClientCSRResponseParams, MTRTLSCertificateManagementClusterFindClientCertificateParams, MTRTLSCertificateManagementClusterFindClientCertificateResponseParams, MTRTLSCertificateManagementClusterFindRootCertificateParams, MTRTLSCertificateManagementClusterFindRootCertificateResponseParams, MTRTLSCertificateManagementClusterLookupClientCertificateParams, MTRTLSCertificateManagementClusterLookupClientCertificateResponseParams, MTRTLSCertificateManagementClusterLookupRootCertificateParams, MTRTLSCertificateManagementClusterLookupRootCertificateResponseParams, MTRTLSCertificateManagementClusterProvisionClientCertificateParams, MTRTLSCertificateManagementClusterProvisionRootCertificateParams, MTRTLSCertificateManagementClusterProvisionRootCertificateResponseParams, MTRTLSCertificateManagementClusterRemoveClientCertificateParams, MTRTLSCertificateManagementClusterRemoveRootCertificateParams, MTRTLSClientManagementClusterFindEndpointParams, MTRTLSClientManagementClusterFindEndpointResponseParams, MTRTLSClientManagementClusterProvisionEndpointParams, MTRTLSClientManagementClusterProvisionEndpointResponseParams, MTRTLSClientManagementClusterRemoveEndpointParams, MTRTemperatureControlClusterSetTemperatureParams, MTRThermostatClusterAddThermostatSuggestionParams, MTRThermostatClusterAddThermostatSuggestionResponseParams, MTRThermostatClusterAtomicRequestParams, MTRThermostatClusterAtomicResponseParams, MTRThermostatClusterRemoveThermostatSuggestionParams, MTRThermostatClusterSetActivePresetRequestParams, MTRThermostatClusterSetActiveScheduleRequestParams, MTRThermostatClusterThermostatSuggestionStruct, MTRThreadBorderRouterManagementClusterDatasetResponseParams, MTRThreadBorderRouterManagementClusterGetActiveDatasetRequestParams, MTRThreadBorderRouterManagementClusterGetPendingDatasetRequestParams, MTRThreadBorderRouterManagementClusterSetActiveDatasetRequestParams, MTRThreadBorderRouterManagementClusterSetPendingDatasetRequestParams, MTRThreadNetworkDirectoryClusterAddNetworkParams, MTRThreadNetworkDirectoryClusterGetOperationalDatasetParams, MTRThreadNetworkDirectoryClusterOperationalDatasetResponseParams, MTRThreadNetworkDirectoryClusterRemoveNetworkParams, MTRTimeSynchronizationClusterSetDSTOffsetParams, MTRTimeSynchronizationClusterSetDefaultNTPParams, MTRTimeSynchronizationClusterSetTimeZoneParams, MTRTimeSynchronizationClusterSetTimeZoneResponseParams, MTRTimeSynchronizationClusterSetTrustedTimeSourceParams, MTRTimeSynchronizationClusterSetUTCTimeParams, MTRTimeSynchronizationClusterTrustedTimeSourceStruct, MTRTimerClusterAddTimeParams, MTRTimerClusterReduceTimeParams, MTRTimerClusterResetTimerParams, MTRTimerClusterSetTimerParams, MTRUnitTestingClusterGlobalEchoRequestParams, MTRUnitTestingClusterGlobalEchoResponseParams, MTRUnitTestingClusterStringEchoRequestParams, MTRUnitTestingClusterStringEchoResponseParams, MTRUnitTestingClusterTestBatchHelperRequestParams, MTRUnitTestingClusterTestBatchHelperResponseParams, MTRUnitTestingClusterTestCheckCommandFlagsParams, MTRUnitTestingClusterTestDifferentVendorMeiRequestParams, MTRUnitTestingClusterTestDifferentVendorMeiResponseParams, MTRUnitTestingClusterTestSecondBatchHelperRequestParams, MTRValveConfigurationAndControlClusterCloseParams, MTRValveConfigurationAndControlClusterOpenParams, MTRWaterHeaterManagementClusterBoostParams, MTRWaterHeaterManagementClusterCancelBoostParams, MTRWaterHeaterModeClusterChangeToModeParams, MTRWaterHeaterModeClusterChangeToModeResponseParams, MTRWebRTCTransportProviderClusterEndSessionParams, MTRWebRTCTransportProviderClusterProvideAnswerParams, MTRWebRTCTransportProviderClusterProvideICECandidatesParams, MTRWebRTCTransportProviderClusterProvideOfferParams, MTRWebRTCTransportProviderClusterProvideOfferResponseParams, MTRWebRTCTransportProviderClusterSolicitOfferParams, MTRWebRTCTransportProviderClusterSolicitOfferResponseParams, MTRWebRTCTransportRequestorClusterAnswerParams, MTRWebRTCTransportRequestorClusterEndParams, MTRWebRTCTransportRequestorClusterICECandidatesParams, MTRWebRTCTransportRequestorClusterOfferParams, MTRWiFiNetworkManagementClusterNetworkPassphraseRequestParams, MTRWiFiNetworkManagementClusterNetworkPassphraseResponseParams, MTRZoneManagementClusterCreateOrUpdateTriggerParams, MTRZoneManagementClusterCreateTwoDCartesianZoneParams, MTRZoneManagementClusterCreateTwoDCartesianZoneResponseParams, MTRZoneManagementClusterRemoveTriggerParams, MTRZoneManagementClusterRemoveZoneParams, MTRZoneManagementClusterTwoDCartesianVertexStruct, MTRZoneManagementClusterUpdateTwoDCartesianZoneParams;
+// not declare: 1 of them, forward-declared here because pointer uses need only this.
+@class MTRGenericBaseCluster;
 
 // The nullability of everything below is stated ONCE, here, rather than per parameter: 32 of the
 // SDK's Matter headers open an assume-nonnull region, so a pointer in this header with no annotation of
@@ -34,6 +34,3270 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MTRGenericBaseCluster : MTRCluster
 @end
 
+@interface MTRAccessControlClusterAccessControlTargetStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable cluster;
+@property (nonatomic, copy) NSNumber * _Nullable endpoint;
+@property (nonatomic, copy) NSNumber * _Nullable deviceType;
+@end
+@interface MTRAccessControlClusterAccessRestrictionEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull endpoint;
+@property (nonatomic, copy) NSNumber * _Nonnull cluster;
+@property (nonatomic, copy) NSArray * _Nonnull restrictions;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRAccessControlClusterAccessRestrictionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull type;
+@property (nonatomic, copy) NSNumber * _Nullable id;
+@end
+@interface MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull endpoint;
+@property (nonatomic, copy) NSNumber * _Nonnull cluster;
+@property (nonatomic, copy) NSArray * _Nonnull restrictions;
+@end
+@interface MTRAccessControlClusterFabricRestrictionReviewUpdateEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull token;
+@property (nonatomic, copy) NSString * _Nullable instruction;
+@property (nonatomic, copy) NSString * _Nullable arlRequestFlowUrl;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRAccessControlClusterReviewFabricRestrictionsParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull arl;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRAccessControlClusterReviewFabricRestrictionsResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull token;
+@end
+@interface MTRAccountLoginClusterLoggedOutEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable node;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRAccountLoginClusterLoginParams ()
+@property (nonatomic, copy) NSNumber * _Nullable node;
+@end
+@interface MTRAccountLoginClusterLogoutParams ()
+@property (nonatomic, copy) NSNumber * _Nullable node;
+@end
+@interface MTRActivatedCarbonFilterMonitoringClusterReplacementProductStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull productIdentifierType;
+@property (nonatomic, copy) NSString * _Nonnull productIdentifierValue;
+@end
+@interface MTRActivatedCarbonFilterMonitoringClusterResetConditionParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRBasicClusterCapabilityMinimaStruct ()
+@property (nonatomic, copy) NSNumber * _Nonnull caseSessionsPerFabric;
+@property (nonatomic, copy) NSNumber * _Nonnull subscriptionsPerFabric;
+@end
+@interface MTRBasicClusterLeaveEvent ()
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRBasicClusterReachableChangedEvent ()
+@property (nonatomic, copy) NSNumber * _Nonnull reachableNewValue;
+@end
+@interface MTRBasicClusterStartUpEvent ()
+@property (nonatomic, copy) NSNumber * _Nonnull softwareVersion;
+@end
+@interface MTRBasicInformationClusterProductAppearanceStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull finish;
+@property (nonatomic, copy) NSNumber * _Nullable primaryColor;
+@end
+@interface MTRBooleanStateConfigurationClusterAlarmsStateChangedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull alarmsActive;
+@property (nonatomic, copy) NSNumber * _Nullable alarmsSuppressed;
+@end
+@interface MTRBooleanStateConfigurationClusterEnableDisableAlarmParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull alarmsToEnableDisable;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRBooleanStateConfigurationClusterSensorFaultEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull sensorFault;
+@end
+@interface MTRBooleanStateConfigurationClusterSuppressAlarmParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull alarmsToSuppress;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRBridgedDeviceBasicClusterReachableChangedEvent ()
+@property (nonatomic, copy) NSNumber * _Nonnull reachableNewValue;
+@end
+@interface MTRBridgedDeviceBasicClusterStartUpEvent ()
+@property (nonatomic, copy) NSNumber * _Nonnull softwareVersion;
+@end
+@interface MTRBridgedDeviceBasicInformationClusterActiveChangedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull promisedActiveDuration;
+@end
+@interface MTRBridgedDeviceBasicInformationClusterKeepActiveParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull stayActiveDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull timeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRBridgedDeviceBasicInformationClusterProductAppearanceStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull finish;
+@property (nonatomic, copy) NSNumber * _Nullable primaryColor;
+@end
+@interface MTRCameraAVSettingsUserLevelManagementClusterDPTZRelativeMoveParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull videoStreamID;
+@property (nonatomic, copy) NSNumber * _Nullable deltaX;
+@property (nonatomic, copy) NSNumber * _Nullable deltaY;
+@property (nonatomic, copy) NSNumber * _Nullable zoomDelta;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDataTypeViewportStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull x1;
+@property (nonatomic, copy) NSNumber * _Nonnull y1;
+@property (nonatomic, copy) NSNumber * _Nonnull x2;
+@property (nonatomic, copy) NSNumber * _Nonnull y2;
+@end
+@interface MTRCameraAVSettingsUserLevelManagementClusterDPTZSetViewportParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull videoStreamID;
+@property (nonatomic, copy) MTRDataTypeViewportStruct * _Nonnull viewport;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVSettingsUserLevelManagementClusterDPTZStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull videoStreamID;
+@property (nonatomic, copy) MTRDataTypeViewportStruct * _Nonnull viewport;
+@end
+@interface MTRCameraAVSettingsUserLevelManagementClusterMPTZMoveToPresetParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull presetID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVSettingsUserLevelManagementClusterMPTZStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable pan;
+@property (nonatomic, copy) NSNumber * _Nullable tilt;
+@property (nonatomic, copy) NSNumber * _Nullable zoom;
+@end
+@interface MTRCameraAVSettingsUserLevelManagementClusterMPTZPresetStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull presetID;
+@property (nonatomic, copy) NSString * _Nonnull name;
+@property (nonatomic, copy) MTRCameraAVSettingsUserLevelManagementClusterMPTZStruct * _Nonnull settings;
+@end
+@interface MTRCameraAVSettingsUserLevelManagementClusterMPTZRelativeMoveParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable panDelta;
+@property (nonatomic, copy) NSNumber * _Nullable tiltDelta;
+@property (nonatomic, copy) NSNumber * _Nullable zoomDelta;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVSettingsUserLevelManagementClusterMPTZRemovePresetParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull presetID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVSettingsUserLevelManagementClusterMPTZSavePresetParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable presetID;
+@property (nonatomic, copy) NSString * _Nonnull name;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVSettingsUserLevelManagementClusterMPTZSetPositionParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable pan;
+@property (nonatomic, copy) NSNumber * _Nullable tilt;
+@property (nonatomic, copy) NSNumber * _Nullable zoom;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull maxNumberOfChannels;
+@property (nonatomic, copy) NSArray * _Nonnull supportedCodecs;
+@property (nonatomic, copy) NSArray * _Nonnull supportedSampleRates;
+@property (nonatomic, copy) NSArray * _Nonnull supportedBitDepths;
+@end
+@interface MTRCameraAVStreamManagementClusterAudioStreamAllocateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull streamUsage;
+@property (nonatomic, copy) NSNumber * _Nonnull audioCodec;
+@property (nonatomic, copy) NSNumber * _Nonnull channelCount;
+@property (nonatomic, copy) NSNumber * _Nonnull sampleRate;
+@property (nonatomic, copy) NSNumber * _Nonnull bitRate;
+@property (nonatomic, copy) NSNumber * _Nonnull bitDepth;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVStreamManagementClusterAudioStreamAllocateResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull audioStreamID;
+@end
+@interface MTRCameraAVStreamManagementClusterAudioStreamDeallocateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull audioStreamID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVStreamManagementClusterAudioStreamStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull audioStreamID;
+@property (nonatomic, copy) NSNumber * _Nonnull streamUsage;
+@property (nonatomic, copy) NSNumber * _Nonnull audioCodec;
+@property (nonatomic, copy) NSNumber * _Nonnull channelCount;
+@property (nonatomic, copy) NSNumber * _Nonnull sampleRate;
+@property (nonatomic, copy) NSNumber * _Nonnull bitRate;
+@property (nonatomic, copy) NSNumber * _Nonnull bitDepth;
+@property (nonatomic, copy) NSNumber * _Nonnull referenceCount;
+@end
+@interface MTRCameraAVStreamManagementClusterVideoResolutionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull width;
+@property (nonatomic, copy) NSNumber * _Nonnull height;
+@end
+@interface MTRCameraAVStreamManagementClusterCaptureSnapshotParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable snapshotStreamID;
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull requestedResolution;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVStreamManagementClusterCaptureSnapshotResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull data;
+@property (nonatomic, copy) NSNumber * _Nonnull imageCodec;
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull resolution;
+@end
+@interface MTRCameraAVStreamManagementClusterRateDistortionTradeOffPointsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull codec;
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull resolution;
+@property (nonatomic, copy) NSNumber * _Nonnull minBitRate;
+@end
+@interface MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull streamPriorities;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVStreamManagementClusterSnapshotCapabilitiesStruct : NSObject <NSCopying>
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull resolution;
+@property (nonatomic, copy) NSNumber * _Nonnull maxFrameRate;
+@property (nonatomic, copy) NSNumber * _Nonnull imageCodec;
+@property (nonatomic, copy) NSNumber * _Nonnull requiresEncodedPixels;
+@property (nonatomic, copy) NSNumber * _Nullable requiresHardwareEncoder;
+@end
+@interface MTRCameraAVStreamManagementClusterSnapshotStreamAllocateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull imageCodec;
+@property (nonatomic, copy) NSNumber * _Nonnull maxFrameRate;
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull minResolution;
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull maxResolution;
+@property (nonatomic, copy) NSNumber * _Nonnull quality;
+@property (nonatomic, copy) NSNumber * _Nullable watermarkEnabled;
+@property (nonatomic, copy) NSNumber * _Nullable osdEnabled;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVStreamManagementClusterSnapshotStreamAllocateResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull snapshotStreamID;
+@end
+@interface MTRCameraAVStreamManagementClusterSnapshotStreamDeallocateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull snapshotStreamID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVStreamManagementClusterSnapshotStreamModifyParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull snapshotStreamID;
+@property (nonatomic, copy) NSNumber * _Nullable watermarkEnabled;
+@property (nonatomic, copy) NSNumber * _Nullable osdEnabled;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVStreamManagementClusterSnapshotStreamStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull snapshotStreamID;
+@property (nonatomic, copy) NSNumber * _Nonnull imageCodec;
+@property (nonatomic, copy) NSNumber * _Nonnull frameRate;
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull minResolution;
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull maxResolution;
+@property (nonatomic, copy) NSNumber * _Nonnull quality;
+@property (nonatomic, copy) NSNumber * _Nonnull referenceCount;
+@property (nonatomic, copy) NSNumber * _Nonnull encodedPixels;
+@property (nonatomic, copy) NSNumber * _Nonnull hardwareEncoder;
+@property (nonatomic, copy) NSNumber * _Nullable watermarkEnabled;
+@property (nonatomic, copy) NSNumber * _Nullable osdEnabled;
+@end
+@interface MTRCameraAVStreamManagementClusterVideoSensorParamsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull sensorWidth;
+@property (nonatomic, copy) NSNumber * _Nonnull sensorHeight;
+@property (nonatomic, copy) NSNumber * _Nonnull maxFPS;
+@property (nonatomic, copy) NSNumber * _Nullable maxHDRFPS;
+@end
+@interface MTRCameraAVStreamManagementClusterVideoStreamAllocateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull streamUsage;
+@property (nonatomic, copy) NSNumber * _Nonnull videoCodec;
+@property (nonatomic, copy) NSNumber * _Nonnull minFrameRate;
+@property (nonatomic, copy) NSNumber * _Nonnull maxFrameRate;
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull minResolution;
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull maxResolution;
+@property (nonatomic, copy) NSNumber * _Nonnull minBitRate;
+@property (nonatomic, copy) NSNumber * _Nonnull maxBitRate;
+@property (nonatomic, copy) NSNumber * _Nonnull keyFrameInterval;
+@property (nonatomic, copy) NSNumber * _Nullable watermarkEnabled;
+@property (nonatomic, copy) NSNumber * _Nullable osdEnabled;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVStreamManagementClusterVideoStreamAllocateResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull videoStreamID;
+@end
+@interface MTRCameraAVStreamManagementClusterVideoStreamDeallocateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull videoStreamID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVStreamManagementClusterVideoStreamModifyParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull videoStreamID;
+@property (nonatomic, copy) NSNumber * _Nullable watermarkEnabled;
+@property (nonatomic, copy) NSNumber * _Nullable osdEnabled;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCameraAVStreamManagementClusterVideoStreamStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull videoStreamID;
+@property (nonatomic, copy) NSNumber * _Nonnull streamUsage;
+@property (nonatomic, copy) NSNumber * _Nonnull videoCodec;
+@property (nonatomic, copy) NSNumber * _Nonnull minFrameRate;
+@property (nonatomic, copy) NSNumber * _Nonnull maxFrameRate;
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull minResolution;
+@property (nonatomic, copy) MTRCameraAVStreamManagementClusterVideoResolutionStruct * _Nonnull maxResolution;
+@property (nonatomic, copy) NSNumber * _Nonnull minBitRate;
+@property (nonatomic, copy) NSNumber * _Nonnull maxBitRate;
+@property (nonatomic, copy) NSNumber * _Nonnull keyFrameInterval;
+@property (nonatomic, copy) NSNumber * _Nullable watermarkEnabled;
+@property (nonatomic, copy) NSNumber * _Nullable osdEnabled;
+@property (nonatomic, copy) NSNumber * _Nonnull referenceCount;
+@end
+@interface MTRChannelClusterAdditionalInfoStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull name;
+@property (nonatomic, copy) NSString * _Nonnull value;
+@end
+@interface MTRChannelClusterCancelRecordProgramParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull programIdentifier;
+@property (nonatomic, copy) NSNumber * _Nonnull shouldRecordSeries;
+@property (nonatomic, copy) NSArray * _Nonnull externalIDList;
+@property (nonatomic, copy) NSData * _Nonnull data;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRChannelClusterChannelInfoStruct ()
+@property (nonatomic, copy) NSString * _Nullable identifier;
+@property (nonatomic, copy) NSNumber * _Nullable type;
+@end
+@interface MTRChannelClusterPageTokenStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable limit;
+@property (nonatomic, copy) NSString * _Nullable after;
+@property (nonatomic, copy) NSString * _Nullable before;
+@end
+@interface MTRChannelClusterChannelPagingStruct : NSObject <NSCopying>
+@property (nonatomic, copy) MTRChannelClusterPageTokenStruct * _Nullable previousToken;
+@property (nonatomic, copy) MTRChannelClusterPageTokenStruct * _Nullable nextToken;
+@end
+@interface MTRChannelClusterGetProgramGuideParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable startTime;
+@property (nonatomic, copy) NSNumber * _Nullable endTime;
+@property (nonatomic, copy) NSArray * _Nullable channelList;
+@property (nonatomic, copy) MTRChannelClusterPageTokenStruct * _Nullable pageToken;
+@property (nonatomic, copy) NSNumber * _Nullable recordingFlag;
+@property (nonatomic, copy) NSArray * _Nullable externalIDList;
+@property (nonatomic, copy) NSData * _Nullable data;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRChannelClusterProgramCastStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull name;
+@property (nonatomic, copy) NSString * _Nonnull role;
+@end
+@interface MTRChannelClusterProgramCategoryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull category;
+@property (nonatomic, copy) NSString * _Nullable subCategory;
+@end
+@interface MTRChannelClusterProgramGuideResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRChannelClusterChannelPagingStruct * _Nonnull paging;
+@property (nonatomic, copy) NSArray * _Nonnull programList;
+@end
+@interface MTRChannelClusterSeriesInfoStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull season;
+@property (nonatomic, copy) NSString * _Nonnull episode;
+@end
+@interface MTRChannelClusterProgramStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull identifier;
+@property (nonatomic, copy) MTRChannelClusterChannelInfoStruct * _Nonnull channel;
+@property (nonatomic, copy) NSNumber * _Nonnull startTime;
+@property (nonatomic, copy) NSNumber * _Nonnull endTime;
+@property (nonatomic, copy) NSString * _Nonnull title;
+@property (nonatomic, copy) NSString * _Nullable subtitle;
+@property (nonatomic, copy) NSString * _Nullable descriptionString;
+@property (nonatomic, copy) NSArray * _Nullable audioLanguages;
+@property (nonatomic, copy) NSArray * _Nullable ratings;
+@property (nonatomic, copy) NSString * _Nullable thumbnailUrl;
+@property (nonatomic, copy) NSString * _Nullable posterArtUrl;
+@property (nonatomic, copy) NSString * _Nullable dvbiUrl;
+@property (nonatomic, copy) NSString * _Nullable releaseDate;
+@property (nonatomic, copy) NSString * _Nullable parentalGuidanceText;
+@property (nonatomic, copy) NSNumber * _Nullable recordingFlag;
+@property (nonatomic, copy) MTRChannelClusterSeriesInfoStruct * _Nullable seriesInfo;
+@property (nonatomic, copy) NSArray * _Nullable categoryList;
+@property (nonatomic, copy) NSArray * _Nullable castList;
+@property (nonatomic, copy) NSArray * _Nullable externalIDList;
+@end
+@interface MTRChannelClusterRecordProgramParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull programIdentifier;
+@property (nonatomic, copy) NSNumber * _Nonnull shouldRecordSeries;
+@property (nonatomic, copy) NSArray * _Nonnull externalIDList;
+@property (nonatomic, copy) NSData * _Nonnull data;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRChimeClusterChimeSoundStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull chimeID;
+@property (nonatomic, copy) NSString * _Nonnull name;
+@end
+@interface MTRChimeClusterPlayChimeSoundParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRClosureControlClusterCalibrateParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRClosureControlClusterEngageStateChangedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull engageValue;
+@end
+@interface MTRClosureControlClusterMoveToParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable position;
+@property (nonatomic, copy) NSNumber * _Nullable latch;
+@property (nonatomic, copy) NSNumber * _Nullable speed;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRClosureControlClusterMovementCompletedEvent : NSObject <NSCopying>
+@end
+@interface MTRClosureControlClusterOperationalErrorEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull errorState;
+@end
+@interface MTRClosureControlClusterOverallCurrentStateStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable position;
+@property (nonatomic, copy) NSNumber * _Nullable latch;
+@property (nonatomic, copy) NSNumber * _Nullable speed;
+@property (nonatomic, copy) NSNumber * _Nullable secureState;
+@end
+@interface MTRClosureControlClusterOverallTargetStateStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable position;
+@property (nonatomic, copy) NSNumber * _Nullable latch;
+@property (nonatomic, copy) NSNumber * _Nullable speed;
+@end
+@interface MTRClosureControlClusterSecureStateChangedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull secureValue;
+@end
+@interface MTRClosureControlClusterStopParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRClosureDimensionClusterDimensionStateStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable position;
+@property (nonatomic, copy) NSNumber * _Nullable latch;
+@property (nonatomic, copy) NSNumber * _Nullable speed;
+@end
+@interface MTRClosureDimensionClusterRangePercent100thsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull min;
+@property (nonatomic, copy) NSNumber * _Nonnull max;
+@end
+@interface MTRClosureDimensionClusterSetTargetParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable position;
+@property (nonatomic, copy) NSNumber * _Nullable latch;
+@property (nonatomic, copy) NSNumber * _Nullable speed;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRClosureDimensionClusterStepParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull direction;
+@property (nonatomic, copy) NSNumber * _Nonnull numberOfSteps;
+@property (nonatomic, copy) NSNumber * _Nullable speed;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRClosureDimensionClusterUnitRangeStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull min;
+@property (nonatomic, copy) NSNumber * _Nonnull max;
+@end
+@interface MTRCommissionerControlClusterCommissionNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull requestID;
+@property (nonatomic, copy) NSNumber * _Nonnull responseTimeoutSeconds;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCommissionerControlClusterCommissioningRequestResultEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull requestID;
+@property (nonatomic, copy) NSNumber * _Nonnull clientNodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull statusCode;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRCommissionerControlClusterRequestCommissioningApprovalParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull requestID;
+@property (nonatomic, copy) NSNumber * _Nonnull vendorID;
+@property (nonatomic, copy) NSNumber * _Nonnull productID;
+@property (nonatomic, copy) NSString * _Nullable label;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCommissionerControlClusterReverseOpenCommissioningWindowParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull commissioningTimeout;
+@property (nonatomic, copy) NSData * _Nonnull pakePasscodeVerifier;
+@property (nonatomic, copy) NSNumber * _Nonnull discriminator;
+@property (nonatomic, copy) NSNumber * _Nonnull iterations;
+@property (nonatomic, copy) NSData * _Nonnull salt;
+@end
+@interface MTRCommodityMeteringClusterMeteredQuantityStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull tariffComponentIDs;
+@property (nonatomic, copy) NSNumber * _Nonnull quantity;
+@end
+@interface MTRCommodityPriceClusterCommodityPriceComponentStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull price;
+@property (nonatomic, copy) NSNumber * _Nonnull source;
+@property (nonatomic, copy) NSString * _Nullable descriptionString;
+@property (nonatomic, copy) NSNumber * _Nullable tariffComponentID;
+@end
+@interface MTRCommodityPriceClusterCommodityPriceStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull periodStart;
+@property (nonatomic, copy) NSNumber * _Nullable periodEnd;
+@property (nonatomic, copy) NSNumber * _Nullable price;
+@property (nonatomic, copy) NSNumber * _Nullable priceLevel;
+@property (nonatomic, copy) NSString * _Nullable descriptionString;
+@property (nonatomic, copy) NSArray * _Nullable components;
+@end
+@interface MTRCommodityPriceClusterGetDetailedForecastRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull details;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCommodityPriceClusterGetDetailedForecastResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull priceForecast;
+@end
+@interface MTRCommodityPriceClusterGetDetailedPriceRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull details;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCommodityPriceClusterGetDetailedPriceResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRCommodityPriceClusterCommodityPriceStruct * _Nullable currentPrice;
+@end
+@interface MTRCommodityPriceClusterPriceChangeEvent : NSObject <NSCopying>
+@property (nonatomic, copy) MTRCommodityPriceClusterCommodityPriceStruct * _Nullable currentPrice;
+@end
+@interface MTRCommodityTariffClusterAuxiliaryLoadSwitchSettingsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull number;
+@property (nonatomic, copy) NSNumber * _Nonnull requiredState;
+@end
+@interface MTRCommodityTariffClusterCalendarPeriodStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable startDate;
+@property (nonatomic, copy) NSArray * _Nonnull dayPatternIDs;
+@end
+@interface MTRCommodityTariffClusterDayEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull dayEntryID;
+@property (nonatomic, copy) NSNumber * _Nonnull startTime;
+@property (nonatomic, copy) NSNumber * _Nullable duration;
+@property (nonatomic, copy) NSNumber * _Nullable randomizationOffset;
+@property (nonatomic, copy) NSNumber * _Nullable randomizationType;
+@end
+@interface MTRCommodityTariffClusterDayPatternStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull dayPatternID;
+@property (nonatomic, copy) NSNumber * _Nonnull daysOfWeek;
+@property (nonatomic, copy) NSArray * _Nonnull dayEntryIDs;
+@end
+@interface MTRCommodityTariffClusterDayStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull date;
+@property (nonatomic, copy) NSNumber * _Nonnull dayType;
+@property (nonatomic, copy) NSArray * _Nonnull dayEntryIDs;
+@end
+@interface MTRCommodityTariffClusterGetDayEntryParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull dayEntryID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCommodityTariffClusterGetDayEntryResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRCommodityTariffClusterDayEntryStruct * _Nonnull dayEntry;
+@end
+@interface MTRCommodityTariffClusterGetTariffComponentParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull tariffComponentID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRCommodityTariffClusterTariffPriceStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull priceType;
+@property (nonatomic, copy) NSNumber * _Nullable price;
+@property (nonatomic, copy) NSNumber * _Nullable priceLevel;
+@end
+@interface MTRCommodityTariffClusterPeakPeriodStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull severity;
+@property (nonatomic, copy) NSNumber * _Nonnull peakPeriod;
+@end
+@interface MTRDataTypePowerThresholdStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable powerThreshold;
+@property (nonatomic, copy) NSNumber * _Nullable apparentPowerThreshold;
+@property (nonatomic, copy) NSNumber * _Nullable powerThresholdSource;
+@end
+@interface MTRCommodityTariffClusterTariffComponentStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull tariffComponentID;
+@property (nonatomic, copy) MTRCommodityTariffClusterTariffPriceStruct * _Nullable price;
+@property (nonatomic, copy) NSNumber * _Nullable friendlyCredit;
+@property (nonatomic, copy) MTRCommodityTariffClusterAuxiliaryLoadSwitchSettingsStruct * _Nullable auxiliaryLoad;
+@property (nonatomic, copy) MTRCommodityTariffClusterPeakPeriodStruct * _Nullable peakPeriod;
+@property (nonatomic, copy) MTRDataTypePowerThresholdStruct * _Nullable powerThreshold;
+@property (nonatomic, copy) NSNumber * _Nullable threshold;
+@property (nonatomic, copy) NSString * _Nullable label;
+@property (nonatomic, copy) NSNumber * _Nullable predicted;
+@end
+@interface MTRCommodityTariffClusterGetTariffComponentResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nullable label;
+@property (nonatomic, copy) NSArray * _Nonnull dayEntryIDs;
+@property (nonatomic, copy) MTRCommodityTariffClusterTariffComponentStruct * _Nonnull tariffComponent;
+@end
+@interface MTRDataTypeCurrencyStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull currency;
+@property (nonatomic, copy) NSNumber * _Nonnull decimalPoints;
+@end
+@interface MTRCommodityTariffClusterTariffInformationStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nullable tariffLabel;
+@property (nonatomic, copy) NSString * _Nullable providerName;
+@property (nonatomic, copy) MTRDataTypeCurrencyStruct * _Nullable currency;
+@property (nonatomic, copy) NSNumber * _Nullable blockMode;
+@end
+@interface MTRCommodityTariffClusterTariffPeriodStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nullable label;
+@property (nonatomic, copy) NSArray * _Nonnull dayEntryIDs;
+@property (nonatomic, copy) NSArray * _Nonnull tariffComponentIDs;
+@end
+@interface MTRContentAppObserverClusterContentAppMessageParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nullable data;
+@property (nonatomic, copy) NSString * _Nonnull encodingHint;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRContentAppObserverClusterContentAppMessageResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nullable data;
+@property (nonatomic, copy) NSString * _Nullable encodingHint;
+@end
+@interface MTRContentControlClusterAddBonusTimeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nullable pinCode;
+@property (nonatomic, copy) NSNumber * _Nullable bonusTime;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRContentControlClusterBlockUnratedContentParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRContentControlClusterDisableParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRContentControlClusterEnableParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRContentControlClusterRatingNameStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull ratingName;
+@property (nonatomic, copy) NSString * _Nullable ratingNameDesc;
+@end
+@interface MTRContentControlClusterRemainingScreenTimeExpiredEvent : NSObject <NSCopying>
+@end
+@interface MTRContentControlClusterResetPINParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRContentControlClusterResetPINResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull pinCode;
+@end
+@interface MTRContentControlClusterSetOnDemandRatingThresholdParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull rating;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRContentControlClusterSetScheduledContentRatingThresholdParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull rating;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRContentControlClusterSetScreenDailyTimeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull screenTime;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRContentControlClusterUnblockUnratedContentParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRContentControlClusterUpdatePINParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nullable oldPIN;
+@property (nonatomic, copy, getter=getNewPIN) NSString * _Nonnull newPIN;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRContentLauncherClusterTrackPreferenceStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull languageCode;
+@property (nonatomic, copy) NSArray * _Nullable characteristics;
+@property (nonatomic, copy) NSNumber * _Nonnull audioOutputIndex;
+@end
+@interface MTRContentLauncherClusterPlaybackPreferencesStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull playbackPosition;
+@property (nonatomic, copy) MTRContentLauncherClusterTrackPreferenceStruct * _Nonnull textTrack;
+@property (nonatomic, copy) NSArray * _Nullable audioTracks;
+@end
+@interface MTRContentLauncherClusterLaunchContentParams ()
+@property (nonatomic, copy) MTRContentLauncherClusterPlaybackPreferencesStruct * _Nullable playbackPreferences;
+@property (nonatomic, copy) NSNumber * _Nullable useCurrentContext;
+@end
+@interface MTRContentLauncherClusterLaunchResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nullable data;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRDataTypeAtomicAttributeStatusStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull attributeID;
+@property (nonatomic, copy) NSNumber * _Nonnull statusCode;
+@end
+@interface MTRDataTypeICECandidateStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull candidate;
+@property (nonatomic, copy) NSString * _Nullable sdpMid;
+@property (nonatomic, copy) NSNumber * _Nullable sdpmLineIndex;
+@end
+@interface MTRDataTypeICEServerStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull urls;
+@property (nonatomic, copy) NSString * _Nullable username;
+@property (nonatomic, copy) NSString * _Nullable credential;
+@property (nonatomic, copy) NSNumber * _Nullable caid;
+@end
+@interface MTRDataTypeLocationDescriptorStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull locationName;
+@property (nonatomic, copy) NSNumber * _Nullable floorNumber;
+@property (nonatomic, copy) NSNumber * _Nullable areaType;
+@end
+@interface MTRDataTypeMeasurementAccuracyRangeStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull rangeMin;
+@property (nonatomic, copy) NSNumber * _Nonnull rangeMax;
+@property (nonatomic, copy) NSNumber * _Nullable percentMax;
+@property (nonatomic, copy) NSNumber * _Nullable percentMin;
+@property (nonatomic, copy) NSNumber * _Nullable percentTypical;
+@property (nonatomic, copy) NSNumber * _Nullable fixedMax;
+@property (nonatomic, copy) NSNumber * _Nullable fixedMin;
+@property (nonatomic, copy) NSNumber * _Nullable fixedTypical;
+@end
+@interface MTRDataTypeMeasurementAccuracyStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull measurementType;
+@property (nonatomic, copy) NSNumber * _Nonnull measured;
+@property (nonatomic, copy) NSNumber * _Nonnull minMeasuredValue;
+@property (nonatomic, copy) NSNumber * _Nonnull maxMeasuredValue;
+@property (nonatomic, copy) NSArray * _Nonnull accuracyRanges;
+@end
+@interface MTRDataTypePriceStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull amount;
+@property (nonatomic, copy) MTRDataTypeCurrencyStruct * _Nonnull currency;
+@end
+@interface MTRDataTypeSemanticTagStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable mfgCode;
+@property (nonatomic, copy) NSNumber * _Nonnull namespaceID;
+@property (nonatomic, copy) NSNumber * _Nonnull tag;
+@property (nonatomic, copy) NSString * _Nullable label;
+@end
+@interface MTRDataTypeTestGlobalStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull name;
+@property (nonatomic, copy) NSNumber * _Nullable myBitmap;
+@property (nonatomic, copy) NSNumber * _Nullable myEnum;
+@end
+@interface MTRDataTypeWebRTCSessionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull id;
+@property (nonatomic, copy) NSNumber * _Nonnull peerNodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull peerEndpointID;
+@property (nonatomic, copy) NSNumber * _Nonnull streamUsage;
+@property (nonatomic, copy) NSNumber * _Nullable videoStreamID;
+@property (nonatomic, copy) NSNumber * _Nullable audioStreamID;
+@property (nonatomic, copy) NSNumber * _Nonnull metadataEnabled;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRDeviceControllerStartupParams ()
+@property (nonatomic, copy, nullable) NSSet<NSNumber *> * caseAuthenticatedTags;
+@end
+@interface MTRDeviceEnergyManagementClusterCancelPowerAdjustRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDeviceEnergyManagementClusterCancelRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDeviceEnergyManagementClusterConstraintsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull startTime;
+@property (nonatomic, copy) NSNumber * _Nonnull duration;
+@property (nonatomic, copy) NSNumber * _Nullable nominalPower;
+@property (nonatomic, copy) NSNumber * _Nullable maximumEnergy;
+@property (nonatomic, copy) NSNumber * _Nullable loadControl;
+@end
+@interface MTRDeviceEnergyManagementClusterCostStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull costType;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@property (nonatomic, copy) NSNumber * _Nonnull decimalPoints;
+@property (nonatomic, copy) NSNumber * _Nullable currency;
+@end
+@interface MTRDeviceEnergyManagementClusterForecastStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull forecastID;
+@property (nonatomic, copy) NSNumber * _Nullable activeSlotNumber;
+@property (nonatomic, copy) NSNumber * _Nonnull startTime;
+@property (nonatomic, copy) NSNumber * _Nonnull endTime;
+@property (nonatomic, copy) NSNumber * _Nullable earliestStartTime;
+@property (nonatomic, copy) NSNumber * _Nullable latestEndTime;
+@property (nonatomic, copy) NSNumber * _Nonnull isPausable;
+@property (nonatomic, copy) NSArray * _Nonnull slots;
+@property (nonatomic, copy) NSNumber * _Nonnull forecastUpdateReason;
+@end
+@interface MTRDeviceEnergyManagementClusterModifyForecastRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull forecastID;
+@property (nonatomic, copy) NSArray * _Nonnull slotAdjustments;
+@property (nonatomic, copy) NSNumber * _Nonnull cause;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDeviceEnergyManagementClusterPauseRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull duration;
+@property (nonatomic, copy) NSNumber * _Nonnull cause;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDeviceEnergyManagementClusterPausedEvent : NSObject <NSCopying>
+@end
+@interface MTRDeviceEnergyManagementClusterPowerAdjustCapabilityStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nullable powerAdjustCapability;
+@property (nonatomic, copy) NSNumber * _Nonnull cause;
+@end
+@interface MTRDeviceEnergyManagementClusterPowerAdjustEndEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull cause;
+@property (nonatomic, copy) NSNumber * _Nonnull duration;
+@property (nonatomic, copy) NSNumber * _Nonnull energyUse;
+@end
+@interface MTRDeviceEnergyManagementClusterPowerAdjustRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull power;
+@property (nonatomic, copy) NSNumber * _Nonnull duration;
+@property (nonatomic, copy) NSNumber * _Nonnull cause;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDeviceEnergyManagementClusterPowerAdjustStartEvent : NSObject <NSCopying>
+@end
+@interface MTRDeviceEnergyManagementClusterPowerAdjustStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull minPower;
+@property (nonatomic, copy) NSNumber * _Nonnull maxPower;
+@property (nonatomic, copy) NSNumber * _Nonnull minDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull maxDuration;
+@end
+@interface MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull constraints;
+@property (nonatomic, copy) NSNumber * _Nonnull cause;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDeviceEnergyManagementClusterResumeRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDeviceEnergyManagementClusterResumedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull cause;
+@end
+@interface MTRDeviceEnergyManagementClusterSlotAdjustmentStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull slotIndex;
+@property (nonatomic, copy) NSNumber * _Nullable nominalPower;
+@property (nonatomic, copy) NSNumber * _Nonnull duration;
+@end
+@interface MTRDeviceEnergyManagementClusterSlotStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull minDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull maxDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull defaultDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull elapsedSlotTime;
+@property (nonatomic, copy) NSNumber * _Nonnull remainingSlotTime;
+@property (nonatomic, copy) NSNumber * _Nullable slotIsPausable;
+@property (nonatomic, copy) NSNumber * _Nullable minPauseDuration;
+@property (nonatomic, copy) NSNumber * _Nullable maxPauseDuration;
+@property (nonatomic, copy) NSNumber * _Nullable manufacturerESAState;
+@property (nonatomic, copy) NSNumber * _Nullable nominalPower;
+@property (nonatomic, copy) NSNumber * _Nullable minPower;
+@property (nonatomic, copy) NSNumber * _Nullable maxPower;
+@property (nonatomic, copy) NSNumber * _Nullable nominalEnergy;
+@property (nonatomic, copy) NSArray * _Nullable costs;
+@property (nonatomic, copy) NSNumber * _Nullable minPowerAdjustment;
+@property (nonatomic, copy) NSNumber * _Nullable maxPowerAdjustment;
+@property (nonatomic, copy) NSNumber * _Nullable minDurationAdjustment;
+@property (nonatomic, copy) NSNumber * _Nullable maxDurationAdjustment;
+@end
+@interface MTRDeviceEnergyManagementClusterStartTimeAdjustRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull requestedStartTime;
+@property (nonatomic, copy) NSNumber * _Nonnull cause;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDeviceEnergyManagementModeClusterChangeToModeParams : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getNewMode) NSNumber * _Nonnull newMode;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDeviceEnergyManagementModeClusterChangeToModeResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nullable statusText;
+@end
+@interface MTRDeviceEnergyManagementModeClusterModeOptionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull label;
+@property (nonatomic, copy) NSNumber * _Nonnull mode;
+@property (nonatomic, copy) NSArray * _Nonnull modeTags;
+@end
+@interface MTRDeviceEnergyManagementModeClusterModeTagStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable mfgCode;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@end
+@interface MTRDishwasherAlarmClusterModifyEnabledAlarmsParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull mask;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDishwasherAlarmClusterNotifyEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull active;
+@property (nonatomic, copy) NSNumber * _Nonnull inactive;
+@property (nonatomic, copy) NSNumber * _Nonnull state;
+@property (nonatomic, copy) NSNumber * _Nonnull mask;
+@end
+@interface MTRDishwasherAlarmClusterResetParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull alarms;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDishwasherModeClusterChangeToModeParams : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getNewMode) NSNumber * _Nonnull newMode;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDishwasherModeClusterChangeToModeResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nullable statusText;
+@end
+@interface MTRDishwasherModeClusterModeOptionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull label;
+@property (nonatomic, copy) NSNumber * _Nonnull mode;
+@property (nonatomic, copy) NSArray * _Nonnull modeTags;
+@end
+@interface MTRDishwasherModeClusterModeTagStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable mfgCode;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@end
+@interface MTRDoorLockClusterAppleAliroCredentialStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull credentialType;
+@property (nonatomic, copy) NSNumber * _Nonnull credentialIndex;
+@end
+@interface MTRDoorLockClusterAppleAliroLockOperationErrorEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull lockOperationType;
+@property (nonatomic, copy) NSNumber * _Nonnull operationError;
+@property (nonatomic, copy) NSNumber * _Nullable userIndex;
+@property (nonatomic, copy) NSNumber * _Nullable fabricIndex;
+@property (nonatomic, copy) NSArray * _Nullable credentials;
+@end
+@interface MTRDoorLockClusterAppleAliroLockOperationEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull lockOperationType;
+@property (nonatomic, copy) NSNumber * _Nullable userIndex;
+@property (nonatomic, copy) NSNumber * _Nullable fabricIndex;
+@property (nonatomic, copy) NSArray * _Nullable credentials;
+@end
+@interface MTRDoorLockClusterAppleAliroLockUserChangeEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull lockDataType;
+@property (nonatomic, copy) NSNumber * _Nonnull dataOperationType;
+@property (nonatomic, copy) NSNumber * _Nonnull operationSource;
+@property (nonatomic, copy) NSNumber * _Nullable userIndex;
+@property (nonatomic, copy) NSNumber * _Nullable fabricIndex;
+@property (nonatomic, copy) NSNumber * _Nullable sourceNode;
+@property (nonatomic, copy) NSNumber * _Nullable dataIndex;
+@end
+@interface MTRDoorLockClusterAppleClearAliroCredentialParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRDoorLockClusterAppleAliroCredentialStruct * _Nullable credential;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDoorLockClusterAppleClearAliroReaderConfigParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDoorLockClusterAppleGetAliroCredentialStatusParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRDoorLockClusterAppleAliroCredentialStruct * _Nonnull credential;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDoorLockClusterAppleSetAliroCredentialParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull operationType;
+@property (nonatomic, copy) MTRDoorLockClusterAppleAliroCredentialStruct * _Nonnull credential;
+@property (nonatomic, copy) NSData * _Nonnull credentialData;
+@property (nonatomic, copy) NSNumber * _Nonnull userIndex;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDoorLockClusterAppleSetAliroReaderConfigParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull signingKey;
+@property (nonatomic, copy) NSData * _Nonnull verificationKey;
+@property (nonatomic, copy) NSData * _Nonnull groupIdentifier;
+@property (nonatomic, copy) NSData * _Nullable groupResolvingKey;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDoorLockClusterClearAliroReaderConfigParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDoorLockClusterGetCredentialStatusResponseParams ()
+@property (nonatomic, copy) NSData * _Nullable credentialData;
+@end
+@interface MTRDoorLockClusterSetAliroReaderConfigParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull signingKey;
+@property (nonatomic, copy) NSData * _Nonnull verificationKey;
+@property (nonatomic, copy) NSData * _Nonnull groupIdentifier;
+@property (nonatomic, copy) NSData * _Nullable groupResolvingKey;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRDoorLockClusterUnboltDoorParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nullable pinCode;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTREcosystemInformationClusterDeviceTypeStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull deviceType;
+@property (nonatomic, copy) NSNumber * _Nonnull revision;
+@end
+@interface MTREcosystemInformationClusterEcosystemDeviceStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nullable deviceName;
+@property (nonatomic, copy) NSNumber * _Nullable deviceNameLastEdit;
+@property (nonatomic, copy) NSNumber * _Nonnull bridgedEndpoint;
+@property (nonatomic, copy) NSNumber * _Nonnull originalEndpoint;
+@property (nonatomic, copy) NSArray * _Nonnull deviceTypes;
+@property (nonatomic, copy) NSArray * _Nonnull uniqueLocationIDs;
+@property (nonatomic, copy) NSNumber * _Nonnull uniqueLocationIDsLastEdit;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTREcosystemInformationClusterEcosystemLocationStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull uniqueLocationID;
+@property (nonatomic, copy) MTRDataTypeLocationDescriptorStruct * _Nonnull locationDescriptor;
+@property (nonatomic, copy) NSNumber * _Nonnull locationDescriptorLastEdit;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRElectricalEnergyMeasurementClusterEnergyMeasurementStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull energy;
+@property (nonatomic, copy) NSNumber * _Nullable startTimestamp;
+@property (nonatomic, copy) NSNumber * _Nullable endTimestamp;
+@property (nonatomic, copy) NSNumber * _Nullable startSystime;
+@property (nonatomic, copy) NSNumber * _Nullable endSystime;
+@property (nonatomic, copy) NSNumber * _Nullable apparentEnergy;
+@property (nonatomic, copy) NSNumber * _Nullable reactiveEnergy;
+@end
+@interface MTRElectricalEnergyMeasurementClusterCumulativeEnergyMeasuredEvent : NSObject <NSCopying>
+@property (nonatomic, copy) MTRElectricalEnergyMeasurementClusterEnergyMeasurementStruct * _Nullable energyImported;
+@property (nonatomic, copy) MTRElectricalEnergyMeasurementClusterEnergyMeasurementStruct * _Nullable energyExported;
+@end
+@interface MTRElectricalEnergyMeasurementClusterCumulativeEnergyResetStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable importedResetTimestamp;
+@property (nonatomic, copy) NSNumber * _Nullable exportedResetTimestamp;
+@property (nonatomic, copy) NSNumber * _Nullable importedResetSystime;
+@property (nonatomic, copy) NSNumber * _Nullable exportedResetSystime;
+@end
+@interface MTRElectricalEnergyMeasurementClusterMeasurementAccuracyRangeStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull rangeMin;
+@property (nonatomic, copy) NSNumber * _Nonnull rangeMax;
+@property (nonatomic, copy) NSNumber * _Nullable percentMax;
+@property (nonatomic, copy) NSNumber * _Nullable percentMin;
+@property (nonatomic, copy) NSNumber * _Nullable percentTypical;
+@property (nonatomic, copy) NSNumber * _Nullable fixedMax;
+@property (nonatomic, copy) NSNumber * _Nullable fixedMin;
+@property (nonatomic, copy) NSNumber * _Nullable fixedTypical;
+@end
+@interface MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull measurementType;
+@property (nonatomic, copy) NSNumber * _Nonnull measured;
+@property (nonatomic, copy) NSNumber * _Nonnull minMeasuredValue;
+@property (nonatomic, copy) NSNumber * _Nonnull maxMeasuredValue;
+@property (nonatomic, copy) NSArray * _Nonnull accuracyRanges;
+@end
+@interface MTRElectricalEnergyMeasurementClusterPeriodicEnergyMeasuredEvent : NSObject <NSCopying>
+@property (nonatomic, copy) MTRElectricalEnergyMeasurementClusterEnergyMeasurementStruct * _Nullable energyImported;
+@property (nonatomic, copy) MTRElectricalEnergyMeasurementClusterEnergyMeasurementStruct * _Nullable energyExported;
+@end
+@interface MTRElectricalGridConditionsClusterElectricalGridConditionsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull periodStart;
+@property (nonatomic, copy) NSNumber * _Nullable periodEnd;
+@property (nonatomic, copy) NSNumber * _Nonnull gridCarbonIntensity;
+@property (nonatomic, copy) NSNumber * _Nonnull gridCarbonLevel;
+@property (nonatomic, copy) NSNumber * _Nonnull localCarbonIntensity;
+@property (nonatomic, copy) NSNumber * _Nonnull localCarbonLevel;
+@end
+@interface MTRElectricalGridConditionsClusterCurrentConditionsChangedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) MTRElectricalGridConditionsClusterElectricalGridConditionsStruct * _Nullable currentConditions;
+@end
+@interface MTRElectricalPowerMeasurementClusterHarmonicMeasurementStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull order;
+@property (nonatomic, copy) NSNumber * _Nullable measurement;
+@end
+@interface MTRElectricalPowerMeasurementClusterMeasurementAccuracyRangeStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull rangeMin;
+@property (nonatomic, copy) NSNumber * _Nonnull rangeMax;
+@property (nonatomic, copy) NSNumber * _Nullable percentMax;
+@property (nonatomic, copy) NSNumber * _Nullable percentMin;
+@property (nonatomic, copy) NSNumber * _Nullable percentTypical;
+@property (nonatomic, copy) NSNumber * _Nullable fixedMax;
+@property (nonatomic, copy) NSNumber * _Nullable fixedMin;
+@property (nonatomic, copy) NSNumber * _Nullable fixedTypical;
+@end
+@interface MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull measurementType;
+@property (nonatomic, copy) NSNumber * _Nonnull measured;
+@property (nonatomic, copy) NSNumber * _Nonnull minMeasuredValue;
+@property (nonatomic, copy) NSNumber * _Nonnull maxMeasuredValue;
+@property (nonatomic, copy) NSArray * _Nonnull accuracyRanges;
+@end
+@interface MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull ranges;
+@end
+@interface MTRElectricalPowerMeasurementClusterMeasurementRangeStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull measurementType;
+@property (nonatomic, copy) NSNumber * _Nonnull min;
+@property (nonatomic, copy) NSNumber * _Nonnull max;
+@property (nonatomic, copy) NSNumber * _Nullable startTimestamp;
+@property (nonatomic, copy) NSNumber * _Nullable endTimestamp;
+@property (nonatomic, copy) NSNumber * _Nullable minTimestamp;
+@property (nonatomic, copy) NSNumber * _Nullable maxTimestamp;
+@property (nonatomic, copy) NSNumber * _Nullable startSystime;
+@property (nonatomic, copy) NSNumber * _Nullable endSystime;
+@property (nonatomic, copy) NSNumber * _Nullable minSystime;
+@property (nonatomic, copy) NSNumber * _Nullable maxSystime;
+@end
+@interface MTREnergyEVSEClusterChargingTargetScheduleStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull dayOfWeekForSequence;
+@property (nonatomic, copy) NSArray * _Nonnull chargingTargets;
+@end
+@interface MTREnergyEVSEClusterChargingTargetStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull targetTimeMinutesPastMidnight;
+@property (nonatomic, copy) NSNumber * _Nullable targetSoC;
+@property (nonatomic, copy) NSNumber * _Nullable addedEnergy;
+@end
+@interface MTREnergyEVSEClusterClearTargetsParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTREnergyEVSEClusterDisableParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTREnergyEVSEClusterEVConnectedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull sessionID;
+@end
+@interface MTREnergyEVSEClusterEVNotDetectedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull sessionID;
+@property (nonatomic, copy) NSNumber * _Nonnull state;
+@property (nonatomic, copy) NSNumber * _Nonnull sessionDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull sessionEnergyCharged;
+@property (nonatomic, copy) NSNumber * _Nullable sessionEnergyDischarged;
+@end
+@interface MTREnergyEVSEClusterEnableChargingParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable chargingEnabledUntil;
+@property (nonatomic, copy) NSNumber * _Nonnull minimumChargeCurrent;
+@property (nonatomic, copy) NSNumber * _Nonnull maximumChargeCurrent;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTREnergyEVSEClusterEnableDischargingParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable dischargingEnabledUntil;
+@property (nonatomic, copy) NSNumber * _Nonnull maximumDischargeCurrent;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTREnergyEVSEClusterEnergyTransferStartedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull sessionID;
+@property (nonatomic, copy) NSNumber * _Nonnull state;
+@property (nonatomic, copy) NSNumber * _Nonnull maximumCurrent;
+@property (nonatomic, copy) NSNumber * _Nullable maximumDischargeCurrent;
+@end
+@interface MTREnergyEVSEClusterEnergyTransferStoppedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull sessionID;
+@property (nonatomic, copy) NSNumber * _Nonnull state;
+@property (nonatomic, copy) NSNumber * _Nonnull reason;
+@property (nonatomic, copy) NSNumber * _Nonnull energyTransferred;
+@property (nonatomic, copy) NSNumber * _Nullable energyDischarged;
+@end
+@interface MTREnergyEVSEClusterFaultEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable sessionID;
+@property (nonatomic, copy) NSNumber * _Nonnull state;
+@property (nonatomic, copy) NSNumber * _Nonnull faultStatePreviousState;
+@property (nonatomic, copy) NSNumber * _Nonnull faultStateCurrentState;
+@end
+@interface MTREnergyEVSEClusterGetTargetsParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTREnergyEVSEClusterGetTargetsResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull chargingTargetSchedules;
+@end
+@interface MTREnergyEVSEClusterRFIDEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull uid;
+@end
+@interface MTREnergyEVSEClusterSetTargetsParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull chargingTargetSchedules;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTREnergyEVSEClusterStartDiagnosticsParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTREnergyEVSEModeClusterChangeToModeParams : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getNewMode) NSNumber * _Nonnull newMode;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTREnergyEVSEModeClusterChangeToModeResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nullable statusText;
+@end
+@interface MTREnergyEVSEModeClusterModeOptionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull label;
+@property (nonatomic, copy) NSNumber * _Nonnull mode;
+@property (nonatomic, copy) NSArray * _Nonnull modeTags;
+@end
+@interface MTREnergyEVSEModeClusterModeTagStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable mfgCode;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@end
+@interface MTREnergyPreferenceClusterBalanceStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull step;
+@property (nonatomic, copy) NSString * _Nullable label;
+@end
+@interface MTRFanControlClusterStepParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull direction;
+@property (nonatomic, copy) NSNumber * _Nullable wrap;
+@property (nonatomic, copy) NSNumber * _Nullable lowestOff;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRGeneralCommissioningClusterSetTCAcknowledgementsParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull tcVersion;
+@property (nonatomic, copy) NSNumber * _Nonnull tcUserResponse;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRGeneralCommissioningClusterSetTCAcknowledgementsResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull errorCode;
+@end
+@interface MTRGeneralDiagnosticsClusterPayloadTestRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull enableKey;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@property (nonatomic, copy, getter=getCount) NSNumber * _Nonnull count;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRGeneralDiagnosticsClusterPayloadTestResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull payload;
+@end
+@interface MTRGeneralDiagnosticsClusterTimeSnapshotParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRGeneralDiagnosticsClusterTimeSnapshotResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull systemTimeMs;
+@property (nonatomic, copy) NSNumber * _Nullable posixTimeMs;
+@end
+@interface MTRGroupcastClusterConfigureAuxiliaryACLParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSNumber * _Nonnull useAuxiliaryACL;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRGroupcastClusterExpireGracePeriodParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRGroupcastClusterJoinGroupParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSArray * _Nonnull endpoints;
+@property (nonatomic, copy) NSNumber * _Nonnull keyID;
+@property (nonatomic, copy) NSData * _Nullable key;
+@property (nonatomic, copy) NSNumber * _Nullable gracePeriod;
+@property (nonatomic, copy) NSNumber * _Nullable useAuxiliaryACL;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRGroupcastClusterLeaveGroupParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSArray * _Nullable endpoints;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRGroupcastClusterLeaveGroupResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSArray * _Nullable endpoints;
+@property (nonatomic, copy) NSNumber * _Nullable listTooLarge;
+@end
+@interface MTRGroupcastClusterMembershipStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSArray * _Nonnull endpoints;
+@property (nonatomic, copy) NSNumber * _Nonnull keyID;
+@property (nonatomic, copy) NSNumber * _Nonnull hasAuxiliaryACL;
+@property (nonatomic, copy) NSNumber * _Nullable expiringKeyID;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRGroupcastClusterUpdateGroupKeyParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSNumber * _Nonnull keyID;
+@property (nonatomic, copy) NSData * _Nullable key;
+@property (nonatomic, copy) NSNumber * _Nullable gracePeriod;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRHEPAFilterMonitoringClusterReplacementProductStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull productIdentifierType;
+@property (nonatomic, copy) NSString * _Nonnull productIdentifierValue;
+@end
+@interface MTRHEPAFilterMonitoringClusterResetConditionParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRICDManagementClusterMonitoringRegistrationStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull checkInNodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull monitoredSubject;
+@property (nonatomic, copy) NSNumber * _Nonnull clientType;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRICDManagementClusterRegisterClientParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull checkInNodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull monitoredSubject;
+@property (nonatomic, copy) NSData * _Nonnull key;
+@property (nonatomic, copy) NSData * _Nullable verificationKey;
+@property (nonatomic, copy) NSNumber * _Nonnull clientType;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRICDManagementClusterRegisterClientResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull icdCounter;
+@end
+@interface MTRICDManagementClusterStayActiveRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull stayActiveDuration;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRICDManagementClusterStayActiveResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull promisedActiveDuration;
+@end
+@interface MTRICDManagementClusterUnregisterClientParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull checkInNodeID;
+@property (nonatomic, copy) NSData * _Nullable verificationKey;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricAdministratorClusterAddICACParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull icacValue;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricAdministratorClusterAnnounceJointFabricAdministratorParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricAdministratorClusterICACCSRRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricAdministratorClusterICACCSRResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull icaccsr;
+@end
+@interface MTRJointFabricAdministratorClusterICACResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull statusCode;
+@end
+@interface MTRJointFabricAdministratorClusterOpenJointCommissioningWindowParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull commissioningTimeout;
+@property (nonatomic, copy) NSData * _Nonnull pakePasscodeVerifier;
+@property (nonatomic, copy) NSNumber * _Nonnull discriminator;
+@property (nonatomic, copy) NSNumber * _Nonnull iterations;
+@property (nonatomic, copy) NSData * _Nonnull salt;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricAdministratorClusterTransferAnchorCompleteParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricAdministratorClusterTransferAnchorRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricAdministratorClusterTransferAnchorResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull statusCode;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreAccessControlEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull privilege;
+@property (nonatomic, copy) NSNumber * _Nonnull authMode;
+@property (nonatomic, copy) NSArray * _Nullable subjects;
+@property (nonatomic, copy) NSArray * _Nullable targets;
+@end
+@interface MTRJointFabricDatastoreClusterAddACLToNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreAccessControlEntryStruct * _Nonnull aclEntry;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterAddAdminParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSString * _Nonnull friendlyName;
+@property (nonatomic, copy) NSNumber * _Nonnull vendorID;
+@property (nonatomic, copy) NSData * _Nonnull icac;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreBindingTargetStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable node;
+@property (nonatomic, copy) NSNumber * _Nullable group;
+@property (nonatomic, copy) NSNumber * _Nullable endpoint;
+@property (nonatomic, copy) NSNumber * _Nullable cluster;
+@end
+@interface MTRJointFabricDatastoreClusterAddBindingToEndpointForNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreBindingTargetStruct * _Nonnull binding;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterAddGroupIDToEndpointForNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterAddGroupParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSString * _Nonnull friendlyName;
+@property (nonatomic, copy) NSNumber * _Nullable groupKeySetID;
+@property (nonatomic, copy) NSNumber * _Nullable groupCAT;
+@property (nonatomic, copy) NSNumber * _Nullable groupCATVersion;
+@property (nonatomic, copy) NSNumber * _Nonnull groupPermission;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreGroupKeySetStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupKeySetID;
+@property (nonatomic, copy) NSNumber * _Nonnull groupKeySecurityPolicy;
+@property (nonatomic, copy) NSData * _Nullable epochKey0;
+@property (nonatomic, copy) NSNumber * _Nullable epochStartTime0;
+@property (nonatomic, copy) NSData * _Nullable epochKey1;
+@property (nonatomic, copy) NSNumber * _Nullable epochStartTime1;
+@property (nonatomic, copy) NSData * _Nullable epochKey2;
+@property (nonatomic, copy) NSNumber * _Nullable epochStartTime2;
+@property (nonatomic, copy) NSNumber * _Nonnull groupKeyMulticastPolicy;
+@end
+@interface MTRJointFabricDatastoreClusterAddKeySetParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreGroupKeySetStruct * _Nonnull groupKeySet;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterAddPendingNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSString * _Nonnull friendlyName;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreStatusEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull state;
+@property (nonatomic, copy) NSNumber * _Nonnull updateTimestamp;
+@property (nonatomic, copy) NSNumber * _Nonnull failureCode;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreACLEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull listID;
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreAccessControlEntryStruct * _Nonnull aclEntry;
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreStatusEntryStruct * _Nonnull statusEntry;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreAccessControlTargetStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable cluster;
+@property (nonatomic, copy) NSNumber * _Nullable endpoint;
+@property (nonatomic, copy) NSNumber * _Nullable deviceType;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreAdministratorInformationEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSString * _Nonnull friendlyName;
+@property (nonatomic, copy) NSNumber * _Nonnull vendorID;
+@property (nonatomic, copy) NSData * _Nonnull icac;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreEndpointBindingEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy) NSNumber * _Nonnull listID;
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreBindingTargetStruct * _Nonnull binding;
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreStatusEntryStruct * _Nonnull statusEntry;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreEndpointEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSString * _Nonnull friendlyName;
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreStatusEntryStruct * _Nonnull statusEntry;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreEndpointGroupIDEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreStatusEntryStruct * _Nonnull statusEntry;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreGroupInformationEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSString * _Nonnull friendlyName;
+@property (nonatomic, copy) NSNumber * _Nullable groupKeySetID;
+@property (nonatomic, copy) NSNumber * _Nullable groupCAT;
+@property (nonatomic, copy) NSNumber * _Nullable groupCATVersion;
+@property (nonatomic, copy) NSNumber * _Nonnull groupPermission;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreNodeInformationEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSString * _Nonnull friendlyName;
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreStatusEntryStruct * _Nonnull commissioningStatusEntry;
+@end
+@interface MTRJointFabricDatastoreClusterDatastoreNodeKeySetEntryStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull groupKeySetID;
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreStatusEntryStruct * _Nonnull statusEntry;
+@end
+@interface MTRJointFabricDatastoreClusterRefreshNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterRemoveACLFromNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull listID;
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterRemoveAdminParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterRemoveBindingFromEndpointForNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull listID;
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterRemoveGroupIDFromEndpointForNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterRemoveGroupParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterRemoveKeySetParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupKeySetID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterRemoveNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterUpdateAdminParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable nodeID;
+@property (nonatomic, copy) NSString * _Nullable friendlyName;
+@property (nonatomic, copy) NSData * _Nullable icac;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterUpdateEndpointForNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSString * _Nonnull friendlyName;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterUpdateGroupParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSString * _Nullable friendlyName;
+@property (nonatomic, copy) NSNumber * _Nullable groupKeySetID;
+@property (nonatomic, copy) NSNumber * _Nullable groupCAT;
+@property (nonatomic, copy) NSNumber * _Nullable groupCATVersion;
+@property (nonatomic, copy) NSNumber * _Nonnull groupPermission;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterUpdateKeySetParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRJointFabricDatastoreClusterDatastoreGroupKeySetStruct * _Nonnull groupKeySet;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRJointFabricDatastoreClusterUpdateNodeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSString * _Nonnull friendlyName;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRLaundryWasherModeClusterChangeToModeParams : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getNewMode) NSNumber * _Nonnull newMode;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRLaundryWasherModeClusterChangeToModeResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nullable statusText;
+@end
+@interface MTRLaundryWasherModeClusterModeOptionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull label;
+@property (nonatomic, copy) NSNumber * _Nonnull mode;
+@property (nonatomic, copy) NSArray * _Nonnull modeTags;
+@end
+@interface MTRLaundryWasherModeClusterModeTagStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable mfgCode;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@end
+@interface MTRMediaPlaybackClusterActivateAudioTrackParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull trackID;
+@property (nonatomic, copy) NSNumber * _Nonnull audioOutputIndex;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRMediaPlaybackClusterActivateTextTrackParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull trackID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRMediaPlaybackClusterDeactivateTextTrackParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRMediaPlaybackClusterFastForwardParams ()
+@property (nonatomic, copy) NSNumber * _Nullable audioAdvanceUnmuted;
+@end
+@interface MTRMediaPlaybackClusterRewindParams ()
+@property (nonatomic, copy) NSNumber * _Nullable audioAdvanceUnmuted;
+@end
+@interface MTRMediaPlaybackClusterStateChangedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull currentState;
+@property (nonatomic, copy) NSNumber * _Nonnull startTime;
+@property (nonatomic, copy) NSNumber * _Nonnull duration;
+@property (nonatomic, copy) MTRMediaPlaybackClusterPlaybackPositionStruct * _Nonnull sampledPosition;
+@property (nonatomic, copy) NSNumber * _Nonnull playbackSpeed;
+@property (nonatomic, copy) NSNumber * _Nonnull seekRangeEnd;
+@property (nonatomic, copy) NSNumber * _Nonnull seekRangeStart;
+@property (nonatomic, copy) NSData * _Nullable data;
+@property (nonatomic, copy) NSNumber * _Nonnull audioAdvanceUnmuted;
+@end
+@interface MTRMediaPlaybackClusterStopPlaybackParams ()
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRMediaPlaybackClusterTrackAttributesStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull languageCode;
+@property (nonatomic, copy) NSString * _Nullable displayName;
+@end
+@interface MTRMediaPlaybackClusterTrackStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull id;
+@property (nonatomic, copy) MTRMediaPlaybackClusterTrackAttributesStruct * _Nullable trackAttributes;
+@end
+@interface MTRMessagesClusterCancelMessagesRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull messageIDs;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRMessagesClusterMessageCompleteEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull messageID;
+@property (nonatomic, copy) NSNumber * _Nullable responseID;
+@property (nonatomic, copy) NSString * _Nullable reply;
+@property (nonatomic, copy) NSNumber * _Nullable futureMessagesPreference;
+@end
+@interface MTRMessagesClusterMessagePresentedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull messageID;
+@end
+@interface MTRMessagesClusterMessageQueuedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull messageID;
+@end
+@interface MTRMessagesClusterMessageResponseOptionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable messageResponseID;
+@property (nonatomic, copy) NSString * _Nullable label;
+@end
+@interface MTRMessagesClusterMessageStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull messageID;
+@property (nonatomic, copy) NSNumber * _Nonnull priority;
+@property (nonatomic, copy) NSNumber * _Nonnull messageControl;
+@property (nonatomic, copy) NSNumber * _Nullable startTime;
+@property (nonatomic, copy) NSNumber * _Nullable duration;
+@property (nonatomic, copy) NSString * _Nonnull messageText;
+@property (nonatomic, copy) NSArray * _Nullable responses;
+@end
+@interface MTRMessagesClusterPresentMessagesRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull messageID;
+@property (nonatomic, copy) NSNumber * _Nonnull priority;
+@property (nonatomic, copy) NSNumber * _Nonnull messageControl;
+@property (nonatomic, copy) NSNumber * _Nullable startTime;
+@property (nonatomic, copy) NSNumber * _Nullable duration;
+@property (nonatomic, copy) NSString * _Nonnull messageText;
+@property (nonatomic, copy) NSArray * _Nullable responses;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRMicrowaveOvenControlClusterAddMoreTimeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull timeToAdd;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRMicrowaveOvenControlClusterSetCookingParametersParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable cookMode;
+@property (nonatomic, copy) NSNumber * _Nullable cookTime;
+@property (nonatomic, copy) NSNumber * _Nullable powerSetting;
+@property (nonatomic, copy) NSNumber * _Nullable wattSettingIndex;
+@property (nonatomic, copy) NSNumber * _Nullable startAfterSetting;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRMicrowaveOvenModeClusterModeOptionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull label;
+@property (nonatomic, copy) NSNumber * _Nonnull mode;
+@property (nonatomic, copy) NSArray * _Nonnull modeTags;
+@end
+@interface MTRMicrowaveOvenModeClusterModeTagStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable mfgCode;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@end
+@interface MTRNetworkCommissioningClusterAddOrUpdateWiFiNetworkParams ()
+@property (nonatomic, copy) NSData * _Nullable networkIdentity;
+@property (nonatomic, copy) NSData * _Nullable clientIdentifier;
+@property (nonatomic, copy) NSData * _Nullable possessionNonce;
+@end
+@interface MTRNetworkCommissioningClusterNetworkConfigResponseParams ()
+@property (nonatomic, copy) NSData * _Nullable clientIdentity;
+@property (nonatomic, copy) NSData * _Nullable possessionSignature;
+@end
+@interface MTRNetworkCommissioningClusterNetworkInfoStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull networkID;
+@property (nonatomic, copy) NSNumber * _Nonnull connected;
+@property (nonatomic, copy) NSData * _Nullable networkIdentifier;
+@property (nonatomic, copy) NSData * _Nullable clientIdentifier;
+@end
+@interface MTRNetworkCommissioningClusterQueryIdentityParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull keyIdentifier;
+@property (nonatomic, copy) NSData * _Nullable possessionNonce;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRNetworkCommissioningClusterQueryIdentityResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull identity;
+@property (nonatomic, copy) NSData * _Nullable possessionSignature;
+@end
+@interface MTRNetworkCommissioningClusterThreadInterfaceScanResultStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull panId;
+@property (nonatomic, copy) NSNumber * _Nonnull extendedPanId;
+@property (nonatomic, copy) NSString * _Nonnull networkName;
+@property (nonatomic, copy) NSNumber * _Nonnull channel;
+@property (nonatomic, copy) NSNumber * _Nonnull version;
+@property (nonatomic, copy) NSData * _Nonnull extendedAddress;
+@property (nonatomic, copy) NSNumber * _Nonnull rssi;
+@property (nonatomic, copy) NSNumber * _Nonnull lqi;
+@end
+@interface MTRNetworkCommissioningClusterWiFiInterfaceScanResultStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull security;
+@property (nonatomic, copy) NSData * _Nonnull ssid;
+@property (nonatomic, copy) NSData * _Nonnull bssid;
+@property (nonatomic, copy) NSNumber * _Nonnull channel;
+@property (nonatomic, copy) NSNumber * _Nonnull wiFiBand;
+@property (nonatomic, copy) NSNumber * _Nonnull rssi;
+@end
+@interface MTROccupancySensingClusterHoldTimeLimitsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull holdTimeMin;
+@property (nonatomic, copy) NSNumber * _Nonnull holdTimeMax;
+@property (nonatomic, copy) NSNumber * _Nonnull holdTimeDefault;
+@end
+@interface MTROccupancySensingClusterOccupancyChangedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull occupancy;
+@end
+@interface MTROperationalCredentialsClusterFabricDescriptorStruct ()
+@property (nonatomic, copy) NSData * _Nullable vidVerificationStatement;
+@end
+@interface MTROperationalCredentialsClusterNOCStruct ()
+@property (nonatomic, copy) NSData * _Nullable vvsc;
+@end
+@interface MTROperationalCredentialsClusterSetVIDVerificationStatementParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable vendorID;
+@property (nonatomic, copy) NSData * _Nullable vidVerificationStatement;
+@property (nonatomic, copy) NSData * _Nullable vvsc;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROperationalCredentialsClusterSignVIDVerificationRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@property (nonatomic, copy) NSData * _Nonnull clientChallenge;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROperationalCredentialsClusterSignVIDVerificationResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricBindingVersion;
+@property (nonatomic, copy) NSData * _Nonnull signature;
+@end
+@interface MTROperationalStateClusterErrorStateStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull errorStateID;
+@property (nonatomic, copy) NSString * _Nullable errorStateLabel;
+@property (nonatomic, copy) NSString * _Nullable errorStateDetails;
+@end
+@interface MTROperationalStateClusterOperationCompletionEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull completionErrorCode;
+@property (nonatomic, copy) NSNumber * _Nullable totalOperationalTime;
+@property (nonatomic, copy) NSNumber * _Nullable pausedTime;
+@end
+@interface MTROperationalStateClusterOperationalCommandResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTROperationalStateClusterErrorStateStruct * _Nonnull commandResponseState;
+@end
+@interface MTROperationalStateClusterOperationalErrorEvent : NSObject <NSCopying>
+@property (nonatomic, copy) MTROperationalStateClusterErrorStateStruct * _Nonnull errorState;
+@end
+@interface MTROperationalStateClusterOperationalStateStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull operationalStateID;
+@property (nonatomic, copy) NSString * _Nullable operationalStateLabel;
+@end
+@interface MTROperationalStateClusterPauseParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROperationalStateClusterResumeParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROperationalStateClusterStartParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROperationalStateClusterStopParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROtaSoftwareUpdateProviderClusterApplyUpdateRequestParams ()
+@property (nonatomic, copy) NSData * _Nonnull updateToken;
+@property (nonatomic, copy, getter=getNewVersion) NSNumber * _Nonnull newVersion;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROtaSoftwareUpdateProviderClusterApplyUpdateResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull action;
+@property (nonatomic, copy) NSNumber * _Nonnull delayedActionTime;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTROtaSoftwareUpdateProviderClusterNotifyUpdateAppliedParams ()
+@property (nonatomic, copy) NSData * _Nonnull updateToken;
+@property (nonatomic, copy) NSNumber * _Nonnull softwareVersion;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROtaSoftwareUpdateProviderClusterQueryImageParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull softwareVersion;
+@property (nonatomic, copy) NSArray * _Nonnull protocolsSupported;
+@property (nonatomic, copy) NSNumber * _Nullable hardwareVersion;
+@property (nonatomic, copy) NSString * _Nullable location;
+@property (nonatomic, copy) NSNumber * _Nullable requestorCanConsent;
+@property (nonatomic, copy) NSData * _Nullable metadataForProvider;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROtaSoftwareUpdateProviderClusterQueryImageResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSNumber * _Nullable delayedActionTime;
+@property (nonatomic, copy) NSString * _Nullable imageURI;
+@property (nonatomic, copy) NSNumber * _Nullable softwareVersion;
+@property (nonatomic, copy) NSString * _Nullable softwareVersionString;
+@property (nonatomic, copy) NSData * _Nullable updateToken;
+@property (nonatomic, copy) NSNumber * _Nullable userConsentNeeded;
+@property (nonatomic, copy) NSData * _Nullable metadataForRequestor;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTROtaSoftwareUpdateRequestorClusterAnnounceOtaProviderParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull announcementReason;
+@property (nonatomic, copy) NSData * _Nullable metadataForNode;
+@property (nonatomic, copy) NSNumber * _Nonnull endpoint;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROtaSoftwareUpdateRequestorClusterDownloadErrorEvent ()
+@property (nonatomic, copy) NSNumber * _Nonnull softwareVersion;
+@property (nonatomic, copy) NSNumber * _Nonnull bytesDownloaded;
+@property (nonatomic, copy) NSNumber * _Nullable progressPercent;
+@property (nonatomic, copy) NSNumber * _Nullable platformCode;
+@end
+@interface MTROtaSoftwareUpdateRequestorClusterStateTransitionEvent ()
+@property (nonatomic, copy) NSNumber * _Nonnull previousState;
+@property (nonatomic, copy, getter=getNewState) NSNumber * _Nonnull newState;
+@property (nonatomic, copy) NSNumber * _Nonnull reason;
+@property (nonatomic, copy) NSNumber * _Nullable targetSoftwareVersion;
+@end
+@interface MTROtaSoftwareUpdateRequestorClusterVersionAppliedEvent ()
+@property (nonatomic, copy) NSNumber * _Nonnull softwareVersion;
+@property (nonatomic, copy) NSNumber * _Nonnull productID;
+@end
+@interface MTROvenCavityOperationalStateClusterErrorStateStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull errorStateID;
+@property (nonatomic, copy) NSString * _Nullable errorStateLabel;
+@property (nonatomic, copy) NSString * _Nullable errorStateDetails;
+@end
+@interface MTROvenCavityOperationalStateClusterOperationCompletionEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull completionErrorCode;
+@property (nonatomic, copy) NSNumber * _Nullable totalOperationalTime;
+@property (nonatomic, copy) NSNumber * _Nullable pausedTime;
+@end
+@interface MTROvenCavityOperationalStateClusterOperationalCommandResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTROvenCavityOperationalStateClusterErrorStateStruct * _Nonnull commandResponseState;
+@end
+@interface MTROvenCavityOperationalStateClusterOperationalErrorEvent : NSObject <NSCopying>
+@property (nonatomic, copy) MTROvenCavityOperationalStateClusterErrorStateStruct * _Nonnull errorState;
+@end
+@interface MTROvenCavityOperationalStateClusterOperationalStateStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull operationalStateID;
+@property (nonatomic, copy) NSString * _Nullable operationalStateLabel;
+@end
+@interface MTROvenCavityOperationalStateClusterStartParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROvenCavityOperationalStateClusterStopParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROvenModeClusterChangeToModeParams : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getNewMode) NSNumber * _Nonnull newMode;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTROvenModeClusterChangeToModeResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nullable statusText;
+@end
+@interface MTROvenModeClusterModeOptionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull label;
+@property (nonatomic, copy) NSNumber * _Nonnull mode;
+@property (nonatomic, copy) NSArray * _Nonnull modeTags;
+@end
+@interface MTROvenModeClusterModeTagStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable mfgCode;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@end
+@interface MTRPowerTopologyClusterCircuitNodeStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull node;
+@property (nonatomic, copy) NSNumber * _Nullable endpoint;
+@property (nonatomic, copy) NSString * _Nullable label;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRPushAVStreamTransportClusterTransportMotionTriggerTimeControlStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull initialDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull augmentationDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull maxDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull blindDuration;
+@end
+@interface MTRPushAVStreamTransportClusterTransportTriggerOptionsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull triggerType;
+@property (nonatomic, copy) NSArray * _Nullable motionZones;
+@property (nonatomic, copy) NSNumber * _Nullable motionSensitivity;
+@property (nonatomic, copy) MTRPushAVStreamTransportClusterTransportMotionTriggerTimeControlStruct * _Nullable motionTimeControl;
+@property (nonatomic, copy) NSNumber * _Nullable maxPreRollLen;
+@end
+@interface MTRPushAVStreamTransportClusterCMAFContainerOptionsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull cmafInterface;
+@property (nonatomic, copy) NSNumber * _Nonnull segmentDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull chunkDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull sessionGroup;
+@property (nonatomic, copy) NSString * _Nonnull trackName;
+@property (nonatomic, copy) NSData * _Nullable cencKey;
+@property (nonatomic, copy) NSData * _Nullable cencKeyID;
+@property (nonatomic, copy) NSNumber * _Nullable metadataEnabled;
+@end
+@interface MTRPushAVStreamTransportClusterContainerOptionsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull containerType;
+@property (nonatomic, copy) MTRPushAVStreamTransportClusterCMAFContainerOptionsStruct * _Nullable cmafContainerOptions;
+@end
+@interface MTRPushAVStreamTransportClusterTransportOptionsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull streamUsage;
+@property (nonatomic, copy) NSNumber * _Nullable videoStreamID;
+@property (nonatomic, copy) NSNumber * _Nullable audioStreamID;
+@property (nonatomic, copy) NSNumber * _Nonnull tlsEndpointID;
+@property (nonatomic, copy) NSString * _Nonnull url;
+@property (nonatomic, copy) MTRPushAVStreamTransportClusterTransportTriggerOptionsStruct * _Nonnull triggerOptions;
+@property (nonatomic, copy) NSNumber * _Nonnull ingestMethod;
+@property (nonatomic, copy) MTRPushAVStreamTransportClusterContainerOptionsStruct * _Nonnull containerOptions;
+@property (nonatomic, copy) NSNumber * _Nullable expiryTime;
+@end
+@interface MTRPushAVStreamTransportClusterAllocatePushTransportParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRPushAVStreamTransportClusterTransportOptionsStruct * _Nonnull transportOptions;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRPushAVStreamTransportClusterTransportConfigurationStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull connectionID;
+@property (nonatomic, copy) NSNumber * _Nonnull transportStatus;
+@property (nonatomic, copy) MTRPushAVStreamTransportClusterTransportOptionsStruct * _Nullable transportOptions;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRPushAVStreamTransportClusterAllocatePushTransportResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRPushAVStreamTransportClusterTransportConfigurationStruct * _Nonnull transportConfiguration;
+@end
+@interface MTRPushAVStreamTransportClusterDeallocatePushTransportParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull connectionID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRPushAVStreamTransportClusterFindTransportParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable connectionID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRPushAVStreamTransportClusterFindTransportResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull transportConfigurations;
+@end
+@interface MTRPushAVStreamTransportClusterManuallyTriggerTransportParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull connectionID;
+@property (nonatomic, copy) NSNumber * _Nonnull activationReason;
+@property (nonatomic, copy) MTRPushAVStreamTransportClusterTransportMotionTriggerTimeControlStruct * _Nullable timeControl;
+@property (nonatomic, copy) NSData * _Nullable userDefined;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRPushAVStreamTransportClusterModifyPushTransportParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull connectionID;
+@property (nonatomic, copy) MTRPushAVStreamTransportClusterTransportOptionsStruct * _Nonnull transportOptions;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRPushAVStreamTransportClusterPushTransportBeginEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull connectionID;
+@property (nonatomic, copy) NSNumber * _Nonnull triggerType;
+@property (nonatomic, copy) NSNumber * _Nullable activationReason;
+@end
+@interface MTRPushAVStreamTransportClusterPushTransportEndEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull connectionID;
+@end
+@interface MTRPushAVStreamTransportClusterSetTransportStatusParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable connectionID;
+@property (nonatomic, copy) NSNumber * _Nonnull transportStatus;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRPushAVStreamTransportClusterSupportedFormatStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull containerFormat;
+@property (nonatomic, copy) NSNumber * _Nonnull ingestMethod;
+@end
+@interface MTRPushAVStreamTransportClusterTransportZoneOptionsStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable zone;
+@property (nonatomic, copy) NSNumber * _Nullable sensitivity;
+@end
+@interface MTRRVCCleanModeClusterChangeToModeParams : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getNewMode) NSNumber * _Nonnull newMode;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRRVCCleanModeClusterChangeToModeResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nullable statusText;
+@end
+@interface MTRRVCCleanModeClusterModeOptionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull label;
+@property (nonatomic, copy) NSNumber * _Nonnull mode;
+@property (nonatomic, copy) NSArray * _Nonnull modeTags;
+@end
+@interface MTRRVCCleanModeClusterModeTagStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable mfgCode;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@end
+@interface MTRRVCOperationalStateClusterErrorStateStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull errorStateID;
+@property (nonatomic, copy) NSString * _Nullable errorStateLabel;
+@property (nonatomic, copy) NSString * _Nullable errorStateDetails;
+@end
+@interface MTRRVCOperationalStateClusterGoHomeParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRRVCOperationalStateClusterOperationCompletionEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull completionErrorCode;
+@property (nonatomic, copy) NSNumber * _Nullable totalOperationalTime;
+@property (nonatomic, copy) NSNumber * _Nullable pausedTime;
+@end
+@interface MTRRVCOperationalStateClusterOperationalCommandResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRRVCOperationalStateClusterErrorStateStruct * _Nonnull commandResponseState;
+@end
+@interface MTRRVCOperationalStateClusterOperationalErrorEvent : NSObject <NSCopying>
+@property (nonatomic, copy) MTRRVCOperationalStateClusterErrorStateStruct * _Nonnull errorState;
+@end
+@interface MTRRVCOperationalStateClusterOperationalStateStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull operationalStateID;
+@property (nonatomic, copy) NSString * _Nullable operationalStateLabel;
+@end
+@interface MTRRVCOperationalStateClusterPauseParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRRVCOperationalStateClusterResumeParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRRVCRunModeClusterChangeToModeParams : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getNewMode) NSNumber * _Nonnull newMode;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRRVCRunModeClusterChangeToModeResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nullable statusText;
+@end
+@interface MTRRVCRunModeClusterModeOptionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull label;
+@property (nonatomic, copy) NSNumber * _Nonnull mode;
+@property (nonatomic, copy) NSArray * _Nonnull modeTags;
+@end
+@interface MTRRVCRunModeClusterModeTagStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable mfgCode;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@end
+@interface MTRReadParams ()
+@property (nonatomic, assign, getter=shouldAssumeUnknownAttributesReportable) BOOL assumeUnknownAttributesReportable;
+@end
+@interface MTRRefrigeratorAlarmClusterNotifyEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull active;
+@property (nonatomic, copy) NSNumber * _Nonnull inactive;
+@property (nonatomic, copy) NSNumber * _Nonnull state;
+@property (nonatomic, copy) NSNumber * _Nonnull mask;
+@end
+@interface MTRRefrigeratorAndTemperatureControlledCabinetModeClusterChangeToModeParams : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getNewMode) NSNumber * _Nonnull newMode;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRRefrigeratorAndTemperatureControlledCabinetModeClusterChangeToModeResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nullable statusText;
+@end
+@interface MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull label;
+@property (nonatomic, copy) NSNumber * _Nonnull mode;
+@property (nonatomic, copy) NSArray * _Nonnull modeTags;
+@end
+@interface MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeTagStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable mfgCode;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@end
+@interface MTRSampleMEIClusterAddArgumentsParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull arg1;
+@property (nonatomic, copy) NSNumber * _Nonnull arg2;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRSampleMEIClusterAddArgumentsResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull returnValue;
+@end
+@interface MTRSampleMEIClusterPingCountEventEvent : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getCount) NSNumber * _Nonnull count;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRSampleMEIClusterPingParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRScenesManagementClusterAddSceneParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneID;
+@property (nonatomic, copy) NSNumber * _Nonnull transitionTime;
+@property (nonatomic, copy) NSString * _Nonnull sceneName;
+@property (nonatomic, copy) NSArray * _Nonnull extensionFieldSetStructs;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRScenesManagementClusterAddSceneResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneID;
+@end
+@interface MTRScenesManagementClusterAttributeValuePairStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull attributeID;
+@property (nonatomic, copy) NSNumber * _Nullable valueUnsigned8;
+@property (nonatomic, copy) NSNumber * _Nullable valueSigned8;
+@property (nonatomic, copy) NSNumber * _Nullable valueUnsigned16;
+@property (nonatomic, copy) NSNumber * _Nullable valueSigned16;
+@property (nonatomic, copy) NSNumber * _Nullable valueUnsigned32;
+@property (nonatomic, copy) NSNumber * _Nullable valueSigned32;
+@property (nonatomic, copy) NSNumber * _Nullable valueUnsigned64;
+@property (nonatomic, copy) NSNumber * _Nullable valueSigned64;
+@end
+@interface MTRScenesManagementClusterCopySceneParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull mode;
+@property (nonatomic, copy) NSNumber * _Nonnull groupIdentifierFrom;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneIdentifierFrom;
+@property (nonatomic, copy) NSNumber * _Nonnull groupIdentifierTo;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneIdentifierTo;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRScenesManagementClusterCopySceneResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSNumber * _Nonnull groupIdentifierFrom;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneIdentifierFrom;
+@end
+@interface MTRScenesManagementClusterExtensionFieldSetStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull clusterID;
+@property (nonatomic, copy) NSArray * _Nonnull attributeValueList;
+@end
+@interface MTRScenesManagementClusterGetSceneMembershipParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRScenesManagementClusterGetSceneMembershipResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSNumber * _Nullable capacity;
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSArray * _Nullable sceneList;
+@end
+@interface MTRScenesManagementClusterRecallSceneParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneID;
+@property (nonatomic, copy) NSNumber * _Nullable transitionTime;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRScenesManagementClusterRemoveAllScenesParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRScenesManagementClusterRemoveAllScenesResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@end
+@interface MTRScenesManagementClusterRemoveSceneParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRScenesManagementClusterRemoveSceneResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneID;
+@end
+@interface MTRScenesManagementClusterSceneInfoStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull sceneCount;
+@property (nonatomic, copy) NSNumber * _Nonnull currentScene;
+@property (nonatomic, copy) NSNumber * _Nonnull currentGroup;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneValid;
+@property (nonatomic, copy) NSNumber * _Nonnull remainingCapacity;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRScenesManagementClusterStoreSceneParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRScenesManagementClusterStoreSceneResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneID;
+@end
+@interface MTRScenesManagementClusterViewSceneParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRScenesManagementClusterViewSceneResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSNumber * _Nonnull groupID;
+@property (nonatomic, copy) NSNumber * _Nonnull sceneID;
+@property (nonatomic, copy) NSNumber * _Nullable transitionTime;
+@property (nonatomic, copy) NSString * _Nullable sceneName;
+@property (nonatomic, copy) NSArray * _Nullable extensionFieldSetStructs;
+@end
+@interface MTRServiceAreaClusterLandmarkInfoStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull landmarkTag;
+@property (nonatomic, copy) NSNumber * _Nullable relativePositionTag;
+@end
+@interface MTRServiceAreaClusterAreaInfoStruct : NSObject <NSCopying>
+@property (nonatomic, copy) MTRDataTypeLocationDescriptorStruct * _Nullable locationInfo;
+@property (nonatomic, copy) MTRServiceAreaClusterLandmarkInfoStruct * _Nullable landmarkInfo;
+@end
+@interface MTRServiceAreaClusterAreaStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull areaID;
+@property (nonatomic, copy) NSNumber * _Nullable mapID;
+@property (nonatomic, copy) MTRServiceAreaClusterAreaInfoStruct * _Nonnull areaInfo;
+@end
+@interface MTRServiceAreaClusterMapStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull mapID;
+@property (nonatomic, copy) NSString * _Nonnull name;
+@end
+@interface MTRServiceAreaClusterProgressStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull areaID;
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSNumber * _Nullable totalOperationalTime;
+@property (nonatomic, copy) NSNumber * _Nullable estimatedTime;
+@end
+@interface MTRServiceAreaClusterSelectAreasParams : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getNewAreas) NSArray * _Nonnull newAreas;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRServiceAreaClusterSelectAreasResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nonnull statusText;
+@end
+@interface MTRServiceAreaClusterSkipAreaParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull skippedArea;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRServiceAreaClusterSkipAreaResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nonnull statusText;
+@end
+@interface MTRSmokeCOAlarmClusterAlarmMutedEvent : NSObject <NSCopying>
+@end
+@interface MTRSmokeCOAlarmClusterAllClearEvent : NSObject <NSCopying>
+@end
+@interface MTRSmokeCOAlarmClusterCOAlarmEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull alarmSeverityLevel;
+@end
+@interface MTRSmokeCOAlarmClusterEndOfServiceEvent : NSObject <NSCopying>
+@end
+@interface MTRSmokeCOAlarmClusterHardwareFaultEvent : NSObject <NSCopying>
+@end
+@interface MTRSmokeCOAlarmClusterInterconnectCOAlarmEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull alarmSeverityLevel;
+@end
+@interface MTRSmokeCOAlarmClusterInterconnectSmokeAlarmEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull alarmSeverityLevel;
+@end
+@interface MTRSmokeCOAlarmClusterLowBatteryEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull alarmSeverityLevel;
+@end
+@interface MTRSmokeCOAlarmClusterMuteEndedEvent : NSObject <NSCopying>
+@end
+@interface MTRSmokeCOAlarmClusterSelfTestCompleteEvent : NSObject <NSCopying>
+@end
+@interface MTRSmokeCOAlarmClusterSelfTestRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRSmokeCOAlarmClusterSmokeAlarmEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull alarmSeverityLevel;
+@end
+@interface MTRTLSCertificateManagementClusterClientCSRParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull nonce;
+@property (nonatomic, copy) NSNumber * _Nullable ccdid;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTLSCertificateManagementClusterClientCSRResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull ccdid;
+@property (nonatomic, copy) NSData * _Nonnull csr;
+@property (nonatomic, copy) NSData * _Nonnull nonceSignature;
+@end
+@interface MTRTLSCertificateManagementClusterFindClientCertificateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable ccdid;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTLSCertificateManagementClusterFindClientCertificateResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull certificateDetails;
+@end
+@interface MTRTLSCertificateManagementClusterFindRootCertificateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable caid;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTLSCertificateManagementClusterFindRootCertificateResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull certificateDetails;
+@end
+@interface MTRTLSCertificateManagementClusterLookupClientCertificateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull fingerprint;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTLSCertificateManagementClusterLookupClientCertificateResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull ccdid;
+@end
+@interface MTRTLSCertificateManagementClusterLookupRootCertificateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull fingerprint;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTLSCertificateManagementClusterLookupRootCertificateResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull caid;
+@end
+@interface MTRTLSCertificateManagementClusterProvisionClientCertificateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull ccdid;
+@property (nonatomic, copy) NSData * _Nonnull clientCertificate;
+@property (nonatomic, copy) NSArray * _Nonnull intermediateCertificates;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTLSCertificateManagementClusterProvisionRootCertificateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull certificate;
+@property (nonatomic, copy) NSNumber * _Nullable caid;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTLSCertificateManagementClusterProvisionRootCertificateResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull caid;
+@end
+@interface MTRTLSCertificateManagementClusterRemoveClientCertificateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull ccdid;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTLSCertificateManagementClusterRemoveRootCertificateParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull caid;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTLSCertificateManagementClusterTLSCertStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull caid;
+@property (nonatomic, copy) NSData * _Nullable certificate;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRTLSCertificateManagementClusterTLSClientCertificateDetailStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull ccdid;
+@property (nonatomic, copy) NSData * _Nullable clientCertificate;
+@property (nonatomic, copy) NSArray * _Nullable intermediateCertificates;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRTLSClientManagementClusterFindEndpointParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTLSClientManagementClusterTLSEndpointStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy) NSData * _Nonnull hostname;
+@property (nonatomic, copy) NSNumber * _Nonnull port;
+@property (nonatomic, copy) NSNumber * _Nonnull caid;
+@property (nonatomic, copy) NSNumber * _Nullable ccdid;
+@property (nonatomic, copy) NSNumber * _Nonnull referenceCount;
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRTLSClientManagementClusterFindEndpointResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRTLSClientManagementClusterTLSEndpointStruct * _Nonnull endpoint;
+@end
+@interface MTRTLSClientManagementClusterProvisionEndpointParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull hostname;
+@property (nonatomic, copy) NSNumber * _Nonnull port;
+@property (nonatomic, copy) NSNumber * _Nonnull caid;
+@property (nonatomic, copy) NSNumber * _Nullable ccdid;
+@property (nonatomic, copy) NSNumber * _Nullable endpointID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTLSClientManagementClusterProvisionEndpointResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@end
+@interface MTRTLSClientManagementClusterRemoveEndpointParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull endpointID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTargetNavigatorClusterTargetUpdatedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull targetList;
+@property (nonatomic, copy) NSNumber * _Nonnull currentTarget;
+@property (nonatomic, copy) NSData * _Nonnull data;
+@end
+@interface MTRTemperatureControlClusterSetTemperatureParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable targetTemperature;
+@property (nonatomic, copy) NSNumber * _Nullable targetTemperatureLevel;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterBooleanResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRUnitTestingClusterSimpleStruct ()
+@property (nonatomic, copy) NSNumber * _Nullable i;
+@end
+@interface MTRUnitTestingClusterNestedStruct ()
+@property (nonatomic, copy) MTRDataTypeTestGlobalStruct * _Nullable d;
+@end
+@interface MTRTestClusterClusterSimpleStruct ()
+@property (nonatomic, copy) NSNumber * _Nonnull a;
+@property (nonatomic, copy) NSNumber * _Nonnull b;
+@property (nonatomic, copy) NSNumber * _Nonnull c;
+@property (nonatomic, copy) NSData * _Nonnull d;
+@property (nonatomic, copy) NSString * _Nonnull e;
+@property (nonatomic, copy) NSNumber * _Nonnull f;
+@property (nonatomic, copy) NSNumber * _Nonnull g;
+@property (nonatomic, copy) NSNumber * _Nonnull h;
+@end
+@interface MTRTestClusterClusterNestedStruct ()
+@property (nonatomic, copy) NSNumber * _Nonnull a;
+@property (nonatomic, copy) NSNumber * _Nonnull b;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nonnull c;
+@end
+@interface MTRTestClusterClusterNullablesAndOptionalsStruct ()
+@property (nonatomic, copy) NSNumber * _Nullable nullableInt;
+@property (nonatomic, copy) NSNumber * _Nullable optionalInt;
+@property (nonatomic, copy) NSNumber * _Nullable nullableOptionalInt;
+@property (nonatomic, copy) NSString * _Nullable nullableString;
+@property (nonatomic, copy) NSString * _Nullable optionalString;
+@property (nonatomic, copy) NSString * _Nullable nullableOptionalString;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable nullableStruct;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable optionalStruct;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable nullableOptionalStruct;
+@property (nonatomic, copy) NSArray * _Nullable nullableList;
+@property (nonatomic, copy) NSArray * _Nullable optionalList;
+@property (nonatomic, copy) NSArray * _Nullable nullableOptionalList;
+@end
+@interface MTRTestClusterClusterSimpleStructEchoRequestParams ()
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterSimpleStructResponseParams ()
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRTestClusterClusterTestAddArgumentsParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull arg1;
+@property (nonatomic, copy) NSNumber * _Nonnull arg2;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestAddArgumentsResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull returnValue;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRTestClusterClusterTestComplexNullableOptionalRequestParams ()
+@property (nonatomic, copy) NSNumber * _Nullable nullableInt;
+@property (nonatomic, copy) NSNumber * _Nullable optionalInt;
+@property (nonatomic, copy) NSNumber * _Nullable nullableOptionalInt;
+@property (nonatomic, copy) NSString * _Nullable nullableString;
+@property (nonatomic, copy) NSString * _Nullable optionalString;
+@property (nonatomic, copy) NSString * _Nullable nullableOptionalString;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable nullableStruct;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable optionalStruct;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable nullableOptionalStruct;
+@property (nonatomic, copy) NSArray * _Nullable nullableList;
+@property (nonatomic, copy) NSArray * _Nullable optionalList;
+@property (nonatomic, copy) NSArray * _Nullable nullableOptionalList;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestComplexNullableOptionalResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull nullableIntWasNull;
+@property (nonatomic, copy) NSNumber * _Nullable nullableIntValue;
+@property (nonatomic, copy) NSNumber * _Nonnull optionalIntWasPresent;
+@property (nonatomic, copy) NSNumber * _Nullable optionalIntValue;
+@property (nonatomic, copy) NSNumber * _Nonnull nullableOptionalIntWasPresent;
+@property (nonatomic, copy) NSNumber * _Nullable nullableOptionalIntWasNull;
+@property (nonatomic, copy) NSNumber * _Nullable nullableOptionalIntValue;
+@property (nonatomic, copy) NSNumber * _Nonnull nullableStringWasNull;
+@property (nonatomic, copy) NSString * _Nullable nullableStringValue;
+@property (nonatomic, copy) NSNumber * _Nonnull optionalStringWasPresent;
+@property (nonatomic, copy) NSString * _Nullable optionalStringValue;
+@property (nonatomic, copy) NSNumber * _Nonnull nullableOptionalStringWasPresent;
+@property (nonatomic, copy) NSNumber * _Nullable nullableOptionalStringWasNull;
+@property (nonatomic, copy) NSString * _Nullable nullableOptionalStringValue;
+@property (nonatomic, copy) NSNumber * _Nonnull nullableStructWasNull;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable nullableStructValue;
+@property (nonatomic, copy) NSNumber * _Nonnull optionalStructWasPresent;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable optionalStructValue;
+@property (nonatomic, copy) NSNumber * _Nonnull nullableOptionalStructWasPresent;
+@property (nonatomic, copy) NSNumber * _Nullable nullableOptionalStructWasNull;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable nullableOptionalStructValue;
+@property (nonatomic, copy) NSNumber * _Nonnull nullableListWasNull;
+@property (nonatomic, copy) NSArray * _Nullable nullableListValue;
+@property (nonatomic, copy) NSNumber * _Nonnull optionalListWasPresent;
+@property (nonatomic, copy) NSArray * _Nullable optionalListValue;
+@property (nonatomic, copy) NSNumber * _Nonnull nullableOptionalListWasPresent;
+@property (nonatomic, copy) NSNumber * _Nullable nullableOptionalListWasNull;
+@property (nonatomic, copy) NSArray * _Nullable nullableOptionalListValue;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRTestClusterClusterTestEmitTestEventRequestParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull arg1;
+@property (nonatomic, copy) NSNumber * _Nonnull arg2;
+@property (nonatomic, copy) NSNumber * _Nonnull arg3;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestEmitTestEventResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRTestClusterClusterTestEmitTestFabricScopedEventRequestParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestEmitTestFabricScopedEventResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRTestClusterClusterTestEnumsRequestParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull arg1;
+@property (nonatomic, copy) NSNumber * _Nonnull arg2;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestEnumsResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull arg1;
+@property (nonatomic, copy) NSNumber * _Nonnull arg2;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRTestClusterClusterTestEventEvent ()
+@property (nonatomic, copy) NSNumber * _Nonnull arg1;
+@property (nonatomic, copy) NSNumber * _Nonnull arg2;
+@property (nonatomic, copy) NSNumber * _Nonnull arg3;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nonnull arg4;
+@property (nonatomic, copy) NSArray * _Nonnull arg5;
+@property (nonatomic, copy) NSArray * _Nonnull arg6;
+@end
+@interface MTRTestClusterClusterTestFabricScopedEventEvent ()
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@end
+@interface MTRTestClusterClusterTestListInt8UArgumentRequestParams ()
+@property (nonatomic, copy) NSArray * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestListInt8UReverseRequestParams ()
+@property (nonatomic, copy) NSArray * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestListInt8UReverseResponseParams ()
+@property (nonatomic, copy) NSArray * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRTestClusterClusterTestListNestedStructListArgumentRequestParams ()
+@property (nonatomic, copy) NSArray * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestListStructArgumentRequestParams ()
+@property (nonatomic, copy) NSArray * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestNestedStructArgumentRequestParams ()
+@property (nonatomic, copy) MTRUnitTestingClusterNestedStruct * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestNestedStructListArgumentRequestParams ()
+@property (nonatomic, copy) MTRUnitTestingClusterNestedStructList * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestNotHandledParams ()
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestNullableOptionalRequestParams ()
+@property (nonatomic, copy) NSNumber * _Nullable arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestNullableOptionalResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull wasPresent;
+@property (nonatomic, copy) NSNumber * _Nullable wasNull;
+@property (nonatomic, copy) NSNumber * _Nullable value;
+@property (nonatomic, copy) NSNumber * _Nullable originalValue;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRTestClusterClusterTestParams ()
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestSimpleArgumentRequestParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestSimpleArgumentResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull returnValue;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRTestClusterClusterTestSimpleOptionalArgumentRequestParams ()
+@property (nonatomic, copy) NSNumber * _Nullable arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestSpecificParams ()
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestSpecificResponseParams ()
+@property (nonatomic, copy) NSNumber * _Nonnull returnValue;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRTestClusterClusterTestStructArgumentRequestParams ()
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestStructArrayArgumentRequestParams ()
+@property (nonatomic, copy) NSArray * _Nonnull arg1;
+@property (nonatomic, copy) NSArray * _Nonnull arg2;
+@property (nonatomic, copy) NSArray * _Nonnull arg3;
+@property (nonatomic, copy) NSArray * _Nonnull arg4;
+@property (nonatomic, copy) NSNumber * _Nonnull arg5;
+@property (nonatomic, copy) NSNumber * _Nonnull arg6;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTestStructArrayArgumentResponseParams ()
+@property (nonatomic, copy) NSArray * _Nonnull arg1;
+@property (nonatomic, copy) NSArray * _Nonnull arg2;
+@property (nonatomic, copy) NSArray * _Nonnull arg3;
+@property (nonatomic, copy) NSArray * _Nonnull arg4;
+@property (nonatomic, copy) NSNumber * _Nonnull arg5;
+@property (nonatomic, copy) NSNumber * _Nonnull arg6;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@end
+@interface MTRTestClusterClusterTestUnknownCommandParams ()
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTestClusterClusterTimedInvokeRequestParams ()
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThermostatClusterActivePresetChangeEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nullable previousPresetHandle;
+@property (nonatomic, copy) NSData * _Nullable currentPresetHandle;
+@end
+@interface MTRThermostatClusterActiveScheduleChangeEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nullable previousScheduleHandle;
+@property (nonatomic, copy) NSData * _Nullable currentScheduleHandle;
+@end
+@interface MTRThermostatClusterAddThermostatSuggestionParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull presetHandle;
+@property (nonatomic, copy) NSNumber * _Nullable effectiveTime;
+@property (nonatomic, copy) NSNumber * _Nonnull expirationInMinutes;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThermostatClusterAddThermostatSuggestionResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull uniqueID;
+@end
+@interface MTRThermostatClusterAtomicRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull requestType;
+@property (nonatomic, copy) NSArray * _Nonnull attributeRequests;
+@property (nonatomic, copy) NSNumber * _Nullable timeout;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThermostatClusterAtomicResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull statusCode;
+@property (nonatomic, copy) NSArray * _Nonnull attributeStatus;
+@property (nonatomic, copy) NSNumber * _Nullable timeout;
+@end
+@interface MTRThermostatClusterLocalTemperatureChangeEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable currentLocalTemperature;
+@end
+@interface MTRThermostatClusterOccupancyChangeEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable previousOccupancy;
+@property (nonatomic, copy) NSNumber * _Nonnull currentOccupancy;
+@end
+@interface MTRThermostatClusterPresetStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nullable presetHandle;
+@property (nonatomic, copy) NSNumber * _Nonnull presetScenario;
+@property (nonatomic, copy) NSString * _Nullable name;
+@property (nonatomic, copy) NSNumber * _Nullable coolingSetpoint;
+@property (nonatomic, copy) NSNumber * _Nullable heatingSetpoint;
+@property (nonatomic, copy) NSNumber * _Nullable builtIn;
+@end
+@interface MTRThermostatClusterPresetTypeStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull presetScenario;
+@property (nonatomic, copy) NSNumber * _Nonnull numberOfPresets;
+@property (nonatomic, copy) NSNumber * _Nonnull presetTypeFeatures;
+@end
+@interface MTRThermostatClusterRemoveThermostatSuggestionParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull uniqueID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThermostatClusterRunningModeChangeEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable previousRunningMode;
+@property (nonatomic, copy) NSNumber * _Nonnull currentRunningMode;
+@end
+@interface MTRThermostatClusterRunningStateChangeEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable previousRunningState;
+@property (nonatomic, copy) NSNumber * _Nonnull currentRunningState;
+@end
+@interface MTRThermostatClusterScheduleStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nullable scheduleHandle;
+@property (nonatomic, copy) NSNumber * _Nonnull systemMode;
+@property (nonatomic, copy) NSString * _Nullable name;
+@property (nonatomic, copy) NSData * _Nullable presetHandle;
+@property (nonatomic, copy) NSArray * _Nonnull transitions;
+@property (nonatomic, copy) NSNumber * _Nullable builtIn;
+@end
+@interface MTRThermostatClusterScheduleTransitionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull dayOfWeek;
+@property (nonatomic, copy) NSNumber * _Nonnull transitionTime;
+@property (nonatomic, copy) NSData * _Nullable presetHandle;
+@property (nonatomic, copy) NSNumber * _Nullable systemMode;
+@property (nonatomic, copy) NSNumber * _Nullable coolingSetpoint;
+@property (nonatomic, copy) NSNumber * _Nullable heatingSetpoint;
+@end
+@interface MTRThermostatClusterScheduleTypeStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull systemMode;
+@property (nonatomic, copy) NSNumber * _Nonnull numberOfSchedules;
+@property (nonatomic, copy) NSNumber * _Nonnull scheduleTypeFeatures;
+@end
+@interface MTRThermostatClusterSetActivePresetRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nullable presetHandle;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThermostatClusterSetActiveScheduleRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull scheduleHandle;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThermostatClusterSetpointChangeEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull systemMode;
+@property (nonatomic, copy) NSNumber * _Nullable occupancy;
+@property (nonatomic, copy) NSNumber * _Nullable previousSetpoint;
+@property (nonatomic, copy) NSNumber * _Nonnull currentSetpoint;
+@end
+@interface MTRThermostatClusterSystemModeChangeEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable previousSystemMode;
+@property (nonatomic, copy) NSNumber * _Nonnull currentSystemMode;
+@end
+@interface MTRThermostatClusterThermostatSuggestionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull uniqueID;
+@property (nonatomic, copy) NSData * _Nonnull presetHandle;
+@property (nonatomic, copy) NSNumber * _Nonnull effectiveTime;
+@property (nonatomic, copy) NSNumber * _Nonnull expirationTime;
+@end
+@interface MTRThermostatClusterWeeklyScheduleTransitionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull transitionTime;
+@property (nonatomic, copy) NSNumber * _Nullable heatSetpoint;
+@property (nonatomic, copy) NSNumber * _Nullable coolSetpoint;
+@end
+@interface MTRThreadBorderRouterManagementClusterDatasetResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull dataset;
+@end
+@interface MTRThreadBorderRouterManagementClusterGetActiveDatasetRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThreadBorderRouterManagementClusterGetPendingDatasetRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThreadBorderRouterManagementClusterSetActiveDatasetRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull activeDataset;
+@property (nonatomic, copy) NSNumber * _Nullable breadcrumb;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThreadBorderRouterManagementClusterSetPendingDatasetRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull pendingDataset;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThreadNetworkDiagnosticsClusterNeighborTableStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull extAddress;
+@property (nonatomic, copy) NSNumber * _Nonnull age;
+@property (nonatomic, copy) NSNumber * _Nonnull rloc16;
+@property (nonatomic, copy) NSNumber * _Nonnull linkFrameCounter;
+@property (nonatomic, copy) NSNumber * _Nonnull mleFrameCounter;
+@property (nonatomic, copy) NSNumber * _Nonnull lqi;
+@property (nonatomic, copy) NSNumber * _Nullable averageRssi;
+@property (nonatomic, copy) NSNumber * _Nullable lastRssi;
+@property (nonatomic, copy) NSNumber * _Nonnull frameErrorRate;
+@property (nonatomic, copy) NSNumber * _Nonnull messageErrorRate;
+@property (nonatomic, copy) NSNumber * _Nonnull rxOnWhenIdle;
+@property (nonatomic, copy) NSNumber * _Nonnull fullThreadDevice;
+@property (nonatomic, copy) NSNumber * _Nonnull fullNetworkData;
+@property (nonatomic, copy) NSNumber * _Nonnull isChild;
+@end
+@interface MTRThreadNetworkDiagnosticsClusterRouteTableStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull extAddress;
+@property (nonatomic, copy) NSNumber * _Nonnull rloc16;
+@property (nonatomic, copy) NSNumber * _Nonnull routerId;
+@property (nonatomic, copy) NSNumber * _Nonnull nextHop;
+@property (nonatomic, copy) NSNumber * _Nonnull pathCost;
+@property (nonatomic, copy) NSNumber * _Nonnull lqiIn;
+@property (nonatomic, copy) NSNumber * _Nonnull lqiOut;
+@property (nonatomic, copy) NSNumber * _Nonnull age;
+@property (nonatomic, copy) NSNumber * _Nonnull allocated;
+@property (nonatomic, copy) NSNumber * _Nonnull linkEstablished;
+@end
+@interface MTRThreadNetworkDirectoryClusterAddNetworkParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull operationalDataset;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThreadNetworkDirectoryClusterGetOperationalDatasetParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull extendedPanID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThreadNetworkDirectoryClusterOperationalDatasetResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull operationalDataset;
+@end
+@interface MTRThreadNetworkDirectoryClusterRemoveNetworkParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull extendedPanID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRThreadNetworkDirectoryClusterThreadNetworkStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull extendedPanID;
+@property (nonatomic, copy) NSString * _Nonnull networkName;
+@property (nonatomic, copy) NSNumber * _Nonnull channel;
+@property (nonatomic, copy) NSNumber * _Nonnull activeTimestamp;
+@end
+@interface MTRTimeSynchronizationClusterDSTOffsetStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull offset;
+@property (nonatomic, copy) NSNumber * _Nonnull validStarting;
+@property (nonatomic, copy) NSNumber * _Nullable validUntil;
+@end
+@interface MTRTimeSynchronizationClusterDSTStatusEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull dstOffsetActive;
+@end
+@interface MTRTimeSynchronizationClusterDSTTableEmptyEvent : NSObject <NSCopying>
+@end
+@interface MTRTimeSynchronizationClusterFabricScopedTrustedTimeSourceStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull endpoint;
+@end
+@interface MTRTimeSynchronizationClusterMissingTrustedTimeSourceEvent : NSObject <NSCopying>
+@end
+@interface MTRTimeSynchronizationClusterSetDSTOffsetParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull dstOffset;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTimeSynchronizationClusterSetDefaultNTPParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nullable defaultNTP;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTimeSynchronizationClusterSetTimeZoneParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSArray * _Nonnull timeZone;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTimeSynchronizationClusterSetTimeZoneResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull dstOffsetRequired;
+@end
+@interface MTRTimeSynchronizationClusterSetTrustedTimeSourceParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRTimeSynchronizationClusterFabricScopedTrustedTimeSourceStruct * _Nullable trustedTimeSource;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTimeSynchronizationClusterSetUTCTimeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull utcTime;
+@property (nonatomic, copy) NSNumber * _Nonnull granularity;
+@property (nonatomic, copy) NSNumber * _Nullable timeSource;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTimeSynchronizationClusterTimeFailureEvent : NSObject <NSCopying>
+@end
+@interface MTRTimeSynchronizationClusterTimeZoneStatusEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull offset;
+@property (nonatomic, copy) NSString * _Nullable name;
+@end
+@interface MTRTimeSynchronizationClusterTimeZoneStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull offset;
+@property (nonatomic, copy) NSNumber * _Nonnull validAt;
+@property (nonatomic, copy) NSString * _Nullable name;
+@end
+@interface MTRTimeSynchronizationClusterTrustedTimeSourceStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull fabricIndex;
+@property (nonatomic, copy) NSNumber * _Nonnull nodeID;
+@property (nonatomic, copy) NSNumber * _Nonnull endpoint;
+@end
+@interface MTRTimerClusterAddTimeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull additionalTime;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTimerClusterReduceTimeParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull timeReduction;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTimerClusterResetTimerParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRTimerClusterSetTimerParams : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getNewTime) NSNumber * _Nonnull newTime;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRUnitTestingClusterGlobalEchoRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRDataTypeTestGlobalStruct * _Nonnull field1;
+@property (nonatomic, copy) NSNumber * _Nonnull field2;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRUnitTestingClusterGlobalEchoResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRDataTypeTestGlobalStruct * _Nonnull field1;
+@property (nonatomic, copy) NSNumber * _Nonnull field2;
+@end
+@interface MTRUnitTestingClusterStringEchoRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull payload;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRUnitTestingClusterStringEchoResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull payload;
+@end
+@interface MTRUnitTestingClusterTestBatchHelperRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull sleepBeforeResponseTimeMs;
+@property (nonatomic, copy) NSNumber * _Nonnull sizeOfResponseBuffer;
+@property (nonatomic, copy) NSNumber * _Nonnull fillCharacter;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRUnitTestingClusterTestBatchHelperResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull buffer;
+@end
+@interface MTRUnitTestingClusterTestCheckCommandFlagsParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRUnitTestingClusterTestDifferentVendorMeiEventEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull arg1;
+@end
+@interface MTRUnitTestingClusterTestDifferentVendorMeiRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull arg1;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRUnitTestingClusterTestDifferentVendorMeiResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull arg1;
+@property (nonatomic, copy) NSNumber * _Nonnull eventNumber;
+@end
+@interface MTRUnitTestingClusterTestSecondBatchHelperRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull sleepBeforeResponseTimeMs;
+@property (nonatomic, copy) NSNumber * _Nonnull sizeOfResponseBuffer;
+@property (nonatomic, copy) NSNumber * _Nonnull fillCharacter;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRValveConfigurationAndControlClusterCloseParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRValveConfigurationAndControlClusterOpenParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable openDuration;
+@property (nonatomic, copy) NSNumber * _Nullable targetLevel;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRValveConfigurationAndControlClusterValveFaultEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull valveFault;
+@end
+@interface MTRValveConfigurationAndControlClusterValveStateChangedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull valveState;
+@property (nonatomic, copy) NSNumber * _Nullable valveLevel;
+@end
+@interface MTRWaterHeaterManagementClusterBoostEndedEvent : NSObject <NSCopying>
+@end
+@interface MTRWaterHeaterManagementClusterWaterHeaterBoostInfoStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull duration;
+@property (nonatomic, copy) NSNumber * _Nullable oneShot;
+@property (nonatomic, copy) NSNumber * _Nullable emergencyBoost;
+@property (nonatomic, copy) NSNumber * _Nullable temporarySetpoint;
+@property (nonatomic, copy) NSNumber * _Nullable targetPercentage;
+@property (nonatomic, copy) NSNumber * _Nullable targetReheat;
+@end
+@interface MTRWaterHeaterManagementClusterBoostParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRWaterHeaterManagementClusterWaterHeaterBoostInfoStruct * _Nonnull boostInfo;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWaterHeaterManagementClusterBoostStartedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) MTRWaterHeaterManagementClusterWaterHeaterBoostInfoStruct * _Nonnull boostInfo;
+@end
+@interface MTRWaterHeaterManagementClusterCancelBoostParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWaterHeaterModeClusterChangeToModeParams : NSObject <NSCopying>
+@property (nonatomic, copy, getter=getNewMode) NSNumber * _Nonnull newMode;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWaterHeaterModeClusterChangeToModeResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull status;
+@property (nonatomic, copy) NSString * _Nullable statusText;
+@end
+@interface MTRWaterHeaterModeClusterModeOptionStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull label;
+@property (nonatomic, copy) NSNumber * _Nonnull mode;
+@property (nonatomic, copy) NSArray * _Nonnull modeTags;
+@end
+@interface MTRWaterHeaterModeClusterModeTagStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable mfgCode;
+@property (nonatomic, copy) NSNumber * _Nonnull value;
+@end
+@interface MTRWebRTCTransportProviderClusterEndSessionParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull webRTCSessionID;
+@property (nonatomic, copy) NSNumber * _Nonnull reason;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWebRTCTransportProviderClusterProvideAnswerParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull webRTCSessionID;
+@property (nonatomic, copy) NSString * _Nonnull sdp;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWebRTCTransportProviderClusterProvideICECandidatesParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull webRTCSessionID;
+@property (nonatomic, copy) NSArray * _Nonnull iceCandidates;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWebRTCTransportProviderClusterSFrameStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull cipherSuite;
+@property (nonatomic, copy) NSData * _Nonnull baseKey;
+@property (nonatomic, copy) NSData * _Nonnull kid;
+@end
+@interface MTRWebRTCTransportProviderClusterProvideOfferParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nullable webRTCSessionID;
+@property (nonatomic, copy) NSString * _Nonnull sdp;
+@property (nonatomic, copy) NSNumber * _Nonnull streamUsage;
+@property (nonatomic, copy) NSNumber * _Nonnull originatingEndpointID;
+@property (nonatomic, copy) NSNumber * _Nullable videoStreamID;
+@property (nonatomic, copy) NSNumber * _Nullable audioStreamID;
+@property (nonatomic, copy) NSArray * _Nullable iceServers;
+@property (nonatomic, copy) NSString * _Nullable iceTransportPolicy;
+@property (nonatomic, copy) NSNumber * _Nullable metadataEnabled;
+@property (nonatomic, copy) MTRWebRTCTransportProviderClusterSFrameStruct * _Nullable sFrameConfig;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWebRTCTransportProviderClusterProvideOfferResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull webRTCSessionID;
+@property (nonatomic, copy) NSNumber * _Nullable videoStreamID;
+@property (nonatomic, copy) NSNumber * _Nullable audioStreamID;
+@end
+@interface MTRWebRTCTransportProviderClusterSolicitOfferParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull streamUsage;
+@property (nonatomic, copy) NSNumber * _Nonnull originatingEndpointID;
+@property (nonatomic, copy) NSNumber * _Nullable videoStreamID;
+@property (nonatomic, copy) NSNumber * _Nullable audioStreamID;
+@property (nonatomic, copy) NSArray * _Nullable iceServers;
+@property (nonatomic, copy) NSString * _Nullable iceTransportPolicy;
+@property (nonatomic, copy) NSNumber * _Nullable metadataEnabled;
+@property (nonatomic, copy) MTRWebRTCTransportProviderClusterSFrameStruct * _Nullable sFrameConfig;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWebRTCTransportProviderClusterSolicitOfferResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull webRTCSessionID;
+@property (nonatomic, copy) NSNumber * _Nonnull deferredOffer;
+@property (nonatomic, copy) NSNumber * _Nullable videoStreamID;
+@property (nonatomic, copy) NSNumber * _Nullable audioStreamID;
+@end
+@interface MTRWebRTCTransportRequestorClusterAnswerParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull webRTCSessionID;
+@property (nonatomic, copy) NSString * _Nonnull sdp;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWebRTCTransportRequestorClusterEndParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull webRTCSessionID;
+@property (nonatomic, copy) NSNumber * _Nonnull reason;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWebRTCTransportRequestorClusterICECandidatesParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull webRTCSessionID;
+@property (nonatomic, copy) NSArray * _Nonnull iceCandidates;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWebRTCTransportRequestorClusterOfferParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull webRTCSessionID;
+@property (nonatomic, copy) NSString * _Nonnull sdp;
+@property (nonatomic, copy) NSArray * _Nullable iceServers;
+@property (nonatomic, copy) NSString * _Nullable iceTransportPolicy;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent ()
+@property (nonatomic, copy) NSNumber * _Nonnull associationFailureCause;
+@end
+@interface MTRWiFiNetworkManagementClusterNetworkPassphraseRequestParams : NSObject <NSCopying>
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRWiFiNetworkManagementClusterNetworkPassphraseResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSData * _Nonnull passphrase;
+@end
+@interface MTRZoneManagementClusterZoneTriggerControlStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull zoneID;
+@property (nonatomic, copy) NSNumber * _Nonnull initialDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull augmentationDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull maxDuration;
+@property (nonatomic, copy) NSNumber * _Nonnull blindDuration;
+@property (nonatomic, copy) NSNumber * _Nullable sensitivity;
+@end
+@interface MTRZoneManagementClusterCreateOrUpdateTriggerParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRZoneManagementClusterZoneTriggerControlStruct * _Nonnull trigger;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRZoneManagementClusterTwoDCartesianZoneStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSString * _Nonnull name;
+@property (nonatomic, copy) NSNumber * _Nonnull use;
+@property (nonatomic, copy) NSArray * _Nonnull vertices;
+@property (nonatomic, copy) NSString * _Nullable color;
+@end
+@interface MTRZoneManagementClusterCreateTwoDCartesianZoneParams : NSObject <NSCopying>
+@property (nonatomic, copy) MTRZoneManagementClusterTwoDCartesianZoneStruct * _Nonnull zone;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRZoneManagementClusterCreateTwoDCartesianZoneResponseParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull zoneID;
+@end
+@interface MTRZoneManagementClusterRemoveTriggerParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull zoneID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRZoneManagementClusterRemoveZoneParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull zoneID;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRZoneManagementClusterTwoDCartesianVertexStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull x;
+@property (nonatomic, copy) NSNumber * _Nonnull y;
+@end
+@interface MTRZoneManagementClusterUpdateTwoDCartesianZoneParams : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull zoneID;
+@property (nonatomic, copy) MTRZoneManagementClusterTwoDCartesianZoneStruct * _Nonnull zone;
+@property (nonatomic, copy, nullable) NSNumber * timedInvokeTimeoutMs;
+@property (nonatomic, copy, nullable) NSNumber * serverSideProcessingTimeout;
+@end
+@interface MTRZoneManagementClusterZoneInformationStruct : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull zoneID;
+@property (nonatomic, copy) NSNumber * _Nonnull zoneType;
+@property (nonatomic, copy) NSNumber * _Nonnull zoneSource;
+@property (nonatomic, copy) MTRZoneManagementClusterTwoDCartesianZoneStruct * _Nullable twoDCartesianZone;
+@end
+@interface MTRZoneManagementClusterZoneStoppedEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull zone;
+@property (nonatomic, copy) NSNumber * _Nonnull reason;
+@end
+@interface MTRZoneManagementClusterZoneTriggeredEvent : NSObject <NSCopying>
+@property (nonatomic, copy) NSNumber * _Nonnull zone;
+@property (nonatomic, copy) NSNumber * _Nonnull reason;
+@end
 @interface MTRBaseClusterActivatedCarbonFilterMonitoring : MTRGenericBaseCluster
 @property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
 @property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
