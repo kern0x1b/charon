@@ -66,12 +66,18 @@ static struct charon_alias *charon_aliases(size_t *count)
     return found;
 }
 
-// A category written on a name charon_alias.h aliases belongs to the release's class.
+// A category written on a name charon_alias.h aliases belongs to the release's class, where the
+// release has one. Where it has none, the proxy IS the class that name stands for -- the alias's own
+// class methods answer as the proxy's own there, and the members ld64 merged into the proxy are
+// already on it -- so the category is given the proxy and reaches the methods it adds. Answering nil
+// instead dropped the whole category on a release that has no such class.
 static Class charon_release_class(Class cls, const struct charon_alias *aliases, size_t count)
 {
     for (size_t index = 0; index < count; index++) {
-        if (aliases[index].proxy == (const void *)cls)
-            return objc_getClass(aliases[index].name);
+        if (aliases[index].proxy == (const void *)cls) {
+            Class release = objc_getClass(aliases[index].name);
+            return release ? release : cls;
+        }
     }
     return cls;
 }

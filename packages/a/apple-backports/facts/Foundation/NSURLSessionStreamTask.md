@@ -4,6 +4,66 @@
 factories they are built on, and three of the four `NSURLSessionStreamDelegate` callbacks -- the fourth
 is declared and never sent, and the section below says why and what was measured about it.
 
+## The class of that name, which iOS 8.0-8.4.1 carry and no release exports before 9.0
+
+The class this port carries is an ALIAS of a class of Charon's own, and the reason is measured, not
+guessed. Every held armv7 rung, read with `objc.inventory` for the class list and `dyld.load` for the
+export trie (`.agent-work/measure/stream-export.lua` in the worktree that wrote this, run against
+`$HOME/.charon/dyld`):
+
+| release | `NSURLSessionStreamTask` in `__objc_classlist` | image | `_OBJC_CLASS_$_NSURLSessionStreamTask` exported |
+| --- | --- | --- | --- |
+| 6.0, 6.0.2, 6.1, 6.1.3, 6.1.4, 6.1.6 | no | - | no |
+| 7.0, 7.0.1, 7.0.6, 7.1, 7.1.1, 7.1.2 | no | - | no |
+| 8.0, 8.0.2, 8.1, 8.1.1, 8.1.2, 8.1.3, 8.2, 8.3, 8.4, 8.4.1 | **yes** | CFNetwork | **no** |
+| 9.0 and later (held: 9.0 ... 18.0) | yes | CFNetwork | yes, with its metaclass |
+
+So the two answers differ on exactly the ten 8.x rungs, and that is the whole of the case:
+
+* **Nothing to ask the release for.** `objc.code_map` over the same caches says what that class is on
+  8.0 and on 8.4.1: `superclass NSURLSessionTask`, **0 own instance variables, 0 own methods**, no
+  protocols, and no category anywhere in either release adding one. Nothing in either release carries
+  `-readDataOfMinLength:maxLength:timeout:completionHandler:`, `-captureStreams` or
+  `-streamTaskWithHostName:port:` either -- those names first appear in 9.0, and there they are on
+  `__NSCFURLLocalStreamTask`, a private subclass, while the class of the SDK's name stays the empty
+  shell. A class the release carries and cannot answer for is nothing to ask, so the first of the two
+  routes is measured to be unavailable on every release, and a class implementation in
+  `Foundation/NSURLSessionStreamTask9.m` would put a second class of that name into every process on
+  every band from 8.0 on.
+* **So the name is an alias** (`charon_alias.h`), which is what this tree already does for a name a
+  release carries and does not export: CarPlay's `CPListItem` (`CarPlay/CPListItem.m`), UIKit's
+  `NSTextList` and `NSTextTab`. What is new here is that the release carries the class in *some* of
+  the releases a band is built for and in none of the others, which the three existing aliases never
+  had to answer for -- measured above, they are carried on 6.1.3, 7.1.2, 8.0, 8.4.1 and 9.0 alike.
+
+What the library's loader (`attach.c`) then does, per release, is what `charon_alias.h` says and this
+page measured on the bands:
+
+| band | what the proxy is | what an application gets |
+| --- | --- | --- |
+| 9.0 and later | the band drops the object and re-exports the release's own class and metaclass (`band()`), so the port's members are not in the process at all | the release's own task, which is `__NSCFURLLocalStreamTask`'s public face |
+| 8.0 - 8.4.1 | `charon_reparent` makes `CharonNSURLSessionStreamTask` a subclass of CFNetwork's class (no instance variable of its own, so the two instance sizes are equal and the re-parent is kept) and `charon_adopt_methods` gives that class all ten methods the proxy carries | an instance of **CFNetwork's own class**, which answers the seven methods, `-captureStreams`, the factories' construction method and the delegate sends |
+| 6.0 - 7.1.2 | there is no class of that name, so the loader has nothing to re-parent onto and nothing to adopt into: the proxy **is** the class | an instance of `CharonNSURLSessionStreamTask`, which answers the same seven methods over the same `NSStream` pair |
+
+Two things about the 6.x/7.x row are worth writing down rather than leaving to be found:
+
+* **`NSClassFromString(@"NSURLSessionStreamTask")` answers nil there.** The class is a class of
+  Charon's own, and the release's own name belongs to no class on such a release -- giving it that
+  name would mean a second class of it, which is the collision this shape exists to avoid. Everything
+  reached through the name a port links (`[NSURLSessionStreamTask class]`, `+alloc`, the factory in
+  `NSURLSession+StreamTask9.m`) answers as the proxy, and `-isKindOfClass:` through the linked
+  reference is true; a lookup by string is the one thing that no longer finds it.
+* **`-init` is the release's own there**, not the port's: the loader does not add a method the
+  release's class already answers somewhere in its chain, and `NSObject` answers `-init`. That is
+  why the task's state is made when it is first asked for (`-charon_state`) and not in `-init`.
+
+The seven methods are not a CATEGORY on the release's name here, and that is a measured choice too:
+a category on `NSURLSessionStreamTask` implements the methods the SDK's own interface declares there,
+and clang's `-Wobjc-protocol-method-implementation` says so once per method, which the wave's rules
+have no pragma to silence. `CarPlay/CPListItem.m` and `UIKit/NSTextTab.m` each carry that pragma for
+the same warning; this file writes the members as a category on Charon's own name instead, which
+ld64 merges into the proxy, and the proxy's method list is what the loader adopts.
+
 ## The connection is the release's own, not ours
 
 `+[NSStream getStreamsToHostWithName:port:inputStream:outputStream:]` is
@@ -39,10 +99,12 @@ on the session's delegate queue where the session has one.
 `-init` is carried and `+new` is not. The header **deprecates** both with "please use
 `-streamTaskWithHostName:port:` or other NSURLSession methods to create instances", and a deprecation
 is a warning rather than a refusal: the port answers `-init`, which is what the release's own
-`-[NSURLSessionTask init]` does, and `NSURLSessionStreamTask9.m` calls it from its own factory. The
-registry says the same thing — `-[NSURLSessionStreamTask init]` is `implemented` with that reason, and
-`+[NSURLSessionStreamTask new]` is `absent` because the port does not define a `+new` that bypasses
-the factory. What an application should do is what the header says: ask the session for the task.
+`-[NSURLSessionTask init]` does, and its own factory calls `-initWithSession:hostName:port:`, which
+goes through it. The registry says the same thing — `-[NSURLSessionStreamTask init]` is `implemented`
+with that reason, and `+[NSURLSessionStreamTask new]` is `absent` because the port does not define a
+`+new` that bypasses the factory. What an application should do is what the header says: ask the
+session for the task. On the 8.x bands `-init` is the release's own rather than the port's, which is
+why nothing in this file depends on it: the state is made on first use (see the section above).
 
 `-stopSecureConnection` is carried and does nothing to a connection that has TLS, because TLS cannot be
 taken off a connection once it is on -- which is the header's own reason for deprecating it.
@@ -157,13 +219,26 @@ Run over the object this file's own changes produced, compiled with the tree's c
 
 ```
 xmake l tools/release-split.lua <objects> <out> <iPhoneOS16.4.sdk>
-release-split: clean, every object file's symbols first-appear in one release (1 files, 2 symbols, 50 releases checked)
+release-split: clean, every object file's symbols first-appear in one release (1 files, 2 symbols, 53 releases checked)
 NSURLSessionStreamTask9.o	_OBJC_CLASS_$_NSURLSessionStreamTask	9.0
 NSURLSessionStreamTask9.o	_OBJC_METACLASS_$_NSURLSessionStreamTask	9.0
 ```
 
-One `.m` for release 9, and the API it defines is exactly that release's class. What the tool cannot
-see, and what a reader has to check by hand here, is the methods: an Objective-C method implementation
-is not an exported symbol, so the four callbacks, the seven task methods and the two factories are all
-invisible to it, and this file is the record that they are one release's API together.
+The object's four defined Objective-C symbols are the release's name and the class of Charon's own at
+one address each, which is what an alias is:
+
+```
+nm -gU NSURLSessionStreamTask9.m.o | grep OBJC_CLASS
+000035b4 S _OBJC_CLASS_$_CharonNSURLSessionStreamTask
+000035b4 S _OBJC_CLASS_$_NSURLSessionStreamTask
+000035a0 S _OBJC_METACLASS_$_CharonNSURLSessionStreamTask
+000035a0 S _OBJC_METACLASS_$_NSURLSessionStreamTask
+```
+
+`release-split` and the band machinery read the two symbols under the release's name (the ones under
+Charon's are filtered out as internal, `internal_symbol()`), so what the object carries is 9.0's API
+and nothing else, and one `.m` for release 9 it is. What the tool cannot see, and what a reader has to
+check by hand here, is the methods: an Objective-C method implementation is not an exported symbol, so
+the four callbacks, the seven task methods and the two factories are all invisible to it, and this
+file is the record that they are one release's API together.
 

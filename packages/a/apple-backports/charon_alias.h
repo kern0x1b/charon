@@ -13,6 +13,20 @@
 // into CharonName, and attach.c gives the release's class what CharonName has and the
 // release's class lacks; a category on Name in another image is attached to the
 // release's class by name.
+//
+// The release may carry that class in SOME of the releases a band is built for and in none
+// of the others -- NSURLSessionStreamTask is such a name: CFNetwork carries it from 8.0 on,
+// carrying no method of its own, and nothing below 8.0 carries it at all. Where the release
+// has no class of the name, the loader has nothing to re-parent the proxy onto and nothing
+// to adopt its members into, so the proxy IS the class and every class method below answers
+// as CharonName itself: what it makes is an instance of self, what it answers about members
+// is what its own chain answers, and what its superclass is is the superclass it was declared
+// with. CHARON_ALIAS_OF(Name, Super) declares it; CHARON_ALIAS(Name) is that with NSObject,
+// which is right for a name whose release class is NSObject's own descendant. One thing does
+// not answer there and is written down in facts/: an application that asks the runtime for the
+// name with NSClassFromString gets nil, where the port's own class used to answer, because the
+// class it would have to replace is a class of Charon's own and the release's own name belongs
+// to no class on such a release.
 struct charon_alias {
     const void *proxy;
     const char *name;
@@ -22,12 +36,39 @@ struct charon_alias {
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 
-#define CHARON_ALIAS_ANSWER(Name, own, released) ((__bridge const void *)self == (const void *)&charon_alias_class_##Name ? (released) : (own))
+// The released answer is the release's own, and only where the release has the class: the test is
+// the class itself, so a release that carries none of the name takes the own answer instead of
+// messaging nil.
+#define CHARON_ALIAS_ANSWER(Name, own, released) \
+    ((__bridge const void *)self == (const void *)&charon_alias_class_##Name && objc_getClass(#Name) ? (released) : (own))
 
-#define CHARON_ALIAS(Name)                                                                                         \
+// What a class answers about a member, walking its own chain: the question is about the class,
+// and [super ...] answers it about the class above it, which is not the class asked about.
+static BOOL charon_alias_answers(Class cls, SEL selector, BOOL class_methods)
+{
+    for (Class current = cls; current; current = class_getSuperclass(current)) {
+        if ((class_methods ? class_getClassMethod(current, selector) : class_getInstanceMethod(current, selector))) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+static Method charon_alias_method(Class cls, SEL selector, BOOL class_methods)
+{
+    for (Class current = cls; current; current = class_getSuperclass(current)) {
+        Method found = class_methods ? class_getClassMethod(current, selector) : class_getInstanceMethod(current, selector);
+        if (found) {
+            return found;
+        }
+    }
+    return NULL;
+}
+
+#define CHARON_ALIAS_OF(Name, Super)                                                                               \
     extern char charon_alias_class_##Name __asm__("_OBJC_CLASS_$_Charon" #Name);                                   \
                                                                                                                    \
-    @interface Charon##Name : NSObject                                                                             \
+    @interface Charon##Name : Super                                                                                \
     @end                                                                                                           \
                                                                                                                    \
     @implementation Charon##Name                                                                                   \
@@ -39,41 +80,50 @@ struct charon_alias {
                                                                                                                    \
     + (id)alloc                                                                                                    \
     {                                                                                                              \
-        return CHARON_ALIAS_ANSWER(Name, [super alloc], [objc_getClass(#Name) alloc]);                             \
+        return CHARON_ALIAS_ANSWER(Name, class_createInstance(self, 0), [objc_getClass(#Name) alloc]);             \
     }                                                                                                              \
                                                                                                                    \
     + (id)allocWithZone:(NSZone *)zone                                                                             \
     {                                                                                                              \
-        return CHARON_ALIAS_ANSWER(Name, [super allocWithZone:zone], [objc_getClass(#Name) allocWithZone:zone]);   \
+        return CHARON_ALIAS_ANSWER(Name, class_createInstance(self, 0), [objc_getClass(#Name) allocWithZone:zone]); \
     }                                                                                                              \
                                                                                                                    \
     + (Class)superclass                                                                                            \
     {                                                                                                              \
-        Class found = CHARON_ALIAS_ANSWER(Name, [super superclass], [objc_getClass(#Name) superclass]);            \
+        Class found = CHARON_ALIAS_ANSWER(Name, class_getSuperclass(self), [objc_getClass(#Name) superclass]);     \
         return (__bridge const void *)found == (const void *)&charon_alias_class_##Name ? objc_getClass(#Name) : found; \
     }                                                                                                              \
                                                                                                                    \
     + (BOOL)isSubclassOfClass:(Class)aClass                                                                        \
     {                                                                                                              \
-        return CHARON_ALIAS_ANSWER(Name, [super isSubclassOfClass:aClass], [objc_getClass(#Name) isSubclassOfClass:aClass]); \
+        if ((__bridge const void *)self == (const void *)&charon_alias_class_##Name && objc_getClass(#Name)) {      \
+            return [objc_getClass(#Name) isSubclassOfClass:aClass];                                                 \
+        }                                                                                                          \
+        for (Class current = self; current; current = class_getSuperclass(current)) {                             \
+            if (current == aClass) {                                                                               \
+                return YES;                                                                                        \
+            }                                                                                                      \
+        }                                                                                                          \
+        return NO;                                                                                                 \
     }                                                                                                              \
                                                                                                                    \
     + (BOOL)instancesRespondToSelector:(SEL)selector                                                               \
     {                                                                                                              \
-        return CHARON_ALIAS_ANSWER(Name, [super instancesRespondToSelector:selector],                              \
+        return CHARON_ALIAS_ANSWER(Name, charon_alias_answers(self, selector, false),                              \
                                    [objc_getClass(#Name) instancesRespondToSelector:selector]);                    \
     }                                                                                                              \
                                                                                                                    \
     + (IMP)instanceMethodForSelector:(SEL)selector                                                                 \
     {                                                                                                              \
-        return CHARON_ALIAS_ANSWER(Name, [super instanceMethodForSelector:selector],                               \
+        return CHARON_ALIAS_ANSWER(Name, method_getImplementation(charon_alias_method(self, selector, false)),      \
                                    [objc_getClass(#Name) instanceMethodForSelector:selector]);                     \
     }                                                                                                              \
                                                                                                                    \
     + (NSMethodSignature *)instanceMethodSignatureForSelector:(SEL)selector                                        \
     {                                                                                                              \
-        return CHARON_ALIAS_ANSWER(Name, [super instanceMethodSignatureForSelector:selector],                      \
-                                   [objc_getClass(#Name) instanceMethodSignatureForSelector:selector]);            \
+        Class asked = CHARON_ALIAS_ANSWER(Name, self, objc_getClass(#Name));                                       \
+        const char *types = method_getTypeEncoding(charon_alias_method(asked, selector, false));                   \
+        return types ? [NSMethodSignature signatureWithObjCTypes:types] : nil;                                     \
     }                                                                                                              \
                                                                                                                    \
     + (BOOL)conformsToProtocol:(Protocol *)protocol                                                                \
@@ -88,7 +138,8 @@ struct charon_alias {
                                                                                                                    \
     + (IMP)methodForSelector:(SEL)selector                                                                         \
     {                                                                                                              \
-        return CHARON_ALIAS_ANSWER(Name, [super methodForSelector:selector], [objc_getClass(#Name) methodForSelector:selector]); \
+        return CHARON_ALIAS_ANSWER(Name, method_getImplementation(charon_alias_method(self, selector, true)),       \
+                                   [objc_getClass(#Name) methodForSelector:selector]);                            \
     }                                                                                                              \
                                                                                                                    \
     + (NSString *)description                                                                                      \
@@ -120,6 +171,8 @@ struct charon_alias {
             ".set _OBJC_METACLASS_$_" #Name ", _OBJC_METACLASS_$_Charon" #Name "\n");                              \
     __attribute__((used, section("__DATA,__charon_alias"))) static const struct charon_alias charon_alias_##Name = { \
         &charon_alias_class_##Name, #Name};
+
+#define CHARON_ALIAS(Name) CHARON_ALIAS_OF(Name, NSObject)
 #endif
 
 #endif
