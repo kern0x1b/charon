@@ -45,7 +45,7 @@ reached for shows up as a difference in the text.
   | -2..2 | 5 | 5, 3, 4, 5, 5, 5, 5, 5, 5 |
   | 0..2 | 3 | 3, 1, 2, 3, 3, 3, 3, 3, 3 |
   | 2..5 | 4 | bounds 0 and 1 raise, then 0, 1, 2, 3, 4, 4, 4 |
-  | 3..3 | 1 | bounds 0, 1 and 2 raise, then 0, 0, 0, 0, 0, 0 |
+  | 3..3 | 1 | bounds 0, 1 and 2 raise, then 0, 1, 1, 1, 1, 1 |
 
   A bound below `lowestValue` raises `NSInvalidArgumentException` with the host's own reason, `upper
   bound provided is less than lowestInclusive`. The answer is that draw added to the lowest, and to

@@ -706,8 +706,8 @@ static void distributions(void)
     }
     // measure.m, "nextIntWithUpperBound over 2..5" and "over -2..2": which span is asked for.
     {
-        const NSInteger lows[] = {-2, 0, 2};
-        const NSInteger highs[] = {2, 2, 5};
+        const NSInteger lows[] = {-2, 0, 2, 3};
+        const NSInteger highs[] = {2, 2, 5, 3};
         // measure.m prints the same lines with an empty script: what the source was asked for, as
         // starved(bounded:N) because the script had nothing left to give.
         const char *asks[] = {
@@ -716,8 +716,12 @@ static void distributions(void)
             "starved(bounded:3) starved(bounded:1) starved(bounded:2) starved(bounded:3) starved(bounded:3) "
             "starved(bounded:3) starved(bounded:3) starved(bounded:3) starved(bounded:3)",
             "starved(bounded:0) starved(bounded:1) starved(bounded:2) starved(bounded:3) starved(bounded:4) "
-            "starved(bounded:4) starved(bounded:4)"};
-        for (unsigned range = 0; range < 3; range++) {
+            "starved(bounded:4) starved(bounded:4)",
+            // over 3..3, bounds 3..8: the span is 0 for the bound that matches the lowest and 1 for
+            // every bound above it, because the whole range is one outcome.
+            "starved(bounded:0) starved(bounded:1) starved(bounded:1) starved(bounded:1) "
+            "starved(bounded:1) starved(bounded:1)"};
+        for (unsigned range = 0; range < 4; range++) {
             NSMutableArray *got = [NSMutableArray array];
             for (NSUInteger bound = 0; bound <= 8; bound++) {
                 CharonGKScriptedSource *fresh = [[CharonGKScriptedSource alloc] initWithScript:@[]];

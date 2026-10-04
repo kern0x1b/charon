@@ -507,6 +507,21 @@ int main(void)
             }
             printf("nextIntWithUpperBound over -2..2: %s\n", [[underBounds componentsJoinedByString:@" "] UTF8String]);
             printf("  asked: %s\n", [below.log UTF8String]);
+            // One fresh source per call over a range whose lowest is above zero and whose whole range is
+            // a single outcome, so that the span rule is measured where min(bound - lowest, outcomes)
+            // and bound - lowest come apart most.
+            for (NSUInteger bound = 0; bound <= 8; bound++) {
+                CharonGKScriptedSource *fresh = [[CharonGKScriptedSource alloc] initWithScript:@[]];
+                GKRandomDistribution *single = [[GKRandomDistribution alloc] initWithRandomSource:fresh
+                                                                                     lowestValue:3
+                                                                                    highestValue:3];
+                @try {
+                    printf("  3..3 b%lu = %lu asked '%s'\n", (unsigned long)bound,
+                           (unsigned long)[single nextIntWithUpperBound:bound], [fresh.log UTF8String]);
+                } @catch (NSException *exception) {
+                    printf("  3..3 b%lu raised %s\n", (unsigned long)bound, [[exception name] UTF8String]);
+                }
+            }
             CharonGKScriptedSource *normal = [[CharonGKScriptedSource alloc]
                                               initWithScript:@[@"uniform=0.25", @"uniform=0.75", @"uniform=0.5",
                                                                @"uniform=0.1", @"uniform=0.9"]];
