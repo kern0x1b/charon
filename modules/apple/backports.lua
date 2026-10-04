@@ -2625,6 +2625,14 @@ end
 -- release first; a deployment at or above it has every source in range and compiles nothing extra.
 -- The libraries this run keeps, for the reason keeps() gives: a source of a library the run drops
 -- is not this run's to place.
+--
+-- WHAT THIS FUNCTION IS ALSO THE ONLY PLACE minimums() IS ASKED, and therefore where its refusals are
+-- made: a run whose deployment is at or above the highest minimum the registry names returns at the
+-- top of this function, compiles nothing for a floor and asks nothing. That is this function's own
+-- scope since before the release-export floor was added to minimums() (a band-placement check needs
+-- objects placed at a floor to have anything to say), and the deployment such a run builds is a band
+-- no trap below it reaches - but it is a hole, and it is named here rather than left for a reader to
+-- find: a build at or above the highest registry minimum runs no placement check of any kind.
 function floors(opt)
     local top
     for _, entry in pairs(listed(opt.root)) do
