@@ -44,6 +44,11 @@
 - (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor startTensor:(MPSGraphTensor *)startTensor endTensor:(MPSGraphTensor *)endTensor strideTensor:(MPSGraphTensor *)strideTensor startMask:(uint32_t)startMask endMask:(uint32_t)endMask squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
 - (MPSGraphTensor *)sliceUpdateDataTensor:(MPSGraphTensor *)dataTensor updateTensor:(MPSGraphTensor *)updateTensor starts:(NSArray<NSNumber *> *)starts ends:(NSArray<NSNumber *> *)ends strides:(NSArray<NSNumber *> *)strides startMask:(uint32_t)startMask endMask:(uint32_t)endMask squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
 - (MPSGraphTensor *)constantWithData:(NSData *)data shape:(MPSShape *)shape dataType:(MPSDataType)dataType;
+- (MPSGraphTensor *)spaceToDepth2DTensor:(MPSGraphTensor *)tensor widthAxis:(NSUInteger)widthAxis heightAxis:(NSUInteger)heightAxis depthAxis:(NSUInteger)depthAxis blockSize:(NSUInteger)blockSize usePixelShuffleOrder:(BOOL)usePixelShuffleOrder name:(NSString *)name;
+- (MPSGraphTensor *)depthToSpace2DTensor:(MPSGraphTensor *)tensor widthAxis:(NSUInteger)widthAxis heightAxis:(NSUInteger)heightAxis depthAxis:(NSUInteger)depthAxis blockSize:(NSUInteger)blockSize usePixelShuffleOrder:(BOOL)usePixelShuffleOrder name:(NSString *)name;
+- (MPSGraphTensor *)spaceToDepth2DTensor:(MPSGraphTensor *)tensor widthAxisTensor:(MPSGraphTensor *)widthAxisTensor heightAxisTensor:(MPSGraphTensor *)heightAxisTensor depthAxisTensor:(MPSGraphTensor *)depthAxisTensor blockSize:(NSUInteger)blockSize usePixelShuffleOrder:(BOOL)usePixelShuffleOrder name:(NSString *)name;
+- (MPSGraphTensor *)spaceToBatchTensor:(MPSGraphTensor *)tensor spatialAxes:(NSArray<NSNumber *> *)spatialAxes batchAxis:(NSInteger)batchAxis blockDimensions:(NSArray<NSNumber *> *)blockDimensions usePixelShuffleOrder:(BOOL)usePixelShuffleOrder name:(NSString *)name;
+- (MPSGraphTensor *)batchToSpaceTensor:(MPSGraphTensor *)tensor spatialAxes:(NSArray<NSNumber *> *)spatialAxes batchAxis:(NSInteger)batchAxis blockDimensions:(NSArray<NSNumber *> *)blockDimensions usePixelShuffleOrder:(BOOL)usePixelShuffleOrder name:(NSString *)name;
 @end
 
 static id<MTLDevice> gDevice;
@@ -212,6 +217,13 @@ static float thinRow[4] = { 1.0f, 2.0f, 3.0f, 4.0f };
 static float twoByThreeByFour[24] = {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 };
+// The [3, 4, 6] of 1 to 72 the block-moving family's questions are asked over, whose extents are all
+// different - which is what makes an answer say which operand axis each coordinate of the result came from.
+static float wideFeed[72] = {
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+    25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48,
+    49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72,
+};
 
 int main(int argc, const char *argv[])
 {
@@ -248,6 +260,13 @@ int main(int argc, const char *argv[])
             "split-num-divisible", "split-num-six-into-four", "split-num0",
             "coord-axis-outside", "coord-axis-negoutside", "coord-rank-one-axis1", "coord-zero-extent",
             "coord-fed-axis-placeholder", "coord-fed-axis-float", "coord-fed-shape-placeholder",
+            "block-s2b-axis-outside", "block-s2b-axis-duplicate", "block-s2b-batch-among-spatial",
+            "block-s2b-block-list-short", "block-s2b-block-does-not-divide",
+            "block-b2s-batch-among-spatial", "block-b2s-block-list-short",
+            "block-s2d-axis-outside", "block-s2d-axis-negoutside", "block-s2d-degenerate-axes",
+            "block-s2d-block-does-not-divide", "block-d2s-block-does-not-divide",
+            "block-s2d-fed-axis-placeholder",
+            "block-s2d-fed-axis-unranked", "block-s2d-fed-axis-two-numbers",
         };
         unsigned i;
         for (i = 0; i < sizeof(kQuestions) / sizeof(kQuestions[0]); i++)
@@ -810,6 +829,137 @@ int main(int argc, const char *argv[])
                                                    targetOperations:@[] compilationDescriptor:nil];
             [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
                                   inputsArray:inputs resultsArray:@[destination] executionDescriptor:nil];
+            put(q, buffer, bytes);
+            return 0;
+        }
+        // THE BLOCK-MOVING FAMILY of 15.0 and 16.1 - the space-to-depth and depth-to-space of 15.0 and the
+        // space-to-batch and batch-to-space of 16.1 - and every question of theirs a case cannot ask. They
+        // are four methods and FOUR OPERATIONS to the release, and each operation refuses in its own words
+        // and at its own moment: an axis outside the rank is refused where the GRAPH is built, with the
+        // result's shape nil, while a degenerate pair of axes and a block that does not divide are refused
+        // where the graph is COMPILED, after the release has built a result of a shape of its own. Both
+        // moments are printed, so a refusal that moved is a refusal this file no longer describes.
+        if (strncmp(q, "block-", 6) == 0) {
+            NSString *question = [NSString stringWithUTF8String:q];
+            MPSGraph *graph = [MPSGraph new];
+            NSArray<NSNumber *> *threeByFourBySix = @[@3, @4, @6];
+            NSArray<NSNumber *> *twelveByTwoByThree = @[@12, @2, @3];
+            NSArray<NSNumber *> *eightByTwoByTwo = @[@8, @2, @2];
+            // THE FED PAIR of 15.0 is four operands: the tensor and its three axes. Over a CONSTANT of one
+            // number the release answers exactly what the written-down axes answer, so the questions here are
+            // the fed forms' own - a placeholder, a constant of no rank, and a constant of two numbers.
+            if (strstr(q, "fed-axis")) {
+                int32_t axis[4] = { 2, 1, 0, 2 };
+                // A constant of NO RANK is not constructible at all: the release's own +constantWithData:
+                // shape:dataType: takes the process down, so the question is that call and nothing else.
+                if (strstr(q, "unranked")) {
+                    printf("%s about to make an unranked constant\n", question.UTF8String); fflush(stdout);
+                    [graph constantWithData:[NSData dataWithBytes:axis length:sizeof axis]
+                                     shape:@[] dataType:MPSDataTypeInt32];
+                    return 0;
+                }
+                // A constant of MORE THAN ONE NUMBER builds the graph and leaves the result with no shape,
+                // and a PLACEHOLDER does the same - which is what these two measure against each other,
+                // because the shape the caller would run into is the shape of the written-down form.
+                if (strstr(q, "two-numbers")) {
+                    MPSGraphTensor *operand = [graph placeholderWithShape:threeByFourBySix
+                                                                  dataType:MPSDataTypeFloat32 name:@"a"];
+                    MPSGraphTensor *wide = [graph constantWithData:[NSData dataWithBytes:axis length:sizeof axis]
+                                                           shape:@[@2] dataType:MPSDataTypeInt32];
+                    MPSGraphTensor *t = [graph spaceToDepth2DTensor:operand widthAxisTensor:wide
+                                                  heightAxisTensor:wide depthAxisTensor:wide blockSize:2
+                                           usePixelShuffleOrder:NO name:@"s"];
+                    printf("%s result-shape %s\n", question.UTF8String,
+                           t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil");
+                    return 0;
+                }
+                // The three axes of 2, 1 and 0, ONE EACH: the release reads all three where the graph runs, so
+                // handing the same value to all three is not the same question as handing each its own.
+                int32_t width2[1] = { 2 }, height1[1] = { 1 }, depth0[1] = { 0 };
+                multi(^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                          return [g spaceToDepth2DTensor:in[0] widthAxisTensor:in[1] heightAxisTensor:in[2]
+                                    depthAxisTensor:in[3] blockSize:2 usePixelShuffleOrder:NO name:@"s"]; },
+                      @[threeByFourBySix, @[@1], @[@1], @[@1]],
+                      @[[NSData dataWithBytes:wideFeed length:72 * sizeof(float)],
+                        [NSData dataWithBytes:width2 length:sizeof width2],
+                        [NSData dataWithBytes:height1 length:sizeof height1],
+                        [NSData dataWithBytes:depth0 length:sizeof depth0]],
+                      @[@(MPSDataTypeFloat32), @(MPSDataTypeInt32), @(MPSDataTypeInt32), @(MPSDataTypeInt32)],
+                      twelveByTwoByThree, q);
+                return 0;
+            }
+            // And the WRITTEN-DOWN forms, which is where the two operations' own sentences live.
+            MPSGraphTensor *operand = [graph placeholderWithShape:threeByFourBySix dataType:MPSDataTypeFloat32
+                                                             name:@"a"];
+            MPSGraphTensor *shallow = [graph placeholderWithShape:twelveByTwoByThree
+                                                         dataType:MPSDataTypeFloat32 name:@"b"];
+            MPSGraphTensor *cube = [graph placeholderWithShape:eightByTwoByTwo dataType:MPSDataTypeFloat32
+                                                         name:@"c"];
+            MPSGraphTensor *t = nil;
+            if (strstr(q, "s2b-axis-outside"))
+                t = [graph spaceToBatchTensor:operand spatialAxes:@[@3] batchAxis:0
+                              blockDimensions:@[@2] usePixelShuffleOrder:NO name:@"s"];
+            else if (strstr(q, "s2b-axis-duplicate"))
+                t = [graph spaceToBatchTensor:operand spatialAxes:@[@1, @1] batchAxis:0
+                              blockDimensions:@[@2, @2] usePixelShuffleOrder:NO name:@"s"];
+            else if (strstr(q, "s2b-batch-among-spatial"))
+                t = [graph spaceToBatchTensor:operand spatialAxes:@[@0, @1] batchAxis:0
+                              blockDimensions:@[@2, @2] usePixelShuffleOrder:NO name:@"s"];
+            else if (strstr(q, "s2b-block-list-short"))
+                t = [graph spaceToBatchTensor:operand spatialAxes:@[@1, @2] batchAxis:0
+                              blockDimensions:@[@2] usePixelShuffleOrder:NO name:@"s"];
+            else if (strstr(q, "s2b-block-does-not-divide"))
+                t = [graph spaceToBatchTensor:operand spatialAxes:@[@1, @2] batchAxis:0
+                              blockDimensions:@[@2, @5] usePixelShuffleOrder:NO name:@"s"];
+            else if (strstr(q, "b2s-batch-among-spatial"))
+                t = [graph batchToSpaceTensor:cube spatialAxes:@[@0, @1] batchAxis:0
+                              blockDimensions:@[@2, @2] usePixelShuffleOrder:NO name:@"b"];
+            else if (strstr(q, "b2s-block-list-short"))
+                t = [graph batchToSpaceTensor:cube spatialAxes:@[@1, @2] batchAxis:0
+                              blockDimensions:@[@2] usePixelShuffleOrder:NO name:@"b"];
+            else if (strstr(q, "s2d-axis-outside"))
+                t = [graph spaceToDepth2DTensor:operand widthAxis:3 heightAxis:1 depthAxis:0 blockSize:2
+                          usePixelShuffleOrder:NO name:@"s"];
+            else if (strstr(q, "s2d-axis-negoutside"))
+                t = [graph spaceToDepth2DTensor:operand widthAxis:(NSUInteger)-1 heightAxis:1 depthAxis:0
+                                       blockSize:2 usePixelShuffleOrder:NO name:@"s"];
+            else if (strstr(q, "s2d-degenerate-axes"))
+                t = [graph spaceToDepth2DTensor:operand widthAxis:2 heightAxis:1 depthAxis:1 blockSize:2
+                          usePixelShuffleOrder:NO name:@"s"];
+            else if (strstr(q, "s2d-block-does-not-divide"))
+                t = [graph spaceToDepth2DTensor:operand widthAxis:2 heightAxis:1 depthAxis:0 blockSize:3
+                          usePixelShuffleOrder:NO name:@"s"];
+            else if (strstr(q, "d2s-block-does-not-divide"))
+                t = [graph depthToSpace2DTensor:shallow widthAxis:2 heightAxis:1 depthAxis:0 blockSize:3
+                          usePixelShuffleOrder:NO name:@"d"];
+            printf("%s result-shape %s\n", question.UTF8String,
+                   t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil");
+            fflush(stdout);
+            NSUInteger count = 1;
+            for (NSNumber *d in (t.shape.count ? t.shape : threeByFourBySix)) count *= (NSUInteger)d.integerValue;
+            size_t bytes = count * sizeof(float);
+            id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+            memset([buffer contents], gPattern, bytes);
+            NSMutableDictionary *feeds = [NSMutableDictionary dictionary];
+            NSMutableArray *inputs = [NSMutableArray array];
+            for (MPSGraphTensor *one in @[operand, shallow, cube]) {
+                if (one.shape == nil) continue;
+                feeds[one] = [[MPSGraphShapedType alloc] initWithShape:one.shape dataType:MPSDataTypeFloat32];
+                [inputs addObject:[[MPSGraphTensorData alloc] initWithMTLBuffer:
+                                   [gDevice newBufferWithBytes:wideFeed length:72 * sizeof(float)
+                                                        options:MTLResourceStorageModeShared]
+                                    shape:one.shape dataType:MPSDataTypeFloat32]];
+            }
+            MPSGraphExecutable *executable = [graph compileWithDevice:gGraphDevice feeds:feeds
+                                                       targetTensors:@[t] targetOperations:@[]
+                                              compilationDescriptor:nil];
+            if (executable == nil) { printf("  NO EXECUTABLE\n"); return 0; }
+            [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                                  inputsArray:inputs
+                                   resultsArray:@[[[MPSGraphTensorData alloc] initWithMTLBuffer:buffer
+                                                                               shape:t.shape
+                                                                             dataType:MPSDataTypeFloat32]]
+                           executionDescriptor:nil];
             put(q, buffer, bytes);
             return 0;
         }
