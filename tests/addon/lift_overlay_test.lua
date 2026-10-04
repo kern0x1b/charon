@@ -15,14 +15,20 @@ function failures(opt)
     -- one folder is a race, and the loser answers with the fixture missing (measured in lift_test, 2026-10-04).
     local root = path.join(os.tmpdir(), "lift_overlay_test-" .. os.getpid())
     local folder = path.join("System", "Library", "Frameworks", "Fix.framework", "Headers")
+    -- Foundation's umbrella, which the umbrella lift() generates imports first, and where this fixture's NSObject is declared: one
+    -- translation unit cannot declare a protocol twice, so the framework headers below reach it there and do not declare it themselves
+    local function foundation(sdk)
+        io.writefile(path.join(sdk, "System", "Library", "Frameworks", "Foundation.framework", "Headers", "Foundation.h"),
+                     "@protocol NSObject @end\n@protocol NSCopying @end\n__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\n")
+    end
     local function lifted(lines, registry, expected)
         os.tryrm(root)
         local sdk = path.join(root, "sdk")
         -- the macros in a header of their own, as the SDK has them: the location of a use that names a file only where it differs from the last
         io.writefile(path.join(sdk, folder, "Avail.h"), "#define ios(version) ios, introduced=version\n" ..
                      "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n")
+        foundation(sdk)
         io.writefile(path.join(sdk, folder, "Fix.h"), table.concat({
-            "@protocol NSObject @end", "@protocol NSCopying @end", "__attribute__((objc_root_class)) @interface NSObject <NSObject> @end",
             '#include "Avail.h"', "@protocol FixEnv", "- (void)traitDidChange:(id)previous API_AVAILABLE(ios(8.0));", "@end",
             unpack(lines)}, "\n") .. "\n")
         local entries = {}
@@ -88,7 +94,8 @@ function failures(opt)
     os.tryrm(root)
     local other = path.join(root, "sdk", "System", "Library", "Frameworks", "Other.framework", "Headers")
     io.writefile(path.join(other, "Avail.h"), "#define ios(version) ios, introduced=version\n#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n")
-    io.writefile(path.join(other, "Top.h"), "@protocol NSObject @end\n@protocol NSCopying @end\n__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\nvoid FixTop(void);\n")
+    foundation(path.join(root, "sdk"))
+    io.writefile(path.join(other, "Top.h"), "void FixTop(void);\n")
     io.writefile(path.join(other, "G2", "gl.h"), '#include <Other/Avail.h>\nvoid FixGenTwo(void) API_AVAILABLE(ios(9.0));\n')
     io.writefile(path.join(other, "G3", "gl.h"), '#include <Other/Avail.h>\nvoid FixGenThree(void) API_AVAILABLE(ios(9.0));\n')
     io.writefile(path.join(root, "registry", "Other.json"), '[{"api": "FixGenThree", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented"},' ..
