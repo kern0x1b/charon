@@ -47,6 +47,9 @@
 - (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor startTensor:(MPSGraphTensor *)startTensor sizeTensor:(MPSGraphTensor *)sizeTensor squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
 - (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor startTensor:(MPSGraphTensor *)startTensor endTensor:(MPSGraphTensor *)endTensor strideTensor:(MPSGraphTensor *)strideTensor startMask:(uint32_t)startMask endMask:(uint32_t)endMask squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
 - (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor startTensor:(MPSGraphTensor *)startTensor sizeTensor:(MPSGraphTensor *)sizeTensor squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
+// The completion and scheduled handlers the header gives the descriptor, and MPSGraph's own command buffer -
+// the wait is on the BUFFER, which is where -waitUntilCompleted is, and a queue does not have it.
+- (void)setWaitUntilCompleted:(BOOL)waitUntilCompleted;
 // The seven run, async and encode forms of the graph, the four of the executable and the two shared-event
 // methods of an execution descriptor (MPSGraph.h, MPSGraphExecutable.h, ios(14.0) and the 16.0 events).
 - (MPSGraphTensorDataDictionary *)runWithMTLCommandQueue:(id<MTLCommandQueue>)commandQueue feeds:(NSDictionary *)feeds targetTensors:(NSArray<MPSGraphTensor *> *)targetTensors targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations;
@@ -1256,14 +1259,48 @@ static void family_run_forms(void)
         [g runWithMTLCommandQueue:queue feeds:@{a: both[a]} targetOperations:nil
              resultsDictionary:@{t: both[t]}];
     });
-    // THE ASYNC AND THE ENCODE FORMS' DICTIONARY FORM IS NOT A CASE, and the reason is measured: the release
-    // writes into the dictionary the caller gave AFTER its GPU work is done, and this host's own command
-    // queue has no -waitUntilCompleted to wait for it with ("-[AGXG16XFamilyCommandQueue
-    // waitUntilCompleted]: unrecognized selector", so there is nothing to read back on this host at all). The
-    // port's walk is on the CPU and its answer is in the caller's buffer when the call returns, which is the
-    // same answer at the moment a caller who CAN wait would look. The rows of the five async and encode
-    // methods say so, and the two forms that RETURN a dictionary are compared below, because what they return
-    // is observable.
+    // THE ASYNC FORMS ARE ASKED WITH THE DESCRIPTOR'S OWN waitUntilCompleted, which is the header's own way of
+    // saying the call returns after the work is done - so the answer is in the caller's buffer when it returns
+    // and there is nothing to wait for afterwards. That is the coordinator's correction and it is right: the
+    // previous pass of this family asked a COMMAND QUEUE for -waitUntilCompleted, which is a method of the
+    // command BUFFER, and read a buffer the release had not written yet and called that a host limit.
+    //
+    // THE ENCODE FORMS ARE NOT CASES, and the reason is measured on this host and is a different one: MPSGraph's
+    // own MPSCommandBuffer has NO CREATION API in this SDK - MPSGraph.h and MPSGraphDevice.h only name the
+    // class in the encode parameters, and a bare alloc gives an object that raises "-[MPSCommandBuffer device]:
+    // unrecognized selector". So the buffer to encode into cannot be made here, and a case through the encode
+    // forms would pass nil and measure the port's own walk. The two rows of the encode forms say so.
+    run_case("run-async-dictionary float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSGraphExecutionDescriptor *descriptor = [MPSGraphExecutionDescriptor new];
+        descriptor.waitUntilCompleted = YES;
+        [g runAsyncWithMTLCommandQueue:queue feeds:@{a: both[a]} targetOperations:nil
+                   resultsDictionary:@{t: both[t]} executionDescriptor:descriptor];
+    });
+    run_case("run-async-tensors-waited float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSGraphExecutionDescriptor *descriptor = [MPSGraphExecutionDescriptor new];
+        descriptor.waitUntilCompleted = YES;
+        NSDictionary *got = [g runAsyncWithMTLCommandQueue:queue feeds:@{a: both[a]} targetTensors:@[t]
+                                targetOperations:nil executionDescriptor:descriptor];
+        printf("#case run-async-tensors-waited-entries %lu\n", (unsigned long)got.count);
+    });
+    run_case("run-async-feeds-waited float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSGraphExecutionDescriptor *descriptor = [MPSGraphExecutionDescriptor new];
+        descriptor.waitUntilCompleted = YES;
+        NSDictionary *got = [g runAsyncWithFeeds:@{a: both[a]} targetTensors:@[t] targetOperations:nil
+                             executionDescriptor:descriptor];
+        printf("#case run-async-feeds-waited-entries %lu\n", (unsigned long)got.count);
+    });
+
+    // THE EXECUTABLE'S ASYNC AND ENCODE FORMS, asked the same two ways: its descriptor carries the same
+    // waitUntilCompleted and the same completion handler, and the buffer's wait is on the buffer.
+    run_case("executable-async-waited float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSGraphExecutable *e = [g compileWithDevice:gGraphDevice feeds:@{a: [[MPSGraphShapedType alloc] initWithShape:shape dataType:MPSDataTypeFloat32]}
+                                         targetTensors:@[t] targetOperations:nil compilationDescriptor:nil];
+        MPSGraphExecutableExecutionDescriptor *descriptor = [MPSGraphExecutableExecutionDescriptor new];
+        descriptor.waitUntilCompleted = YES;
+        [e runAsyncWithMTLCommandQueue:queue inputsArray:@[both[a]] resultsArray:@[both[t]]
+                  executionDescriptor:descriptor];
+    });
     // THE FORMS THAT RETURN A DICTIONARY: measured, they leave the caller's buffer as it was, so the case
     // reads the buffer the port and the release both left alone - the byte 0xbd the destination was filled
     // with is what a form that writes nothing leaves behind.
@@ -1283,10 +1320,6 @@ static void family_run_forms(void)
         printf("#case run-encode-returns-dictionary-entries %lu\n", (unsigned long)got.count);
     });
 
-    // THE EXECUTABLE'S ASYNC AND ENCODE FORMS ARE NOT CASES EITHER, for the same measured reason as the
-    // graph's own two: the release writes the results after its GPU work is done and this host's command
-    // queue cannot be waited on, so there is nothing to read back here. The port answers them through the
-    // same walk the synchronous form above uses, and the two rows say what cannot be observed and why.
     // THE SPECIALIZATION AND THE OUTPUT TYPES: the output types are the targets' own shapes, printed one per
     // line, which is the whole of what a caller can read off them.
     {

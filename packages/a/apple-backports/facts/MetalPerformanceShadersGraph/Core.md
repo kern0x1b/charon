@@ -1169,14 +1169,22 @@ its own (`run_forms`): **15 case lines, every cell byte-identical to the release
 The dictionary form names no target tensors of its own, so **the dictionary's keys are what the walk computes**
 - a caller who passes an empty dictionary gets an empty walk.
 
-### What cannot be observed on this host, measured rather than asserted
+### What is compared, and the one thing that is not
 
-The **async and encode forms write the caller's dictionary after the release's GPU work is done**, and this
-host's own command queue gives no way to wait for it: `-[AGXG16XFamilyCommandQueue waitUntilCompleted]` is
-unrecognized in this SDK, so nothing can be read back for those five forms here. The port's answer is in the
-caller's buffer when the call returns, which is the same answer at the moment a caller who *can* wait would look.
-So those five rows are carried with this measurement in them, and the two forms that RETURN a dictionary are
-compared anyway, because what they return is observable (one entry each, both sides).
+**The three async forms ARE compared cell for cell.** Each is asked with its descriptor's own
+`waitUntilCompleted` set, which is the header's own way of saying the call returns after the work is done, so
+the answer is in the caller's dictionary when the call returns and the case reads it there. The previous pass of
+this section said the host could not be asked at all, because a queue has no `-waitUntilCompleted`; that was
+**the harness asking the wrong object** - the method is of the command buffer - and the coordinator's correction
+is right. The descriptor's `completionHandler` and `scheduledHandler` are honoured around the walk on both
+sides, each called with the results and a nil error.
+
+**The two encode forms are not compared, and the reason is measured on this host and is not about timing**:
+MPSGraph's own `MPSCommandBuffer` has **no creation API in the SDK this harness compiles against** -
+`MPSGraph.h` and `MPSGraphDevice.h` name the class only in the encode parameters - so a bare `alloc` gives an
+object that raises `-[MPSCommandBuffer device]: unrecognized selector`, and there is no buffer to encode into.
+The port answers both forms through the same walk and writes the caller's dictionary; the two rows say what
+could not be asked rather than what was measured about it.
 
 ### The two shared events, measured
 

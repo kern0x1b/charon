@@ -1308,6 +1308,15 @@ static NSDictionary *CharonMPSGraphRunForm(MPSGraph *graph, NSDictionary *feeds,
         memcpy(to, from, [value charon_mps_elementCount] * MPSSizeofMPSDataType(value.dataType));
     }
     [descriptor charon_mps_applyEventsAtStage:MPSGraphExecutionStageCompleted named:@"a graph run"];
+    // The descriptor's two handlers, which are the header's own notification points: the scheduled one is
+    // called when the work is about to run and the completion one when it has finished, each with the results
+    // and the error. On this port the walk is over the host's memory on the CPU and both are called around it
+    // rather than around a GPU submission, and -waitUntilCompleted needs nothing: the answer is already in
+    // the caller's buffer when the call returns, which is what that property asks for.
+    if (descriptor.scheduledHandler)
+        descriptor.scheduledHandler(computed, nil);
+    if (descriptor.completionHandler)
+        descriptor.completionHandler(computed, nil);
     return computed;
 }
 
