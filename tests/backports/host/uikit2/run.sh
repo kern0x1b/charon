@@ -81,10 +81,15 @@ prefixed_build() {
             *) objective_c= ;;
         esac
         if [ -n "$objective_c" ] && [ -s "$build/$name.carried" ]; then
+            # The group's own -D renames go to the rewriter as well as to the compile below, because they are
+            # what its AST filter needs to see the port's classes: they are named in the source exactly as the
+            # SDK names them, so `-ast-dump-filter=haron` drops their bodies whole, and a send of a carried
+            # selector from inside one was left unrenamed. prefix_selectors.py's group_renames() reads them back
+            # and maps every name it meets to the spelling the source uses, so nothing else changes.
             if ! python3 "$prefixer" "$sources/$file" "$source" charonHost \
                 --declarations="$build/$name.declarations.h" \
                 --sources="$(for f in $files; do printf '%s,' "$sources/$f"; done | sed 's/,$//')" \
-                $flags -I"$sources" \
+                $(cat "$build/$name.flags") $flags -I"$sources" \
                 -I"$(dirname "$sources/$file")" \
                 -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" \
                 -- $objects; then

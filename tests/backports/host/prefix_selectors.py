@@ -36,7 +36,47 @@ def ported(objects):
     return found
 
 
-def runtime_superclasses():
+def header_superclasses(flags):
+    """{class: the class it declares itself a subclass of}, over every header of every framework on the
+    include path, cached beside the build.
+
+    The runtime of the process that runs this tool knows nothing of the image the differential links. Measured
+    on this machine: objc_getClass answers NULL for every UIKit name, UIScreen and UILayoutGuide included, so
+    runtime_superclasses() below walks nowhere. owns() walks the chain to decide whether a receiver answers a
+    selector a port category adds to one of its SUPERclasses, and with no chain every such send was left
+    unrenamed: `-[self charon_setNeedsUpdateConfiguration]` inside @implementation UICollectionViewCell
+    (CharonConfiguration) reaches a CharonHostUICollectionViewListCell, which does not answer the bare name, and
+    the group died on it after the pinFrame send was placed. A class's superclass is declared in its own
+    @interface line, so the headers are the authority; a category (`@interface X (Name)`) declares none and does
+    not match, and a forward declaration (`@class X;`) is not an @interface at all."""
+    import hashlib
+    import tempfile
+    roots = sorted({flags[index + 1] for index, word in enumerate(flags)
+                    if word in ("-iframework", "-F") and index + 1 < len(flags)})
+    key = hashlib.sha256(("\\0".join(roots)).encode()).hexdigest()[:16]
+    cache = os.path.join(tempfile.gettempdir(), "charon-prefix-superclasses-" + key + ".json")
+    try:
+        with open(cache, encoding="utf-8") as handle:
+            return json.load(handle)
+    except (OSError, ValueError):
+        pass
+    found = {}
+    for header in framework_headers(flags):
+        try:
+            text = open(header, encoding="utf-8", errors="replace").read()
+        except OSError:
+            continue
+        for name, parent in re.findall(r"@interface\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*([A-Za-z_][A-Za-z0-9_]*)", text):
+            found.setdefault(name, parent)
+    try:
+        with open(cache, "w", encoding="utf-8") as handle:
+            json.dump(found, handle)
+    except OSError:
+        pass
+    return found
+
+
+def runtime_superclasses(flags=None):
     import ctypes
     ctypes.CDLL("/System/Library/Frameworks/Foundation.framework/Foundation")
     runtime = ctypes.CDLL("/usr/lib/libobjc.A.dylib")
@@ -47,12 +87,15 @@ def runtime_superclasses():
     runtime.class_getName.restype = ctypes.c_char_p
     runtime.class_getName.argtypes = [ctypes.c_void_p]
 
+    declared = header_superclasses(flags) if flags else {}
+
     class Chain(dict):
         def get(self, name, default=None):
             if name not in self:
                 found = runtime.objc_getClass(name.encode())
-                parent = runtime.class_getSuperclass(found) if found else None
-                self[name] = runtime.class_getName(parent).decode() if parent else None
+                parent = runtime.class_getName(runtime.class_getSuperclass(found)).decode() if found else None
+                # the runtime knows nothing of the frameworks the differential links; the headers do
+                self[name] = parent if parent else declared.get(name)
             return dict.get(self, name, default)
     return Chain()
 
@@ -314,8 +357,34 @@ def text_after(source, offset):
     return source[offset + 1:offset + 2] not in ("]", "")
 
 
+RENAMED = re.compile(r"^-D([A-Za-z_][A-Za-z0-9_]*)=([A-Za-z_][A-Za-z0-9_]*)$")
+
+
+def group_renames(flags):
+    """{renamed class name: the name the port's own source spells}, from the group's -D flags.
+
+    renames.sh gives every class the group's objects DEFINE a CharonHost prefix at build time, and those
+    classes are named in the source exactly as the SDK names them - UIListContentView, UICollectionViewListCell,
+    CharonLists' own UICellAccessory. So `-ast-dump-filter=haron` in main(), which keeps only the top-level
+    declarations whose NAME contains "haron", drops the whole body of every one of them: measured on
+    UIListContentView.m, the filtered dump holds no ObjCImplementationDecl and no ObjCMessageExpr at all, while
+    the same dump with -DUIListContentView=CharonHostUIListContentView holds 369 message expressions. A send of a
+    carried selector from inside such a class was therefore never rewritten and reached the host unprefixed:
+    -[UILayoutGuide charon_pinFrame:inView:] unrecognized selector, sent from -[CharonHostUIListContentView
+    layoutSubviews]. Passing the flags to the dump makes the filter see the port's classes, and every name the
+    walk reads is mapped back before it is looked up, so a class the port defines still resolves to its own
+    name and no member of it is carried."""
+    names = {}
+    for flag in flags:
+        found = RENAMED.match(flag)
+        if found and found.group(2) == "CharonHost" + found.group(1):
+            names[found.group(2)] = found.group(1)
+    return names
+
+
 class Rewriter:
-    def __init__(self, source, carried, superclasses, protocol_owners=None, ported_classes=None, prefix="charonHost"):
+    def __init__(self, source, carried, superclasses, protocol_owners=None, ported_classes=None, prefix="charonHost",
+                 renames=None):
         self.source = source
         # The prefix this rewrite is for. It is a parameter because the send rewritten as an explicit
         # message below has to spell the renamed selector itself, and spelling it needs the prefix;
@@ -324,6 +393,9 @@ class Rewriter:
         self.carried = carried
         self.superclasses = superclasses
         self.ported_classes = ported_classes or set()
+        # {the name the dump carries: the name the source spells}, so every lookup below finds the entry the
+        # source's own spelling is keyed by. See group_renames().
+        self.renames = renames or {}
         # literal insertions, for a rewrite that is not a rename: the cast a protocol-typed receiver needs
         self.protocol_owners = protocol_owners or {}
         self.inserts = set()
@@ -333,6 +405,10 @@ class Rewriter:
         # literal insertions, for a rewrite that is not a rename: the cast a receiver of no class needs, see
         # main() and the note there
         self.replacements = {}
+
+    def original(self, name):
+        """The name the port's source spells for a class the dump shows under its built name."""
+        return self.renames.get(name, name)
 
     def owns(self, kind, receiver, selector):
         while receiver:
@@ -366,13 +442,13 @@ class Rewriter:
     def receiver_class(self, node, context):
         kind = node.get("receiverKind")
         if kind == "class":
-            return "+", bare(node["classType"]["qualType"])
+            return "+", self.original(bare(node["classType"]["qualType"]))
         if kind in ("super_instance", "super_class") or not node.get("inner"):
             return None, None
         inner = node["inner"][0]
         # named(), not bare(): an id-typed receiver is written id<UIContextMenuInteractionDelegate> and
         # bare() strips the <...> whole, which leaves "id" -- the type, not the protocol this send is about.
-        qualified = named(inner["type"]["qualType"])
+        qualified = self.original(named(inner["type"]["qualType"]))
         if qualified in self.protocol_owners and qualified not in self.superclasses:
             # A protocol-typed receiver: owns() places the send from the conformers, and the receiver is
             # named by the protocol here so the walk reports the send rather than dropping it silently.
@@ -385,13 +461,13 @@ class Rewriter:
             while target.get("kind") in ("ImplicitCastExpr", "CStyleCastExpr") and target.get("inner"):
                 target = target["inner"][0]
             if context and target.get("kind") == "DeclRefExpr" and target.get("referencedDecl", {}).get("name") == "self":
-                return ("+" if context[0] == "+" else "-"), context[1]
+                return ("+" if context[0] == "+" else "-"), self.original(context[1])
             if target.get("kind") == "ObjCMessageExpr" and target.get("selector") == "alloc":
                 owner = self.receiver_class(target, context)[1]
-                return "-", owner
+                return "-", self.original(owner) if owner else owner
             return "-", None
         if qualified == "Class":
-            return "+", context[1] if context else None
+            return "+", self.original(context[1]) if context else None
         return "-", qualified
 
     def walk(self, node, context):
@@ -407,7 +483,19 @@ class Rewriter:
             return
         kind = node.get("kind")
         if kind in ("ObjCCategoryImplDecl", "ObjCCategoryDecl"):
-            owner = node.get("interface", {}).get("name")
+            owner = self.original(node.get("interface", {}).get("name"))
+            for item in node.get("inner", []):
+                self.walk(item, ("-", owner))
+            return
+        if kind == "ObjCImplementationDecl":
+            # The class a body belongs to, so a send to self inside it is placed against that class and not
+            # against nothing: `[self isEditing]` in Charon's own UICellConfigurationState answers the host's
+            # UICollectionView (CharonEditing)'s selector and must be renamed, while `[self charon_flag:]`, whose
+            # selector the port's own class defines and no category carries, must not be. With no context here a
+            # self send reached the candidate path in main(), which renames a selector the port alone defines
+            # without asking which class it was sent to, and the group died on
+            # -[CharonHostUICellConfigurationState charonHostIsEditing]: unrecognized selector.
+            owner = self.original(node.get("name"))
             for item in node.get("inner", []):
                 self.walk(item, ("-", owner))
             return
@@ -539,7 +627,7 @@ class Rewriter:
             if node.get("isMessagingSetter"):
                 accessors.append("set" + name[0].upper() + name[1:] + ":")
             receiver = node.get("inner", [{}])[0].get("type", {}).get("qualType", "")
-            receiver = context[1] if bare(receiver) in ("id", "instancetype") and context else bare(receiver)
+            receiver = self.original(context[1]) if bare(receiver) in ("id", "instancetype") and context else self.original(bare(receiver))
             if any(self.owns("-", receiver, accessor) for accessor in accessors):
                 # Dot syntax names the accessor itself, so a read is rewritten like a message send's keyword.
                 # A write cannot be: clang derives the setter from the property name it reads, so `self.foo = x`
@@ -749,7 +837,7 @@ def main():
     carried = ported(objects)
     dump = subprocess.run(["xcrun", "clang", *flags, "-fsyntax-only", "-w", "-Xclang", "-ast-dump=json", "-Xclang", "-ast-dump-filter=haron", source_path],
                           capture_output=True, text=True, check=True).stdout
-    superclasses = runtime_superclasses()
+    superclasses = runtime_superclasses(flags)
     source = open(source_path, encoding="utf-8").read()
     # The group is one release: the conformers of a protocol are the same for every file of it, so they are
     # read once for the group and handed to the rewriter, which cannot answer for a protocol receiver
@@ -757,7 +845,7 @@ def main():
     # alone rather than placed against a guess.
     classes = ported_classes([*objects, *superclasses.values()])
     owners = conformers(group_sources or [source_path], flags, classes) if group_sources else {}
-    rewriter = Rewriter(source, carried, superclasses, owners, classes, prefix)
+    rewriter = Rewriter(source, carried, superclasses, owners, classes, prefix, group_renames(flags))
     for document in documents(dump):
         rewriter.walk(document, None)
     if rewriter.candidates:
