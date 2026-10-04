@@ -34,8 +34,16 @@ target("sourcehandlers")
     -- plain `clang -Os -fvisibility=hidden -c`, and NO forced include of the renaming headers. A forced
     -- include is what an IMAGE gets, so that the calls in the image bind to the shim; it must not reach
     -- this program, or the readings below would be a shim's and not the release's.
+    --
+    -- What it does link from the package is the barrier EVENT handler's shim and the resume that writes
+    -- the activation record it asks, both on origin/main, because the event cases ask both columns: the
+    -- release's own dispatch_source_set_event_handler and this package's. No shim of the cancellation or
+    -- registration kind is here, and none is in the binary - run.sh's nm gate refuses a build that has
+    -- one.
     local shims = path.join(root, "packages", "a", "apple-compat", "src")
     add_files(path.join(shims, "dispatch_block_create.c"))
+    add_files(path.join(shims, "dispatch_source_set_event_handler.c"))
+    add_files(path.join(shims, "dispatch_resume.c"))
     add_includedirs(shims)
     add_frameworks("Foundation")
     set_values("charon.version", "1.0")

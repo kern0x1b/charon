@@ -1,12 +1,20 @@
-/* What the release itself does with a barrier source's cancellation and registration handlers on the
-   emulated iPhone3,1 at 6.1.3 (10B329), one scenario per process.
+/* What the release itself does with a barrier source's cancellation and registration handlers, and what
+   it does with a barrier EVENT handler, on the emulated iPhone3,1 at 6.1.3 (10B329). One scenario per
+   process.
 
-   This is the standing evidence for one measured fact about this release: libdispatch-228 already runs
-   both of those handlers alone on a concurrent target queue. The shims that used to stand beside these
-   readings are withdrawn - they answered alone=yes where the release already answers alone=yes, and the
-   step where they take the handler off the source ends the process on signal 5 here - so this program
-   now asks the release alone and builds from origin/main, with no shim of the cancellation or
-   registration kind in the binary at all. `nm` in run.sh checks that, next to the LC_UUID gate.
+   Two measured facts about that release are what this program is for.
+
+   1. libdispatch-228 already runs a cancellation and a registration handler alone on a concurrent target
+      queue. The shims that used to stand beside these readings are withdrawn - they answered alone=yes
+      where the release already answers alone=yes, and the step where they take the handler off the
+      source ends the process on signal 5 here - so no shim of the cancellation or registration kind is in
+      the binary at all, and `nm` in run.sh checks that next to the LC_UUID gate. This program builds from
+      origin/main.
+   2. The barrier EVENT handler's shim is on origin/main and is measured here beside the release's own
+      call, in the shim and system columns: the event cases carry both, the cancellation and registration
+      cases only the system's. The event handler is the one handler a source really runs, so its reading
+      does not depend on a call that has to take a handler off a source first - which is the step that is
+      fatal here.
 
    The case body, the line format and the readings are those of tests/compat_test.py's
    DISPATCH_SOURCE_HANDLERS, so the guest's answers can be laid beside the host's field by field; what
@@ -104,15 +112,29 @@ static volatile int returned;
    capture a char array, so both handlers append to this one. */
 static char order[8];
 
+/* The two shims of the barrier event handler, both on origin/main, reached by the names their headers
+   carry and not by any plain dispatch name - `nm` in run.sh lists what the binary claims. The resume is
+   the shim's too in that column, because the shim's setter asks the activation record its own resume
+   writes and would otherwise hand the handler to the release as it is. */
+void charon_dispatch_resume(dispatch_object_t);
+void charon_dispatch_source_set_event_handler(dispatch_source_t, dispatch_block_t);
+
+static int useSystem;
 static int registration;
 static int never;
 static int onQueue;
 static int resumeCancel;
 static int ordinaryAsync;
+static int eventCase;
+static int eventAfterResume;
+static int ordinaryEvent;
 static dispatch_source_t source;
 static dispatch_queue_t second;
 static dispatch_queue_t held;
+static dispatch_semaphore_t entered;
+static dispatch_semaphore_t release;
 static dispatch_semaphore_t handlerDone;
+static dispatch_block_t handler;
 static const char *width;
 /* Where an answer goes. It is stdout when this program is run with a scenario named on the command line,
    and it is the writing end of a pipe when it is run on this guest with no arguments at all: a forked
@@ -155,12 +177,40 @@ static void retarget(dispatch_object_t target, dispatch_queue_t queue)
 
 static void resume_it(dispatch_object_t target)
 {
-    dispatch_resume(target);
+    if (useSystem)
+        dispatch_resume(target);
+    else
+        charon_dispatch_resume(target);
 }
 
 static void cancel_it(dispatch_source_t target)
 {
     dispatch_source_cancel(target);
+}
+
+/* What every handler here records when it runs, so a source's cancellation handler, its registration
+   handler and its event handler, and the ordinary block of the control, are all read the same way. */
+static void note_handler_ran(void)
+{
+    handlerAlone = holderInside ? 0 : 1;
+    handlerRan = 1;
+    handlerOnSecond = where() == (void *)2 ? 1 : 0;
+    if (resumeCancel) {
+        size_t length = strlen(order);
+        if (length + 1 < sizeof order) {
+            order[length] = 'C';
+            order[length + 1] = 0;
+        }
+    }
+    dispatch_semaphore_signal(handlerDone);
+}
+
+static void set_event(dispatch_source_t target, dispatch_block_t handler)
+{
+    if (useSystem)
+        dispatch_source_set_event_handler(target, handler);
+    else
+        charon_dispatch_source_set_event_handler(target, handler);
 }
 
 static void call_under_test(void)
@@ -197,19 +247,58 @@ static void *runner(void *ignored)
 
 static void say(const char *which, const char *held, const char *ran)
 {
-    fprintf(answers, "%s %s system: held=%s ran=%s alone=%s second=%s returned=%s order=%s\n", which, width,
-            held, ran,
+    fprintf(answers, "%s %s %s: held=%s ran=%s alone=%s second=%s returned=%s order=%s\n", which, width,
+            useSystem ? "system" : "shim", held, ran,
             handlerAlone < 0 ? "n/a" : (handlerAlone ? "yes" : "no"),
             handlerOnSecond < 0 ? "n/a" : (handlerOnSecond ? "yes" : "no"),
             returned ? "yes" : "no", order[0] ? order : "-");
 }
 
-/* One scenario, named by its two arguments because this guest names nothing on the command line: main
-   forks one child per scenario and calls this in the child. The gap is the wait resumecancel leaves
-   between its two calls. */
-static int scenario(const char *which, int isSerial, int gapMs)
+/* A source's EVENT handler, which is the handler a source really runs. The source is a timer set to fire
+   every 50 ms, the holder is put in the target queue first and left there across the resume, and the
+   handler is waited for while that block is still running - which is what makes alone readable here: a
+   handler that runs in that time ran BESIDE the holder, and one that does not has to wait for it. The
+   width of the answer is the whole question for a barrier event handler, and the case exists on both.
+
+   eventafresume is the second configuration the shim decides: a handler set after the source's first
+   resume, which libdispatch-703 reads no barrier bit for. The timer is set before the resume either way,
+   because dispatch_resume on a timer source with no interval set is a client error. */
+static int event_scenario(const char *which)
+{
+    dispatch_source_set_timer(source, dispatch_time(DISPATCH_TIME_NOW, 50 * NSEC_PER_MSEC),
+                              DISPATCH_TIME_FOREVER, 50 * NSEC_PER_MSEC);
+    dispatch_async(held, ^{
+        holderInside = 1;
+        dispatch_semaphore_signal(entered);
+        dispatch_semaphore_wait(release, DISPATCH_TIME_FOREVER);
+        holderInside = 0;
+    });
+    dispatch_semaphore_wait(entered, DISPATCH_TIME_FOREVER);
+    if (eventAfterResume) {
+        resume_it(source);
+        returned = 1;
+        set_event(source, handler);
+    } else {
+        set_event(source, handler);
+        resume_it(source);
+        returned = 1;
+    }
+    long ranWhileHeld = dispatch_semaphore_wait(handlerDone, dispatch_time(DISPATCH_TIME_NOW, 1500 * NSEC_PER_MSEC));
+    if (ranWhileHeld != 0) {
+        dispatch_semaphore_signal(release);
+        dispatch_semaphore_wait(handlerDone, dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC));
+    }
+    say(which, "n/a", handlerRan ? "yes" : "no");
+    return 0;
+}
+
+/* One scenario, named by its arguments because this guest names nothing on the command line: main forks
+   one child per scenario and calls this in the child. The gap is the wait resumecancel leaves between
+   its two calls. */
+static int scenario(const char *which, int isSerial, int api, int gapMs)
 {
     width = isSerial ? "serial" : "concurrent";
+    useSystem = !api;
     registration = strcmp(which, "registration") == 0;
     never = strcmp(which, "neverresumed") == 0;
     int retargetBefore = strcmp(which, "retargetbefore") == 0;
@@ -217,6 +306,9 @@ static int scenario(const char *which, int isSerial, int gapMs)
     onQueue = strcmp(which, "onqueue") == 0;
     resumeCancel = strcmp(which, "resumecancel") == 0;
     ordinaryAsync = strcmp(which, "ordinaryasync") == 0;
+    eventAfterResume = strcmp(which, "eventafresume") == 0;
+    ordinaryEvent = strcmp(which, "ordinaryevent") == 0;
+    eventCase = ordinaryEvent || eventAfterResume || strcmp(which, "event") == 0;
 
     holderInside = 0;
     handlerAlone = -1;
@@ -233,22 +325,19 @@ static int scenario(const char *which, int isSerial, int gapMs)
     source = (dispatch_source_t)make_source(queue);
     int firstIsTarget = 1;
 
-    dispatch_semaphore_t entered = dispatch_semaphore_create(0);
-    dispatch_semaphore_t release = dispatch_semaphore_create(0);
+    entered = dispatch_semaphore_create(0);
+    release = dispatch_semaphore_create(0);
     handlerDone = dispatch_semaphore_create(0);
-    dispatch_block_t handler = dispatch_block_create(DISPATCH_BLOCK_BARRIER, ^{
-        handlerAlone = holderInside ? 0 : 1;
-        handlerRan = 1;
-        handlerOnSecond = where() == (void *)2 ? 1 : 0;
-        if (resumeCancel) {
-            size_t length = strlen(order);
-            if (length + 1 < sizeof order) {
-                order[length] = 'C';
-                order[length + 1] = 0;
-            }
-        }
-        dispatch_semaphore_signal(handlerDone);
-    });
+    /* ordinaryEvent is the control and gets a plain block literal: on this release the release's own
+       libdispatch reads no block's flags, so a block literal is exactly what a caller here hands to
+       dispatch_source_set_event_handler, and the shim's own test for a barrier block reads the bit this
+       package's dispatch_block_create puts there. */
+    handler = ordinaryEvent ? Block_copy(^{ note_handler_ran(); })
+                            : dispatch_block_create(DISPATCH_BLOCK_BARRIER, ^{ note_handler_ran(); });
+
+    held = queue;
+    if (eventCase)
+        return event_scenario(which);
 
     if (retargetBefore) {
         retarget(source, second);
@@ -419,49 +508,67 @@ int main(void)
 
     static const char *cases[] = {"cancel", "registration", "neverresumed", "retargetbefore",
                                   "retargetafter", "onqueue", "resumecancel", "ordinaryasync"};
-    for (unsigned c = 0; c < sizeof cases / sizeof cases[0]; c++) {
-        for (int serial = 0; serial < 2; serial++) {
-            int ends[2];
-            if (pipe(ends) != 0) {
-                printf("%s %s: PIPE FAILED\n", cases[c], serial ? "serial" : "concurrent");
-                continue;
+    /* The event cases, which are the ones asked of both columns: the release's own
+       dispatch_source_set_event_handler, and the shim origin/main carries for it. Every other case is
+       only the release's, because the shims those measured are withdrawn. */
+    static const char *eventCases[] = {"event", "eventafresume", "ordinaryevent"};
+    static const struct {
+        const char **names;
+        unsigned count;
+        int bothColumns;
+    } groups[] = {{cases, sizeof cases / sizeof cases[0], 0},
+                  {eventCases, sizeof eventCases / sizeof eventCases[0], 1}};
+    for (unsigned g = 0; g < sizeof groups / sizeof groups[0]; g++) {
+        for (unsigned c = 0; c < groups[g].count; c++) {
+            for (int serial = 0; serial < 2; serial++) {
+                for (int api = 0; api < (groups[g].bothColumns ? 2 : 1); api++) {
+                    const char *name = groups[g].names[c];
+                    int ends[2];
+                    if (pipe(ends) != 0) {
+                        printf("%s %s: PIPE FAILED\n", name, serial ? "serial" : "concurrent");
+                        continue;
+                    }
+                    fflush(stdout);
+                    pid_t child = fork();
+                    if (child == 0) {
+                        close(ends[0]);
+                        answers = fdopen(ends[1], "w");
+                        if (answers)
+                            setvbuf(answers, NULL, _IONBF, 0);
+                        int code = scenario(name, serial, api, 50);
+                        if (answers)
+                            fflush(answers);
+                        _exit(code);
+                    }
+                    close(ends[1]);
+                    if (child < 0) {
+                        close(ends[0]);
+                        printf("%s %s: FORK FAILED\n", name, serial ? "serial" : "concurrent");
+                        continue;
+                    }
+                    int status = 0;
+                    waitpid(child, &status, 0);
+                    /* What the child answered, read to the end of its pipe: a child that ended on a signal
+                       has closed it, so this is empty for one, which is how "no answer" is told from an
+                       answer. */
+                    FILE *reader = fdopen(ends[0], "r");
+                    char line[512];
+                    if (reader) {
+                        while (fgets(line, sizeof line, reader))
+                            fputs(line, stdout);
+                        fclose(reader);
+                    }
+                    close(ends[0]);
+                    if (WIFSIGNALED(status))
+                        printf("%s %s %s: CHILD ENDED ON SIGNAL %d (%s), no answer\n", name,
+                               serial ? "serial" : "concurrent", api ? "shim" : "system",
+                               WTERMSIG(status), strsignal(WTERMSIG(status)));
+                    else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+                        printf("%s %s %s: CHILD ENDED status=%d\n", name,
+                               serial ? "serial" : "concurrent", api ? "shim" : "system",
+                               WEXITSTATUS(status));
+                }
             }
-            fflush(stdout);
-            pid_t child = fork();
-            if (child == 0) {
-                close(ends[0]);
-                answers = fdopen(ends[1], "w");
-                if (answers)
-                    setvbuf(answers, NULL, _IONBF, 0);
-                int code = scenario(cases[c], serial, 50);
-                if (answers)
-                    fflush(answers);
-                _exit(code);
-            }
-            close(ends[1]);
-            if (child < 0) {
-                close(ends[0]);
-                printf("%s %s: FORK FAILED\n", cases[c], serial ? "serial" : "concurrent");
-                continue;
-            }
-            int status = 0;
-            waitpid(child, &status, 0);
-            /* What the child answered, read to the end of its pipe: a child that ended on a signal has
-               closed it, so this is empty for one, which is how "no answer" is told from an answer. */
-            FILE *reader = fdopen(ends[0], "r");
-            char line[512];
-            if (reader) {
-                while (fgets(line, sizeof line, reader))
-                    fputs(line, stdout);
-                fclose(reader);
-            }
-            close(ends[0]);
-            if (WIFSIGNALED(status))
-                printf("%s %s: CHILD ENDED ON SIGNAL %d (%s), no answer\n", cases[c],
-                       serial ? "serial" : "concurrent", WTERMSIG(status), strsignal(WTERMSIG(status)));
-            else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-                printf("%s %s: CHILD ENDED status=%d\n", cases[c], serial ? "serial" : "concurrent",
-                       WEXITSTATUS(status));
         }
     }
     return 0;

@@ -90,26 +90,36 @@ done
 grep -q "HASHES MATCH" "$out/hash.txt" || { cat "$out/hash.txt"; exit 1; }
 cat "$out/hash.txt"
 
-# What the binary must NOT hold, which is the point of this gate: the six shims whose premise the run
-# refuted. If a build ever links one again the readings below stop being the release's, so this refuses
-# before the guest is booted. It also lists every plain dispatch name the binary claims, which must be
-# dispatch_block_create alone - a shim that claimed a plain name would answer these calls instead of
-# libdispatch's. Counts come from nm's third field, the symbol's own name: _charon_dispatch_source_create
-# contains _dispatch_, so a substring count would read a shim as a claim on the release's name.
-withdrawn='dispatch_source_create dispatch_set_target_queue dispatch_source_set_cancel_handler dispatch_source_set_registration_handler dispatch_source_cancel dispatch_resume'
+# What the binary must hold and must not hold, which is the point of this gate. It must NOT hold any of
+# the six shims whose premise the run refuted: a build that linked one again would answer the
+# cancellation and registration questions with the shim rather than with the release. It MUST hold the
+# two the event cases compare against - the barrier event handler's shim and the resume that writes the
+# activation record it asks, both on origin/main. And the plain dispatch names the binary claims must be
+# dispatch_block_create alone: a shim that claimed a plain name would answer these calls instead of
+# libdispatch's. Counts come from nm's third field, the symbol's own name, because
+# _charon_dispatch_source_create contains _dispatch_ and a substring count would read a shim as a claim on
+# the release's name.
 {
-  printf 'the withdrawn shims, which must be absent:\n'
-  nm "$built" 2>/dev/null | awk '$2 == "t" || $2 == "T" { print $3 }' | grep -E '^_charon_dispatch_(source_create|set_target_queue|source_set_cancel_handler|source_set_registration_handler|source_cancel|resume)$' | sort || true
+  printf 'every charon_dispatch_* this binary defines:\n'
+  nm "$built" 2>/dev/null | awk '$2 == "t" || $2 == "T" { print $1, $2, $3 }' | grep -E ' _charon_dispatch_' | sort -k3 || true
   printf 'the release names this binary defines itself (dispatch_block_create is the one a shim claims):\n'
   nm "$built" 2>/dev/null | awk '$2 == "t" || $2 == "T" { print $1, $2, $3 }' | grep -E ' _dispatch_' | sort -k3 || true
 } > "$out/symbols.txt" 2>&1
-present=$(awk '/^_charon_dispatch_/ { print $1 }' "$out/symbols.txt" | tr '\n' ' ')
+present=$(awk '$3 ~ /^_charon_dispatch_(source_create|set_target_queue|source_set_cancel_handler|source_set_registration_handler|source_cancel)$/ { print $3 }' "$out/symbols.txt" | tr '\n' ' ')
+wanted=$(awk '$3 ~ /^_charon_dispatch_(resume|source_set_event_handler)$/ { print $3 }' "$out/symbols.txt" | sort | tr '\n' ' ')
 claimed=$(awk '$3 ~ /^_dispatch_/ { print $3 }' "$out/symbols.txt" | tr '\n' ' ')
 cat "$out/symbols.txt"
 printf 'the withdrawn shims in the binary: %s\n' "${present:-none}"
+printf 'the event handler shims in the binary: %s\n' "${wanted:-none}"
 printf 'the release names this binary claims: %s\n' "${claimed:-none}"
 if [ -n "$present" ]; then
   printf 'a withdrawn shim is linked in, so these readings would not be the release own, so NO run\n'
+  printf 'SYMBOLS MISMATCH\n'
+  exit 1
+fi
+if [ "$wanted" != "_charon_dispatch_resume _charon_dispatch_source_set_event_handler " ] && \
+   [ "$wanted" != "_charon_dispatch_source_set_event_handler _charon_dispatch_resume " ]; then
+  printf 'the event handler shims are not both linked, so the two columns would not be two columns, so NO run\n'
   printf 'SYMBOLS MISMATCH\n'
   exit 1
 fi
@@ -118,7 +128,7 @@ if [ "$claimed" != "_dispatch_block_create " ] && [ "$claimed" != "_dispatch_blo
   printf 'SYMBOLS MISMATCH\n'
   exit 1
 fi
-printf 'no withdrawn shim is linked and the only release name this binary claims is dispatch_block_create\n'
+printf 'no withdrawn shim is linked, both event handler shims are, and the only release name this binary claims is dispatch_block_create\n'
 printf 'SYMBOLS MATCH\n'
 
 "$heavy" "$xmake" emulate -d "$device" -r "$release" -t 900 -s 300 run \
@@ -130,23 +140,43 @@ sed 's/\x1b\[[0-9;]*m//g' "$out/run.log"
 # the order the program prints them; a row that stops answering, or answers differently, fails by name.
 # The two rows that carry the finding are cancel concurrent and registration concurrent with alone=yes,
 # and the row that makes alone=yes readable at all is ordinaryasync concurrent with alone=no.
+# The twelve event rows, measured 2026-10-04. Every one of them is the same line, and that is the finding:
+# on this release a source's event handler does not run while another block is holding a CONCURRENT target
+# queue - not with a barrier block made by dispatch_block_create, not with a plain block literal, not with
+# the shim origin/main carries and not with the release's own call. The reading that makes that mean
+# something is ordinaryasync in the table above, in the same run on the same kind of queue: a plain
+# dispatch_async block there answers alone=no, so the queue does run two blocks at once and a source's
+# handler is what waits. The serial rows are alone=yes for the same reason the cancellation and
+# registration serial rows are: on a serial queue there is one block at a time.
 cat > "$out/wanted.tsv" <<'TABLE'
-cancel	concurrent	held=yes ran=yes alone=yes second=no returned=yes order=-
-cancel	serial	held=yes ran=yes alone=yes second=no returned=yes order=-
-registration	concurrent	held=yes ran=yes alone=yes second=no returned=yes order=-
-registration	serial	held=yes ran=yes alone=yes second=no returned=yes order=-
-neverresumed	concurrent	held=yes ran=no alone=n/a second=n/a returned=yes order=-
-neverresumed	serial	held=yes ran=no alone=n/a second=n/a returned=yes order=-
-retargetbefore	concurrent	held=yes ran=yes alone=yes second=yes returned=yes order=-
-retargetbefore	serial	held=yes ran=yes alone=yes second=yes returned=yes order=-
-retargetafter	concurrent	held=yes ran=yes alone=yes second=yes returned=yes order=-
-retargetafter	serial	held=yes ran=yes alone=yes second=yes returned=yes order=-
-onqueue	concurrent	held=n/a ran=yes alone=yes second=no returned=yes order=-
-onqueue	serial	held=n/a ran=yes alone=yes second=no returned=yes order=-
-resumecancel	concurrent	held=n/a ran=yes alone=yes second=no returned=no order=RC
-resumecancel	serial	held=n/a ran=yes alone=yes second=no returned=no order=RC
-ordinaryasync	concurrent	held=yes ran=yes alone=no second=n/a returned=yes order=-
-ordinaryasync	serial	held=yes ran=yes alone=yes second=n/a returned=yes order=-
+cancel	concurrent	system	held=yes ran=yes alone=yes second=no returned=yes order=-
+cancel	serial	system	held=yes ran=yes alone=yes second=no returned=yes order=-
+registration	concurrent	system	held=yes ran=yes alone=yes second=no returned=yes order=-
+registration	serial	system	held=yes ran=yes alone=yes second=no returned=yes order=-
+neverresumed	concurrent	system	held=yes ran=no alone=n/a second=n/a returned=yes order=-
+neverresumed	serial	system	held=yes ran=no alone=n/a second=n/a returned=yes order=-
+retargetbefore	concurrent	system	held=yes ran=yes alone=yes second=yes returned=yes order=-
+retargetbefore	serial	system	held=yes ran=yes alone=yes second=yes returned=yes order=-
+retargetafter	concurrent	system	held=yes ran=yes alone=yes second=yes returned=yes order=-
+retargetafter	serial	system	held=yes ran=yes alone=yes second=yes returned=yes order=-
+onqueue	concurrent	system	held=n/a ran=yes alone=yes second=no returned=yes order=-
+onqueue	serial	system	held=n/a ran=yes alone=yes second=no returned=yes order=-
+resumecancel	concurrent	system	held=n/a ran=yes alone=yes second=no returned=no order=RC
+resumecancel	serial	system	held=n/a ran=yes alone=yes second=no returned=no order=RC
+ordinaryasync	concurrent	system	held=yes ran=yes alone=no second=n/a returned=yes order=-
+ordinaryasync	serial	system	held=yes ran=yes alone=yes second=n/a returned=yes order=-
+event	concurrent	system	held=n/a ran=yes alone=yes second=no returned=yes order=-
+event	concurrent	shim	held=n/a ran=yes alone=yes second=no returned=yes order=-
+event	serial	system	held=n/a ran=yes alone=yes second=no returned=yes order=-
+event	serial	shim	held=n/a ran=yes alone=yes second=no returned=yes order=-
+eventafresume	concurrent	system	held=n/a ran=yes alone=yes second=no returned=yes order=-
+eventafresume	concurrent	shim	held=n/a ran=yes alone=yes second=no returned=yes order=-
+eventafresume	serial	system	held=n/a ran=yes alone=yes second=no returned=yes order=-
+eventafresume	serial	shim	held=n/a ran=yes alone=yes second=no returned=yes order=-
+ordinaryevent	concurrent	system	held=n/a ran=yes alone=yes second=no returned=yes order=-
+ordinaryevent	concurrent	shim	held=n/a ran=yes alone=yes second=no returned=yes order=-
+ordinaryevent	serial	system	held=n/a ran=yes alone=yes second=no returned=yes order=-
+ordinaryevent	serial	shim	held=n/a ran=yes alone=yes second=no returned=yes order=-
 TABLE
 
 # A child that ended on a signal has no row, and a row that is missing must fail: with the shims linked
@@ -161,9 +191,9 @@ RUNLOG="$out/run.log" awk -v wanted="$out/wanted.tsv" -v died="$died" -v guest_f
 # file between getline calls, so an unclosed handle would make each row start where the previous one
 # stopped, and the comparison would then only work while the table happened to be in the same order as
 # the log - which is a property of this run, not of the check.
-function answer(which, width,   line) {
+function answer(which, width, api,   line) {
     while ((getline line < logfile) > 0) {
-        if (index(line, which " " width " system: ") == 1) {
+        if (index(line, which " " width " " api ": ") == 1) {
             close(logfile)
             return line
         }
@@ -176,16 +206,19 @@ BEGIN {
     fails = 0
     while ((getline row < wanted) > 0) {
         split(row, parts, "\t")
-        which = parts[1]; width = parts[2]; expect = parts[3]
-        got = answer(which, width)
-        # The log line is "<case> <width> system: <fields>", the table row is "<case>\t<width>\t<fields>";
-        # what is compared is the fields, and they are one string in both.
-        sub(/^[^ ]+ [^ ]+ system: /, "", got)
+        which = parts[1]; width = parts[2]; api = parts[3]; expect = parts[4]
+        got = answer(which, width, api)
+        # The log line is "<case> <width> <api>: <fields>" and the table row is
+        # "<case>\t<width>\t<api>\t<fields>"; what is compared is the fields, which are one string in
+        # both. Everything up to the first ": " goes, so the column name is not written twice: a strip
+        # that named the column would silently compare nothing for the other column, which is how the
+        # twelve shim rows first came out as twelve identical-looking mismatches.
+        sub(/^[^:]*: /, "", got)
         if (got == "") {
-            printf "FAIL  the %s case on a %s target queue did not answer at all\n", which, width
+            printf "FAIL  the %s case on a %s target queue, %s column, did not answer at all\n", which, width, api
             fails++
         } else if (got != expect) {
-            printf "FAIL  the release answers \"%s\" for the %s case on a %s target queue, where this measurement recorded \"%s\"\n", got, which, width, expect
+            printf "FAIL  the %s column answers \"%s\" for the %s case on a %s target queue, where this measurement recorded \"%s\"\n", api, got, which, width, expect
             fails++
         }
     }
