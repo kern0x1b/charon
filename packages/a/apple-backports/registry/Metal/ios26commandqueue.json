@@ -55,6 +55,160 @@
    "effect": "the value the application set, read back, with Apple's own answer measured on a host and written down in tests/backports/device/metalchain-expectations.h; the port's queue is an EAGL object over OpenGL ES 2.0 and cannot be built in a host binary, so the CHECK against those expectations is the CHECK against those expectations is the device probe tests/backports/device/metalchain-probe, which compiles clean for armv7 iOS 6.1.3 and has NOT been RUN: heavy.sh queued it behind the gate (\"load average 13 is at or over 12, waiting\") and it did not get a slot, so there is NO verdict line yet and this row does not claim one. The probe's runner is tests/backports/device/metalchain-probe/run.sh, and it refuses to run a stale binary by comparing LC_UUIDs (facts/Metal/CommandChain26.md)",
    "source": "SDK 26.2, Metal, MTLDevice.h:1262-1280, MTL4CommandQueue.h:212 and MTL4CommandBuffer.h; Apple's own answers measured by tests/backports/host/metal-census/chain-oracle.sh and chain-commit.sh",
    "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue commit:count:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the queue's only submit call, and it COMMITS: each buffer of the C array that this port made is committed through the queue underneath, which draws over the EAGL context; one from anywhere else is refused by name rather than sent to a queue that cannot read it. Apple's own -commit:count: RETURNS on the header's own path and on the un-ended one alike, measured in a process execed on its own (chain-commit.sh)",
+   "effect": "the commit returns and the port's own work is submitted; a buffer this port did not make is refused with a line naming its class. The run that placed the method on the queue measured this case as a FAILURE while it sat on CharonMetalDevice, and it is asked by the device probe on the guest; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:231; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue commit:count:options:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the options form of the same commit, and MTL4CommitOptions carries a feedback handler this queue has nowhere to report to: the port's feedback is the commit itself, so the commit runs and the caller is told there is no MTL4CommitFeedback",
+   "effect": "the commit returns as -commit:count: does, and a caller that asked for feedback is told there is none; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:236; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue addResidencySet:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name: this port keeps every resource resident for the life of its EAGL context and has no residency set to add one to",
+   "effect": "the call returns and a line in the log names the facility it would have needed; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:246; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue removeResidencySet:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name: the same absence as -addResidencySet:, from the other side",
+   "effect": "the call returns and a line in the log names the facility it would have needed; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:250; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue addResidencySets:count:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name, for every set of the C array: there is no residency set in this port",
+   "effect": "the call returns and one line in the log says how many sets were refused; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:254; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue removeResidencySets:count:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name, for every set of the C array: there is no residency set in this port",
+   "effect": "the call returns and one line in the log says how many sets were refused; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:258; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue updateBufferMappings:heap:count:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name: a sparse mapping needs an MTLHeap with a residency mode, and this port's heaps are the arena of one EAGL context with nothing sparse in it",
+   "effect": "the call returns and a line in the log names the heap residency it would have needed; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:262; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue updateTextureMappings:heap:count:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name: the same absent heap residency as the buffer form, for textures",
+   "effect": "the call returns and a line in the log names the heap residency it would have needed; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:266; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue copyBufferMappingsFromBuffer:toBuffer:operations:count:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name: there are no sparse mappings to copy, since none can be made",
+   "effect": "the call returns and one line in the log says how many mappings were refused; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:270; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue copyTextureMappingsFromTexture:toTexture:operations:count:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name: there are no sparse mappings to copy, since none can be made",
+   "effect": "the call returns and one line in the log says how many mappings were refused; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:272; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue waitForDrawable:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name: this queue has no drawable of its own, and a CAMetalLayer's is presented by the application that made it",
+   "effect": "the call returns and a line in the log names the drawable it would have waited on; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:308; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue waitForEvent:value:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name: this port has no event that outlives the EAGL context it would be waited on. The header spells the event id<MTLEvent> and this spells it id, because iOS 6 has no MTLEvent to name and the SDK annotates the type 12.0 and later; the selector is the header's",
+   "effect": "the call returns and a line in the log names the event it would have waited on; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:274; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue signalEvent:value:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name: the same absent event as -waitForEvent:value:, from the other side, and spelled the same way",
+   "effect": "the call returns and a line in the log names the event it would have signalled; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:278; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
+  },
+  {
+   "api": "-[MTL4CommandQueue signalDrawable:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "refused by name: the same absent drawable as -waitForDrawable:, from the other side",
+   "effect": "the call returns and a line in the log names the drawable it would have signalled; Held by the device probe tests/backports/device/metalchain-probe, whose runner refuses to run a stale binary by comparing LC_UUIDs built against installed, and whose run of 2026-10-04 on the emulated iPhone3,1 6.1.3 measured every case in tests/backports/device/metalchain-expectations.h (facts/Metal/CommandChain26.md)",
+   "source": "SDK 26.2, Metal, MTL4CommandQueue.h:312; the port's own placement measured by the device probe's run of 2026-10-04, which found these methods answering on CharonMetalDevice",
+   "facts": "facts/Metal/CommandChain26.md"
   }
  ]
 }
