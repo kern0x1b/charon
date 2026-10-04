@@ -2,11 +2,37 @@
 
 static BOOL ur_port_mode;
 
+// A prefixed selector for the port's copy of a name, spelled the way prefix_selectors.py's prefixed()
+// spells it, which is not simply "charonHost" in front of the name. An Objective-C family keyword keeps
+// its own spelling and the prefix goes after it, so the method is still an initializer and clang's family
+// rules still see one: initWithDynamicProvider: becomes initCharonHostWithDynamicProvider:, not
+// charonHostInitWithDynamicProvider:. Measured on this group, linking the port's own object:
+//
+//   $ nm colors13/UIColorDynamic.m.o | grep DynamicProvider
+//   00000000000001a8 t +[UIColor(CharonDynamicColor) charonHostColorWithDynamicProvider:]
+//   0000000000000444 t -[UIColor(CharonDynamicColor) initCharonHostWithDynamicProvider:]
+//
+// and with that object linked, [UIColor alloc] - whose class the host names UIPlaceholderColor, and which
+// IS a UIColor subclass - answers initWithDynamicProvider: and not the name this header was asking for:
+// "unrecognized selector sent to instance", exit 134. Four other groups carry family keywords too
+// (controlactions, controlmenus, views13), which is why the rule is spelled once and here rather than
+// patched per group.
 static SEL ur_sel(const char *name)
 {
     if (!ur_port_mode)
         return sel_registerName(name);
+    static const char *families[] = {"mutableCopy", "copy", "init", "new", "alloc"};
     char renamed[256];
+    for (size_t index = 0; index < sizeof(families) / sizeof(families[0]); index++) {
+        size_t length = strlen(families[index]);
+        if (strncmp(name, families[index], length) != 0)
+            continue;
+        char tail = name[length];
+        if (tail == '\0' || (tail >= 'A' && tail <= 'Z')) {
+            snprintf(renamed, sizeof(renamed), "%sCharonHost%s", families[index], name + length);
+            return sel_registerName(renamed);
+        }
+    }
     snprintf(renamed, sizeof(renamed), "charonHost%c%s", name[0] - 32, name + 1);
     return sel_registerName(renamed);
 }

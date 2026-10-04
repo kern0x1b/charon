@@ -106,16 +106,44 @@ def spelled(type_node):
     return type_node.get("desugaredQualType", qualified)
 
 
+def declared(text):
+    """A type as this tool is willing to write into a declaration. A declaration here only has to make the
+    rewritten file compile - the send passes what the source passes it, and the receiver is untyped - which
+    is what send_declaration() below has always said, so where a real type will not parse, `id` will:
+
+      - a struct, union or enum BY VALUE. clang writes `struct CGPoint` for the type of
+        -updateInteractiveMovementTargetPosition:(struct CGPoint)targetPosition, and neither that nor the
+        parenthesised spelling compiles here: measured on listactions, whose CharonLists.m carries that send
+        and whose UILayoutGuide category carries -charon_pinFrame:(struct CGRect)frame,
+        "error: expected a type" at each.
+      - a leading nullability keyword. clang writes `nullable NSData *` for a deprecated NSURLConnection
+        method's result, and `+ (nullable NSData *)...` is not a type.
+      - a type that is one of the PORT's own classes. The declarations header force-includes
+        <UIKit/UIKit.h> and nothing else, and it is read by every file of the group, so a name the port
+        declares in one of them is unknown to the rest: measured on listactions, whose CharonLists.m reads
+        -charon_movement, whose type UICollectionView+InteractiveMovement.m declares and this header does
+        not, and the group stopped on "error: expected a type". Charon is the port's own prefix by
+        construction - no SDK type has it - so a base name that starts with it is one of ours.
+    """
+    if re.match(r"(?:struct|union|enum)\s+[A-Za-z_]", text):
+        return "id"
+    text = re.sub(r"^(?:_Nullable|_Nonnull|__nullable|__nonnull|nullable|nonnull|null_unspecified)\s+", "", text)
+    base = re.sub(r"[^A-Za-z0-9_].*$", "", text.replace("*", " ").strip())
+    if base.startswith("Charon"):
+        return "id"
+    return text
+
+
 def declaration(sign, node, prefix):
     keywords = node["name"].split(":")
     parameters = [item for item in node.get("inner", []) if item.get("kind") == "ParmVarDecl"]
-    head = "%s (%s)" % (sign, spelled(node["returnType"]))
+    head = "%s (%s)" % (sign, declared(spelled(node["returnType"])))
     if not parameters:
         return head + prefixed(node["name"], prefix)
     parts = []
     for index, parameter in enumerate(parameters):
         keyword = prefixed(keywords[index], prefix) if index == 0 else keywords[index]
-        parts.append("%s:(%s)%s" % (keyword, spelled(parameter["type"]), parameter.get("name", "value%d" % index)))
+        parts.append("%s:(%s)%s" % (keyword, declared(spelled(parameter["type"])), parameter.get("name", "value%d" % index)))
     return head + " ".join(parts)
 
 
