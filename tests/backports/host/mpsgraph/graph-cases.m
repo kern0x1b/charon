@@ -2956,6 +2956,60 @@ static void family_gather_spacebatch(void)
              blockDimensionsTensor:forwardShapeConstant(g, @[@2, @2])
                  usePixelShuffleOrder:NO name:@"s"] ]; },
                       @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    // The FED pair of 15.0, whose THREE axes arrive as tensors and whose block size is still written down -
+    // measured over the same [3, 4, 6] and the same axes of 2, 1 and 0 with the same block of 2: an int32
+    // constant of shape [1] answers exactly what the written-down forms above answer over the same operand,
+    // byte for byte, in both directions and under both flags. A placeholder answers nothing at all and does
+    // not take the process down (the graph builds with the result carrying no shape and the compile still
+    // hands back an executable), which is measured in refusals.txt.
+    multi_targets_case("spaceToDepth2D-fed-constants float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToDepth2DTensor:in[0]
+                          widthAxisTensor:forwardShapeConstant(g, @[@2])
+                         heightAxisTensor:forwardShapeConstant(g, @[@1])
+                          depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                blockSize:2
+                     usePixelShuffleOrder:NO name:@"s"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("spaceToDepth2D-fed-constants-shuffle float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToDepth2DTensor:in[0]
+                          widthAxisTensor:forwardShapeConstant(g, @[@2])
+                         heightAxisTensor:forwardShapeConstant(g, @[@1])
+                          depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                blockSize:2
+                     usePixelShuffleOrder:YES name:@"s"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("depthToSpace2D-fed-constants float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g depthToSpace2DTensor:in[0]
+                          widthAxisTensor:forwardShapeConstant(g, @[@2])
+                         heightAxisTensor:forwardShapeConstant(g, @[@1])
+                          depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                blockSize:2
+                     usePixelShuffleOrder:NO name:@"d"] ]; },
+                      @[twelveByTwoByThree], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("depthToSpace2D-fed-constants-shuffle float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g depthToSpace2DTensor:in[0]
+                          widthAxisTensor:forwardShapeConstant(g, @[@2])
+                         heightAxisTensor:forwardShapeConstant(g, @[@1])
+                          depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                blockSize:2
+                     usePixelShuffleOrder:YES name:@"d"] ]; },
+                      @[twelveByTwoByThree], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    // And the fed pair's own inverse claim: the same three constants into both directions is the identity,
+    // which is what the header's "This operation is the inverse of" sentence says of the FED pair.
+    multi_targets_case("spaceToDepth2D-fed-roundtrip float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        MPSGraphTensor *s = [g spaceToDepth2DTensor:in[0]
+                                   widthAxisTensor:forwardShapeConstant(g, @[@2])
+                                  heightAxisTensor:forwardShapeConstant(g, @[@1])
+                                   depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                         blockSize:2
+                              usePixelShuffleOrder:NO name:@"s"];
+        return @[ [g depthToSpace2DTensor:s
+                          widthAxisTensor:forwardShapeConstant(g, @[@2])
+                         heightAxisTensor:forwardShapeConstant(g, @[@1])
+                          depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                blockSize:2
+                     usePixelShuffleOrder:NO name:@"d"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
     chain_case();
 }
 

@@ -1688,6 +1688,167 @@ two-element int32 constant out of four bytes. With the length right it answers `
 what the written-down sizes answer. The corrected probe is `.agent-work/probe/family2c.m` and the four
 constants are cases of `gather_split`; nothing in the rows rests on the wrong reading.
 
+## The block-moving family: four operations that are ONE chain of three walks
+
+Eight rows and two seams, of 15.0 and 16.1: the **space-to-depth** and **depth-to-space** of 15.0, each with two
+axes of a block and the axis the blocks go to and the axis they come from, and the **space-to-batch** and
+**batch-to-space** of 16.1, which are the same thing with any number of spatial axes and a rectangular block.
+
+**Nothing in this family is a walk of its own.** Every one of the four operations is three walks this library
+already had, in this order:
+
+1. a **reshape** that splits each spatial axis into its block rows and its block columns - or merges them back
+   and splits the batch axis instead, which is the same statement the other way round;
+2. the **permutation transpose** of 16.0, which carries the batch axis's own piece and the block's own
+   coordinates into the order the flag names;
+3. the reshape that collapses that group back into the single axis the result has.
+
+So the seam is `-charon_mps_blockShuffle:spatial:batch:block:toBatch:shuffle:name:` and what is worth writing
+down is the **order the axes are held in** and **the rules the release refuses the family by**.
+
+Measured on this host's own MPSGraph (macOS 27.0 build 26A428, M4 Pro, Metal 4) and compared cell for cell in a
+process of its own (`gather_spacebatch`): **49 cases, 1416 cells, every cell byte-identical to the release,
+`gather_spacebatch: same as the system on 1416 of the 1416 cells with a result buffer; 1416 within the
+release's own precision, 0 recorded`, `checks=23 failures=0 recorded=0`, and the red control differing from the
+release in 24 of the 49 case lines.**
+
+### The one thing that was wrong, and it took the whole family with it
+
+The permutation the transpose reads is the **operand's axes in the operand's own order with the batch axis
+replaced by the woven group**, and the collapse after it is of **that run of adjacent axes** rather than of a
+prefix. An earlier version of the seam appended the block ROWS to the woven group as well, which made the
+permutation one entry per spatial axis longer than the split tensor has axes. The symptom was not a wrong
+answer: the family's own process **died on its very first case** with
+
+> `MPSGraph: s was asked to transpose with a permutation of 7 entries for a rank-5 tensor`
+
+so no case of the family past the first was ever compared against the release, and the `wip` commit that
+introduced the seam reported sixteen of eighteen cases green - a number measured before that edit and not after
+it. The order above is what fixes it, and what the two cases that first showed it are:
+
+| case | the release answers | what the port answered |
+| --- | --- | --- |
+| one spatial axis `@[@2]` over a `[3, 4, 6]` with batch axis 0 and a block of `@[@2]` | a **`[6, 4, 3]`** | a `[6, 3, 4]` |
+| three spatial axes `@[@0, @1, @2]` over a `[2, 2, 4, 2]` with the **batch axis last** | a **`[1, 1, 2, 16]`** | a `[16, 1, 1, 2]` |
+
+Both are the result's AXIS ORDER, and both say the same thing: the axes after the batch axis were being put in
+the split layout's order rather than the operand's. With the order fixed, a one-spatial-axis graph carries the
+answer of the general form over two axes with one of them of extent one, and the batch axis's own position is
+what the three-axes case pins down.
+
+### What the release's own ordering is, in the words of the measurement
+
+* **The block's own coordinates run with the LAST spatial axis fastest.** That is what makes the 2D form's
+  `(widthAxis, heightAxis)` the general form's `spatialAxes @[@heightAxis, @widthAxis]`: measured, the two
+  forms over the same operand and the same block answer **byte for byte the same values**.
+* **Block dimension `i` belongs to spatial axis `i`, and the result's axes are the operand's own in the
+  operand's own order.** Both halves are measured over a `[2, 4, 8]` whose batch axis is 0, and they are two
+  halves of one fact - a list written the other way round is the same operation read positionally:
+
+  | `spatialAxes` | `blockDimensions` | the release answers | what it says |
+  | --- | --- | --- | --- |
+  | `@[@1, @2]` | `@[@4, @2]` | a **`[16, 1, 4]`** | axis 1 over **its own** block of 4 is 1, axis 2 over its own block of 2 is 4 - the result holds the **operand's** axes |
+  | `@[@2, @1]` | `@[@4, @2]` | a **`[16, 2, 2]`** | the same two numbers read positionally against the other list: the block of 4 now belongs to axis 2 |
+  | `@[@1, @2]` | `@[@2, @4]` | a `[16, 2, 2]` of `(1, 5, 17, 21, 33, 37, ...)` | the blocks swapped, so each axis has its own block again - and **different bytes** from the line below |
+  | `@[@2, @1]` | `@[@4, @2]` | a `[16, 2, 2]` of `(1, 5, 17, 21, ... , 9, 13, 25, 29, ...)` | the same shape, not the same bytes |
+  | `@[@1, @2]` | `@[@2, @2]` | a `[8, 1, 2]` over a `[2, 2, 4]` | with an **equal** block the two orders are a `[8, 1, 2]` each and **still not the same bytes** |
+
+  The bytes differ because **the block's own coordinate `k` runs in the LIST's order, with the last of them
+  fastest**, whichever order that is - so writing the list the other way round with the blocks swapped
+  assigns each block coordinate to the other axis.
+* **The flag says which of the batch coordinate and the block's own is fastest in the result's batch axis.**
+  With `usePixelShuffleOrder=NO` the batch coordinate is the fastest, and the result's `d'` is `d + D*k`; with
+  `YES` it is the slowest and `d'` is `d*(the product of the block) + k`, where `k` is the block's own
+  coordinate in its row-major order with the last spatial axis fastest. Over the `[3, 4, 6]` with a 2x2 block:
+
+  | the operand's element | `d'` with NO | `d'` with YES |
+  | --- | --- | --- |
+  | `(0, 0, w even)` | 0 | 0 |
+  | `(0, 0, w odd)` | 3 | 1 |
+  | `(1, 0, w even)` | 1 | 4 |
+  | `(0, 1, w even)` | 6 | 2 |
+
+  which is the header's own sentence measured: the block's values "contiguously within the depthAxis
+  dimension" with YES and "interleaved with existing values" without it.
+* **The result's shape** is the operand's own with the batch axis made `D` times the product of the block and
+  every spatial axis made `extent / block` - `[3, 4, 6]` -> `[12, 2, 3]` - and for the other direction the same
+  statement the other way round.
+* **Each operation is the inverse of its partner with the same flag, and the round trip is the identity**, for
+  both flags and for both the general and the 2D form. That is the header's own "This operation is the inverse
+  of" sentence measured rather than assumed, and it is why the two directions are one chain here run forwards
+  and one run backwards.
+
+### The block rule is the same rule in two operations' own words
+
+A block has to be an extent of one **and** to fit the axis it is a block of, and *which* of those two rules
+that is depends on the direction, because the two directions move the blocks opposite ways:
+
+| direction | the rule | the release's sentence, over a `[3, 4, 6]` and a `[12, 2, 3]` |
+| --- | --- | --- |
+| blocks IN (`spaceToBatch`, `spaceToDepth2D`) | each block **divides its own extent**, because every spatial axis becomes `extent / block` | ``Invalid `block_dimensions[1] = 5 for input size[2] = 6``, and the 2D form's `block_size (3) must be multiple of height 4` |
+| blocks OUT (`batchToSpace`, `depthToSpace2D`) | the **product** of the blocks divides the batch axis, because the batch axis is the one that shrinks - which for the 2D form, with ONE block size for two axes, is the **square** of the block over the depth axis | ``Invalid prod(`block_dimensions`) = 4 for input[2] = 2``, and the 2D form's `block_size (3) squared (9) must be multiple of depth 12` |
+
+This was the one divergence the last pass found and fixed, and the fix is in this object rather than in the
+seam: the seam quotes the general form's sentence for both directions, and `depthToSpace2DTensor:` - which is
+15.0's own method in 15.0's own object - now asks its own rule in the 2D form's own words before it reaches
+the seam.
+
+### The refusals, and the moment each one happens at
+
+Every one of these is in `refusals.txt` with the release's own words and the exit status it was measured to
+have. The moment matters as much as the text: **an axis outside the rank is refused where the graph is
+BUILT**, with the result's shape nil and the release's own `LLVM ERROR: Failed to infer result type(s):`
+behind it, while **a degenerate pair of axes and a block that does not divide are refused where the graph is
+COMPILED**, after the release has built a result of a shape of its own.
+
+| question | the release's words | moment | the shape it had built |
+| --- | --- | --- | --- |
+| an axis outside the rank, general form | `'mps.space_to_batch' op invalid axis: 3, axis must be in range - rank <= axis < rank, rank = 3` | build | nil |
+| an axis outside the rank, 2D form | `invalid width_axis (3) for shape of rank 3`, and a negative one lands there too as `invalid width_axis (2147483647)` - the header's own `NSUInteger` making the caller write it | build | nil |
+| the same axis twice | `'mps.space_to_batch' op axis must be unique` | build | nil |
+| the batch axis among the spatial ones | ``'mps.batch_to_space' op `batch_axis` = 0 must be unique from `spatial_axes` `` | build | a shape, `12x2x6` |
+| as many block dimensions as spatial axes | ``must have same size as `block_dimensions` `` | build | nil |
+| a block that does not divide | ``Invalid `block_dimensions[1] = 5 for input size[2] = 6`` | compile | `30x2x1` |
+| a degenerate pair of axes | `'mps.space_to_depth_2d' op Invalid degenerate axes: depth_axis (1) height_axis (1) for shape of rank 3` | compile | `3x16x3` |
+| a block that does not divide, 2D, in | `block_size (3) must be multiple of height 4` | compile | `27x1x2` |
+| a block that does not divide, 2D, out | `block_size (3) squared (9) must be multiple of depth 12` | compile | `1x6x9` |
+
+The port asks every one of them **where the graph is built**, with the release's own sentence, which is this
+library's rule for every extent the release will not run. That is a difference of moment and not of rule, and
+the rows of the family say so.
+
+### The 15.0 FED pair, measured before any row claimed it
+
+`spaceToDepth2DTensor:widthAxisTensor:heightAxisTensor:depthAxisTensor:blockSize:usePixelShuffleOrder:name:`
+and its partner take their **three axes as tensors** and their block size written down - which is the header's
+own shape, and which the previous pass had declared but **never asked of the release**. The probe is
+`.agent-work/probe/fed2d.m`; the raw run is `.agent-work/runs/v-mps11/fed2d-all.txt`.
+
+* **A CONSTANT of shape `[1]` answers exactly what the written-down axes answer**, byte for byte, in both
+  directions and under both flags - measured over the same `[3, 4, 6]` of 1 to 72 with the same axes of 2, 1 and
+  0 and the same block of 2. An **int64** of shape `[1]` answers the same, so the release takes a shape of
+  four or of eight bytes.
+* **A constant of NO rank is not constructible at all.** The release's own
+  `+constantWithData:shape:dataType:` takes the process down with ``failed assertion `shape.count > 0 failed, a
+  constant must be passed a ranked shape'`` (exit 134), so the axis tensor has to be written with a rank.
+* **A constant of MORE THAN ONE NUMBER builds the graph and leaves the result carrying no shape**, so there is
+  nothing for a caller to read before the run and nothing to run into.
+* **A PLACEHOLDER is the one of the four the release does not refuse, and the one this port does.** The release
+  builds the graph with the result carrying **no shape at all**, hands back an executable, and its own run
+  answers the written-down form's values into the destination the caller gave it - measured: the `12x2x3` of
+  `(1, 3, 5, 13, 15, 17, 25, ... | 2, 4, 6, 14, ...)` over the three axes of 2, 1 and 0 fed one each, exit 0
+  (`block-s2d-fed-axis-placeholder`). The port raises where the graph is built instead, because the whole
+  chain - the split shape, the permutation and the result's own shape - would have to be built at run time
+  rather than at build time, which is the interpreter's own `fedParameter` arrangement and not a line in a
+  seam. **That is the one measured answer of this pair the port does not give, and it is the whole of what is
+  left of it.**
+
+One thing measured on the way, which decides which of these questions can be asked at all: the
+**depth-to-space** over fed placeholder axes **was measured not to return within 300 s** on this host - it
+builds the graph and writes its `result-shape nil` line, and then the process is still there - so it is **not**
+in `refusals.txt` (a question that hangs would hang `run.sh`), and it is recorded here instead. Its
+space-to-depth counterpart, which is the one that is asked, returns (exit 0).
+
 ## The R4 names this band adds, in full
 
 The SDK this package compiles against, the iPhoneOS 16.4 one, declares none of these: they are the private

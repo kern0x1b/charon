@@ -1127,12 +1127,18 @@ typedef enum {
 //     form over the same operand answers byte for byte what the general form answers with
 //     spatialAxes=@[@1, @2] and blockDimensions=@[@2, @2], and with THREE spatial axes the last of them
 //     varies fastest of all.
-//   - THE RESULT'S SPATIAL AXES KEEP THE OPERAND'S ORDER, not the order the list is written in, while the
-//     BLOCK LIST IS READ IN THE ORDER IT IS WRITTEN: measured, spatialAxes @[@2, @1] with
-//     blockDimensions @[@2, @2] over a [2, 2, 4] answers a [8, 1, 2] - the operand's own axis 1 keeps its
-//     position in the result - and with a RECTANGULAR block the two orders answer different bytes
-//     (spatialAxes @[@1, @2] with block @[@2, @4] against spatialAxes @[@2, @1] with block @[@4, @2] over
-//     a [2, 4, 8], both a [16, 2, 2] and not the same bytes).
+//   - BLOCK DIMENSION i BELONGS TO SPATIAL AXIS i, and THE RESULT'S AXES ARE THE OPERAND'S OWN in the
+//     operand's own order - the two together are what a list written the other way round is, and each is
+//     measured over a [2, 4, 8] whose batch axis is 0: spatialAxes @[@1, @2] with block @[@4, @2] answers a
+//     [16, 1, 4] - axis 1 over ITS OWN block of 4 is 1 and axis 2 over its own block of 2 is 4, so the result
+//     holds the operand's axes and not the list's - and spatialAxes @[@2, @1] with the same @[@4, @2]
+//     answers a [16, 2, 2], which is the same two numbers read positionally against the other list.
+//     A list written the other way round with the blocks swapped to match pairs each axis with its own block
+//     again and answers the SAME shape and DIFFERENT bytes: spatialAxes @[@1, @2] with block @[@2, @4] and
+//     spatialAxes @[@2, @1] with block @[@4, @2] are both a [16, 2, 2] and not the same bytes, and with an
+//     EQUAL block the two are both a [8, 1, 2] over a [2, 2, 4] and still not the same bytes - because the
+//     block's own coordinate runs in the LIST's order, with the last of them fastest, whichever order that
+//     is.
 //   - WITH usePixelShuffleOrder=NO the batch coordinate is the FASTEST of the two in the result's batch axis:
 //     the result's batch coordinate d' is d + D*k, where D is the operand's own batch extent and k is the
 //     block's own coordinate in its row-major order - measured over the [3, 4, 6]: the elements at
@@ -1300,8 +1306,13 @@ typedef enum {
             [woven addObject:indexOf[[NSString stringWithFormat:@"ki%lu", (unsigned long)i]]];
         [woven addObject:indexOf[batchKey]];
     }
-    for (NSUInteger i = 0; i < count; i++)
-        [woven addObject:indexOf[[NSString stringWithFormat:@"hi%lu", (unsigned long)i]]];
+    // The group holds ITS OWN pieces and nothing else - the block's own coordinates and the batch axis's -
+    // because the loop below puts one entry in beside it for every other axis of the operand, including
+    // each spatial axis's block ROWS. An earlier version of this appended those rows here as well, which
+    // made the permutation one entry per spatial axis longer than the split tensor has axes: measured, the
+    // very first case of the family, a space-to-depth of a [3, 4, 6] with a 2x2 block, was refused with
+    // "transpose with a permutation of 7 entries for a rank-5 tensor" and the family's own process died on
+    // it, so that no case of the family past the first was ever compared against the release.
 
     // THE EXTENT OF EVERY PIECE, which is what tells the two directions apart: moving the blocks TO the batch
     // axis splits each spatial axis into its rows and its columns and leaves the batch axis whole, and moving
@@ -1330,10 +1341,10 @@ typedef enum {
         for (NSUInteger j = 0; j < keys.count; j++)
             [splitShape addObject:@(piece[j])];
         // THE ORDERING THE TRANSPOSE READS, and the result's axes are the OPERAND'S OWN in the operand's own
-        // order - measured, which is what says a spatial list written the other way round answers the same
-        // shape over the same bytes, and what the two cases that put the block rows before an axis of the
-        // operand's own got wrong at first. The batch axis is the one that is replaced: by the woven group,
-        // whose pieces the merge below collapses into the single axis the result has.
+        // order - measured, which is what says a spatial list written the other way round answers a result
+        // whose axes are still the operand's, and what the two cases that put the block rows before an axis of
+        // the operand's own got wrong at first. The batch axis is the one that is replaced: by the woven
+        // group, whose pieces the merge below collapses into the single axis the result has.
         NSMutableArray<NSNumber *> *permutation = [NSMutableArray arrayWithCapacity:keys.count];
         NSMutableArray<NSNumber *> *resultShape = [NSMutableArray arrayWithCapacity:rank];
         long long merged = 1;
@@ -1347,7 +1358,7 @@ typedef enum {
             }
             NSUInteger which = [spatialAxes indexOfObject:@(axis)];
             if (which == NSNotFound) {
-                    [permutation addObject:indexOf[[NSString stringWithFormat:@"ax%lu", (unsigned long)axis]]];
+                [permutation addObject:indexOf[[NSString stringWithFormat:@"ax%lu", (unsigned long)axis]]];
                 [resultShape addObject:operandShape[axis]];
                 continue;
             }
