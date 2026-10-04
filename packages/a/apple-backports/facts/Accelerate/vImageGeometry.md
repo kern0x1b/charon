@@ -1656,39 +1656,63 @@ above used - so the reader and the disassembler agree before either is trusted o
 | the Q14 table's end, as an **offset from the object** | `sub r0, r12, r0` then `+ int16Stride<<exponent`; arm64 `sub x8,x10,x0` then `madd` |
 | the size | the offset `+ 16`, on every release |
 
-**Where it changes is the WIDTH of a field and the position of the last one, and both follow the
-architecture.** Every field is a 32-bit slot on armv7 and a 64-bit slot on arm64:
+**Where it changes is the WIDTH of a field, and that follows the architecture and nothing else.** Every field
+is a 32-bit slot on armv7 and a 64-bit slot on arm64:
 
-| release | arch | the slots, by byte offset from the object |
+**There are exactly TWO shapes, and which one a release has is decided by its architecture and nothing
+else. No arm64 writer read differs from another:**
+
+| releases read | arch | the slots, by byte offset from the object |
 | --- | --- | --- |
-| 6.1.3, 7.0, 8.0, 9.3.6, 10.3.4 | armv7/armv7s | `0` scale (double), `8` numTaps, `12` floatStride, `16` int16Stride, `20` phases, `24` exponent, `28` **offset**, `32` Q14's first byte, `36` `(object+55)&~15` |
-| 7.0, 7.0.1 | arm64 | `0` scale, `8` numTaps, `16` floatStride, `24` int16Stride, `32` phases, `40` exponent, `48` **offset**, `56` `(object+87)&~15` |
-| 10.0.1, 11.0, 12.0 | arm64 | `0` scale, `8`, `16`, `24`, `32`, `40`, `48` **offset**, `56` **Q14's first byte**, `64` `(object+87)&~15` |
+| 6.1.3, 7.0, 8.0, 9.3.6, 10.3.4 | armv7/armv7s | `0` scale (double), `8` numTaps, `12` floatStride, `16` int16Stride, `20` phases, `24` exponent, `28` **offset**, `32` **Q14's first byte**, `36` `(object+55)&~15` |
+| 7.0, 7.0.1, 10.0.1, 11.0, 12.0 | arm64 | `0` scale (double), `8` numTaps, `16` floatStride, `24` int16Stride, `32` phases, `40` exponent, `48` **offset**, `56` **Q14's first byte**, `64` `(object+87)&~15` |
+
+The two are the same nine fields in the same order. **On armv7 each is a 32-bit slot at byte `4k`; on arm64
+each is a 64-bit slot at byte `8k`.** The last three arm64 stores are worth quoting because they are the
+ones a reader gets wrong, and they are written in a different ORDER on 7.0 than on 12.0 while meaning the
+same thing:
+
+    7.0 arm64, 0x1804adde0   madd x10, x10, x12, x13    ; the float table's end = floatStride*(phases+1) + base
+    0x1804adde4               stp  x10, x13, [x0, #56]  ; byte 56 = that end, byte 64 = (object+87)&~15
+    0x1804adde8               sub  x8, x10, x0          ; the offset = the end - object
+    0x1804addec               madd x8, x9, x11, x8      ;             + int16Stride*phases
+    0x1804adef0               str  x8, [x0, #48]        ; byte 48 = the offset, written LAST
+
+    12.0 arm64, 0x182712218  str  x10, [sp, #72]       ; byte 64 = the base, written BEFORE the end
+    0x18271221c               madd x10, x11, x13, x10   ; the float table's end
+    0x182712220               sub  x8, x10, x8
+    0x182712224               madd x8, x12, x9, x8      ; the offset
+    0x182712228               stp  x8, x10, [sp, #56]  ; byte 48 = the offset, byte 56 = that end
+
+So **the Q14 table's first byte is in the object on every release read** - byte 32 on armv7, byte 56 on arm64
+- and the offset is stored as an offset on both shapes. **Nothing has to be computed from another field, and
+the port reads byte 56 on arm64 because that is where the field is on all five arm64 releases, not because
+7.0 overwrites anything.** (An earlier draft of this section said 7.0 and 7.0.1 overwrote byte 48 and that the
+table's first byte had to be computed. That was a misread of the `stp` base - `#56` is bytes 56 and 64, not 48
+and 56 - and it is corrected here rather than left on the page.)
 
 **Three things follow, and each one is a refusal the port has to make.**
 
-1. **A "word N" on this page is an armv7 offset.** Byte 8 is `numTaps` on armv7 and on every arm64 release
-   too, but byte 20 is the phase count on armv7 and byte 32 is on arm64, and byte 32 on armv7 is the Q14
-   table's first byte while on arm64 it is the phase count. **A port that reads "word 8" and "word 20" gets
-   the phase count on a 6.1.3 iPhone and on an arm64 release only by accident, and gets everything after it
-   wrong.** The port therefore keys the layout on what the release is and accepts exactly the two measured
-   shapes - armv7/armv7s, and arm64 from 10.0.1 - refusing anything else.
-2. **The arm64 releases 7.0 and 7.0.1 do not store the Q14 table's first byte at all.** Their writer computes
-   the float table's end (`madd x10, x10, x12, x13`), stores it at byte 48, and then **overwrites byte 48
-   with the offset** (`str x8, [x0, #48]`); what survives at byte 56 is the base `(object+87)&~15`. So on
-   those two releases the first Q14 byte has to be *computed* - `base + floatStride*(phases+1)` - and reading
-   byte 56 as if it were the table's first byte reads the base and dereferences the object's own middle.
-   From 10.0.1 the writer keeps the value and a ninth slot appears at byte 64 holding the base, so byte 56 is
-   the table's first byte there.
-3. **The change is bounded by the held set and is not extrapolated.** Every held release with an armv7 slice
-   carries the armv7 shape and every one measured agrees - 6.1.3, 7.0, 8.0, 9.3.6, 10.3.4, which is both ends
-   and every architecture change point in the held armv7 ladder (6.1.3, 7.0, 7.0.6, 7.1, 7.1.1, 7.1.2, 8.0,
-   8.0.2, 8.1, 8.1.1, 8.1.2, 8.1.3, 8.2, 8.3, 8.4, 8.4.1, 9.0, 9.0.2, 9.1, 9.2, 9.2.1, 9.3, 9.3.5, 9.3.6,
-   10.0.1, 10.0.2, 10.1, 10.1.1, 10.2, 10.2.1, 10.3, 10.3.1, 10.3.2, 10.3.3, 10.3.4). **The held arm64
-   slices are 7.0, 7.0.1, 10.0.1, 11.0, 12.0, 16.0 and 18.0, and there is none between 7.0.1 and 10.0.1**,
-   which is exactly where the header changes. All five of the sub-15.0 ones were read; 16.0 and 18.0 are
-   above every row's introduction and are not read, and the 16.0 cache is split into 44 subcaches that
-   `tools/dyldcache.py` does not read, so nothing about it is claimed here.
+1. **A "word N" on this page is an armv7 offset.** Byte 8 is `numTaps` on both shapes, but byte 20 is the
+   phase count on armv7 and byte 32 is on arm64, while byte 32 on armv7 is the Q14 table's first byte and on
+   arm64 it is the phase count. **A port that reads "word 8" and "word 20" gets `numTaps` right on every
+   release, gets the phase count on arm64 only by accident, and gets every field after it wrong.** The port
+   therefore keys the layout on what the release is - armv7/armv7s or arm64 - and accepts exactly those two
+   measured shapes, refusing anything else.
+2. **The offset is the only bound the port may use, and it is an offset on both shapes.** Neither writer
+   stores a pointer to the table's end; both store `floatTableEnd - object + int16Stride*phases`. A refusal
+   that compares that field against a pointer refuses the release's own filter, which is exactly what the
+   first version of this probe did - and that refusal was the measurement that word 7 is an offset.
+3. **The coverage is bounded by the held set and is not extrapolated.** Every held release with an armv7 slice
+   carries the armv7 shape, and every one measured agrees - 6.1.3, 7.0, 8.0, 9.3.6 and 10.3.4, which is both
+   ends of the held armv7 ladder (6.1.3, 7.0, 7.0.6, 7.1, 7.1.1, 7.1.2, 8.0, 8.0.2, 8.1, 8.1.1, 8.1.2, 8.1.3,
+   8.2, 8.3, 8.4, 8.4.1, 9.0, 9.0.2, 9.1, 9.2, 9.2.1, 9.3, 9.3.5, 9.3.6, 10.0.1, 10.0.2, 10.1, 10.1.1,
+   10.2, 10.2.1, 10.3, 10.3.1, 10.3.2, 10.3.3, 10.3.4). **Every held arm64 release below 15.0 carries the
+   arm64 shape and all five were read** - 7.0, 7.0.1, 10.0.1, 11.0, 12.0. **The held arm64 slices are those
+   five plus 16.0 and 18.0, and there is none between 7.0.1 and 10.0.1**; the two ends of that gap read the
+   same, so the gap is stated and not filled. 16.0 and 18.0 are above every row's introduction and are not
+   read, and the 16.0 cache is split into 44 subcaches that `tools/dyldcache.py` does not read, so nothing
+   about it is claimed here.
 
 **One arithmetic difference, and it changes nothing.** 6.1.3's armv7 writer adds a `+1` to the int16 row
 stride under `kvImageHighQualityResampling` and 7.0 and later do not. For every tap count these two spellings
