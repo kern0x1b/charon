@@ -362,6 +362,77 @@ static int scenario(int argc, char **argv)
     return 0;
 }
 
+/* What this guest can be asked to do, one child each, before any scenario runs. The fork below is the
+   whole reason this program can measure one scenario per process here, so it is measured rather than
+   assumed: a child that makes a queue, that makes a barrier block, that makes a source and reads a
+   record off it, and whose dispatch_async runs, all exit 0 on this release - measured 2026-10-04, and
+   re-measured by every run of this program. If one of them ever does not, the fork is no longer sound
+   and the scenario answers after it are worth nothing, so the failure is printed and not swallowed. */
+static void child_nothing(void) {}
+static void child_prints(void) { printf("a child reached its own first statement\n"); }
+static void child_queue(void)
+{
+    dispatch_queue_t made = dispatch_queue_create("probe", DISPATCH_QUEUE_CONCURRENT);
+    printf("a child made a queue: %s\n", made ? "yes" : "NO");
+}
+static void child_block(void)
+{
+    dispatch_block_t made = dispatch_block_create(DISPATCH_BLOCK_BARRIER, ^{ printf("the barrier block ran\n"); });
+    printf("a child made a barrier block: %s\n", made ? "yes" : "NO");
+}
+static void child_source(void)
+{
+    dispatch_queue_t queue = dispatch_queue_create("probe", DISPATCH_QUEUE_CONCURRENT);
+    dispatch_source_t made = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    printf("a child made a source: %s, and read a record off it: %s\n", made ? "yes" : "NO",
+           charon_dispatch_is_object(made) ? "readable" : "NOT READABLE");
+}
+static void child_async(void)
+{
+    dispatch_queue_t queue = dispatch_queue_create("probe", DISPATCH_QUEUE_CONCURRENT);
+    dispatch_semaphore_t done = dispatch_semaphore_create(0);
+    dispatch_async(queue, ^{ dispatch_semaphore_signal(done); });
+    long got = dispatch_semaphore_wait(done, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC));
+    printf("a child ran a dispatch_async and waited for it: %s\n", got ? "NO" : "yes");
+}
+
+static void check_guest(void)
+{
+    static const struct {
+        const char *what;
+        void (*body)(void);
+    } checks[] = {
+        {"a child that does nothing", child_nothing},
+        {"a child that prints", child_prints},
+        {"a child that makes a queue", child_queue},
+        {"a child that makes a barrier block", child_block},
+        {"a child that makes a source and reads a record off it", child_source},
+        {"a child whose dispatch_async runs", child_async},
+    };
+    for (unsigned i = 0; i < sizeof checks / sizeof checks[0]; i++) {
+        fflush(stdout);
+        pid_t child = fork();
+        if (child == 0) {
+            checks[i].body();
+            fflush(stdout);
+            _exit(0);
+        }
+        if (child < 0) {
+            printf("guest %s: FORK FAILED\n", checks[i].what);
+            continue;
+        }
+        int status = 0;
+        waitpid(child, &status, 0);
+        if (WIFSIGNALED(status))
+            printf("guest %s: ENDED ON SIGNAL %d (%s)\n", checks[i].what, WTERMSIG(status),
+                   strsignal(WTERMSIG(status)));
+        else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+            printf("guest %s: ENDED status=%d\n", checks[i].what, WEXITSTATUS(status));
+        else
+            printf("guest %s: ok\n", checks[i].what);
+    }
+}
+
 /* The one place the two hosts differ, so it is here and not scattered through the program: on the host
    the arguments name the scenario and this runs once, answering on stdout; on this guest there are none, so
    one child per scenario is forked, the child answers on a pipe and this reads it back and prints it.
@@ -377,6 +448,7 @@ int main(int argc, char **argv)
            sysconf(_SC_NPROCESSORS_ONLN), objc_getClass("OS_dispatch_source") ? "present" : "ABSENT");
     if (argc >= 4)
         return scenario(argc, argv);
+    check_guest();
 
     static const char *cases[] = {"cancel", "registration", "neverresumed", "retargetbefore",
                                   "retargetafter", "onqueue", "resumecancel", "ordinaryasync"};
