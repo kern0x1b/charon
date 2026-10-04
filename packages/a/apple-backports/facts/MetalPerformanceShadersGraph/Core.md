@@ -1151,6 +1151,47 @@ at all - a built method with no registry row is what `check_registry` fails on, 
 method whose behaviour is guessed is what this project calls a fake. Both probes are in the report and the next
 pass starts from them.
 
+## The run, async and encode forms, and the two shared events
+
+Thirteen rows, and they are all **one walk** - the graph's own over its operations - because a port whose
+operations are a walk has nothing to compile ahead of time, and the difference the release makes between the
+synchronous, the async and the encode forms is what it does with the GPU afterwards. Compared in a process of
+its own (`run_forms`): **15 case lines, every cell byte-identical to the release,
+`run_forms checks=5 failures=0 recorded=0` over 40 cells**, the red control differing in 3 of the 15.
+
+### The two shapes of answer, both measured
+
+| form | where the answer goes | measured over a 2x4 added to itself |
+| --- | --- | --- |
+| the form that **returns a dictionary** (`runWithMTLCommandQueue:...targetTensors:`, `runAsyncWithFeeds:...`, `runAsyncWithMTLCommandQueue:...targetTensors:...`, `encodeToCommandBuffer:...targetTensors:...`) | the release's **own** tensor data | one entry, the returned object is **not** the one the caller passed, and the caller's buffer still holds the byte `0xbd` it was filled with |
+| the form that takes a **results dictionary** (`runWithMTLCommandQueue:...resultsDictionary:` and its async and encode twins) | into the data the caller put in it | `(2, 4, 6, 8 \| 20, 40, 60, 80)` in the caller's own buffer, byte for byte |
+
+The dictionary form names no target tensors of its own, so **the dictionary's keys are what the walk computes**
+- a caller who passes an empty dictionary gets an empty walk.
+
+### What cannot be observed on this host, measured rather than asserted
+
+The **async and encode forms write the caller's dictionary after the release's GPU work is done**, and this
+host's own command queue gives no way to wait for it: `-[AGXG16XFamilyCommandQueue waitUntilCompleted]` is
+unrecognized in this SDK, so nothing can be read back for those five forms here. The port's answer is in the
+caller's buffer when the call returns, which is the same answer at the moment a caller who *can* wait would look.
+So those five rows are carried with this measurement in them, and the two forms that RETURN a dictionary are
+compared anyway, because what they return is observable (one entry each, both sides).
+
+### The two shared events, measured
+
+Both `MPSGraphExecutionDescriptor` and `MPSGraphExecutableExecutionDescriptor` declare
+`-waitForEvent:value:` and `-signalEvent:atExecutionEvent:value:`, so both hold them. Measured on this host: a
+fresh `id<MTLSharedEvent>`'s own `signaledValue` is **0**, and naming it in either descriptor does not change it -
+so the only thing a run can do with one is to write it at the stage the caller named, and the one stage the
+header names is `MPSGraphExecutionStageCompleted` (0). In the differential an event a run signals at that stage
+reads **42** afterwards and **0** before, on both sides; the walk is the release's own and the result is byte for
+byte.
+
+A **wait** is checked and a run whose event has not reached the value the caller named is **refused**, naming the
+event and the value, because this port's walk is on the CPU where there is no queue to block on - a refusal that
+says so is an answer, and running early would be a silent wrong answer.
+
 ### What is not measured here
 
 The rest of the shape family (`concat`, `stack`, `split`, `spaceToDepth`, `depthToSpace`, `spaceToBatch`,
