@@ -92,13 +92,17 @@ vImage_Error {name}(const vImage_Buffer *src, const vImage_Buffer *dest, vImageP
                    vImagePixelCount srcOffsetToROI_Y, {translate} {axis}Translate, {translate} shearSlope,
                    ResamplingFilter filter, const {pixel} backColor, vImage_Flags flags)
 {{
-    const CharonResampleFilter *ours = CharonResampleFilterOf(filter);
-    vImage_Error ready = CharonShearReady(src, dest, ours, {axis_flag}, srcOffsetToROI_X, srcOffsetToROI_Y);
+    // The caller's own filter, read: `ours` is zeroed and the read refused for anything that is not one of
+    // the two measured shapes, and CharonShearReady turns that into kvImageInvalidParameter - AFTER the
+    // NULL-buffer refusal, which is the order the release makes them in.
+    CharonResampleFilter ours;
+    int have = CharonResampleFilterOf(filter, &ours);
+    vImage_Error ready = CharonShearReady(src, dest, have ? &ours : 0, {axis_flag}, srcOffsetToROI_X, srcOffsetToROI_Y);
     if (ready != kvImageNoError)
         return ready;
     double back[4] = {{ 0, 0, 0, 0 }};
     {back}
-    return CharonShearRun(src, dest, ours, {type}, {yes_no}, {axis}Translate, shearSlope, srcOffsetToROI_X,
+    return CharonShearRun(src, dest, &ours, {type}, {yes_no}, {axis}Translate, shearSlope, srcOffsetToROI_X,
                           srcOffsetToROI_Y, back, flags);
 }}
 """

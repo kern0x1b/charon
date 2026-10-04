@@ -27,12 +27,26 @@
 #include <string.h>
 #include <math.h>
 
-// The port's own filter layout, so the harness can hand the port a filter it will read: CharonShear.h refuses a
-// buffer that is not one of the port's, which is exactly what a host filter is. The scale and the flag are the
-// same on both sides, so the two filters describe the same kernel.
+// The port's own filter READER, brought in for the descriptor's type only. **The filter this harness hands the
+// port is the HOST's own object**, the one `vImageNewResamplingFilter` returned - the same pointer the host's
+// own shear is given. That is the whole point: on the device the caller hands the port the release's object,
+// and on this Mac the caller hands it the system's, so the port is exercised on the substrate it will read in
+// production rather than on one built here.
+//
+// **The expectation therefore cannot re-derive the weights, and does not try.** The release's stored Q14
+// integers are its own single-precision `sinf` (facts/Accelerate/vImageGeometry.md), so no analytic kernel
+// reproduces them to the byte and an expectation that used one would differ from both the host and the port by
+// the quantisation - which would make this harness measure the wrong thing. What this file re-derives
+// INDEPENDENTLY is everything else, and each piece is written here from the measurement rather than taken from
+// the port: the slot offsets, the mapped position, the phase and carry, the tap walk, the divisor, the two
+// edging modes, the half-up store and the per-type clamp. Sharing the caller's integers with the port is not
+// sharing a decision: there is no other source for them.
 #include "CharonResampling.h"
 
 static int checks, failures;
+// SEARCH runs the whole sweep once per candidate mapping, so the per-case lines are silenced while it does and
+// the score is the only output; a run that printed 9900 FAIL lines per candidate would be unreadable.
+static int quiet;
 
 // One of the thirty-six: the layout, how a channel is stored and clamped, and the two thunks that call it -
 // the host's by name, and the port's under the `charon_host_` name run.sh's -D rename gives it. `scalar` says
@@ -320,62 +334,120 @@ static void storeChannel(void *pixel, unsigned channel, double value, const Shea
     *(uint32_t *)pixel = word;
 }
 
-// The kernel and the mapping, written here from the measurement. Nothing below is taken from the port.
-static double sincOf(double x)
+// The caller's filter, read HERE and not through the port's header: this file's own opinion of where the nine
+// fields are and what they hold. A 32-bit slot at byte 4k on armv7 and a 64-bit slot at byte 8k on arm64, and
+// the pointer to the Q14 table is the field at index 7 on both. Measured on ten iOS writers and on this Mac's
+// own ten shapes; the assertions below are what the reader checks on every shape, so a layout that changed
+// would be a refusal rather than a wrong answer.
+typedef struct {
+    double reciprocal;
+    unsigned numTaps, floatStride, int16Stride, phases, exponent, offset;
+    const int16_t *table;
+    unsigned width, centre;
+} ReadFilter;
+
+// A slot is a 32-bit word at byte 4k on armv7 and a 64-bit word at byte 8k on arm64, so the walk is in units of
+// `sizeof(void *)`; every field is read as a 64-bit word and narrowed, which on armv7 takes the low half - the
+// value - of the 32-bit slot, since both architectures this runs on are little-endian.
+static uint64_t fieldSlot(const void *object, unsigned index)
 {
-    if (x == 0.0) return 1.0;
-    return sin(M_PI * x) / (M_PI * x);
+    return *(const uintptr_t *)((const char *)object + (size_t)index * sizeof(uintptr_t));
 }
 
-static double lanczos(double x, double lobes)
+static int readFilter(ResamplingFilter filter, ReadFilter *out)
 {
-    if (x <= -lobes || x >= lobes) return 0.0;
-    return sincOf(x) * sincOf(x / lobes);
+    memset(out, 0, sizeof *out);
+    if (!filter)
+        return 0;
+    double reciprocal;
+    uint64_t bits = fieldSlot(filter, 0);
+    memcpy(&reciprocal, &bits, sizeof reciprocal);
+    out->reciprocal = reciprocal;
+    out->numTaps = (unsigned)fieldSlot(filter, 1);
+    out->floatStride = (unsigned)fieldSlot(filter, 2);
+    out->int16Stride = (unsigned)fieldSlot(filter, 3);
+    out->phases = (unsigned)fieldSlot(filter, 4);
+    out->exponent = (unsigned)fieldSlot(filter, 5);
+    out->offset = (unsigned)fieldSlot(filter, 6);
+    out->table = (const int16_t *)(uintptr_t)fieldSlot(filter, 7);
+    out->width = out->int16Stride / 2;
+    if (!(out->reciprocal > 0.0) || out->numTaps < 1 || out->int16Stride < 2 || (out->int16Stride & 1))
+        return 0;
+    if (out->phases == 0 || out->phases > 64 || (out->phases & (out->phases - 1)))
+        return 0;
+    size_t inside = (size_t)((const char *)out->table - (const char *)filter);
+    if (inside == 0 || inside >= (size_t)out->offset)
+        return 0;
+    if (inside + (size_t)out->phases * out->int16Stride != (size_t)out->offset)
+        return 0;
+    int best = -(1 << 30);
+    for (unsigned k = 0; k < out->width; k++)
+        if (out->table[k] > best) { best = out->table[k]; out->centre = k; }
+    return 1;
 }
 
-// One destination sample: the tap walk, the two edging modes, and the per-phase normalisation. `first` and
-// `taps` come in so the tap window is computed once per sample rather than per channel.
+// One destination sample: the row the release's own table says, the tap walk, and the two edging modes.
+//
+// `centre` is the mapped position in source pixels and there is **no half pixel in it**: source pixel `c` is
+// at position `c`. The phase is the fraction rounded to NEAREST with a CARRY - `q` runs 0..phases as the
+// fraction runs 0..1, `q == phases` wraps the phase to zero and advances the base - and the row's own sum is
+// the divisor, which on this Mac is exactly 16384 and on 6.1.3 is within 5 of it.
+// The mapping's four open terms, as one struct so that SEARCH can sweep them against the host's own bytes.
+// `alongShift` is the constant the along coordinate carries, `translateSign` which way the translate goes,
+// `slopeShift` the slope's cross half pixel, and `halfPixel` whether the scale's bracket carries the `+0.5` /
+// `-0.5` pair at all. The default is what the port implements.
+// `translateSign` is +1 for the form the host's bytes settled on - the horizontal SUBTRACTS the translate and
+// the vertical ADDS it - and the default below is that. It was 0 in the first version of this line, which
+// switched the translate off in the expectation only: the port and this file's own loops then disagreed on 7143
+// of the 9900 checks while the harness reported them as two independent answers, and the count said nothing
+// about either.
+typedef struct { double alongShift; int translateSign; double slopeShift; int halfPixel; int farAnchor; } Mapping;
+static Mapping mapping = { 0.0, 1, 0.5, 1, 0 };
+
 static double expectSample(const Shear *shear, const uint8_t *srcRow, size_t srcStep, vImagePixelCount srcAlong,
-                           int extent, int lobes, float scale, int extend, const double *back, unsigned channel,
-                           double centre, int first, int taps)
+                           const ReadFilter *filter, int extend, const double *back, unsigned channel,
+                           double centre)
 {
-    double weights[1024], total = 0.0, sum = 0.0;
-    for (int k = 0; k < taps; k++) {
-        // The distance from the MAPPED POSITION, fractional part and all. An earlier version took it from the
-        // tap index alone, which silently computed every sample at the phase of the nearest whole pixel - so
-        // the identity, the only case whose centre is a whole pixel, was the only case that agreed.
-        double distance = ((double)(first + k) - centre) * (scale < 1.0f ? (double)scale : 1.0);
-        weights[k] = lanczos(distance, lobes);
-        total += weights[k];
-    }
-    if (total == 0.0) return back[channel];
-    for (int k = 0; k < taps; k++) {
-        long at = first + k;
-        double weight = weights[k] / total;
-        // A tap outside the picture keeps its weight and takes the backColor, which is the header's
-        // kvImageBackgroundColorFill read literally, or the edge element under kvImageEdgeExtend.
+    double whole = floor(centre);
+    double fraction = centre - whole;
+    long low = (long)whole;
+    long q = (long)floor(fraction * (double)filter->phases + 0.5);
+    long carry = q / (long)filter->phases;
+    unsigned phase = (unsigned)(q - carry * (long)filter->phases);
+    long base = low + carry;
+
+    const int16_t *row = filter->table + (size_t)phase * filter->width;
+    long total = 0;
+    for (unsigned k = 0; k < filter->width; k++)
+        total += row[k];
+    double accumulator = 0.0;
+    for (unsigned k = 0; k < filter->width; k++) {
+        long at = base + (long)k - (long)filter->centre;
+        double weight = (double)row[k];
+        if (row[k] == 0)
+            continue;
         double value;
         if (at < 0 || at >= (long)srcAlong) {
+            // kvImageBackgroundColorFill keeps the weight and substitutes the backColor;
+            // kvImageEdgeExtend keeps the weight and pulls the tap back to the edge.
             if (!extend) value = back[channel];
             else value = loadChannel(srcRow + (size_t)(at < 0 ? 0 : (long)srcAlong - 1) * srcStep, channel, shear);
         } else {
             value = loadChannel(srcRow + (size_t)at * srcStep, channel, shear);
         }
-        sum += weight * value;
+        accumulator += weight * value;
     }
-    return sum;
+    return total ? accumulator / (double)total : 0.0;
 }
 
 // The whole expected destination, from this file's own loops.
 static void expectDestination(const Shear *shear, const vImage_Buffer *src, const vImage_Buffer *dest,
                               vImagePixelCount along0, vImagePixelCount cross0, double translate, double slope,
-                              float scale, int lobes, int extend, const double *back, vImage_Buffer *out)
+                              const ReadFilter *filter, int extend, const double *back, vImage_Buffer *out)
 {
-    vImagePixelCount srcAlong = shear->horizontal ? src->width : src->height;
     vImagePixelCount dstAlong = shear->horizontal ? dest->width : dest->height;
     vImagePixelCount dstCross = shear->horizontal ? dest->height : dest->width;
-    int extent = (int)ceil((double)lobes / (scale < 1.0f ? (double)scale : 1.0) - 1.0e-4);
-    int taps = 2 * extent + 1;
+    vImagePixelCount srcAlong = shear->horizontal ? src->width : src->height;
     size_t pixelBytes = bytesPerPixel(shear);
     for (vImagePixelCount cross = 0; cross < dstCross; cross++) {
         long sourceCross = (long)cross0 + (long)cross;
@@ -385,21 +457,30 @@ static void expectDestination(const Shear *shear, const vImage_Buffer *src, cons
                                     ? (const uint8_t *)src->data + (size_t)sourceCross * src->rowBytes
                                     : (const uint8_t *)src->data + (size_t)sourceCross * pixelBytes;
         for (vImagePixelCount along = 0; along < dstAlong; along++) {
-            double edge = shear->horizontal ? (double)dstCross - (double)cross : (double)cross + 1.0;
-            double alongPosition = (double)(along0 + along) + 0.5
-                                   + (shear->horizontal ? -translate : translate)
-                                   + (shear->horizontal ? -slope : slope) * (edge - 0.5);
-            double centre = shear->horizontal
-                                ? alongPosition / (double)scale - 0.5
-                                : (double)dstAlong + (alongPosition - (double)dstAlong) / (double)scale - 0.5;
-            int first = (int)floor(centre) - extent;
+            // The position, and then the scale's bracket. **The half pixel is in the bracket and it does not
+            // cancel except at a scale of one**: `+0.5` on the position and `-0.5` on the centre, which is
+            // why the along offset that reproduces the host's bytes is 0 at a scale of one, -0.5 at two,
+            // +0.25 at a half and +0.375 at a quarter. The horizontal's scale is anchored at the near edge and
+            // the vertical's at the destination's far one, `dstAlong`.
+            int horizontal = shear->horizontal;
+            double position = (double)(along0 + along) + mapping.alongShift
+                              + (horizontal ? mapping.translateSign * -translate : mapping.translateSign * translate)
+                              + slope * (horizontal ? (double)cross - (double)dstCross + mapping.slopeShift
+                                                    : (double)cross + mapping.slopeShift);
+            if (mapping.halfPixel)
+                position += 0.5;
+            double centre = position * filter->reciprocal;
+            if (!horizontal && mapping.farAnchor)
+                centre = (double)dstAlong + centre - (double)dstAlong;
+            if (mapping.halfPixel)
+                centre -= 0.5;
             uint8_t *pixel = shear->horizontal
                                  ? (uint8_t *)out->data + (size_t)cross * out->rowBytes + (size_t)along * pixelBytes
                                  : (uint8_t *)out->data + (size_t)along * out->rowBytes + (size_t)cross * pixelBytes;
             for (unsigned channel = 0; channel < (unsigned)shear->channels; channel++) {
                 double sample = expectSample(shear, srcRow,
-                                          shear->horizontal ? pixelBytes : src->rowBytes, srcAlong, extent, lobes,
-                                          scale, extend, back, channel, centre, first, taps);
+                                             shear->horizontal ? pixelBytes : src->rowBytes, srcAlong,
+                                             filter, extend, back, channel, centre);
                 storeChannel(pixel, channel, sample, shear);
             }
         }
@@ -487,11 +568,23 @@ static void one(const Shear *shear, vImagePixelCount srcW, vImagePixelCount srcH
 
     ResamplingFilter theirFilter = vImageNewResamplingFilter(scale, (flags & kvImageHighQualityResampling));
     vImage_Error theirs = shear->host(&src, &theirDest, along0, cross0, translate, slope, theirFilter, back, flags);
-    vImageDestroyResamplingFilter(theirFilter);
-
-    CharonResampleFilter portFilter;
-    CharonResampleFilterInit(&portFilter, scale, flags);
-    vImage_Error ours = shear->port(&src, &ourDest, along0, cross0, translate, slope, &portFilter, back, flags);
+    // **The same pointer goes to the port.** On the device the caller hands the port the release's own filter
+    // and on this Mac that is the system's, so this is the substrate the port will read in production and not
+    // one built for the test. Two filters of the same scale would differ in their quantised Q14 rows and every
+    // sheared pixel would carry the difference, which would make a byte comparison measure that and not the
+    // mapping.
+    ReadFilter read;
+    if (!readFilter(theirFilter, &read)) {
+        printf("FAIL %s: this Mac's own filter is not one of the two measured shapes, so the port cannot be "
+               "exercised at all (reciprocal %g numTaps %u iStride %u phases %u offset %u)\n",
+               shear->name, read.reciprocal, read.numTaps, read.int16Stride, read.phases, read.offset);
+        checks++;
+        failures++;
+        vImageDestroyResamplingFilter(theirFilter);
+        free(src.data); free(theirDest.data); free(ourDest.data); free(mine.data);
+        return;
+    }
+    vImage_Error ours = shear->port(&src, &ourDest, along0, cross0, translate, slope, theirFilter, back, flags);
 
     static int dumped = 0;
     char what[256], note[320];
@@ -502,7 +595,7 @@ static void one(const Shear *shear, vImagePixelCount srcW, vImagePixelCount srcH
     checks++;
     if (theirs != ours) {
         failures++;
-        printf("FAIL %s: the host answers %ld and the port %ld\n", what, (long)theirs, (long)ours);
+        if (!quiet) printf("FAIL %s: the host answers %ld and the port %ld\n", what, (long)theirs, (long)ours);
     }
     if (theirs != kvImageNoError) {
         // The expectation is NOT computed for a refused case, and AddressSanitizer says why it must not be:
@@ -515,21 +608,21 @@ static void one(const Shear *shear, vImagePixelCount srcW, vImagePixelCount srcH
                         (const uint8_t *)theirDest.data, (const uint8_t *)ourDest.data, &theirDest,
                         "host against port")) {
             failures++;
-            printf("FAIL %s: %s\n", what, note);
+            if (!quiet) printf("FAIL %s: %s\n", what, note);
         }
         free(src.data); free(theirDest.data); free(ourDest.data); free(mine.data);
         return;
     }
     // DUMP=1 prints the first row of all three answers for the first few divergences, which is what says WHERE
     // two of them part company; the byte offset alone does not.
-    expectDestination(shear, &src, &theirDest, along0, cross0, translate, slope, scale, lobes,
+    expectDestination(shear, &src, &theirDest, along0, cross0, translate, slope, &read,
                       (flags & kvImageEdgeExtend) ? 1 : 0, backScale, &mine);
 
     if (!sameBuffer(note, sizeof note, "the port and the host differ",
                     (const uint8_t *)theirDest.data, (const uint8_t *)ourDest.data, &theirDest,
                     "host against port")) {
         failures++;
-        printf("FAIL %s: %s\n", what, note);
+        if (!quiet) printf("FAIL %s: %s\n", what, note);
         if (getenv("DUMP") && dumped < 3) {
             dumped++;
             for (int side = 0; side < 3; side++) {
@@ -550,13 +643,13 @@ static void one(const Shear *shear, vImagePixelCount srcW, vImagePixelCount srcH
                     (const uint8_t *)theirDest.data, (const uint8_t *)mine.data, &theirDest,
                     "host against expectation")) {
         failures++;
-        printf("FAIL %s: %s\n", what, note);
+        if (!quiet) printf("FAIL %s: %s\n", what, note);
     }
     if (!sameBuffer(note, sizeof note, "the host and this file's own loops differ",
                     (const uint8_t *)ourDest.data, (const uint8_t *)mine.data, &ourDest,
                     "port against expectation")) {
         failures++;
-        printf("FAIL %s: %s\n", what, note);
+        if (!quiet) printf("FAIL %s: %s\n", what, note);
     }
     free(src.data); free(theirDest.data); free(ourDest.data); free(mine.data);
 }
@@ -572,8 +665,6 @@ static void refusals(const Shear *shear)
     double backScale[4];
     fillBackColor(shear, back, backScale);
     ResamplingFilter filter = vImageNewResamplingFilter(1.0f, kvImageNoFlags);
-    CharonResampleFilter portFilter;
-    CharonResampleFilterInit(&portFilter, 1.0f, kvImageNoFlags);
     char what[256], note[256];
 
     struct { const char *name; const vImage_Buffer *src; const vImage_Buffer *dest; ResamplingFilter filter; }
@@ -586,12 +677,12 @@ static void refusals(const Shear *shear)
         vImage_Error theirs = shear->host(cases[c].src, cases[c].dest, 0, 0, 0.0, 0.0, cases[c].filter, back,
                                           kvImageBackgroundColorFill);
         vImage_Error ours = shear->port(cases[c].src, cases[c].dest, 0, 0, 0.0, 0.0,
-                                        cases[c].filter ? &portFilter : NULL, back, kvImageBackgroundColorFill);
+                                        cases[c].filter, back, kvImageBackgroundColorFill);
         checks++;
         snprintf(what, sizeof what, "%s: %s", shear->name, cases[c].name);
         if (theirs != ours) {
             failures++;
-            printf("FAIL %s: the host answers %ld and the port %ld\n", what, (long)theirs, (long)ours);
+            if (!quiet) printf("FAIL %s: the host answers %ld and the port %ld\n", what, (long)theirs, (long)ours);
         }
     }
 
@@ -625,14 +716,14 @@ static void refusals(const Shear *shear)
         fillSource(&shaped, shear);
         fillSource(&wide, shear);
         vImage_Error theirs = shear->host(&shaped, &wide, ox, oy, 0.0, 0.0, filter, back, kvImageBackgroundColorFill);
-        vImage_Error ours = shear->port(&shaped, &wide, ox, oy, 0.0, 0.0, &portFilter, back, kvImageBackgroundColorFill);
+        vImage_Error ours = shear->port(&shaped, &wide, ox, oy, 0.0, 0.0, filter, back, kvImageBackgroundColorFill);
         checks++;
         snprintf(what, sizeof what, "%s: %s", shear->name, shapes[c].name);
         snprintf(note, sizeof note, "the host answers %ld, the port %ld, and the measurement is %ld",
                  (long)theirs, (long)ours, (long)shapes[c].want);
         if (theirs != shapes[c].want || ours != shapes[c].want) {
             failures++;
-            printf("FAIL %s: %s\n", what, note);
+            if (!quiet) printf("FAIL %s: %s\n", what, note);
         }
         free(wide.data);
         free(shaped.data);
@@ -642,7 +733,7 @@ static void refusals(const Shear *shear)
     for (unsigned bit = 0; bit < 32; bit++) {
         vImage_Flags flags = (vImage_Flags)1u << bit;
         vImage_Error theirs = shear->host(&src, &dest, 0, 0, 0.0, 0.0, filter, back, flags);
-        vImage_Error ours = shear->port(&src, &dest, 0, 0, 0.0, 0.0, &portFilter, back, flags);
+        vImage_Error ours = shear->port(&src, &dest, 0, 0, 0.0, 0.0, filter, back, flags);
         // The expectation is the measured table, not the host's answer: a bit the function takes is
         // kvImageNoError and a bit it does not is kvImageUnknownFlagsBit.
         vImage_Error want = (shear->acceptedFlags & (1u << bit)) ? kvImageNoError : kvImageUnknownFlagsBit;
@@ -652,7 +743,7 @@ static void refusals(const Shear *shear)
             snprintf(what, sizeof what, "%s: the flag 0x%x", shear->name, (unsigned)flags);
             snprintf(note, sizeof note, "the host answers %ld, the port %ld, and the measurement is %ld",
                      (long)theirs, (long)ours, (long)want);
-            printf("FAIL %s: %s\n", what, note);
+            if (!quiet) printf("FAIL %s: %s\n", what, note);
         }
     }
     vImageDestroyResamplingFilter(filter);
@@ -687,49 +778,81 @@ static void surveyFlags(void)
     }
 }
 
+// The sweep, as one function so that SEARCH can run it against many mappings and the normal run once.
+static int sweep(void)
+{
+    int before = failures;
+    float scales[] = { 1.0f, 2.0f, 0.5f, 0.25f };
+    double translates[] = { 0.0, 1.0, -1.0, 0.5, -0.5, 2.5, 0.0078125 };
+    double slopes[] = { 0.0, 1.0, -0.5, 2.0 };
+    vImage_Flags modes[] = { kvImageBackgroundColorFill, kvImageEdgeExtend };
+    struct { vImagePixelCount sw, sh, dw, dh; const char *label; } shapes[] = {
+        { 9, 5, 9, 5, "" }, { 9, 5, 14, 5, " wide" }, { 9, 5, 4, 5, " narrow" },
+        { 9, 5, 9, 2, " short" }, { 9, 5, 9, 8, " tall" }, { 5, 12, 12, 5, " transposed" },
+    };
+    for (int s = 0; s < shearCount; s++) {
+        const Shear *shear = &shears[s];
+        for (int m = 0; m < 2; m++)
+            for (unsigned sc = 0; sc < 4; sc++)
+                for (unsigned tr = 0; tr < sizeof translates / sizeof *translates; tr++)
+                    for (unsigned sl = 0; sl < 4; sl++)
+                        one(shear, 9, 5, 9, 5, 0, 0, translates[tr], slopes[sl], scales[sc],
+                            modes[m] | (sc == 3 ? kvImageHighQualityResampling : kvImageNoFlags),
+                            (sc == 3) ? 5 : 3, "sweep");
+        for (unsigned sh = 0; sh < 6; sh++)
+            one(shear, shapes[sh].sw, shapes[sh].sh, shapes[sh].dw, shapes[sh].dh, 0, 0, 0.5, 1.0, 1.0f,
+                kvImageBackgroundColorFill, 3, shapes[sh].label);
+        one(shear, 9, 5, 9, 5, 2, 0, 0.0, 0.0, 1.0f, kvImageBackgroundColorFill, 3, " along offset 2");
+        one(shear, 9, 5, 9, 5, 12, 0, 0.0, 0.0, 1.0f, kvImageBackgroundColorFill, 3, " along offset 12");
+        refusals(shear);
+    }
+    return failures - before;
+}
+
+// SEARCH scores the EXPECTATION against the host alone, over the whole sweep, for every candidate mapping.
+// The port is not involved: what is being decided is which mapping reproduces the host, and the port is then
+// written to that. A score is the number of checks where this file's own loops and the host's bytes differ.
+static void search(void)
+{
+    Mapping best;
+    int bestScore = 1 << 30;
+    quiet = 1;
+    double shifts[] = { -0.5, -0.375, -0.25, -0.125, 0.0, 0.125, 0.25, 0.375, 0.5 };
+    double slopes[] = { -0.5, 0.0, 0.5, 1.0 };
+    for (int halfPixel = 0; halfPixel < 2; halfPixel++)
+        for (int farAnchor = 0; farAnchor < 2; farAnchor++)
+            for (int sign = -1; sign <= 1; sign += 2)
+                for (unsigned a = 0; a < sizeof shifts / sizeof *shifts; a++)
+                    for (unsigned b = 0; b < sizeof slopes / sizeof *slopes; b++) {
+                        mapping.alongShift = shifts[a];
+                        mapping.translateSign = sign;
+                        mapping.slopeShift = slopes[b];
+                        mapping.halfPixel = halfPixel;
+                        mapping.farAnchor = farAnchor;
+                        checks = 0;
+                        failures = 0;
+                        int score = sweep();
+                        if (score < bestScore) {
+                            bestScore = score;
+                            best = mapping;
+                            if (score == 0) printf("SEARCH a mapping with NO expectation failures\n");
+                            printf("SEARCH along %+.3f translate %+d slopeShift %+.3f halfPixel %d farAnchor %d"
+                                   " -> %d expectation failures\n", best.alongShift, best.translateSign,
+                                   best.slopeShift, best.halfPixel, best.farAnchor, bestScore);
+                            fflush(stdout);
+                        }
+                    }
+    printf("SEARCH best: along %+.3f translate %+d slopeShift %+.3f halfPixel %d farAnchor %d -> %d failures\n",
+           best.alongShift, best.translateSign, best.slopeShift, best.halfPixel, best.farAnchor, bestScore);
+}
+
 int main(void)
 {
     setbuf(stdout, NULL);
     @autoreleasepool {
         if (getenv("SURVEY")) { surveyFlags(); return 0; }
-        float scales[] = { 1.0f, 2.0f, 0.5f, 0.25f };
-        // **The last translate is 1/128 and it is there because of the release's phase grid.** The release's
-        // filter quantises the mapped position to `1 / (64 * min(1, scale))` of a pixel - 1/64 at a scale of one
-        // and two, 1/32 at 0.5, 1/16 at 0.25 (facts/Accelerate/vImageGeometry.md) - and the release's own
-        // weight table has one row per phase of that grid. The first six translates and the four slopes make
-        // every mapped position a multiple of a QUARTER at a scale of one and two, a half at 0.5 and a quarter
-        // at 0.25, which are all multiples of the grid at every scale: **the sweep therefore landed on the grid
-        // on every case and could not see the quantisation at all**, which is measured - quantising the mapped
-        // position to the grid in `CharonResampleWeights` leaves the failure count at 8748 checks / 9230
-        // failures, unchanged. One translate of 1/128 puts every mapped position off the grid at every scale
-        // (1/128 itself, and divided by the scale 1/256, 1/64 and 1/32, none of which is a multiple of the
-        // grid), so a fix that only quantises the phase is visible here.
-        double translates[] = { 0.0, 1.0, -1.0, 0.5, -0.5, 2.5, 0.0078125 };
-        double slopes[] = { 0.0, 1.0, -0.5, 2.0 };
-        vImage_Flags modes[] = { kvImageBackgroundColorFill, kvImageEdgeExtend };
-        // The shapes: the destination the same size, wider, narrower, taller, shorter, and the destination
-        // transposed relative to the source so that both axes are exercised at a shape that is not square.
-        struct { vImagePixelCount sw, sh, dw, dh; const char *label; } shapes[] = {
-            { 9, 5, 9, 5, "" }, { 9, 5, 14, 5, " wide" }, { 9, 5, 4, 5, " narrow" },
-            { 9, 5, 9, 2, " short" }, { 9, 5, 9, 8, " tall" }, { 5, 12, 12, 5, " transposed" },
-        };
-        for (int s = 0; s < shearCount; s++) {
-            const Shear *shear = &shears[s];
-            for (int m = 0; m < 2; m++)
-                for (unsigned sc = 0; sc < 4; sc++)
-                    for (unsigned t = 0; t < sizeof translates / sizeof *translates; t++)
-                        for (unsigned sl = 0; sl < 4; sl++)
-                            one(shear, 9, 5, 9, 5, 0, 0, translates[t], slopes[sl], scales[sc],
-                                modes[m] | (sc == 3 ? kvImageHighQualityResampling : kvImageNoFlags),
-                                (sc == 3) ? 5 : 3, "sweep");
-            for (unsigned sh = 0; sh < 6; sh++)
-                one(shear, shapes[sh].sw, shapes[sh].sh, shapes[sh].dw, shapes[sh].dh, 0, 0, 0.5, 1.0, 1.0f,
-                    kvImageBackgroundColorFill, 3, shapes[sh].label);
-            // The along offset, which the release takes at any value.
-            one(shear, 9, 5, 9, 5, 2, 0, 0.0, 0.0, 1.0f, kvImageBackgroundColorFill, 3, " along offset 2");
-            one(shear, 9, 5, 9, 5, 12, 0, 0.0, 0.0, 1.0f, kvImageBackgroundColorFill, 3, " along offset 12");
-            refusals(shear);
-        }
+        if (getenv("SEARCH")) { search(); return 0; }
+        sweep();
         printf("\n%d checks, %d failures\n", checks, failures);
     }
     return failures ? 1 : 0;
