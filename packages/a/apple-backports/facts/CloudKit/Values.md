@@ -78,16 +78,16 @@ The measurements that are easy to get wrong, all from the host:
     copy is a different object carrying the same fields, and +[CKRecordZone defaultRecordZone] is one
     shared object. CKRecordID, CKRecordZoneID and CKReference compare by value.
 
-## The two names the sweep lists that nothing in the pile ever carried
+## The two names the sweep lists, and where they came from
 
-`CKFetchWebAuthTokenOperation` and `CKShareRequestAccessOperation` are on the sweep's list of 72
-CloudKit API names main lacks, and they are the two this series does not carry. They are **owed, and
-deliberately absent from the registry rather than filed as `absent`**, because the owner's rule is that
-`absent` is only for hardware the device physically lacks and these are two more operations that need an
-iCloud account to reach the network.
+`CKFetchWebAuthTokenOperation` and `CKShareRequestAccessOperation` were on the sweep's list of 72
+CloudKit API names main lacked, and they are the two the bundle this series was rebuilt from had no
+commit for. **Both are carried now**, one file of its own each, because the band machinery puts an
+object in the band of the release its API arrived in: `CKOperations92.m` for the one that arrived in
+9.2, `CKOperations26.m` for the one that arrived in 26.
 
-What is true about them here, measured rather than assumed: no commit in the bundle from which this
-series was rebuilt declares either class or implements it.
+What that earlier page said about them was right about the bundle and wrong about the headers, and the
+second half is what made them look impossible:
 
     $ for n in CKFetchWebAuthTokenOperation CKShareRequestAccessOperation; do
         git log --format=%H --all -- packages/a/apple-backports/CloudKit | while read s; do
@@ -95,11 +95,32 @@ series was rebuilt declares either class or implements it.
       done
       no @implementation in any reachable commit   (both names)
 
-So there is nothing to replay: the header does not declare them, no source defines them, and a row that
-said `implemented` would be a claim about code that is not in the tree - the defect the gate refused the
-value half for and the reviewer refused it for. They are this series' first two **owed** CloudKit names,
-and carrying them is the same work as the engine's: a configuration over the transport, a local state, and
-the transport's own refusal in `CKErrorDomain` for the one request each would make.
+    $ ls "$(cat /tmp/land/sdkpath)"/System/Library/Frameworks/CloudKit.framework/Headers/CKFetchWebAuthTokenOperation.h
+    ...iPhoneOS16.4.sdk/.../CloudKit.framework/Headers/CKFetchWebAuthTokenOperation.h
+    $ ls "$(cat /tmp/land/sdkpath)"/System/Library/Frameworks/CloudKit.framework/Headers/CKShareRequestAccessOperation.h
+    No such file or directory
+
+`CKFetchWebAuthTokenOperation` is declared by the headers this package builds against, 9.2 with three
+members, so nothing about it had to be transcribed. `CKShareRequestAccessOperation` is not in the 16.4
+headers and is transcribed from the 26.2 ones into `CharonCKIOS26.h` - the same shape as
+`CharonCKSyncEngine26.h`, which is how the other half of the 26 surface is declared - and implemented
+in `CKOperations26.m` beside it with an explicit `@synthesize` for each of its three properties.
+
+**What each one asks the service for.** The web auth token operation is the one request in this package
+whose answer is not of the port's own making: it is `users/login` with the API token the caller was
+handed, the path a client uses rather than signing a token of its own, and a token it was not given is
+`CKErrorNotAuthenticated` with no request made - there is no account behind the answer, because there
+was no token to exchange. `CKShareRequestAccessOperation` is the other half of accepting a share:
+`shares/requestAccess` with the URLs of the shares to ask about, answered per URL, an item the service
+refused arriving as that item's own error and the operation's own as `CKErrorPartialFailure` under
+`CKPartialErrorsByItemIDKey`. Both are the service's own interface, as `facts/CloudKit/WebServices.md`
+sets out; neither is reachable from this device, which has no iCloud account, so neither has been run
+against the service and neither claims an answer it was given.
+
+The two siblings of the 26 sharing surface that are still not carried - `CKShareAccessRequester`,
+`CKShareBlockedIdentity`, and the members of `CKShare` that say a share may ask at all - are named at
+the bottom of `CharonCKIOS26.h`. They are values the service fills in, and the `CKShare` members cannot
+be answered without `CKShare` itself.
 
 ## The five names the two halves of the pile defined without a row
 
@@ -380,13 +401,16 @@ again. The rule above is the one committed with the script, and `python3 tools/c
 `CKDatabase` is the next family by that rule, and the count is a count of distinct owed spellings, not a
 judgement about what it is worth: a member is owed when no row and no definition exist for it here, and
 a member whose behaviour is already answered by a class this series carries is not owed work, it is a row
-to be written. The two owed *classes* - names the sweep lists that nothing in the pile ever carried -
-remain `CKFetchWebAuthTokenOperation` and `CKShareRequestAccessOperation`, and they are owed on the same
-terms as before.
+to be written. The table was measured when the two owed *classes* were still owed; both are carried now
+- `CKFetchWebAuthTokenOperation` in `CKOperations92.m` and `CKShareRequestAccessOperation` in
+`CKOperations26.m` - and *The two names the sweep lists, and where they came from* above has them.
 
 What this table is not: a plan, and not a claim that any of it can be carried. Each family needs its own
 host differential before a row may say `implemented`, and where the host cannot be asked the row says so
-with the reason, as `CKFetchWebAuthTokenOperation` does.
+with the reason. The two operations above are the exception in the other direction: their host
+differential is the initializer probe, because what a CloudKit operation answers without an iCloud
+account is its refusal to be built wrongly - and neither has been run against the service, which this
+device has no account for.
 
 ### CKDatabase, and what the host does not answer
 

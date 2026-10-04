@@ -1251,6 +1251,27 @@
     "effect": "shares/accept with the URLs of the metadata it was given; a share the service refused to accept arrives as that item's own error, and the accepted share is the one the metadata named",
     "source": "packages/a/apple-backports/CloudKit/CKOperations83.m",
     "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKFetchWebAuthTokenOperation",
+    "kind": "class",
+    "introduced": "9.2",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "users/login with the API token the caller was given, which is the path a client that was handed a web authentication token uses rather than signing one of its own; a token it was not given is CKErrorNotAuthenticated and no request is made",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations92.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKShareRequestAccessOperation",
+    "kind": "class",
+    "introduced": "26.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "shares/requestAccess with the URLs of the shares to ask about, the other half of accepting one; an item the service refused arrives as that item's own error, and the operation's own is CKErrorPartialFailure with the failures under CKPartialErrorsByItemIDKey",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations26.m",
+    "minimum": "6.0",
+    "facts": "facts/CloudKit/Values.md"
   }
   ],
   "framework": "CloudKit"
