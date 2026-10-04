@@ -10,10 +10,10 @@
 // its API arrived in, and this arrived in 9.2. The 16.4 headers declare the class and its three
 // members, so nothing here is transcribed.
 //
-// -init is the header's designated initializer here as it is on CKOperation, and it reaches
-// -charon_init rather than NSOperation's -init, because CKOperation's own -init refuses. What the host
-// answers for the base class and for each of the sixteen concrete subclasses is measured, with both
-// spellings, by tests/backports/host/cloudkit/initializers-host.m.
+// What the host answers for the base class and for each of the sixteen concrete subclasses is measured,
+// with both spellings, by tests/backports/host/cloudkit/initializers-host.m: the base refuses, and every
+// concrete subclass answers with a working instance because CKOperation's -init does the set-up for
+// anything below it.
 
 #import "CharonCloudKit.h"
 #import "CharonCKConstants.h"
@@ -21,9 +21,14 @@
 
 @implementation CKFetchWebAuthTokenOperation
 
+// There is no default of its own to add here: the header's -init is the designated initializer and the
+// base class's -init is what builds a CKFetchWebAuthTokenOperation. APIToken stays nil until a caller
+// sets it, and -main answers CKErrorNotAuthenticated for that, which is the code the header names for a
+// client that is not signed in. The override is written because the header declares it
+// (CKFetchWebAuthTokenOperation.h:19), not because it has anything to do.
 - (instancetype)init
 {
-    return [super charon_init];
+    return [super init];
 }
 
 - (instancetype)initWithAPIToken:(NSString *)APIToken

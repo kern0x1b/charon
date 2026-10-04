@@ -160,16 +160,10 @@ extern CKShareMetadata *_Nullable CharonCKShareMetadataWithDocument(NSDictionary
 @end
 
 // What every operation of this package needs and none of them should decide for itself. The base
-// class's own -init refuses, as measured, so these are what a concrete subclass builds through; and
-// they are also the one request, the one end and the partial-failure rule the whole family shares.
+// class's own -init refuses the abstract base and nothing else, as measured, and it is that -init
+// which calls -charon_setUp; these are also the one request, the one end and the partial-failure rule
+// the whole family shares.
 @interface CKOperation (CharonCKShared)
-// The initializer a concrete subclass builds through, and the only path to NSOperation's own -init
-// this class offers: the header's -init is the designated one and it refuses, so a subclass that
-// wrote [super init] would raise instead of building anything. Measured on the host: every concrete
-// subclass answers for both spellings, and the base class answers neither. In the init family
-// because it assigns to self, like WebKit's own charon_init initialisers; a category cannot carry
-// objc_designated_initializer, so clang reads it as a convenience initializer and says so.
-- (instancetype)charon_init __attribute__((objc_method_family(init)));
 - (void)charon_setUp;
 - (void)charon_finish;
 // The per-item failures of a partial answer, and the CKError that carries them under

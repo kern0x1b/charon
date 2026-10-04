@@ -330,11 +330,24 @@ of `CKOperations10.m`. That is why a modify built with `-init` is a modify with 
 its `-main` declines to send it: the header marks each of those `-init` as the **designated**
 initializer, which is a statement that this is the way to make one, and the framework agrees.
 
-**The set-up therefore cannot be reached through the base class's own `-init`, and the seam is named
-for that.** `-charon_init` is the initializer every concrete subclass builds through; it calls
-`NSOperation`'s own `-init` and then `-charon_setUp`, which is the four members every operation needs.
-`-[CKOperation init]` raises before either, exactly as the host's does, so a subclass that wrote
-`[super init]` would raise instead of building anything.
+**The refusal is about the receiver, and that is what the host's own words say.** *"You must use a
+concrete subclass of CKOperation"* is a statement about which class was instantiated, not about which
+initializer was reached - a `CKModifyRecordsOperation` **is** a concrete subclass, and measured on the
+host it answers. So `-[CKOperation init]` does both halves in one method: for the abstract base itself it
+raises with the host's exception and words, and for anything below it it is the ordinary designated
+initializer, `NSOperation`'s own `-init` followed by `-charon_setUp` (the four members every operation
+needs). Every subclass therefore writes the `[super init]` the header tells it to write, and there is no
+seam to go around. The question "which class is this really" is asked with `object_getClass`, not
+`[self class]`, because `-class` is a method a subclass may answer with something else.
+
+The first version of this had it the other way round: the base refused unconditionally and every
+subclass built through a `-charon_init` seam instead of `[super init]`. It compiled, it was green, and it
+was wrong twice over - it would have raised on every operation anybody built, and it cost 35
+`-Wobjc-designated-initializers` warnings over these files, because a category cannot carry
+`objc_designated_initializer` and marking the seam designated in a class extension instead makes clang
+demand an override per subclass (both measured). The warning count over the 28 sources main already had
+is back at main's own **336**, and the 24 `-Wobjc-designated-initializers` lines left in the family are
+the ones `CKQuery8.m`, `CKValues10.m` and `CKValues11.m` already had.
 
 **`+new` is NSObject's here, and that is the host's shape too.** The 26.2 header marks `-init` as the
 designated initializer of `CKOperation` and says nothing about `+new`, so `+[CKOperation new]` reaches
@@ -352,11 +365,12 @@ visible to a caller that sends the selector dynamically; a caller compiling agai
 `CharonCKSyncEngine26.h` cannot write `[CKSyncEngine new]` at all, because that header marks both
 spellings `NS_UNAVAILABLE` as Apple's own does.
 
-**What this costs in the compiler's own opinion, measured.** Routing sixteen `-init`s through a seam
-that clang cannot see as a designated initializer adds 35 `-Wobjc-designated-initializers` warnings
-over these files (336 warning lines across the 28 CloudKit sources before, 371 after; none is an
-error, and the gate compiles with `-Werror=objc-missing-property-synthesis` only). The alternative is
-a `+new` on every subclass and a base class that does not refuse, and the host does the opposite.
+**What is measured here and what is not.** The 36 cases above are the host's own answers, and they are
+the oracle for the words and for which classes refuse. The port's own answer is not run here: linking
+this family's objects for the host needs `uECC.c` from micro-ecc, and the shared store keeps that
+package's headers and its per-digest archives built for armv7, not the C it was fetched as. What is
+checked on this side is the compile - 30 sources for `armv7-apple-ios6.0` against iPhoneOS16.4, no
+error line - and the gate's own reading of the objects.
 
 ## What CloudKit is still owed, by class
 

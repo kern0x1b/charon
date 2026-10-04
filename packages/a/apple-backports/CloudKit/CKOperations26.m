@@ -24,12 +24,13 @@
 @synthesize perShareAccessRequestCompletionBlock = _perShareAccessRequestCompletionBlock;
 @synthesize shareRequestAccessCompletionBlock = _shareRequestAccessCompletionBlock;
 
-// -init is the header's designated initializer, and it reaches -charon_init rather than NSOperation's
-// -init because CKOperation's own -init refuses: what the host answers for the base class and for each
-// concrete subclass is measured, with both spellings, by tests/backports/host/cloudkit/initializers-host.m.
+// -init is the header's designated initializer: [super init] is CKOperation's own, which does the set-up
+// for anything below the abstract base and refuses only the base itself -- what the host answers for the
+// base class and for each concrete subclass is measured, with both spellings, by
+// tests/backports/host/cloudkit/initializers-host.m. The one default this class adds is an empty list.
 - (instancetype)init
 {
-    self = [super charon_init];
+    self = [super init];
     if (self) {
         _shareURLs = @[];
     }

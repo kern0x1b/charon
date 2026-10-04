@@ -30,7 +30,7 @@
 
 - (instancetype)init
 {
-    self = [super charon_init];
+    self = [super init];
     if (self) {
         [self charon_setUp];
         _resultsLimit = CKQueryOperationMaximumResults;
@@ -178,7 +178,7 @@ static void CharonCKTakeZoneChanging(id entry, NSString **token, NSUInteger *lim
 
 - (instancetype)init
 {
-    self = [super charon_init];
+    self = [super init];
     if (self) {
         [self charon_setUp];
         _recordZoneIDs = @[];

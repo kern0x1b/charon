@@ -22,6 +22,9 @@
 #import "CharonCKConstants.h"
 #import "CharonCKSubscription.h"
 
+// object_getClass, for -init's one question: which class the object really is.
+#import <objc/runtime.h>
+
 // The end of an operation, and the name the port uses for it: this release keeps NSOperation's own
 // -finish private, so an operation of this package ends through a name of its own and the queue is
 // released by the one below.
@@ -44,39 +47,24 @@
     NSTimeInterval _timeoutIntervalForResource;
 }
 
-// The initializer a concrete subclass builds through, and the only path to NSOperation's own -init
-// this class offers. The header's -init is the designated initializer and it refuses, so a subclass
-// that wrote [super init] would refuse with it -- and measured on the host, no concrete subclass
-// does that: every one of them answers for both spellings. So the set-up every operation needs is
-// here, under a name of its own, and each of them calls it.
-- (instancetype)charon_init
-{
-    self = [super init];
-    if (self) {
-        [self charon_setUp];
-    }
-    return self;
-}
-
-// The four members every operation needs and none of them should decide for itself. This is the body
-// of the base class's initializer and nothing more: it is separate from -charon_init so that the
-// refusal above and the set-up are two things a reader can see separately, and so that
-// CharonCloudKit.h's own -charon_setUp is the one every operation of this family gets.
-- (void)charon_setUp
-{
-    _operationID = (CKOperationID)[[NSUUID UUID] UUIDString];
-    _longLived = NO;
-    _allowsCellularAccess = YES;
-    _timeoutIntervalForRequest = 60.0;
-    _timeoutIntervalForResource = 7.0 * 24.0 * 60.0 * 60.0;
-}
-
 // Measured against the host's own CloudKit, for both spellings and through objc_msgSend so the
 // header's own marking could not stop the call: the base class refuses to be instantiated at all, with
 // NSInternalInconsistencyException and these words, and the two spellings answer the same way. Every
 // concrete subclass answers with a working instance for both spellings, because its -init is the
 // designated initializer the header declares -- a modify built with -init is a modify with nothing in
 // it, and its -main declines to send it.
+//
+// THE REFUSAL IS ABOUT THE RECEIVER, and that is what the host's own words say: "You must use a
+// concrete subclass of CKOperation" is a statement about which class was instantiated, not about which
+// initializer was reached. A CKModifyRecordsOperation IS a concrete subclass of CKOperation, and
+// measured on the host it answers, so an -init that refused every subclass would be refusing sixteen
+// classes the framework builds. So this one initializer does both halves: for the abstract base itself
+// it raises with the host's exception and words, and for anything below it it is the ordinary
+// designated initializer NSOperation's -init plus the four members every operation needs. A subclass
+// therefore writes [super init] and gets its own object, which is what the header says to write.
+//
+// object_getClass, not [self class]: the question is which class the object really is, and -class is a
+// method a subclass may answer with something else.
 //
 // There is no +new of this class's own, and that is the host's shape too: the 26.2 header marks -init
 // as the designated initializer and says nothing about +new, so +[CKOperation new] is NSObject's and
@@ -85,9 +73,27 @@
 // the host builds.
 - (instancetype)init
 {
-    [NSException raise:NSInternalInconsistencyException
-                format:@"You must use a concrete subclass of CKOperation", nil];
-    return nil;
+    if (object_getClass(self) == [CKOperation class]) {
+        [NSException raise:NSInternalInconsistencyException
+                    format:@"You must use a concrete subclass of CKOperation", nil];
+        return nil;
+    }
+    self = [super init];
+    if (self) {
+        [self charon_setUp];
+    }
+    return self;
+}
+
+// The four members every operation needs and none of them should decide for itself, kept in a method
+// of their own so that the refusal above and the set-up are two things a reader can see separately.
+- (void)charon_setUp
+{
+    _operationID = (CKOperationID)[[NSUUID UUID] UUIDString];
+    _longLived = NO;
+    _allowsCellularAccess = YES;
+    _timeoutIntervalForRequest = 60.0;
+    _timeoutIntervalForResource = 7.0 * 24.0 * 60.0 * 60.0;
 }
 
 - (void)main
@@ -157,16 +163,6 @@
 
 @implementation CKDatabaseOperation
 
-// The class between the base and the ten operations above it is concrete on the host -- measured:
-// +[CKDatabaseOperation new] and -[CKDatabaseOperation init] both answer with an instance -- so it
-// needs an -init of its own, or it would inherit the base class's refusal and refuse with it. There
-// are no defaults of its own to add here: what it adds is the container, which -container reads, and
-// +new is NSObject's, which reaches this.
-- (instancetype)init
-{
-    return [super charon_init];
-}
-
 - (CKContainer *)container
 {
     CKDatabase *database = self.database;
@@ -196,7 +192,7 @@
 
 - (instancetype)init
 {
-    self = [super charon_init];
+    self = [super init];
     if (self) {
         _atomic = YES;
         _savePolicy = CKRecordSaveChangedKeys;
@@ -332,7 +328,7 @@
 
 - (instancetype)init
 {
-    self = [super charon_init];
+    self = [super init];
     if (self) {
         _recordZonesToSave = @[];
         _recordZoneIDsToDelete = @[];
@@ -432,7 +428,7 @@
 
 - (instancetype)init
 {
-    self = [super charon_init];
+    self = [super init];
     if (self) {
         _subscriptionsToSave = @[];
         _subscriptionIDsToDelete = @[];
@@ -537,7 +533,7 @@
 
 - (instancetype)init
 {
-    self = [super charon_init];
+    self = [super init];
     if (self) {
         _recordIDs = @[];
         _desiredKeys = nil;
@@ -647,7 +643,7 @@
 
 - (instancetype)init
 {
-    self = [super charon_init];
+    self = [super init];
     if (self) {
         _recordZoneIDs = @[];
     }
@@ -721,7 +717,7 @@
 
 - (instancetype)init
 {
-    self = [super charon_init];
+    self = [super init];
     if (self) {
         _subscriptionIDs = @[];
     }
@@ -791,7 +787,7 @@
 
 - (instancetype)init
 {
-    self = [super charon_init];
+    self = [super init];
     if (self) {
         _resultsLimit = CKQueryOperationMaximumResults;
     }
@@ -926,7 +922,7 @@
 
 - (instancetype)init
 {
-    self = [super charon_init];
+    self = [super init];
     if (self) {
         _resultsLimit = CKQueryOperationMaximumResults;
     }
