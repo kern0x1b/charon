@@ -113,9 +113,12 @@ typedef enum {
                                    name:(NSString *)name
 {
     // The output takes the first input's shape and data type, which is what every elementwise operation
-    // in this family produces; a family whose result has a shape of its own computes it here instead.
+    // in this family produces; a family whose result has a shape of its own computes it here instead. A
+    // result whose shape is decided by data that arrives when the graph RUNS takes neither: there is no shape
+    // to put on it before then, and that is what the release's own tensor carries over one (measured: no
+    // shape at all, before the run or after it), so the interpreter puts it on when it walks the operation.
     MPSGraphTensor *source = inputs.firstObject;
-    NSArray<NSNumber *> *shape = source.shape;
+    NSArray<NSNumber *> *shape = [parameters[@"resultShapeIsFed"] boolValue] ? nil : source.shape;
     MPSDataType dataType = source.dataType;
     if ([parameters[@"shape"] isKindOfClass:[NSArray class]])
         shape = parameters[@"shape"];
@@ -1100,6 +1103,139 @@ typedef enum {
                                                           operation:operation index:0];
     [operation charon_mps_setOutputTensors:@[result]];
     return result;
+}
+
+#pragma mark - the space-to-depth family: four operations of 15.0 and 16.1 that are ONE chain of walks
+// What every operation of this family does, measured: it moves a BLOCK of the operand's spatial axes into
+// the batch axis, or out of it, and the result's batch axis holds the operand's batch coordinate woven with
+// the block's own coordinates. Two shapes of answer, and which one is which is what the header's
+// usePixelShuffleOrder says - with YES the block's own coordinates are CONTIGUOUS in the result's batch axis
+// and without it they are INTERLEAVED with the batch coordinate - and neither needs a walk of its own:
+//
+//   1. a RESHAPE that splits each spatial axis into its block rows and its block columns (for the two
+//      operations that move the blocks TO the batch axis), or that merges them back (for the two that move
+//      them FROM it), and splits or merges the batch axis the other way round;
+//   2. a TRANSPOSE that puts the batch axis and the block's coordinates into the order the flag names;
+//   3. the other half of the reshape.
+//
+// Every one of those three is a walk this library already has and the harness already compares - the reshape
+// of 15.0 and the permutation transpose of 16.0 - so what is here is the chain, the order the axis is held
+// in, and the rules the release refuses the family by.
+//
+// MEASURED on this host's own MPSGraph (macOS 27.0 build 26A428, M4 Pro, Metal 4) over a [3, 4, 6] of 1 to 72
+// with a 2x2 block, the spatial axes @[@1, @2] and the batch axis @0, whose result is a [12, 2, 3]:
+//
+//   - THE BLOCK'S OWN COORDINATES ARE ORDERED WITH THE LAST SPATIAL AXIS FASTEST, which is what makes the 2D
+//     form's two axis arguments read (widthAxis, heightAxis) with the width the fastest: measured, the 2D
+//     form over the same operand answers byte for byte what the general form answers with
+//     spatialAxes=@[@1, @2] and blockDimensions=@[@2, @2], and with THREE spatial axes the last of them
+//     varies fastest of all.
+//   - BLOCK DIMENSION i BELONGS TO SPATIAL AXIS i, and THE RESULT'S AXES ARE THE OPERAND'S OWN in the
+//     operand's own order - the two together are what a list written the other way round is, and each is
+//     measured over a [2, 4, 8] whose batch axis is 0: spatialAxes @[@1, @2] with block @[@4, @2] answers a
+//     [16, 1, 4] - axis 1 over ITS OWN block of 4 is 1 and axis 2 over its own block of 2 is 4, so the result
+//     holds the operand's axes and not the list's - and spatialAxes @[@2, @1] with the same @[@4, @2]
+//     answers a [16, 2, 2], which is the same two numbers read positionally against the other list.
+//     A list written the other way round with the blocks swapped to match pairs each axis with its own block
+//     again and answers the SAME shape and DIFFERENT bytes: spatialAxes @[@1, @2] with block @[@2, @4] and
+//     spatialAxes @[@2, @1] with block @[@4, @2] are both a [16, 2, 2] and not the same bytes, and with an
+//     EQUAL block the two are both a [8, 1, 2] over a [2, 2, 4] and still not the same bytes - because the
+//     block's own coordinate runs in the LIST's order, with the last of them fastest, whichever order that
+//     is.
+//   - WITH usePixelShuffleOrder=NO the batch coordinate is the FASTEST of the two in the result's batch axis:
+//     the result's batch coordinate d' is d + D*k, where D is the operand's own batch extent and k is the
+//     block's own coordinate in its row-major order - measured over the [3, 4, 6]: the elements at
+//     (0, 0, w even) are at the result's d' = 0, those at (1, 0, w even) at d' = 1 and those at (0, 1, w even)
+//     at d' = 6, and the odd half of each of those at d' = 3, 4 and 9.
+//   - WITH usePixelShuffleOrder=YES the block's own coordinate is the fastest: d' is d*(the product of the
+//     block) + k - measured, the same operand's (0, 0, w even) at d' = 0, (0, 0, w odd) at d' = 1,
+//     (0, 1, w even) at d' = 2 and (1, 0, w even) at d' = 4.
+//   - THE RESULT'S SHAPE is the operand's own with the batch axis made D*times the product of the block and
+//     every spatial axis made extent/block - measured [3, 4, 6] -> [12, 2, 3] - and for the other direction the
+//     same statement the other way round, the batch axis made D over the product of the block and every
+//     spatial axis extent times its own.
+//   - EACH OPERATION IS THE INVERSE OF ITS PARTNER WITH THE SAME FLAG, and the round trip is the IDENTITY:
+//     measured, a space-to-depth over the [3, 4, 6] and then the depth-to-space of what it built answers
+//     1 to 72 in the operand's own order, and a space-to-batch and then a batch-to-space does the same, for
+//     BOTH flags. That is the header's own "This operation is the inverse of" sentence measured rather than
+//     assumed, and it is why the two directions are one chain run forwards and one run backwards here.
+
+- (MPSGraphTensor *)charon_mps_blockShuffle:(MPSGraphTensor *)tensor
+                                     spatial:(NSArray<NSNumber *> *)spatial
+                                       batch:(NSInteger)batch
+                                       block:(NSArray<NSNumber *> *)block
+                                     toBatch:(BOOL)toBatch
+                                     shuffle:(BOOL)shuffle
+                                         name:(NSString *)name
+{
+    // THE CHAIN, which is three operations this library already has and the harness already compares - the
+    // reshape of 15.0 and the permutation transpose of 16.0 - so what the plan hands over is exactly what
+    // each of the three carries: the shape the first splits the operand into, the permutation the second
+    // reads, and the shape the third merges it back into. The plan itself, with every refusal of the family,
+    // is in the interpreter (CharonMPSGraphBlockShufflePlan) and is asked twice over: here, when the graph
+    // is built, by the four written-down forms whose axes are numbers the caller wrote down, and when the
+    // graph RUNS, by the fed pair of 15.0, whose three axes arrive as data and so cannot be asked before
+    // then - measured: the release builds a graph whose result carries no shape over three fed axes, hands
+    // back an executable, and its run answers exactly what the written-down axes answer over the same operand.
+    NSDictionary *plan = [self charon_mps_blockShufflePlan:name
+                                                   ofShape:tensor.shape
+                                                   spatial:spatial
+                                                     batch:batch
+                                                     block:block
+                                                   toBatch:toBatch
+                                                   shuffle:shuffle];
+    MPSGraphTensor *split = [self reshapeTensor:tensor withShape:plan[@"splitShape"] name:name];
+    MPSGraphTensor *moved = [self transposeTensor:split permutation:plan[@"permutation"] name:name];
+    return [self reshapeTensor:moved withShape:plan[@"resultShape"] name:name];
+}
+
+// The FED forms of the block-moving family, where the spatial axes, the batch axis and the block dimensions
+// each arrive as a tensor. A parameter the graph HOLDS - a CONSTANT - is read here, when the graph is built,
+// and one the caller FEEDS is refused here: measured, the release answers a constant of the same values with
+// exactly what the written-down form answers, and takes the process down over a placeholder, which is the rule
+// this library follows for every fed parameter of this framework's shape family (the split's sizes, the
+// coordinate's axis and shape, and here the three of this one).
+- (MPSGraphTensor *)charon_mps_fedBlockShuffle:(MPSGraphTensor *)tensor
+                                       spatial:(MPSGraphTensor *)spatial
+                                         batch:(MPSGraphTensor *)batch
+                                         block:(MPSGraphTensor *)block
+                                       toBatch:(BOOL)toBatch
+                                       shuffle:(BOOL)shuffle
+                                           name:(NSString *)name
+{
+    NSArray<NSNumber *> *axes = [self charon_mps_constantShapeOfTensor:spatial];
+    NSArray<NSNumber *> *where = [self charon_mps_constantShapeOfTensor:batch];
+    NSArray<NSNumber *> *sizes = [self charon_mps_constantShapeOfTensor:block];
+    if (axes == nil || where == nil || sizes == nil) {
+        MPSGraphTensor *fed = axes == nil ? spatial : (where == nil ? batch : block);
+        MPSDataType type = fed.dataType;
+        if (type == MPSDataTypeFloat32 || type == MPSDataTypeFloat16 || type == MPSDataTypeBool) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was given a parameter of this family as a tensor of data type "
+                               @"0x%x, and an axis, a block and a list of extents are all indices: measured, the "
+                               @"release's own compiler refuses a floating point operand with \"'mps."
+                               @"space_to_batch' op operand #%lu must be 0D tensor of mps index type values\"",
+                              name, (unsigned)type, (unsigned long)(fed == spatial ? 1 : (fed == batch ? 2 : 3))];
+        }
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was given a parameter of this family as a tensor the caller feeds, "
+                           @"and a parameter that arrives as data is not one the release can build a graph over: "
+                           @"measured, it answers a CONSTANT of the same values with exactly what the written-"
+                           @"down form answers and takes the process down over a placeholder", name];
+    }
+    if (where.count != 1) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was given %lu numbers as its batch axis, and the batch axis is one of "
+                           @"them: measured, the release takes it as a 0D tensor or one of shape [1]", name,
+                  (unsigned long)where.count];
+    }
+    return [self charon_mps_blockShuffle:tensor
+                                  spatial:axes
+                                    batch:where.firstObject.integerValue
+                                    block:sizes
+                                  toBatch:toBatch
+                                  shuffle:shuffle
+                                      name:name];
 }
 
 #pragma mark - the gather family: the one seam every release's shape factory goes through

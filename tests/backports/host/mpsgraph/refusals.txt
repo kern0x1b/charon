@@ -251,3 +251,57 @@ coord-fed-axis-float 134 operand #1 must be 0D tensor
 # bytes does not exist (measured on this host: newBufferWithLength:0 and newBufferWithBytes:length:0 both
 # answer nil). So there is no run to answer and the port refuses the shape where the graph is built.
 coord-zero-extent 134 object cannot be nil
+# THE BLOCK-MOVING FAMILY of 15.0 and 16.1: the space-to-depth and depth-to-space of 15.0, the space-to-batch
+# and batch-to-space of 16.1. Four methods, FOUR operations to the release, and each operation refuses in its
+# own words and at its own MOMENT - which is why every line below records the exit status and not only the
+# text. An axis outside the rank is refused where the GRAPH is built, with the result's shape nil and the
+# release's own "Failed to infer result type(s)" behind it. A degenerate pair of axes and a block that does
+# not divide are refused where the graph is COMPILED, after the release has built a result of a shape of its
+# own - 3x16x3, 27x1x2, 1x6x9, 30x2x1 - and the shape line is in the measured output beside the sentence.
+#
+# The general form's three rules, over a [3, 4, 6] whose extents are all different.
+block-s2b-axis-outside 134 invalid axis: 3, axis must be in range - rank <= axis < rank, rank = 3
+block-s2b-axis-duplicate 134 'mps.space_to_batch' op axis must be unique
+block-s2b-batch-among-spatial 134 must be unique from `spatial_axes`
+block-s2b-block-list-short 134 must have same size as `block_dimensions`
+block-s2b-block-does-not-divide 134 Invalid `block_dimensions[1] = 5 for input size[2] = 6
+# And the batch-to-space's own two, over an [8, 2, 2] whose batch axis holds eight. The sentence names
+# 'mps.batch_to_space', which is the operation and not the other one.
+block-b2s-batch-among-spatial 134 'mps.batch_to_space' op `batch_axis` = 0 must be unique from `spatial_axes`
+block-b2s-block-list-short 134 must have same size as `block_dimensions`
+# The 2D forms of 15.0, which are two more operations and not the general form's words: an axis outside the
+# rank carries the axis's own NAME in the sentence, and a negative one lands there too with the value the
+# release was handed - 2147483647 is (NSUInteger)-1 - which is the header's own type making a caller write it.
+block-s2d-axis-outside 134 invalid width_axis (3) for shape of rank 3
+block-s2d-axis-negoutside 134 invalid width_axis (2147483647) for shape of rank 3
+# A DEGENERATE pair of axes - the depth axis among the two spatial ones - is refused at the COMPILE and not at
+# the build, and the result the release built for it is a 3x16x3: the height axis is read as a spatial axis
+# twice and its own extent is multiplied by the block a second time.
+block-s2d-degenerate-axes 134 Invalid degenerate axes: depth_axis (1) height_axis (1) for shape of rank 3
+# The block rule in each of the two directions' own words, which are not the general form's: moving the
+# blocks IN makes the block divide the height, moving them OUT makes the block SQUARED divide the depth.
+block-s2d-block-does-not-divide 134 block_size (3) must be multiple of height 4
+block-d2s-block-does-not-divide 134 block_size (3) squared (9) must be multiple of depth 12
+# THE FED PAIR of 15.0's own three questions, and they are the only ones of the family the release does NOT
+# refuse. A PLACEHOLDER for the three axes builds a graph whose result carries NO shape - so there is nothing
+# for a caller to read before the run - and its own run then answers the written-down form's values into the
+# destination the caller gave it, over the three axes of 2, 1 and 0 fed one each - and the DEPTH-TO-SPACE answers the same way, which the previous pass recorded as measured not
+# to return. An int64 axis fed is taken and answered exactly as an int32 one is. A fed float32 axis and a fed
+# placeholder of two numbers are refused where the graph is COMPILED, with the verifier's own rule about the
+# tensor. A fed axis whose value the release cannot use is refused by the release in the RUN - a width axis
+# outside the rank takes the process down with the written-down form's own sentence - or answered with a buffer
+# the verifier flags at the same time, which is the degenerate pair of axes and a block that does not divide.
+# A CONSTANT of NO RANK is
+# not constructible at all: the release's own +constantWithData:shape:dataType: takes the process down. A
+# constant of MORE THAN ONE NUMBER builds the graph and leaves the result with no shape, as a placeholder
+# does, and nothing is written into the destination.
+block-s2d-fed-axis-placeholder 0 result-shape nil
+block-s2d-fed-axis-unranked 134 a constant must be passed a ranked shape
+block-s2d-fed-axis-two-numbers 0 result-shape nil
+block-s2d-fed-axis-float32 134 operand #1 must be 0D tensor of mps index type values or static-shape defined tensor with shape equal to [1] or unranked tensor of mps index type values, but got 'tensor<1xf32>'
+block-s2d-fed-axis-two-fed-numbers 134 operand #1 must be 0D tensor of mps index type values or static-shape defined tensor with shape equal to [1] or unranked tensor of mps index type values, but got 'tensor<2xsi32>'
+block-d2s-fed-axis-placeholder 0 result-shape nil
+block-s2d-fed-axis-outside-at-run 134 invalid width_axis (3) for shape of rank 3
+block-s2d-fed-axis-int64-at-run 0 0000803f000040400000a0400000504100007041000088410000c8410000d8410000e84100001442
+block-s2d-fed-axis-degenerate-at-run 0 Invalid degenerate axes: depth_axis (1) height_axis (1) for shape of rank 3
+block-s2d-fed-axis-block3-at-run 0 block_size (3) must be multiple of height 4

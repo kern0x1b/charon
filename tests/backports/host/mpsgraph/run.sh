@@ -50,6 +50,7 @@ gather_squeeze:0
 gather_expand:0
 gather_concat:0
 gather_split:0
+gather_spacebatch:0
 "
 
 xcrun clang -fobjc-arc $target $quiet "$here/graph-cases.m" \
