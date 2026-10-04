@@ -44,6 +44,10 @@
 #include "CharonResampling.h"
 
 static int checks, failures;
+// The count FORMS scores on: the cases where the HOST's bytes and this file's own loops part company.
+// It is its own counter because `failures` carries all three comparisons and a search over the centre's
+// arrangement is only about this one.
+static int loopMisses;
 // SEARCH runs the whole sweep once per candidate mapping, so the per-case lines are silenced while it does and
 // the score is the only output; a run that printed 9900 FAIL lines per candidate would be unreadable.
 static int quiet;
@@ -421,16 +425,25 @@ static Mapping mapping = { 0.0, 1, 0.5, 1, 1 };
 
 static double expectSample(const Shear *shear, const uint8_t *srcRow, size_t srcStep, vImagePixelCount srcAlong,
                            const ReadFilter *filter, int extend, const double *back, unsigned channel,
-                           double centre, int tiesUp)
+                           double centre, int horizontal)
 {
+    // **The horizontal rounds the fraction to nearest with a CARRY and the tie to the upper row; the vertical
+    // TRUNCATES it with no carry at all.** They are different readings of the same position, not one rule with
+    // the tie moved, and the host's bytes tell them apart at 0.75 where the reciprocal is inexact.
     double whole = floor(centre);
     double fraction = centre - whole;
     long low = (long)whole;
-    long q = tiesUp ? (long)floor(fraction * (double)filter->phases + 0.5)
-                    : (long)ceil(fraction * (double)filter->phases - 0.5);
-    long carry = q / (long)filter->phases;
-    unsigned phase = (unsigned)(q - carry * (long)filter->phases);
-    long base = low + carry;
+    unsigned phase;
+    long base;
+    if (horizontal) {
+        long q = (long)floor(fraction * (double)filter->phases + 0.5);
+        long carry = q / (long)filter->phases;
+        phase = (unsigned)(q - carry * (long)filter->phases);
+        base = low + carry;
+    } else {
+        phase = (unsigned)(long)floor(fraction * (double)filter->phases);
+        base = low;
+    }
 
     const int16_t *row = filter->table + (size_t)phase * filter->width;
     long total = 0;
@@ -456,6 +469,47 @@ static double expectSample(const Shear *shear, const uint8_t *srcRow, size_t src
     return total ? accumulator / (double)total : 0.0;
 }
 
+// The centre's algebraic ARRANGEMENT, as one search term.
+//
+// At scales 1, 2, 0.5 and 0.25 the filter's stored reciprocal is exact, so every rearrangement that is
+// algebraically equal is equal to the byte as well and the whole family is indistinguishable. 0.75 stores
+// `1.3333333333333333` and the family parts company: the far-edge anchor can be `A + (position - A)*recip` or
+// `position*recip + (A - A*recip)` or `position*recip + A*(1 - recip)`, which are the same expression written
+// three ways and round differently - `A*(1 - recip)` and `A - A*recip` differ by about one ulp - and the half
+// pixel can be `+0.5` before the scale with `-0.5` after it, or the single constant `0.5*recip - 0.5` added
+// afterwards. "Multiply by the stored reciprocal" and "divide by 1/reciprocal" are two more.
+//
+// This is the term FORMS=1 sweeps. It scores the HOST against this file's own loops and nothing else, over the
+// vertical integer shears at 0.75 alone - the family the four exact scales cannot decide and that is the whole
+// of what is left red on the integer forms.
+static const char *formLabel[] = {
+    "A + (position - A)*recip - 0.5               the far anchor bracketed",
+    "position*recip + (A - A*recip) - 0.5         the same, the anchor as a difference",
+    "position*recip + A*(1 - recip) - 0.5         the same, the anchor a product",
+    "position*recip + A*(1 - 1/scale) - 0.5       the anchor against 1/scale rather than against recip",
+    "A + (position - A)*recip + 0.5*recip - 0.5   the half pixel distributed over the two ends",
+    "A + (position - A)*recip + (0.5*recip - 0.5) the half pixel as one constant",
+    "A + (position - A)/scale - 0.5               DIVIDE by 1/recip rather than multiply by recip",
+    "position*recip - 0.5                         NO far anchor at all",
+    "A + (position - A)*recip - 0.5*recip + 0.5   the half pixel moved to the far end",
+    "(position - 0.5)*recip + A*(1 - recip) + 0.5 the half pixel moved inside, the anchor a product",
+    "position*recip + A*(1 - recip) - 0.5         the anchor a product, position WITHOUT the +0.5",
+    "position*recip + A*(1 - recip) - 0.5         the anchor a product, position WITH the +0.5",
+};
+enum { FormBracketed, FormDifference, FormProduct, FormAgainstScale, FormHalfDistributed, FormHalfConstant,
+       FormDivide, FormNoAnchor, FormHalfInside, FormHalfAtFarEnd, FormHalfInsideOut, FormDistributed, FormCount };
+
+// **Each form below is the WHOLE centre, half pixel included, and there is no adjustment outside the switch.**
+// The first version of this ladder subtracted the half pixel inside every arm AND again after the switch, so all
+// eleven arms computed the same thing with a whole extra `-0.5` and scored within three samples of each other -
+// a run that looks like a measurement and is one. Two of the arms also want the `+0.5` left out of the position
+// and the other nine want it in, which is why the switch below asks for it rather than the caller adding it.
+//
+// The default is FormDistributed, which is what the port implements. At the four exact scales all twelve
+// spellings are the same double, so the default is a statement about 0.75 and about nothing else, and FORMS is
+// how it was decided.
+static int form = FormDistributed;
+
 // The whole expected destination, from this file's own loops.
 static void expectDestination(const Shear *shear, const vImage_Buffer *src, const vImage_Buffer *dest,
                               vImagePixelCount along0, vImagePixelCount cross0, double translate, double slope,
@@ -465,6 +519,8 @@ static void expectDestination(const Shear *shear, const vImage_Buffer *src, cons
     vImagePixelCount dstCross = shear->horizontal ? dest->height : dest->width;
     vImagePixelCount srcAlong = shear->horizontal ? src->width : src->height;
     size_t pixelBytes = bytesPerPixel(shear);
+    double recip = filter->reciprocal, scale = filter->reciprocal ? 1.0 / filter->reciprocal : 1.0;
+    double A = (double)dstAlong;
     for (vImagePixelCount cross = 0; cross < dstCross; cross++) {
         long sourceCross = (long)cross0 + (long)cross;
         // The base of the run of taps: a row for the horizontal and a column for the vertical, and the tap
@@ -477,19 +533,36 @@ static void expectDestination(const Shear *shear, const vImage_Buffer *src, cons
             // cancel except at a scale of one**: `+0.5` on the position and `-0.5` on the centre, which is
             // why the along offset that reproduces the host's bytes is 0 at a scale of one, -0.5 at two,
             // +0.25 at a half and +0.375 at a quarter. The horizontal's scale is anchored at the near edge and
-            // the vertical's at the destination's far one, `dstAlong`.
+            // the vertical's at the destination's far one, `A`.
             int horizontal = shear->horizontal;
+            // `position` carries the `+0.5` except for the two arms that ask for it outside, which is what
+            // `insideHalfPixel` says.
+            int insideHalfPixel = (form == FormHalfInside || form == FormHalfInsideOut);
             double position = (double)(along0 + along) + mapping.alongShift
                               + (horizontal ? mapping.translateSign * -translate : mapping.translateSign * translate)
                               + slope * (horizontal ? (double)cross - (double)dstCross + mapping.slopeShift
                                                     : (double)cross + mapping.slopeShift);
-            if (mapping.halfPixel)
+            if (mapping.halfPixel && !insideHalfPixel)
                 position += 0.5;
-            double centre = position * filter->reciprocal;
-            if (!horizontal && mapping.farAnchor)
-                centre = (double)dstAlong + (position - (double)dstAlong) * filter->reciprocal;
-            if (mapping.halfPixel)
-                centre -= 0.5;
+            double centre;
+            if (horizontal) {
+                centre = mapping.halfPixel ? position * recip - 0.5 : position * recip;
+            } else {
+                switch (form) {
+                case FormBracketed: centre = A + (position - A) * recip - 0.5; break;
+                case FormDifference: centre = position * recip + (A - A * recip) - 0.5; break;
+                case FormProduct: centre = position * recip + A * (1.0 - recip) - 0.5; break;
+                case FormAgainstScale: centre = position * recip + A * (1.0 - 1.0 / scale) - 0.5; break;
+                case FormHalfDistributed: centre = A + (position - A) * recip + 0.5 * recip - 0.5; break;
+                case FormHalfConstant: centre = A + (position - A) * recip + (0.5 * recip - 0.5); break;
+                case FormDivide: centre = A + (position - A) / scale - 0.5; break;
+                case FormNoAnchor: centre = position * recip - 0.5; break;
+                case FormHalfInside: centre = A + (position - A) * recip - 0.5 * recip + 0.5; break;
+                case FormHalfInsideOut: centre = (position - 0.5) * recip + A * (1.0 - recip) + 0.5; break;
+                case FormDistributed: centre = position * recip + A * (1.0 - recip) - 0.5; break;
+                default: centre = position * recip + A * (1.0 - recip) - 0.5; break;
+                }
+            }
             uint8_t *pixel = shear->horizontal
                                  ? (uint8_t *)out->data + (size_t)cross * out->rowBytes + (size_t)along * pixelBytes
                                  : (uint8_t *)out->data + (size_t)along * out->rowBytes + (size_t)cross * pixelBytes;
@@ -667,6 +740,7 @@ static void one(const Shear *shear, vImagePixelCount srcW, vImagePixelCount srcH
                     (const uint8_t *)theirDest.data, (const uint8_t *)mine.data, &theirDest,
                     "host against expectation")) {
         failures++;
+        loopMisses++;
         if (!quiet) printf("FAIL %s: %s\n", what, note);
     }
     if (!sameBuffer(note, sizeof note, "the port and this file's own loops differ",
@@ -812,10 +886,15 @@ static void surveyFlags(void)
 // inexact (`1.3333333333333333`), which is exactly what makes it the discriminating one: at 1, 2, 0.5 and 0.25
 // the reciprocal is exact and "multiply by the stored reciprocal" is indistinguishable from "divide by
 // 1/reciprocal". `sc == 3` is the scale that takes kvImageHighQualityResampling, and it stays that index.
-static int sweep(void)
+// `ids` NULL means every shear and `scalesIn` NULL means every scale, so the normal run is the whole sweep and
+// FORMS can restrict to the one family and the one scale it is deciding. `sc == 3` is the index that takes
+// kvImageHighQualityResampling, and it is an index into this file's own list, not into the caller's.
+static int sweepSubset(const int *ids, unsigned nIds, const float *scalesIn, unsigned nScales)
 {
-    int before = failures;
-    float scales[] = { 1.0f, 2.0f, 0.5f, 0.25f, 0.75f };
+    int before = failures, loopsBefore = loopMisses;
+    float own[] = { 1.0f, 2.0f, 0.5f, 0.25f, 0.75f };
+    const float *scales = scalesIn ? scalesIn : own;
+    unsigned nScalesUsed = scalesIn ? nScales : (unsigned)(sizeof own / sizeof *own);
     double translates[] = { 0.0, 1.0, -1.0, 0.5, -0.5, 2.5, 0.0078125 };
     double slopes[] = { 0.0, 1.0, -0.5, 2.0 };
     vImage_Flags modes[] = { kvImageBackgroundColorFill, kvImageEdgeExtend };
@@ -823,23 +902,58 @@ static int sweep(void)
         { 9, 5, 9, 5, "" }, { 9, 5, 14, 5, " wide" }, { 9, 5, 4, 5, " narrow" },
         { 9, 5, 9, 2, " short" }, { 9, 5, 9, 8, " tall" }, { 5, 12, 12, 5, " transposed" },
     };
-    for (int s = 0; s < shearCount; s++) {
+    for (unsigned pick = 0; pick < (ids ? nIds : (unsigned)shearCount); pick++) {
+        int s = ids ? ids[pick] : (int)pick;
         const Shear *shear = &shears[s];
         for (int m = 0; m < 2; m++)
-            for (unsigned sc = 0; sc < 5; sc++)
+            for (unsigned sc = 0; sc < nScalesUsed; sc++)
                 for (unsigned tr = 0; tr < sizeof translates / sizeof *translates; tr++)
                     for (unsigned sl = 0; sl < 4; sl++)
                         one(shear, 9, 5, 9, 5, 0, 0, translates[tr], slopes[sl], scales[sc],
-                            modes[m] | (sc == 3 ? kvImageHighQualityResampling : kvImageNoFlags),
-                            (sc == 3) ? 5 : 3, "sweep");
-        for (unsigned sh = 0; sh < 6; sh++)
-            one(shear, shapes[sh].sw, shapes[sh].sh, shapes[sh].dw, shapes[sh].dh, 0, 0, 0.5, 1.0, 1.0f,
-                kvImageBackgroundColorFill, 3, shapes[sh].label);
-        one(shear, 9, 5, 9, 5, 2, 0, 0.0, 0.0, 1.0f, kvImageBackgroundColorFill, 3, " along offset 2");
-        one(shear, 9, 5, 9, 5, 12, 0, 0.0, 0.0, 1.0f, kvImageBackgroundColorFill, 3, " along offset 12");
-        refusals(shear);
+                            modes[m] | (scales[sc] == 0.25f ? kvImageHighQualityResampling : kvImageNoFlags),
+                            3, "sweep");
+        if (!ids) {
+            for (unsigned sh = 0; sh < 6; sh++)
+                one(shear, shapes[sh].sw, shapes[sh].sh, shapes[sh].dw, shapes[sh].dh, 0, 0, 0.5, 1.0, 1.0f,
+                    kvImageBackgroundColorFill, 3, shapes[sh].label);
+            one(shear, 9, 5, 9, 5, 2, 0, 0.0, 0.0, 1.0f, kvImageBackgroundColorFill, 3, " along offset 2");
+            one(shear, 9, 5, 9, 5, 12, 0, 0.0, 0.0, 1.0f, kvImageBackgroundColorFill, 3, " along offset 12");
+            refusals(shear);
+        }
     }
+    (void)loopsBefore;
     return failures - before;
+}
+
+static int sweep(void)
+{
+    return sweepSubset(NULL, 0, NULL, 0);
+}
+
+// FORMS scores the centre's algebraic ARRANGEMENT against the host, over the vertical integer shears at 0.75
+// alone. The port is not involved and neither is the four exact scales: what is being decided is which
+// arrangement reproduces the host's bytes where the others cannot, and the score is the number of those cases
+// where this file's own loops and the host part company.
+static void searchForms(void)
+{
+    int ids[16], n = 0;
+    for (int s = 0; s < shearCount; s++)
+        if (!shears[s].horizontal && !shears[s].isHalf && !shears[s].packed)
+            ids[n++] = s;
+    float scale[] = { 0.75f };
+    quiet = 1;
+    printf("FORMS the vertical integer shears at 0.75, %d of them, scored on the HOST against this file's own "
+           "loops\n", n);
+    for (int f = 0; f < FormCount; f++) {
+        form = f;
+        checks = 0;
+        failures = 0;
+        loopMisses = 0;
+        sweepSubset(ids, (unsigned)n, scale, 1);
+        printf("FORMS %5d host-vs-loops misses   %s\n", loopMisses, formLabel[f]);
+        fflush(stdout);
+    }
+    form = FormBracketed;
 }
 
 // SEARCH scores the EXPECTATION against the host alone, over the whole sweep, for every candidate mapping.
@@ -884,6 +998,7 @@ int main(void)
     setbuf(stdout, NULL);
     @autoreleasepool {
         if (getenv("SURVEY")) { surveyFlags(); return 0; }
+        if (getenv("FORMS")) { searchForms(); return 0; }
         if (getenv("SEARCH")) { search(); return 0; }
         sweep();
         printf("\n%d checks, %d failures\n", checks, failures);

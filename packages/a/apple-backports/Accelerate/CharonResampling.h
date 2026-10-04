@@ -194,10 +194,22 @@ static inline int CharonResampleFilterOf(ResamplingFilter filter, CharonResample
 // advances the base while the phase wraps back to zero. The carry is not decoration - it is what makes row 0's
 // peak land on the next source pixel at the top of the range instead of one pixel behind it.
 //
-// **The two functions round the tie in OPPOSITE directions, and that is measured on their own bytes rather
-// than assumed.** `tiesUp` selects `floor(x + 0.5)` for `vImageHorizontalShear` and `ceil(x - 0.5)` for
-// `vImageVerticalShear`. The two spellings differ ONLY where `fraction * phases` is exactly `m + 0.5`, and
-// there the two release functions answer differently:
+// **The two functions do not read the row the same way, and the difference only shows at an inexact reciprocal.**
+//
+// | | horizontal | vertical |
+// | --- | --- | --- |
+// | how the position becomes a row | `q = floor(frac*phases + 0.5)`, then a carry | `phase = floor(frac*phases)`, no carry |
+// | a position at half a phase | the upper row | the lower row |
+// | the centre's arrangement | `position*recip - 0.5` | `position*recip + A*(1 - recip) - 0.5` |
+//
+// At scales 1, 2, 0.5 and 0.25 the stored reciprocal is exact and every position the sweep asks for is a whole
+// phase or half a phase, so the two rows are indistinguishable and the whole family reads the same. 0.75 stores
+// `1.3333333333333333` and separates all three.
+//
+// **The horizontal's tie goes UP.** Measured on the host's own bytes, both axes asked for the SAME mapped centre
+// - the horizontal's centre is `along - translate` and the vertical's is `along + translate`, so horizontal
+// translate `-t` and vertical translate `+t` land on one centre (`tie.m`, committed beside the harness because
+// a claim in this file rests on it):
 //
 // | mapped centre (scale one, slope zero) | horizontal | vertical |
 // | --- | --- | --- |
@@ -207,28 +219,29 @@ static inline int CharonResampleFilterOf(ResamplingFilter filter, CharonResample
 // | 0.9921875, `x = 63.5` | phase 0, **base carried** | phase 63, no carry |
 // | -0.0078125, `x = 63.5` | phase 0, **base carried** | phase 63, no carry |
 //
-// A ramp source along the axis and a zero backColor, with the two axes asked for the SAME centre - the
-// horizontal's centre is `along - translate` and the vertical's is `along + translate`, so horizontal translate
-// `-t` and vertical translate `+t` land on one centre (`tie8.m`, committed beside the harness because a claim
-// in this file rests on it). Every non-tie agrees between the axes and every tie disagrees, at the bottom of
-// the range, in the middle of it and at the top, where the tie is where a CARRY would show: `floor` reaches
-// `q == phases`, wraps the phase to zero and advances the base, and the horizontal does exactly that while the
-// vertical stays at `q == phases - 1`.
+// Every non-tie agrees between the axes and every tie disagrees, at the bottom of the range, in the middle of it
+// and at the top, where the tie is where the horizontal's CARRY shows: `floor` reaches `q == phases`, wraps the
+// phase to zero and advances the base, and the horizontal does exactly that while the vertical stays at
+// `q == phases - 1`. The m = 1 tie is what rules out round-to-nearest-TIES-TO-EVEN, which would answer phase 2
+// there and which the horizontal does not do either.
 //
-// **Neither rule serves both functions**, which is what makes this a measurement rather than a preference: the
-// vertical's eleven integer shears answer 1000 against the host on 264 checks with the tie up, and the
-// horizontal's fourteen answer 24 each with the tie down. `vImageHorizontalShear` and `vImageVerticalShear`
-// are two exported functions with two inner loops, and this is where their rounding expressions differ.
+// **The vertical TRUNCATES.** `phase = floor(frac*phases)` and `base = floor(centre)`, with no carry at all -
+// which is not the same rule with the tie moved, it is a different reading of the position, and the host's bytes
+// name it: at 0.75, translate zero and slope zero, the host's five destination rows read rows (32, base -2),
+// (53, base -1), (10, base 1), (31, base 2), (53, base 3), and truncating reproduces all five while rounding
+// answers 53, 11, 32, 53 and misses four of them. `base = floor(centre)` with `phase = floor(frac*phases)` is
+// the whole rule: `floor(floor(x*P)/P) == floor(x)` for a positive integer P, so the carry a rounding rule needs
+// is the identity here and there is nothing to get wrong about it.
 //
 // A tie is reachable only where the translate is a dyadic rational that lands half a phase from a whole one,
-// which is why the sweep's off-grid translate 1/128 is the only one that reaches it: it is exactly half of one
-// of the 64 phases at a scale of one and half of one of the 32 at a scale of one half. **At a scale of two no
-// tie is reachable** - the reciprocal halves the translate, so the same position is a quarter of a phase -
-// and at 0.75 the reciprocal is inexact, so the product is not a tie either.
+// which is why the sweep's off-grid translate 1/128 is the only one that reaches the horizontal's tie: it is
+// exactly half of one of the 64 phases at a scale of one and half of one of the 32 at a scale of one half. **At
+// a scale of two no tie is reachable** - the reciprocal halves the translate, so the same position is a quarter
+// of a phase - and at 0.75 the product is not a tie either.
 //
 // `ceil` and `floor` are the right primitives rather than `floor` adjusted by hand because each is monotone
-// across its own tie from both sides: `x` a hair under 0.5 gives 0 and a hair over gives 1, with no epsilon and
-// no special case.
+// across its own boundary from both sides: `x` a hair under 0.5 gives 0 and a hair over gives 1, with no epsilon
+// and no special case.
 //
 // Measured on iPhone3,1 6.1.3 10B329 against the release's own stored bytes, by exhaustion over all 64 rows
 // and every base tap for every destination column of a one-column delta: 1344 of 1344 at a scale of two, 768
@@ -236,17 +249,25 @@ static inline int CharonResampleFilterOf(ResamplingFilter filter, CharonResample
 // ramp at translates 0, 0.5, 0.25 and 0.125 - where the four other spellings of the translate score 7, 7, 5
 // and 4 of the same 56. The translate is inside the parenthesis with the coordinate and the whole is divided
 // by the scale.
-static inline void CharonResamplePhase(const CharonResampleFilter *filter, double centre, int tiesUp,
+static inline void CharonResamplePhase(const CharonResampleFilter *filter, double centre, int horizontal,
                                        unsigned *phase, long *base)
 {
     double whole = floor(centre);
     double fraction = centre - whole;
     long low = (long)whole;
-    long q = tiesUp ? (long)floor(fraction * (double)filter->phases + 0.5)
-                    : (long)ceil(fraction * (double)filter->phases - 0.5);
-    long carry = q / (long)filter->phases;
-    *phase = (unsigned)(q - carry * (long)filter->phases);
-    *base = low + carry;
+    long q;
+    if (horizontal) {
+        // Round to nearest, the tie to the upper row, with the carry that wraps the phase and advances the base.
+        q = (long)floor(fraction * (double)filter->phases + 0.5);
+        long carry = q / (long)filter->phases;
+        *phase = (unsigned)(q - carry * (long)filter->phases);
+        *base = low + carry;
+    } else {
+        // Truncate the fraction. No carry and no tie to settle.
+        long q = (long)floor(fraction * (double)filter->phases);
+        *phase = (unsigned)q;
+        *base = low;
+    }
 }
 
 // The row's own sum, which is the divisor. **Not 16384**: on 6.1.3 the rows are within 5 of it and at a scale

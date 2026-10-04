@@ -328,13 +328,19 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
                               + (horizontal ? -translate : translate)
                               + (horizontal ? slope * ((double)cross - (double)dstCross + 0.5)
                                             : slope * ((double)cross + 0.5));
+            // **The vertical's centre is the DISTRIBUTED form, and the distribution is load-bearing at an inexact
+            // reciprocal.** `A + (position - A)*recip - 0.5` and `position*recip + A*(1 - recip) - 0.5` are the
+            // same expression, and at 0.75 they differ by about an ulp - which is the difference between a
+            // centre of 2.5 and one of 2.4999999999999996, and therefore between the truncated phase 32 and the
+            // phase 31 the release's own bytes name (CharonResampling.h has the table). At the four exact scales
+            // the two are the same double and the choice is invisible, which is why it has to be stated rather
+            // than discovered: either spelling is right at four scales and only one at the fifth.
             double centre = horizontal ? position * reciprocal - 0.5
-                                       : (double)dstAlong
-                                         + (position - (double)dstAlong) * reciprocal - 0.5;
+                                       : position * reciprocal + (double)dstAlong * (1.0 - reciprocal) - 0.5;
             unsigned phase;
             long base;
-            // The two functions round a tie in opposite directions, so the axis names the rule rather than the
-            // rule being assumed (CharonResampling.h carries the measurement and the table of what each answers).
+            // The two functions do not read the row the same way: the horizontal rounds the fraction to nearest
+            // with a carry and the vertical truncates it (CharonResampling.h carries the measurement).
             CharonResamplePhase(filter, centre, horizontal, &phase, &base);
             const int16_t *row = filter->row + (size_t)phase * filter->width;
             long first = base - (long)filter->centre;
