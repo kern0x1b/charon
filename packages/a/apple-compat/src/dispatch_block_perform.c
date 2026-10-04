@@ -14,8 +14,10 @@ void charon_dispatch_block_perform(dispatch_block_flags_t flags, dispatch_block_
 void charon_dispatch_block_perform(dispatch_block_flags_t flags, dispatch_block_t block)
 {
     void (*system)(dispatch_block_flags_t, dispatch_block_t) = charon_system_function(&charon_system_dispatch_block_perform, CHARON_LIBDISPATCH, "dispatch_block_perform");
-    if (system)
+    if (system) {
         system(flags, block);
+        return;
+    }
     if (flags & ~(unsigned long)CHARON_BLOCK_API_MASK)
         charon_block_crash("Invalid flags passed to dispatch_block_perform()", flags);
     struct charon_block_data data;

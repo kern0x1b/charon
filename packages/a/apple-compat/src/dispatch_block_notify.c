@@ -14,8 +14,10 @@ void charon_dispatch_block_notify(dispatch_block_t block, dispatch_queue_t queue
 void charon_dispatch_block_notify(dispatch_block_t block, dispatch_queue_t queue, dispatch_block_t notification)
 {
     void (*system)(dispatch_block_t, dispatch_queue_t, dispatch_block_t) = charon_system_function(&charon_system_dispatch_block_notify, CHARON_LIBDISPATCH, "dispatch_block_notify");
-    if (system)
+    if (system) {
         system(block, queue, notification);
+        return;
+    }
     struct charon_block_data *data = charon_block_data(block);
     if (!data)
         charon_block_crash("Invalid block object passed to dispatch_block_notify()", (unsigned long)block);

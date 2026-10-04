@@ -914,11 +914,15 @@ static char *scenario(const struct api *api, char *log, size_t size)
 
     ran = 0;
     __block int notified = 0;
+    __block int notices = 0;
     dispatch_semaphore_t told = dispatch_semaphore_create(0);
     work = api->create(0, ^{ __atomic_add_fetch(&ran, 1, __ATOMIC_SEQ_CST); });
-    api->notify(work, parallel, ^{ notified = ran; dispatch_semaphore_signal(told); });
+    api->notify(work, parallel, ^{ notified = ran; __atomic_add_fetch(&notices, 1, __ATOMIC_SEQ_CST); dispatch_semaphore_signal(told); });
     dispatch_async(queue, work);
     LOG("notify:got=%d ran-at-notice=%d;", dispatch_semaphore_wait(told, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0, notified);
+    /* Every notice is on the queue once the block's group is empty; a barrier behind them sees them all. */
+    dispatch_barrier_sync(parallel, ^{ });
+    LOG("notices=%d;", notices);
     Block_release(work);
 
     ran = 0;
@@ -2281,6 +2285,12 @@ def failures():
             found.append("the dispatch_block shims must compile: {}".format(built.stderr[-400:]))
         else:
             found += outcome("dispatch_block", run("./blocks", cwd=folder))
+        # Where the system has the calls the shims hand each one to it and do nothing more, so they answer as Darwin does.
+        built = run("xcrun", "clang", "-O2", "-w", "-fblocks", *blocks, "blocks.c", "-o", "blocks-system", cwd=folder)
+        if built.returncode:
+            found.append("the dispatch_block shims must compile over the system's own: {}".format(built.stderr[-400:]))
+        else:
+            found += outcome("dispatch_block over the system's", run("./blocks-system", cwd=folder))
         asserts = [SHIMS / "{}.c".format(symbol) for symbol in ("os_unfair_lock_assert_owner", "os_unfair_lock_assert_not_owner")]
         (folder / "asserts.c").write_text(UNFAIR_ASSERT)
         built = run("xcrun", "clang", "-O2", "-w", "-DCHARON_COMPAT_SYSTEM=0", *asserts, *locks, *waits, "asserts.c", "-o", "asserts", cwd=folder)
