@@ -49,6 +49,26 @@
 static id<MTLDevice> gDevice;
 static MPSGraphDevice *gGraphDevice;
 
+// A feed whose buffer carries a SENTINEL immediately after the operand's own elements, which is the whole
+// of how the tile's gradient is measured: an operation that reads one element past the end of the operand
+// picks the sentinel up, and the bytes it answers with are then OURS and not the heap's. The sentinel is
+// 1000 and up, so an answer holding 1013 is a read past the end and not an arithmetic result.
+static MPSGraphTensorData *sentinelFeed(const float *values, NSArray<NSNumber *> *shape, NSUInteger wide,
+                                         BOOL mark)
+{
+    NSUInteger count = 1;
+    for (NSNumber *dimension in shape) count *= (NSUInteger)dimension.integerValue;
+    id<MTLBuffer> buffer = [gDevice newBufferWithLength:count * (wide ? 4 : 2) * sizeof(float)
+                                              options:MTLResourceStorageModeShared];
+    float *bytes = (float *)[buffer contents];
+    for (NSUInteger i = 0; i < count; i++) bytes[i] = values[i];
+    // How far past the end a read went is then readable off the answer: 1000 and up is one operand's length
+    // past, 2000 and up is two, 3000 is three. An answer holding none of them read nothing it should not.
+    for (NSUInteger i = count; i < count * (wide ? 4 : 2); i++)
+        bytes[i] = mark ? 1000.0f * (float)((i - count) / count) + (float)((i - count) % count) : 0.0f;
+    return [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:shape dataType:MPSDataTypeFloat32];
+}
+
 static void put(const char *name, id<MTLBuffer> buffer, size_t bytes)
 {
     printf("%s %zu ", name, bytes);
@@ -213,6 +233,8 @@ int main(int argc, const char *argv[])
             "slice-gradient-stride2", "slice-gradient-shape-mismatch",
             "slice-update-end-mask", "slice-update-squeeze-mask", "slice-update-shape-wide",
             "slice-update-shape-narrow", "slice-update-fed-answer",
+            "tilegrad-1x1", "tilegrad-1x2", "tilegrad-1x2-zero", "tilegrad-1x3", "tilegrad-1x5",
+            "tilegrad-1x3-short",
             "pad-destination-narrower-rank3-clamp", "pad-destination-narrower-rank3-constant",
             "pad-destination-narrower-rank2",
             "pad-periodic", "pad-antiperiodic", "pad-reflect-past-extent",
@@ -535,6 +557,59 @@ int main(int argc, const char *argv[])
                   @[[NSData dataWithBytes:data length:sizeof data], [NSData dataWithBytes:four length:sizeof four]],
                   @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32)], twoByFour, q);
             (void)starts; (void)ends; (void)each;
+            return 0;
+        }
+        // THE TILE'S GRADIENT over a SENTINEL-PADDED gradient, which is the only way to ask it at all: where
+        // a window runs off the end of an axis the release READS PAST THE END of the caller's gradient buffer,
+        // so its answer there is whatever memory follows it and two harnesses that ask the identical question
+        // get different bytes. Measured with the sentinel: a 4x4 of (1 ... 16) with a multiplier of (1, 2)
+        // answers the first three rows 6, 8, 10, 12 | 14, 16, 18, 20 | 22, 24, 26, 28 and the last row
+        // 1013, 1015, 1017, 1019 - which is the last row of the gradient (13, 14, 15, 16) plus the sentinel
+        // read one element past the operand (1000, 1001, 1002, 1003). Without the sentinel the same question
+        // answers 13, 14, 15, 16 on this host and 30, 32, 34, 36 inside the differential, which is the heap.
+        // So these are asked of the release with the sentinel in place and their bytes recorded here: the
+        // answer is then made of the caller's own buffer and is the one measurement of this method that does
+        // not depend on memory this repository does not own.
+        if (strncmp(q, "tilegrad-", 8) == 0) {
+            NSArray<NSNumber *> *shape = nil;
+            NSArray<NSNumber *> *multiplier = nil;
+            if (strcmp(q, "tilegrad-1x1") == 0) { shape = @[@4, @4]; multiplier = @[@1, @1]; }
+            else if (strncmp(q, "tilegrad-1x2", 12) == 0) { shape = @[@4, @4]; multiplier = @[@1, @2]; }
+            else if (strcmp(q, "tilegrad-1x3") == 0) { shape = @[@4, @4]; multiplier = @[@1, @3]; }
+            else if (strcmp(q, "tilegrad-1x5") == 0) { shape = @[@4, @4]; multiplier = @[@1, @5]; }
+            else if (strcmp(q, "tilegrad-4x3") == 0) { shape = @[@4, @4]; multiplier = @[@4, @3]; }
+            else if (strcmp(q, "tilegrad-1x3-short") == 0) { shape = @[@2, @4]; multiplier = @[@1, @3]; }
+            else { shape = @[@4, @4, @2]; multiplier = @[@1, @3, @3]; }
+            NSUInteger count = 1;
+            for (NSNumber *dimension in shape) count *= (NSUInteger)dimension.integerValue;
+            float *gradient = malloc(count * sizeof(float));
+            for (NSUInteger i = 0; i < count; i++) gradient[i] = (float)(i + 1);
+            float *source = malloc(count * sizeof(float));
+            for (NSUInteger i = 0; i < count; i++) source[i] = 1.0f;
+            MPSGraph *one = [MPSGraph new];
+            MPSGraphTensor *g = [one placeholderWithShape:shape dataType:MPSDataTypeFloat32 name:@"g"];
+            MPSGraphTensor *s = [one placeholderWithShape:shape dataType:MPSDataTypeFloat32 name:@"s"];
+            MPSGraphTensor *t = [one tileGradientWithIncomingGradientTensor:g sourceTensor:s
+                                                            withMultiplier:multiplier name:@"tg"];
+            printf("%s result-shape %s\n", q,
+                   t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil");
+            size_t bytes = count * sizeof(float);
+            id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+            memset([buffer contents], gPattern, bytes);
+            MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:shape
+                                                                                 dataType:MPSDataTypeFloat32];
+            NSMutableDictionary *shaped = [NSMutableDictionary dictionary];
+            shaped[g] = [[MPSGraphShapedType alloc] initWithShape:shape dataType:MPSDataTypeFloat32];
+            shaped[s] = [[MPSGraphShapedType alloc] initWithShape:shape dataType:MPSDataTypeFloat32];
+            MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice feeds:shaped targetTensors:@[t]
+                                                   targetOperations:@[] compilationDescriptor:nil];
+            [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                                  inputsArray:@[sentinelFeed(gradient, shape, strstr(q, "wide") != NULL, strstr(q, "zero") == NULL),
+                               feed(source, shape, MPSDataTypeFloat32)]
+                                   resultsArray:@[destination] executionDescriptor:nil];
+            put(q, buffer, bytes);
+            free(gradient);
+            free(source);
             return 0;
         }
         // THE PAD AND THE TILE'S OWN REFUSALS, each measured on this host's own MPSGraph: two modes the

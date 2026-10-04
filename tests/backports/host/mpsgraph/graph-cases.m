@@ -776,6 +776,10 @@ static void cumulative_families(MPSDataType type, const void *values, const char
 // file - the six gather families come before it in the file's order because they come before the table of
 // families in the run order, and a declaration here is what lets them end with it.
 static void chain_case(void);
+static void tile_gradient_cases(void);
+static void tile_gradient_case(const char *name, NSArray<NSNumber *> *multiplier,
+                               NSArray<NSNumber *> *shape, const void *gradient, const void *source,
+                               size_t bytes, NSArray<NSNumber *> *types);
 
 // The feeds the gather families are asked over. The ordinary one is the case file's own 2x4 of (1, 2, 3, 4 |
 // 10, 20, 30, 40), whose answers a reader can work out by hand; the rank-3 one is the 1 to 24 a 2x3x4 holds
@@ -1592,13 +1596,6 @@ static void family_gather_padtile(void)
                 MPSDataTypeFloat32, twoByFour, rowFeed);
     // A rank of three, which the release answers: a 2x3x4 tiled by two on every axis is a 4x6x8 of 192
     // elements, which is also what this file's own result buffer had to grow for.
-    // THE TILE'S GRADIENT IS NOT A CASE, and the port does not carry it: measured on this host, the release's
-    // answer is not the sum of the copies of an element, which is what a gradient of a sum is - over an
-    // incoming gradient of ones it answers the PRODUCT of the multiplier for every element (6 for (2, 3), 3
-    // for (1, 3), 9 for (3, 3)), and over an incoming gradient of (1 ... 24) with a multiplier of (1, 3) it
-    // answers (15, 18, 21, 24 | 51, 54, 57, 60) where the sum of the copies is (6, 15, 24, 33 | 42, 51, 60,
-    // 69). Which elements it reads is what is left to measure, and a row whose behaviour is not measured is
-    // not carried: facts/MetalPerformanceShadersGraph/Core.md holds both measurements.
     gather_case("tile-rank3 float32",
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g tileTensor:a withMultiplier:@[@2, @2, @2] name:@"t"]; },
@@ -1635,7 +1632,69 @@ static void family_gather_padtile(void)
                             [NSData dataWithBytes:rowFeed length:32]],
                           @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32)], 0xbd);
     }
+    tile_gradient_cases();
     chain_case();
+}
+
+// THE TILE'S GRADIENT, the tile's own other direction, and the family carries it now - but only where the
+// release's answer is a function of the graph. Measured on this host's own MPSGraph, a window of m[j + 1]
+// terms along axis j that RUNS OFF THE END of that axis makes the release read past the end of the caller's
+// gradient buffer, so its answer there is whatever memory follows the operand: the same 4x4 of (1 ... 16)
+// with a multiplier of (1, 2) and 1000 planted immediately after the operand answers 6, 8, 10, 12 | 14, 16,
+// 18, 20 | 22, 24, 26, 28 | 13, 15, 17, 19 and with zeros planted there answers 6, 8, 10, 12 | 14, 16, 18,
+// 20 | 22, 24, 26, 28 | 13, 14, 15, 16 - the same graph, the same values, the same shape, and a last row
+// that is a function of memory this repository does not own. So a window is not comparable and is asked of
+// the release over a planted sentinel instead, in refusals.txt's six `tilegrad-` questions, which is where
+// the rule below is recorded. What is comparable is every multiplier whose windows all stay inside the axes,
+// and these five cases are all of them: the identity, the leading multiplier read as nothing at and below the
+// leading extent, and the two positions of a zero.
+//
+// The rule the release does follow where it stays inside the operand, measured over a gradient of (1 ... N)
+// at four shapes and about thirty multipliers and written down in full in
+// facts/MetalPerformanceShadersGraph/Core.md: for each axis j below the last, multiplier[j + 1] is a window
+// of that many terms along axis j at axis j's OWN STRIDE, weighted one each; the windows compose across
+// axes, and each is a window of the INCOMING GRADIENT and not of the sum so far; multiplier[0] is not read
+// while it is at most the leading extent; and an entry of zero anywhere answers zeros. The source is fed
+// ONES beside every gradient here, so an answer that read the source instead of the gradient would be ones
+// and the case would fail.
+static void tile_gradient_cases(void)
+{
+    float feed16[16], ones16[16], feed4[4], ones4[4];
+    for (int i = 0; i < 16; i++) { feed16[i] = (float)(i + 1); ones16[i] = 1.0f; }
+    for (int i = 0; i < 4; i++) { feed4[i] = (float)(i + 1); ones4[i] = 1.0f; }
+    NSArray<NSNumber *> *fourByFour = @[@4, @4];
+    NSArray<NSNumber *> *four = @[@4];
+    NSArray<NSNumber *> *floatTypes = @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32)];
+    // A multiplier of one on every axis is the gradient unchanged: no window, so nothing is read past the
+    // operand and both sides answer.
+    tile_gradient_case("tile-gradient-identity float32", @[@1, @1], fourByFour, feed16, ones16, 64, floatTypes);
+    // A rank of one, which has no axis below the last and so no window at all: the one entry of its
+    // multiplier is the leading one, and a leading entry above one reads past the end of the gradient here as
+    // it does everywhere else - measured, a multiplier of (4) over a 4 answers 30, 32, 34, 36. So it is asked
+    // with a multiplier of one, which is the only leading entry whose answer is a function of the graph.
+    tile_gradient_case("tile-gradient-rank1 float32", @[@1], four, feed4, ones4, 16, floatTypes);
+    // An entry of zero is an empty window and an empty sum: written zeros, which a destination filled with
+    // the byte 0xbd tells apart from an answer that was never written. Both positions of the zero.
+    tile_gradient_case("tile-gradient-zero float32", @[@1, @0], fourByFour, feed16, ones16, 64, floatTypes);
+    tile_gradient_case("tile-gradient-zero-leading float32", @[@0, @1], fourByFour, feed16, ones16, 64, floatTypes);
+}
+
+// The tile's gradient's case, which is multi_case_filled with the two operands a gradient of a tile has - the
+// incoming gradient and the source - and the destination filled with the byte 0xbd, because an empty window
+// answers WRITTEN zeros and a destination that starts as zero cannot tell a written zero from an unwritten
+// one. Both operands are of the SOURCE'S OWN SHAPE, which is what a gradient of a tile is fed.
+static void tile_gradient_case(const char *name, NSArray<NSNumber *> *multiplier,
+                               NSArray<NSNumber *> *shape, const void *gradient, const void *source,
+                               size_t bytes, NSArray<NSNumber *> *types)
+{
+    multi_case_filled(name,
+                      ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                          return [g tileGradientWithIncomingGradientTensor:in[0] sourceTensor:in[1]
+                                                        withMultiplier:multiplier name:@"tg"]; },
+                      @[shape, shape],
+                      @[[NSData dataWithBytes:gradient length:bytes],
+                        [NSData dataWithBytes:source length:bytes]],
+                      types, 0xbd);
 }
 
 // The reshape, which is the same walk with the axes left alone and the result's shape the caller's: the

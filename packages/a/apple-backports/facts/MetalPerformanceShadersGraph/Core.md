@@ -1080,10 +1080,10 @@ that is gone, so there is nothing to compare a line against. Both are measuremen
 
 ## Pad and tile: the gather walk with two more rules
 
-Three of the four rows of the ledger's pad and tile pair, in `MPSGraph14.m` where 14.0 put them, compared in a
-process of their own (`gather_padtile`): **67 cases, every cell and every shape byte-identical to the release,
-`gather_padtile checks=32 failures=0 recorded=0` over 1076 cells in 67 case lines**, the red control differing
-from the release in 33 of them, and eight refusal questions of their own.
+Four of the rows of the ledger's pad and tile pair, in `MPSGraph14.m` where 14.0 put them, compared in a
+process of their own (`gather_padtile`): **75 cases, every cell and every shape byte-identical to the release,
+`gather_padtile checks=36 failures=0 recorded=0` over 1128 cells in 75 case lines**, the red control differing
+from the release in 33 of them, and fourteen refusal questions of their own.
 
 * **A TILE is the gather walk with every axis REPEATED**: the result's axis k is the operand's axis k at
   `multiplier[k]` times its extent, and the coordinate of the result counts the operand's own extent over again.
@@ -1232,32 +1232,43 @@ Three whole cases the rule predicts and the release answers, each in the differe
 | 2x3x4 | `(1, 3, 1)` | 1 ... 24 | `14, 16, 18, 20 | 22, 24, 26, 28 | 30, 32, 34, 36 | 13, 14, 15, 16 | 17, 18, 19, 20 | 21, 22, 23, 24` |
 | 2x3x4 | `(1, 1, 3)` | 1 ... 24 | `15, 18, 21, 24 | 27, 30, 33, 36 | 39, 42, 45, 48 | 51, 54, 57, 60 | 38, 40, 42, 44 | 21, 22, 23, 24` |
 
-**Why the row is still `missing`.** The port's implementation of the rule is a chain of shifted slices summed
-one at a time, each shift the gradient sliced from that distance along the axis to the end of it and the
-zeros put on the right of it, and the windows taken over what the sum already is so that they compose. Six of
-the seven cases above it reproduces byte for byte - the identity, the unread leading axis, the window of three
-cut short, the window of two on an axis of three, the window along axis 0 of a rank of three and the composed
-pair over the 4x4x2 - and **three it does not**, all three of them a window on the axis just below the last:
-the 4x4 with `(1, 5)`, and the rank of three with `(1, 1, 3)` and with `(1, 3, 3)`. Over the rank of three with
-`(1, 1, 3)` the port answers `14, 18, 22, 26 | 20, 24, 28, 32 | 26, 30, 34, 38 | 16, 20, 24, 28 | 38, 40, 42, 44
-| 21, 22, 23, 24` where the release answers `14, 18, 22, 26 | 27, 30, 33, 36 | 39, 42, 45, 48 | 51, 54, 57,
-60 | 38, 40, 42, 44 | 21, 22, 23, 24`: the first row, the last two rows and the whole of the last axis agree,
-and the rows in between are the ones that are short by one term each - the release's window crosses from the
-end of one row of the leading block into the next, and the port's per-axis slice stops at the end of the axis.
+### Why the row is `implemented`, and what it is not measured against
 
-So the defect is named and it is in the implementation, not in the rule: **a window on the axis just below the
-last must not be cut at that axis's extent** - the release's window runs past it into the next row of the
-leading block, which is what a flat shift of the leading block is and what a per-axis slice is not. The fix is
-to build the shift on the gradient flattened to `(leading product, last extent)` - the port has
-`-flatten2DTensor:axis:name:` and `-reshapeTensor:shape:name:` for exactly that - and to slice along axis 0 of
-that view, so one shift moves a whole number of leading rows and the window crosses the row boundary.
+The port implements the rule above over the seam the family already has: the incoming gradient plus one term
+per shift of every axis below the last, each term a slice of the INCOMING GRADIENT from `shift` to the end of
+that axis at that axis's own stride, put back at the front with a `MPSGraphPaddingModeZero` pad. The pad is
+what makes the dropped terms zeros - a gather's result coordinate with no element of the operand behind it is
+not written at all, and the result's bytes are a fresh buffer's, so a term that is not padded would carry
+whatever the allocator left. Each axis's window is taken of the incoming gradient and not of the running sum,
+which is the composition the measurement shows, and a shift past the axis ends the window.
 
-A row whose behaviour the port does not reproduce is not registered as implemented, and the port does not
-define the method at all in the tree as it stands - a built method with no registry row is what
-`check_registry` fails on, and a registered row with a method whose behaviour is guessed is what this project
-calls a fake. The measurement above is what the next pass starts from; the probe that took it is
-`.agent-work/probe/tilegrad-probe.m` in the band worktree and the ten differential cases written against it
-are `.agent-work/runs/v-mps7/graph-cases-with-tilegrad-cases.m`.
+**The release reads past the end of the caller's gradient buffer for every multiplier that is not all ones,
+the leading entry included, so those multipliers cannot be compared.** Measured with a sentinel planted
+immediately after the operand's own elements in the same buffer:
+
+| question | the gradient of (1 ... 16) over a 4x4 | the last row of the answer |
+| --- | --- | --- |
+| `tilegrad-1x2` - 1000 and up planted after the operand | `6, 8, 10, 12 \| 14, 16, 18, 20 \| 22, 24, 26, 28` | `13, 15, 17, 19` |
+| `tilegrad-1x2-zero` - zeros planted after the operand | `6, 8, 10, 12 \| 14, 16, 18, 20 \| 22, 24, 26, 28` | `13, 14, 15, 16` |
+| `tilegrad-1x1` - a multiplier of all ones | `1, 2, 3, 4 \| 5, 6, 7, 8 \| 9, 10, 11, 12 \| 13, 14, 15, 16` | `13, 14, 15, 16` |
+
+The same graph, the same values, the same shape, and a last row that is a function of the bytes planted after
+the operand: `13, 15, 17, 19` is the gradient's own last row plus the first four planted floats, and
+`13, 14, 15, 16` is the gradient's own last row plus four zeros. It holds for the leading entry as well -
+measured, a multiplier of `(4)` over a `4` answers `30, 32, 34, 36` and a multiplier of `(4, 1)` over a `4x4`
+answers `18, 20, 22, 24 | 26, 28, 30, 32`, which is the gradient read at an offset that is not a window of it.
+So:
+
+* **the port's answer is the defined one** - the window with what ran off the end of the axis dropped - and no
+  port reproduces a read of memory it does not own. This is a divergence from the release and the row says so
+  with the measurement beside it;
+* **the differential compares what can be compared**: the four multipliers whose answer is a function of the
+  graph, all ones at rank of two and of one and a zero in either position. A window is not a case;
+* `refusals.txt` holds the six `tilegrad-` questions that measure the windows over a planted sentinel, so the
+  rule is recorded by a run a later reader repeats rather than by a line of prose here.
+
+Two refusals the port makes where the release's answer is its heap are raised where the graph is built rather
+than where it runs, and the row says so: a leading multiplier above the leading extent, and a negative entry.
 
 ## The run, async and encode forms, and the two shared events
 
