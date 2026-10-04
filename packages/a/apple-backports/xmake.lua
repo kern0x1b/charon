@@ -250,14 +250,36 @@ package("apple-backports")
                                      package:config("gameplaykit") and {"GameplayKitBackports"} or {},
                                      package:config("pdfkit") and {"PDFKitBackports"} or {},
                                      package:config("networkextension") and {"NetworkExtensionBackports"} or {})
+        -- Every archive a library of this package declares, each with the directory and the static
+        -- library's own name taken from the dependency that carries it, and read out of the build
+        -- module rather than written out here: coordination/build-gate.lua derives its own from the
+        -- same declarations, so the two routes compile one object per source with one line of flags
+        -- and link the same archives.
+        --
+        -- This table used to name four of the six by hand. An install with every config at its
+        -- default died on HomeKit's CharonHapCrypto.m with "'monocypher/monocypher.h' file not
+        -- found", and an install with accelerate (or avfoundation, or avfaudio, or mlcompute) on
+        -- could not link at all: "AccelerateBackports links the static library of the package
+        -- suitesparse-ordering, and the build was given none". The gate route stayed green through
+        -- both, because it reads the module and this table did not.
+        local archives = {}
+        for _, library in ipairs(backports.libraries()) do
+            for _, name in ipairs(library.archives or {}) do
+                local dependency = package:dep(name)
+                assert(dependency, "the library " .. library.name .. " links the archive " .. name
+                                    .. " and this recipe declares no dependency with that alias")
+                local links = table.unique(table.wrap(dependency:get("links")))
+                assert(#links == 1, "the archive " .. name .. " of " .. library.name .. " is one static library, and "
+                                    .. name .. " links " .. #links .. " (" .. table.concat(links, ", ") ..
+                                    "); name the one this link needs")
+                archives[name] = {linkdir = path.join(dependency:installdir(), "lib"), link = links[1],
+                                  includedir = path.join(dependency:installdir(), "include")}
+            end
+        end
         local common = {root = package:scriptdir(), architecture = package:arch(), deployment = deployment, sdkdir = toolchain:config("sdkdir"),
                         cc = assert(toolchain:tool("cc"), "the apple-ios toolchain names no compiler for " .. package:arch()),
                         ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch()), libraries = libraries,
-                        archives = {["box2d"] = {linkdir = package:dep("box2d"):installdir("lib"), link = "Box2D", includedir = package:dep("box2d"):installdir("include")},
-                                    ["charon-coding"] = {linkdir = package:dep("charon-coding"):installdir("lib"), link = "charon-coding", includedir = package:dep("charon-coding"):installdir("include")},
-                                    ["ggml"] = {linkdir = package:dep("ggml"):installdir("lib"), link = "ggml", includedir = package:dep("ggml"):installdir("include")},
-                                    ["micro-ecc"] = {linkdir = package:dep("micro-ecc"):installdir("lib"), link = "micro-ecc", includedir = package:dep("micro-ecc"):installdir("include")}
-                        }}
+                        archives = archives}
         -- no width here on purpose: on_install runs inside a job of xmake's own, and
         -- backports.lua's width() sees that and compiles one unit at a time, for this call and for
         -- write_deb() below, without either of them having to remember

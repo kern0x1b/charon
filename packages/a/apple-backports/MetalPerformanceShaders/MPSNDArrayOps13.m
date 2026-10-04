@@ -37,9 +37,6 @@
 
 #import "CharonMPSNDArray.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
 // The state's recorded axis, a method on a class the port DEFINES and therefore its own machinery
 // rather than a seam needing a registry row: added_members() in modules/apple/backports.lua:1398 counts
