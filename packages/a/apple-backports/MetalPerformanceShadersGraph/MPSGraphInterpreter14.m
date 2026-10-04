@@ -1973,15 +1973,39 @@ static NSDictionary *CharonMPSGraphConcatPlan(NSString *name, NSArray<NSArray<NS
     // of the extents before it, and the walk below divides the coordinate by the number of operands when it
     // interleaves.
     NSMutableArray<NSNumber *> *starts = [NSMutableArray arrayWithCapacity:operands];
-    NSMutableArray<NSNumber *> *extents = [NSMutableArray arrayWithCapacity:operands];
     long long at = 0;
     for (NSArray<NSNumber *> *shapeOfOperand in shapes) {
         [starts addObject:@(at)];
-        long long own = stacked ? 1 : shapeOfOperand[(NSUInteger)where].longLongValue;
-        [extents addObject:@(own)];
-        at += own;
+        at += stacked ? 1 : shapeOfOperand[(NSUInteger)where].longLongValue;
     }
-    return @{@"shape": shape, @"concatAxis": @(where), @"concatStarts": starts, @"concatExtents": extents,
+    // AN INTERLEAVED CONCATENATION IS THE ONE FORM THAT NEEDS THE OPERANDS TO AGREE ON THE AXIS, and this
+    // is that check; it is why the walk below may divide the coordinate by the number of operands without
+    // asking how long the operand it lands on is. Measured on this host's own MPSGraph: a 2x4 beside a 2x1
+    // laid along axis 1 answers a 2x5 when they are laid end to end, and is REFUSED when they interleave, by
+    // the release's own compiler with "'mps.concat' op all input shapes must match along axis dimension when
+    // interleaving" (MPSGraphUtilities.mm:748). That refusal is the whole of the invariant: with every
+    // operand E long on the axis, the coordinate divided by the number of operands is below E for every
+    // coordinate of the result, because the result's extent there is the number of operands times E. Without
+    // it the shorter operand is read past its end - a 2x4 beside a 2x1 would answer its operand 1's element 2,
+    // 3 and 4 for three coordinates of the result - so this is refused here rather than checked per element
+    // in the walk, which is where a check would be three orders of magnitude more expensive for the same
+    // answer. It is refusals.txt's concat-interleave-unequal.
+    if (interleave) {
+        NSArray<NSNumber *> *first = shapes.firstObject;
+        for (NSArray<NSNumber *> *shapeOfOperand in shapes) {
+            long long own = shapeOfOperand[(NSUInteger)where].longLongValue;
+            long long theirs = first[(NSUInteger)where].longLongValue;
+            if (own != theirs) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to interleave tensors that are %lld and %lld long "
+                                   @"on axis %ld, and an interleaved concatenation needs every one of them the "
+                                   "same length there: measured, the release's own compiler refuses it with "
+                                   "\"'mps.concat' op all input shapes must match along axis dimension when "
+                                   "interleaving\"", name, theirs, own, (long)where];
+            }
+        }
+    }
+    return @{@"shape": shape, @"concatAxis": @(where), @"concatStarts": starts,
              @"concatInterleave": @(interleave), @"concatStacked": @(stacked)};
 }
 
@@ -1995,7 +2019,6 @@ static void CharonMPSGraphConcat(NSString *name, NSArray<MPSGraphTensorData *> *
     NSArray<NSNumber *> *resultShape = result.shape;
     NSInteger axis = [plan[@"concatAxis"] integerValue];
     NSArray<NSNumber *> *starts = plan[@"concatStarts"];
-    NSArray<NSNumber *> *extents = plan[@"concatExtents"];
     BOOL interleave = [plan[@"concatInterleave"] boolValue];
     BOOL stacked = [plan[@"concatStacked"] boolValue];
     NSUInteger operands = starts.count;
@@ -2020,6 +2043,9 @@ NSUInteger across = rank ? (NSUInteger)resultShape[(NSUInteger)axis].unsignedInt
         // WHICH OPERAND: the one whose region of the axis this coordinate is in, which is the coordinate
         // divided by the number of operands when the regions interleave and a search of the offsets when they
         // do not. A stack's regions are one element each, so the coordinate IS the operand's index there.
+        // Both leave the coordinate INSIDE that operand: a search of the offsets picks the last region that
+        // starts at or before it, and the plan has refused an interleaved form whose operands are not all the
+        // same length on this axis - see CharonMPSGraphConcatPlan - so the division cannot land past the end.
         NSUInteger which = 0;
         if (interleave) {
             which = (NSUInteger)(coordinate % operands);

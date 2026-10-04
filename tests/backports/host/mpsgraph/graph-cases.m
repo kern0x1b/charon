@@ -2121,6 +2121,22 @@ static void family_gather_concat(void)
     // axis 0 beside a 2x4 is a 3x4 of (101, 102, 103, 104 | 5, 6, 7, 8 | 50, 60, 70, 80) and not a 2x4 with
     // the row repeated. The same two operands with axis 1 the one laid along are REFUSED, because then the
     // extent that differs is one the concatenation does not touch - refusals.m's concat-shapes-differ.
+    // THE OPERANDS OF DIFFERING LENGTH ON THE AXIS LAID ALONG, which is the one shape where the axis's own
+    // extent is allowed to differ between them, and where the answer is NOT one of the operands' lengths: a
+    // 2x4 laid along axis 1 beside a 2x1 of (5, 6) is a 2x5 of (1, 2, 3, 4, 10 | 20, 30, 40, 5, 6), measured.
+    // The extent that differs is on the axis the operands ARE laid along, so the refusal above does not apply
+    // and the region of the shorter one is one element of the result - which is why the interleave form of
+    // this very shape is refused with a different sentence, refusals.m's concat-interleave-unequal.
+    concat_filled("concat-unequal-axis1 float32", @[twoByFour, @[@2, @1]],
+                  @[pair[0], [NSData dataWithBytes:secondFeed length:8]],
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:1 name:@"c"];
+                  });
+    concat_filled("concat-unequal-axis0 float32", @[@[@2, @4], @[@1, @4]],
+                  @[pair[0], [NSData dataWithBytes:thinRow2 length:16]],
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:0 name:@"c"];
+                  });
     concat_filled("concat-thin-axis0 float32", @[@[@1, @4], twoByFour],
                   @[[NSData dataWithBytes:thinRow2 length:16], pair[1]],
                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {

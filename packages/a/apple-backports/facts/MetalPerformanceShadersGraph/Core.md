@@ -1441,8 +1441,8 @@ thing the gather's has not: an offset and a length per operand along the axis na
 
 Measured on this host's own MPSGraph (macOS 27.0 build 26A428, M4 Pro, Metal 4), over the case file's 2x4 of
 (1, 2, 3, 4 | 10, 20, 30, 40) beside one of (5, 6, 7, 8 | 50, 60, 70, 80) and one of
-(9, 10, 11, 12 | 90, 100, 110, 120). Compared in a process of its own (`gather_concat`): **36 cases, every
-cell byte-identical to the release, and the red control differing in 36 of the 77 case lines.** The red
+(9, 10, 11, 12 | 90, 100, 110, 120). Compared in a process of its own (`gather_concat`): **38 cases, every
+cell byte-identical to the release, and the red control differing in 38 of the 81 case lines.** The red
 control's count is unchanged by the two cases of an empty array, and that is right rather than a gap: those
 two carry a shape and a data type and no stored element at all, so there is nothing in them for a plant that
 shifts every stored element to move.
@@ -1456,7 +1456,9 @@ shifts every stored element to move.
 | a negative axis | counted from the end: -2 answers what 0 answers and -1 what 1 answers |
 | ONE operand | the identity: a 2x4 alone is a 2x4 of its own eight values |
 | an extent of ONE **on** the axis laid along | not a broadcast but one element of the result: a 1x4 of (101, 102, 103, 104) laid along axis 0 beside a 2x4 is a 3x4 of (101, 102, 103, 104 \| 5, 6, 7, 8 \| 50, 60, 70, 80) |
+| operands of DIFFERING LENGTH on the axis laid along | allowed, and the result is then neither of their lengths: a 2x4 beside a 2x1 laid along axis 1 is a 2x5 of (1, 2, 3, 4, 10 \| 20, 30, 40, 5, 6) |
 | INTERLEAVED along an axis | operand i's coordinate c lands at the result's coordinate `i + c * (the number of operands)`, and the extent is the sum either way |
+| INTERLEAVED with the operands of DIFFERENT length on that axis | **refused** - see below |
 | stack at an axis | the result is of the operands' rank plus one and that axis is of extent as many operands: axis 1 of two 2x4s is a 2x2x4, axis 2 a 2x4x2 |
 | a stack's negative axis | counted from the end of the RESULT's rank, one more than the operands': -3, -2, -1 answer what 0, 1, 2 answer |
 | a stack of ONE operand | the operand itself with the new axis of extent one: a 1x2x4 of its own eight values |
@@ -1486,6 +1488,27 @@ An extent of one ON the axis laid along is therefore not a broadcast either, and
 one element of the result, which is what `concat-thin-axis0` compares. So the header's sentence is loose in
 both directions and the release's rule is the strict one; the port raises where the graph is built and the row
 of each method says so.
+
+### Interleaving is the one form that needs the operands to agree on the axis, and the release says so
+
+The interleaved walk divides the result's coordinate by the number of operands, which lands inside the
+operand it names **only if every operand is the same length on that axis**. The release enforces exactly
+that, and says so in a sentence of its own which is neither of the two above:
+
+    'mps.concat' op all input shapes must match along axis dimension when interleaving
+
+(MPSGraphUtilities.mm:748), measured over the shape where the axis laid along is the only one whose extent
+differs: a `2x4` beside a `2x1` on axis 1 is a `2x5` **end to end** - `concat-unequal-axis1`, which answers -
+and is refused when they interleave, which is `refusals.txt`'s `concat-interleave-unequal`.
+
+This is worth writing down because the port got it wrong first and a compiler warning is what said so. The
+plan computed a per-operand `extents` list that nothing read, which is what `-Wunused-variable` names; the
+list was the residue of the check that belongs there, and deleting the line instead of writing the check
+would have left a documented public call - `concatTensors:dimension:interleave:` over operands of different
+lengths, which is the very thing the header invites - reading past the end of the shorter operand's buffer,
+because the division would have answered its elements 2, 3 and 4 where it holds two. The check is in the
+plan rather than in the walk's per-element path, which is where the release has it too and where it costs
+nothing: three orders of magnitude fewer comparisons for the same answer.
 
 ### An axis outside the rank, and the two messages
 
