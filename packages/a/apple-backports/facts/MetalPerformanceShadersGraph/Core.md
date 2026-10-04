@@ -1156,10 +1156,10 @@ pass starts from them.
 Thirteen rows, and they are all **one walk** - the graph's own over its operations - because a port whose
 operations are a walk has nothing to compile ahead of time, and the difference the release makes between the
 synchronous, the async and the encode forms is what it does with the GPU afterwards. Compared in a process of
-its own (`run_forms`): **15 case lines, every cell byte-identical to the release,
-`run_forms checks=5 failures=0 recorded=0` over 40 cells**, the red control differing in 3 of the 15.
+its own (`run_forms`): **23 case lines, every cell byte-identical to the release,
+`run_forms checks=11 failures=0 recorded=0` over 88 cells**, the red control differing in 7 of the 23.
 
-### The two shapes of answer, both measured
+### The two shapes of answer, all of them compared now
 
 | form | where the answer goes | measured over a 2x4 added to itself |
 | --- | --- | --- |
@@ -1171,7 +1171,7 @@ The dictionary form names no target tensors of its own, so **the dictionary's ke
 
 ### What is compared, and the one thing that is not
 
-**The three async forms ARE compared cell for cell.** Each is asked with its descriptor's own
+**All three async forms ARE compared cell for cell.** Each is asked with its descriptor's own
 `waitUntilCompleted` set, which is the header's own way of saying the call returns after the work is done, so
 the answer is in the caller's dictionary when the call returns and the case reads it there. The previous pass of
 this section said the host could not be asked at all, because a queue has no `-waitUntilCompleted`; that was
@@ -1179,18 +1179,39 @@ this section said the host could not be asked at all, because a queue has no `-w
 is right. The descriptor's `completionHandler` and `scheduledHandler` are honoured around the walk on both
 sides, each called with the results and a nil error.
 
-**The two encode forms CAN be compared, and this page's previous two passes said they could not - both times for
-the wrong reason, so the correction is here as well as in the commit message.** MPSGraph's own
-`MPSCommandBuffer` has its creation API in
-`MetalPerformanceShaders.framework/Frameworks/MPSCore.framework/Headers/MPSCommandBuffer.h`, **inside the
-MetalPerformanceShaders umbrella**, as `+commandBufferFromCommandQueue:`. The harness imported only
-`MetalPerformanceShadersGraph`, so the declaration was never in view; this band then concluded from a bare
-`alloc` raising `-[MPSCommandBuffer device]: unrecognized selector` that the class could not be made. It can.
-**The case is not in the family yet** - this band ran out of context before adding it, and this page does not
-claim it is there. What the case is: an `MPSCommandBuffer` from the queue, encode, `[buffer commit]`,
-`[buffer waitUntilCompleted]` - the wait is on the **buffer**, which is where that method is - and then the
-caller's dictionary is read. The port answers both forms through the same walk as every other and writes that
-dictionary, so what is left to measure is the release's own answer and not the port's.
+**All three encode forms ARE compared cell for cell too, and this page's previous two passes said they could not
+- both times for the wrong reason.** What is measured:
+
+* **Where the buffer comes from.** `+[MPSCommandBuffer commandBufferFromCommandQueue:]` in
+  `MetalPerformanceShaders.framework/Frameworks/MPSCore.framework/Headers/MPSCommandBuffer.h`, **inside the
+  MetalPerformanceShaders umbrella** and in no MetalPerformanceShadersGraph header. The class is declared
+  `@interface MPSCommandBuffer : NSObject <MTLCommandBuffer>`, so `-commit` and `-waitUntilCompleted` are its
+  own methods and **the wait is on the buffer**, not on the queue: encode, `[buffer commit]`,
+  `[buffer waitUntilCompleted]`, and then the caller's own buffer is read.
+* **What the release answers.** The graph's results-dictionary form writes `(2, 4, 6, 8 | 20, 40, 60, 80)`
+  into the destination the caller allocated - the same bytes the synchronous and the async dictionary forms
+  answer over the same graph, and the port answers them too. The graph's returning form answers one entry, the
+  release's own tensor data, and leaves the caller's buffer holding the `0xbd` it was filled with, which is the
+  shape of answer the two other returning forms give. The executable's form writes the same bytes into the
+  `resultsArray` the caller passed. The planted build answers `00004040` where the release and the port answer
+  `00000040`, so the two byte-comparing cases are checked and not merely equal.
+* **Why the earlier passes said otherwise, and both of the reasons were wrong.** A bare `alloc` raising
+  `-[MPSCommandBuffer device]: unrecognized selector` measures **`-init`**, which that header marks
+  `NS_UNAVAILABLE` and says to replace with `-initWithCommandBuffer:`; it says nothing about the factory.
+  Measured on this host: the class is `MPSCommandBuffer`, the factory answers one, and it answers
+  `-waitUntilCompleted` - on the object itself and on its `-rootCommandBuffer` alike. And "the harness imported
+  only MetalPerformanceShadersGraph, so the declaration was never in view" is wrong twice over: the declaration
+  is reachable from the graph umbrella as well, because `MetalPerformanceShadersGraph.h` imports `MPSGraph.h`,
+  which imports `MPSGraphCore.h`, which imports `MetalPerformanceShaders.h`, which imports
+  `MPSCore/MPSCore.h` - a file importing nothing but the graph umbrella compiles the call and links it against
+  `MetalPerformanceShaders`, both measured. `graph-cases.m` now imports `MetalPerformanceShaders` for the class
+  so the dependency is stated rather than transitive.
+
+**The one thing that cannot be done here is waiting on a COMMAND QUEUE**, and that is not a limit on any of the
+forms: asking a queue for `-waitUntilCompleted` raises
+`-[AGGX16XFamilyCommandQueue waitUntilCompleted]: unrecognized selector`. That is why no case in this family
+waits on a queue - the descriptor's own `waitUntilCompleted` and the command buffer's own
+`-waitUntilCompleted` are what the cases use.
 
 ### The two shared events, measured
 
