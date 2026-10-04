@@ -244,11 +244,16 @@ BEGIN {
             if (line ~ /^guest .*: (ENDED|FORK FAILED)/) guestFailed++
         }
         close(logpath)
-        # Only the rows of a release that was run are compared.
+        # Only the rows of a release that was run are compared, and a release that was run must have had
+        # at least one: a release whose rows are not in the table yet compares nothing, has no scenario
+        # that ended without answering because none ran, and would report success. That is not a check
+        # that can fail, and it reported ok for 7.1.2 whose guest never reached the runner at all.
+        compared = 0
         while ((getline row < wanted) > 0) {
             split(row, parts, "\t")
             if (parts[1] != release) continue
             which = parts[2]; width = parts[3]; api = parts[4]; expect = parts[5]
+            compared++
             got = answer(which, width, api, logpath)
             sub(/^[^:]*: /, "", got)
             if (got == "") {
@@ -259,6 +264,10 @@ BEGIN {
                 fails++
             }
         }
+        if (compared == 0) {
+            printf "FAIL  %s: no row of the table is for this release, so nothing was compared and this run says nothing about it\n", release
+            fails++
+        }
         if (died != 0) {
             printf "FAIL  %s: %s scenario(s) ended without answering, so the table above cannot be complete\n", release, died
             fails++
@@ -267,6 +276,8 @@ BEGIN {
             printf "FAIL  %s: %s of the guest capability checks did not pass, so fork is not sound here\n", release, guestFailed
             fails++
         }
+        # A "?" here is a reading that is not there, and it is printed as one so the table cannot be read
+        # as if the release had answered; the FAIL line above is what says so in words.
         printf "%-7s  event=%s  cancel=%s  registration=%s  ordinaryevent=%s  ordinaryasync=%s\n", release,
                field(answer("event", "concurrent", "system", logpath), "alone"),
                field(answer("cancel", "concurrent", "system", logpath), "alone"),
@@ -276,7 +287,7 @@ BEGIN {
     }
     close(wanted)
     if (fails == 0)
-        printf "ok    every row of every release run holds, and the ordinary-block controls are in the table above them\n"
+        printf "ok    every release run answered, every row of it holds, and the ordinary-block controls are in the table above them\n"
     else
         printf "%d checks failed\n", fails
     exit(fails == 0 ? 0 : 1)
