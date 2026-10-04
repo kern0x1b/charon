@@ -39,7 +39,10 @@ function failures(opts)
         return out
     end
 
-    local scratch = path.join(os.tmpdir(), "charon-cache-sweep-test")
+    -- The run's own folder: this suite writes a checkout and a cache under it and removes the folder when it is
+    -- done, so a name two concurrent runs agree on is one run's files gone (lift_test, measured 2026-10-04:
+    -- eight of nine concurrent runs red with clang unable to open the fixture under its path).
+    local scratch = path.join(os.tmpdir(), "charon-cache-sweep-test-" .. os.getpid())
     if os.isdir(scratch) then os.tryrm(scratch) end
     local checkout = path.join(scratch, "broken")
     local cache = path.join(scratch, "cache")

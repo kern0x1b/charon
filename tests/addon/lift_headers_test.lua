@@ -14,8 +14,10 @@ function failures(opt)
     local function raises(action)
         return try {function () action() return false end, catch {function () end}} ~= false
     end
-    local sdk = path.join(os.tmpdir(), "lift_headers_test_sdk")
-    local work = path.join(os.tmpdir(), "lift_headers_test_work")
+    -- Both folders belong to the run alone (measured in lift_test, 2026-10-04: a fixture folder a second run
+    -- removes is a lift that cannot open its own SDK), so the run's own id is in each of their names.
+    local sdk = path.join(os.tmpdir(), "lift_headers_test_sdk-" .. os.getpid())
+    local work = path.join(os.tmpdir(), "lift_headers_test_work-" .. os.getpid())
     os.tryrm(sdk)
     os.tryrm(work)
     os.mkdir(work)

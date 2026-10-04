@@ -939,7 +939,11 @@ end
 -- status, so a name built and listed implemented in one file is listed absent in the other, and every check
 -- that reads the status answers about the last one. It has to be refused by name, with both paths.
 function named_twice(backports, found)
-    local root = path.join(os.tmpdir(), "registry_test_named_twice")
+    -- The scratch folder is named by the run (the process id), not only by what it holds, and spelling() and
+    -- unreadable() below do the same: a fixture a run writes and then reads, under a name two runs would agree
+    -- on, is one run's os.tryrm away from being the other run's missing registry - measured on this tree
+    -- 2026-10-04 in lift_test, which had exactly that shape and went red eight times in nine concurrent runs.
+    local root = path.join(os.tmpdir(), "registry_test_named_twice-" .. os.getpid())
     os.tryrm(root)
     os.mkdir(path.join(root, "registry"))
     os.mkdir(path.join(root, "registry", "Fix"))
@@ -985,7 +989,7 @@ end
 -- A method or a property is told by -[Class selector:], +[Class selector:] or Class.name, which is what lift() reads: one spelled Class.selector:
 -- is asked for as a bare name, found nowhere and left as it was, so the registry refuses it (by name) and does not let a lift bless it.
 function spelling(backports, found)
-    local root = path.join(os.tmpdir(), "registry_test_spelling")
+    local root = path.join(os.tmpdir(), "registry_test_spelling-" .. os.getpid())
     os.tryrm(root)
     local function complaints(api, kind)
         io.writefile(path.join(root, "registry", "Fix.json"), string.format('[{"api": "%s", "kind": "%s", "introduced": "8.0", "minimum": "6.0", "status": "implemented"}]', api, kind))
@@ -1014,7 +1018,7 @@ end
 -- refuses over after the whole surface has been dumped. The two rows below are the ones a full lift of
 -- 7bb678779 raised over, both of them, on both SDKs.
 function unreadable(backports, found)
-    local root = path.join(os.tmpdir(), "registry_test_unreadable")
+    local root = path.join(os.tmpdir(), "registry_test_unreadable-" .. os.getpid())
     os.tryrm(root)
     os.mkdir(path.join(root, "registry"))
     local function complaints(rows)

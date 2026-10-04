@@ -534,7 +534,9 @@ function failures(opt)
     elseif not clang then
         print("skipped: no clang under " .. path.join(store, "l/llvm"))
     else
-        local written = path.join(os.tmpdir(), "charon-lift-redeclaration")
+        -- The scratch folder is named by the run as well as by what is written in it (see the nested
+        -- fixture below): two runs of this suite share nothing, so neither takes the other's files away.
+        local written = path.join(os.tmpdir(), "charon-lift-redeclaration-" .. os.getpid())
         for _, only in ipairs({"CoreGraphics", "Foundation"}) do
             os.tryrm(written)
             os.mkdir(written)
@@ -580,6 +582,13 @@ function failures(opt)
     -- fixture under the same folder with a header rewritten between two runs gave the lift the declarations of the
     -- earlier text (a mark at line 4 where the fixture as written has none), and both the same fixture under a
     -- folder no run had used and the same fixture with CCACHE_DISABLE=1 gave the lift the fixture as written.
+    -- And it carries the process id as well, because that hash is a function of the fixture ALONE: two runs of this
+    -- suite - a band's light guard and a gate, or any two guards - computed the same path, and the os.tryrm(root)
+    -- each run does before it writes took the fixture out from under the other's clang. Measured on this tree,
+    -- 2026-10-04: three concurrent runs, nine in all, eight of them red with "cannot open file: ...
+    -- /charon-lift-nested-<hash>/out/expand/.../Fix.h" and the nine follow-on checks failing behind it. The cost of
+    -- owning the folder per run is that a cached dump of the fixture is not reused between runs, and lift_test's
+    -- whole wall time is in the run's own log either way.
     local swiftc = os.getenv("LIFT_SWIFTC")
     if not swiftc or #swiftc == 0 then
         for _, bin in ipairs(os.dirs(path.join(store, "s/swift/*/*/bin"))) do
@@ -621,7 +630,7 @@ function failures(opt)
                          ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"},' ..
                          '{"api": "FixExpanded", "kind": "function", "introduced": "7.0", "minimum": "6.0", "status": "implemented",' ..
                          ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"}]'}
-        local root = path.join(os.tmpdir(), "charon-lift-nested-" .. hash.strhash128(table.concat(fixture, "")))
+        local root = path.join(os.tmpdir(), "charon-lift-nested-" .. hash.strhash128(table.concat(fixture, "")) .. "-" .. os.getpid())
         os.tryrm(root)
         local frameworks = path.join(root, "sdk", "System", "Library", "Frameworks")
         local fix, nested = path.join(frameworks, "Fix.framework", "Headers"),
@@ -741,7 +750,7 @@ function failures(opt)
                          ' "effect": "a fixture entry", "reason": "a header-only enumeration the port carries"},' ..
                          '{"api": "FixKindOne", "kind": "constant", "introduced": "9.0", "minimum": "6.0", "status": "inert",' ..
                          ' "effect": "a fixture entry", "reason": "a header-only enumerator the port carries"}]'}
-        local root = path.join(os.tmpdir(), "charon-lift-types-" .. hash.strhash128(table.concat(fixture, "")))
+        local root = path.join(os.tmpdir(), "charon-lift-types-" .. hash.strhash128(table.concat(fixture, "")) .. "-" .. os.getpid())
         os.tryrm(root)
         local headers = path.join(root, "sdk", "System", "Library", "Frameworks")
         local fix = path.join(headers, "Fix.framework", "Headers")

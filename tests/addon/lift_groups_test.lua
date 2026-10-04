@@ -10,7 +10,9 @@ function failures(opt)
             table.insert(found, string.format("%s was %s, not %s", what, tostring(got), tostring(wanted)))
         end
     end
-    local root = path.join(os.tmpdir(), "lift_groups_test")
+    -- The run's own folder, like every other fixture folder in these suites: two runs writing and then removing
+    -- one folder is a race, and the loser answers with the fixture missing (measured in lift_test, 2026-10-04).
+    local root = path.join(os.tmpdir(), "lift_groups_test-" .. os.getpid())
     os.tryrm(root)
     local sdk = path.join(root, "sdk")
     local header = path.join("System", "Library", "Frameworks", "Fix.framework", "Headers", "Fix.h")
