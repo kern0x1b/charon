@@ -122,8 +122,22 @@ static id host_alloc_from_released_class(id ignored)
 
 BOOL host_alloc_from(Class from, Class to)
 {
-    host_allocated_from = to;
+    /* The type encoding is the one the method being replaced carries, read out of the runtime rather
+     * than written here: +alloc is (id self, SEL _cmd) and its frame is the two pointers, so the
+     * offset is 8 bytes where a pointer is 4 and 16 where it is 8 - "@8:0" is the 32-bit spelling and
+     * this host is 64-bit (measured, in test.m's own note). A method installed with an encoding that
+     * does not describe its own arguments is a method the runtime and every caller that reads the
+     * encoding have to guess about, and the guess is not the method's. A class whose own +alloc is not
+     * found gets no method at all, which the caller can see, rather than one typed by a literal. */
+    SEL selector = sel_registerName("alloc");
+    Method own = class_getClassMethod(from, selector);
+    const char *types = own ? method_getTypeEncoding(own) : NULL;
+    if (!types)
+        return NO;
     /* class_replaceMethod, not class_addMethod: the port's own class answers +alloc already - the
        alias defines it - so adding a second one is refused and the task would still be the port's. */
-    return class_replaceMethod(object_getClass((id)from), sel_registerName("alloc"), (IMP)host_alloc_from_released_class, "@8:0");
+    if (!class_replaceMethod(object_getClass((id)from), selector, (IMP)host_alloc_from_released_class, types))
+        return NO;
+    host_allocated_from = to;
+    return YES;
 }

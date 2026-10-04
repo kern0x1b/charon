@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <objc/message.h>
+#import <objc/runtime.h>
 #import <arpa/inet.h>
 #import <netinet/in.h>
 #import <sys/socket.h>
@@ -235,6 +236,13 @@ int main(void)
         size_t moved = host_attach_members(ourTaskClass, released);
         charon_check(moved > 0, "the port's members go on the host's own stream task class",
                      [NSString stringWithFormat:@"%lu of them", (unsigned long)moved]);
+        /* What +alloc is typed as on this host, read out of the runtime rather than written beside it:
+           the method takes (id self, SEL _cmd), so the frame is the two pointers and the offset names
+           them - 8 bytes where a pointer is 4, 16 where it is 8. host_alloc_from() installs it under
+           the encoding of the method it replaces, which is what this line prints. */
+        Method ownAlloc = class_getClassMethod(ourTaskClass, sel_registerName("alloc"));
+        printf("note the port's own +alloc is typed %s on this host\n",
+               ownAlloc ? method_getTypeEncoding(ownAlloc) : "(the port's class has no +alloc to read)");
         charon_check(host_alloc_from(ourTaskClass, released),
                      "the port's factory hands out one of the host's own",
                      @"+alloc is the port's own");
