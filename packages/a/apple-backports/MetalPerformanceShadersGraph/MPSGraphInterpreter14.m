@@ -1877,6 +1877,206 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
     free(sourceStride);
 }
 
+// THE CONCAT AND STACK PLAN, which is the one plan of this library whose result is SEVERAL operands, so it
+// cannot be the gather's: every axis but the one named has to hold the same extent in every operand, and
+// the extent of the one named is the sum of theirs (or, for a stack, the number of operands). What the walk
+// needs afterwards is, per operand, where its region of the result starts and how many elements of the axis
+// it is long, plus whether the regions interleave.
+//
+// Everything here is measured on this host's own MPSGraph; see the seam's own comment in CharonMPSGraph.h
+// for the answers and for the two refusals, which are the release's own.
+static NSDictionary *CharonMPSGraphConcatPlan(NSString *name, NSArray<NSArray<NSNumber *> *> *shapes,
+                                              NSInteger axis, BOOL interleave, BOOL stacked)
+{
+    NSUInteger operands = shapes.count;
+    if (operands == 0) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked to %@ no tensors at all, and the header's array is the "
+                           @"operands themselves", name, stacked ? @"stack" : @"concatenate"];
+    }
+    NSArray<NSNumber *> *first = shapes.firstObject;
+    NSUInteger rank = first.count;
+    // Every operand has the same RANK, which the release's own words are about when they are not: a
+    // concatenation of a rank-two tensor beside a rank-three one is a rank it cannot build at all, and a
+    // stack is one operation per operand and so is refused the same way.
+    for (NSArray<NSNumber *> *shapeOfOperand in shapes) {
+        if (shapeOfOperand.count != rank) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was asked to %@ a rank-%lu tensor beside a rank-%lu one, and "
+                               @"every operand has to have the same rank", name,
+                               stacked ? @"stack" : @"concatenate", (unsigned long)rank,
+                               (unsigned long)shapeOfOperand.count];
+        }
+    }
+    // The result's rank is the operands' own, or one more for a stack: its axis of extent as many operands
+    // is the one that says which operand an element came from. So the axis the caller wrote down is counted
+    // from the end of the RESULT's rank, which is what the header's own range says for a stack
+    // (`-rank + 1 <= dimension < rank + 1`) and is the same walk for a concat (`-rank <= dimension < rank`).
+    NSInteger resultRank = stacked ? (NSInteger)rank + 1 : (NSInteger)rank;
+    NSInteger where = axis;
+    if (where < 0)
+        where += resultRank;
+    if (where < 0 || where >= resultRank) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked for axis %ld of a rank-%ld tensor, and axis 0 to %ld is "
+                           @"all it has: measured, the release's own compiler refuses it with \"invalid axis "
+                           "tensor: [%ld], axis must be in range -rank <= axis < rank\" (a concat) or "
+                           "\"invalid axis: %ld, axis must be in range -|rank| <= axis < |rank|\" (a stack)",
+                          name, (long)axis, (long)resultRank, (long)resultRank - 1, (long)axis, (long)axis];
+    }
+
+    NSMutableArray<NSNumber *> *shape = [NSMutableArray arrayWithCapacity:(NSUInteger)resultRank];
+    long long total = 0;
+    for (NSInteger k = 0; k < resultRank; k++) {
+        if (k == where) {
+            // The axis the operands are laid along: its extent is every operand's own added up, which for a
+            // stack is the number of them - each operand being one element of it.
+            for (NSArray<NSNumber *> *shapeOfOperand in shapes)
+                total += stacked ? 1 : shapeOfOperand[(NSUInteger)where].longLongValue;
+            [shape addObject:@(stacked ? (long long)operands : total)];
+            continue;
+        }
+        // Every other axis of the result is one of the operands' own axes - the ones before the one named
+        // and the ones after it - and it must hold the SAME extent in every operand. The header says the
+        // inputs must be "broadcast compatible" and the release does not take it: measured, a 1x4 beside a
+        // 2x4 with the concat on axis 1 is refused by its own compiler with "'mps.concat' op invalid input
+        // tensor shapes, all input shapes must match except at axis" (MPSGraphUtilities.mm:748), and a stack
+        // is refused the same way over inputs whose shapes differ at all.
+        NSUInteger operandAxis = stacked ? (NSUInteger)(k < where ? k : k - 1) : (NSUInteger)k;
+        long long extent = -1;
+        for (NSArray<NSNumber *> *shapeOfOperand in shapes) {
+            long long own = shapeOfOperand[operandAxis].longLongValue;
+            if (extent < 0)
+                extent = own;
+            else if (extent != own) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to %@ tensors whose axis %ld holds %lld in one of "
+                                   @"them and %lld in another, and the release wants every axis but the one it "
+                                   @"lays them along to match: measured, its own compiler refuses this with "
+                                   "\"'mps.concat' op invalid input tensor shapes, all input shapes must "
+                                   "match except at axis\"",
+                              name, stacked ? @"stack" : @"concatenate", (long)operandAxis, extent, own];
+            }
+        }
+        [shape addObject:@(extent)];
+    }
+
+    // Where each operand's region of the result starts, and how many elements of the axis it is long. The
+    // regions are the operands' own order either way - interleaving changes which element of the axis a
+    // given operand's coordinate lands at, not the order the regions are read in - so the offset is the sum
+    // of the extents before it, and the walk below divides the coordinate by the number of operands when it
+    // interleaves.
+    NSMutableArray<NSNumber *> *starts = [NSMutableArray arrayWithCapacity:operands];
+    NSMutableArray<NSNumber *> *extents = [NSMutableArray arrayWithCapacity:operands];
+    long long at = 0;
+    for (NSArray<NSNumber *> *shapeOfOperand in shapes) {
+        [starts addObject:@(at)];
+        long long own = stacked ? 1 : shapeOfOperand[(NSUInteger)where].longLongValue;
+        [extents addObject:@(own)];
+        at += own;
+    }
+    return @{@"shape": shape, @"concatAxis": @(where), @"concatStarts": starts, @"concatExtents": extents,
+             @"concatInterleave": @(interleave), @"concatStacked": @(stacked)};
+}
+
+// The walk itself, and the reason it is not the gather above: for each element of the RESULT the coordinate
+// along the axis the operands were laid along says which operand it came from, and the other coordinates
+// are that operand's own - the one below the axis is the result's axis below it and the one above it is the
+// result's axis one further up, because the axis itself belongs to no operand of a stack.
+static void CharonMPSGraphConcat(NSString *name, NSArray<MPSGraphTensorData *> *sources,
+                                 MPSGraphTensorData *result, NSDictionary *plan)
+{
+    NSArray<NSNumber *> *resultShape = result.shape;
+    NSInteger axis = [plan[@"concatAxis"] integerValue];
+    NSArray<NSNumber *> *starts = plan[@"concatStarts"];
+    NSArray<NSNumber *> *extents = plan[@"concatExtents"];
+    BOOL interleave = [plan[@"concatInterleave"] boolValue];
+    BOOL stacked = [plan[@"concatStacked"] boolValue];
+    NSUInteger operands = starts.count;
+    NSUInteger rank = resultShape.count;
+    NSUInteger count = CharonMPSGraphElementCount(resultShape);
+    if (count == 0)
+        return;
+    MPSDataType type = result.dataType;
+    void *out = [result charon_mps_bytes];
+
+NSUInteger across = rank ? (NSUInteger)resultShape[(NSUInteger)axis].unsignedIntegerValue : 1;
+    // The stride of the axis the operands were laid along, in the RESULT's own row-major order. It is not the
+    // axis the result ends with in general - a concatenation on axis 0 of a 4x4 lays its regions along the
+    // SLOWEST-moving axis and a stack at axis 0 lays them along the slowest of the result too - so it is
+    // computed rather than assumed, and it is what says which coordinate of an element is the one that picks
+    // the operand.
+    unsigned long long axisStride = 1;
+    for (NSUInteger a = (NSUInteger)axis + 1; a < rank; a++)
+        axisStride *= (unsigned long long)resultShape[a].unsignedIntegerValue;
+    for (NSUInteger element = 0; element < count; element++) {
+        unsigned long long coordinate = axisStride ? (element / axisStride) % across : 0;
+        // WHICH OPERAND: the one whose region of the axis this coordinate is in, which is the coordinate
+        // divided by the number of operands when the regions interleave and a search of the offsets when they
+        // do not. A stack's regions are one element each, so the coordinate IS the operand's index there.
+        NSUInteger which = 0;
+        if (interleave) {
+            which = (NSUInteger)(coordinate % operands);
+        } else {
+            for (NSUInteger i = operands; i-- > 0;) {
+                if (coordinate >= (unsigned long long)[starts[i] longLongValue]) { which = i; break; }
+            }
+        }
+        // The coordinate this element has INSIDE the operand that answered it. For a stack the axis belongs
+        // to no operand at all - it is the one that says which operand this is - so the answer is zero there;
+        // for a concat it is the coordinate divided by the number of operands when the regions interleave, and
+        // the coordinate less where that operand's own region starts when they do not.
+        long long own = 0;
+        if (!stacked)
+            own = interleave ? (long long)(coordinate / operands)
+                             : (long long)(coordinate - [starts[which] longLongValue]);
+        MPSGraphTensorData *source = sources[which];
+        NSArray<NSNumber *> *sourceShape = source.shape;
+        // The stride of that axis in the operand, which is where the element sits inside it. For a stack the
+        // axis belongs to no operand, so `own` is zero and this is only ever multiplying zero.
+        unsigned long long sourceIndex = (unsigned long long)(own < 0 ? 0 : own);
+        unsigned long long stride = 1;
+        for (NSUInteger a = (NSUInteger)axis + 1; a < sourceShape.count; a++)
+            stride *= (unsigned long long)sourceShape[a].unsignedIntegerValue;
+        sourceIndex *= stride;
+        // The remaining coordinates of the result are the operand's own - the one below the axis is the
+        // result's axis below it and the one above it is the result's axis one further up, because the axis
+        // itself belongs to no operand of a stack - so they are read off the flat index in the result's own
+        // row-major order, which has the FIRST axis the slowest moving and so reads them from the last back.
+        unsigned long long rest = element;
+        for (NSInteger k = (NSInteger)rank; k-- > 0;) {
+            NSUInteger extentOfResult = resultShape[(NSUInteger)k].unsignedIntegerValue;
+            unsigned long long at = extentOfResult ? rest % extentOfResult : 0;
+            if (extentOfResult)
+                rest /= extentOfResult;
+            if (k == axis)
+                continue;
+            NSUInteger operandAxis = stacked ? ((NSUInteger)k < (NSUInteger)axis ? (NSUInteger)k : (NSUInteger)k - 1)
+                                             : (NSUInteger)k;
+            unsigned long long step = 1;
+            for (NSUInteger a = operandAxis + 1; a < sourceShape.count; a++)
+                step *= (unsigned long long)sourceShape[a].unsignedIntegerValue;
+            sourceIndex += at * step;
+        }
+        // The plan cannot produce an index the operand does not hold: every axis but the one named was
+        // checked above to hold the same extent in every operand, and the coordinate along the one named is
+        // inside that operand's own region by construction. The check is here so that a defect in that
+        // arithmetic writes a known zero and says which operation it was, rather than reading past the end of
+        // a buffer the port does not own - which is what the release itself does for a window of a tile
+        // gradient that runs off its axis, and what no port reproduces.
+        NSUInteger sourceCount = CharonMPSGraphElementCount(sourceShape);
+        if (sourceIndex >= sourceCount) {
+            CharonMPSGraphRefuse(@"MPSGraph: the operation named %@ wanted element %lu of its result at "
+                                 "index %llu of a %lu-element operand, which its own plan cannot ask for",
+                                 name, (unsigned long)element, sourceIndex, (unsigned long)sourceCount);
+            CharonMPSStoreRounded(out, type, element, 0.0, 1);
+            continue;
+        }
+        CharonMPSStoreRounded(out, type, element,
+                              CharonMPSLoad([source charon_mps_bytes], source.dataType, (NSUInteger)sourceIndex), 1);
+    }
+}
+
 // WHAT A PAD PUTS WHERE THE OPERAND HAS NO ELEMENT, which is the whole of the padding mode and the reason the
 // pad is a gather plus this and not one walk: the gather above fills the inside of the padding and leaves
 // every other element of the result alone, and the five modes the release answers each answer that space
@@ -2052,6 +2252,22 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
     return plan[@"shape"];
 }
 
+// The shape of a concat's or a stack's result, asked when the graph is BUILT so that the output tensor
+// carries it before anything runs - the same reason as the gather's shape above, and the same arrangement:
+// the walk's own plan over the INPUTS' shapes, with the axis the caller wrote down and whether the operands
+// interleave along it. The interpreter below asks the same function when the operation runs.
+- (NSArray<NSNumber *> *)charon_mps_concatShapeOfTensors:(NSArray<MPSGraphTensor *> *)tensors
+                                                    axis:(NSInteger)axis
+                                              interleave:(BOOL)interleave
+                                                stacked:(BOOL)stacked
+                                                   named:(NSString *)name
+{
+    NSMutableArray<NSArray<NSNumber *> *> *shapes = [NSMutableArray arrayWithCapacity:tensors.count];
+    for (MPSGraphTensor *tensor in tensors)
+        [shapes addObject:tensor.shape];
+    return CharonMPSGraphConcatPlan(name, shapes, axis, interleave, stacked)[@"shape"];
+}
+
 - (void)charon_mps_runOperation:(MPSGraphOperation *)operation values:(NSMutableDictionary *)values
 {
     CharonMPSGraphOperationKind kind = [operation charon_mps_kind];
@@ -2073,8 +2289,39 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
     // read out of its own parameters and not out of its kind, because a kind names the release the
     // operation came from and the walk here is one walk for every release: a reduction says which fold it
     // is in @"combination", and nothing else in this interpreter knows that a fold exists by its name.
+    //
+    // The CONCAT and STACK family, the one walk of this library whose result is SEVERAL operands, is asked
+    // first because it is the only one that reads every input: the gather below reads the operation's FIRST
+    // input and a concat has no single operand to read.
+    if (operation.charon_mps_parameters[@"concatAxis"]) {
+        NSMutableArray<MPSGraphTensorData *> *sources = [NSMutableArray arrayWithCapacity:inputs.count];
+        NSMutableArray<NSArray<NSNumber *> *> *shapes = [NSMutableArray arrayWithCapacity:inputs.count];
+        for (MPSGraphTensor *input in inputs) {
+            MPSGraphTensorData *value = values[input];
+            if (![value isKindOfClass:[MPSGraphTensorData class]]) {
+                CharonMPSGraphRefuse(@"MPSGraph: the operation named %@ has no value for one of its operands, "
+                                     @"so nothing was written to its output", [operation name]);
+                return;
+            }
+            [sources addObject:value];
+            [shapes addObject:value.shape];
+        }
+        NSDictionary *plan = CharonMPSGraphConcatPlan([operation name], shapes,
+                                                      [operation.charon_mps_parameters[@"concatAxis"] integerValue],
+                                                      [operation.charon_mps_parameters[@"concatInterleave"] boolValue],
+                                                      [operation.charon_mps_parameters[@"concatStacked"] boolValue]);
+        [output charon_mps_setShape:plan[@"shape"]];
+        MPSGraphTensorData *concatenated = [[MPSGraphTensorData alloc] initWithDevice:sources.firstObject.device
+                                                                          elementCount:CharonMPSGraphElementCount(plan[@"shape"])
+                                                                                 shape:plan[@"shape"]
+                                                                              dataType:dataType];
+        [concatenated charon_mps_bytes];
+        CharonMPSGraphConcat([operation name], sources, concatenated, plan);
+        values[output] = concatenated;
+        return;
+    }
     if (operation.charon_mps_parameters[@"gather"]) {
-        // The gather family, whose result is the operand's elements in another order or another extent. The
+        // The gather family, whose result is ONE operand's elements in another order or another extent. The
         // operation carries which transformation it is and the parameter of it the caller wrote down or fed;
         // see CharonMPSGraphGather.
         MPSGraphTensorData *source = values[inputs.firstObject];
