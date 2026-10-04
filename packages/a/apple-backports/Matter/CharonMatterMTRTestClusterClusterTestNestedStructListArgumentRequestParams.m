@@ -7,7 +7,7 @@
 //
 //  MTRTestClusterClusterTestNestedStructListArgumentRequestParams is the DEPRECATED SPELLING of MTRUnitTestingClusterTestNestedStructListArgumentRequestParams, which its own header says in so many words:
 //      MTR_DEPRECATED("Please use MTRUnitTestingClusterTestNestedStructListArgumentRequestParams", ios(...), ...)
-////
+//
 //  The framework's own @implementation for a class shaped this way is `@dynamic` and nothing else - one
 //  member per line, no ivar, no accessor, no -init, no -copyWithZone: and no -description - so every member
 //  lives in MTRUnitTestingClusterTestNestedStructListArgumentRequestParams's storage and ONE storage serves the pair. Writing an ivar of its own would give the two

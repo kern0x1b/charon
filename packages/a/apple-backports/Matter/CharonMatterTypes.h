@@ -22,8 +22,8 @@
 #import <Matter/Matter.h>
 
 // The types the interfaces below name that the SDK this library builds against does
-// not declare: 1 of them, forward-declared here because pointer uses need only this.
-@class MTRGenericBaseCluster;
+// not declare: 2 of them, forward-declared here because pointer uses need only this.
+@class MTRGenericBaseCluster, MTRGenericCluster;
 
 // The nullability of everything below is stated ONCE, here, rather than per parameter: 32 of the
 // SDK's Matter headers open an assume-nonnull region, so a pointer in this header with no annotation of
@@ -32,6 +32,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MTRGenericBaseCluster : MTRCluster
+@end
+
+@interface MTRGenericCluster : MTRCluster
+@property (nonatomic, strong, readonly) MTRBaseDevice * device;
 @end
 
 @interface MTRAccessControlClusterAccessControlTargetStruct : NSObject <NSCopying>
@@ -5701,6 +5705,1521 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)readAttributeFeatureMapWithClusterStateCache:(MTRClusterStateCacheContainer *)clusterStateCacheContainer endpoint:(NSNumber *)endpoint queue:(dispatch_queue_t)queue completion:(void (^)(NSNumber * value, NSError * error))completion;
 + (void)readAttributeClusterRevisionWithClusterStateCache:(MTRClusterStateCacheContainer *)clusterStateCacheContainer endpoint:(NSNumber *)endpoint queue:(dispatch_queue_t)queue completion:(void (^)(NSNumber * value, NSError * error))completion;
 - (instancetype)initWithDevice:(MTRBaseDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterActivatedCarbonFilterMonitoring : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ChangeIndicationValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *ConditionValues;
+@property (nonatomic, strong) NSMutableDictionary *DegradationDirectionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *InPlaceIndicatorValues;
+@property (nonatomic, strong) NSMutableDictionary *LastChangedTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *ReplacementProductListValues;
+- (void)resetConditionWithParams:(MTRActivatedCarbonFilterMonitoringClusterResetConditionParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)resetConditionWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterAirQuality : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AirQualityValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterAppleDeviceInformation : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportsTapToUnlockValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportsWEDValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterAppleLockCluster : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *IntentDetectionValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterBooleanStateConfiguration : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AlarmsActiveValues;
+@property (nonatomic, strong) NSMutableDictionary *AlarmsEnabledValues;
+@property (nonatomic, strong) NSMutableDictionary *AlarmsSupportedValues;
+@property (nonatomic, strong) NSMutableDictionary *AlarmsSuppressedValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentSensitivityLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *DefaultSensitivityLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SensorFaultValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedSensitivityLevelsValues;
+- (void)suppressAlarmWithParams:(MTRBooleanStateConfigurationClusterSuppressAlarmParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)enableDisableAlarmWithParams:(MTRBooleanStateConfigurationClusterEnableDisableAlarmParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterCameraAVSettingsUserLevelManagement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *DPTZStreamsValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MPTZPositionValues;
+@property (nonatomic, strong) NSMutableDictionary *MPTZPresetsValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxPresetsValues;
+@property (nonatomic, strong) NSMutableDictionary *MovementStateValues;
+@property (nonatomic, strong) NSMutableDictionary *PanMaxValues;
+@property (nonatomic, strong) NSMutableDictionary *PanMinValues;
+@property (nonatomic, strong) NSMutableDictionary *TiltMaxValues;
+@property (nonatomic, strong) NSMutableDictionary *TiltMinValues;
+@property (nonatomic, strong) NSMutableDictionary *ZoomMaxValues;
+- (void)MPTZSetPositionWithParams:(MTRCameraAVSettingsUserLevelManagementClusterMPTZSetPositionParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)MPTZSetPositionWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)MPTZRelativeMoveWithParams:(MTRCameraAVSettingsUserLevelManagementClusterMPTZRelativeMoveParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)MPTZRelativeMoveWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)MPTZMoveToPresetWithParams:(MTRCameraAVSettingsUserLevelManagementClusterMPTZMoveToPresetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)MPTZSavePresetWithParams:(MTRCameraAVSettingsUserLevelManagementClusterMPTZSavePresetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)MPTZRemovePresetWithParams:(MTRCameraAVSettingsUserLevelManagementClusterMPTZRemovePresetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)DPTZSetViewportWithParams:(MTRCameraAVSettingsUserLevelManagementClusterDPTZSetViewportParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)DPTZRelativeMoveWithParams:(MTRCameraAVSettingsUserLevelManagementClusterDPTZRelativeMoveParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterCameraAVStreamManagement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AllocatedAudioStreamsValues;
+@property (nonatomic, strong) NSMutableDictionary *AllocatedSnapshotStreamsValues;
+@property (nonatomic, strong) NSMutableDictionary *AllocatedVideoStreamsValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentFrameRateValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *HDRModeEnabledValues;
+@property (nonatomic, strong) NSMutableDictionary *HardPrivacyModeOnValues;
+@property (nonatomic, strong) NSMutableDictionary *ImageFlipHorizontalValues;
+@property (nonatomic, strong) NSMutableDictionary *ImageFlipVerticalValues;
+@property (nonatomic, strong) NSMutableDictionary *ImageRotationValues;
+@property (nonatomic, strong) NSMutableDictionary *LocalSnapshotRecordingEnabledValues;
+@property (nonatomic, strong) NSMutableDictionary *LocalVideoRecordingEnabledValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxConcurrentEncodersValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxContentBufferSizeValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxEncodedPixelRateValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxNetworkBandwidthValues;
+@property (nonatomic, strong) NSMutableDictionary *MicrophoneAGCEnabledValues;
+@property (nonatomic, strong) NSMutableDictionary *MicrophoneCapabilitiesValues;
+@property (nonatomic, strong) NSMutableDictionary *MicrophoneMaxLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *MicrophoneMinLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *MicrophoneMutedValues;
+@property (nonatomic, strong) NSMutableDictionary *MicrophoneVolumeLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *MinViewportResolutionValues;
+@property (nonatomic, strong) NSMutableDictionary *NightVisionValues;
+@property (nonatomic, strong) NSMutableDictionary *NightVisionIllumValues;
+@property (nonatomic, strong) NSMutableDictionary *NightVisionUsesInfraredValues;
+@property (nonatomic, strong) NSMutableDictionary *RateDistortionTradeOffPointsValues;
+@property (nonatomic, strong) NSMutableDictionary *SnapshotCapabilitiesValues;
+@property (nonatomic, strong) NSMutableDictionary *SoftLivestreamPrivacyModeEnabledValues;
+@property (nonatomic, strong) NSMutableDictionary *SoftRecordingPrivacyModeEnabledValues;
+@property (nonatomic, strong) NSMutableDictionary *SpeakerCapabilitiesValues;
+@property (nonatomic, strong) NSMutableDictionary *SpeakerMaxLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *SpeakerMinLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *SpeakerMutedValues;
+@property (nonatomic, strong) NSMutableDictionary *SpeakerVolumeLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *StatusLightBrightnessValues;
+@property (nonatomic, strong) NSMutableDictionary *StatusLightEnabledValues;
+@property (nonatomic, strong) NSMutableDictionary *StreamUsagePrioritiesValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedStreamUsagesValues;
+@property (nonatomic, strong) NSMutableDictionary *TwoWayTalkSupportValues;
+@property (nonatomic, strong) NSMutableDictionary *VideoSensorParamsValues;
+@property (nonatomic, strong) NSMutableDictionary *ViewportValues;
+- (void)audioStreamAllocateWithParams:(MTRCameraAVStreamManagementClusterAudioStreamAllocateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRCameraAVStreamManagementClusterAudioStreamAllocateResponseParams * data, NSError * error))completion;
+- (void)audioStreamDeallocateWithParams:(MTRCameraAVStreamManagementClusterAudioStreamDeallocateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)videoStreamAllocateWithParams:(MTRCameraAVStreamManagementClusterVideoStreamAllocateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRCameraAVStreamManagementClusterVideoStreamAllocateResponseParams * data, NSError * error))completion;
+- (void)videoStreamModifyWithParams:(MTRCameraAVStreamManagementClusterVideoStreamModifyParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)videoStreamDeallocateWithParams:(MTRCameraAVStreamManagementClusterVideoStreamDeallocateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)snapshotStreamAllocateWithParams:(MTRCameraAVStreamManagementClusterSnapshotStreamAllocateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRCameraAVStreamManagementClusterSnapshotStreamAllocateResponseParams * data, NSError * error))completion;
+- (void)snapshotStreamModifyWithParams:(MTRCameraAVStreamManagementClusterSnapshotStreamModifyParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)snapshotStreamDeallocateWithParams:(MTRCameraAVStreamManagementClusterSnapshotStreamDeallocateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setStreamPrioritiesWithParams:(MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)captureSnapshotWithParams:(MTRCameraAVStreamManagementClusterCaptureSnapshotParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRCameraAVStreamManagementClusterCaptureSnapshotResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterCarbonDioxideConcentrationMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LevelValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementMediumValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementUnitValues;
+@property (nonatomic, strong) NSMutableDictionary *MinMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *UncertaintyValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterCarbonMonoxideConcentrationMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LevelValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementMediumValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementUnitValues;
+@property (nonatomic, strong) NSMutableDictionary *MinMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *UncertaintyValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterChime : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *EnabledValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *InstalledChimeSoundsValues;
+@property (nonatomic, strong) NSMutableDictionary *SelectedChimeValues;
+- (void)playChimeSoundWithParams:(MTRChimeClusterPlayChimeSoundParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)playChimeSoundWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterClosureControl : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CountdownTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentErrorListValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LatchControlModesValues;
+@property (nonatomic, strong) NSMutableDictionary *MainStateValues;
+@property (nonatomic, strong) NSMutableDictionary *OverallCurrentStateValues;
+@property (nonatomic, strong) NSMutableDictionary *OverallTargetStateValues;
+- (void)stopWithParams:(MTRClosureControlClusterStopParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)stopWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)moveToWithParams:(MTRClosureControlClusterMoveToParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)moveToWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)calibrateWithParams:(MTRClosureControlClusterCalibrateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)calibrateWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterClosureDimension : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentStateValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LatchControlModesValues;
+@property (nonatomic, strong) NSMutableDictionary *LimitRangeValues;
+@property (nonatomic, strong) NSMutableDictionary *ModulationTypeValues;
+@property (nonatomic, strong) NSMutableDictionary *OverflowValues;
+@property (nonatomic, strong) NSMutableDictionary *ResolutionValues;
+@property (nonatomic, strong) NSMutableDictionary *RotationAxisValues;
+@property (nonatomic, strong) NSMutableDictionary *StepValueValues;
+@property (nonatomic, strong) NSMutableDictionary *TargetStateValues;
+@property (nonatomic, strong) NSMutableDictionary *TranslationDirectionValues;
+@property (nonatomic, strong) NSMutableDictionary *UnitValues;
+@property (nonatomic, strong) NSMutableDictionary *UnitRangeValues;
+- (void)setTargetWithParams:(MTRClosureDimensionClusterSetTargetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setTargetWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)stepWithParams:(MTRClosureDimensionClusterStepParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterCommissionerControl : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedDeviceCategoriesValues;
+- (void)requestCommissioningApprovalWithParams:(MTRCommissionerControlClusterRequestCommissioningApprovalParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)commissionNodeWithParams:(MTRCommissionerControlClusterCommissionNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRCommissionerControlClusterReverseOpenCommissioningWindowParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterCommodityMetering : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MaximumMeteredQuantitiesValues;
+@property (nonatomic, strong) NSMutableDictionary *MeteredQuantityValues;
+@property (nonatomic, strong) NSMutableDictionary *MeteredQuantityTimestampValues;
+@property (nonatomic, strong) NSMutableDictionary *TariffUnitValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterCommodityPrice : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrencyValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentPriceValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *PriceForecastValues;
+@property (nonatomic, strong) NSMutableDictionary *TariffUnitValues;
+- (void)getDetailedPriceRequestWithParams:(MTRCommodityPriceClusterGetDetailedPriceRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRCommodityPriceClusterGetDetailedPriceResponseParams * data, NSError * error))completion;
+- (void)getDetailedForecastRequestWithParams:(MTRCommodityPriceClusterGetDetailedForecastRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRCommodityPriceClusterGetDetailedForecastResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterCommodityTariff : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *CalendarPeriodsValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentDayValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentDayEntryValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentDayEntryDateValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentTariffComponentsValues;
+@property (nonatomic, strong) NSMutableDictionary *DayEntriesValues;
+@property (nonatomic, strong) NSMutableDictionary *DayPatternsValues;
+@property (nonatomic, strong) NSMutableDictionary *DefaultRandomizationOffsetValues;
+@property (nonatomic, strong) NSMutableDictionary *DefaultRandomizationTypeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *IndividualDaysValues;
+@property (nonatomic, strong) NSMutableDictionary *NextDayValues;
+@property (nonatomic, strong) NSMutableDictionary *NextDayEntryValues;
+@property (nonatomic, strong) NSMutableDictionary *NextDayEntryDateValues;
+@property (nonatomic, strong) NSMutableDictionary *NextTariffComponentsValues;
+@property (nonatomic, strong) NSMutableDictionary *StartDateValues;
+@property (nonatomic, strong) NSMutableDictionary *TariffComponentsValues;
+@property (nonatomic, strong) NSMutableDictionary *TariffInfoValues;
+@property (nonatomic, strong) NSMutableDictionary *TariffPeriodsValues;
+@property (nonatomic, strong) NSMutableDictionary *TariffUnitValues;
+- (void)getTariffComponentWithParams:(MTRCommodityTariffClusterGetTariffComponentParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRCommodityTariffClusterGetTariffComponentResponseParams * data, NSError * error))completion;
+- (void)getDayEntryWithParams:(MTRCommodityTariffClusterGetDayEntryParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRCommodityTariffClusterGetDayEntryResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterContentAppObserver : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+- (void)contentAppMessageWithParams:(MTRContentAppObserverClusterContentAppMessageParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRContentAppObserverClusterContentAppMessageResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterContentControl : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *BlockUnratedValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *EnabledValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *OnDemandRatingThresholdValues;
+@property (nonatomic, strong) NSMutableDictionary *OnDemandRatingsValues;
+@property (nonatomic, strong) NSMutableDictionary *RemainingScreenTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *ScheduledContentRatingThresholdValues;
+@property (nonatomic, strong) NSMutableDictionary *ScheduledContentRatingsValues;
+@property (nonatomic, strong) NSMutableDictionary *ScreenDailyTimeValues;
+- (void)updatePINWithParams:(MTRContentControlClusterUpdatePINParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)resetPINWithParams:(MTRContentControlClusterResetPINParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRContentControlClusterResetPINResponseParams * data, NSError * error))completion;
+- (void)resetPINWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRContentControlClusterResetPINResponseParams * data, NSError * error))completion;
+- (void)enableWithParams:(MTRContentControlClusterEnableParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)enableWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)disableWithParams:(MTRContentControlClusterDisableParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)disableWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)addBonusTimeWithParams:(MTRContentControlClusterAddBonusTimeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)addBonusTimeWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setScreenDailyTimeWithParams:(MTRContentControlClusterSetScreenDailyTimeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)blockUnratedContentWithParams:(MTRContentControlClusterBlockUnratedContentParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)blockUnratedContentWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)unblockUnratedContentWithParams:(MTRContentControlClusterUnblockUnratedContentParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)unblockUnratedContentWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setOnDemandRatingThresholdWithParams:(MTRContentControlClusterSetOnDemandRatingThresholdParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setScheduledContentRatingThresholdWithParams:(MTRContentControlClusterSetScheduledContentRatingThresholdParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterDeviceEnergyManagement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AbsMaxPowerValues;
+@property (nonatomic, strong) NSMutableDictionary *AbsMinPowerValues;
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *ESACanGenerateValues;
+@property (nonatomic, strong) NSMutableDictionary *ESAStateValues;
+@property (nonatomic, strong) NSMutableDictionary *ESATypeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *ForecastValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *OptOutStateValues;
+@property (nonatomic, strong) NSMutableDictionary *PowerAdjustmentCapabilityValues;
+- (void)powerAdjustRequestWithParams:(MTRDeviceEnergyManagementClusterPowerAdjustRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)cancelPowerAdjustRequestWithParams:(MTRDeviceEnergyManagementClusterCancelPowerAdjustRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)cancelPowerAdjustRequestWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)startTimeAdjustRequestWithParams:(MTRDeviceEnergyManagementClusterStartTimeAdjustRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)pauseRequestWithParams:(MTRDeviceEnergyManagementClusterPauseRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)resumeRequestWithParams:(MTRDeviceEnergyManagementClusterResumeRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)resumeRequestWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)modifyForecastRequestWithParams:(MTRDeviceEnergyManagementClusterModifyForecastRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)requestConstraintBasedForecastWithParams:(MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)cancelRequestWithParams:(MTRDeviceEnergyManagementClusterCancelRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)cancelRequestWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterDeviceEnergyManagementMode : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentModeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedModesValues;
+- (void)changeToModeWithParams:(MTRDeviceEnergyManagementModeClusterChangeToModeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRDeviceEnergyManagementModeClusterChangeToModeResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterDishwasherAlarm : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LatchValues;
+@property (nonatomic, strong) NSMutableDictionary *MaskValues;
+@property (nonatomic, strong) NSMutableDictionary *StateValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedValues;
+- (void)resetWithParams:(MTRDishwasherAlarmClusterResetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)modifyEnabledAlarmsWithParams:(MTRDishwasherAlarmClusterModifyEnabledAlarmsParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterDishwasherMode : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentModeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedModesValues;
+- (void)changeToModeWithParams:(MTRDishwasherModeClusterChangeToModeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRDishwasherModeClusterChangeToModeResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterEcosystemInformation : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *DeviceDirectoryValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LocationDirectoryValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterElectricalEnergyMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AccuracyValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CumulativeEnergyExportedValues;
+@property (nonatomic, strong) NSMutableDictionary *CumulativeEnergyImportedValues;
+@property (nonatomic, strong) NSMutableDictionary *CumulativeEnergyResetValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *PeriodicEnergyExportedValues;
+@property (nonatomic, strong) NSMutableDictionary *PeriodicEnergyImportedValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterElectricalGridConditions : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentConditionsValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *ForecastConditionsValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LocalGenerationAvailableValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterElectricalPowerMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AccuracyValues;
+@property (nonatomic, strong) NSMutableDictionary *ActiveCurrentValues;
+@property (nonatomic, strong) NSMutableDictionary *ActivePowerValues;
+@property (nonatomic, strong) NSMutableDictionary *ApparentCurrentValues;
+@property (nonatomic, strong) NSMutableDictionary *ApparentPowerValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *FrequencyValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *HarmonicCurrentsValues;
+@property (nonatomic, strong) NSMutableDictionary *HarmonicPhasesValues;
+@property (nonatomic, strong) NSMutableDictionary *NeutralCurrentValues;
+@property (nonatomic, strong) NSMutableDictionary *NumberOfMeasurementTypesValues;
+@property (nonatomic, strong) NSMutableDictionary *PowerFactorValues;
+@property (nonatomic, strong) NSMutableDictionary *PowerModeValues;
+@property (nonatomic, strong) NSMutableDictionary *RMSCurrentValues;
+@property (nonatomic, strong) NSMutableDictionary *RMSPowerValues;
+@property (nonatomic, strong) NSMutableDictionary *RMSVoltageValues;
+@property (nonatomic, strong) NSMutableDictionary *RangesValues;
+@property (nonatomic, strong) NSMutableDictionary *ReactiveCurrentValues;
+@property (nonatomic, strong) NSMutableDictionary *ReactivePowerValues;
+@property (nonatomic, strong) NSMutableDictionary *VoltageValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterEnergyEVSE : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *ApproximateEVEfficiencyValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *BatteryCapacityValues;
+@property (nonatomic, strong) NSMutableDictionary *ChargingEnabledUntilValues;
+@property (nonatomic, strong) NSMutableDictionary *CircuitCapacityValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *DischargingEnabledUntilValues;
+@property (nonatomic, strong) NSMutableDictionary *FaultStateValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MaximumChargeCurrentValues;
+@property (nonatomic, strong) NSMutableDictionary *MaximumDischargeCurrentValues;
+@property (nonatomic, strong) NSMutableDictionary *MinimumChargeCurrentValues;
+@property (nonatomic, strong) NSMutableDictionary *NextChargeRequiredEnergyValues;
+@property (nonatomic, strong) NSMutableDictionary *NextChargeStartTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *NextChargeTargetSoCValues;
+@property (nonatomic, strong) NSMutableDictionary *NextChargeTargetTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *RandomizationDelayWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *SessionDurationValues;
+@property (nonatomic, strong) NSMutableDictionary *SessionEnergyChargedValues;
+@property (nonatomic, strong) NSMutableDictionary *SessionEnergyDischargedValues;
+@property (nonatomic, strong) NSMutableDictionary *SessionIDValues;
+@property (nonatomic, strong) NSMutableDictionary *StateValues;
+@property (nonatomic, strong) NSMutableDictionary *StateOfChargeValues;
+@property (nonatomic, strong) NSMutableDictionary *SupplyStateValues;
+@property (nonatomic, strong) NSMutableDictionary *UserMaximumChargeCurrentValues;
+@property (nonatomic, strong) NSMutableDictionary *VehicleIDValues;
+- (void)disableWithParams:(MTREnergyEVSEClusterDisableParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)disableWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)enableChargingWithParams:(MTREnergyEVSEClusterEnableChargingParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)enableDischargingWithParams:(MTREnergyEVSEClusterEnableDischargingParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)startDiagnosticsWithParams:(MTREnergyEVSEClusterStartDiagnosticsParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)startDiagnosticsWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setTargetsWithParams:(MTREnergyEVSEClusterSetTargetsParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)getTargetsWithParams:(MTREnergyEVSEClusterGetTargetsParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTREnergyEVSEClusterGetTargetsResponseParams * data, NSError * error))completion;
+- (void)getTargetsWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTREnergyEVSEClusterGetTargetsResponseParams * data, NSError * error))completion;
+- (void)clearTargetsWithParams:(MTREnergyEVSEClusterClearTargetsParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)clearTargetsWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterEnergyEVSEMode : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentModeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedModesValues;
+- (void)changeToModeWithParams:(MTREnergyEVSEModeClusterChangeToModeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTREnergyEVSEModeClusterChangeToModeResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterEnergyPreference : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentEnergyBalanceValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentLowPowerModeSensitivityValues;
+@property (nonatomic, strong) NSMutableDictionary *EnergyBalancesValues;
+@property (nonatomic, strong) NSMutableDictionary *EnergyPrioritiesValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LowPowerModeSensitivitiesValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterFormaldehydeConcentrationMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LevelValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementMediumValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementUnitValues;
+@property (nonatomic, strong) NSMutableDictionary *MinMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *UncertaintyValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterGroupcast : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxMembershipCountValues;
+@property (nonatomic, strong) NSMutableDictionary *MembershipValues;
+- (void)joinGroupWithParams:(MTRGroupcastClusterJoinGroupParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)leaveGroupWithParams:(MTRGroupcastClusterLeaveGroupParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRGroupcastClusterLeaveGroupResponseParams * data, NSError * error))completion;
+- (void)updateGroupKeyWithParams:(MTRGroupcastClusterUpdateGroupKeyParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)expireGracePeriodWithParams:(MTRGroupcastClusterExpireGracePeriodParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)configureAuxiliaryACLWithParams:(MTRGroupcastClusterConfigureAuxiliaryACLParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterHEPAFilterMonitoring : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ChangeIndicationValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *ConditionValues;
+@property (nonatomic, strong) NSMutableDictionary *DegradationDirectionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *InPlaceIndicatorValues;
+@property (nonatomic, strong) NSMutableDictionary *LastChangedTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *ReplacementProductListValues;
+- (void)resetConditionWithParams:(MTRHEPAFilterMonitoringClusterResetConditionParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)resetConditionWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterICDManagement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *ActiveModeDurationValues;
+@property (nonatomic, strong) NSMutableDictionary *ActiveModeThresholdValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClientsSupportedPerFabricValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *ICDCounterValues;
+@property (nonatomic, strong) NSMutableDictionary *IdleModeDurationValues;
+@property (nonatomic, strong) NSMutableDictionary *MaximumCheckInBackOffValues;
+@property (nonatomic, strong) NSMutableDictionary *OperatingModeValues;
+@property (nonatomic, strong) NSMutableDictionary *RegisteredClientsValues;
+@property (nonatomic, strong) NSMutableDictionary *UserActiveModeTriggerHintValues;
+@property (nonatomic, strong) NSMutableDictionary *UserActiveModeTriggerInstructionValues;
+- (void)registerClientWithParams:(MTRICDManagementClusterRegisterClientParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRICDManagementClusterRegisterClientResponseParams * data, NSError * error))completion;
+- (void)unregisterClientWithParams:(MTRICDManagementClusterUnregisterClientParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)stayActiveRequestWithParams:(MTRICDManagementClusterStayActiveRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRICDManagementClusterStayActiveResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterJointFabricAdministrator : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AdministratorFabricIndexValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+- (void)ICACCSRRequestWithParams:(MTRJointFabricAdministratorClusterICACCSRRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRJointFabricAdministratorClusterICACCSRResponseParams * data, NSError * error))completion;
+- (void)ICACCSRRequestWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRJointFabricAdministratorClusterICACCSRResponseParams * data, NSError * error))completion;
+- (void)addICACWithParams:(MTRJointFabricAdministratorClusterAddICACParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRJointFabricAdministratorClusterICACResponseParams * data, NSError * error))completion;
+- (void)openJointCommissioningWindowWithParams:(MTRJointFabricAdministratorClusterOpenJointCommissioningWindowParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)transferAnchorRequestWithParams:(MTRJointFabricAdministratorClusterTransferAnchorRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRJointFabricAdministratorClusterTransferAnchorResponseParams * data, NSError * error))completion;
+- (void)transferAnchorRequestWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRJointFabricAdministratorClusterTransferAnchorResponseParams * data, NSError * error))completion;
+- (void)transferAnchorCompleteWithParams:(MTRJointFabricAdministratorClusterTransferAnchorCompleteParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)transferAnchorCompleteWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)announceJointFabricAdministratorWithParams:(MTRJointFabricAdministratorClusterAnnounceJointFabricAdministratorParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterJointFabricDatastore : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AdminListValues;
+@property (nonatomic, strong) NSMutableDictionary *AnchorNodeIDValues;
+@property (nonatomic, strong) NSMutableDictionary *AnchorRootCAValues;
+@property (nonatomic, strong) NSMutableDictionary *AnchorVendorIDValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *EndpointBindingListValues;
+@property (nonatomic, strong) NSMutableDictionary *EndpointGroupIDListValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *FriendlyNameValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *GroupKeySetListValues;
+@property (nonatomic, strong) NSMutableDictionary *GroupListValues;
+@property (nonatomic, strong) NSMutableDictionary *NodeACLListValues;
+@property (nonatomic, strong) NSMutableDictionary *NodeEndpointListValues;
+@property (nonatomic, strong) NSMutableDictionary *NodeKeySetListValues;
+@property (nonatomic, strong) NSMutableDictionary *NodeListValues;
+@property (nonatomic, strong) NSMutableDictionary *StatusValues;
+- (void)addKeySetWithParams:(MTRJointFabricDatastoreClusterAddKeySetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)updateKeySetWithParams:(MTRJointFabricDatastoreClusterUpdateKeySetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)removeKeySetWithParams:(MTRJointFabricDatastoreClusterRemoveKeySetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)addGroupWithParams:(MTRJointFabricDatastoreClusterAddGroupParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)updateGroupWithParams:(MTRJointFabricDatastoreClusterUpdateGroupParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)removeGroupWithParams:(MTRJointFabricDatastoreClusterRemoveGroupParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)addAdminWithParams:(MTRJointFabricDatastoreClusterAddAdminParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)updateAdminWithParams:(MTRJointFabricDatastoreClusterUpdateAdminParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)removeAdminWithParams:(MTRJointFabricDatastoreClusterRemoveAdminParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)addPendingNodeWithParams:(MTRJointFabricDatastoreClusterAddPendingNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)refreshNodeWithParams:(MTRJointFabricDatastoreClusterRefreshNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)updateNodeWithParams:(MTRJointFabricDatastoreClusterUpdateNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)removeNodeWithParams:(MTRJointFabricDatastoreClusterRemoveNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)updateEndpointForNodeWithParams:(MTRJointFabricDatastoreClusterUpdateEndpointForNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)addGroupIDToEndpointForNodeWithParams:(MTRJointFabricDatastoreClusterAddGroupIDToEndpointForNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)removeGroupIDFromEndpointForNodeWithParams:(MTRJointFabricDatastoreClusterRemoveGroupIDFromEndpointForNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)addBindingToEndpointForNodeWithParams:(MTRJointFabricDatastoreClusterAddBindingToEndpointForNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)removeBindingFromEndpointForNodeWithParams:(MTRJointFabricDatastoreClusterRemoveBindingFromEndpointForNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)addACLToNodeWithParams:(MTRJointFabricDatastoreClusterAddACLToNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)removeACLFromNodeWithParams:(MTRJointFabricDatastoreClusterRemoveACLFromNodeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterLaundryDryerControls : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SelectedDrynessLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedDrynessLevelsValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterLaundryWasherControls : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *NumberOfRinsesValues;
+@property (nonatomic, strong) NSMutableDictionary *SpinSpeedCurrentValues;
+@property (nonatomic, strong) NSMutableDictionary *SpinSpeedsValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedRinsesValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterLaundryWasherMode : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentModeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedModesValues;
+- (void)changeToModeWithParams:(MTRLaundryWasherModeClusterChangeToModeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRLaundryWasherModeClusterChangeToModeResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterMessages : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *ActiveMessageIDsValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MessagesValues;
+- (void)presentMessagesRequestWithParams:(MTRMessagesClusterPresentMessagesRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)cancelMessagesRequestWithParams:(MTRMessagesClusterCancelMessagesRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterMeterIdentification : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MeterSerialNumberValues;
+@property (nonatomic, strong) NSMutableDictionary *MeterTypeValues;
+@property (nonatomic, strong) NSMutableDictionary *PointOfDeliveryValues;
+@property (nonatomic, strong) NSMutableDictionary *PowerThresholdValues;
+@property (nonatomic, strong) NSMutableDictionary *ProtocolVersionValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterMicrowaveOvenControl : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CookTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxCookTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxPowerValues;
+@property (nonatomic, strong) NSMutableDictionary *MinPowerValues;
+@property (nonatomic, strong) NSMutableDictionary *PowerSettingValues;
+@property (nonatomic, strong) NSMutableDictionary *PowerStepValues;
+@property (nonatomic, strong) NSMutableDictionary *SelectedWattIndexValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedWattsValues;
+@property (nonatomic, strong) NSMutableDictionary *WattRatingValues;
+- (void)setCookingParametersWithParams:(MTRMicrowaveOvenControlClusterSetCookingParametersParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setCookingParametersWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)addMoreTimeWithParams:(MTRMicrowaveOvenControlClusterAddMoreTimeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterMicrowaveOvenMode : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentModeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedModesValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterNitrogenDioxideConcentrationMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LevelValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementMediumValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementUnitValues;
+@property (nonatomic, strong) NSMutableDictionary *MinMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *UncertaintyValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterOperationalState : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CountdownTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentPhaseValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *OperationalErrorValues;
+@property (nonatomic, strong) NSMutableDictionary *OperationalStateValues;
+@property (nonatomic, strong) NSMutableDictionary *OperationalStateListValues;
+@property (nonatomic, strong) NSMutableDictionary *PhaseListValues;
+- (void)pauseWithParams:(MTROperationalStateClusterPauseParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)pauseWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)stopWithParams:(MTROperationalStateClusterStopParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)stopWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)startWithParams:(MTROperationalStateClusterStartParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)startWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)resumeWithParams:(MTROperationalStateClusterResumeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)resumeWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterOvenCavityOperationalState : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CountdownTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentPhaseValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *OperationalErrorValues;
+@property (nonatomic, strong) NSMutableDictionary *OperationalStateValues;
+@property (nonatomic, strong) NSMutableDictionary *OperationalStateListValues;
+@property (nonatomic, strong) NSMutableDictionary *PhaseListValues;
+- (void)stopWithParams:(MTROvenCavityOperationalStateClusterStopParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROvenCavityOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)stopWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROvenCavityOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)startWithParams:(MTROvenCavityOperationalStateClusterStartParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROvenCavityOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)startWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROvenCavityOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterOvenMode : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentModeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedModesValues;
+- (void)changeToModeWithParams:(MTROvenModeClusterChangeToModeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTROvenModeClusterChangeToModeResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterOzoneConcentrationMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LevelValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementMediumValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementUnitValues;
+@property (nonatomic, strong) NSMutableDictionary *MinMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *UncertaintyValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterPM10ConcentrationMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LevelValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementMediumValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementUnitValues;
+@property (nonatomic, strong) NSMutableDictionary *MinMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *UncertaintyValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterPM1ConcentrationMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LevelValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementMediumValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementUnitValues;
+@property (nonatomic, strong) NSMutableDictionary *MinMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *UncertaintyValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterPM25ConcentrationMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LevelValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementMediumValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementUnitValues;
+@property (nonatomic, strong) NSMutableDictionary *MinMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *UncertaintyValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterPowerTopology : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *ActiveEndpointsValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AvailableEndpointsValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *ElectricalCircuitNodesValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterPulseWidthModulation : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterPushAVStreamTransport : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentConnectionsValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedFormatsValues;
+- (void)allocatePushTransportWithParams:(MTRPushAVStreamTransportClusterAllocatePushTransportParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRPushAVStreamTransportClusterAllocatePushTransportResponseParams * data, NSError * error))completion;
+- (void)deallocatePushTransportWithParams:(MTRPushAVStreamTransportClusterDeallocatePushTransportParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)modifyPushTransportWithParams:(MTRPushAVStreamTransportClusterModifyPushTransportParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setTransportStatusWithParams:(MTRPushAVStreamTransportClusterSetTransportStatusParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)manuallyTriggerTransportWithParams:(MTRPushAVStreamTransportClusterManuallyTriggerTransportParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)findTransportWithParams:(MTRPushAVStreamTransportClusterFindTransportParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRPushAVStreamTransportClusterFindTransportResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterRVCCleanMode : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentModeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedModesValues;
+- (void)changeToModeWithParams:(MTRRVCCleanModeClusterChangeToModeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRRVCCleanModeClusterChangeToModeResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterRVCOperationalState : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CountdownTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentPhaseValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *OperationalErrorValues;
+@property (nonatomic, strong) NSMutableDictionary *OperationalStateValues;
+@property (nonatomic, strong) NSMutableDictionary *OperationalStateListValues;
+@property (nonatomic, strong) NSMutableDictionary *PhaseListValues;
+- (void)pauseWithParams:(MTRRVCOperationalStateClusterPauseParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRRVCOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)pauseWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRRVCOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)resumeWithParams:(MTRRVCOperationalStateClusterResumeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRRVCOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)resumeWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRRVCOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)goHomeWithParams:(MTRRVCOperationalStateClusterGoHomeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRRVCOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (void)goHomeWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRRVCOperationalStateClusterOperationalCommandResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterRVCRunMode : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentModeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedModesValues;
+- (void)changeToModeWithParams:(MTRRVCRunModeClusterChangeToModeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRRVCRunModeClusterChangeToModeResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterRadonConcentrationMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LevelValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementMediumValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementUnitValues;
+@property (nonatomic, strong) NSMutableDictionary *MinMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *UncertaintyValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterRefrigeratorAlarm : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MaskValues;
+@property (nonatomic, strong) NSMutableDictionary *StateValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterRefrigeratorAndTemperatureControlledCabinetMode : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentModeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedModesValues;
+- (void)changeToModeWithParams:(MTRRefrigeratorAndTemperatureControlledCabinetModeClusterChangeToModeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRRefrigeratorAndTemperatureControlledCabinetModeClusterChangeToModeResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterSampleMEI : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *FlipFlopValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+- (void)pingWithParams:(MTRSampleMEIClusterPingParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)pingWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)addArgumentsWithParams:(MTRSampleMEIClusterAddArgumentsParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRSampleMEIClusterAddArgumentsResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterScenesManagement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FabricSceneInfoValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SceneTableSizeValues;
+- (void)addSceneWithParams:(MTRScenesManagementClusterAddSceneParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRScenesManagementClusterAddSceneResponseParams * data, NSError * error))completion;
+- (void)viewSceneWithParams:(MTRScenesManagementClusterViewSceneParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRScenesManagementClusterViewSceneResponseParams * data, NSError * error))completion;
+- (void)removeSceneWithParams:(MTRScenesManagementClusterRemoveSceneParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRScenesManagementClusterRemoveSceneResponseParams * data, NSError * error))completion;
+- (void)removeAllScenesWithParams:(MTRScenesManagementClusterRemoveAllScenesParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRScenesManagementClusterRemoveAllScenesResponseParams * data, NSError * error))completion;
+- (void)storeSceneWithParams:(MTRScenesManagementClusterStoreSceneParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRScenesManagementClusterStoreSceneResponseParams * data, NSError * error))completion;
+- (void)recallSceneWithParams:(MTRScenesManagementClusterRecallSceneParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)getSceneMembershipWithParams:(MTRScenesManagementClusterGetSceneMembershipParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRScenesManagementClusterGetSceneMembershipResponseParams * data, NSError * error))completion;
+- (void)copySceneWithParams:(MTRScenesManagementClusterCopySceneParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRScenesManagementClusterCopySceneResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterServiceArea : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentAreaValues;
+@property (nonatomic, strong) NSMutableDictionary *EstimatedEndTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *ProgressValues;
+@property (nonatomic, strong) NSMutableDictionary *SelectedAreasValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedAreasValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedMapsValues;
+- (void)selectAreasWithParams:(MTRServiceAreaClusterSelectAreasParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRServiceAreaClusterSelectAreasResponseParams * data, NSError * error))completion;
+- (void)skipAreaWithParams:(MTRServiceAreaClusterSkipAreaParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRServiceAreaClusterSkipAreaResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterSmokeCOAlarm : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *BatteryAlertValues;
+@property (nonatomic, strong) NSMutableDictionary *COStateValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *ContaminationStateValues;
+@property (nonatomic, strong) NSMutableDictionary *DeviceMutedValues;
+@property (nonatomic, strong) NSMutableDictionary *EndOfServiceAlertValues;
+@property (nonatomic, strong) NSMutableDictionary *ExpiryDateValues;
+@property (nonatomic, strong) NSMutableDictionary *ExpressedStateValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *HardwareFaultAlertValues;
+@property (nonatomic, strong) NSMutableDictionary *InterconnectCOAlarmValues;
+@property (nonatomic, strong) NSMutableDictionary *InterconnectSmokeAlarmValues;
+@property (nonatomic, strong) NSMutableDictionary *SmokeSensitivityLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *SmokeStateValues;
+@property (nonatomic, strong) NSMutableDictionary *TestInProgressValues;
+- (void)selfTestRequestWithParams:(MTRSmokeCOAlarmClusterSelfTestRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)selfTestRequestWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterSoilMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SoilMoistureMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *SoilMoistureMeasurementLimitsValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterTLSCertificateManagement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxClientCertificatesValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxRootCertificatesValues;
+@property (nonatomic, strong) NSMutableDictionary *ProvisionedClientCertificatesValues;
+@property (nonatomic, strong) NSMutableDictionary *ProvisionedRootCertificatesValues;
+- (void)provisionRootCertificateWithParams:(MTRTLSCertificateManagementClusterProvisionRootCertificateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRTLSCertificateManagementClusterProvisionRootCertificateResponseParams * data, NSError * error))completion;
+- (void)findRootCertificateWithParams:(MTRTLSCertificateManagementClusterFindRootCertificateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRTLSCertificateManagementClusterFindRootCertificateResponseParams * data, NSError * error))completion;
+- (void)lookupRootCertificateWithParams:(MTRTLSCertificateManagementClusterLookupRootCertificateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRTLSCertificateManagementClusterLookupRootCertificateResponseParams * data, NSError * error))completion;
+- (void)removeRootCertificateWithParams:(MTRTLSCertificateManagementClusterRemoveRootCertificateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)clientCSRWithParams:(MTRTLSCertificateManagementClusterClientCSRParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRTLSCertificateManagementClusterClientCSRResponseParams * data, NSError * error))completion;
+- (void)provisionClientCertificateWithParams:(MTRTLSCertificateManagementClusterProvisionClientCertificateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)findClientCertificateWithParams:(MTRTLSCertificateManagementClusterFindClientCertificateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRTLSCertificateManagementClusterFindClientCertificateResponseParams * data, NSError * error))completion;
+- (void)lookupClientCertificateWithParams:(MTRTLSCertificateManagementClusterLookupClientCertificateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRTLSCertificateManagementClusterLookupClientCertificateResponseParams * data, NSError * error))completion;
+- (void)removeClientCertificateWithParams:(MTRTLSCertificateManagementClusterRemoveClientCertificateParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterTLSClientManagement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxProvisionedValues;
+@property (nonatomic, strong) NSMutableDictionary *ProvisionedEndpointsValues;
+- (void)provisionEndpointWithParams:(MTRTLSClientManagementClusterProvisionEndpointParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRTLSClientManagementClusterProvisionEndpointResponseParams * data, NSError * error))completion;
+- (void)findEndpointWithParams:(MTRTLSClientManagementClusterFindEndpointParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRTLSClientManagementClusterFindEndpointResponseParams * data, NSError * error))completion;
+- (void)removeEndpointWithParams:(MTRTLSClientManagementClusterRemoveEndpointParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterTemperatureControl : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxTemperatureValues;
+@property (nonatomic, strong) NSMutableDictionary *MinTemperatureValues;
+@property (nonatomic, strong) NSMutableDictionary *SelectedTemperatureLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *StepValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedTemperatureLevelsValues;
+@property (nonatomic, strong) NSMutableDictionary *TemperatureSetpointValues;
+- (void)setTemperatureWithParams:(MTRTemperatureControlClusterSetTemperatureParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setTemperatureWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterThreadBorderRouterManagement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *ActiveDatasetTimestampValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *BorderAgentIDValues;
+@property (nonatomic, strong) NSMutableDictionary *BorderRouterNameValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *InterfaceEnabledValues;
+@property (nonatomic, strong) NSMutableDictionary *PendingDatasetTimestampValues;
+@property (nonatomic, strong) NSMutableDictionary *ThreadVersionValues;
+- (void)getActiveDatasetRequestWithParams:(MTRThreadBorderRouterManagementClusterGetActiveDatasetRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRThreadBorderRouterManagementClusterDatasetResponseParams * data, NSError * error))completion;
+- (void)getActiveDatasetRequestWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRThreadBorderRouterManagementClusterDatasetResponseParams * data, NSError * error))completion;
+- (void)getPendingDatasetRequestWithParams:(MTRThreadBorderRouterManagementClusterGetPendingDatasetRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRThreadBorderRouterManagementClusterDatasetResponseParams * data, NSError * error))completion;
+- (void)getPendingDatasetRequestWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRThreadBorderRouterManagementClusterDatasetResponseParams * data, NSError * error))completion;
+- (void)setActiveDatasetRequestWithParams:(MTRThreadBorderRouterManagementClusterSetActiveDatasetRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setPendingDatasetRequestWithParams:(MTRThreadBorderRouterManagementClusterSetPendingDatasetRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterThreadNetworkDirectory : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *PreferredExtendedPanIDValues;
+@property (nonatomic, strong) NSMutableDictionary *ThreadNetworkTableSizeValues;
+@property (nonatomic, strong) NSMutableDictionary *ThreadNetworksValues;
+- (void)addNetworkWithParams:(MTRThreadNetworkDirectoryClusterAddNetworkParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)removeNetworkWithParams:(MTRThreadNetworkDirectoryClusterRemoveNetworkParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)getOperationalDatasetWithParams:(MTRThreadNetworkDirectoryClusterGetOperationalDatasetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRThreadNetworkDirectoryClusterOperationalDatasetResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterTimeSynchronization : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *DSTOffsetValues;
+@property (nonatomic, strong) NSMutableDictionary *DSTOffsetListMaxSizeValues;
+@property (nonatomic, strong) NSMutableDictionary *DefaultNTPValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *GranularityValues;
+@property (nonatomic, strong) NSMutableDictionary *LocalTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *NTPServerAvailableValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportsDNSResolveValues;
+@property (nonatomic, strong) NSMutableDictionary *TimeSourceValues;
+@property (nonatomic, strong) NSMutableDictionary *TimeZoneValues;
+@property (nonatomic, strong) NSMutableDictionary *TimeZoneDatabaseValues;
+@property (nonatomic, strong) NSMutableDictionary *TimeZoneListMaxSizeValues;
+@property (nonatomic, strong) NSMutableDictionary *TrustedTimeSourceValues;
+@property (nonatomic, strong) NSMutableDictionary *UTCTimeValues;
+- (void)setUTCTimeWithParams:(MTRTimeSynchronizationClusterSetUTCTimeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setTrustedTimeSourceWithParams:(MTRTimeSynchronizationClusterSetTrustedTimeSourceParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setTimeZoneWithParams:(MTRTimeSynchronizationClusterSetTimeZoneParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRTimeSynchronizationClusterSetTimeZoneResponseParams * data, NSError * error))completion;
+- (void)setDSTOffsetWithParams:(MTRTimeSynchronizationClusterSetDSTOffsetParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)setDefaultNTPWithParams:(MTRTimeSynchronizationClusterSetDefaultNTPParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterTimer : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SetTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *TimeRemainingValues;
+@property (nonatomic, strong) NSMutableDictionary *TimerStateValues;
+- (void)setTimerWithParams:(MTRTimerClusterSetTimerParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)resetTimerWithParams:(MTRTimerClusterResetTimerParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)resetTimerWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)addTimeWithParams:(MTRTimerClusterAddTimeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)reduceTimeWithParams:(MTRTimerClusterReduceTimeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterTotalVolatileOrganicCompoundsConcentrationMeasurement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *AverageMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LevelValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementMediumValues;
+@property (nonatomic, strong) NSMutableDictionary *MeasurementUnitValues;
+@property (nonatomic, strong) NSMutableDictionary *MinMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueValues;
+@property (nonatomic, strong) NSMutableDictionary *PeakMeasuredValueWindowValues;
+@property (nonatomic, strong) NSMutableDictionary *UncertaintyValues;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterValveConfigurationAndControl : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *AutoCloseTimeValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentStateValues;
+@property (nonatomic, strong) NSMutableDictionary *DefaultOpenDurationValues;
+@property (nonatomic, strong) NSMutableDictionary *DefaultOpenLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *LevelStepValues;
+@property (nonatomic, strong) NSMutableDictionary *OpenDurationValues;
+@property (nonatomic, strong) NSMutableDictionary *RemainingDurationValues;
+@property (nonatomic, strong) NSMutableDictionary *TargetLevelValues;
+@property (nonatomic, strong) NSMutableDictionary *TargetStateValues;
+@property (nonatomic, strong) NSMutableDictionary *ValveFaultValues;
+- (void)openWithParams:(MTRValveConfigurationAndControlClusterOpenParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)openWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)closeWithParams:(MTRValveConfigurationAndControlClusterCloseParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)closeWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterWaterHeaterManagement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *BoostStateValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *EstimatedHeatRequiredValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *HeatDemandValues;
+@property (nonatomic, strong) NSMutableDictionary *HeaterTypesValues;
+@property (nonatomic, strong) NSMutableDictionary *TankPercentageValues;
+@property (nonatomic, strong) NSMutableDictionary *TankVolumeValues;
+- (void)boostWithParams:(MTRWaterHeaterManagementClusterBoostParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)cancelBoostWithParams:(MTRWaterHeaterManagementClusterCancelBoostParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)cancelBoostWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterWaterHeaterMode : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentModeValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *SupportedModesValues;
+- (void)changeToModeWithParams:(MTRWaterHeaterModeClusterChangeToModeParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRWaterHeaterModeClusterChangeToModeResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterWebRTCTransportProvider : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentSessionsValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+- (void)solicitOfferWithParams:(MTRWebRTCTransportProviderClusterSolicitOfferParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRWebRTCTransportProviderClusterSolicitOfferResponseParams * data, NSError * error))completion;
+- (void)provideOfferWithParams:(MTRWebRTCTransportProviderClusterProvideOfferParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRWebRTCTransportProviderClusterProvideOfferResponseParams * data, NSError * error))completion;
+- (void)provideAnswerWithParams:(MTRWebRTCTransportProviderClusterProvideAnswerParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)provideICECandidatesWithParams:(MTRWebRTCTransportProviderClusterProvideICECandidatesParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)endSessionWithParams:(MTRWebRTCTransportProviderClusterEndSessionParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterWebRTCTransportRequestor : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *CurrentSessionsValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+- (void)offerWithParams:(MTRWebRTCTransportRequestorClusterOfferParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)answerWithParams:(MTRWebRTCTransportRequestorClusterAnswerParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)ICECandidatesWithParams:(MTRWebRTCTransportRequestorClusterICECandidatesParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)endWithParams:(MTRWebRTCTransportRequestorClusterEndParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterWiFiNetworkManagement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *PassphraseSurrogateValues;
+@property (nonatomic, strong) NSMutableDictionary *SSIDValues;
+- (void)networkPassphraseRequestWithParams:(MTRWiFiNetworkManagementClusterNetworkPassphraseRequestParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRWiFiNetworkManagementClusterNetworkPassphraseResponseParams * data, NSError * error))completion;
+- (void)networkPassphraseRequestWithExpectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedValues expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRWiFiNetworkManagementClusterNetworkPassphraseResponseParams * data, NSError * error))completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
+                              endpointID:(NSNumber *)endpointID
+                                   queue:(dispatch_queue_t)queue;
+@end
+@interface MTRClusterZoneManagement : MTRGenericCluster
+@property (nonatomic, strong) NSMutableDictionary *AcceptedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *AttributeListValues;
+@property (nonatomic, strong) NSMutableDictionary *ClusterRevisionValues;
+@property (nonatomic, strong) NSMutableDictionary *FeatureMapValues;
+@property (nonatomic, strong) NSMutableDictionary *GeneratedCommandListValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxUserDefinedZonesValues;
+@property (nonatomic, strong) NSMutableDictionary *MaxZonesValues;
+@property (nonatomic, strong) NSMutableDictionary *SensitivityValues;
+@property (nonatomic, strong) NSMutableDictionary *SensitivityMaxValues;
+@property (nonatomic, strong) NSMutableDictionary *TriggersValues;
+@property (nonatomic, strong) NSMutableDictionary *TwoDCartesianMaxValues;
+@property (nonatomic, strong) NSMutableDictionary *ZonesValues;
+- (void)createTwoDCartesianZoneWithParams:(MTRZoneManagementClusterCreateTwoDCartesianZoneParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(void (^)(MTRZoneManagementClusterCreateTwoDCartesianZoneResponseParams * data, NSError * error))completion;
+- (void)updateTwoDCartesianZoneWithParams:(MTRZoneManagementClusterUpdateTwoDCartesianZoneParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)removeZoneWithParams:(MTRZoneManagementClusterRemoveZoneParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)createOrUpdateTriggerWithParams:(MTRZoneManagementClusterCreateOrUpdateTriggerParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (void)removeTriggerWithParams:(MTRZoneManagementClusterRemoveTriggerParams *)params expectedValues:(NSArray<NSDictionary<NSString *, id> *> *)expectedDataValueDictionaries expectedValueInterval:(NSNumber *)expectedValueIntervalMs completion:(MTRStatusCompletion)completion;
+- (instancetype)initWithDevice:(MTRDevice *)device
                               endpointID:(NSNumber *)endpointID
                                    queue:(dispatch_queue_t)queue;
 @end

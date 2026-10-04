@@ -61,7 +61,14 @@ HEADERS = (
 )
 
 AVAILABLE = re.compile(r"MTR_AVAILABLE\(\s*ios\(([0-9.]+)\)")
-ANNOTATION = "MTR_AVAILABLE("
+# The availability and deprecation macros a declaration can END with, and signature() takes off whichever it
+# finds. `MTR_AVAILABLE(` alone was not enough: SDK 16.4 - the SDK the library BUILDS against, whose
+# declarations cluster_declarations() unions in for every member 26.2 dropped - writes the OTHER spelling, so
+# every one of those declarations arrived with `API_AVAILABLE(ios(16.1), ...)` still attached and the emitted
+# method carried the macro as part of its signature.
+ANNOTATIONS = ("MTR_AVAILABLE(", "API_AVAILABLE(",
+               "MTR_DEPRECATED(", "API_DEPRECATED(",
+               "MTR_UNAVAILABLE(", "API_UNAVAILABLE(")
 INTERFACE = re.compile(r"^@interface\s+(\w+)\s*(?::\s*(\w+))?\s*$")
 READ = re.compile(
     r"^-\s*\(void\)readAttribute(\w+)WithCompletion:\(void \(\^\)\(([\w ]+?)\s*\*\s*_Nullable value")
@@ -90,9 +97,53 @@ CACHE = re.compile(r"^[-+]\s*\(void\)readAttribute(\w+)WithClusterStateCache:")
 # nothing, so the contract asked the port for an initialiser no emit had recorded.
 INIT = re.compile(r"^-\s*\((?:nonnull\s+|nullable\s+)?instancetype(?:\s+_\w+)?\)initWithDevice:")
 
+# The three shapes the 143 concrete MTRCluster* classes declare, which the patterns above match nothing of.
+# Measured over the 143 classes whose own @interface names MTRGenericCluster as their superclass, read with
+# this file's own reader: 2,042 synchronous reads, 532 expected-value writes and 143 each of the two
+# NS_UNAVAILABLE declarations. The map in v-matter2's report put the first at 2,053 and the writes at 282+282;
+# the difference is that this count is over every Matter header and that one over the two cluster headers,
+# and the three shapes are the same three either way.
+#
+# The synchronous read RETURNS the attribute's value where the asynchronous one hands it to a completion
+# block, and the expected-value write takes no completion block at all - the two are the SDK's own shapes for
+# "read on this thread" and "write and tell me when it took effect", and neither has anywhere to report an
+# error, so neither needs one. `NSDictionary<NSString *, id>` is the DATA VALUE type both of them carry: the
+# attribute's own type is not stated anywhere in these 143 headers, and the emitted comment says so rather
+# than naming one.
+READ_SYNC = re.compile(
+    r"^-\s*\(NSDictionary<NSString \*, id> \* _Nullable\)readAttribute(\w+)WithParams:")
+# `\s+` and not a space between the two arguments: SDK 16.4 writes this declaration over TWO lines
+# (`- (void)writeAttributeWhitePointXWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary` then
+# `expectedValueInterval:(NSNumber *)expectedValueIntervalMs API_AVAILABLE(...)`), and a literal space does
+# not cross the newline - so 22 members the library's own SDK declares were read as no shape at all and the
+# run's invariant named every one of them.
+WRITE_EXPECTED = re.compile(
+    r"^-\s*\(void\)writeAttribute(\w+)WithValue:\(NSDictionary<NSString \*, id> \*\)dataValueDictionary"
+    r"\s+expectedValueInterval:")
+# The command that takes expected VALUES and no params: `logoutWithExpectedValues:expectedValueInterval:completion:`
+# at MTRClusters.h:6663, over 40 of the 143 classes and 63 members. It is a command and not a write - it
+# invokes the cluster rather than setting an attribute - so it belongs beside COMMAND, and it matched nothing
+# because COMMAND demands a `params:` argument and COMMAND_NOPARAMS demands the verb to end in
+# `WithCompletion`.
+COMMAND_EXPECTED = re.compile(r"^-\s*\(void\)(\w+)WithExpectedValues:\(")
+# The value a member of each kind is described with in the emitted comment, where the pattern captures no
+# type of its own. `id` is the existing default for a shape that states none.
+VALUE_OF = {"read_sync": "value dictionary, the only type these headers state for it",
+            "write_expected": "value dictionary, the only type these headers state for it"}
+
 
 OFFENDERS = []
 LOST = []
+# (cluster, selector) for every member the OBJECT defines that the port's own @interface exists to
+# declare: a command in any of its shapes, a cached read, the initialiser. The reads, writes and
+# subscribes are deliberately not here - each cluster object defines its own and nothing declares them,
+# which is legal and is what the tree has always done - so this is not "every member of the contract",
+# and the check that reads it knows the difference.
+EMITTED_DECLARED = []
+# What the @interface the port writes for a class the library's SDK does not declare leaves out. Its own
+# bucket, so a verdict line says WHICH artifact is short: the object can define every member and still
+# compile while the interface beside it is missing one, because the SDK's own header declares it there.
+INTERFACE_LOST = []
 NAMED = {}
 # Clusters the SDK declares under two spellings that differ only in case. The class reader takes the
 # first, and the runtime does not register that one, so an object written for it defines a class no
@@ -133,6 +184,8 @@ CLUSTER_INTERFACES = []
 # type than the member has: counted and printed, not a failure. The host's measurement says whether the two
 # share storage, and where they cannot the port gives the alias its own and says which.
 SHARED_STORAGE_REFUSED = []
+# (held, derived) when the committed list of the concrete clusters and the SDK's own headers disagree.
+GENERIC_DRIFT = []
 # An alias that shares its successor's ivar over a conversion: (class, alias, alias type, successor type).
 CONVERSIONS = []
 # The plain data classes' buckets, kept so --cases can write the probe's driver from them in the same run.
@@ -438,16 +491,18 @@ def signature(line):
     # MTR_PROVISIONALLY_AVAILABLE is the same annotation WITHOUT parentheses: it ends the declaration and
     # expands to availability attributes, so a paren-counting strip cannot see it and it was emitted as a
     # bare macro call at the end of the method's signature. Three clusters carried it.
-    out = out.replace("MTR_PROVISIONALLY_AVAILABLE", "")
+    for bare in ("MTR_PROVISIONALLY_AVAILABLE", "API_PROVISIONALLY_AVAILABLE"):
+        out = out.replace(bare, "")
     while True:
-        start = out.find(ANNOTATION)
+        start, length = min(((out.find(each), len(each)) for each in ANNOTATIONS
+                             if out.find(each) >= 0), default=(-1, 0))
         if start < 0:
             # The declaration's semicolon is not part of the selector, and leaving it on makes the last
             # argument's name unreadable: the segment ends "completion ;" and there is no identifier at
             # its end. That was the one shape this reader could not parse, over all seven attributes.
             return out.strip().rstrip(";").strip()
         depth = 0
-        for index in range(start + len(ANNOTATION) - 1, len(out)):
+        for index in range(start + length - 1, len(out)):
             if out[index] == "(":
                 depth += 1
             elif out[index] == ")":
@@ -650,14 +705,15 @@ def facts(items):
             if selector_of(captured) not in {selector_of(i["signature"]) for i in initialisers}:
                 initialisers.append({"signature": captured})
         attribute_recorded = False
-        for pattern, kind in ((READ, "read"), (READ_PARAMS, "read_params"),
-                             (WRITE, "write"), (SUBSCRIBE, "subscribe")):
+        for pattern, kind in ((READ, "read"), (READ_PARAMS, "read_params"), (READ_SYNC, "read_sync"),
+                             (WRITE, "write"), (WRITE_EXPECTED, "write_expected"),
+                             (SUBSCRIBE, "subscribe")):
             found = pattern.match(line)
             if not found:
                 continue
             info = attributes.setdefault(found.group(1), {"value": found.group(2).strip()
                                                                if found.lastindex and found.lastindex > 1
-                                                               else "id"})
+                                                               else VALUE_OF.get(kind, "id")})
             emitted = signature(line)
             key = selector_of(emitted)
             if key in info.get("emitted", ()):
@@ -682,13 +738,22 @@ def facts(items):
         # a read's completion is a block and never matched the old plain-type pattern.
         if attribute_recorded:
             continue
-        found = COMMAND.match(line) if not SUBSCRIBE.match(line) else None
+        found = (COMMAND.match(line) or COMMAND_EXPECTED.match(line)) if not SUBSCRIBE.match(line) else None
         if found:
             command = commands.setdefault(found.group(1), {"params": None})
             captured = signature(line)
             if selector_of(captured) not in command.setdefault("emitted", set()):
                 command.setdefault("emitted", set()).add(selector_of(captured))
-                command["signature"] = captured
+                # ONE slot per verb held the LAST shape and dropped the rest, and the 143 concrete clusters
+                # are where that bites: a verb declared both as `<verb>WithParams:...params expectedValues:
+                # ...completion:` and as `<verb>WithExpectedValues:...completion:` is two selectors, and the
+                # run's own invariant named the one the slot lost - `logoutWithParams:expectedValues:
+                # expectedValueInterval:completion:` over 40 classes. `more` holds the second and later ones
+                # and every reader of the shape walks the two together.
+                if "signature" not in command:
+                    command["signature"] = captured
+                else:
+                    command.setdefault("more", []).append(captured)
             continue
         found = COMMAND_NOPARAMS.match(line)
         if found:
@@ -1271,6 +1336,25 @@ def plain_data_classes(families):
     for name in sorted(wanted):
         visit(name)
     return ordered
+
+
+def generic_cluster_classes(lines):
+    """Every class the SDK declares whose superclass is MTRGenericCluster, in name order.
+
+    DERIVED from the headers and not a list, for the same reason plain_data_classes() is: a cluster that
+    arrives with a payload brings a family with it, and a list written here would be a copy of the SDK that
+    goes stale the first time one does. The rule is one line of the reader's own output -
+    `@interface MTRClusterIdentify : MTRGenericCluster` at MTRClusters.h - and it selects 143 of the 1,330
+    classes the SDK declares, disjoint from the 142 `MTRBaseCluster*` classes clusters-emitted.txt carries
+    and named by nothing else.
+
+    The list is still WRITTEN beside clusters-emitted.txt and checked against it, because that file is what a
+    reader opens to see which classes this tree carries, and a list that is only derived cannot be read.
+    Derived and committed disagreeing is an error the run names, not a file to edit.
+    """
+    found = [name for name, info in payload_classes(lines).items()
+             if info["super"] == "MTRGenericCluster"]
+    return sorted(found)
 
 
 def MATTER_TYPE_FIND(text):
@@ -2578,6 +2662,11 @@ SHARED_TYPES = (
     # (class, superclass, the properties it declares, in header order)
     ("MTRCluster", "NSObject", ("endpointID",)),
     ("MTRGenericBaseCluster", "MTRCluster", ()),
+    # MTRCluster.h:62, and the superclass of all 143 concrete MTRCluster* classes. 16.4 does not declare it -
+    # it arrived at 17.4 - so without this entry each of those 143 objects is `cannot find interface
+    # declaration for` and the library does not link. It carries the one property its header declares,
+    # `device`, and nothing else: MTRCluster.h:66 `@property (nonatomic, strong, readonly) MTRDevice * device;`
+    ("MTRGenericCluster", "MTRCluster", ("device",)),
 )
 
 
@@ -2636,6 +2725,41 @@ TYPES_OBJECT = """//
 """
 
 
+def command_shapes(info):
+    """Every PARAMETERISED shape one command verb is declared in: the first, and any more beside it.
+
+    The `<verb>WithCompletion:` form is deliberately not one of them: it takes no params, so it has no
+    `signature` slot, and emit() writes it from `noparam` in a loop of its own AHEAD of these - the order
+    the objects in the tree have carried since the first of them was generated. An @interface lists the
+    three in the order the header declares them, so it reads `command_declarations()` below, which is
+    these and then `noparam`.
+    """
+    shapes = []
+    if info.get("signature"):
+        shapes.append(info["signature"])
+    shapes.extend(info.get("more") or [])
+    return shapes
+
+
+def command_declarations(info):
+    """Every shape one command verb contributes to its @interface, in the header's own order.
+
+    This is the whole of the `noparam` slot's reach, and it is why the function exists: the first version
+    of the second parameterised shape replaced a loop over `("signature", "noparam")` here with a loop
+    over `command_shapes()`, which has no `noparam` in it, and quietly dropped 45 declarations from
+    CharonMatterTypes.h - every `<verb>WithCompletion:` over the 281 cluster classes. Nothing caught it:
+    the run's own invariant compares the header's members against the OBJECT's declarations, and the
+    object still defined all of them, and `the 79 classes this SDK does not declare` compiled because
+    for most of those verbs 16.4's own header declares the selector anyway. An @interface missing a
+    member the object implements is `-Wincomplete-implementation` the moment nothing else declares it,
+    so the interface is checked against the same contract below, in the same run.
+    """
+    shapes = command_shapes(info)
+    if info.get("noparam"):
+        shapes.append(info["noparam"])
+    return shapes
+
+
 def cluster_interface(cluster, items, supers):
     """The @interface of a cluster class the target's SDK does not declare, for CharonMatterTypes.h.
 
@@ -2651,12 +2775,10 @@ def cluster_interface(cluster, items, supers):
     for name in sorted(attributes):
         lines.append("@property (nonatomic, strong) NSMutableDictionary *%sValues;" % name)
     for info in commands.values():
-        for key in ("signature", "noparam"):
-            shape = info.get(key)
-            if shape:
-                # The same rule the object applies: this interface sits under the header's
-                # assume-nonnull region, so it states nonnull and the object must not say _Nullable.
-                lines.append("%s;" % shape_line(shape))
+        for shape in command_declarations(info):
+            # The same rule the object applies: this interface sits under the header's
+            # assume-nonnull region, so it states nonnull and the object must not say _Nullable.
+            lines.append("%s;" % shape_line(shape))
     for info in cache.values():
         if info.get("signature"):
             lines.append("%s;" % shape_line(info["signature"]))
@@ -2681,7 +2803,16 @@ def emit_shared_types(arguments, stem_of, cluster_interfaces=(), payload_interfa
         # DOES declare MTRCluster, so declaring it here as well was `duplicate interface definition for class
         # 'MTRCluster'`.
         if name not in DECLARED_16:
-            declarations.append("@interface %s : %s\n@end\n" % (name, supers))
+            # The properties go IN the interface, not only the @synthesize below. `@synthesize device =
+            # _device;` with nothing declaring `device` is `property implementation must have its declaration
+            # in interface`, and it is the same rule cluster_interface() follows for the members it writes:
+            # an @interface with none of them is the compiler's error on the first one.
+            lines = ["@interface %s : %s" % (name, supers)]
+            lines.extend("@property (nonatomic, strong, readonly) MTRBaseDevice * %s;" % each
+                         if each == "device" else "@property (nonatomic, strong) id %s;" % each
+                         for each in properties)
+            lines.extend(["@end", ""])
+            declarations.append("\n".join(lines))
         # The OBJECT is written for every one of them, whether the SDK declares the class or not. The
         # declaration says the class exists at compile time; the object is what makes it EXIST at runtime,
         # and the release this family is carried into has no Matter.framework at all: every row in
@@ -2809,6 +2940,25 @@ def strip_region_nullability(text):
     return text.replace(" _Nullable", "").replace(" _Nonnull", "")
 
 
+def strip_return_nullability(text):
+    """strip_region_nullability() for the one shape whose ONLY annotation is on its return type.
+
+    The rule the object applies to a command or a cached read takes both pointer specifiers off the whole
+    declaration, because every annotated parameter of those sits under the enclosing region's nonnull. It is
+    WRONG for a block parameter: the SDK spells
+    `- (void)readAttributeXWithCompletion:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))completion`
+    and narrowing a block's own parameter is legal, so those keep theirs - which is why the two are two
+    functions rather than one. The synchronous read's single annotation is its RETURN type, where the region's
+    nonnull and an explicit `_Nullable` are `nullability specifier '_Nullable' conflicts with existing
+    specifier 'nonnull'`, measured on all 143 objects.
+
+    Only the part before the first `)` is touched, which is the return type and nothing else:
+    `NSDictionary<NSString *, id> *` carries no parenthesis of its own.
+    """
+    head, separator, tail = text.partition(")")
+    return head.replace(" _Nullable", "").replace(" _Nonnull", "") + separator + tail
+
+
 def stored_value(slot, name, kind):
     """The assignment that puts one initializer argument into the ivar that holds it.
 
@@ -2891,6 +3041,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
         if len(typed) != len(slots):
             OFFENDERS.append((cluster, "initWithDevice", "initialiser", entry["signature"]))
             continue
+        EMITTED_DECLARED.append((cluster, selector_of(entry["signature"])))
         stored = "".join("    %s\n" % stored_value(slot, name, kind)
                          for slot, (name, kind) in zip(slots, typed))
         body.append("%s\n{\n%s    return self;\n}\n\n"
@@ -2926,6 +3077,17 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                         "    %s;\n}\n\n"
                         % (s, unused, completion, cluster, name,
                            completion_call(s, completion, "written")))
+        for s in info.get("read_sync", []):
+            # The synchronous read: what the caller wrote into the table, or nil when nothing was written.
+            # The framework reads the attribute off the node; a release with no Matter hardware has no node,
+            # so there is nothing to read and the caller gets nil, which is what the declaration's own
+            # `_Nullable` return says is a possible answer.
+            names = arguments_or_note(s, cluster, name, "read_sync")
+            if names is None:
+                continue
+            unused = "".join("    (void)%s;\n" % each for each in names)
+            body.append("%s\n{\n%s    return [%s charon_port_values][@\"%s\"];\n}\n\n"
+                        % (strip_return_nullability(s), unused, cluster, name))
         for s in info.get("write", []):
             names = arguments_or_note(s, cluster, name, "write")
             if names is None or len(names) < 2:
@@ -2941,6 +3103,19 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                         "    [%s charon_port_values][@\"%s\"] = %s;\n"
                         "    if (%s) {\n        %s;\n    }\n}\n\n"
                         % (s, cluster, name, value_name, completion, completion_call(s, completion)))
+        for s in info.get("write_expected", []):
+            # The expected-value write: it stores what the caller wrote and has no completion block to
+            # report through, so there is nothing else to answer. `expectedValueIntervalMs` and `params` are
+            # the framework's own way of saying "tell me when it takes effect" and "how to write it", and
+            # both are the caller's business on a release with no fabric.
+            names = arguments_or_note(s, cluster, name, "write_expected")
+            if names is None or len(names) < 2:
+                if names is not None:
+                    OFFENDERS.append((cluster, name, "write_expected", s))
+                continue
+            unused = "".join("    (void)%s;\n" % each for each in names[1:])
+            body.append("%s\n{\n    [%s charon_port_values][@\"%s\"] = %s;\n%s}\n\n"
+                        % (s, cluster, name, names[0], unused))
         for s in info.get("subscribe", []):
             names = arguments_or_note(s, cluster, name, "subscribe")
             if names is None:
@@ -2958,6 +3133,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
         if completion is None:
             OFFENDERS.append((cluster, name, "cached read", info["signature"]))
             continue
+        EMITTED_DECLARED.append((cluster, selector_of(info["signature"])))
         unused = "".join("    (void)%s;\n" % each for each in args[:-1])
         body.append("%s\n{\n%s"
                     "    if (!%s) {\n        return;\n    }\n"
@@ -2974,12 +3150,22 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
     # declared - which is the reverse of the truth, and left MTRBaseClusterGroupKeyManagement failing on a
     # parameter the SDK itself declares nonnull.
     if True:
-        commands = dict((verb, dict((key, strip_region_nullability(value))
-                                    for key, value in info.items()
-                                    if isinstance(value, str)))
+        # `more` is a LIST and this rebuild keeps only the strings, so it dropped every second parameterised
+        # shape of a verb and the run's invariant named all 63 of them - `logoutWithExpectedValues:
+        # expectedValueInterval:completion:` and its 62 siblings. A dict comprehension that keeps the strings
+        # is right for the one slot `signature` was and wrong the moment there is a second.
+        commands = dict((verb, dict(list({key: strip_region_nullability(value)
+                                          for key, value in info.items()
+                                          if isinstance(value, str)}.items())
+                                    + ([("more", [strip_region_nullability(shape)
+                                                  for shape in info["more"]])]
+                                       if info.get("more") else [])))
                         for verb, info in commands.items())
+        for info in commands.values():
+            if info.get("more"):
+                info["more"] = [strip_region_nullability(shape) for shape in info["more"]]
         for info in attributes.values():
-            for key in ("read", "read_params", "write", "subscribe"):
+            for key in ("read", "read_params", "read_sync", "write", "write_expected", "subscribe"):
                 if isinstance(info.get(key), list):
                     info[key] = [strip_region_nullability(shape) for shape in info[key]]
         for info in cache.values():
@@ -2993,6 +3179,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             if names is not None:
                 completion, rule = completion_of(shape)
                 if completion is not None:
+                    EMITTED_DECLARED.append((cluster, selector_of(shape)))
                     unused = "".join("    (void)%s;\n" % each for each in names[:-1])
                     body.append("%s\n{\n%s"
                                 "    if (%s) {\n        %s;\n    }\n}\n\n"
@@ -3001,24 +3188,24 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                     OFFENDERS.append((cluster, verb, "command", shape))
             else:
                 OFFENDERS.append((cluster, verb, "command", shape))
-        # The parameterised shape, and ONLY when this verb has one. A verb the header declares solely as
+        # The parameterised shapes, and ONLY where this verb has one. A verb the header declares solely as
         # `<verb>WithCompletion:` carries no "signature" key at all, and reading it here unconditionally
-        # is a KeyError the run died on the moment the pattern above started matching those verbs.
-        if not info.get("signature"):
-            continue
-        body.append("// %s. It answers: there is nothing to reach on a release with no fabric.\n" % verb)
-        names = arguments_or_note(info["signature"], cluster, verb, "command")
-        if names is None:
-            continue
-        completion, rule = completion_of(info["signature"])
-        if completion is None:
-            OFFENDERS.append((cluster, verb, "command", info["signature"]))
-            continue
-        unused = "".join("    (void)%s;\n" % each for each in names if each != completion)
-        body.append("%s\n{\n%s"
-                    "    if (%s) {\n        %s;\n    }\n}\n\n"
-                    % (info["signature"], unused, completion,
-                       completion_call(info["signature"], completion)))
+        # is a KeyError the run died on the moment the pattern above started matching those verbs. A verb
+        # declared in TWO parameterised shapes has both, and the loop is over the two together.
+        for shape in command_shapes(info):
+            body.append("// %s. It answers: there is nothing to reach on a release with no fabric.\n" % verb)
+            names = arguments_or_note(shape, cluster, verb, "command")
+            if names is None:
+                continue
+            completion, rule = completion_of(shape)
+            if completion is None:
+                OFFENDERS.append((cluster, verb, "command", shape))
+                continue
+            EMITTED_DECLARED.append((cluster, selector_of(shape)))
+            unused = "".join("    (void)%s;\n" % each for each in names if each != completion)
+            body.append("%s\n{\n%s"
+                        "    if (%s) {\n        %s;\n    }\n}\n\n"
+                        % (shape, unused, completion, completion_call(shape, completion)))
     body.append("@end\n")
     text = "".join(body)
 
@@ -3173,6 +3360,10 @@ def main():
     parser.add_argument("--shared-types", action="store_true", help="emit CharonMatterTypes.h and one object per shared class")
     parser.add_argument("--sdk16", help="the SDK the LIBRARY builds against; types it does not declare get a forward declaration")
     parser.add_argument("--paths", action="store_true", help="also emit MTRClusterPath and the three that extend it")
+    parser.add_argument("--generic-clusters", action="store_true",
+                        help="also emit the concrete MTRCluster* classes - every one the SDK declares whose"
+                             " superclass is MTRGenericCluster, derived from the headers and checked against"
+                             " generic-clusters-emitted.txt beside clusters-emitted.txt")
     parser.add_argument("--cases",
                         help="write the probe's driver file here: one line per class and one per alias pair, "
                              "read out of the same buckets this run emits from")
@@ -3240,16 +3431,29 @@ def main():
             arguments.classes = [line.strip() for line in handle if line.strip() and not line.startswith("#")]
     if not arguments.classes and not arguments.self_test:
         parser.error("give --classes or --classes-from")
+    # The 143 concrete MTRCluster* classes ride the SAME loop as the 142 MTRBaseCluster* ones, so they are
+    # appended to the class list rather than given a second emitter beside it. `base_classes` keeps the list
+    # clusters-emitted.txt is written from, so the two families stay in two files.
+    base_classes = list(arguments.classes)
+    generic = []
+    if arguments.generic_clusters:
+        generic = generic_cluster_classes(payload_lines + lines)
+        print("the concrete MTRCluster* classes - every one the SDK declares whose superclass is"
+              " MTRGenericCluster, and %d of them, disjoint from the %d MTRBaseCluster* ones: %s ... %s"
+              % (len(generic), len(base_classes), ", ".join(generic[:2]), ", ".join(generic[-2:])))
+        arguments.classes = base_classes + [each for each in generic if each not in set(base_classes)]
     if not os.path.isdir(arguments.out):
         os.makedirs(arguments.out)
     for stale in sorted(os.listdir(arguments.out)):
         if stale.endswith(".m"):
             os.remove(os.path.join(arguments.out, stale))
-    global NAMED, EMITTED, NAME_ERRORS, PORT_ONLY, PORT_OWNED_CLASS, PARAMS_MISSING, EMITTED_FILES, FORWARDED, CLUSTER_INTERFACES, HEADER_FORWARDS, COMPILE_FAILURES, HEADER_NOT_ALONE, PAYLOAD_INTERFACES, CASES
+    global NAMED, EMITTED, NAME_ERRORS, PORT_ONLY, PORT_OWNED_CLASS, PARAMS_MISSING, EMITTED_FILES, FORWARDED, CLUSTER_INTERFACES, HEADER_FORWARDS, COMPILE_FAILURES, HEADER_NOT_ALONE, PAYLOAD_INTERFACES, CASES, EMITTED_DECLARED, INTERFACE_LOST
     NAMED = {}
     EMITTED = []
     CASES = []
     NAME_ERRORS = []
+    EMITTED_DECLARED = []
+    INTERFACE_LOST = []
     written = 0
     for cluster in arguments.classes:
         if cluster in EXCLUDED:
@@ -3282,6 +3486,23 @@ def main():
         if declared_here:
             CLUSTER_INTERFACES.append(declared_here)
         emit(path, cluster, supers, attributes, commands, version, cache_reads, cache, initialisers)
+        if declared_here:
+            # The @interface the port writes and the object it writes come out of the SAME facts(), read
+            # by two functions, and a shape one of them takes and the other does not is invisible to every
+            # check that looks at one of them alone. That is not hypothetical: a first version of the
+            # second parameterised command shape replaced the interface's loop over `("signature",
+            # "noparam")` with one over `command_shapes()`, which has no `noparam` in it, and 45
+            # `<verb>WithCompletion:` declarations went out of CharonMatterTypes.h - every one of them a
+            # selector the object beside it still defines. All 1,208 objects compiled, because the library's
+            # SDK declares those selectors itself, and the run's own invariant passed, because it compares
+            # the header's members against the OBJECT's declarations. The interface must declare every
+            # command, cached read and initialiser the object defines; that is what it is for, and the
+            # reads, writes and subscribes it does not declare are named in EMITTED_DECLARED's comment.
+            declared_in_interface = set(selector_of(signature(text))
+                                        for _, text in declarations(declared_here.splitlines()))
+            for name in [each for who, each in EMITTED_DECLARED if who == cluster]:
+                if name not in declared_in_interface:
+                    INTERFACE_LOST.append((cluster, name))
         declared = contract_of(items)
         # The contract is a TEST FIXTURE: it is what the differential holds the port to, and it is not
         # source. Written beside the object it landed in packages/a/apple-backports/Matter/, where it
@@ -3507,13 +3728,36 @@ def main():
     # separate families: one list of both is a list the next run reads back as the cluster list, and 923
     # payload classes then go looking for a cluster block each.
     with open(os.path.join(arguments.out, "clusters-emitted.txt"), "w") as out:
-        for each in arguments.classes:
+        for each in base_classes:
             if each in EMITTED:
                 out.write(each + "\n")
     if not arguments.params and not arguments.params_from:
         with open(os.path.join(arguments.out, "clusters-emitted.txt"), "w") as out:
             for each in EMITTED:
+                if each not in generic:
+                    out.write(each + "\n")
+    if generic:
+        # Written AND checked. The list is derived, so the file is a record rather than a source; a derived
+        # list that disagrees with the committed one is a stale file, and the run says which way rather than
+        # leaving the tree to carry two answers.
+        path = os.path.join(arguments.out, "generic-clusters-emitted.txt")
+        held = []
+        if os.path.exists(path):
+            with open(path) as handle:
+                held = [line.strip() for line in handle if line.strip() and not line.startswith("#")]
+        if held and held != generic:
+            print("INVARIANT FAILED: generic-clusters-emitted.txt holds %d name(s) and the SDK's own headers"
+                  " give %d; %d only in the file, %d only in the headers"
+                  % (len(held), len(generic), len(set(held) - set(generic)), len(set(generic) - set(held))))
+            for name in sorted(set(held) ^ set(generic)):
+                print("  %s: %s" % (name, "in the file only" if name in held else "in the headers only"))
+            GENERIC_DRIFT.append((len(held), len(generic)))
+        with open(path, "w") as out:
+            for each in generic:
                 out.write(each + "\n")
+        print("generic-clusters-emitted.txt: %d name(s) written%s"
+              % (len(generic), "" if not held else
+                 ", and they %s the committed list" % ("MATCH" if held == generic else "DIFFER FROM")))
     print("clusters written: %d" % written)
     if OFFENDERS:
         shapes = collections.OrderedDict()
@@ -3535,6 +3779,17 @@ def main():
     else:
         print("")
         print("invariant: every member the header declares is in the generated file, for every cluster")
+    if INTERFACE_LOST:
+        print("")
+        print("INVARIANT FAILED: %d member(s) the object defines are not declared in the @interface the"
+              " port writes for it, over %d cluster(s):"
+              % (len(INTERFACE_LOST), len(set(c for c, _ in INTERFACE_LOST))))
+        for cluster, name in INTERFACE_LOST:
+            print("  %s\t%s" % (cluster, name))
+    else:
+        print("")
+        print("invariant: every command, cached read and initialiser an object defines is declared in the"
+              " @interface the port writes for it, over every cluster the library's SDK does not declare")
     skipped = len([c for c in arguments.classes if c in EXCLUDED])
     if skipped:
         print("skipped by the exclusion list: %d" % skipped)
@@ -3619,7 +3874,8 @@ def main():
         print("every object names the class it implements: %d of %d" % (len(emitted), len(emitted)))
 
     everything_clear = not (OFFENDERS or LOST or PORT_ONLY or NAME_ERRORS or PARAMS_MISSING
-                            or COMPILE_FAILURES or HEADER_NOT_ALONE or unnamed or STORE_CLASSES)
+                            or COMPILE_FAILURES or HEADER_NOT_ALONE or unnamed or STORE_CLASSES
+                            or GENERIC_DRIFT or INTERFACE_LOST)
     return 0 if everything_clear else 1
 
 

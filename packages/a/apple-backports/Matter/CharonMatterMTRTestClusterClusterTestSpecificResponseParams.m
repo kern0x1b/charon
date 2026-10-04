@@ -7,7 +7,7 @@
 //
 //  MTRTestClusterClusterTestSpecificResponseParams is the DEPRECATED SPELLING of MTRUnitTestingClusterTestSpecificResponseParams, which its own header says in so many words:
 //      MTR_DEPRECATED("Please use MTRUnitTestingClusterTestSpecificResponseParams", ios(...), ...)
-////
+//
 //  The framework's own @implementation for a class shaped this way is `@dynamic` and nothing else - one
 //  member per line, no ivar, no accessor, no -init, no -copyWithZone: and no -description - so every member
 //  lives in MTRUnitTestingClusterTestSpecificResponseParams's storage and ONE storage serves the pair. Writing an ivar of its own would give the two

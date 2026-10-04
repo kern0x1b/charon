@@ -7,14 +7,16 @@
 //
 //  MTRControllerFactoryParams is the DEPRECATED SPELLING of MTRDeviceControllerFactoryParams, which its own header says in so many words:
 //      MTR_DEPRECATED("Please use MTRDeviceControllerFactoryParams", ios(...), ...)
-////
-//  0 member(s) the superclass declares are `@dynamic`, as above, so those live in MTRDeviceControllerFactoryParams's storage.
-//  The other 4 - `storageDelegate`, `startServer`, `paaCerts`, `cdCerts` - MTRDeviceControllerFactoryParams does NOT declare, and for those the framework writes the
-//  accessor by hand, each forwarding to a differently named member of the superclass. Those are written here
-//  the way MTRDeviceControllerFactoryParams's own source writes them, read out of tools/matter-alias-accessors.tsv: the header's deprecation text names the
-//  member for 4 of the 4 and says "Please use the storage property" for 0, and prose is
-//  not a place to read a member name from. A member left with no accessor at all answers
-//  unrecognizedSelector, which is what the framework's own shape says it does.
+//
+//  0 of its members are declared by MTRDeviceControllerFactoryParams as well, and those are `@dynamic`: the accessor that
+//  answers them is MTRDeviceControllerFactoryParams's and so is the storage it reads. The other 4 - `storageDelegate`, `startServer`, `paaCerts`, `cdCerts` - MTRDeviceControllerFactoryParams
+//  does NOT declare, and for those the framework writes the accessor by hand, each forwarding to a
+//  differently named member of the superclass. They are written here the way the framework's own source
+//  writes them, read out of tools/matter-alias-accessors.tsv: the header's deprecation text names the member for 3 of the
+//  4 and says "Please use the storage property" for the rest, and prose is not a place to read a
+//  member name from, which is why the table is read out of the source and not out of the header.
+//  A member of this class with no accessor written for it answers unrecognizedSelector, which is what the
+//  framework's own shape says it does, and the run names any there is.
 //
 //  Nothing in it reaches a fabric.
 #import <Foundation/Foundation.h>

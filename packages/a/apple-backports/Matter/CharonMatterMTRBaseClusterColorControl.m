@@ -686,7 +686,6 @@
 
 - (void)writeAttributeWhitePointXWithValue:(NSNumber * _Nonnull)value
                                 completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"WhitePointX"] = value;
     if (completion) {
@@ -697,7 +696,6 @@
 - (void)writeAttributeWhitePointXWithValue:(NSNumber * _Nonnull)value
                                     params:(MTRWriteParams * _Nullable)params
                                 completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"WhitePointX"] = value;
     if (completion) {
@@ -727,7 +725,6 @@
 
 - (void)writeAttributeWhitePointYWithValue:(NSNumber * _Nonnull)value
                                 completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"WhitePointY"] = value;
     if (completion) {
@@ -738,7 +735,6 @@
 - (void)writeAttributeWhitePointYWithValue:(NSNumber * _Nonnull)value
                                     params:(MTRWriteParams * _Nullable)params
                                 completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"WhitePointY"] = value;
     if (completion) {
@@ -768,7 +764,6 @@
 
 - (void)writeAttributeColorPointRXWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointRX"] = value;
     if (completion) {
@@ -779,7 +774,6 @@
 - (void)writeAttributeColorPointRXWithValue:(NSNumber * _Nonnull)value
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointRX"] = value;
     if (completion) {
@@ -809,7 +803,6 @@
 
 - (void)writeAttributeColorPointRYWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointRY"] = value;
     if (completion) {
@@ -820,7 +813,6 @@
 - (void)writeAttributeColorPointRYWithValue:(NSNumber * _Nonnull)value
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointRY"] = value;
     if (completion) {
@@ -850,7 +842,6 @@
 
 - (void)writeAttributeColorPointRIntensityWithValue:(NSNumber * _Nullable)value
                                          completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointRIntensity"] = value;
     if (completion) {
@@ -861,7 +852,6 @@
 - (void)writeAttributeColorPointRIntensityWithValue:(NSNumber * _Nullable)value
                                              params:(MTRWriteParams * _Nullable)params
                                          completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointRIntensity"] = value;
     if (completion) {
@@ -891,7 +881,6 @@
 
 - (void)writeAttributeColorPointGXWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointGX"] = value;
     if (completion) {
@@ -902,7 +891,6 @@
 - (void)writeAttributeColorPointGXWithValue:(NSNumber * _Nonnull)value
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointGX"] = value;
     if (completion) {
@@ -932,7 +920,6 @@
 
 - (void)writeAttributeColorPointGYWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointGY"] = value;
     if (completion) {
@@ -943,7 +930,6 @@
 - (void)writeAttributeColorPointGYWithValue:(NSNumber * _Nonnull)value
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointGY"] = value;
     if (completion) {
@@ -973,7 +959,6 @@
 
 - (void)writeAttributeColorPointGIntensityWithValue:(NSNumber * _Nullable)value
                                          completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointGIntensity"] = value;
     if (completion) {
@@ -984,7 +969,6 @@
 - (void)writeAttributeColorPointGIntensityWithValue:(NSNumber * _Nullable)value
                                              params:(MTRWriteParams * _Nullable)params
                                          completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointGIntensity"] = value;
     if (completion) {
@@ -1014,7 +998,6 @@
 
 - (void)writeAttributeColorPointBXWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointBX"] = value;
     if (completion) {
@@ -1025,7 +1008,6 @@
 - (void)writeAttributeColorPointBXWithValue:(NSNumber * _Nonnull)value
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointBX"] = value;
     if (completion) {
@@ -1055,7 +1037,6 @@
 
 - (void)writeAttributeColorPointBYWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointBY"] = value;
     if (completion) {
@@ -1066,7 +1047,6 @@
 - (void)writeAttributeColorPointBYWithValue:(NSNumber * _Nonnull)value
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointBY"] = value;
     if (completion) {
@@ -1096,7 +1076,6 @@
 
 - (void)writeAttributeColorPointBIntensityWithValue:(NSNumber * _Nullable)value
                                          completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointBIntensity"] = value;
     if (completion) {
@@ -1107,7 +1086,6 @@
 - (void)writeAttributeColorPointBIntensityWithValue:(NSNumber * _Nullable)value
                                              params:(MTRWriteParams * _Nullable)params
                                          completion:(MTRStatusCompletion)completion
-    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
 {
     [MTRBaseClusterColorControl charon_port_values][@"ColorPointBIntensity"] = value;
     if (completion) {
