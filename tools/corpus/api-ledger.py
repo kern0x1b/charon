@@ -450,6 +450,23 @@ def _ancestors(owner, built_classes, release_classes):
         current = superclass
 
 
+def _held_note(unavailable, api, decided):
+    """The clause a held-back row's reason carries, or "" when nothing holds it back.
+
+    A row the walk was not allowed to ask is a row whose reason must not read as an absence: the
+    selector may well be in the class above it, and the only reason it is not credited is a fact about
+    the row. `+[UIKeyCommand commandWithTitle:image:action:propertyList:]` is the case to read -- its
+    reason used to say the selector is not there, while UICommand declares it and UIKeyCommand.h:108
+    marks the row NS_UNAVAILABLE.
+    """
+    if unavailable:
+        return (", and Apple's own header marks this row NS_UNAVAILABLE, so nothing answers it at run "
+                "time and the class above it was not asked")
+    if api in (decided or ()):
+        return ", and a registry has decided this row, so the class above it was not asked"
+    return ""
+
+
 def classify_method(api, built_classes, release_classes, built_protocols=None, release_protocols=None,
                     decided=None, unavailable=False):
     """A method row's owner is named without saying whether it is a class or a protocol, and the
@@ -514,7 +531,7 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
         return "implemented", ("+new is NSObject's and every class inherits it: the 6.1.3 cache's "
                                "own NSObject declares it and 2 of its 11378 classes declare one of "
                                "their own")
-    stopped = ""
+    stopped, held = "", _held_note(unavailable, api, decided)
     if built or released:
         # `built or released` keeps a protocol owner out: a protocol has no superclass to walk, and
         # the reason below already says the owner is a protocol and not a class. The two guards are
@@ -522,7 +539,7 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
         # row Apple's own header marks NS_UNAVAILABLE, are both facts about the row that an inference
         # from the release's metadata must not overrule.
         chain, stopped = _ancestors(owner, built_classes, release_classes)
-        if unavailable or api in (decided or ()):
+        if held:
             chain = []
         for name, entries in chain:
             for entry, is_built in entries:
@@ -532,8 +549,8 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
     if not built and not released and not (built_protocols or {}).get(owner) \
             and not (release_protocols or {}).get(owner):
         return "missing", "owner %s is neither a class nor a protocol in the built libraries or the 6.1.3 cache" % owner
-    return "missing", "%s is there, selector %s is not%s" % (
-        owner, selector,
+    return "missing", "%s is there, selector %s is not%s%s" % (
+        owner, selector, held,
         "" if not stopped else ", and the superclass %s above it is in neither the built libraries "
                                "nor the 6.1.3 cache" % stopped)
 
@@ -592,12 +609,12 @@ def classify_property(api, built_classes, release_classes, built_protocols=None,
         if entry and carried_by(entry):
             label = why + (entry.get("library", "") if why == "built: " else "")
             return "implemented", label + " (the protocol %s declares it)" % owner
-    stopped = ""
+    stopped, held = "", _held_note(unavailable, api, decided)
     if owner in built_classes or owner in release_classes:
         # A protocol owner is not in either, so it never reaches the walk: a protocol has no
         # superclass, and the reason below already says the owner is neither.
         chain, stopped = _ancestors(owner, built_classes, release_classes)
-        if unavailable or api in (decided or ()):
+        if held:
             chain = []
         for name, entries in chain:
             for entry, is_built in entries:
@@ -611,8 +628,8 @@ def classify_property(api, built_classes, release_classes, built_protocols=None,
     if owner not in built_classes and owner not in release_classes \
             and not (built_protocols or {}).get(owner) and not (release_protocols or {}).get(owner):
         return "missing", "owner class %s not in the built libraries or the 6.1.3 cache" % owner
-    return "missing", "%s is there, neither %s nor %s is an instance or a class selector%s" % (
-        owner, getter, setter,
+    return "missing", "%s is there, neither %s nor %s is an instance or a class selector%s%s" % (
+        owner, getter, setter, held,
         "" if not stopped else ", and the superclass %s above it is in neither the built libraries "
                                "nor the 6.1.3 cache" % stopped)
 

@@ -304,10 +304,25 @@ for name in ("classify_method", "classify_property"):
 # against its source text, like the two above it.
 check("the walk is held back for a row Apple's header marks unavailable",
       prop("KeyCommand.action", unavailable=True)[0], "missing")
+check("and its reason says so instead of reading as an absence",
+      prop("KeyCommand.action", unavailable=True)[1],
+      "KeyCommand is there, neither -action nor -setAction: is an instance or a class selector, and "
+      "Apple's own header marks this row NS_UNAVAILABLE, so nothing answers it at run time and the "
+      "class above it was not asked")
 check("and the method side too",
       method("-[KeyCommand state]", unavailable=True)[0], "missing")
+check("with the same clause",
+      method("-[KeyCommand state]", unavailable=True)[1],
+      "KeyCommand is there, selector state is not, and Apple's own header marks this row "
+      "NS_UNAVAILABLE, so nothing answers it at run time and the class above it was not asked")
+check("while a decided row says the registry decided it",
+      method("-[KeyCommand state]", decided={"-[KeyCommand state]"})[1],
+      "KeyCommand is there, selector state is not, and a registry has decided this row, so the class "
+      "above it was not asked")
 check("while the same rows read implemented without the flag",
       (prop("KeyCommand.action")[0], method("-[KeyCommand state]")[0]), ("implemented", "implemented"))
+check("and a row nothing holds back keeps the reason it always had",
+      method("-[KeyCommand makeOne]")[1], "KeyCommand is there, selector makeOne is not")
 check("main() hands both functions the surface's own unavailable column",
       len(re.findall(r'unavailable=row\["unavailable"\]', body)), 2)
 check("and the header pass keeps its own form of the rule",
