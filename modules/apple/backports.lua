@@ -1424,8 +1424,9 @@ end
 -- both cases attach.c attaches the category to the release's class of that name, which it
 -- finds only where the class is in an image the library loads. A category whose class is
 -- neither exported nor there is dropped on the very release it is for, while its methods
--- still count as built. An alias of charon_alias.h is held to the same: its class must be
--- the release's, in an image the library loads.
+-- still count as built. An alias of charon_alias.h is held to the same, with one more answer
+-- the release's class is not the only one of: the proxy it defines is a class of this band
+-- too, and on a release that carries no class of the name it is the class the name stands for.
 local function loaded_images(release, binaries, binary, architecture)
     local own = {}
     for _, other in ipairs(binaries) do
@@ -1462,10 +1463,18 @@ function unattached_categories(release, inventory, binaries, architecture)
         local images
         for proxy, name in pairs(objc.binary_aliases(binary, architecture) or {}) do
             aliases[proxy] = name
+            -- The alias's class is the release's where the release has one in an image this library
+            -- loads, and otherwise it is the proxy: a name a release carries in SOME of the releases a
+            -- band is built for and in none of the others (NSURLSessionStreamTask, which CFNetwork
+            -- carries from 8.0 on and nothing below carries at all) leaves the proxy as the class the
+            -- name stands for, the alias's own class methods answer as the proxy's own there, and the
+            -- members ld64 merged into the proxy are already on it. So a band that defines the proxy
+            -- carries the alias. What it does not carry is an alias whose proxy is in no binary of
+            -- the band: there the name stands for a class nothing of this band has.
             local carried = inventory.classes[name]
             images = images or loaded_images(release, binaries, binary, architecture)
-            if not (carried and carried.image and images[carried.image]) then
-                table.insert(found, string.format("%s, which %s aliases in %s", name, proxy, path.filename(binary)))
+            if not (carried and carried.image and images[carried.image]) and not defined["_OBJC_CLASS_$_" .. proxy] then
+                table.insert(found, string.format("%s, which %s aliases in %s, and which no release this band is built for carries where the library's loader can give it what the alias adds", name, proxy, path.filename(binary)))
             end
         end
     end
