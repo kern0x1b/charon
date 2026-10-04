@@ -101,6 +101,13 @@ package("swift-runtime")
             table.insert(digests, path.relative(file, path.join(os.scriptdir(), held)) .. "=" .. hash.sha256(file))
         end
     end
+    -- What apple-compat holds is linked into the libraries built here (and libc++abi exports its process-wide half), so a
+    -- changed shim is a different runtime: without this a build finds the one it already has and keeps the old shims.
+    local folder = path.join(os.scriptdir(), "..", "..", "a", "apple-compat")
+    for _, shim in ipairs(table.join(os.files(path.join(folder, "src", "*.c")), os.files(path.join(folder, "src", "*.h")),
+                                     os.files(path.join(folder, "include", "charon", "*.h")))) do
+        table.insert(digests, "apple-compat/" .. path.filename(shim) .. "=" .. hash.sha256(shim))
+    end
     table.sort(digests)
     add_configs("recipe", {description = "The digest of this recipe and the changes it makes to the runtime's sources, so a changed flag or patch is a different runtime.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 

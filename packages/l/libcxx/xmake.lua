@@ -16,6 +16,13 @@ package("libcxx")
     for _, patch in ipairs(os.files(path.join(os.scriptdir(), "patches", "*.patch"))) do
         table.insert(digests, path.filename(patch) .. "=" .. hash.sha256(patch))
     end
+    -- What apple-compat holds is linked into the libraries built here (and libc++abi exports its process-wide half), so a
+    -- changed shim is a different runtime: without this a build finds the one it already has and keeps the old shims.
+    local folder = path.join(os.scriptdir(), "..", "..", "a", "apple-compat")
+    for _, shim in ipairs(table.join(os.files(path.join(folder, "src", "*.c")), os.files(path.join(folder, "src", "*.h")),
+                                     os.files(path.join(folder, "include", "charon", "*.h")))) do
+        table.insert(digests, "apple-compat/" .. path.filename(shim) .. "=" .. hash.sha256(shim))
+    end
     table.sort(digests)
     add_configs("recipe", {description = "The digest of this recipe and the patches it applies, so a changed flag or patch is a different runtime.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 
