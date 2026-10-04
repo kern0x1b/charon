@@ -1814,3 +1814,108 @@ Read with `tools/corpus/disasm.sh` on the 6.1.3 armv7 cache, no emulator:
   `centre = d13 + x*recip`, which reads as a `+1`.** It does not: at a scale of one the release is an exact
   identity, 768 of 768. The constant that reads as 1.0 is consumed before the addition, and the release's
   stored bytes are what settles it.
+
+## The half pixel IS there, and a12's rule is the scale-of-one case of it (2026-10-04, v-tail-a13)
+
+The section above measured `centre = (x - translate)/scale` and concluded there is no half pixel. **That is
+true at a scale of one and false at every other scale**, and the engine written from it was wrong at three of
+the four scales the shears run at. This section is the measurement that says so, taken on the host's own bytes.
+
+    horizontal:  position = along0 + along + 0.5 - translate + slope*(cross - dstCross + 0.5)
+                 centre   = position * reciprocal - 0.5
+    vertical:    position = along0 + along + 0.5 + translate + slope*(cross + 0.5)
+                 centre   = dstAlong + (position - dstAlong) * reciprocal - 0.5
+
+`mapsearch.m` decides it by exhaustion: a one-column (or, on the vertical, one-row) delta of 65535 on channel 0
+with alpha 65535 everywhere, the host's own whole destination for every delta, and then every candidate
+spelling scored on **every byte** of all of them. The candidate space is the along offset over a ladder of
+eighths, the translate's sign, the slope's cross offset over a ladder of quarters, the half pixel on and off,
+the far anchor on and off, and `multiply by the stored reciprocal` against `divide by 1/reciprocal`. The
+instrument and its log: `.agent-work/hostlayout/mapsearch.m`, `mapsearch.log`.
+
+**Every one of the sixteen (translate, slope) shapes has a perfect candidate at scales 1, 2, 0.5 and 0.25, on
+both axes** - 16 shapes x 225 bytes x 4 scales x 2 axes, 0 shapes with no candidate. What the surviving
+spellings say:
+
+- **The half pixel is in the scale's bracket, `+0.5` on the position and `-0.5` on the centre.** The proof is
+  the along offset each scale needs: **0 at a scale of one, -0.5 at two, +0.25 at a half, +0.375 at a
+  quarter**, and `(along + 0.5)*recip - 0.5` asks for exactly those. A half pixel removed from the general rule
+  is invisible at a scale of one, which is the only scale a12 swept, and wrong at the other three.
+- **The translate SUBTRACTS on the horizontal and ADDS on the vertical**, at every scale, inside the bracket.
+- **The slope's cross coordinate keeps its own half pixel**: `cross - dstCross + 0.5` counted from the bottom
+  row, `cross + 0.5` counted from the left column. The two axes are mirrors, which is why the horizontal's is
+  negated.
+- **The horizontal's scale is anchored at the near edge and the vertical's at the DESTINATION'S FAR edge.**
+  The vertical's constant is `dstAlong*(1 - 1/scale)` - five pixels at a scale of two on a five-row
+  destination - which is why an `along` ladder one pixel wide can never express it and why the first two
+  versions of this search found nothing on the vertical off a scale of one.
+- **`multiply by the stored reciprocal`, not `divide by 1/reciprocal`.** The two are identical at 1, 2, 0.5
+  and 0.25, where the reciprocal is exact; **at 0.75 only the multiply survives.** It is also what the
+  release's own worker does with the `1.0/scale` it keeps beside `floor` of it.
+- **0.75 has no candidate on either axis**, at every translate and slope swept. That is a12's 28-of-624
+  residual, reproduced on the host, and it is **not fixed**: the cause is a rounding of a mapped position whose
+  `1/scale` is not a binary fraction, and it is named in the rows' reasons rather than softened.
+
+## The arm64 header, verified on the bytes, and the host's own filter is the same shape (2026-10-04, v-tail-a13)
+
+`d4ed12b1c` took back the arm64 "overwrite". It is re-read here from the bytes rather than taken on trust, on
+the release where the earlier reading went wrong:
+
+    CHARON_ROOT=$PWD sh tools/corpus/disasm.sh ~/.charon/dyld/7.0/dyld_shared_cache_arm64 \
+        /Frameworks/vImage 1804addc0 1804ade00 arm64e
+    0x1804addc0   stp  x10, x9,  [x0, #16]    bytes 16 and 24: floatStride, int16Stride
+    0x1804addcc   stp  x11, x8,  [x0, #32]    bytes 32 and 40: phases, exponent
+    0x1804adde0   madd x10, x10, x12, x13      the float table's end
+    0x1804adde4   stp  x10, x13, [x0, #56]    bytes 56 and 64: the Q14 table's first byte, then the base
+    0x1804adde8   sub  x8, x10, x0
+    0x1804addec   madd x8, x9, x11, x8        the offset
+    0x1804adf0   str  x8,  [x0, #48]          byte 48: the offset, written last
+
+**`stp x10, x13, [x0, #56]` is bytes 56 and 64, not 48 and 56.** The Q14 table's first byte is in the object on
+every release read, and nothing is computed from another field.
+
+**And the host's own filter has the SAME shape**, which is what lets the host differential exercise the port at
+all: `vImageNewResamplingFilter` on this Mac answers nine 64-bit slots at bytes 0, 8, 16, 24, 32, 40, 48, 56,
+64 with the same meaning, over ten shapes (`fields.m`, `checkheader.py`):
+
+    asked  reciprocal  lobes  numTaps fStride iStride phases offset  q14     base
+      1        1          3        6      32      16      64   3184   +2160    +80
+      1        1          5       10      48      32      64   5248   +3200    +80
+      2        0.5        3        6      32      16      64   3184   +2160    +80
+      2        0.5        5       10      48      32      64   5248   +3200    +80
+    0.5        2          3       12      48      32      32   2688   +1664    +80
+    0.5        2          5       20      80      48      32   4256   +2720    +80
+    0.75     1.3333       3        8      32      16      64   3184   +2160    +80
+    0.75     1.3333       5       13      64      32      64   6288   +4240    +80
+    0.25       4          3       24      96      48      16   2480   +1712    +80
+    0.25       4          5       40     160      80      16   4080   +2800    +80
+
+`base` is `object + 80 = (object + 87) & ~15` on all ten, the arm64 value the ten iOS writers agree on.
+
+## The identity the refusal may check, on nineteen shapes and two architectures (2026-10-04, v-tail-a13)
+
+The offset is an OFFSET, and the arithmetic that ties the table's pointer to the object is
+
+    offset == (table - object) + phases * int16Stride
+
+**It holds on all nine shapes the 6.1.3 guest dumped and all ten shapes this Mac's own Accelerate handed out** -
+nineteen of nineteen, two architectures, `checkheader.py`, with `numTaps >= 1`, `int16Stride >= 2` and even,
+`phases` a power of two of at most 64, and the table inside `[object, object + offset)` all holding on every one.
+
+**`offset == phases * int16Stride` is FALSE on all nineteen**, because the offset also carries the float
+table's size. A refusal written that way refuses every filter the port exists to read - which is the same class
+of mistake as the one v-tail-a11's first probe made when it compared the offset against a pointer, and the check
+the brief spells as `phases * int16Stride == offset` has to be the identity above.
+
+## Two properties of the release's own Q14 row the engine relies on (2026-10-04, v-tail-a13)
+
+Over every phase of every shape the 6.1.3 guest dumped (`checkrows.py`, section D of the run log):
+
+- **The tail past `numTaps` is zero in every row of every shape**, so summing the `int16Stride/2` the port reads
+  is summing the release's own `numTaps` weights. That is what lets the divisor be "the row the port read".
+- **The peak is NOT at one index.** It sits at `K0` for the first half of the phases and at `K0 + 1` for the
+  second, and is **TIED at the half phase** - on all nine shapes, without exception. That is how a table with
+  one index per phase carries a fractional position at all, and it is why `K0` is read from row 0 alone and
+  used for every phase. A reader who measured `argmax` over every row and expected one index would conclude the
+  engine's `K0` was wrong; on the 0.75 five-lobe shape even **row 0** is tied
+  (`73 -431 833 -627 -1224 9564 9564 -1224 ...`), and the lowest of the two is `K0 = (numTaps-2)/2 = 5`.
