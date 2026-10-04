@@ -1963,6 +1963,29 @@ differential's own questions are in `refusals.txt` (`block-s2d-fed-axis-*`, `blo
   (`block_size (3) must be multiple of height 4`, exit 0, a partial buffer) - so this port refuses all three,
   at the run, with the release's own sentence.
 
+### The BATCH AXIS outside the rank, both directions, and the port's own sentence was wrong twice
+
+The general form's batch axis had **no question in the harness at all**: the fed 2D form's own question
+(`block-s2d-fed-axis-outside-at-run`) is about a fed axis refused at the RUN, and nothing asked the WRITTEN-DOWN
+pair about a batch axis outside the rank, in either direction. Measured now over the `[3, 4, 6]` of 1 to 72 and
+the `8x2x2` (`refusals.m`'s `block-s2b-batch-outside`, `block-b2s-batch-outside`,
+`block-s2b-batch-negoutside`, `block-b2s-batch-negoutside`):
+
+* the result tensor comes back with **no shape**, and the release's own **compiler** prints its sentence and
+  takes the process down with it, **exit 134**, in both directions - *"'mps.space_to_batch' op invalid axis: 3,
+  axis must be in range - rank <= axis < rank, rank = 3"* (`MPSGraphUtilities.mm:1171`) and *"'mps.batch_to_space'
+  op invalid axis: 3, ..."* (`MPSGraphUtilities.mm:1119`). The **moment is the compile**, not the graph's own
+  building, which is the difference the rows of this family already name for the fed verifier's refusals.
+* a **negative** axis outside the same range is refused with the axis **AS IT WAS GIVEN** - `-4`, not the `-1`
+  the plan counts it to - and the range itself is **-rank to rank-1**, not 0 to rank-1, because a negative axis
+  inside that range is one this family counts from the end.
+
+Both of those were wrong in the port's own refusal, and are fixed in
+`CharonMPSGraphBlockShufflePlan`: it printed the counted axis (`-1` where the release prints `-4`) and its prose
+said "axis 0 to rank-1 is all it has" where the release's rule is `-rank <= axis < rank`. The port still refuses
+**where the graph is built**, which is this library's moment and the only one it has, and now says the release's
+sentence with the release's range.
+
 ### The depth-to-space over fed axes DOES answer, and the previous pass's hang was not this question
 
 The previous pass recorded that the **depth-to-space over fed placeholder axes was measured not to return

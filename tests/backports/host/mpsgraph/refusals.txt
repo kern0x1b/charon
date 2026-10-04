@@ -301,6 +301,19 @@ coord-zero-extent 134 object cannot be nil
 block-s2b-axis-outside 134 invalid axis: 3, axis must be in range - rank <= axis < rank, rank = 3
 block-s2b-axis-duplicate 134 'mps.space_to_batch' op axis must be unique
 block-s2b-batch-among-spatial 134 must be unique from `spatial_axes`
+# THE BATCH AXIS OUTSIDE THE RANK, which the general form had no question for at all and the fed 2D form's own
+# question covers only at the RUN (block-s2d-fed-axis-outside-at-run). Measured here over the 3x4x6 of 1 to 72
+# and the 8x2x2, both directions: the result tensor comes back with NO shape and the release's own COMPILER
+# prints its sentence - "'mps.space_to_batch' op invalid axis: 3, axis must be in range - rank <= axis < rank,
+# rank = 3" (MPSGraphUtilities.mm:1171) and "'mps.batch_to_space' op invalid axis: 3, ..." (MPSGraphUtilities.mm:
+# 1119) - and the process GOES DOWN with it, exit 134, in both directions. A negative axis outside the same
+# range is refused with the axis AS IT WAS GIVEN, -4 and not the -1 it counts to. The port refuses all four
+# where the graph is BUILT, which is this library's moment and the only one it has, with the release's own
+# sentence and its own range of -rank to rank-1.
+block-s2b-batch-outside 134 invalid axis: 3, axis must be in range
+block-b2s-batch-outside 134 invalid axis: 3, axis must be in range
+block-s2b-batch-negoutside 134 invalid axis: -4, axis must be in range
+block-b2s-batch-negoutside 134 invalid axis: -4, axis must be in range
 block-s2b-block-list-short 134 must have same size as `block_dimensions`
 block-s2b-block-does-not-divide 134 Invalid `block_dimensions[1] = 5 for input size[2] = 6
 # And the batch-to-space's own two, over an [8, 2, 2] whose batch axis holds eight. The sentence names

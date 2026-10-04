@@ -317,6 +317,8 @@ int main(int argc, const char *argv[])
             "block-s2b-axis-outside", "block-s2b-axis-duplicate", "block-s2b-batch-among-spatial",
             "block-s2b-block-list-short", "block-s2b-block-does-not-divide",
             "block-b2s-batch-among-spatial", "block-b2s-block-list-short",
+            "block-s2b-batch-outside", "block-s2b-batch-negoutside",
+            "block-b2s-batch-outside", "block-b2s-batch-negoutside",
             "block-s2d-axis-outside", "block-s2d-axis-negoutside", "block-s2d-degenerate-axes",
             "block-s2d-block-does-not-divide", "block-d2s-block-does-not-divide",
             "block-s2d-fed-axis-placeholder",
@@ -1088,6 +1090,23 @@ int main(int argc, const char *argv[])
             else if (strstr(q, "s2b-block-does-not-divide"))
                 t = [graph spaceToBatchTensor:operand spatialAxes:@[@1, @2] batchAxis:0
                               blockDimensions:@[@2, @5] usePixelShuffleOrder:NO name:@"s"];
+            // THE BATCH AXIS OUTSIDE THE RANK, which the fed pair's own question covers for the 2D form
+            // (block-s2d-fed-axis-outside-at-run, at the RUN) and which the GENERAL form had no question for
+            // at all: the batch axis is a parameter of its own here, and one outside the rank is refused where
+            // the graph is built, in the plan. Both directions, and a negative one outside the rank as well,
+            // because the plan counts a negative axis from the end and the sentence says what the release says.
+            else if (strstr(q, "s2b-batch-outside"))
+                t = [graph spaceToBatchTensor:operand spatialAxes:@[@1, @2] batchAxis:3
+                              blockDimensions:@[@2, @2] usePixelShuffleOrder:NO name:@"s"];
+            else if (strstr(q, "s2b-batch-negoutside"))
+                t = [graph spaceToBatchTensor:operand spatialAxes:@[@1, @2] batchAxis:(NSInteger)-4
+                              blockDimensions:@[@2, @2] usePixelShuffleOrder:NO name:@"s"];
+            else if (strstr(q, "b2s-batch-outside"))
+                t = [graph batchToSpaceTensor:cube spatialAxes:@[@1, @2] batchAxis:3
+                              blockDimensions:@[@2, @2] usePixelShuffleOrder:NO name:@"b"];
+            else if (strstr(q, "b2s-batch-negoutside"))
+                t = [graph batchToSpaceTensor:cube spatialAxes:@[@1, @2] batchAxis:(NSInteger)-4
+                              blockDimensions:@[@2, @2] usePixelShuffleOrder:NO name:@"b"];
             else if (strstr(q, "b2s-batch-among-spatial"))
                 t = [graph batchToSpaceTensor:cube spatialAxes:@[@0, @1] batchAxis:0
                               blockDimensions:@[@2, @2] usePixelShuffleOrder:NO name:@"b"];

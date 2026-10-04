@@ -2192,11 +2192,17 @@ static NSDictionary *CharonMPSGraphBlockShufflePlan(NSString *name, NSArray<NSNu
     if (where < 0)
         where += (NSInteger)rank;
     if (where < 0 || (NSUInteger)where >= rank) {
+        // The sentence is the release's own, and it prints the axis AS IT WAS GIVEN - a batch axis of -4 over a
+        // rank of three is refused with "invalid axis: -4" and not with the -1 it counts to (measured, both
+        // directions, refusals.m's block-s2b-batch-negoutside and block-b2s-batch-negoutside), and its range is
+        // -rank to rank-1 rather than 0 to rank-1, because a negative axis inside that range is one the family
+        // counts from the end.
         [NSException raise:NSInvalidArgumentException
-                    format:@"MPSGraph: %@ was given batch axis %ld of a rank-%lu tensor, and axis 0 to %lu is all "
+                    format:@"MPSGraph: %@ was given batch axis %ld of a rank-%lu tensor, and -%lu to %lu is all "
                            @"it has: measured, the release's own compiler refuses it with \"invalid axis: %ld, "
                            @"axis must be in range - rank <= axis < rank, rank = %lu\"", name, (long)batch,
-                  (unsigned long)rank, (unsigned long)rank - 1, (long)where, (unsigned long)rank];
+                  (unsigned long)rank, (unsigned long)rank, (unsigned long)rank - 1, (long)batch,
+                  (unsigned long)rank];
     }
     for (NSNumber *axisOfBlock in spatialAxes) {
         if (axisOfBlock.integerValue == where) {
