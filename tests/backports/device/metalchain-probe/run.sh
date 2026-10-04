@@ -61,8 +61,10 @@ program=metalchain-probe
 built=$(find "$here/build" -name "$program" -type f 2>/dev/null | head -1)
 
 # THIS PROJECT'S IMAGE NAME, asked of xmake with the expression plugins/emulate/main.lua itself uses.
-owner=$(printf 'print("metalchainprobe-" .. hash.strhash32(os.projectdir()))\n' > "$out/owner.lua"
-        cd "$here" && "$xmake" lua "$out/owner.lua" 2>/dev/null | head -1)
+# NOT `2>/dev/null`: a silent xmake here would leave `owner` empty and the gate would then report a
+# missing image rather than the reason, which is the failure mode this script exists to prevent.
+printf 'print("metalchainprobe-" .. hash.strhash32(os.projectdir()))\n' > "$out/owner.lua"
+owner=$(cd "$here" && "$xmake" lua "$out/owner.lua" | head -1)
 image=$(ls -d "$HOME"/.charon/emulator/images.noindex/"$owner" 2>/dev/null | head -1)
 installed=""
 if [ -n "$image" ]; then
