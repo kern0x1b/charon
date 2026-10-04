@@ -1179,6 +1179,33 @@ local function marks(node)
     return found
 end
 
+-- The availability marks marks() could not place, by count: an __attribute__((availability(ios,introduced=X)))
+-- written out rather than through a macro carries no expansion location, and in a header reached through an include
+-- clang writes no file and no line on the location either - they are inside its includedFrom chain, which names the
+-- file that included it and not where in it the attribute stands (measured on clang 23.1.1, iPhoneOS-style umbrella
+-- over a header with - (void)traitDidChange:(id)previous __attribute__((availability(ios,introduced=8.0)))). The
+-- lift cannot rewrite what it cannot point at, so the mark is out of reach of the lowering and of the check both.
+--
+-- It is counted here because the one question that must not be answered from an incomplete account is "does this
+-- declaration have to move at all": a mark the lift cannot see may name a release above the port's, and the
+-- redeclaration is what answers the row when it does. The SDK's own declarations spell availability through a macro
+-- nearly always, which is the case that does have a site (NS_AVAILABLE_IOS, API_AVAILABLE and every macro of a
+-- framework's own that ends in one); the count is 0 for all of them, and a redeclaration is written exactly as before
+-- where it is not.
+function unplaced(node)
+    local found = 0
+    for _, child in ipairs((node or {}).inner or {}) do
+        if child.kind == "AvailabilityAttr" and child.platform == "ios" and child.introduced then
+            local begin = child.range and child.range.begin or {}
+            local where = begin.expansionLoc or begin
+            if not (where.file and where.line and where.col) then
+                found = found + 1
+            end
+        end
+    end
+    return found
+end
+
 local function member_api(api)
     local sign, owner, selector = api:match("^([-+])%[([%w_]+) (.+)%]$")
     if sign then
@@ -2041,7 +2068,7 @@ local function computed(opt)
     -- member the SDK declares elsewhere is for.
     local function moves(nodes, target)
         for _, node in ipairs(nodes) do
-            if #unavailables(node) > 0 then
+            if #unavailables(node) > 0 or unplaced(node) > 0 then
                 return true
             end
             for _, mark in ipairs(marks(node)) do
