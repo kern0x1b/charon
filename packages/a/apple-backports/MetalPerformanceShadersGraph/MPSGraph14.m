@@ -857,6 +857,106 @@ typedef enum {
                              name:name];
 }
 
+#pragma mark - the concat family of 14.0: the one walk whose result is SEVERAL operands
+// The three concatenations MPSGraph itself arrived with, over the header's own three forms: two tensors, any
+// number of them, and any number of them interleaved. They are one walk in MPSGraphInterpreter14.m, which
+// derives the result's shape from the operands' own shapes and lays a region of the axis per operand, so
+// what is here is each method's own rule about which axis and whether the regions interleave.
+//
+// Measured on this host's own MPSGraph, over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) beside one of
+// (5, 6, 7, 8 | 50, 60, 70, 80) and one of (9, 10, 11, 12 | 90, 100, 110, 120):
+//   - END TO END along the axis, in the order the caller wrote them: axis 0 of the three is a 6x4 holding
+//     the three 2x4s in that order, and axis 1 a 2x12 holding their rows side by side. The two-tensor form
+//     answers the same thing as the many over two operands, and a negative axis is counted from the end.
+//   - INTERLEAVED along the axis, which puts operand i's coordinate c at the result's coordinate
+//     i + c * (the number of operands): axis 1 of two is a 2x8 of (1, 5, 2, 6, 3, 7, 4, 8 | 10, 50, 20, 60,
+//     30, 70, 40, 80) and axis 1 of three a 2x12 of (1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 | 10, 50, 90,
+//     20, 60, 100, 30, 70, 110, 40, 80, 120). The result's extent on that axis is the SUM either way, and
+//     the interleave form with NO answers exactly what the many-operand form answers.
+//   - one operand is the identity: a 2x4 on its own is a 2x4 of its own eight values.
+//   - every axis but the one named must hold the SAME extent in every operand, which the header calls
+//     "broadcast compatible" and the release does not take: measured, a 1x4 beside a 2x4 with the concat on
+//     axis 1 is refused by its own compiler with "'mps.concat' op invalid input tensor shapes, all input
+//     shapes must match except at axis" (MPSGraphUtilities.mm:748), and the port raises there instead.
+//   - an axis outside the rank is refused by the release's own compiler - "invalid axis tensor: [2], axis
+//     must be in range -rank <= axis < rank, rank = 2" - and then "LLVM ERROR: Failed to infer result
+//     type(s)" takes the process down with it, so the port raises where the graph is built.
+//   - an EMPTY ARRAY is NOT a refusal, and the port answers it the way the release does rather than the way
+//     this row first claimed. Measured on this host's own MPSGraph over the whole path, `concatTensors:@[]`
+//     builds the result tensor with its shape NIL and its data type FLOAT32, `compileWithDevice:` returns an
+//     executable and the run leaves the caller's destination as it was. So the result tensor here carries no
+//     shape and no value; see the seam below for where that comes from.
+
+- (MPSGraphTensor *)concatTensor:(MPSGraphTensor *)tensor
+                      withTensor:(MPSGraphTensor *)tensor2
+                       dimension:(NSInteger)dimensionIndex
+                            name:(NSString *)name
+{
+    return [self charon_mps_concat:CharonMPSGraphOperationKindConcat
+                            tensors:@[tensor, tensor2]
+                               axis:dimensionIndex
+                         interleave:NO
+                              name:name];
+}
+
+- (MPSGraphTensor *)concatTensors:(NSArray<MPSGraphTensor *> *)tensors
+                        dimension:(NSInteger)dimensionIndex
+                             name:(NSString *)name
+{
+    return [self charon_mps_concat:CharonMPSGraphOperationKindConcat
+                            tensors:tensors ?: @[]
+                               axis:dimensionIndex
+                         interleave:NO
+                              name:name];
+}
+
+- (MPSGraphTensor *)concatTensors:(NSArray<MPSGraphTensor *> *)tensors
+                        dimension:(NSInteger)dimensionIndex
+                       interleave:(BOOL)interleave
+                             name:(NSString *)name
+{
+    return [self charon_mps_concat:CharonMPSGraphOperationKindConcat
+                            tensors:tensors ?: @[]
+                               axis:dimensionIndex
+                         interleave:interleave
+                              name:name];
+}
+
+// The seam the concat and the stack both go through, which is the one walk of this library that has no
+// single operand: the operation takes every tensor as an input, the parameters say which axis the result's
+// elements are laid along and whether they interleave there and whether that axis is one the operands
+// already have or one the result adds, and the interpreter's plan derives the result's shape from the
+// operands' own - here at build time so that a caller can read the shape off the tensor, and again when the
+// graph runs, where it is the offsets the walk needs.
+//
+// The result's DATA TYPE is the first operand's, which is what every operation of this family does and what
+// the release answers for an operation whose operands are of more than one type (measured: a float32 2x4
+// beside an int32 2x4 gives a float32 result and only the release's own compiler objects). With NO operands
+// there is no first one, and the release's answer there is float32 - measured, 0x10000020 - so that is the
+// value written down, and the measurement is named here rather than the number standing in for behaviour.
+- (MPSGraphTensor *)charon_mps_concat:(CharonMPSGraphOperationKind)kind
+                               tensors:(NSArray<MPSGraphTensor *> *)tensors
+                                  axis:(NSInteger)axis
+                            interleave:(BOOL)interleave
+                                 name:(NSString *)name
+{
+    BOOL stacked = kind == CharonMPSGraphOperationKindStack;
+    NSArray<NSNumber *> *shape = [self charon_mps_concatShapeOfTensors:tensors axis:axis interleave:interleave
+                                                                stacked:stacked named:name];
+    MPSGraphTensor *result = [self charon_mps_operation:kind inputs:tensors ?: @[]
+                                            parameters:@{@"concatAxis": @(axis), @"concatInterleave": @(interleave),
+                                                         @"concatStacked": @(stacked),
+                                                         @"dataType": @(tensors.firstObject.dataType
+                                                                        ?: MPSDataTypeFloat32)}
+                                                   name:name];
+    // No shape is put on the tensor when the plan has none, which is the empty array of operands: the
+    // release's result tensor there has a nil shape too, and a caller that reads the shape off the tensor
+    // gets nil on both sides.
+    if (shape != nil)
+        [result charon_mps_setShape:shape];
+    return result;
+}
+
 #pragma mark - the gather family: the one seam every release's shape factory goes through
 // What a gather is: the result's shape, and the parameters that say which transformation produces it. The
 // walk in MPSGraphInterpreter14.m is one function for the whole family - the squeeze and the expanded
