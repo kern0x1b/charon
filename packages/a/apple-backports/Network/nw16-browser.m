@@ -9,10 +9,10 @@
  * setter, a copy and the start reach it through the C functions at the end of that file, and the
  * browse result's own calls read the result's ivars, which `CharonNW.h` declares once for the library.
  *
- * What each call answers is in `facts/Network/NWBrowser.md`: a browse is a PTR query and a resolve over
- * the release's own DNS-SD, a result is reported once its port is known, and the interfaces of a result
- * are the objects the library's path monitor makes, keyed by the interface index every DNS-SD answer
- * carries.
+ * What each call answers is in `facts/Network/NWBrowser.md`: a browse is the release's own
+ * `DNSServiceBrowse` and the record of each instance its `DNSServiceResolve`, a result is reported once
+ * that resolve has answered, and the interfaces of a result are the objects the library's path monitor
+ * makes, keyed by the interface index every DNS-SD answer carries.
  */
 
 #import "CharonNW.h"
@@ -59,8 +59,8 @@ void nw_browser_start(nw_browser_t browser)
 
 /* What a browse result says about one service: the endpoint a program connects to, the record the
    service advertised when the descriptor asked for one, and the interfaces it was found on. A result
-   is built by the browser once the service has resolved, so its endpoint carries the port the service
-   publishes and not zero. */
+   is built by the browser once the service has resolved, and its endpoint names the service - instance,
+   type and domain - and carries no port, which is what Apple's own browse result answers. */
 nw_endpoint_t nw_browse_result_copy_endpoint(nw_browse_result_t result)
 {
     CharonNWBrowseResult *value = (CharonNWBrowseResult *)result;

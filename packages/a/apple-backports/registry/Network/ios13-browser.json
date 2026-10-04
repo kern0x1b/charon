@@ -10,7 +10,7 @@
       "reason": "the factory of a browser: an object that browses for the services a browse descriptor names, over the parameters it is given",
       "effect": "the browser holds the descriptor and the parameters and copies both back: -nw_browser_copy_browse_descriptor answers the descriptor that was given and -nw_browser_copy_parameters the parameters, and a caller that gave none gets the empty parameters object the header says is created internally (Network/nw12-browser.m:596)",
       "facts": "facts/Network/NWBrowser.md",
-      "source": "SDK 26.2, browser.h:79-84, for the factory and its two copy calls; the browse itself is a PTR query and a resolve over the release's own DNS-SD, listed with its export measurements in facts/Network/NWBrowser.md"
+      "source": "SDK 26.2, browser.h:79-84, for the factory and its two copy calls; the browse and the resolve over the release's own DNS-SD are listed with their export measurements, and with what each release's own symbol takes, in facts/Network/NWBrowser.md"
     },
     {
       "api": "nw_browser_copy_browse_descriptor()",
@@ -74,9 +74,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "what starts the browse",
-      "effect": "the PTR query for the type in the domain begins on the browser's own queue, the path monitor that supplies the interface objects starts with it, and no handler of the browser runs before the call has returned to its caller; a browser started twice is the same browse and the second start says nothing (Network/nw16-browser.m:55)",
+      "effect": "the browse for the type in the domain, asked with the release's own DNSServiceBrowse, begins on the browser's own queue, the path monitor that supplies the interface objects starts with it, and no handler of the browser runs before the call has returned to its caller; a browser started twice is the same browse and the second start says nothing (Network/nw16-browser.m:55)",
       "facts": "facts/Network/NWBrowser.md",
-      "source": "SDK 26.2, browser.h:183-194; the PTR query and its export measurements are in facts/Network/NWBrowser.md"
+      "source": "SDK 26.2, browser.h:183-194; the browse - the release's own entry point for one, and the measurement that a PTR record query is answered by nothing on a live link - is in facts/Network/NWBrowser.md"
     },
     {
       "api": "nw_browser_cancel()",
@@ -95,10 +95,10 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the endpoint a browse result connects to: for a Bonjour service, a Bonjour service endpoint with the port the service resolved to and its record",
-      "effect": "the endpoint of the result, whose port is the one DNSServiceResolve answered and not zero, because a result is reported only once the resolve has answered (Network/nw16-browser.m:64)",
+      "reason": "the endpoint a browse result connects to: for a Bonjour service, a Bonjour service endpoint with the instance, the type, the domain and its record",
+      "effect": "the endpoint of the result, which carries no port and so answers 0 for it: that is what Apple's own browse result for the same service answers on the same link in the same second (tests/backports/host/network-browser prints endpoint.port 0 on both sides), and what the header of nw_endpoint_get_port says for an endpoint that is not a host or address endpoint; the port the service publishes belongs to the service, and a result is reported once its resolve has answered so that the record is there (Network/nw16-browser.m:64)",
       "facts": "facts/Network/NWBrowser.md",
-      "source": "SDK 26.2, browse_result.h:104-116; the resolve is the release's own, listed in facts/Network/NWBrowser.md"
+      "source": "SDK 26.2, browse_result.h:104-116; the resolve the record comes through is the release's own, listed in facts/Network/NWBrowser.md"
     },
     {
       "api": "nw_browse_result_copy_txt_record_object()",

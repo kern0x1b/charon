@@ -1,26 +1,41 @@
 /*
  * The browser object of Network, and the calls the 12.0 cache already carries.
  *
- * What a browser is here: a Bonjour browse, over the release's own DNS-SD client. A browse is a PTR
- * query for the type in the domain - which is what a browse is on the wire - so the port asks it with
- * `DNSServiceQueryRecord` and reads each instance name out of the answer, and takes every answer from
- * a dispatch source over the reference's own descriptor (`DNSServiceRefSockFD` says when a result is
- * waiting, `DNSServiceProcessResult` is the call that takes it). Every callback therefore runs on the
- * queue the program gave the browser, and none of them runs before the browser has been started.
- * `DNSServiceResolve` answers for each instance with the port it publishes and the record it
- * advertises. Nothing here is a second DNS-SD: the release answers the queries and the release decides
- * what is on the link.
+ * What a browser is here: a Bonjour browse, over the release's own DNS-SD client, asked with the entry
+ * point that is a browse - `DNSServiceBrowse`, which names each instance the browse finds and the
+ * interface it was found on. Every answer is taken from a dispatch source over the reference's own
+ * descriptor (`DNSServiceRefSockFD` says when a result is waiting, `DNSServiceProcessResult` is the call
+ * that takes it), so every callback runs on the queue the program gave the browser and none of them runs
+ * before the browser has been started. `DNSServiceResolve` answers for each instance with the port it
+ * publishes and the record it advertises. Nothing here is a second DNS-SD: the release answers the
+ * queries and the release decides what is on the link.
+ *
+ * Why `DNSServiceBrowse` and not a PTR record query: measured on this machine, a PTR question asked with
+ * `DNSServiceQueryRecord` is not answered at all - not for the type being browsed, not for a type that is
+ * on the link, and not for the TXT or SRV record of the very service the same process registered, while a
+ * browse for the same type answers and a `DNSServiceResolve` in the same process answers three times.
+ * `tests/backports/host/network-browser/run.sh` is the differential, and `facts/Network/NWBrowser.md`
+ * carries the reading. The entry point was not called before because the SDK's header declares an
+ * `interfaceIndex` these releases were believed not to pass; that belief was wrong, and the next
+ * paragraph is what measures it.
  *
  * What a browse result is: one service instance the browse reported, with the endpoint a program
- * connects to (a Bonjour service endpoint carrying the port the service resolved to), the interfaces
- * the browse named the service on - the `interfaceIndex` every answer carries, which is what tells one
- * answer on the Wi-Fi radio from the same answer on a Personal Hotspot's bridge - and the TXT record
- * when the descriptor asked for one.
+ * connects to, the interfaces the browse named the service on - the `interfaceIndex` every answer
+ * carries, which is what tells one answer on the Wi-Fi radio from the same answer on a Personal
+ * Hotspot's bridge - and the TXT record when the descriptor asked for one.
  *
  * A result is reported once it can be used. The browse says an instance exists, and the port resolves
- * it before the result is handed over, so the endpoint of the result carries the port the service
- * publishes and not zero. That is also what makes the change bits mean what the header says: a service
- * that has not resolved has nothing a program could compare, so it is never the `old_result` of a pair.
+ * it before the result is handed over, because the record the descriptor asked for is the resolve's to
+ * answer. That is also what makes the change bits mean what the header says: a service that has not
+ * resolved has no record to compare, so it is never the `old_result` of a pair.
+ *
+ * The endpoint of a result carries no port, and this is measured rather than chosen: Apple's own browse
+ * result for the same service, on the same link, in the same second, answers `nw_endpoint_get_port`
+ * with 0 (`tests/backports/host/network-browser` prints it on both sides). That is also what the header
+ * of `nw_endpoint_get_port` says - 0 for an endpoint that is not a host or address endpoint - and a
+ * Bonjour service endpoint is named by its instance, its type and its domain; the port it publishes
+ * belongs to the service, not to the endpoint, and a program reads it by connecting and letting the
+ * resolve that a connection makes answer it. So the port the resolve brings is not put on the endpoint.
  *
  * The interfaces of a result are this library's own interface objects, reached through the path monitor
  * the library already carries (`nw_path_monitor_*`, `nw_path_enumerate_interfaces`,
@@ -30,12 +45,15 @@
  * table. An answer naming an interface the port has no object for - one that went down between the
  * answer and the last path update - contributes no interface, and the count says so.
  *
- * Why the browse is a PTR query and not `DNSServiceBrowse`: the build SDK is iOS 16.4 and its
- * `DNSServiceBrowse` takes an `interfaceIndex` this port's releases do not pass - the parameter was
- * added to the header years after they shipped, so calling the entry point as the header declares it
- * would read a register the release never wrote. `DNSServiceQueryRecord` and `DNSServiceResolve` have
- * carried `interfaceIndex` since the API was introduced and their signatures are the same on every
- * release this port builds, which is what `facts/Network/NWBrowser.md` records.
+ * Why the browse is `DNSServiceBrowse` on every release this port builds: the SDK's header and the
+ * releases' own symbols agree, which is measured rather than assumed. One image is taken out of each
+ * cache of the ladder with `tools/cache-extract.lua` (dyld.lua's own `extract()`) and the symbol's own
+ * disassembly is read, and on 4.3, 6.1.3 and 8.0 the entry point consumes seven parameters in the
+ * header's order - r0 the reference, r1 the flags, r2 a 32-bit word compared against zero for
+ * `kDNSServiceInterfaceIndexAny`, r3 the service type as a string, and three incoming stack words for
+ * the domain, the reply and the context - and the reply it makes carries six parameters in the header's
+ * order, the third being the interface index the reply names the instance on.
+ * `facts/Network/NWBrowser.md` carries the reading, the addresses and the run.
  *
  * This file holds the two calls the 12.0 cache already exports - `nw_browser_create` and
  * `nw_browser_cancel`, measured in `coordination/corpus/caches/12.0.tsv` - and the object itself. The
@@ -45,29 +63,57 @@
  * end of this one, for the reason `nw12-listener.m` gives for the listener's.
  */
 
+/* The SDK's own declaration of `DNSServiceBrowse` is renamed out of the way while this file's headers
+   are read, and the entry point is declared below under the name the header gives it. `Network.framework`
+   pulls `dns_sd.h` in through `error.h`, so the rename has to cover the framework import as well as the
+   direct include, and this file is the only one of the package that names any of it. The header's
+   declaration is the newest one: its reply type carries two parameters a release that makes six never
+   writes, so a call written against it would read registers this program never set. What each release's
+   own symbol takes is read out of its disassembly, and the paragraph on the browse above names the
+   reading; the declaration below is therefore the port's own and does not depend on the header's. */
+#define DNSServiceBrowse DNSServiceBrowseAsThisSDKDeclaresIt
 #import "CharonNW.h"
 #import "CharonNWSupport.h"
 
 #include <arpa/inet.h>
 #include <dns_sd.h>
 #include <string.h>
+#undef DNSServiceBrowse
+
+/* The reply a browse makes, read as far as every release's own reply handler agrees: the reference, the
+   flags, the interface the instance was found on, the error, and the instance name. What comes after the
+   name is not this port's business, because it is not the same on every release - the reply handlers of
+   4.3, 6.1.3 and 8.0 hand the program's reply six words, the SDK 16.4 header's typedef declares eight
+   (the service type and the domain between the name and the context), and a function that ignores the
+   arguments past the ones it names is called correctly by both, since they arrive in the same registers
+   and the same stack words either way. So the browser is not taken from the reply: it is the queue's own
+   answer, through the reference the reply carries and `dispatch_get_specific()`. Every reference of a
+   browser is created and driven on the queue the program gave it, so the key - the reference itself - is
+   found on that queue and nowhere else, and two browsers on one queue cannot answer for each other.
+   Both dispatch calls are exported by the 6.0 and the 6.1.3 cache, and no band below 6.0 links this
+   library at all - `facts/Network/NWFloor.md` is why, and the export measurement is in
+   `facts/Network/NWBrowser.md`. */
+typedef void (*CharonDNSServiceBrowseReply)(DNSServiceRef, DNSServiceFlags, uint32_t, DNSServiceErrorType,
+                                            const char *);
 
 /* The DNS-SD entry points, redeclared to be reached under the names dns_sd.h gives them. Nothing here
    is a fallback: every one of them is exported by every release this package builds, measured on the
    ladder's own caches - `tools/corpus/cache-exports.lua` over the export tries, because the trie
    compresses names and a raw search over the cache bytes is not an oracle:
 
-       4.3     _DNSServiceQueryRecord, _DNSServiceResolve, _DNSServiceProcessResult,
-               _DNSServiceRefSockFD, _DNSServiceRefDeallocate, _DNSServiceBrowse
+       4.3     _DNSServiceBrowse, _DNSServiceResolve, _DNSServiceProcessResult,
+               _DNSServiceRefSockFD, _DNSServiceRefDeallocate
                all in /usr/lib/system/libsystem_dnssd.dylib
-       6.0     the same six, the same image
-       6.1.3   the same six, the same image
+       6.0     the same five, the same image
+       6.1.3   the same five, the same image
 
-   The redeclaration is here because `DNSServiceBrowse` is declared with an `interfaceIndex` this port's
-   releases do not pass, and the redeclarations of the five that are called spell out the prototypes the
-   releases have. `facts/Network/NWBrowser.md` carries the reading and the run. */
-extern DNSServiceErrorType DNSServiceQueryRecord(DNSServiceRef *, DNSServiceFlags, uint32_t, const char *,
-                                                uint16_t, uint16_t, DNSServiceQueryRecordReply, void *);
+   The redeclarations are here because the port does not take the SDK header's word for what a release's
+   own symbol takes - the header's answer is the newest one, and a release is free to be older. Each is
+   spelled out here, and what each release's own symbol takes is read out of its disassembly; the two
+   paragraphs above name the reading for the browse, and it agrees with the header's declaration on every
+   release the ladder holds. `facts/Network/NWBrowser.md` carries the addresses and the run. */
+extern DNSServiceErrorType DNSServiceBrowse(DNSServiceRef *, DNSServiceFlags, uint32_t, const char *,
+                                            const char *, CharonDNSServiceBrowseReply, void *);
 extern DNSServiceErrorType DNSServiceResolve(DNSServiceRef *, DNSServiceFlags, uint32_t, const char *,
                                             const char *, const char *, DNSServiceResolveReply, void *);
 extern void DNSServiceRefDeallocate(DNSServiceRef);
@@ -89,7 +135,6 @@ extern int DNSServiceRefSockFD(DNSServiceRef);
     __weak CharonNWBrowser *_browser;
     DNSServiceRef _resolve;
     dispatch_source_t _source;
-    NSString *_port;
     CharonNWTxtRecord *_txt;
     BOOL _resolved;
     BOOL _reported;
@@ -206,7 +251,6 @@ static CharonNWBrowseResult *charon_browser_result(CharonNWBrowser *browser, Cha
     endpoint->_bonjourName = lookup->_name;
     endpoint->_bonjourType = lookup->_type;
     endpoint->_bonjourDomain = lookup->_domain;
-    endpoint->_port = lookup->_port ?: @"0";
     endpoint->_txtRecord = lookup->_txt;
     result->_endpoint = endpoint;
     return result;
@@ -258,8 +302,9 @@ static void charon_browser_gone(CharonNWBrowser *browser, CharonNWBrowserLookup 
     charon_browser_enqueue(browser, reported, nil);
 }
 
-/* The resolve answered: the port the service publishes, and the record it advertises when the
-   descriptor asked for one. */
+/* The resolve answered: the record the service advertises, when the descriptor asked for one. The port
+   it publishes is not carried anywhere - the endpoint of a browse result answers 0 for it, which is what
+   Apple's own browse result answers, and the paragraph at the head of this file is the measurement. */
 static void charon_browser_resolved(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex,
                                     DNSServiceErrorType errorCode, const char *fullname, const char *hosttarget,
                                     uint16_t port, uint16_t txtLen, const unsigned char *txtRecord, void *context)
@@ -271,6 +316,7 @@ static void charon_browser_resolved(DNSServiceRef sdRef, DNSServiceFlags flags, 
     (void)interfaceIndex;
     (void)fullname;
     (void)hosttarget;
+    (void)port;
     [lookup close];
     if (!browser || browser->_cancelled)
         return;
@@ -279,7 +325,6 @@ static void charon_browser_resolved(DNSServiceRef sdRef, DNSServiceFlags flags, 
        link goes away mid-resolve, and no browse error is raised for that. */
     if (errorCode != kDNSServiceErr_NoError)
         return;
-    lookup->_port = [NSString stringWithFormat:@"%u", ntohs(port)];
     if (lookup->_wantRecord && txtLen)
         lookup->_txt = (CharonNWTxtRecord *)nw_txt_record_create_with_bytes(txtRecord, txtLen);
     lookup->_resolved = YES;
@@ -331,68 +376,29 @@ static void charon_browser_resolve(CharonNWBrowser *browser, CharonNWBrowserLook
     });
 }
 
-/* The name a PTR answer carries: the instance name in wire form, which is a sequence of length-prefixed
-   labels. A label whose top two bits are set is a compression pointer, and the name before it is
-   complete - a compressed suffix is the domain the query was for, which the port already holds. */
-static NSString *charon_browser_instance(const void *rdata, uint16_t rdlen)
+/* One browse answer: the instance is on an interface, or it is not any more. The reply is read as far as
+   every release agrees (the typedef above), and the browser is the queue's own answer for the reference
+   the reply carries, because the arguments after the name are not the same on every release and the one
+   of them that is the context is not in the same place twice. */
+static void charon_browser_browsed(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex,
+                                   DNSServiceErrorType errorCode, const char *name)
 {
-    const uint8_t *bytes = (const uint8_t *)rdata;
-    const uint8_t *end = bytes + rdlen;
-    NSMutableString *name = [NSMutableString string];
-    while (bytes < end) {
-        uint8_t length = *bytes++;
-        if (length == 0)
-            break;
-        if (length & 0xC0)
-            break;
-        if (bytes + length > end)
-            break;
-        if (name.length)
-            [name appendString:@"."];
-        [name appendString:[[NSString alloc] initWithBytes:bytes length:length encoding:NSUTF8StringEncoding]];
-        bytes += length;
-    }
-    return name.length ? name : nil;
-}
-
-/* The name a PTR query is for: `<type>.<domain>` in wire form, with the trailing dot the descriptor's
-   domain ends in made the label's own terminator. */
-static NSString *charon_browser_query(NSString *type, NSString *domain)
-{
-    NSString *name = domain;
-    while ([name hasSuffix:@"."])
-        name = [name substringToIndex:name.length - 1];
-    return [NSString stringWithFormat:@"%@.%@.", type, name];
-}
-
-/* One browse answer: the instance is on an interface, or it is not any more. */
-static void charon_browser_answer(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex,
-                                  DNSServiceErrorType errorCode, const char *fullname, uint16_t rrtype,
-                                  uint16_t rrclass, uint16_t rdlen, const void *rdata, uint32_t ttl,
-                                  void *context)
-{
-    CharonNWBrowser *browser = (__bridge CharonNWBrowser *)context;
-    (void)sdRef;
-    (void)fullname;
-    (void)rrtype;
-    (void)rrclass;
-    (void)ttl;
+    CharonNWBrowser *browser = (__bridge CharonNWBrowser *)dispatch_get_specific((const void *)sdRef);
     if (!browser || browser->_cancelled || errorCode != kDNSServiceErr_NoError)
         return;
-    /* The query is for PTR records, so anything else is not an answer about a service. */
-    if (rrtype != kDNSServiceType_PTR)
+    if (!name || !name[0])
         return;
-    NSString *name = charon_browser_instance(rdata, rdlen);
-    if (!name)
+    NSString *instance = [NSString stringWithUTF8String:name];
+    if (!instance.length)
         return;
-    /* `Add` is what a PTR answer carries when the instance is there; the same answer without it is the
+    /* `Add` is what a browse answer carries when the instance is there; the same answer without it is the
        instance going away, which is what the flag's own documentation says of an enumeration. */
     BOOL added = (flags & kDNSServiceFlagsAdd) != 0;
-    CharonNWBrowserLookup *lookup = browser->_lookups[name];
+    CharonNWBrowserLookup *lookup = browser->_lookups[instance];
     if (!lookup) {
         if (!added)
             return;
-        lookup = charon_browser_lookup(browser, name, browser->_type, browser->_domain);
+        lookup = charon_browser_lookup(browser, instance, browser->_type, browser->_domain);
     }
     NSNumber *index = @(interfaceIndex);
     if (added == (BOOL)[lookup->_interfaceIndexes containsObject:index])
@@ -467,10 +473,9 @@ static void charon_browser_begin(nw_browser_t browser)
         self->_type = type;
         self->_domain = domain;
         DNSServiceRef browse = NULL;
-        DNSServiceErrorType failure = DNSServiceQueryRecord(&browse, 0, kDNSServiceInterfaceIndexAny,
-                                                           charon_browser_query(type, domain).UTF8String,
-                                                           kDNSServiceClass_IN, kDNSServiceType_PTR,
-                                                           charon_browser_answer, (__bridge void *)self);
+        DNSServiceErrorType failure = DNSServiceBrowse(&browse, 0, kDNSServiceInterfaceIndexAny,
+                                                       type.UTF8String, domain.UTF8String,
+                                                       charon_browser_browsed, (__bridge void *)self);
         int descriptor = browse ? DNSServiceRefSockFD(browse) : -1;
         if (failure != kDNSServiceErr_NoError || !browse || descriptor < 0) {
             if (browse)
@@ -482,6 +487,12 @@ static void charon_browser_begin(nw_browser_t browser)
             return;
         }
         self->_browse = browse;
+        /* The reply finds the browser through this key rather than through an argument of its own: every
+           reference of a browser is created and driven on the queue the program gave it, so the key - the
+           reference itself - is on that queue and on no other, and the answer to a browse cannot reach a
+           queue that never created one. `charon_browser_stop` takes it back off before it releases the
+           reference, so a queue never keeps a pointer to a browser that is gone. */
+        dispatch_queue_set_specific(self->_queue, (const void *)browse, (__bridge void *)self, NULL);
         self->_source = charon_browser_source(descriptor, self->_queue);
         if (!self->_source) {
             charon_browser_report(self, nw_browser_state_failed,
@@ -522,6 +533,9 @@ static void charon_browser_stop(nw_browser_t browser)
             self->_source = nil;
         }
         if (self->_browse) {
+            /* The key comes off the queue before the reference it names is released, so no queue is left
+               holding a pointer to a browser that is gone. */
+            dispatch_queue_set_specific(self->_queue, (const void *)self->_browse, NULL, NULL);
             DNSServiceRefDeallocate(self->_browse);
             self->_browse = NULL;
         }
