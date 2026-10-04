@@ -655,13 +655,21 @@ static void one(const Shear *shear, vImagePixelCount srcW, vImagePixelCount srcH
             }
         }
     }
-    if (!sameBuffer(note, sizeof note, "the port and this file's own loops differ",
+    // **These two comparisons' LABELS were the wrong way round, and the count said which side was which.**
+    // The first compares the HOST's buffer against this file's own loops and the second compares the PORT's
+    // against them, so the prefix of the first is "the host and this file's own loops differ" and the prefix
+    // of the second is "the port and this file's own loops differ". They were swapped, so every one of the
+    // 4764 + 2993 + 2701 lines they printed was filed under the wrong pair - and a conclusion about which
+    // side agreed with which was drawn from the wrong line. It is named here because the sameBuffer() call
+    // takes the prefix as a bare string and nothing checks it against the buffers it is handed; that is a
+    // place a future edit can make the same mistake again.
+    if (!sameBuffer(note, sizeof note, "the host and this file's own loops differ",
                     (const uint8_t *)theirDest.data, (const uint8_t *)mine.data, &theirDest,
                     "host against expectation")) {
         failures++;
         if (!quiet) printf("FAIL %s: %s\n", what, note);
     }
-    if (!sameBuffer(note, sizeof note, "the host and this file's own loops differ",
+    if (!sameBuffer(note, sizeof note, "the port and this file's own loops differ",
                     (const uint8_t *)ourDest.data, (const uint8_t *)mine.data, &ourDest,
                     "port against expectation")) {
         failures++;
@@ -795,10 +803,19 @@ static void surveyFlags(void)
 }
 
 // The sweep, as one function so that SEARCH can run it against many mappings and the normal run once.
+//
+// **The scale list carries 0.75, and that is the scale the rest of this series could not place.** v-tail-a12's
+// mapping.py closed 596 of 624 guest samples at 0.75 and named the remaining 28 as the place the vertical's
+// own mapping term must live; v-tail-a13's mapsearch then found no candidate for the vertical at 0.75 at all
+// (0 of 16 shapes) while the horizontal closed 16 of 16. A scale the sweep does not contain cannot be green or
+// red, so it was simply unmeasured here - and 0.75 is the only one of the five whose stored reciprocal is
+// inexact (`1.3333333333333333`), which is exactly what makes it the discriminating one: at 1, 2, 0.5 and 0.25
+// the reciprocal is exact and "multiply by the stored reciprocal" is indistinguishable from "divide by
+// 1/reciprocal". `sc == 3` is the scale that takes kvImageHighQualityResampling, and it stays that index.
 static int sweep(void)
 {
     int before = failures;
-    float scales[] = { 1.0f, 2.0f, 0.5f, 0.25f };
+    float scales[] = { 1.0f, 2.0f, 0.5f, 0.25f, 0.75f };
     double translates[] = { 0.0, 1.0, -1.0, 0.5, -0.5, 2.5, 0.0078125 };
     double slopes[] = { 0.0, 1.0, -0.5, 2.0 };
     vImage_Flags modes[] = { kvImageBackgroundColorFill, kvImageEdgeExtend };
@@ -809,7 +826,7 @@ static int sweep(void)
     for (int s = 0; s < shearCount; s++) {
         const Shear *shear = &shears[s];
         for (int m = 0; m < 2; m++)
-            for (unsigned sc = 0; sc < 4; sc++)
+            for (unsigned sc = 0; sc < 5; sc++)
                 for (unsigned tr = 0; tr < sizeof translates / sizeof *translates; tr++)
                     for (unsigned sl = 0; sl < 4; sl++)
                         one(shear, 9, 5, 9, 5, 0, 0, translates[tr], slopes[sl], scales[sc],
