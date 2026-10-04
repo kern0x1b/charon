@@ -208,3 +208,35 @@ both answer 1 — measured. Two keys were measured on the host to settle it, eac
 **The patterns are sorted before they are compared.** A set's enumeration order is not part of an answer,
 and the first version joined them in whatever order the set handed over, which made two runs of the same
 build disagree with each other.
+
+## The sixteen permissions, and how their values were read
+
+`WKWebExtensionPermission` was carried from the first family as a type with nothing to be a value of,
+so an application could name the type and not one permission. The sixteen names the 26.2 SDK declares
+(`WKWebExtensionPermission.h:35` to `:95`) are now carried with their values.
+
+Every value is the string the manifest and the extension's own JavaScript write, read out of the
+host's own WebKit by `dlsym` and not written from the symbol's name -- a data symbol's `dlsym` answer is
+the ADDRESS of the pointer, so the pointer is what has to be dereferenced before it is a string, and a
+program that treats the address as the object crashes in `objc_msgSend`:
+
+```
+WKWebExtensionPermissionActiveTab                   slot 0x1ebb78118 value 0x1f5df2998 activeTab
+WKWebExtensionPermissionTabs                        slot 0x1ebb78190 value 0x1f5df2b78 tabs
+WKWebExtensionPermissionWebRequest                  slot 0x1ebb781a8 value 0x1f5df2bd8 webRequest
+```
+
+Sixteen cases in `webextension-controller_scenario.h` compare the two sides' values, so a permission
+whose value is written from the symbol's own name (`WKWebExtensionPermissionTabs` for `tabs` is the one
+that happens to agree; `WKWebExtensionPermissionContextMenus` for `contextMenus` is the shape, and
+`WKWebExtensionPermissionNativeMessaging` for `nativeMessaging` is the one a camel-case guess gets
+wrong) goes red rather than passing.
+
+**The three error enumerators of the message port have no symbol, and the seven permission statuses
+likewise.** `WKWebExtensionMessagePortErrorUnknown`, `...NotConnected` and `...MessageInvalid` read
+`(no symbol)` on the host, for the reason the seven statuses give above: an enumerator is a
+compile-time integer. They are carried as the `NS_ERROR_ENUM` in the port's own header and have no row.
+
+The sixteen live in `WKWebExtension.m`, beside `-requestedPermissions` and `-optionalPermissions`,
+which answer exactly these strings out of the manifest's own arrays. That object is still the 18.4 one
+it was: nothing older exports any of the sixteen.

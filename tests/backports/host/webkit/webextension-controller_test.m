@@ -33,7 +33,7 @@
 /* Measured on this host with this manifest: 24 cases before the two that need a real extension, and 26
  * with them. A run that answers a different number has lost one or gained one, and a comparison against a
  * shorter record would not notice. */
-static const NSUInteger EXPECTED_CASES = 26;
+static const NSUInteger EXPECTED_CASES = 42;
 
 /* The image that answered, so a failure says WHICH one answered rather than only that the wrong one did. */
 static NSString *answering_image(Class cls, SEL selector)

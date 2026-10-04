@@ -28,6 +28,36 @@
  *     loaded: the host's own run of the probe manifest answers two.
  */
 
+/* WKWebExtensionPermission: the sixteen names a manifest asks for, as the release keeps them -- the
+ * strings the manifest and the extension's own JavaScript use, so that an application comparing a
+ * permission it was asked for with one it granted is comparing the same text the extension wrote.
+ * They are here rather than in a file of their own because -requestedPermissions and
+ * -optionalPermissions below answer exactly these strings, out of the manifest's own arrays.
+ *
+ * Every value was read out of the host's own WebKit by dlsym and not written from the symbol's name.
+ * The sixteen are declared by the 26.2 SDK's WKWebExtensionPermission.h and nothing older exports any of
+ * them, so this object is still the 18.4 one it was. The host's header declares these sixteen and
+ * nothing else (:35 to :95), and every one of the sixteen is a symbol there, which is how they are told
+ * apart from a name with no symbol at all: the seven permission STATUSES of the context family are
+ * enumerators and are carried as an NS_ENUM instead (facts/WebKit/WebExtension.md).
+ */
+WKWebExtensionPermission const WKWebExtensionPermissionActiveTab = @"activeTab";
+WKWebExtensionPermission const WKWebExtensionPermissionAlarms = @"alarms";
+WKWebExtensionPermission const WKWebExtensionPermissionClipboardWrite = @"clipboardWrite";
+WKWebExtensionPermission const WKWebExtensionPermissionContextMenus = @"contextMenus";
+WKWebExtensionPermission const WKWebExtensionPermissionCookies = @"cookies";
+WKWebExtensionPermission const WKWebExtensionPermissionDeclarativeNetRequest = @"declarativeNetRequest";
+WKWebExtensionPermission const WKWebExtensionPermissionDeclarativeNetRequestFeedback = @"declarativeNetRequestFeedback";
+WKWebExtensionPermission const WKWebExtensionPermissionDeclarativeNetRequestWithHostAccess = @"declarativeNetRequestWithHostAccess";
+WKWebExtensionPermission const WKWebExtensionPermissionMenus = @"menus";
+WKWebExtensionPermission const WKWebExtensionPermissionNativeMessaging = @"nativeMessaging";
+WKWebExtensionPermission const WKWebExtensionPermissionScripting = @"scripting";
+WKWebExtensionPermission const WKWebExtensionPermissionStorage = @"storage";
+WKWebExtensionPermission const WKWebExtensionPermissionTabs = @"tabs";
+WKWebExtensionPermission const WKWebExtensionPermissionUnlimitedStorage = @"unlimitedStorage";
+WKWebExtensionPermission const WKWebExtensionPermissionWebNavigation = @"webNavigation";
+WKWebExtensionPermission const WKWebExtensionPermissionWebRequest = @"webRequest";
+
 @implementation WKWebExtension {
     NSDictionary<NSString *, id> *_manifest;
     NSArray<NSError *> *_errors;

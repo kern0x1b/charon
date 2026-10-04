@@ -1703,7 +1703,7 @@
     "facts": "facts/WebKit/WebExtension.md",
     "source": "the host's own WebKit under Mac Catalyst, in the case extension.version of tests/backports/host/webkit/webextension-extension_scenario.h, for the manifest committed beside it"
   },
-{
+  {
     "api": "WKContentRuleList",
     "kind": "class",
     "introduced": "11.0",
@@ -1812,5 +1812,181 @@
     "effect": "the port's store builds a list; an application cannot call it and does not need to",
     "facts": "facts/WebKit/WKContentRuleList.md",
     "source": "the port's own WebKit/WKContentRuleList11.m, held to the release by the 106 cases of tests/backports/host/webkit/contentrulelist_scenario.h"
+  },
+  {
+    "api": "WKWebExtensionPermissionActiveTab",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"activeTab\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionActiveTab of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionAlarms",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"alarms\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionAlarms of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionClipboardWrite",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"clipboardWrite\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionClipboardWrite of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionContextMenus",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"contextMenus\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionContextMenus of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionCookies",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"cookies\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionCookies of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionDeclarativeNetRequest",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"declarativeNetRequest\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionDeclarativeNetRequest of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionDeclarativeNetRequestFeedback",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"declarativeNetRequestFeedback\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionDeclarativeNetRequestFeedback of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionDeclarativeNetRequestWithHostAccess",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"declarativeNetRequestWithHostAccess\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionDeclarativeNetRequestWithHostAccess of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionMenus",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"menus\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionMenus of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionNativeMessaging",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"nativeMessaging\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionNativeMessaging of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionScripting",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"scripting\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionScripting of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionStorage",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"storage\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionStorage of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionTabs",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"tabs\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionTabs of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionUnlimitedStorage",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"unlimitedStorage\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionUnlimitedStorage of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionWebNavigation",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"webNavigation\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionWebNavigation of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
+  },
+  {
+    "api": "WKWebExtensionPermissionWebRequest",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the string the manifest and the extension's own JavaScript write for this permission, read out of the host's own WebKit by dlsym and not written from the symbol's name: the host answers \"webRequest\"",
+    "effect": "an application compares a permission it was asked for with one it granted by the same text the extension wrote",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case constant.PermissionWebRequest of tests/backports/host/webkit/webextension-controller_scenario.h, where the port's own constant is the one that answered"
   }
 ]}

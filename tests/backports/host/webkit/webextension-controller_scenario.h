@@ -78,6 +78,26 @@ static NSArray *controller_scenario(void)
     [lines addObject:ur_line(@"case constant.DataTypeSession", WKWebExtensionDataTypeSession)];
     [lines addObject:ur_line(@"case constant.DataTypeSynchronized", WKWebExtensionDataTypeSynchronized)];
 
+    /* the sixteen permissions, whose VALUES are the strings a manifest writes: an application compares a
+     * permission it was asked for with one it granted, and the comparison is only right if both sides
+     * carry the same text. Sixteen names, sixteen cases, and none of them written from the symbol. */
+    [lines addObject:ur_line(@"case constant.PermissionActiveTab", WKWebExtensionPermissionActiveTab)];
+    [lines addObject:ur_line(@"case constant.PermissionAlarms", WKWebExtensionPermissionAlarms)];
+    [lines addObject:ur_line(@"case constant.PermissionClipboardWrite", WKWebExtensionPermissionClipboardWrite)];
+    [lines addObject:ur_line(@"case constant.PermissionContextMenus", WKWebExtensionPermissionContextMenus)];
+    [lines addObject:ur_line(@"case constant.PermissionCookies", WKWebExtensionPermissionCookies)];
+    [lines addObject:ur_line(@"case constant.PermissionDeclarativeNetRequest", WKWebExtensionPermissionDeclarativeNetRequest)];
+    [lines addObject:ur_line(@"case constant.PermissionDeclarativeNetRequestFeedback", WKWebExtensionPermissionDeclarativeNetRequestFeedback)];
+    [lines addObject:ur_line(@"case constant.PermissionDeclarativeNetRequestWithHostAccess", WKWebExtensionPermissionDeclarativeNetRequestWithHostAccess)];
+    [lines addObject:ur_line(@"case constant.PermissionMenus", WKWebExtensionPermissionMenus)];
+    [lines addObject:ur_line(@"case constant.PermissionNativeMessaging", WKWebExtensionPermissionNativeMessaging)];
+    [lines addObject:ur_line(@"case constant.PermissionScripting", WKWebExtensionPermissionScripting)];
+    [lines addObject:ur_line(@"case constant.PermissionStorage", WKWebExtensionPermissionStorage)];
+    [lines addObject:ur_line(@"case constant.PermissionTabs", WKWebExtensionPermissionTabs)];
+    [lines addObject:ur_line(@"case constant.PermissionUnlimitedStorage", WKWebExtensionPermissionUnlimitedStorage)];
+    [lines addObject:ur_line(@"case constant.PermissionWebNavigation", WKWebExtensionPermissionWebNavigation)];
+    [lines addObject:ur_line(@"case constant.PermissionWebRequest", WKWebExtensionPermissionWebRequest)];
+
     /* a real extension, built from the manifest, and the two answers that depend on one. The host needs
      * a manifest on disk; without WEBEXT_MANIFEST the extension is nil and both sides say so, which is
      * recorded as the answer rather than skipped, so a lost manifest cannot pass quietly. */
@@ -99,8 +119,12 @@ static NSArray *controller_scenario(void)
                                        [lines addObject:ur_line(@"case controller.extensions.afterLoadingOne", @(controller.extensions.count))];
                                        [lines addObject:ur_line(@"case controller.extensionContextForARealExtension", [controller extensionContextForExtension:extension])];
                                    }];
+        /* waited for by the scenario's OWN case count, which is what the test checks: a bound of 26 was
+         * the count before the sixteen permissions joined this file, and with it the loader's answer was
+         * no longer waited for at all -- the system side recorded 40 of the 42 cases and agreed with the
+         * port about nothing. */
         ur_spin(^BOOL {
-            return [lines count] >= 26;
+            return [lines count] >= 42;
         }, 20.0);
     }
 

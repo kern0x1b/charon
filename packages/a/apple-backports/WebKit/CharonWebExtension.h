@@ -18,6 +18,26 @@
 
 typedef NSString *WKWebExtensionPermission NS_STRING_ENUM NS_SWIFT_NAME(WebExtension.Permission);
 
+/* The sixteen permissions a manifest asks for, from the 26.2 SDK's WKWebExtensionPermission.h,
+ * one declaration each: they are values, and a caller that reads one wants the string the
+ * manifest wrote. Their values are in WKWebExtensionPermission.m, each read off the host. */
+extern WKWebExtensionPermission const WKWebExtensionPermissionActiveTab;
+extern WKWebExtensionPermission const WKWebExtensionPermissionAlarms;
+extern WKWebExtensionPermission const WKWebExtensionPermissionClipboardWrite;
+extern WKWebExtensionPermission const WKWebExtensionPermissionContextMenus;
+extern WKWebExtensionPermission const WKWebExtensionPermissionCookies;
+extern WKWebExtensionPermission const WKWebExtensionPermissionDeclarativeNetRequest;
+extern WKWebExtensionPermission const WKWebExtensionPermissionDeclarativeNetRequestFeedback;
+extern WKWebExtensionPermission const WKWebExtensionPermissionDeclarativeNetRequestWithHostAccess;
+extern WKWebExtensionPermission const WKWebExtensionPermissionMenus;
+extern WKWebExtensionPermission const WKWebExtensionPermissionNativeMessaging;
+extern WKWebExtensionPermission const WKWebExtensionPermissionScripting;
+extern WKWebExtensionPermission const WKWebExtensionPermissionStorage;
+extern WKWebExtensionPermission const WKWebExtensionPermissionTabs;
+extern WKWebExtensionPermission const WKWebExtensionPermissionUnlimitedStorage;
+extern WKWebExtensionPermission const WKWebExtensionPermissionWebNavigation;
+extern WKWebExtensionPermission const WKWebExtensionPermissionWebRequest;
+
 // The error domain and the codes the 26.2 SDK's NS_ERROR_ENUM numbers from 1 in this order.
 extern NSString *const WKWebExtensionErrorDomain;
 typedef NS_ENUM(NSInteger, WKWebExtensionError) {
