@@ -7,7 +7,7 @@ because a class has too many members for a hand transcription to be right and th
 
 ## What is carried
 
-**1,067 objects, one class each, all emitted by `tools/matter-generate.py` from the SDK's own declarations.**
+**1,208 objects, one class each, all emitted by `tools/matter-generate.py` from the SDK's own declarations.**
 Two families, and both are read out of the headers rather than listed:
 
 - **the 144 cluster objects** - 142 of the framework's 145 `MTRBaseCluster` classes from the declarations in
@@ -23,6 +23,35 @@ Two families, and both are read out of the headers rather than listed:
   declares - a read, a write, a subscribe, a command in every shape the header gives it, a cached read, the
   initialiser - has a body that answers without reaching a fabric: the value the caller set, or no value and
   the error the release documents for a cluster it cannot reach.
+
+- **the 143 concrete `MTRCluster*` cluster objects, and the third class they sit on** - every `@interface`
+  whose superclass is `MTRGenericCluster`, which is one line of the reader's own output
+  (`@interface MTRClusterIdentify : MTRGenericCluster`, MTRClusters.h) and 143 classes: 139 declared in
+  `MTRClusters.h` and 4 in `MTRBaseClusters.h`, the four already counted above. **139 new objects, plus
+  `MTRGenericCluster`**, which 16.4 does not declare at all - `MTRCluster.h:62` gives it
+  `MTR_AVAILABLE(ios(17.4))` - so without it every one of the 143 is `cannot find interface declaration for`
+  and the library does not link. It carries the one property its own header declares at `MTRCluster.h:66`,
+  `device`, and nothing else. **79 of the 143 are absent from 16.4** and get the port's own `@interface` in
+  `CharonMatterTypes.h`, superclass and every member; the other 64 are declared by it and add nothing there.
+  Their list is written to `generic-clusters-emitted.txt` beside `clusters-emitted.txt` and CHECKED against
+  the headers on every run, so a stale file is named rather than carried.
+
+  These classes declare three shapes the base clusters do not, and each is the SDK's own answer to a
+  different question:
+
+  | shape | what it is | what the port answers |
+  | --- | --- | --- |
+  | `- (NSDictionary<NSString *, id> * _Nullable)readAttribute<Name>WithParams:(MTRReadParams * _Nullable)params` | a read on the caller's thread: it RETURNS the value where the asynchronous form hands it to a completion block, and has nowhere to report an error, so it needs none | the value the caller wrote into the class's own table, or nil when nothing was written - which is what the declaration's own `_Nullable` return says is a possible answer |
+  | `- (void)writeAttribute<Name>WithValue:(NSDictionary *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs`, with and without a trailing `params:` | a write that says when to consider it in effect, and takes no completion block at all | it stores what the caller wrote; there is nothing else to answer, because there is no block to answer through |
+  | `- (void)<verb>WithExpectedValues:...expectedValueInterval:...completion:` | a COMMAND and not a write - it invokes the cluster rather than setting an attribute - which is why it sits beside the command patterns and not with the writes | the command's own answer: the error the release documents for a cluster it cannot reach |
+
+  `NSDictionary<NSString *, id>` is the DATA VALUE type both of the first two carry, and the attribute's own
+  type is stated nowhere in these 143 headers, so the emitted comment says the value is a dictionary rather
+  than naming a type the header does not give. The synchronous read's single nullability annotation is on
+  its RETURN type, which is why it takes one function of its own rather than sharing
+  `strip_region_nullability()` with the commands: the region's nonnull and an explicit `_Nullable` on the
+  same pointer is `nullability specifier '_Nullable' conflicts with existing specifier 'nonnull'`, measured
+  on all 143 objects.
 
 - **the 923 plain data classes** - every `@interface` in the SDK's Matter headers whose name carries
   `Params`, `Struct` or `Event`, holding 3,260 properties. They are the types the commands and the events name,
@@ -72,33 +101,55 @@ methods the header declares answer as Apple documents: no value, and an error.
 
 ## What is measured
 
-    tools/matter-generate.py            run exit 0; invariant 0 in BOTH directions; 1067 of 1067 objects
-                                        compile against SDK 16.4; every object names the class it
-                                        implements, 1067 of 1067; `plain data classes written: 923, 3260
-                                        properties; 0 named but not declared in the SDK`; `the SDK this
-                                        library builds against declares 385 of them itself ... 72 of them as
-                                        a class extension. For the other 538 the port declares the class,
-                                        its superclass and every property.`
-    tools/matter-registry.py            run on the 1,068 objects of this tree: 17606 rows (1068 class, 11244
-                                        method, 5294 property) over 1068 objects, every object one class;
-                                        every class an emitted object defines has a row: 1068 of 1068; 3943
-                                        rows take the 16.0 fallback the header states nowhere - 307 class,
-                                        1976 method, 1660 property - and all of them are listed in
-                                        ios16.json.unannotated (9175 declarations); 752 class rows now
-                                        take the class's OWN annotation and 316 are dated by a member
-                                        because their own annotation names no release
+tools/matter-generate.py            run exit 0; `clusters written: 281` (the 142 MTRBaseCluster* classes
+                                        and 139 more of the 143 concrete MTRCluster* ones, the other four
+                                        already in the first list); `every object compiles against the SDK
+                                        the library builds with: 1208`; `every object names the class it
+                                        implements: 1208 of 1208`; `plain data classes written: 924, 3263
+                                        properties; 0 named but not declared in the SDK`; `the concrete
+                                        MTRCluster* classes - every one the SDK declares whose superclass is
+                                        MTRGenericCluster, and 143 of them, disjoint from the 142
+                                        MTRBaseCluster* ones`; `generic-clusters-emitted.txt: 143 name(s)
+                                        written, and they MATCH the committed list`;
+                                        `CharonMatterTypes.h: 2 shared class declaration(s), 158 cluster
+                                        interface(s), 610 plain data declaration(s); 3 object(s) written`
+    the generator's two invariants, both ways
+                                        `invariant: every member the header declares is in the generated
+                                        file, for every cluster` and `invariant: every command, cached read
+                                        and initialiser an object defines is declared in the @interface the
+                                        port writes for it, over every cluster the library's SDK does not
+                                        declare`. The second is new and it is there because the first could
+                                        not see a whole class of defect: the two artifacts come out of the
+                                        same facts() but are read by two functions, so a shape one of them
+                                        takes and the other does not is invisible to a check that looks at
+                                        one of them alone. Measured, not argued - a version of the tool with
+                                        the interface's reader put back to what it was reports
+                                        `INVARIANT FAILED: 45 member(s) the object defines are not declared in
+                                        the @interface the port writes for it, over 22 cluster(s)` and exits
+                                        1, while the first invariant passes and all 27 objects of that run
+                                        compile; see "The 45 declarations that were not there" below.
+    tools/matter-registry.py            run on the 1,208 objects of this tree: `rows over the base ... 17494
+                                        kept in its order, 4317 appended, 0 dropped`; `wrote ios16.json:
+                                        21811 entries (1208 class, 14139 method, 6464 property) over 1208
+                                        objects, every object one class`; `every class an emitted object
+                                        defines has a row: 1208 of 1208`; 4873 rows take the 16.0 fallback the
+                                        header states nowhere - 336 class, 2507 method, 2030 property - and all
+                                        of them are listed in ios16.json.unannotated (10896 declarations);
+                                        863 class rows take the class's OWN annotation and 345 are dated by a
+                                        member because their own annotation names no release
     the ledger, coordination/corpus/ledger-2026-10-03/Matter.tsv
-                                        2870 of the framework's 11675 `missing` rows are `implemented` by
-                                        this family - 637 class, 2233 property - and all 2870 name a class
-                                        this commit adds: 0 of them are owned by an object main already had
-    the 1067 objects, armv7-apple-ios6.0, the package's own flags
-                                        0 lines matching ` error: ` over all 1067, xargs -P 2
+                                         2870 of the framework's 11675 `missing` rows are `implemented` by
+                                         this family before this change, and 904 more name one of the 79
+                                         concrete clusters 16.4 does not declare - 50 class, 854 method -
+                                         which this change carries (see "The 904 rows" below)
+    the 1208 objects, armv7-apple-ios6.0, the package's own flags
+                                        0 lines matching ` error: ` over all 1208, xargs -P 2
     coordination/work-2026-10-03/tools/relcheck.lua, BP_LIBRARY=MatterClusterBackports
-                                        `compiled 1067 objects of MatterClusterBackports` then
+                                        `compiled 1208 objects of MatterClusterBackports` then
                                         `check_releases: every object of MatterClusterBackports holds API of
                                         one release` - measured from the held caches' EXPORT TRIE, not from
                                         API_AVAILABLE
-    nm -gU over those 1067 objects     1067 distinct _OBJC_CLASS_$_ symbols, one per object, and every one
+    nm -gU over those 1208 objects      1208 distinct _OBJC_CLASS_$_ symbols, one per object, and every one
                                         is either Charon-prefixed or a class the registry carries as
                                         `implemented`: 0 that are neither. The only other exported symbol is
                                         _OBJC_LABEL_PROTOCOL_$_NSCopying, from the NSCopying conformance the
@@ -140,6 +191,40 @@ in the generated file - 1,162 members over 83 clusters when the invariant was fi
 selector the file defines is in the contract - it named 700 on `MTRBaseClusterTestCluster` alone, and an
 invented instance method injected into one emitted object is caught and named, so the reverse direction is
 not vacuous.
+
+**The 45 declarations that were not there.** Both of those directions read the OBJECT. `CharonMatterTypes.h`
+is a second artifact, built from the same `facts()` but read by a different function, and a shape one of them
+takes and the other does not is invisible to a check that looks at one of them. Reading the interface's
+commands over the parameterised shapes alone dropped the `<verb>WithCompletion:` form of every verb that has
+one: **45 declarations over 22 classes, all of them base clusters**, none of the 143 concrete ones - which is
+why the run stayed green. All 1,208 objects compiled, because the library's SDK declares those selectors
+itself, so the port's missing declaration was a duplicate of one the compiler could already see. It would
+have stopped being one the moment the SDK stopped declaring it, and nothing in the run said so.
+
+So the check is now asked of both artifacts: every command, cached read and initialiser an object defines is
+declared in the `@interface` the port writes for it, over every cluster 16.4 does not declare. The reads,
+writes and subscribes are deliberately outside it - each cluster object defines its own and nothing declares
+them, which is legal and is what the tree has always done - and that exclusion is written down beside the
+list it applies to rather than left to be rediscovered. **The control, measured:** the same 24 classes with
+that one line put back to what it was reports
+
+    INVARIANT FAILED: 45 member(s) the object defines are not declared in the @interface the port writes
+      for it, over 22 cluster(s):
+      MTRBaseClusterActivatedCarbonFilterMonitoring	resetConditionWithCompletion:
+      MTRBaseClusterCameraAVSettingsUserLevelManagement	MPTZSetPositionWithCompletion:
+      ...
+
+and exits 1, while the pre-existing invariant on the same run prints its `invariant:` line and all 27 objects
+compile. A check that cannot fail is worth nothing; that one could.
+
+**An annotation macro is the header's, not the method's.** `signature()` took off `MTR_AVAILABLE(` and
+nothing else, so a declaration SDK 16.4 spells with the OTHER name arrived with the macro still attached and
+the emitted signature carried it: 1,723 lines of `MTR_DEPRECATED(...)` in
+`CharonMatterMTRBaseClusterTestCluster.m` and 22 lines of `API_AVAILABLE(...)` in
+`CharonMatterMTRBaseClusterColorControl.m`, both of which compiled and neither of which is the framework's
+shape. The list is now every macro a declaration can END with - available, deprecated, unavailable, in both
+spellings - and the paren-counting strip takes off whichever it finds first, so a nested one is still
+consumed whole.
 
 **The designated-initializer diagnostic cannot be satisfied, and the 60 objects that raise it silence it
 where the repository silences it.** 60 of the 144 objects are the clusters SDK 16.4 declares AND marks
@@ -626,3 +711,22 @@ host (`initOwner MTRTestClusterClusterSimpleStruct - MTRUnitTestingClusterSimple
 the three setters `MTRControllerFactoryParams` now writes by hand. No corpus row names `-init` or
 `-copyWithZone:` on any of the 60 classes, and `check_registry` examines class, function and constant rows
 only, so nothing the gate asks about is in the dropped set.
+
+## The 904 ledger rows, and the 100 that are not closed
+
+Re-running the ledger's own `status = missing` filter against this tree and asking which of those rows is
+OWNED by one of the 79 concrete clusters 16.4 does not declare - the owner read out of `-[Class selector:]`
+and `+[Class selector:]`, not out of a dotted api - gives **904 rows over 50 of the 79 classes: 50 class,
+854 method.** Those 50 classes are the ones the corpus has a `missing` row for at all; the other 29 of the 79
+carry no row, which is a fact about the corpus and not about this port.
+
+**804 of the 904 are now carried by a registry row, verbatim, spelled the way the ledger spells them.** The
+other 100 are 50 pairs of `-[Class init]` and `+[Class new]`, one pair per class, and they are not closed:
+`contract_of()` drops both by rule, because the header marks them `NS_UNAVAILABLE` and they are NSObject's,
+so the object's own method list cannot contain them. **This is not new and not specific to the concrete
+family** - `-[MTRBaseClusterIdentify init]` and `+[MTRBaseClusterIdentify new]` are still `missing` in the
+ledger with the reason "selector init is not", for a class this port has carried since the family began. The
+port does not define either, and both are answered at run time by NSObject's own, which is inherited rather
+than absent; whether a ledger row whose selector is inherited counts as `implemented` or wants `decide` is a
+question about the ledger, not about this family, and it is left open here rather than answered by editing a
+row.
