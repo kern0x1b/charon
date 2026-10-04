@@ -62,11 +62,12 @@
     _salience = salience;
 }
 
-// A rule that has no predicate of its own -- a bare GKRule, which a subclass fills in -- is one the
-// system may always run. Every rule the factories build is a GKNSPredicateRule, which has one.
+// A rule that has no predicate of its own -- a bare GKRule, which a subclass fills in -- does not run:
+// the host's own bare rule answers NO here, measured, and a subclass is expected to override this to
+// say YES. Every rule the factories build is a GKNSPredicateRule, which has a predicate of its own.
 - (BOOL)evaluatePredicateWithSystem:(GKRuleSystem *)system
 {
-    return YES;
+    return NO;
 }
 
 - (void)performActionWithSystem:(GKRuleSystem *)system

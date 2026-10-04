@@ -7,7 +7,8 @@
 // below when it decides what to do with the goals in a behaviour.
 //
 // The arguments a goal carries, by kind:
-//   seek and flee        one agent
+//   seek, flee and
+//   intercept            one agent, and nil for one of those three is what the host refuses
 //   avoid obstacles     a list of obstacles and the longest time to look ahead
 //   avoid agents        a list of agents and the longest time to look ahead
 //   separate, align,
@@ -109,14 +110,27 @@
 
 + (instancetype)goalToSeekAgent:(GKAgent *)agent
 {
-    GKGoal *goal = [self charon_goalOfKind:CharonGKGoalSeek];
-    goal->_agent = agent;
-    return goal;
+    return [self charon_goalWithAgent:agent kind:CharonGKGoalSeek];
 }
 
 + (instancetype)goalToFleeAgent:(GKAgent *)agent
 {
-    GKGoal *goal = [self charon_goalOfKind:CharonGKGoalFlee];
+    return [self charon_goalWithAgent:agent kind:CharonGKGoalFlee];
+}
+
+// The three factories that take ONE agent -- seek, flee and intercept -- are the three that refuse a
+// nil one, with NSInvalidArgumentException: the host keeps the agent in a one-element list and
+// building that list with nothing in it is what raises, so there is no goal to hand back at all.
+// Measured over all twelve factories: the nine that take a list, a path or a number answer for nil
+// and for an empty list alike. The archived version of this file stored nil and answered, which is a
+// goal that names an agent that is not there.
++ (instancetype)charon_goalWithAgent:(GKAgent *)agent kind:(CharonGKGoalKind)kind
+{
+    if (!agent) {
+        [NSException raise:NSInvalidArgumentException format:@"%@ needs an agent", NSStringFromSelector(_cmd)];
+        return nil;
+    }
+    GKGoal *goal = [self charon_goalOfKind:kind];
     goal->_agent = agent;
     return goal;
 }
@@ -180,8 +194,7 @@
 
 + (instancetype)goalToInterceptAgent:(GKAgent *)target maxPredictionTime:(NSTimeInterval)maxPredictionTime
 {
-    GKGoal *goal = [self charon_goalOfKind:CharonGKGoalIntercept];
-    goal->_agent = target;
+    GKGoal *goal = [self charon_goalWithAgent:target kind:CharonGKGoalIntercept];
     goal->_maxPredictionTime = maxPredictionTime;
     return goal;
 }

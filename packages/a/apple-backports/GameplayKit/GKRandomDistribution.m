@@ -10,7 +10,8 @@
 //     -nextUniform is that integer over the highest value, so a d20 is quantised in steps of 1/20
 //     exactly as its header says, and its range is [lowest / highest, 1.0] as the header says;
 //     -nextBool is the source's own -nextBool; and -nextIntWithUpperBound: with a bound above the
-//     range asks the source for no more than the range, so a bound of 3 over [2, 7] asks for 2.
+//     range asks the source for no more than the range, so a bound of 3 over [2, 7] asks for 2, and a
+//     bound of exactly 0 asks for the whole range whatever the lowest is.
 //
 //   GKGaussianDistribution -nextInt asks the source for two uniforms and applies the Box-Muller
 //     transform to them, z = sqrt(-2 ln u1) cos(2 pi u2), and rounds mean + deviation * z, clamped
@@ -80,12 +81,18 @@
 }
 
 // A bound below the range is the error the host raises, with the host's own reason. Above it, the
-// span asked of the source is the bound less the lowest, never more than the whole range, and the
-// value is that draw added to the lowest. Measured over the ranges [0, 7], [2, 7] and [-3, 3] with a
-// source that logs what it is asked: over [0, 7] a bound of 3 asks the source for 3 and answers its
-// draw; over [2, 7] a bound of 3 asks for 1 and answers two plus its draw; and over [-3, 3] a bound
-// of 2 asks for 5 and answers its draw alone, which is what the port does too, so that a range whose
-// lowest is below zero still answers inside its own range.
+// span asked of the source is the bound less the lowest, never more than the whole range -- except
+// that a bound of exactly zero asks for the WHOLE range, which is the one rule the archived version
+// did not have: it asked for `bound - lowest`, which over a range whose lowest is below zero is a
+// number below the whole range. Measured with a source that logs what it is asked, one call per
+// source, over the ranges -2..2, 0..2, 2..5 and 3..3 and every bound from 0 to 8:
+//   over -2..2 (five outcomes) the bounds 0..8 ask for 5, 3, 4, 5, 5, 5, 5, 5, 5
+//   over  0..2 (three outcomes) the bounds 0..8 ask for 3, 1, 2, 3, 3, 3, 3, 3, 3
+//   over  2..5 (four outcomes) the bounds 0 and 1 raise and the bounds 2..8 ask for 0, 1, 2, 3, 4, 4, 4
+// and every one of those is `bound == 0 ? the whole range : min(bound - lowest, the whole range)`.
+// The answer is that draw added to the lowest, and to nothing when the lowest is below zero, so that
+// a range below zero still answers inside its own range: with a source that answers 3 over -2..2, a
+// bound of 2 answers 3 and not 1.
 - (NSUInteger)nextIntWithUpperBound:(NSUInteger)upperBound
 {
     if ((NSInteger)upperBound < _lowest) {
@@ -93,7 +100,8 @@
                     format:@"upper bound provided is less than lowestInclusive"];
         return 0;
     }
-    NSInteger span = (NSInteger)upperBound - _lowest;
+    NSInteger span = (NSInteger)upperBound == 0 ? (NSInteger)[self numberOfPossibleOutcomes]
+                                               : (NSInteger)upperBound - _lowest;
     if (span > (NSInteger)[self numberOfPossibleOutcomes]) {
         span = (NSInteger)[self numberOfPossibleOutcomes];
     }

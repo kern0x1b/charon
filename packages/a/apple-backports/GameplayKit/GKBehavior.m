@@ -100,14 +100,20 @@
 // The host keeps the weights this method is given, so the port keeps them too: a dictionary of one
 // goal at weight 3 gives that goal weight 3, measured on this host. (The archived version of this
 // file recorded the host answering 0 for every goal and kept the weights on purpose; that
-// measurement does not reproduce on macOS 27, so the port and the host now agree and the earlier
-// one is in facts/GameplayKit/Behavior.md rather than in the code.)
+// measurement does not reproduce on macOS 27 (26A428), so the port and the host now agree and the
+// earlier one is in facts/GameplayKit/Behavior.md rather than in the code.)
+//
+// The weights are paired with their goals by walking the keys and the values together, not by asking
+// the dictionary for the value of each key: an NSDictionary copies its keys, a GKGoal's copy is a goal
+// of its own, and on the host a lookup by a key the dictionary itself yielded answers nil for one of
+// the two goals of a two-goal dictionary (measured), so a factory built on that lookup drops a weight.
+// The host's own answers 3 and 7 for the same dictionary, which is what this pairing gives here too.
 + (instancetype)behaviorWithWeightedGoals:(NSDictionary<GKGoal *, NSNumber *> *)weightedGoals
 {
     GKBehavior *behavior = [[self alloc] init];
-    for (GKGoal *goal in weightedGoals) {
-        [behavior setWeight:[weightedGoals[goal] floatValue] forGoal:goal];
-    }
+    [weightedGoals enumerateKeysAndObjectsUsingBlock:^(GKGoal *goal, NSNumber *weight, BOOL *stop) {
+        [behavior setWeight:[weight floatValue] forGoal:goal];
+    }];
     return behavior;
 }
 

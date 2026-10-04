@@ -111,6 +111,215 @@
       "facts": "facts/GameplayKit/GKRandomSource.md",
       "source": "the 16.4 SDK's GKRandomSource.h and the 26.2 SDK's, which are where the declaration is read; the host's own GameplayKit for the value, read through the runtime rather than messaged; the port's object built for armv7-apple-ios6.1.3 with the library flags and no -w; the identification measurements in facts/GameplayKit/GKRandomSource.md",
       "effect": "a source seeded with the given value, drawing from there"
+    },
+    {
+      "api": "+[GKRandomDistribution d20]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "+[GKRandomDistribution d6]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "+[GKRandomDistribution distributionForDieWithSideCount:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "+[GKRandomDistribution distributionWithLowestValue:highestValue:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "-[GKGaussianDistribution initWithRandomSource:lowestValue:highestValue:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "-[GKGaussianDistribution initWithRandomSource:mean:deviation:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "-[GKRandomDistribution initWithRandomSource:lowestValue:highestValue:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "-[GKRandomDistribution nextBool]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "-[GKRandomDistribution nextIntWithUpperBound:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "-[GKRandomDistribution nextInt]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "-[GKRandomDistribution nextUniform]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "GKGaussianDistribution",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "GKGaussianDistribution.deviation",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "GKGaussianDistribution.mean",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "GKRandomDistribution",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "GKRandomDistribution.highestValue",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "GKRandomDistribution.lowestValue",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "GKRandomDistribution.numberOfPossibleOutcomes",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
+    },
+    {
+      "api": "GKShuffledDistribution",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a distribution draws through the GKRandom protocol of the source it was given, which is logic over the source and needs nothing of the device; the source's own sequences are NOT the host's and are not claimed here (facts/GameplayKit/GKRandomSource.md), so what is measured is which protocol methods each distribution reaches for and how it combines the answers",
+      "facts": "facts/GameplayKit/Distribution.md",
+      "source": "the host's own GameplayKit, measured by tests/backports/host/gameplaykit-core/measure.m",
+      "effect": "each distribution draws through the source it was given: -nextInt asks for the whole range and adds the lowest, -nextBool is the source's own, -nextUniform is that integer over the highest and so is quantised, and -nextIntWithUpperBound: asks for the bound less the lowest, never more than the whole range, and for the whole range when the bound is zero -- all measured over the host with a written script; a gaussian takes the middle of a range and a sixth of it, or three deviations around a mean, and asks for two uniforms per draw; a shuffled one shuffles forward once per pass and hands the values out from the back; and -init is the degenerate distribution over zero and zero"
     }
   ]
 }

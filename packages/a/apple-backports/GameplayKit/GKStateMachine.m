@@ -63,6 +63,11 @@
     return YES;
 }
 
+- (GKStateMachine *)stateMachine
+{
+    return _machine;
+}
+
 - (void)charon_attachToStateMachine:(GKStateMachine *)machine
 {
     _machine = machine;
@@ -105,6 +110,11 @@
     // designated one of its own class: the line above raises on every path, so no machine is ever
     // built here. The archived version of this file silenced that diagnostic with a pragma instead.
     return [self initWithStates:@[]];
+}
+
+- (GKState *)currentState
+{
+    return _current;
 }
 
 - (GKState *)stateForClass:(Class)stateClass

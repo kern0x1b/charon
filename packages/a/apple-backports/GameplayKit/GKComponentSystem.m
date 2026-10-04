@@ -39,6 +39,11 @@
     return YES;
 }
 
+- (GKEntity *)entity
+{
+    return _owner;
+}
+
 - (void)charon_attachToEntity:(GKEntity *)entity
 {
     _owner = entity;
@@ -229,6 +234,11 @@
         _components = [NSMutableArray array];
     }
     return self;
+}
+
+- (Class)componentClass
+{
+    return _componentClass;
 }
 
 - (NSArray *)components
