@@ -18,7 +18,7 @@
 /* How many cases the scenario claims, measured by the count this file's first run printed. A run that
  * answers a different number has lost one or gained one, and a comparison against a shorter record
  * would not notice. */
-static const NSUInteger EXPECTED_CASES = 106;
+static const NSUInteger EXPECTED_CASES = 109;
 
 /* The image that answered, so a failure says WHICH one answered rather than only that the wrong one
  * did. The port's methods live in this binary and the system's live in the WebKit framework. */

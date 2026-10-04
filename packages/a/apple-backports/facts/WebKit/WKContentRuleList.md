@@ -34,6 +34,7 @@ rewords one turns the comparison red rather than quietly agreeing on less.
 | `css-display-none` with no selector | `Invalid css-display-none action type. Requires a selector.` |
 | no url-filter, or one that is not a string | `Invalid url-filter object.` |
 | a url-filter or a domain pattern the release's own engine will not compile | `Invalid or unsupported regular expression.` |
+| the store cannot be written, which a program can arrange by putting a regular file where the store's directory goes | `Unspecified error during compile.` |
 
 **The order is not the order the keys are read in**, and it was measured rule by rule rather than
 assumed: a rule with a bad action type and an unbalanced url-filter reports the **action**, and a rule
@@ -110,6 +111,26 @@ A compiled list is applied by a web view's content blocker, and this port has no
 are validated and kept, and **no rule of them is ever run**. `WKUserContentController`'s three
 rule-list methods, which hand a list to the web view that would apply it, are not carried for that
 reason and are named in the band report.
+
+## The one refusal a program can arrange, and the one branch no probe reached
+
+A store whose url a **regular file** occupies is the one refusal a program can bring about, and the
+release answers its own sentence for it -- measured by writing a file where the store's directory goes:
+
+```
+  the path is a NSFileTypeRegular
+  compile into a regular file: nil | WKErrorDomain 6 | Rule list compilation failed: Unspecified error during compile.
+  identifiers there: ( )
+  lookUp there:        nil | WKErrorDomain 7 | Rule list lookup failed: Unspecified error during lookup.
+```
+
+That sentence is NOT one of the list's own, and the port writes that one. Three cases
+(`blocked.identifiers`, `blocked.compile`, `blocked.lookUp`) hold both sides to it.
+
+One branch is still not measured, and it is named rather than covered: a store file that is not the
+JSON this port wrote. The release's store keeps a compiled binary per list in Apple's own layout, so a
+file this port cannot parse is not a state a program can produce there, and the port answers an empty
+store for one rather than a guessed error. Its own file is the only thing it ever reads.
 
 ## The red control
 

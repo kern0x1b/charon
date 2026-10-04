@@ -34,12 +34,28 @@ static NSURL *rule_store(void)
     return [NSURL fileURLWithPath:path isDirectory:YES];
 }
 
+/* A store over a path a REGULAR FILE occupies, which is the one way a program can make a store refuse
+ * that this measurement reaches: the release wants a directory at the url and answers its own sentence
+ * when it finds a file there. Both sides are given the same path and the file is written by both, so
+ * neither side is answering about a state the other did not see. */
+static NSURL *blocked_rule_store(void)
+{
+    /* BESIDE the store's directory, not inside it: the test below counts what is inside, and a second
+     * entry there would be this file rather than the store's own */
+    return [rule_store().URLByDeletingLastPathComponent URLByAppendingPathComponent:@"blocked.store"];
+}
+
 /* A fresh store on both sides: the directory and everything under it go, so the first case answers for
  * an empty store whatever ran before. */
 static void rule_store_reset(void)
 {
-    NSURL *url = rule_store();
-    [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
+    NSFileManager *files = [NSFileManager defaultManager];
+    [files removeItemAtURL:rule_store() error:NULL];
+    NSURL *blocked = blocked_rule_store();
+    [files removeItemAtURL:blocked error:NULL];
+    [files createDirectoryAtPath:blocked.URLByDeletingLastPathComponent.path withIntermediateDirectories:YES
+      attributes:nil error:NULL];
+    [@"not a directory" writeToURL:blocked atomically:YES encoding:NSUTF8StringEncoding error:NULL];
 }
 
 /* A store's own answer, in the one shape the comparison reads: what came back, and the error whole. */
@@ -376,5 +392,13 @@ static NSArray *content_rule_list_scenario(void)
     [lines addObject:ur_line(@"case remove.oneAgain", rule_remove(store, @"a1"))];
     [lines addObject:ur_line(@"case remove.identifiers", rule_identifiers(store))];
     [lines addObject:ur_line(@"case remove.lookUpAfter", rule_look_up(store, @"a1"))];
+
+    /* and a store whose url a regular file occupies: the one refusal a program can arrange, and the
+     * sentence for it is the release's own and not one of the list's */
+    WKContentRuleListStore *blocked = [WKContentRuleListStore storeWithURL:blocked_rule_store()];
+    [lines addObject:ur_line(@"case blocked.identifiers", rule_identifiers(blocked))];
+    [lines addObject:ur_line(@"case blocked.compile", rule_compile(blocked, @"b1",
+                             rule_compile_block(@"https://e.com/*", @"block", nil)))];
+    [lines addObject:ur_line(@"case blocked.lookUp", rule_look_up(blocked, @"b1"))];
     return lines;
 }

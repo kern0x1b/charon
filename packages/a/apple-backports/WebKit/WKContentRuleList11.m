@@ -427,7 +427,11 @@ static void charon_on_main_thread(void (^answer)(void))
         if (charon_store_lists(updated, _url))
             list = [[WKContentRuleList alloc] charon_initWithIdentifier:key];
         else
-            refusal = charon_compile_refusal(@"The compiled list could not be written to the store.");
+            /* the store could not be written -- measured against the host with a REGULAR FILE where the
+             * store wants a directory, which is the one way to make it refuse that a program can arrange:
+             * it answers this sentence and not one of the list's own */
+            refusal = charon_rule_list_error(WKErrorContentRuleListStoreCompileFailed,
+                                             @"Unspecified error during compile.");
     }
     charon_on_main_thread(^{
         if (completionHandler)

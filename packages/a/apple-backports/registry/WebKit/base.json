@@ -1764,7 +1764,7 @@
     "introduced": "11.0",
     "minimum": "6.0",
     "status": "implemented",
-    "reason": "a compile is a validation and a store, and the release refuses exactly what this port refuses: 106 cases in the differential, each one the list, the error's domain and code and the sentence under NSHelpAnchor, covering the JSON shape, the rule shape, the order the checks are reported in, the five action types, the resource-type and load-type sets, the url-filter grammar and the order getAvailableContentRuleListIdentifiers answers (which is compared sorted, because the release answers its own directory's order)",
+    "reason": "a compile is a validation and a store, and the release refuses exactly what this port refuses: 109 cases in the differential, each one the list, the error's domain and code and the sentence under NSHelpAnchor, covering the JSON shape, the rule shape, the order the checks are reported in, the five action types, the resource-type and load-type sets, the url-filter grammar and the order getAvailableContentRuleListIdentifiers answers (which is compared sorted, because the release answers its own directory's order)",
     "effect": "a caller is handed a list it can name, or the release's own sentence for what is wrong with the one it wrote",
     "facts": "facts/WebKit/WKContentRuleList.md",
     "source": "the host's own WebKit under Mac Catalyst, all 106 cases of tests/backports/host/webkit/contentrulelist_scenario.h, with a red control that plants a refusal and this comparison goes red on it"
