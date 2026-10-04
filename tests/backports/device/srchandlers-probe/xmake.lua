@@ -13,7 +13,11 @@ set_version("0.1.0")
 local root = os.getenv("SRCH_ROOT") or path.join(os.scriptdir(), "../../../..")
 add_repositories("charon " .. root)
 add_addons("charon v0.8.14")
-set_config("apple_minimum", "6.1.3")
+-- The release this build is for, and the one xmake emulate boots. They are one argument: the binary is
+-- built for the release it runs on, or a reading is a reading of a different libdispatch than the one
+-- that produced it. A project's configuration is part of its image's name, so each release gets its own
+-- image and run.sh finds it by the built binary's LC_UUID rather than by its name.
+set_config("apple_minimum", os.getenv("SRCH_RELEASE") or "6.1.3")
 includes("@addon/charon/apple-ios")
 includes("@addon/charon/emulate")
 set_allowedplats("iphoneos")
