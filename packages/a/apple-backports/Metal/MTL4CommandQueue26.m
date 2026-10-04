@@ -1,13 +1,14 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
-// THE PROTOCOL'S TWO COMMITS ARE NOT IN THIS FILE and clang says so once per method when this class adopts
-// @protocol MTL4CommandQueue: their rows -[MTL4CommandQueue commit:count:] and
-// -[MTL4CommandQueue commit:count:options:] are `owed` until Metal/MTL4CommandBuffer26.m exists, and defining
-// either now would refuse every buffer a caller could hand it. This is the same suppression
-// Metal/CharonMetalDevice.m:2 and Metal/CharonMetalQueue.m:2 carry for the same reason, and it is scoped to
-// this file and to this warning.
-#pragma clang diagnostic ignored "-Wprotocol"
-
+// THE PROTOCOL'S TWO COMMITS ARE NOT IN THIS FILE, and clang says so - twice, once per method - because this
+// class adopts @protocol MTL4CommandQueue and their rows -[MTL4CommandQueue commit:count:] and
+// -[MTL4CommandQueue commit:count:options:] are `owed` until Metal/MTL4CommandBuffer26.m exists. **Those two
+// warnings are the truth and they stay visible**: they are how a reader of a build log sees that two required
+// members of an adopted protocol are owed, and the wave's rule is that no new diagnostic pragma goes into a
+// port file. The gate counts errors and a warning is not one - land-w14 went through with four of the same
+// warning in MetalPerformanceShaders/MPSGraphExecutionDescriptor14.m - so nothing here is silenced to make a
+// check pass. Defining either commit now would be the thing to hide: every buffer a caller could hand it would
+// be refused, which is a row claiming work the port cannot do.
 #import "CharonMetal.h"
 #import "CharonMetal26Types.h"
 // THE TRANSCRIBED @protocol MTL4CommandQueue, which the 16.4 SDK this file compiles against does not
