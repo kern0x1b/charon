@@ -241,7 +241,7 @@ int main(int argc, const char *argv[])
             "pad-thin-reflect", "pad-thin-symmetric",
             "concat-axis-outside", "concat-shapes-differ", "concat-interleave-axis-outside",
             "stack-axis-outside", "stack-shapes-differ",
-            "concat-empty", "stack-empty", "concat-mixed-types",
+            "concat-mixed-types",
         };
         unsigned i;
         for (i = 0; i < sizeof(kQuestions) / sizeof(kQuestions[0]); i++)
@@ -675,29 +675,19 @@ int main(int argc, const char *argv[])
             free(bytes);
             return 0;
         }
-        // AN EMPTY ARRAY OF TENSORS, and a MIXED DATA TYPE: the two the header's own sentences cover and the
-        // concatenation walk's plan therefore has to have an opinion about. Both are measured here because
-        // the port does not raise in the second case and answers in the first, and a reader is entitled to
-        // the release's answer for both.
+        // MIXED DATA TYPES, the header's sentence about the operands' type, measured here because the port
+        // does not refuse it: a float32 2x4 beside an int32 2x4 builds a result tensor whose data type is the
+        // FIRST operand's (a float32 beside an int32 answers a float32 result, 0x10000020) and only the
+        // release's own compiler refuses it - "'mps.concat' op element type of operand and result differ" -
+        // with the process still alive and nothing written. So the port, which takes the result's data type
+        // from the operands' own, agrees with the release about the tensor; what the release has and the port
+        // has not is the refusal, and that refusal is a compiler's and not the graph's.
         //
-        //   - the empty array. Measured: the release BUILDS the result tensor and its shape is nil, and the
-        //     process survives - there is no graph to compile and nothing to answer. The port raises where
-        //     the graph is built, because a tensor of no shape is the one answer a caller cannot act on, and
-        //     the row of each of the four methods says that is a divergence from the release.
-        //   - operands of DIFFERENT DATA TYPES. Measured: the result tensor carries the FIRST operand's data
-        //     type (a float32 beside an int32 answers a float32 result) and the release's own compiler then
-        //     refuses it - "'mps.concat' op element type of operand and result differ" - with the process
-        //     still alive. So the port's taking the result's type from the operands' own agrees with the
-        //     release here; what the release has and the port has not is the refusal, which is a compiler's
-        //     and not the graph's.
-        if (strcmp(q, "concat-empty") == 0 || strcmp(q, "stack-empty") == 0) {
-            MPSGraph *graph = [MPSGraph new];
-            MPSGraphTensor *t = strcmp(q, "stack-empty") == 0
-                ? [graph stackTensors:@[] axis:0 name:@"s"] : [graph concatTensors:@[] dimension:0 name:@"c"];
-            printf("%s shape %s\n", q, t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil");
-            fflush(stdout);
-            return 0;
-        }
+        // The header's OTHER sentence, the array being the operands themselves, is NOT here because it is not
+        // a refusal: measured over the whole path, an empty array builds a result tensor of nil shape and
+        // float32, the compile returns an executable and the run leaves the destination as it was. It is two
+        // cases of the differential instead - graph-cases.m's concat-empty and stack-empty - and the port
+        // answers it the same way after the correction that removed the raise.
         if (strcmp(q, "concat-mixed-types") == 0) {
             MPSGraph *graph = [MPSGraph new];
             MPSGraphTensor *a = [graph placeholderWithShape:twoByFour dataType:MPSDataTypeFloat32 name:@"a"];

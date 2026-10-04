@@ -1890,9 +1890,15 @@ static NSDictionary *CharonMPSGraphConcatPlan(NSString *name, NSArray<NSArray<NS
 {
     NSUInteger operands = shapes.count;
     if (operands == 0) {
-        [NSException raise:NSInvalidArgumentException
-                    format:@"MPSGraph: %@ was asked to %@ no tensors at all, and the header's array is the "
-                           @"operands themselves", name, stacked ? @"stack" : @"concatenate"];
+        // An EMPTY ARRAY OF TENSORS, and here the release's own answer, which is not a refusal and is why
+        // this is not one: measured on this host's own MPSGraph over the whole path, `[MPSGraph
+        // concatTensors:@[] dimension:0]` and `[MPSGraph stackTensors:@[] axis:0]` both BUILD the result
+        // tensor, its shape is NIL, `compileWithDevice:` returns an executable and the run survives with the
+        // destination left as the caller had it. So the plan here carries no shape either, the same shape the
+        // gather's plan carries when its operand's own is not known yet, and the tensor the factory builds is
+        // the release's: no shape on it and nothing written to it. An operation that cannot answer must not
+        // take the application down over an array the caller passed - which is what raising here did.
+        return @{};
     }
     NSArray<NSNumber *> *first = shapes.firstObject;
     NSUInteger rank = first.count;
@@ -2310,6 +2316,15 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
                                                       [operation.charon_mps_parameters[@"concatAxis"] integerValue],
                                                       [operation.charon_mps_parameters[@"concatInterleave"] boolValue],
                                                       [operation.charon_mps_parameters[@"concatStacked"] boolValue]);
+        // A plan with NO SHAPE is the empty array of operands, which the release answers with a result
+        // tensor of nil shape and nothing written to it - see CharonMPSGraphConcatPlan. There is nothing to
+        // allocate here, and refusing and returning leaves the output with no value at all, which is what the
+        // run's own copy-out then leaves the caller's destination as.
+        if (plan[@"shape"] == nil) {
+            CharonMPSGraphRefuse(@"MPSGraph: the operation named %@ was given no tensors, so its result "
+                                 "carries no shape and nothing was written to it", [operation name]);
+            return;
+        }
         [output charon_mps_setShape:plan[@"shape"]];
         MPSGraphTensorData *concatenated = [[MPSGraphTensorData alloc] initWithDevice:sources.firstObject.device
                                                                           elementCount:CharonMPSGraphElementCount(plan[@"shape"])

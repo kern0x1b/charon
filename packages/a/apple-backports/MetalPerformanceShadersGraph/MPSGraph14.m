@@ -881,6 +881,11 @@ typedef enum {
 //   - an axis outside the rank is refused by the release's own compiler - "invalid axis tensor: [2], axis
 //     must be in range -rank <= axis < rank, rank = 2" - and then "LLVM ERROR: Failed to infer result
 //     type(s)" takes the process down with it, so the port raises where the graph is built.
+//   - an EMPTY ARRAY is NOT a refusal, and the port answers it the way the release does rather than the way
+//     this row first claimed. Measured on this host's own MPSGraph over the whole path, `concatTensors:@[]`
+//     builds the result tensor with its shape NIL and its data type FLOAT32, `compileWithDevice:` returns an
+//     executable and the run leaves the caller's destination as it was. So the result tensor here carries no
+//     shape and no value; see the seam below for where that comes from.
 
 - (MPSGraphTensor *)concatTensor:(MPSGraphTensor *)tensor
                       withTensor:(MPSGraphTensor *)tensor2
@@ -923,6 +928,12 @@ typedef enum {
 // already have or one the result adds, and the interpreter's plan derives the result's shape from the
 // operands' own - here at build time so that a caller can read the shape off the tensor, and again when the
 // graph runs, where it is the offsets the walk needs.
+//
+// The result's DATA TYPE is the first operand's, which is what every operation of this family does and what
+// the release answers for an operation whose operands are of more than one type (measured: a float32 2x4
+// beside an int32 2x4 gives a float32 result and only the release's own compiler objects). With NO operands
+// there is no first one, and the release's answer there is float32 - measured, 0x10000020 - so that is the
+// value written down, and the measurement is named here rather than the number standing in for behaviour.
 - (MPSGraphTensor *)charon_mps_concat:(CharonMPSGraphOperationKind)kind
                                tensors:(NSArray<MPSGraphTensor *> *)tensors
                                   axis:(NSInteger)axis
@@ -934,9 +945,15 @@ typedef enum {
                                                                 stacked:stacked named:name];
     MPSGraphTensor *result = [self charon_mps_operation:kind inputs:tensors ?: @[]
                                             parameters:@{@"concatAxis": @(axis), @"concatInterleave": @(interleave),
-                                                         @"concatStacked": @(stacked)}
+                                                         @"concatStacked": @(stacked),
+                                                         @"dataType": @(tensors.firstObject.dataType
+                                                                        ?: MPSDataTypeFloat32)}
                                                    name:name];
-    [result charon_mps_setShape:shape];
+    // No shape is put on the tensor when the plan has none, which is the empty array of operands: the
+    // release's result tensor there has a nil shape too, and a caller that reads the shape off the tensor
+    // gets nil on both sides.
+    if (shape != nil)
+        [result charon_mps_setShape:shape];
     return result;
 }
 
