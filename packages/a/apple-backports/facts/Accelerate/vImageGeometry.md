@@ -1550,6 +1550,14 @@ used without any reasoning about the kernel.
 
 ## The delta sweep on the device: what the mapping is, and the one shape that is not a row (2026-10-04, v-tail-a11)
 
+**SUPERSEDED BY THE SECTION BELOW, AND TWO OF ITS READINGS ARE WRONG. Kept because the run is real.** Its
+matrix was transcribed from a log line the terminal wrapped: the probe prints each column's *header* and its
+*value* on the same line for `c = 0` and eight values per line after that, so reading the wrapped stream as
+eight values per line shifted every row by one and produced a "+1 shift" and a `2c + 2` peak that are not in
+the release's bytes. The predictions it wrote down, and the scale-2 conclusion it drew from the shape, are
+answered and refuted in the next section; the two claims of it that **hold** are the identity at a scale of
+one and the rule that the probe's shape, not the arithmetic, was the thing to rule out first.
+
 A source with **one column carrying 255 and every other column zero** makes every destination answer one row
 entry divided by the full scale, so the release's own output names the weight it used without any reasoning
 about the kernel. Alpha is 255 in every pixel, which matters: the same sweep with alpha 0 gives different
@@ -1610,6 +1618,12 @@ from a sweep with that same shape, so the 1 and the matrix may share one cause.
 - that the **scale-1 and scale-2 Q14 tables are byte-identical** on the device (phase 32 is
   `[400, -2226, 10017, 10017, -2226, 400, 0, 0]` at both), which is what the phase rule's being a power of two
   predicts and what no host measurement had shown.
+
+**The matrix printed in that section is not the release's bytes and neither is the reading of it.** It reads
+"source column `c` lands at destination `2c + 2`" and "a destination's answers over the source sum to 573"; both
+come from a printout that is one column out of phase, and the next section has the same sweep with the
+destination sized for the scale, where every answer is indexed as it is read and the sum over the destination
+of a delta is 255 at a scale of one.
 
 ## The header on every release the shears run on, and the one place it changes (2026-10-04, v-tail-a12)
 
@@ -1680,3 +1694,99 @@ architecture.** Every field is a 32-bit slot on armv7 and a 64-bit slot on arm64
 stride under `kvImageHighQualityResampling` and 7.0 and later do not. For every tap count these two spellings
 round to the same multiple of 16 - `numTaps` 6, 8, 10, 12, 13, 20, 24 give 16, 16, 32, 32, 32, 48, 48 either
 way - so the branch is redundant on every shape measured and is recorded here rather than implemented.
+
+## The mapping, closed: `centre = (x - translate) / scale` (2026-10-04, v-tail-a12)
+
+The sweep above was re-run on iPhone3,1 6.1.3 10B329 with **the destination sized for the scale** -
+`dstW = ceil(scale*24) + 8` over a 24-pixel source - because a magnification whose destination is the
+source's own width asks the release to compress, and that is a different call. The predictions are in
+`.agent-work/PREDICTION-vimguest-a12.md`, written before the run, and this is which of them held. Every answer
+below is printed as `x:value` with its own index, so nothing is read off a formula.
+
+**P1 was wrong in its sign and right in its shape: a scale of one is an exact identity, `source c -> dest c`,
+24 of 24, and the delta's total over the whole destination is 255.** The `+1` of the section above is not in
+the release's bytes; it was the wrapped log line. **P2 held: with the destination sized for the scale a delta's
+answer is two destination pixels wide and its total is near 255** - 573 only in the shape that asks for a
+compression. **P3 could not be separated**: at every shape measured, dividing by the row's own sum and by
+16384 give byte-identical answers, because the rows are within 3 to 5 of 16384. **P4 held**: an exhaustive
+search over every `(phase, base)` finds a pair for every destination column at every scale. **P5 did not hold
+at 0.75**, and the residual is named below. **P6 was wrong**: a 0.75 minification is not an integer box - the
+same row is on that path as everywhere else.
+
+### The rule, and how it was decided
+
+Every Q14 row the release handed out is in the run's section D and every one-column delta's whole destination
+answer is in its section C, so the pair each destination column takes is found **by exhaustion over all 64 rows
+and every base tap**, not by fitting. The pair is then compared against the formula:
+
+    centre = (x - translate) / scale
+    base   = floor(centre)
+    q      = floor(frac(centre) * phases + 0.5)
+    carry  = q / phases                      (integer)
+    phase  = q - carry * phases
+    base  += carry
+    K0     = argmax(row 0)                  (already measured, nine of nine)
+    out    = clamp(round_half_up( sum over k of row[phase][k] * in[base + k - K0], divided by 16384 ))
+
+**There is no half pixel.** `centre` is `x/scale` and not `(x + 0.5)/scale - 0.5`, and that single fact is the
+whole of what the section above could not close: it is why a scale of one is an identity rather than a
+half-pixel blur, and why a scale of two puts source `c` at destination `2c` and not at `2c + 2`.
+
+**The score, against the release's own stored bytes, and nothing else:**
+
+| what | scale 1 | scale 2 | scale 0.75 | scale 0.5 |
+| --- | --- | --- | --- | --- |
+| every one-column delta, every destination column | **768 of 768** | **1344 of 1344** | **596 of 624** | **480 of 480** |
+| the same rule on the destination-the-size-of-the-source shape | 576 of 576 | 576 of 576 | 548 of 576 | 576 of 576 |
+| a ramp at translate 0 | 32 of 32 | 56 of 56 | 24 of 26 | 20 of 20 |
+| a ramp at translate 0.5 | **32 of 32** | **56 of 56** | 25 of 26 | 20 of 20 |
+| a ramp at translate 0.25 | **32 of 32** | **56 of 56** | 25 of 26 | 20 of 20 |
+| a ramp at translate 0.125 | **32 of 32** | **56 of 56** | 19 of 26 | 20 of 20 |
+
+The bold rows are the translate, and they are the only place the six candidate spellings separate: at a
+translate of 0.5 and 0.25 `centre = (x - t)/scale` is 32 of 32 and 56 of 56 while `centre = x/scale - t` is 7 of
+32 and 7 of 56, `centre = (x + 0.5 - t)/scale - 0.5` is 7 and 7, and `centre = (x + t)/scale` is 5 and 5. **The
+translate is inside the parenthesis with `x` and the whole is divided by the scale**, and that is what the
+release's bytes say.
+
+### What is left, named
+
+- **A scale of 0.75 misses 28 of 624 and a ramp at a translate of 0.125 misses 7 of 26.** Every one of the
+  twenty-eight is at a destination whose `centre` is a third of a pixel - `x/0.75` is `4x/3` - and every one is
+  off by 1 to 3: `x=2 c=2` release 119 model 116, `x=2 c=3` release 169 model 171, `x=3 c=3` release 55 model
+  52, `x=2 c=4` release 0 model 1. **So the residual is a rounding of the fractional position at a scale whose
+  reciprocal is not a binary fraction, and it is not the arithmetic**: at the scales whose `1/scale` is a
+  binary fraction the same code is exact, 1344 of 1344 and 480 of 480. It is not fixed here and not hidden;
+  the next measurement is one more sweep at a scale of 0.75 with the destination one column longer on each
+  side, which separates whether the release rounds the phase of `4x/3` twice.
+- **The divisor is not separated.** Dividing by the row's own sum and by 16384 give the same byte at every
+  answer in this run. The release's own worker does sum the row it is about to use (a `ldrsh` loop over
+  `numTaps` int16 at 0x3040f488 in the 6.1.3 armv7 cache), so the port divides by the sum it read, and this
+  page does not claim the two differ.
+- **`kvImageBackgroundColorFill` and the far tap.** At a scale of two with a destination wider than the
+  source needs, the release convolves past the end of the source and answers 6 where the tap window still
+  reaches source column 23 - `x = 51` answers 6, and the rule above reproduces that 6. It does **not** clamp
+  the destination to what the source can fill. The port does the same; nothing here claims an edge rule it did
+  not measure.
+
+### Three readings of the 6.1.3 disassembly that this run confirms, and one it corrects
+
+Read with `tools/corpus/disasm.sh` on the 6.1.3 armv7 cache, no emulator:
+
+- **`vImage_Buffer` is `{data, height, width, rowBytes}`** on this release, byte offsets 0/4/8/12, which is the
+  SDK's own order (`Accelerate/vImage/vImage_Types.h:143`). The worker reads `[src+8]` as the width and
+  `[src+12]` as the row bytes. **The section above's worry about a reversed field order does not apply**, and
+  v-tail-a10's caveat about it is retired.
+- **The shear takes the SDK's modern nine arguments**, `(src, dest, srcOffsetToROI_X, srcOffsetToROI_Y,
+  xTranslate, shearSlope, filter, backColor, flags)`: the wrapper stores the filter at `[sp+16]` and the worker
+  dereferences it as `*(double *)filter` for the scale and reads its words 2, 4, 6 and 8. **There is no
+  `divisor` argument** - the only six-argument-era spelling on this release is
+  `vImageGetResamplingFilterSize(scale, func, divisor, flags)`, which the probe still calls through `dlsym`.
+- **The scale enters as `min(1.0/scale, 1.0)`** and `floor` of that is kept beside it as a separate integer, so
+  a minification is not the same code as a magnification. **The prediction P6 drew from this - an integer box -
+  is refuted by the device**: a 0.75 minification convolves with the release's own Lanczos row like every other
+  scale, and 596 of 624 is a rounding residual rather than a different filter.
+- **CORRECTED: the worker computes `d13 = 1 + (row - destHeight)*recip*slope - ... ` and then
+  `centre = d13 + x*recip`, which reads as a `+1`.** It does not: at a scale of one the release is an exact
+  identity, 768 of 768. The constant that reads as 1.0 is consumed before the addition, and the release's
+  stored bytes are what settles it.
