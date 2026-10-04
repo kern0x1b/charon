@@ -326,6 +326,52 @@ document is its own file now, in its own group, and the corpus's dating of its f
 they took the version of the class they sit in - is corrected in the generator, which moves a member to
 its class's release.
 
+**`HKCDADocument` is an ALIAS, because the release carries the class from 10.0.1 and exports it only
+from 11.0.** Measured 2026-10-04 with `apple.objc.inventory` and `apple.dyld` over the caches this
+package is built for, one class and one export table at a time:
+
+| release | the class in HealthKit's `__objc_classlist` | `_OBJC_CLASS_$_HKCDADocument` |
+| --- | --- | --- |
+| 6.1.3 - 10.0 (armv7) | absent (no HealthKit) | absent |
+| 10.0.1, 10.1, 10.2, 10.3, 10.3.4 (armv7s) | present: superclass `NSObject`, 15 own methods, no protocol | **no image exports it**, nor its metaclass |
+| 11.0, 12.0 (arm64) | present, the same 15 methods | exported by HealthKit, metaclass with it |
+
+So a band of 10.0.1 to 10.3.4 that linked the class implementation would have held two classes of one
+name in every process, and the runtime keeps the one it registered first - the release's. The name goes
+through `charon_alias.h`, which is what `modules/apple/backports.lua`'s own `check_categories` asks for
+when it reads this reading ("the release carries HKCDADocument in HealthKit without exporting it: alias
+it through charon_alias.h"), and what `MDLMeshBufferZoneDefault`, `NSTextList` and `NSTextTab` already
+are for the same one. The twelve members are a category on Charon's own name, which ld64 merges into
+the proxy, and the document's five values are an associated object - a category cannot add an instance
+variable and neither can the class behind an alias (`attach.c` lays the proxy out from the release's
+class and takes that write back when the two instance sizes differ), the shape `CarPlay`'s `CPListItem`
+row and ModelIO's mesh buffer zone already use. The reader of that state is a C function and not a
+method, so that no selector of Charon's own lands on the release's class on a band where the release has
+one.
+
+What each band answers:
+
+- **From 11.0** the release exports the name, the band reexports the symbol and links neither the
+  category's object nor the proxy, and HealthKit's own class answers. (release-split over this
+  library's objects: `_OBJC_CLASS_$_HKCDADocument` and its metaclass first appear at 11.0.)
+- **On 10.0.1 to 10.3.4** the release's class answers `-documentData`, `-title`, `-patientName`,
+  `-authorName` and `-custodianName`, and the category is attached only where the class does not answer
+  the selector: the five-argument `-charon_initWithDocumentData:` and this file's `-initWithCoder:` and
+  `-encodeWithCoder:` are the port's own there (HealthKit's are the `-omittedContentFlags:` spellings),
+  while `-copyWithZone:`, `-isEqual:`, `-hash` and `-description` are NSObject's or the release's and the
+  category's copies of them are not attached. Nothing in such a band makes a document of ours, and that
+  is measured rather than argued: `band()` **reexports `HKDocument10.o`** at 10.0.1 and at 10.3.4 (its
+  five class symbols and their metaclasses are all exported by the release), so the sample's own
+  `-document` is Apple's there and the documents it hands out are Apple's.
+- **Below 10.0.1** the release has no class of this name, the proxy IS the class, and every method
+  answers out of the state beside it.
+
+**Not measured**: nothing here was run on a device. A document Apple's own sample hands out on 10.x and
+a document of ours below 10.0.1 are different objects by construction, and what a program that holds
+both does with `-isEqual:` is a question about that program. `NSClassFromString` answers nil for the
+name on a release that has no class of it, which is what `charon_alias.h` records for every alias it
+makes; before this change the port's own class answered there.
+
 **The seven clinical type identifiers of 12.0 were `absent` because a run was going to write them, and
 they are carried now.** Their rows said a commit was generating every HealthKit constant whose value is
 its own name, so the group did not define those seven and waited. A wait is not a status the registry
