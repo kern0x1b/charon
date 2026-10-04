@@ -776,6 +776,10 @@ static void cumulative_families(MPSDataType type, const void *values, const char
 // file - the six gather families come before it in the file's order because they come before the table of
 // families in the run order, and a declaration here is what lets them end with it.
 static void chain_case(void);
+static void tile_gradient_cases(void);
+static void tile_gradient_case(const char *name, NSArray<NSNumber *> *multiplier,
+                               NSArray<NSNumber *> *shape, const void *gradient, const void *source,
+                               size_t bytes, NSArray<NSNumber *> *types);
 
 // The feeds the gather families are asked over. The ordinary one is the case file's own 2x4 of (1, 2, 3, 4 |
 // 10, 20, 30, 40), whose answers a reader can work out by hand; the rank-3 one is the 1 to 24 a 2x3x4 holds
@@ -789,6 +793,12 @@ static float cubeFeed[24] = {
 // a NaN of each sign. A gather copies, so these are what says it copies - a NaN's sign and a negative zero's
 // sign are the two things a walk that recomputes a value would lose.
 static float gatherClasses[8] = { 1.0f, -1.0f, -0.0f, 0.0f, INFINITY, -INFINITY, NAN, -NAN };
+// The feeds of a pad over an axis SHORTER than the result: one row of four and one 1x3x4 of the 1 to 12.
+// They are the ordinary 1 to 4 and 1 to 12 rather than the sixteen classes because the question this shape
+// asks is not what an element holds but WHERE the operand's row lands in a result three rows longer - and a
+// feed whose elements are distinguishable by value is what tells one row from another.
+static float thinFeed[4] = { 1.0f, 2.0f, 3.0f, 4.0f };
+static float thinCubeFeed[12] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
 // A gather's case: the compile is given a feed of the OPERAND's shape and a destination of the RESULT's,
 // which the elementwise run() above cannot do - a reduction_case's arrangement, with the operand and the
@@ -1401,6 +1411,8 @@ static void family_gather_padtile(void)
 {
     NSArray<NSNumber *> *twoByFour = @[@2, @4];
     NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+    NSArray<NSNumber *> *oneByFour = @[@1, @4];
+    NSArray<NSNumber *> *oneByThreeByFour = @[@1, @3, @4];
 
     // THE FIVE MODES THE RELEASE ANSWERS, over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) with one element of
     // padding at the front and the back of axis 0 and two at the front of axis 1.
@@ -1443,13 +1455,120 @@ static void family_gather_padtile(void)
                           rightPadding:@[@1, @1] constantValue:99.0 name:@"p"]; },
                 MPSDataTypeFloat32, twoByFour, rowFeed);
     // Three elements at the front of axis 1 and two at the back, which is a mirror of more than half an axis.
-    // A rank of three is NOT asked here: the release takes the process down on every mode of it, which is
-    // refusals.m's pad-rank3-clamp and pad-rank3-symmetric.
+    // A rank of three IS asked below, over an axis of extent one: measured on this host's own MPSGraph, a
+    // pad of a 2x3x4 into a destination of the RESULT's own shape answers in every mode, and the entries in
+    // refusals.txt that say otherwise are this file's own question asked into the wrong shape.
     gather_case("pad-reflect-three float32",
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g padTensor:a withPaddingMode:MPSGraphPaddingModeReflect leftPadding:@[@1, @3]
                           rightPadding:@[@1, @2] constantValue:99.0 name:@"p"]; },
                 MPSDataTypeFloat32, twoByFour, rowFeed);
+    // A PADDED AXIS SHORTER THAN THE RESULT, which nothing above reached: the operand is ONE row and the
+    // result is four, with the three at the front for the mode to fill. This is the shape the tile
+    // gradient's own shifts ask for - a window of five over a leading block of four pads a row of one back
+    // out to four - and the differential carried no case that reached it, so what a pad's fill does over a
+    // thin axis was unmeasured. Measured on this host's own MPSGraph, in every mode it answers:
+    //   - the zero and the constant write the operand's row at the row the offset puts it in and the three
+    //     at the front hold the mode's own value, which is what "a row of one padded out to four" means;
+    //   - the clamp answers the operand's own row at EVERY row of the result, because clamping a length-one
+    //     axis has no other element to clamp to (measured 1, 2, 3, 4 four times over);
+    //   - padded on the RIGHT instead, the operand's row lands at the first row and the three at the back
+    //     hold - the same walk read from the other end;
+    //   - a rank of three of the same shape answers too, over the leading axis and over the axis just below
+    //     it, so the fill is chosen on every axis at once and not only on the first.
+    // The two mirrors do NOT answer this shape and are refusals.m's pad-thin-reflect and pad-thin-symmetric:
+    // they reach the axis and this axis is one element long.
+    gather_case("pad-thin-zero float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeZero leftPadding:@[@3, @0]
+                          rightPadding:@[@0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByFour, thinFeed);
+    gather_case("pad-thin-constant float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeConstant leftPadding:@[@3, @0]
+                          rightPadding:@[@0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByFour, thinFeed);
+    gather_case("pad-thin-clamp float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeClampToEdge leftPadding:@[@3, @0]
+                          rightPadding:@[@0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByFour, thinFeed);
+    gather_case("pad-thin-right-zero float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeZero leftPadding:@[@0, @0]
+                          rightPadding:@[@3, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByFour, thinFeed);
+    gather_case("pad-thin-rank3-zero float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeZero leftPadding:@[@3, @0, @0]
+                          rightPadding:@[@0, @0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByThreeByFour, thinCubeFeed);
+    gather_case("pad-thin-rank3-clamp float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeClampToEdge
+                           leftPadding:@[@3, @0, @0] rightPadding:@[@0, @0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByThreeByFour, thinCubeFeed);
+    gather_case("pad-thin-rank3-axis1-zero float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeZero leftPadding:@[@0, @3, @0]
+                          rightPadding:@[@0, @0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByThreeByFour, thinCubeFeed);
+    // HOW FAR EACH MIRROR REACHES, which is the two modes' own limit and not one number for both. Measured
+    // on this host's own MPSGraph at extents one, two and three, left and right, over every padding from one
+    // to five: a REFLECT answers up to the axis LESS ONE and a SYMMETRIC up to the axis ITSELF, and one
+    // element more of either is refused by the release's compiler with its own words - "'mps.pad' op padding
+    // values too large at axis 0, max padding is 1, got 3" (MPSGraphUtilities.mm:956) - where the maximum it
+    // prints is 1 for a reflect on an axis of two and 2 for a symmetric on the same axis. So the symmetric
+    // boundary below ANSWERS, with the mirror at both ends of the axis, and the port refused it.
+    gather_case("pad-symmetric-boundary float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric leftPadding:@[@2, @0]
+                          rightPadding:@[@0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("pad-symmetric-boundary-both float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric leftPadding:@[@2, @0]
+                          rightPadding:@[@2, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // The symmetric over an axis of extent one at its own limit, which is the one element of padding a
+    // length-one axis admits and the mirror's own edge (measured: the operand's row repeated), and the same
+    // over the axis just below the last of a rank of three, where the extent is three and the padding is its
+    // own limit.
+    gather_case("pad-symmetric-thin float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric leftPadding:@[@1, @0]
+                          rightPadding:@[@1, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByFour, thinFeed);
+    gather_case("pad-symmetric-thin-rank3 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric
+                           leftPadding:@[@1, @0, @0] rightPadding:@[@0, @0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByThreeByFour, thinCubeFeed);
+    gather_case("pad-symmetric-thin-axis1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric
+                           leftPadding:@[@0, @3, @0] rightPadding:@[@0, @0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByThreeByFour, thinCubeFeed);
+    gather_case("pad-reflect-axis0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeReflect leftPadding:@[@1, @0]
+                          rightPadding:@[@1, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // A rank of THREE, over the whole of it at once, which the entries in refusals.txt used to call a refusal.
+    // Measured on this host's own MPSGraph with a destination of the RESULT's own shape, a 2x3x4 of (1 ... 24)
+    // padded by one at each end of every axis answers a 4x5x6 in every mode - and the clamp and the
+    // symmetric answer the same bytes here, because one element of padding on an axis of two or more is where
+    // the two mirrors and the clamp agree.
+    gather_case("pad-rank3-clamp float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeClampToEdge leftPadding:@[@1, @1, @1]
+                          rightPadding:@[@1, @1, @1] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("pad-rank3-symmetric float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric leftPadding:@[@1, @1, @1]
+                          rightPadding:@[@1, @1, @1] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
     // A padding of nothing at all is the identity, and the sixteen classes through it say so byte for byte.
     gather_case("pad-nopad float32",
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
@@ -1477,13 +1596,6 @@ static void family_gather_padtile(void)
                 MPSDataTypeFloat32, twoByFour, rowFeed);
     // A rank of three, which the release answers: a 2x3x4 tiled by two on every axis is a 4x6x8 of 192
     // elements, which is also what this file's own result buffer had to grow for.
-    // THE TILE'S GRADIENT IS NOT A CASE, and the port does not carry it: measured on this host, the release's
-    // answer is not the sum of the copies of an element, which is what a gradient of a sum is - over an
-    // incoming gradient of ones it answers the PRODUCT of the multiplier for every element (6 for (2, 3), 3
-    // for (1, 3), 9 for (3, 3)), and over an incoming gradient of (1 ... 24) with a multiplier of (1, 3) it
-    // answers (15, 18, 21, 24 | 51, 54, 57, 60) where the sum of the copies is (6, 15, 24, 33 | 42, 51, 60,
-    // 69). Which elements it reads is what is left to measure, and a row whose behaviour is not measured is
-    // not carried: facts/MetalPerformanceShadersGraph/Core.md holds both measurements.
     gather_case("tile-rank3 float32",
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g tileTensor:a withMultiplier:@[@2, @2, @2] name:@"t"]; },
@@ -1520,7 +1632,69 @@ static void family_gather_padtile(void)
                             [NSData dataWithBytes:rowFeed length:32]],
                           @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32)], 0xbd);
     }
+    tile_gradient_cases();
     chain_case();
+}
+
+// THE TILE'S GRADIENT, the tile's own other direction, and the family carries it now - but only where the
+// release's answer is a function of the graph. Measured on this host's own MPSGraph, a window of m[j + 1]
+// terms along axis j that RUNS OFF THE END of that axis makes the release read past the end of the caller's
+// gradient buffer, so its answer there is whatever memory follows the operand: the same 4x4 of (1 ... 16)
+// with a multiplier of (1, 2) and 1000 planted immediately after the operand answers 6, 8, 10, 12 | 14, 16,
+// 18, 20 | 22, 24, 26, 28 | 13, 15, 17, 19 and with zeros planted there answers 6, 8, 10, 12 | 14, 16, 18,
+// 20 | 22, 24, 26, 28 | 13, 14, 15, 16 - the same graph, the same values, the same shape, and a last row
+// that is a function of memory this repository does not own. So a window is not comparable and is asked of
+// the release over a planted sentinel instead, in refusals.txt's six `tilegrad-` questions, which is where
+// the rule below is recorded. What is comparable is every multiplier whose windows all stay inside the axes,
+// and these five cases are all of them: the identity, the leading multiplier read as nothing at and below the
+// leading extent, and the two positions of a zero.
+//
+// The rule the release does follow where it stays inside the operand, measured over a gradient of (1 ... N)
+// at four shapes and about thirty multipliers and written down in full in
+// facts/MetalPerformanceShadersGraph/Core.md: for each axis j below the last, multiplier[j + 1] is a window
+// of that many terms along axis j at axis j's OWN STRIDE, weighted one each; the windows compose across
+// axes, and each is a window of the INCOMING GRADIENT and not of the sum so far; multiplier[0] is not read
+// while it is at most the leading extent; and an entry of zero anywhere answers zeros. The source is fed
+// ONES beside every gradient here, so an answer that read the source instead of the gradient would be ones
+// and the case would fail.
+static void tile_gradient_cases(void)
+{
+    float feed16[16], ones16[16], feed4[4], ones4[4];
+    for (int i = 0; i < 16; i++) { feed16[i] = (float)(i + 1); ones16[i] = 1.0f; }
+    for (int i = 0; i < 4; i++) { feed4[i] = (float)(i + 1); ones4[i] = 1.0f; }
+    NSArray<NSNumber *> *fourByFour = @[@4, @4];
+    NSArray<NSNumber *> *four = @[@4];
+    NSArray<NSNumber *> *floatTypes = @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32)];
+    // A multiplier of one on every axis is the gradient unchanged: no window, so nothing is read past the
+    // operand and both sides answer.
+    tile_gradient_case("tile-gradient-identity float32", @[@1, @1], fourByFour, feed16, ones16, 64, floatTypes);
+    // A rank of one, which has no axis below the last and so no window at all: the one entry of its
+    // multiplier is the leading one, and a leading entry above one reads past the end of the gradient here as
+    // it does everywhere else - measured, a multiplier of (4) over a 4 answers 30, 32, 34, 36. So it is asked
+    // with a multiplier of one, which is the only leading entry whose answer is a function of the graph.
+    tile_gradient_case("tile-gradient-rank1 float32", @[@1], four, feed4, ones4, 16, floatTypes);
+    // An entry of zero is an empty window and an empty sum: written zeros, which a destination filled with
+    // the byte 0xbd tells apart from an answer that was never written. Both positions of the zero.
+    tile_gradient_case("tile-gradient-zero float32", @[@1, @0], fourByFour, feed16, ones16, 64, floatTypes);
+    tile_gradient_case("tile-gradient-zero-leading float32", @[@0, @1], fourByFour, feed16, ones16, 64, floatTypes);
+}
+
+// The tile's gradient's case, which is multi_case_filled with the two operands a gradient of a tile has - the
+// incoming gradient and the source - and the destination filled with the byte 0xbd, because an empty window
+// answers WRITTEN zeros and a destination that starts as zero cannot tell a written zero from an unwritten
+// one. Both operands are of the SOURCE'S OWN SHAPE, which is what a gradient of a tile is fed.
+static void tile_gradient_case(const char *name, NSArray<NSNumber *> *multiplier,
+                               NSArray<NSNumber *> *shape, const void *gradient, const void *source,
+                               size_t bytes, NSArray<NSNumber *> *types)
+{
+    multi_case_filled(name,
+                      ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                          return [g tileGradientWithIncomingGradientTensor:in[0] sourceTensor:in[1]
+                                                        withMultiplier:multiplier name:@"tg"]; },
+                      @[shape, shape],
+                      @[[NSData dataWithBytes:gradient length:bytes],
+                        [NSData dataWithBytes:source length:bytes]],
+                      types, 0xbd);
 }
 
 // The reshape, which is the same walk with the axes left alone and the result's shape the caller's: the

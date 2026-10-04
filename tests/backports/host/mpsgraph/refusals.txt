@@ -125,8 +125,41 @@ pad-antiperiodic 134 Unsupported paddingMode
 # the zero and the constant answer the same padding, so it is the mirror the release's own compiler refuses
 # ("Optimize Original Module MLIR pass manager failed"), and the port refuses it where the graph is built.
 pad-reflect-past-extent 134 Optimize Original Module MLIR pass manager failed
-# A rank of THREE. The tile of one answers - a 2x3x4 tiled by two on every axis is a 4x6x8 and both sides
-# agree on it - and the pad of one does not, in any mode: the result tensor is built (the shape line prints
-# 4x5x6) and then the release's own kernel says the destination's shape is not the one it wanted.
-pad-rank3-clamp 134 Invalid KernelDAG, equalShape for destination failed
-pad-rank3-symmetric 134 Invalid KernelDAG, equalShape for destination failed
+# THE TWO MIRRORS' OWN LIMITS, which are different and neither is "the axis's own extent". Measured over
+# extents one, two and three, on the left and on the right, over every padding from one to five: a REFLECT
+# answers up to the axis LESS ONE and a SYMMETRIC up to the axis ITSELF, and the release's compiler says so
+# with its own words - "'mps.pad' op padding values too large at axis 0, max padding is N, got M"
+# (MPSGraphUtilities.mm:956), where the maximum it prints is 0 for a reflect on an axis of ONE and 1 for a
+# symmetric on the same axis. So over an axis of one element the reflect reaches nothing at all and the
+# symmetric reaches its own edge, and one element of padding past either is refused.
+pad-thin-reflect 134 max padding is 0, got 1
+pad-thin-symmetric 134 max padding is 1, got 2
+# A DESTINATION NARROWER THAN THE RESULT, which is what the two rank-3 pad entries used to be recorded as.
+# The destination this branch builds is the OPERAND's shape and the buffer is the OPERAND's bytes, while the
+# result is bigger: a 4x5x6 into a 2x3x4's 96 bytes at rank of three, and a 4x6 into a 2x4's 32 bytes at rank
+# of two. Which mode answers and which refuses is the measurement, and it is per mode and per rank - the two
+# mirrors at rank of three are refused by the release's own multiary kernel ("Invalid KernelDAG, equalShape
+# for destination failed") while the constant and the zero write what fits and exit 0, and at rank of two
+# every mode writes what fits. Neither is a refusal of the PAD: asked into a destination of the RESULT's own
+# shape the same pad of a rank of three answers in every mode, which is what graph-cases.m's pad-rank3-clamp
+# and pad-rank3-symmetric compare - so the pad of a rank of three is a case and not a refusal, and these
+# entries are named for the shape of the destination rather than for the rank.
+pad-destination-narrower-rank3-clamp 134 Invalid KernelDAG, equalShape for destination failed
+pad-destination-narrower-rank3-constant 0 0000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000004000004040000080400000c6420000c0400000e040
+pad-destination-narrower-rank2 0 0000c6420000c6420000c6420000c6420000c6420000c6420000803f00000040
+
+# THE TILE'S GRADIENT, and the one measurement of it that is reproducible. A window of m[j+1] terms along
+# axis j that runs off the end of that axis makes the release READ PAST THE END of the caller's gradient
+# buffer, so its answer there is whatever memory follows the operand. The two `tilegrad-1x2` entries below are
+# the same graph over the same values with the same shape and differ ONLY in the bytes planted immediately
+# after the operand - 1000 and up in one, zeros in the other - and the release's last row answers
+# 13, 15, 17, 19 in the first and 13, 14, 15, 16 in the second. That is the proof in one line: the answer is
+# a function of memory this repository does not own, which is why none of these is a case in graph-cases.m and
+# why the differential compares the tile's gradient only where no window leaves the axis.
+# tilegrad-1x1 is the identity and reads nothing it should not, so its bytes are the gradient's own.
+tilegrad-1x1 0 0000803f0000004000004040000080400000a0400000c0400000e040000000410000104100002041000030410000404100005041000060410000704100008041
+tilegrad-1x2 0 0000c0400000004100002041000040410000604100008041000090410000a0410000b0410000c0410000d0410000e04100005041000070410000884100009841
+tilegrad-1x2-zero 0 0000c0400000004100002041000040410000604100008041000090410000a0410000b0410000c0410000d0410000e04100005041000060410000704100008041
+tilegrad-1x3 0 00007041000090410000a8410000c0410000d8410000f04100000442000010420000b0410000c8410000e0410000f841000088410000a0410000b8410000d041
+tilegrad-1x5 0 0000e041000004420000184200002c420000f8410000104200002442000038420000084200001c420000304200004442000014420000284200003c4200005042
+tilegrad-1x3-short 0 0000c04000001041000040410000704100001041000040410000704100009041

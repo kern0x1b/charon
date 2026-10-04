@@ -923,6 +923,157 @@ typedef enum {
                              name:name];
 }
 
+// The TILE'S GRADIENT, and the whole of what the release's is, measured on this host's own MPSGraph over a
+// gradient of (1 ... N) at four shapes and about thirty multipliers:
+//
+//   - the incoming gradient must be of the SOURCE'S OWN SHAPE and the result is that shape. A gradient of
+//     the tiled shape, or of the same element count in another arrangement, is refused by the release where
+//     the graph runs ("Incompatible shape for parameter at index 0", MPSGraphExecutable.mm:4500), and a
+//     multiplier that is not one entry per axis is refused by its compiler ("'mps.tile_gradient' op `input`
+//     rank: 2 should match `multiplier` length: 3", MPSGraphUtilities.mm:1258). Both are raised here.
+//   - FOR EACH AXIS j from 0 to rank-2 the multiplier m[j+1] is a WINDOW of m[j+1] terms along axis j, at
+//     axis j's OWN STRIDE, weighted one each, and a term that leaves the axis is DROPPED and not clamped:
+//     over a 4x4 of (1 ... 16), m[1] of 2 answers 6, 8, 10, 12 | 14, 16, 18, 20 | 22, 24, 26, 28 | 13, 14,
+//     15, 16, of 3 answers 15, 18, 21, 24 | 27, 30, 33, 36 | 22, 24, 26, 28 | 13, 14, 15, 16, and of 4 or of
+//     5 or of 9 all answer 28, 32, 36, 40 | 27, 30, 33, 36 | 22, 24, 26, 28 | 13, 14, 15, 16 - the last
+//     three rows of each are the window cut short by the end of the axis, which is what "dropped" means.
+//   - the windows COMPOSE ACROSS AXES, and each axis's window is taken of the INCOMING GRADIENT and not of
+//     the sum so far, so a rank of three with (3, 3, 3) is the 3x3 box around each element of the leading
+//     block and a rank of two with (3, 3) is three terms and not six: measured, a 4x4 with (2, 2) answers
+//     byte for byte what a 4x4 with (1, 2) answers, and a 4x4 with (3, 3) what a 4x4 with (1, 3) answers.
+//   - m[0] IS NOT READ while it is at most the leading extent: measured, the gradient is answered unchanged
+//     for m[0] of 1 and 2 on an 8x4, of 1 to 4 on a 4x4, of 1 to 5 on a 3x4, of 1 to 8 on a 2x4, of 1 to 3
+//     on a 5x4 and of 1 and 2 on a 6x4. Above the leading extent the release's answer STOPS BEING THE
+//     GRADIENT OF THE INCOMING GRADIENT and starts reading the SOURCE instead - measured, a gradient of
+//     (1, 2, 4, 8, ...) with a source of ones and m[0] of 3 answers twice the gradient, while the same
+//     source of (1, 2, 4, 8, ...) with a gradient of ONES answers 2, 4, 7, 12, 21, 38, 71, 136 - which is
+//     the source's own elements and not the gradient's. An operation whose answer depends on the forward
+//     operand is not a gradient, and there is no rule here to reproduce, so a leading multiplier above the
+//     leading extent is refused and the row says so.
+//   - AN ENTRY OF ZERO answers ZEROS, wherever it is: measured over a 4x4, (1, 0), (0, 1), (2, 0), (0, 2)
+//     and (0, 0) all answer sixteen zeros.
+//
+// So the answer is the sum of the incoming gradient and one term per shift of every axis, every term sliced
+// out of the INCOMING GRADIENT with that axis's own stride as the shift - which drops what runs off the end
+// of the axis, because a slice's result coordinate with no element of the operand behind it is a zero, and
+// that is the whole of "dropped and not clamped".
+- (MPSGraphTensor *)tileGradientWithIncomingGradientTensor:(MPSGraphTensor *)incomingGradientTensor
+                                             sourceTensor:(MPSGraphTensor *)sourceTensor
+                                            withMultiplier:(NSArray<NSNumber *> *)multiplier
+                                                      name:(NSString *)name
+{
+    NSArray<NSNumber *> *sourceShape = sourceTensor.shape;
+    NSUInteger rank = sourceShape.count;
+    if (multiplier.count != rank) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked for a tile gradient of a rank-%lu tensor with a multiplier "
+                           @"of %lu entries, and the release's own compiler refuses it: 'mps.tile_gradient' op "
+                           @"`input` rank: %lu should match `multiplier` length: %lu",
+                         name, (unsigned long)rank, (unsigned long)multiplier.count, (unsigned long)rank,
+                         (unsigned long)multiplier.count];
+    }
+    for (NSUInteger axis = 0; axis < rank; axis++) {
+        if (multiplier[axis].integerValue < 0) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was asked for %ld copies of axis %lu, and a tile makes one or "
+                               @"more of every axis", name, (long)multiplier[axis].integerValue,
+                        (unsigned long)axis];
+        }
+    }
+    // The gradient must be of the source's own shape, and the result is that shape whatever the multiplier
+    // says. The release refuses the two that are not where the graph RUNS rather than where it is built -
+    // "Incompatible shape for parameter at index 0" (MPSGraphExecutable.mm:4500) - and the refusal here is at
+    // the build, which is earlier and is what the row records.
+    if (incomingGradientTensor.shape != nil && ![incomingGradientTensor.shape isEqualToArray:sourceShape]) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked for the tile gradient of a tensor of %@ with an incoming "
+                           @"gradient of %@, and a gradient is of the tensor it is the gradient of: the "
+                           @"release answers 'Incompatible shape for parameter at index 0' where the graph "
+                           @"runs", name, [sourceShape componentsJoinedByString:@"x"],
+                     [incomingGradientTensor.shape componentsJoinedByString:@"x"]];
+    }
+    MPSDataType type = incomingGradientTensor.dataType;
+    // An entry of zero is an empty window and an empty sum, which is a tensor of zeros of the source's own
+    // shape in the gradient's own type - measured, every position of the multiplier that holds a zero answers
+    // zeros and not the gradient.
+    for (NSUInteger axis = 0; axis < rank; axis++) {
+        if (multiplier[axis].integerValue != 0)
+            continue;
+        NSUInteger count = 1;
+        for (NSNumber *extent in sourceShape) count *= (NSUInteger)extent.integerValue;
+        size_t width = MPSSizeofMPSDataType(type);
+        void *zeros = calloc(count, width);
+        MPSGraphTensor *answer = [self constantWithShape:sourceShape dataType:type
+                                                 values:[NSData dataWithBytes:zeros length:count * width]
+                                                   name:name];
+        free(zeros);
+        return answer;
+    }
+    // The leading multiplier, read only while it is at most the leading extent - see the comment above.
+    NSUInteger leading = sourceShape.firstObject.unsignedIntegerValue;
+    if (multiplier.firstObject.integerValue > (NSInteger)leading) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked for %ld copies of the leading axis, which is %lu long, "
+                           @"and above its own extent the release's answer is not a gradient of the incoming "
+                           @"gradient at all: measured, it reads the SOURCE tensor instead, which is not a rule "
+                           @"this port can reproduce",
+                         name, (long)multiplier.firstObject.integerValue, (unsigned long)leading];
+    }
+    // One term per shift of every axis below the last, and the sum of all of them with the incoming gradient.
+    // The stride of an axis is the product of the extents after it, which is what one step of that axis moves
+    // an element by - the last axis's stride is one and no window is taken along the last axis, because the
+    // multiplier that would give it is the leading one and that is not read.
+    NSMutableArray<MPSGraphTensor *> *terms = [NSMutableArray arrayWithObject:incomingGradientTensor];
+    for (NSUInteger axis = 0; axis + 1 < rank; axis++) {
+        NSInteger window = multiplier[axis + 1].integerValue;
+        NSUInteger stride = 1;
+        for (NSUInteger after = axis + 1; after < rank; after++)
+            stride *= (NSUInteger)sourceShape[after].integerValue;
+        NSUInteger extent = (NSUInteger)sourceShape[axis].integerValue;
+        for (NSInteger shift = 1; shift < window; shift++) {
+            // A shift past the axis is no term at all: the window is a count of terms ALONG the axis, so
+            // the fourth shift of an axis of four reaches no coordinate and the fifth never happens. This is
+            // why a window of five over a leading block of four answers what a window of four answers.
+            if ((NSUInteger)shift >= extent)
+                break;
+            NSMutableArray<NSNumber *> *starts = [NSMutableArray arrayWithCapacity:rank];
+            NSMutableArray<NSNumber *> *ends = [NSMutableArray arrayWithCapacity:rank];
+            NSMutableArray<NSNumber *> *strides = [NSMutableArray arrayWithCapacity:rank];
+            NSMutableArray<NSNumber *> *padLeft = [NSMutableArray arrayWithCapacity:rank];
+            NSMutableArray<NSNumber *> *padRight = [NSMutableArray arrayWithCapacity:rank];
+            for (NSUInteger k = 0; k < rank; k++) {
+                BOOL onAxis = k == axis;
+                [starts addObject:onAxis ? @(shift) : @0];
+                [ends addObject:sourceShape[k]];
+                [strides addObject:onAxis ? @(stride) : @1];
+                [padLeft addObject:onAxis ? @(shift) : @0];
+                [padRight addObject:@0];
+            }
+            // The region is the axis from `shift` to its end at the axis's own stride, which is the window's
+            // shift of the gradient with what ran off the end of the axis left out - and it is put back at
+            // the front with a ZERO pad rather than left short, because a gather's result coordinate with no
+            // element of the operand behind it is not written at all and the result's bytes are a fresh
+            // buffer's. The pad writes every element of the result, which is what makes the dropped terms
+            // zeros and not whatever the allocator left.
+            MPSGraphTensor *term = [self charon_mps_slice:CharonMPSGraphOperationKindSlice
+                                                   inputs:@[incomingGradientTensor]
+                                               parameters:@{@"gather": @"slice", @"sliceStarts": starts,
+                                                            @"sliceEnds": ends, @"sliceStrides": strides}
+                                                      name:name];
+            term = [self charon_mps_slice:CharonMPSGraphOperationKindSlice
+                                  inputs:@[term]
+                              parameters:@{@"gather": @"pad", @"padMode": @(MPSGraphPaddingModeZero),
+                                           @"padLeft": padLeft, @"padRight": padRight, @"padConstant": @0}
+                                     name:name];
+            [terms addObject:term];
+        }
+    }
+    MPSGraphTensor *sum = terms.firstObject;
+    for (NSUInteger i = 1; i < terms.count; i++)
+        sum = [self additionWithPrimaryTensor:sum secondaryTensor:terms[i] name:name];
+    return sum;
+}
+
 // The PAD, and the whole of what its five answered modes are, each measured on this host's own MPSGraph:
 //
 //   MPSGraphPaddingModeConstant  the caller's constantValue, written in the result's own type (measured, a
@@ -936,11 +1087,13 @@ typedef enum {
 //                                last element (3, 1, 2, 3, 4, 3) nor one that repeats the edge;
 //   MPSGraphPaddingModeSymmetric the mirror that DOES repeat the edge - measured (1, 1, 2, 3, 4, 4).
 //
-// Both mirrors are refused by the release when the padding reaches the axis's own extent - measured, a left
-// padding of three on an axis of two is refused by its compiler ("Optimize Original Module MLIR pass manager
-// failed") while one on the same axis answers - and PERIODIC and ANTI-PERIODIC are refused outright, with the
-// release's own words "Unsupported paddingMode", after it has built the result tensor. So the two modes the
-// release does not answer are refused where the graph is built, and the other five are the walk's own.
+// The two mirror modes cannot reach past the axis they mirror, and each reaches a different way: measured
+// over extents one, two and three and both sides of the axis, a REFLECT answers up to the axis LESS ONE and
+// a SYMMETRIC up to the axis ITSELF, and one element more of either is refused by the release's own
+// compiler ("Optimize Original Module MLIR pass manager failed"). PERIODIC and ANTI-PERIODIC are refused
+// outright, with the release's own words "Unsupported paddingMode", after it has built the result tensor. So
+// the two modes the release does not answer are refused where the graph is built, and the other five are the
+// walk's own.
 - (MPSGraphTensor *)padTensor:(MPSGraphTensor *)tensor
              withPaddingMode:(MPSGraphPaddingMode)paddingMode
                  leftPadding:(NSArray<NSNumber *> *)leftPadding
@@ -964,10 +1117,12 @@ typedef enum {
 
 // The pad's GRADIENT, which is the forward pass's output copied back into a tensor of the input's own shape:
 // the incoming gradient is of the PADDED shape, and every element of it outside the region the padding
-// covered is dropped, which is the same scatter the slice's gradient is with the left padding as the offset.
-// Measured: over a padded 4x6 of (1 ... 24) and a padding of (1, 2) at the left and (1, 0) at the right, the
-// gradient of a 2x4 answers (102, 108, 114, 120 | 174, 180, 186, 192) - the sum of the incoming gradient over
-// the copies that land on each element, which for a pad is the one copy and so is that element's value.
+// covered is dropped, which is the same scatter the slice's gradient is with the left padding as its offset.
+// Measured: over an incoming gradient of (1 ... 24) as a 4x6 and a padding of (1, 2) at the left and (1, 0) at
+// the right of a 2x4, the release answers 9, 10, 11, 12 | 15, 16, 17, 18 - which is the incoming gradient's own
+// rows 1 and 2, columns 2 to 5, and is the sum over the copies that land on each element, which for a pad is
+// the one copy and so is that element's value. (The numbers this comment carried before, 102 and 174 down the
+// two rows, were not the release's and are taken back; the row of the registry had the right ones already.)
 - (MPSGraphTensor *)padGradientWithIncomingGradientTensor:(MPSGraphTensor *)incomingGradientTensor
                                             sourceTensor:(MPSGraphTensor *)sourceTensor
                                              paddingMode:(MPSGraphPaddingMode)paddingMode
@@ -982,9 +1137,9 @@ typedef enum {
         [oneEach addObject:@1];
     // The offset is the NEGATED left padding, and that is the whole of what a gradient of a pad is: the
     // region sits `leftPadding` elements into the incoming gradient, which is of the PADDED shape, so the
-    // destination's coordinate is the incoming gradient's less that - measured, a gradient of (1 ... 24) over
-    // a padding of (1, 2) at the left and (1, 0) at the right answers 9, 10, 11, 12 | 21, 22, 23, 24, which is
-    // the incoming gradient's own rows 1 and 2, columns 2 to 5.
+    // destination's coordinate is the incoming gradient's less that - measured, a gradient of (1 ... 24) as a
+    // 4x6 over a padding of (1, 2) at the left and (1, 0) at the right answers 9, 10, 11, 12 | 15, 16, 17, 18,
+    // which is the incoming gradient's own rows 1 and 2, columns 2 to 5.
     NSMutableArray<NSNumber *> *behind = [NSMutableArray arrayWithCapacity:leftPadding.count];
     for (NSNumber *before in leftPadding)
         [behind addObject:@(-before.integerValue)];
