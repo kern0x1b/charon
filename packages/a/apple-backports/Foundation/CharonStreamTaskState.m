@@ -4,6 +4,9 @@
    release group and this one holds none. Named for the task, private to the port, and not an API. */
 @implementation NSURLSessionStreamTaskState
 
+@synthesize session = _session;
+@synthesize hostName = _hostName;
+@synthesize hostPort = _hostPort;
 @synthesize input = _input;
 @synthesize output = _output;
 @synthesize readOpen = _readOpen;
