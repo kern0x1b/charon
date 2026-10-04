@@ -687,7 +687,7 @@ function verify(binary, opt)
         table.join2(problems, pagezero_problems(binary))
     end
     if encrypted(binary) then
-        table.insert(problems, "a linker stamped LC_ENCRYPTION_INFO on a 32-bit ARM library, which iOS 6 refuses to load; link it with ld64")
+        table.insert(problems, "a linker stamped LC_ENCRYPTION_INFO on a 32-bit ARM library, and only an executable carries that command: ld64 makes a library or a bundle encryptable from iOS 7.0 on (rdar://16293398, ld64/src/ld/Options.cpp), so link it with -Wl,-no_encryption")
     end
     if opt.arrived then
         local strong, weak = late_imports(binary, opt.arrived, opt.process_wide)

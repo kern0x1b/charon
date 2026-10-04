@@ -165,6 +165,29 @@ LIBRARIES = {
 PACKAGE = "org.charon.apple-backports"
 INSTALL_FOLDER = "/usr/lib/charon/" .. PACKAGE
 COMPATIBLE = {armv7 = {"armv7", "armv7s"}, armv7s = {"armv7s"}, arm64 = {"arm64"}}
+-- What every link here that writes a library or a bundle says about encryption, and why it is said
+-- to the linker rather than to anything after it.
+--
+-- ld64 makes a dynamic library and a dynamic bundle *encryptable* from iOS 7.0 on: in
+-- ld64/src/ld/Options.cpp, kDynamicLibrary and kDynamicBundle clear fEncryptable only when the
+-- platform's minimum release is older than version2013 (iOS 7.0), with rdar://16293398 next to it -
+-- "Add LC_ENCRYPTION_INFO load command to bundled frameworks". A dynamic executable keeps it at every
+-- release, which is the FairPlay header an application is built with and which modules/apple/macho.lua
+-- leaves alone. What the command carries is cryptid 0, and ld64 sets no MH_CRYPT in the header for it.
+--
+-- Measured with this machine's own toolchain (llvm 23.1.1's clang, the ld64 956.6 package, the 16.4
+-- SDK), one trivial armv7 dylib per release: no command at 6.0, 6.1.3 and below, one at 7.0, 8.0,
+-- 8.4.1, 9.0, 9.3, 10.0.1 and 10.3.4, with either clang as the driver. So it is the minimum on the
+-- link line that decides it, and every band of one install is linked at that install's own minimum -
+-- stage_bands() hands link() the opt it was given, and only the band contents differ - which is why
+-- the 6.1.3 and 4.3 installs carry the command in 0 of their dylibs and an install configured at 8.4.1
+-- or later carries it in every one, and why macho.lua's refusal then fires on a target carrying a
+-- band library (verify_placed) and never on a 6.x install.
+--
+-- -no_encryption is ld64's own negation of that default (Options.cpp parses it into
+-- fEncryptableForceOff), so the linker is told the output is not to be encrypted. Nothing is stripped
+-- afterwards, and the tree's check keeps its invariant.
+NOT_ENCRYPTED = "-Wl,-no_encryption"
 
 function libraries()
     return LIBRARIES
@@ -1261,7 +1284,7 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
     -- packages/m/matter/xmake.lua:69 and packages/s/swift-runtime/xmake.lua:899, so this is the house
     -- spelling and not a new one.
     local arguments = {"-target", opt.triple, "-isysroot", opt.sdkdir, "-fuse-ld=" .. opt.ld, "-fobjc-arc",
-                       "-dynamiclib", "-Wno-incompatible-sysroot",
+                       "-dynamiclib", "-Wno-incompatible-sysroot", NOT_ENCRYPTED,
                        "-install_name", path.join(INSTALL_FOLDER, path.filename(output)),
                        "-Wl,-rename_section,__DATA,__objc_catlist,__DATA,__charon_catlist", "-o", output, attach}
     table.join2(arguments, kept)
@@ -3200,7 +3223,7 @@ function write_searchbundle(opt)
     local output = path.join(folder, "org.charon.corespotlight")
     local triple = opt.architecture .. "-apple-ios" .. opt.deployment
     os.vrunv(driver(opt, {"-target", triple, "-isysroot", opt.sdkdir, "-fuse-ld=" .. opt.ld, "-fobjc-arc",
-                          "-bundle", "-Os", "-g0", "-Wall",
+                          "-bundle", "-Os", "-g0", "-Wall", NOT_ENCRYPTED,
                           "-DCHARON_BACKPORTS_INSTALL_FOLDER=\"" .. INSTALL_FOLDER .. "\"", "-o", output, source, "-framework", "Foundation"}))
     os.vrunv("xcrun", {"strip", "-x", output})
     signing.sign(opt.ldid, output)
