@@ -1,7 +1,7 @@
 #!/bin/bash
 # The zone differential's own check, and the only thing that attests it.
 #
-# It runs FOUR things, and the first two exist because a change to this family that passes only the
+# It runs FIVE things, and the first two exist because a change to this family that passes only the
 # first two has not been checked:
 #
 #   1. every CloudKit source compiles for the port's own target - armv7-apple-ios6.1.3 against the 16.4
@@ -15,9 +15,12 @@
 #   4. the PLANTED control fires - a plant in a scratch copy, never in a tracked file, with a sentinel
 #      symbol checked in the linked binary BEFORE the plant is allowed to count, so a stale link fails
 #      loudly instead of quietly reporting the previous answer.
+#   5. the operation initializers are read out of the host's own CloudKit and compared with the answers
+#      the facts record - a different question from the three above, which are all about values - and
+#      its own control fires, on the recorded answer this time.
 #
 # A check that cannot fail is not evidence, so a script that only did 1 and 2 would be claiming a
-# comparison it never ran. It runs all four and exits non-zero if any of them does not hold.
+# comparison it never ran. It runs all five and exits non-zero if any of them does not hold.
 #
 #     bash tests/backports/host/cloudkit/zone-check.sh
 set -u
@@ -138,6 +141,58 @@ PY
     fi
 else
     echo "  skipped: the port binary is missing"; fails=$((fails + 1))
+fi
+
+echo "== 5. the operation initializers, against the host's own CloudKit, with its own control =="
+# A different question from the four above: the zone differential compares values, and the operation
+# initializers are refusals and instantiations, which the zone cases never reach. The answers are the
+# host's own, recorded beside each case in initializers-host.m, so this stage is what makes the
+# measurement in facts/CloudKit/Values.md reproducible and a host that changes its mind go red.
+#
+# The CONTROL here is on the recorded answer rather than on a value: a scratch copy of the cases file
+# with one expectation changed has to go red and name that case. Without it a case list that no longer
+# matches the framework would read green, because a program that prints what it finds decides nothing
+# about what it should have found.
+build_initializers() {   # $1 = the cases file, $2 = the binary
+    xcrun clang -target arm64-apple-ios13.1-macabi -isysroot "$HOST_SDK" -fobjc-arc -Wall \
+        -framework Foundation -framework CloudKit -o "$2" "$1" 2>"$WORK.init.log"
+}
+if build_initializers tests/backports/host/cloudkit/initializers-host.m "$WORK/init-host"; then
+    out=$(DYLD_FRAMEWORK_PATH="$HOST_SDK/System/iOSSupport/System/Library/Frameworks" \
+          "$WORK/init-host" 2>&1)
+    code=$?
+    echo "$out" | grep -E '^#|^ +CK(Operation|Share|Database|Modify|Fetch|Query|Accept|Discover)' | sed 's/^/  /'
+    if [ "$code" -ne 0 ]; then
+        echo "  FAIL the host's own answer is not the one the facts hold"; fails=$((fails + 1))
+    else
+        echo "  ok the host answers every case the way facts/CloudKit/Values.md records"
+    fi
+    cp tests/backports/host/cloudkit/initializers-host.m "$WORK/plant/initializers-planted.m"
+    python3 - "$WORK/plant/initializers-planted.m" <<'PY'
+import sys
+path = sys.argv[1]
+text = open(path).read()
+old = '#define REFUSES(C) @"raises NSInternalInconsistencyException: You must use a concrete subclass of CKOperation"'
+new = '#define REFUSES(C) @"raises NSInvalidArgumentException: You must instantiate one of the CKOperation subclasses"'
+assert text.count(old) == 1, "the expectation the control changes is not there exactly once"
+open(path, "w").write(text.replace(old, new, 1))
+PY
+    if build_initializers "$WORK/plant/initializers-planted.m" "$WORK/init-planted"; then
+        planted=$(DYLD_FRAMEWORK_PATH="$HOST_SDK/System/iOSSupport/System/Library/Frameworks" \
+                  "$WORK/init-planted" 2>&1)
+        pcode=$?
+        echo "$planted" | grep -E 'CKOperation\[' | sed 's/^/  /'
+        if [ "$pcode" -eq 0 ]; then
+            echo "  FAIL the planted control did not fire: this stage cannot see a wrong answer"
+            fails=$((fails + 1))
+        else
+            echo "  ok the control fired: the stage reads the answer and not merely prints it"
+        fi
+    else
+        echo "  FAIL the scratch copy did not build:"; head -3 "$WORK.init.log"; fails=$((fails + 1))
+    fi
+else
+    echo "  FAIL the host build:"; head -3 "$WORK.init.log"; fails=$((fails + 1))
 fi
 
 echo "zone-check: $fails failing step(s)"

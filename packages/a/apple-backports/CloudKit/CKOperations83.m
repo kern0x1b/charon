@@ -15,7 +15,7 @@
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [super charon_init];
     if (self) {
         [self charon_setUp];
         _shareMetadatas = @[];

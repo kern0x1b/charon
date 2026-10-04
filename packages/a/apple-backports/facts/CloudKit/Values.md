@@ -11,11 +11,15 @@ they are all in the 26.2 surface the corpus measures.
   database is `CKFetchDatabaseChangesOperation`, a fetch of a zone is
   `CKFetchRecordZoneChangesOperation`, a send is `CKModifyRecordsOperation` — so what the engine adds
   is the state and the order, not a request of its own.
-- **Both of the engine's initialisers refuse**, and the refusal is worth its own line: the host
-  *traps*. `+[CKSyncEngine new]` and `-[CKSyncEngine init]` on the host raise
+- **Both of the engine's initialisers refuse on the host, and it is a trap rather than an exception.**
+  `+[CKSyncEngine new]` and `-[CKSyncEngine init]` on the host raise
   `Fatal error: Use of unimplemented initializer 'init()' for class 'CloudKit.__CKSyncEngine'`, because
   the class behind the public one is private and its `-init` is not implemented. A trap takes the
-  process down; this port raises `NSInvalidArgumentException` naming the initializer that is allowed.
+  process down. This port's engine is an `NSObject` that does not trap - it builds, with no state - so
+  the refusal a caller meets is the one this package's own header makes: both spellings are
+  `NS_UNAVAILABLE` in `CharonCKSyncEngine26.h`, as they are in Apple's own header, and the engine is
+  built through `-initWithConfiguration:`. The measured difference, and what a caller sees only if it
+  sends the selector dynamically, is in *The operation initializers* below.
 - **A refusal from the service is handed over with the thing it was about.** A failed record save
   carries the record, a failed zone save the zone, and the failed deletes are dictionaries keyed by
   what was refused. A caller has to decide what to do about a record it did not save, and it cannot
@@ -281,6 +285,57 @@ file that defines a class, with a class two files implement asked of both object
 already tested above it, on synthetic objects; what it could not do was run over the repository's own,
 which is where a registry that disagrees with itself is found. Run before this fix it reported six
 objects, the two here and four that are not ours.
+
+## The operation initializers, measured on the host
+
+`CKOperations8.m` and the four files above it. The base class refuses to be instantiated, and it
+refuses in words and with an exception class that are the host's own; every concrete subclass answers.
+Both halves were measured against the host's CloudKit with `objc_msgSend`, because `-init` and `+new`
+are the two spellings a caller gets wrong and the header's own marking is not what is being asked:
+
+    $ ./ckinit CKOperation new
+    CKOperation[+ new]          -> raises NSInternalInconsistencyException: You must use a concrete subclass of CKOperation
+    $ ./ckinit CKOperation init
+    CKOperation[- init]         -> raises NSInternalInconsistencyException: You must use a concrete subclass of CKOperation
+    $ ./ckinit CKDatabaseOperation new
+    CKDatabaseOperation[+ new]  -> CKDatabaseOperation
+    $ ./ckinit CKModifyRecordsOperation init
+    CKModifyRecordsOperation[- init] -> CKModifyRecordsOperation
+
+**Sixteen is the number of concrete subclasses this port carries, and all sixteen answer for both
+spellings** - `CKDatabaseOperation`, the eight of `CKOperations8.m`, `CKAcceptSharesOperation` of
+8.3, `CKFetchDatabaseChangesOperation` and `CKFetchRecordZoneChangesOperation` of 12.10, and the four
+of `CKOperations10.m`. That is why a modify built with `-init` is a modify with nothing in it and
+its `-main` declines to send it: the header marks each of those `-init` as the **designated**
+initializer, which is a statement that this is the way to make one, and the framework agrees.
+
+**The set-up therefore cannot be reached through the base class's own `-init`, and the seam is named
+for that.** `-charon_init` is the initializer every concrete subclass builds through; it calls
+`NSOperation`'s own `-init` and then `-charon_setUp`, which is the four members every operation needs.
+`-[CKOperation init]` raises before either, exactly as the host's does, so a subclass that wrote
+`[super init]` would raise instead of building anything.
+
+**`+new` is NSObject's here, and that is the host's shape too.** The 26.2 header marks `-init` as the
+designated initializer of `CKOperation` and says nothing about `+new`, so `+[CKOperation new]` reaches
+this `-init` and refuses with the same words. A `+new` of this class's own would be *inherited by*
+`CKDatabaseOperation` - which is concrete on the host - and would refuse a class the host builds.
+
+**Two more refusals were measured in the same probe, and only one of them is this port's to make.**
+`+[CKShare new]` and `-[CKShare init]` raise `CKException` with *"You must call -[CKShare
+initWithRootRecord:shareID:]"*; this port carries no `CKShare` at all, so there is nothing here that
+answers either spelling. `+[CKSyncEngine new]` and `-[CKSyncEngine init]` **trap** -
+`Fatal error: Use of unimplemented initializer 'init()' for class 'CloudKit.__CKSyncEngine'`, because
+the class behind the public one is private and its `-init` is not implemented - and this port's
+`CKSyncEngine` is an `NSObject` that does not trap: it builds, with no state. The difference is only
+visible to a caller that sends the selector dynamically; a caller compiling against
+`CharonCKSyncEngine26.h` cannot write `[CKSyncEngine new]` at all, because that header marks both
+spellings `NS_UNAVAILABLE` as Apple's own does.
+
+**What this costs in the compiler's own opinion, measured.** Routing sixteen `-init`s through a seam
+that clang cannot see as a designated initializer adds 35 `-Wobjc-designated-initializers` warnings
+over these files (336 warning lines across the 28 CloudKit sources before, 371 after; none is an
+error, and the gate compiles with `-Werror=objc-missing-property-synthesis` only). The alternative is
+a `+new` on every subclass and a base class that does not refuse, and the host does the opposite.
 
 ## What CloudKit is still owed, by class
 

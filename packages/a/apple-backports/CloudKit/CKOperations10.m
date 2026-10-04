@@ -24,7 +24,7 @@
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [super charon_init];
     if (self) {
         [self charon_setUp];
         _userIdentityLookupInfos = @[];
@@ -118,7 +118,7 @@ static NSDictionary *CharonCKLookupDocument(CKUserIdentityLookupInfo *lookupInfo
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [super charon_init];
     if (self) {
         [self charon_setUp];
     }
@@ -166,7 +166,7 @@ static NSDictionary *CharonCKLookupDocument(CKUserIdentityLookupInfo *lookupInfo
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [super charon_init];
     if (self) {
         [self charon_setUp];
         _shareURLs = @[];
@@ -253,7 +253,7 @@ static NSDictionary *CharonCKLookupDocument(CKUserIdentityLookupInfo *lookupInfo
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [super charon_init];
     if (self) {
         [self charon_setUp];
         _userIdentityLookupInfos = @[];
