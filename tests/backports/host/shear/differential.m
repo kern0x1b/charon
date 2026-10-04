@@ -401,8 +401,19 @@ static int readFilter(ResamplingFilter filter, ReadFilter *out)
 // switched the translate off in the expectation only: the port and this file's own loops then disagreed on 7143
 // of the 9900 checks while the harness reported them as two independent answers, and the count said nothing
 // about either.
+//
+// `farAnchor` is the vertical's FAR-edge anchor, `dstAlong + (position - dstAlong) * reciprocal`, and the
+// default below is ON. **It was off, and where it was on the term was the identity `dstAlong + centre -
+// dstAlong` - so the anchor was neither applied nor measurable.** That is the same defect v-tail-a13 found in
+// mapsearch.m and it was in this harness too, and the count named it without being asked: the port and this
+// file's own loops disagreed on EVERY vertical case at EVERY scale but one - all 48 translate/slope/mode
+// combinations at scales 2, 0.5 and 0.25, on every shape, which is 3168 of the 4764 - and on nothing else
+// off the off-grid translate, because at a scale of one the anchor's own offset `dstAlong * (1 - 1/scale)` is
+// zero and an absent term and a zero term are the same term. SEARCH could not have found it either: with the
+// identity in place "near anchor" and "far anchor" score alike at every scale, so the ladder had nothing to
+// climb.
 typedef struct { double alongShift; int translateSign; double slopeShift; int halfPixel; int farAnchor; } Mapping;
-static Mapping mapping = { 0.0, 1, 0.5, 1, 0 };
+static Mapping mapping = { 0.0, 1, 0.5, 1, 1 };
 
 static double expectSample(const Shear *shear, const uint8_t *srcRow, size_t srcStep, vImagePixelCount srcAlong,
                            const ReadFilter *filter, int extend, const double *back, unsigned channel,
@@ -471,7 +482,7 @@ static void expectDestination(const Shear *shear, const vImage_Buffer *src, cons
                 position += 0.5;
             double centre = position * filter->reciprocal;
             if (!horizontal && mapping.farAnchor)
-                centre = (double)dstAlong + centre - (double)dstAlong;
+                centre = (double)dstAlong + (position - (double)dstAlong) * filter->reciprocal;
             if (mapping.halfPixel)
                 centre -= 0.5;
             uint8_t *pixel = shear->horizontal
