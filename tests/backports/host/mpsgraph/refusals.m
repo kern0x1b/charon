@@ -243,6 +243,11 @@ int main(int argc, const char *argv[])
             "concat-interleave-unequal", "concat-zero-extent",
             "stack-axis-outside", "stack-shapes-differ",
             "concat-mixed-types",
+            "split-sizes-sum-short", "split-sizes-sum-long", "split-sizes-zero", "split-sizes-negative",
+            "split-sizes-axis-outside", "split-sizes-axis-negoutside", "split-sizes-fed-placeholder",
+            "split-num-divisible", "split-num-six-into-four", "split-num0",
+            "coord-axis-outside", "coord-axis-negoutside", "coord-rank-one-axis1", "coord-zero-extent",
+            "coord-fed-axis-placeholder", "coord-fed-axis-float", "coord-fed-shape-placeholder",
         };
         unsigned i;
         for (i = 0; i < sizeof(kQuestions) / sizeof(kQuestions[0]); i++)
@@ -806,6 +811,178 @@ int main(int argc, const char *argv[])
             [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
                                   inputsArray:inputs resultsArray:@[destination] executionDescriptor:nil];
             put(q, buffer, bytes);
+            return 0;
+        }
+        // THE SPLIT AND THE COORDINATE ALONG AN AXIS, the two walks of 15.4 that are not gathers, and every
+        // question of theirs a case cannot ask because the release takes the process down. A split whose
+        // result is SEVERAL tensors is asked here with every result of its own buffer, and a coordinate has
+        // no operand at all - which is why the two are one branch with a target count each.
+        if (strncmp(q, "split-", 6) == 0 || strncmp(q, "coord-", 6) == 0) {
+            NSArray<NSNumber *> *twoByFour = @[@2, @4];
+            NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+            NSArray<NSNumber *> *twoByFive = @[@2, @5];
+            NSString *question = [NSString stringWithUTF8String:q];
+            MPSGraph *graph = [MPSGraph new];
+            // A coordinate has NO OPERAND, so its graph carries no placeholder of its own: the only placeholder
+            // in it is the fed parameter, and a graph with a second one changes what the release's run pairs
+            // its inputs array against - which is measured, and is why this is one branch and not two.
+            BOOL coordinate = strncmp(q, "coord-", 6) == 0;
+            MPSGraphTensor *operand = coordinate ? nil
+                : [graph placeholderWithShape:twoByFour dataType:MPSDataTypeFloat32 name:@"a"];
+            NSArray<MPSGraphTensor *> *targets = nil;
+            NSUInteger axis = 1;
+            // The fed parameter of the two questions that have one, FED as a caller of the fed form would:
+            // the value is in the graph's feeds and in the run's inputs array, which is the whole point of a
+            // parameter that arrives as data. Left unfed the release refuses at the run with a different
+            // sentence of its own ("Unsupported MPS operation mps.placeholder", MPSRuntime.mm:459), which is
+            // a refusal of the CALLER's pairing rather than of the form.
+            MPSGraphTensorData *fedValue = nil;
+            MPSGraphTensor *fedTensor = nil;
+            // THE SIZES, written down or fed. @[@1, @1] and @[@3, @3] of a 2x4 along axis 1 do not add up and
+            // are refused by the release's own compiler after it has built both result tensors; @[@0, @4]
+            // builds the result of no elements and is refused as the results are assembled; @[@1, @-1] takes
+            // the process down with SIGSEGV and no word at all; and an axis outside the rank is refused with
+            // the same sentence the concatenation's is.
+            if (strstr(q, "sizes")) {
+                if (strstr(q, "sum-short"))
+                    targets = [graph splitTensor:operand splitSizes:@[@1, @1] axis:1 name:@"sp"];
+                else if (strstr(q, "sum-long"))
+                    targets = [graph splitTensor:operand splitSizes:@[@3, @3] axis:1 name:@"sp"];
+                else if (strstr(q, "axis-outside")) {
+                    targets = [graph splitTensor:operand splitSizes:@[@1, @1] axis:2 name:@"sp"];
+                } else if (strstr(q, "axis-negoutside")) {
+                    targets = [graph splitTensor:operand splitSizes:@[@1, @1] axis:-3 name:@"sp"];
+                } else if (strstr(q, "zero"))
+                    targets = [graph splitTensor:operand splitSizes:@[@0, @4] axis:1 name:@"sp"];
+                else if (strstr(q, "negative"))
+                    targets = [graph splitTensor:operand splitSizes:@[@1, @(-1)] axis:1 name:@"sp"];
+                else if (strstr(q, "fed-placeholder")) {
+                    // The sizes fed as a PLACEHOLDER, which is the form the header is written for and which
+                    // takes the release down where the graph is BUILT: SIGSEGV, no word, nothing printed.
+                    MPSGraphTensor *sizes = [graph placeholderWithShape:@[@2] dataType:MPSDataTypeInt32 name:@"s"];
+                    printf("%s about to build\n", question.UTF8String); fflush(stdout);
+                    targets = [graph splitTensor:operand splitSizesTensor:sizes axis:1 name:@"sp"];
+                } else
+                    targets = [graph splitTensor:operand splitSizes:@[@1, @3] axis:1 name:@"sp"];
+            }
+            // THE COUNT, which the release turns into sizes by its own measured rule and refuses when that
+            // rule has nothing left for the last one. 4 into 3 and 6 into 4 are the two that are refused
+            // while 5 into 3 is not.
+            if (strstr(q, "num")) {
+                NSUInteger count = 2;
+                if (strstr(q, "num3")) count = 3;
+                if (strstr(q, "num4")) count = 4;
+                if (strstr(q, "num0")) count = 0;
+                if (strstr(q, "divisible")) {
+                    // An axis of 4 into 3 and one of 6 into 4.
+                    operand = [graph placeholderWithShape:twoByFour dataType:MPSDataTypeFloat32 name:@"a"];
+                    targets = [graph splitTensor:operand numSplits:3 axis:1 name:@"sp"];
+                } else if (strstr(q, "six-into-four")) {
+                    // An axis of SIX into four, which the release's own rule refuses because the first three
+                    // sizes of ceil(6/4) = 2 already take the whole axis and the last would be zero.
+                    MPSGraphTensor *wide = [graph placeholderWithShape:@[@2, @6] dataType:MPSDataTypeFloat32
+                                                                    name:@"w"];
+                    targets = [graph splitTensor:wide numSplits:4 axis:1 name:@"sp"];
+                } else
+                    targets = [graph splitTensor:operand numSplits:count axis:1 name:@"sp"];
+            }
+            // A coordinate's AXIS outside the rank is refused by the release's own compiler with its own
+            // operation's name in the sentence, which is neither a split nor a gather.
+            if (strstr(q, "coord") || strncmp(q, "coord-", 6) == 0) {
+                NSInteger where = 1;
+                if (strstr(q, "axis-outside")) where = 3;
+                // -4 of a rank of THREE, which is one below the rank: -3 would be axis 0 and answers.
+                if (strstr(q, "axis-negoutside")) where = -4;
+                if (strstr(q, "rank-one-axis1")) where = 1;
+                if (strstr(q, "fed-axis-placeholder")) {
+                    MPSGraphTensor *fed = [graph placeholderWithShape:@[@1] dataType:MPSDataTypeInt32 name:@"ax"];
+                    printf("%s about to build\n", question.UTF8String); fflush(stdout);
+                    targets = @[[graph coordinateAlongAxisTensor:fed withShape:twoByFour name:@"c"]];
+                    fedTensor = fed;
+                    int32_t one = 1;
+                    fedValue = [[MPSGraphTensorData alloc] initWithMTLBuffer:
+                                    [gDevice newBufferWithBytes:&one length:sizeof one
+                                                     options:MTLResourceStorageModeShared]
+                                    shape:@[@1] dataType:MPSDataTypeInt32];
+                } else if (strstr(q, "fed-axis-float")) {
+                    MPSGraphTensor *fed = [graph placeholderWithShape:@[@1] dataType:MPSDataTypeFloat32 name:@"ax"];
+                    targets = @[[graph coordinateAlongAxisTensor:fed withShape:twoByFour name:@"c"]];
+                    fedTensor = fed;
+                    float one = 1.0f;
+                    fedValue = [[MPSGraphTensorData alloc] initWithMTLBuffer:
+                                    [gDevice newBufferWithBytes:&one length:sizeof one
+                                                     options:MTLResourceStorageModeShared]
+                                    shape:@[@1] dataType:MPSDataTypeFloat32];
+                } else if (strstr(q, "fed-shape-placeholder")) {
+                    MPSGraphTensor *fed = [graph placeholderWithShape:@[@2] dataType:MPSDataTypeInt32 name:@"sh"];
+                    targets = @[[graph coordinateAlongAxis:1 withShapeTensor:fed name:@"c"]];
+                    fedTensor = fed;
+                    int32_t two[2] = { 2, 4 };
+                    fedValue = [[MPSGraphTensorData alloc] initWithMTLBuffer:
+                                    [gDevice newBufferWithBytes:two length:sizeof two
+                                                     options:MTLResourceStorageModeShared]
+                                    shape:@[@2] dataType:MPSDataTypeInt32];
+                } else if (strstr(q, "zero-extent")) {
+                    // A coordinate of a shape with a zero extent: the release BUILDS the result (the shape
+                    // line prints 0, or 2x0 for the rank of two) and its own RUN refuses the destination,
+                    // because a buffer of no bytes does not exist. So this question is the run.
+                    targets = @[[graph coordinateAlongAxis:0 withShape:@[@0] name:@"c"]];
+                } else if (strstr(q, "rank-one")) {
+                    // An axis of 1 of a rank of one, which the shape line answers and the compiler refuses.
+                    targets = @[[graph coordinateAlongAxis:where withShape:@[@5] name:@"c"]];
+                } else {
+                    targets = @[[graph coordinateAlongAxis:where withShape:twoByThreeByFour name:@"c"]];
+                }
+            }
+            // Whatever the question built, the result's own shapes are printed first: a process that is gone
+            // writes nothing this file can match, and the shapes are what the release did answer.
+            printf("%s result-shape", question.UTF8String);
+            for (MPSGraphTensor *t in targets)
+                printf(" %s", t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil");
+            printf("\n");
+            fflush(stdout);
+            NSMutableDictionary *feeds = [NSMutableDictionary dictionary];
+            NSMutableArray *inputs = [NSMutableArray array];
+            if (operand != nil) {
+                feeds[operand] = [[MPSGraphShapedType alloc] initWithShape:operand.shape dataType:operand.dataType];
+                [inputs addObject:[[MPSGraphTensorData alloc] initWithMTLBuffer:
+                                   [gDevice newBufferWithBytes:rowFeed length:sizeof rowFeed
+                                                    options:MTLResourceStorageModeShared]
+                                   shape:operand.shape dataType:MPSDataTypeFloat32]];
+            }
+            // The feed is for the PLACEHOLDER the caller made, which is not the operation's first input: the
+            // release holds the fed parameter as a constant of its own (the run's own complaint when it is
+            // paired wrongly is "Input feed tensor not found in placeholders, tensor corresponds to
+            // operation: mps_constant"), so pairing the value with the caller's own placeholder is the only
+            // way a caller can ask this at all.
+            if (fedValue != nil && fedTensor != nil) {
+                feeds[fedTensor] = [[MPSGraphShapedType alloc] initWithShape:fedValue.shape
+                                                                      dataType:fedValue.dataType];
+                [inputs addObject:fedValue];
+            }
+            NSMutableArray *results = [NSMutableArray array];
+            NSMutableArray *buffers = [NSMutableArray array];
+            for (MPSGraphTensor *t in targets) {
+                NSUInteger count = 1;
+                for (NSNumber *d in t.shape) count *= (NSUInteger)d.integerValue;
+                size_t bytes = count * MPSSizeofMPSDataType(t.dataType);
+                id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+                memset([buffer contents], gPattern, bytes);
+                [buffers addObject:buffer];
+                [results addObject:[[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:t.shape
+                                                                        dataType:t.dataType]];
+            }
+            MPSGraphExecutable *executable = [graph compileWithDevice:gGraphDevice feeds:feeds
+                                                       targetTensors:targets targetOperations:@[]
+                                              compilationDescriptor:nil];
+            if (executable == nil) { printf("  NO EXECUTABLE\n"); return 0; }
+            [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                                  inputsArray:inputs resultsArray:results executionDescriptor:nil];
+            for (NSUInteger i = 0; i < buffers.count; i++) {
+                char label[128];
+                snprintf(label, sizeof label, "%s-result%lu", q, (unsigned long)i);
+                put(label, buffers[i], [buffers[i] length]);
+            }
             return 0;
         }
         fprintf(stderr, "unknown question '%s'\n", q);

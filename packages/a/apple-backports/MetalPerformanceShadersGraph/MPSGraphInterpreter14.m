@@ -2036,6 +2036,98 @@ static NSDictionary *CharonMPSGraphConcatPlan(NSString *name, NSArray<NSArray<NS
              @"concatInterleave": @(interleave), @"concatStacked": @(stacked)};
 }
 
+// THE SIZES OF A SPLIT, asked both when the graph is built (so that every output tensor carries its shape
+// before anything runs) and when the operation runs (where the operand's value may have a shape of its own).
+// One function for both, so a graph whose operand is fed is cut the way the value says.
+//
+// Written sizes are the caller's own, and the two rules about them are the release's:
+//
+//   - they must ADD UP to the extent of the axis they are cut from. Measured, @[@1, @1] and @[@3, @3] of a
+//     2x4 along axis 1 both BUILD their result tensors and are then refused by the release's own compiler,
+//     "'mps.split' op sum of result dimension lengths along split axis must equal input dimension length
+//     along split axis" (MPSGraphUtilities.mm:1543), after which "Pass failed: MPSCopyDataFiles" takes the
+//     process down; so is @[@1, @2] along axis 2 of a 2x3x4, whose results are a 2x3x1 and a 2x3x2.
+//   - none of them may be ZERO and none may be NEGATIVE. A zero builds the result tensor of no elements
+//     (the shape line prints 2x0) and is refused as the release assembles the results, with
+//     NSInvalidArgumentException "object cannot be nil" from -[__NSArrayM insertObject:atIndex:]; a negative
+//     one takes the process down where the graph is built, with SIGSEGV and no word at all (measured,
+//     @[@1, @(-1)] of a 2x4 along axis 1).
+//
+// A COUNT instead of a list is turned into one by the release's own rule, measured over every pair of an
+// extent E in 1..8 and a count N in 1..4 and then over (9,3), (9,4), (10,3), (10,4), (11,4), (12,5), (13,5),
+// (9,5), (16,5) and (17,6): the first N-1 sizes are ceil(E/N) and the LAST is what is left. So E=5 N=2 is
+// 3 2, E=7 N=3 is 3 3 1, E=8 N=3 is 3 3 2, E=17 N=6 is 3 3 3 3 3 2, and the count is refused exactly when
+// that last size would not be positive - which is when (N-1)*ceil(E/N) is not less than E, and so for E=4
+// N=3, E=6 N=4, E=9 N=4, E=12 N=5, E=16 N=5 and every N above E. The release's words for it are "infer split
+// sizes from total size=E and num_splits=N failed." (MPSGraphUtilities.mm:1543) and then "LLVM ERROR: Failed
+// to infer result type(s):" - and a count of ZERO is refused the same way.
+static NSArray<NSNumber *> *CharonMPSGraphSplitSizes(NSString *name, NSArray<NSNumber *> *written,
+                                                     NSUInteger numSplits, NSInteger axis,
+                                                     NSArray<NSNumber *> *operandShape)
+{
+    NSInteger rank = (NSInteger)operandShape.count;
+    if (axis < 0 || axis >= rank) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked to split axis %ld of a rank-%ld tensor, and axis 0 to %ld is "
+                           @"all it has: measured, the release's own compiler refuses it with \"invalid axis "
+                           @"tensor: [%ld], axis must be in range -rank <= axis < rank, rank = %ld\" "
+                           @"(MPSGraphUtilities.mm:1543) and then \"LLVM ERROR: Failed to infer result type(s)\" "
+                           @"takes the process down",
+                          name, (long)axis, (long)rank, (long)rank - 1, (long)axis, (long)rank];
+    }
+    long long extent = operandShape[(NSUInteger)axis].longLongValue;
+    NSMutableArray<NSNumber *> *sizes = [NSMutableArray array];
+    if (numSplits == 0) {
+        for (NSUInteger i = 0; i < written.count; i++) {
+            long long size = written[i].longLongValue;
+            if (size <= 0) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to split a rank-%ld tensor into a region of %lld "
+                                   @"elements of axis %ld, and a region of no elements is not one the release can "
+                                   @"take: measured, a size of zero builds the result tensor of no elements "
+                                   @"(the shape line prints 2x0) and is refused as the results are assembled "
+                                   @"with \"object cannot be nil\" from -[__NSArrayM insertObject:atIndex:], and "
+                                   @"a NEGATIVE size takes the process down with SIGSEGV where the graph is "
+                                   @"built, with no word at all",
+                              name, (long)rank, size, (long)axis];
+            }
+            [sizes addObject:@(size)];
+        }
+    } else {
+        // ceil(E/N), and the last size is what is left of the axis after the other N-1 have taken theirs.
+        long long each = (extent + (long long)numSplits - 1) / (long long)numSplits;
+        long long last = extent - each * ((long long)numSplits - 1);
+        if (each == 0 || last <= 0) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was asked to split an axis of %lld elements into %lu, and the "
+                               @"release cannot divide those: measured, its own compiler refuses it with "
+                               @"\"infer split sizes from total size=%lld and num_splits=%lu failed.\" "
+                               @"(MPSGraphUtilities.mm:1543) and then \"LLVM ERROR: Failed to infer result "
+                               @"type(s):\" takes the process down. Its own rule is measured and is not "
+                               @"dividing evenly: the first N-1 sizes are ceil(E/N) and the last is what is "
+                               @"left, so E=5 N=2 is 3 2, E=7 N=3 is 3 3 1 and E=8 N=3 is 3 3 2",
+                              name, extent, (unsigned long)numSplits, extent, (unsigned long)numSplits];
+        }
+        for (NSUInteger i = 1; i < numSplits; i++)
+            [sizes addObject:@(each)];
+        [sizes addObject:@(last)];
+    }
+    long long total = 0;
+    for (NSNumber *size in sizes)
+        total += size.longLongValue;
+    if (total != extent) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked to split an axis of %lld elements into regions of %lld in "
+                           @"total, and the release wants them to add up: measured, it BUILDS the result "
+                           @"tensors anyway and then its own compiler refuses the graph with \"'mps.split' op "
+                           @"sum of result dimension lengths along split axis must equal input dimension length "
+                           @"along split axis\" (MPSGraphUtilities.mm:1543), after which \"Pass failed: "
+                           @"MPSCopyDataFiles\" takes the process down",
+                      name, extent, total];
+    }
+    return sizes;
+}
+
 // The walk itself, and the reason it is not the gather above: for each element of the RESULT the coordinate
 // along the axis the operands were laid along says which operand it came from, and the other coordinates
 // are that operand's own - the one below the axis is the result's axis below it and the one above it is the
@@ -2315,6 +2407,17 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
 // carries it before anything runs - the same reason as the gather's shape above, and the same arrangement:
 // the walk's own plan over the INPUTS' shapes, with the axis the caller wrote down and whether the operands
 // interleave along it. The interpreter below asks the same function when the operation runs.
+// The split's sizes, which is the rule and the three refusals of the function above, asked through the
+// factory's own seam so that the graph is cut the same way when it is built and when it runs.
+- (NSArray<NSNumber *> *)charon_mps_splitSizes:(NSArray<NSNumber *> *)written
+                                    numSplits:(NSUInteger)numSplits
+                                         axis:(NSInteger)axis
+                                  ofShape:(NSArray<NSNumber *> *)operandShape
+                                       named:(NSString *)name
+{
+    return CharonMPSGraphSplitSizes(name, written, numSplits, axis, operandShape);
+}
+
 - (NSArray<NSNumber *> *)charon_mps_concatShapeOfTensors:(NSArray<MPSGraphTensor *> *)tensors
                                                     axis:(NSInteger)axis
                                               interleave:(BOOL)interleave
@@ -2352,6 +2455,112 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
     // The CONCAT and STACK family, the one walk of this library whose result is SEVERAL operands, is asked
     // first because it is the only one that reads every input: the gather below reads the operation's FIRST
     // input and a concat has no single operand to read.
+    // The SPLIT, the one walk of this library whose result is SEVERAL TENSORS: its regions are cut OUT of
+    // the operand rather than laid into a result, so every output of the operation is filled here and not
+    // only the first. Each output is the slice walk asked over one region - a start, an end and a stride of
+    // one on the axis named and the operand's own extent on every other axis - with the region's start being
+    // the sum of the sizes before it, which is what puts them in the order the caller wrote them.
+    if (operation.charon_mps_parameters[@"splitAxis"]) {
+        NSDictionary *parameters = operation.charon_mps_parameters;
+        NSInteger axis = [parameters[@"splitAxis"] integerValue];
+        MPSGraphTensorData *source = values[inputs.firstObject];
+        if (![source isKindOfClass:[MPSGraphTensorData class]]) {
+            CharonMPSGraphRefuse(@"MPSGraph: the split named %@ has no value for its operand, so none of its "
+                                 @"results was written", [operation name]);
+            return;
+        }
+        NSArray<NSNumber *> *sizes = CharonMPSGraphSplitSizes([operation name], parameters[@"splitSizes"],
+                                                              [parameters[@"splitNumSplits"] unsignedIntegerValue],
+                                                              axis, source.shape);
+        NSArray<MPSGraphTensor *> *outputs = operation.outputTensors;
+        if (outputs.count != sizes.count) {
+            CharonMPSGraphRefuse(@"MPSGraph: the split named %@ has %lu results and %lu regions, so none of "
+                                 @"them was written", [operation name], (unsigned long)outputs.count,
+                                 (unsigned long)sizes.count);
+            return;
+        }
+        long long at = 0;
+        for (NSUInteger i = 0; i < outputs.count; i++) {
+            MPSGraphTensor *output = outputs[i];
+            // The region is a start and an end per axis and a stride of one: on the axis the regions are cut
+            // from, the start is where this one begins and the end is where the next begins, and on every
+            // other axis the region is the WHOLE of the operand - which is a start of zero and an end of the
+            // axis's own extent, not a start of the extent.
+            NSMutableArray<NSNumber *> *starts = [NSMutableArray arrayWithCapacity:source.shape.count];
+            NSMutableArray<NSNumber *> *ends = [source.shape mutableCopy];
+            NSMutableArray<NSNumber *> *strides = [NSMutableArray arrayWithCapacity:source.shape.count];
+            for (NSUInteger k = 0; k < source.shape.count; k++) {
+                [starts addObject:@0];
+                [strides addObject:@1];
+            }
+            starts[(NSUInteger)axis] = @(at);
+            ends[(NSUInteger)axis] = @(at + sizes[i].longLongValue);
+            // The slice's own plan over that one region - the walk every shape operation of this library
+            // that is a gather of one operand already is, asked here once per output.
+            NSDictionary *region = CharonMPSGraphGatherPlan([operation name], source.shape,
+                                                             @{@"gather": @"slice",
+                                                               @"sliceStarts": starts,
+                                                               @"sliceEnds": ends,
+                                                               @"sliceStrides": strides,
+                                                               @"sliceStartMask": @0,
+                                                               @"sliceEndMask": @0,
+                                                               @"sliceSqueezeMask": @0}, nil);
+            if (region == nil) {
+                CharonMPSGraphRefuse(@"MPSGraph: the split named %@ wanted a region its own plan cannot ask "
+                                     @"for, so none of its results was written", [operation name]);
+                return;
+            }
+            MPSGraphTensorData *result = [[MPSGraphTensorData alloc] initWithDevice:source.device
+                                                                     elementCount:[output charon_mps_elementCount]
+                                                                            shape:output.shape
+                                                                         dataType:output.dataType];
+            [result charon_mps_bytes];
+            CharonMPSGraphGather(operation, source, result, region);
+            values[output] = result;
+            at += sizes[i].longLongValue;
+        }
+        return;
+    }
+    // The COORDINATE ALONG AN AXIS, which is the one walk here with NO OPERAND: every element of the result
+    // holds the coordinate of the axis named, and the shape is the one the factory resolved when the graph
+    // was built - from what the caller wrote down, or out of a constant the graph holds, since a fed
+    // parameter is refused there (measured: the release builds a graph over a fed axis or a fed shape and
+    // then takes the process down, so there is nothing here to read at run time).
+    if (operation.charon_mps_parameters[@"coordinateAxis"]) {
+        MPSGraphTensor *output = operation.outputTensors.firstObject;
+        NSArray<NSNumber *> *shape = operation.charon_mps_parameters[@"coordinateShape"];
+        NSInteger axis = [operation.charon_mps_parameters[@"coordinateAxis"] integerValue];
+        NSUInteger rank = shape.count;
+        NSUInteger count = [output charon_mps_elementCount];
+        // A shape with no axes, an axis outside the rank and a shape with an extent of zero are all refused
+        // where the graph is built, above, so none of the three reaches here; what is left is the answer of a
+        // result of no elements, which has no element to write and is a case the harness cannot ask (the
+        // release refuses the run over one too).
+        if (rank == 0 || axis < 0 || (NSUInteger)axis >= rank || count == 0)
+            return;
+        [output charon_mps_setShape:shape];
+        MPSGraphTensorData *result = [[MPSGraphTensorData alloc] initWithDevice:[MPSGraphDevice deviceWithMTLDevice:device]
+                                                                  elementCount:count
+                                                                         shape:shape
+                                                                      dataType:MPSDataTypeInt32];
+        int32_t *out = [result charon_mps_bytes];
+        if (out == NULL) {
+            CharonMPSGraphRefuse(@"MPSGraph: the coordinate named %@ has nowhere to write its %lu elements, so "
+                                 @"nothing was written to its output", [operation name],
+                                 (unsigned long)count);
+            return;
+        }
+        // The row-major order this library's walks all use: the FIRST axis is the slowest moving, so the
+        // coordinate of the axis named is the one that steps every stride of the axes above it.
+        unsigned long long stride = 1;
+        for (NSUInteger k = (NSUInteger)axis + 1; k < rank; k++)
+            stride *= (unsigned long long)shape[k].unsignedIntegerValue;
+        unsigned long long extent = (unsigned long long)shape[(NSUInteger)axis].unsignedLongLongValue;
+        for (NSUInteger element = 0; element < count; element++)
+            out[element] = (int32_t)(stride ? (element / stride) % (extent ? extent : 1) : 0);
+        values[output] = result;
+        return;
+    }
     if (operation.charon_mps_parameters[@"concatAxis"]) {
         NSMutableArray<MPSGraphTensorData *> *sources = [NSMutableArray arrayWithCapacity:inputs.count];
         NSMutableArray<NSArray<NSNumber *> *> *shapes = [NSMutableArray arrayWithCapacity:inputs.count];

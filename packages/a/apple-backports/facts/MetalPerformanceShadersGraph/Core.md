@@ -1348,11 +1348,12 @@ says so is an answer, and running early would be a silent wrong answer.
 
 ### What is not measured here
 
-The rest of the shape family - `split`, `spaceToDepth`, `depthToSpace`, `spaceToBatch`, `batchToSpace`,
-`coordinateAlongAxis`, `nonZeroIndices`, the `gather*` and `scatter*` forms and the `topK`/`bottomK` pair -
-is not in this page and not in the tree, and the tile's gradient is in the section above with its measurement
-there. `concat` and `stack` have been in the tree since the section above was written and their measurement
-is there now; this list is the rest of the rows the ledger carried as `missing` for this family.
+The rest of the shape family - `spaceToDepth`, `depthToSpace`, `spaceToBatch`, `batchToSpace`,
+`nonZeroIndices`, the `gather*` and `scatter*` forms and the `topK`/`bottomK` pair - is not in this page and
+not in the tree, and the tile's gradient is in the section above with its measurement there. `concat` and
+`stack` have been in the tree since the section above was written and their measurement is there now, and so
+are `split` and `coordinateAlongAxis`, whose measurement is in the section after that; this list is the rest
+of the rows the ledger carried as `missing` for this family.
 
 ## The concat and stack family: the one walk whose result is SEVERAL operands
 
@@ -1504,6 +1505,137 @@ were measured, and they come out differently - one is the compiler's business an
   (the eight refusal questions above, and the tile gradient's read past the end of the caller's buffer) the
   port refuses *and says so in the row*. Here the release has an answer and the port must have it too.
 
+## The split and the coordinate along an axis: the walk that cuts regions OUT, and the walk with no operand
+
+Seven rows and three seams of 15.4, and between them the two walks of this library that are neither a gather of
+one operand nor an arithmetic over two. The **split** is the first operation here whose result is **several
+tensors** - every other walk answers with one - so it is the first that needs an operation with an output
+tensor of its own for each region and a run that fills every one of them. The **coordinate along an axis** is
+the first walk with **no operand at all**: its value IS the coordinate, so what the caller hands it is a shape
+and an axis and nothing else.
+
+Measured on this host's own MPSGraph (macOS 27.0 build 26A428, M4 Pro, Metal 4). The answers the release gives
+are compared cell for cell in a process of their own (`gather_split`): **37 cases, 362 cells, every cell
+byte-identical to the release, `gather_split checks=67 failures=0 recorded=0`, and the red control differing
+in 54 of the 107 case lines.** The refusals - sixteen of them, and most of what this family has - are in
+`refusals.txt` with the release's own words.
+
+### What a split is: the slice walk, once per region
+
+A split's region i is the operand's own elements from the running total of the sizes before it to that total
+plus its own size, along the axis named - so it is **the slice walk asked once per output**, with a region's
+offset being the sum of the sizes before it, and nothing else in this family needed a walk of its own. Over a
+2x4 of (1, 2, 3, 4 | 10, 20, 30, 40):
+
+| question | the release answers |
+| --- | --- |
+| `@[@1, @3]` along axis 1 | a 2x1 of (1, 10) and a 2x3 of (2, 3, 4 \| 20, 30, 40) |
+| `@[@3, @1]` along axis 1 | a 2x3 of (1, 2, 3 \| 10, 20, 30) and a 2x1 of (4 \| 40) - the regions are cut **in the order written** |
+| `@[@1, @1]` along axis 0 | two 1x4s, (1, 2, 3, 4) and (10, 20, 30, 40) |
+| a negative axis | counted from the end: -2 answers what 0 answers and -1 what 1 does |
+| **one** size | the operand itself: `@[@4]` along axis 1 is the same 2x4, which is what the one-operand concatenation of 14.0 answers |
+| a rank of **one** | `@[@1, @2]` along axis 0 of a `[3]` is a `[1]` and a `[2]` |
+| a rank of three | `@[@1, @2]` along axis 1 of a 2x3x4 is a 2x1x4 and a 2x2x4; `@[@2, @1, @1]` along axis 2 is a 2x3x2 and two 2x3x1s |
+| the data type | the **operand's own** in every case measured (0x10000020, float32) |
+
+### The count's own rule, which is NOT dividing evenly, and the header's sentence about it is wrong
+
+`splitTensor:numSplits:axis:name:` takes a count and the release turns it into a list. **The header's own two
+sentences about it are wrong** - MPSGraphTensorShapeOps.h in the SDK of iOS 16.4 says this form "Splits the
+input tensor along `axis` into `numsplits` result tensors of **equal size**. Requires that the length of the
+input along `axis` is **divisible by** `numSplits`" - and both halves are measurably false: 5 into 3 is
+`2 2 1` and 7 into 4 is `2 2 2 1`, which are not equal sizes, over extents that are not divisible by the
+counts. It is the same kind of loose sentence as the concatenation family's "broadcast compatible" above, and
+the row of the method says so with the measurement. The rule is measured
+over **every pair of an extent E in 1..8 and a count N in 1..4**, and then over (9,3), (9,4), (10,3), (10,4),
+(11,4), (12,5), (13,5), (9,5), (16,5) and (17,6) - sixty-six pairs, one process each:
+
+> **the first N-1 sizes are `ceil(E/N)` and the LAST is what is left.**
+
+| E, N | sizes | E, N | sizes |
+| --- | --- | --- | --- |
+| 3, 2 | 2 1 | 7, 2 | 4 3 |
+| 5, 2 | 3 2 | 7, 3 | 3 3 1 |
+| 8, 2 | 4 4 | 5, 3 | 2 2 1 |
+| 3, 3 | 1 1 1 | 8, 3 | 3 3 2 |
+| 9, 3 | 3 3 3 | 10, 3 | 4 4 2 |
+| 4, 4 | 1 1 1 1 | 7, 4 | 2 2 2 1 |
+| 10, 4 | 3 3 3 1 | 11, 4 | 3 3 3 2 |
+| 13, 5 | 3 3 3 3 1 | 17, 6 | 3 3 3 3 3 2 |
+
+Six of those pairs are cases where this rule and "divide evenly" disagree, and a walk that divided evenly
+would fail every one of them. The count is **refused exactly when the last size would not be positive**, which
+is when `(N-1)*ceil(E/N)` is not less than E: E=4 N=3, E=6 N=4, E=9 N=4, E=12 N=5, E=16 N=5, and every N above
+E. The release's own compiler says so in its own words - `infer split sizes from total size=E and
+num_splits=N failed.` (MPSGraphUtilities.mm:1543), then `LLVM ERROR: Failed to infer result type(s):` - and a
+count of ZERO is refused the same way (`refusals.txt`'s `split-num-divisible`, `split-num-six-into-four`,
+`split-num0`).
+
+### What the release refuses about the sizes, and where the port refuses it
+
+Every one of these is a refusal of the release, and the port raises `NSInvalidArgumentException` **where the
+graph is built** for each of them, which is what this library does for every shape and axis the release
+refuses, and what the row of each method says:
+
+| question | what the release does |
+| --- | --- |
+| sizes that do **not add up** | BUILDS the result tensors - the shape line prints two 2x1s for `@[@1, @1]` and two 2x3s for `@[@3, @3]` of a 2x4 - and then its own compiler refuses the graph: `'mps.split' op sum of result dimension lengths along split axis must equal input dimension length along split axis` (MPSGraphUtilities.mm:1543), after which `Pass failed: MPSCopyDataFiles` takes the process down |
+| a size of **zero** | builds the result tensor of no elements - the shape line prints **2x0** - and is refused as it assembles the results: `NSInvalidArgumentException`, `object cannot be nil`, from `-[__NSArrayM insertObject:atIndex:]` |
+| a size of **minus one** | takes the process down **where the graph is built**, with SIGSEGV and no word at all |
+| an **axis outside the rank** | the same sentence the concatenation's is - `invalid axis tensor: [2], axis must be in range -rank <= axis < rank, rank = 2` - from the split's own line 1543 of MPSGraphUtilities.mm, then `LLVM ERROR: Failed to infer result type(s):` |
+
+### The sizes as a tensor: a constant answers, a placeholder does not
+
+`splitTensor:splitSizesTensor:axis:name:` is the header's fed form, and what the release can do with it turns
+out to be the whole question:
+
+* a **constant** of `@[@1, @3]` along axis 1 of a 2x4 answers **exactly what the written-down `@[@1, @3]`
+  answers** - a 2x1 of (1, 10) and a 2x3 of (2, 3, 4 | 20, 30, 40) - and so do constants of `@[@2, @2]`,
+  `@[@3, @1]`, `@[@1, @1, @2]` and `@[@4]`, over an axis of 0 as well as of 1. Four cases of `gather_split`.
+* a **placeholder**, which is what a caller who wants the sizes to arrive at run time makes, takes the release
+  down **where the graph is built**, with SIGSEGV and nothing printed - measured over a sizes tensor of shape
+  `[2]` and of shape `[1]`, an int32 and an int64 alike (`split-sizes-fed-placeholder`).
+
+So the port reads a constant's value when the graph is built and refuses a placeholder there. **One thing
+measured on the way, worth naming because it is what a caller has to do**: the release holds the fed
+parameter as a constant of its own, so the value has to be paired with the caller's **own placeholder** and not
+with the operation's first input - pairing it with the latter is refused at the run with `Input feed tensor not
+found in placeholders, tensor corresponds to operation: mps_constant` (measured, exit 134).
+
+### The coordinate: int32, counted from the end, and the one walk with no operand
+
+`coordinateAlongAxis:withShape:name:` has no operand, so its result is not a gather of anything:
+
+| question | the release answers |
+| --- | --- |
+| the result's data type | **MPSDataTypeInt32** (0x20000020) whatever the shape is, and not int64 - measured over ranks of one (`[1]`, `[3]`, `[5]`), two (2x3, 1x1) and three (2x3x4, 1x1x1) |
+| the value | the coordinate of the axis named: axis 0 of a 2x3 is (0, 0, 0 \| 1, 1, 1), axis 1 is (0, 1, 2 \| 0, 1, 2), axis 0 of a `[5]` is (0, 1, 2, 3, 4), axis 1 of a 2x3x4 is (0, 1, 2 \| 0, 1, 2) four times over, axis 2 of a 2x3x4 is (0, 1, 2, 3) repeated six times |
+| an extent of **one** | a single zero, whatever the axis and the rank |
+| the axis | counted **from the end of the rank**: -1 answers what 1 answers and -2 what 0 does |
+| an axis **outside** the rank | `'mps.get_coordinates' op invalid axis: 3.` and `'mps.get_coordinates' op invalid axis: -4.` of a 2x3x4, and `invalid axis: 1.` of a rank of one (MPSGraphUtilities.mm:1678) - the operation's own name, which is neither a split nor a gather - then `LLVM ERROR: Failed to infer result type(s):` |
+| a shape of **no axes** (`@[]`) | builds a result of rank zero and is refused with the same sentence, `invalid axis: 0.` |
+| a shape with a **zero extent** | is the one extent this family does NOT refuse at the build - measured, a coordinate of a `[0]` is a `[0]` and of a `2x0` a `2x0`, both int32 - but the release's own RUN then refuses the destination with `object cannot be nil` from `-[__NSArrayM insertObject:atIndex:]`, because a buffer of no bytes does not exist (measured on this host: `newBufferWithLength:0` and `newBufferWithBytes:length:0` both answer nil). So there is no run to answer and the port refuses the shape where the graph is built (`coord-zero-extent`), as it does for every extent the release will not run |
+
+The three **fed** forms, and the same rule as the split's sizes: a **constant** answers and answers exactly
+what the written-down form answers (an int32 constant of `@[@2, @4]` at axis 1 is the same 2x4 of coordinates;
+an int32 constant axis of 1, 0 or -1 is the same 2x4 the written-down axis answers - six cases of
+`gather_split`), and a **placeholder** is refused:
+
+| fed form | what the release does with a placeholder |
+| --- | --- |
+| `coordinateAlongAxisTensor:withShape:name:` | takes the process down **where the graph is built**, with SIGSEGV and no word at all, for an axis of 1, of 0, of -1 and of 5 alike. A **floating point** axis is refused by its own compiler: `'mps.get_coordinates' op operand #1 must be 0D tensor of mps index type values or static-shape defined tensor with shape equal to [1] or unranked tensor of mps index type values` - the same sentence the fed gather parameters of this library raise |
+| `coordinateAlongAxis:withShapeTensor:name:` | builds a result tensor whose shape is **-1x-1** and goes down with it (exit 134), for an int32 and an int64 alike |
+| `coordinateAlongAxisTensor:withShapeTensor:name:` | the same, and the fed shape's -1x-1 is what it prints first |
+
+### A retracted measurement, because it was mine and it was wrong
+
+The first probe of the constant-sizes form read `@[@1, @3]` as `2x1` and `2x1` and called it a release
+misdirection. It was **a probe bug**: the constant's NSData was built with the number of bytes its SHAPE had
+*axes* (`@[@2]`.count = 1, so four bytes) instead of the number of elements it holds, so the release read a
+two-element int32 constant out of four bytes. With the length right it answers `2x1` and `2x3`, byte for byte
+what the written-down sizes answer. The corrected probe is `.agent-work/probe/family2c.m` and the four
+constants are cases of `gather_split`; nothing in the rows rests on the wrong reading.
+
 ## The R4 names this band adds, in full
 
 The SDK this package compiles against, the iPhoneOS 16.4 one, declares none of these: they are the private
@@ -1549,6 +1681,12 @@ so it is named here in the facts and not only in the registry.
   carries its result's shape before anything runs
 * `-[MPSGraph charon_mps_slice:inputs:parameters:name:]` - MPSGraph14.m, the one seam the slice family's eleven
   methods and the pad's and the tile's four go through: a gather in one direction, a scatter in the others
+* `-[MPSGraph charon_mps_split:axis:sizes:numSplits:name:]` - MPSGraph14.m, the one seam in this library that
+  answers with SEVERAL tensors: one output tensor per region, each with its own shape
+* `-[MPSGraph charon_mps_splitSizes:numSplits:axis:ofShape:named:]` - MPSGraphInterpreter14.m, the sizes a split
+  cuts by, and the three refusals about them, asked both when the graph is built and when it runs
+* `-[MPSGraph charon_mps_coordinates:fedAxis:shape:fedShape:name:]` - MPSGraph14.m, the walk with no operand: the
+  shape and the axis, written down or held in a constant
 
 **Which half of this list is current, and which is not.** The graph's names are read out of the graph's own
 compiled objects with `nm` and are current for this tree: `relcheck` compiled twenty of them - the slice family's
