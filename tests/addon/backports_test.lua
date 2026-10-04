@@ -219,6 +219,27 @@ local function categories_step(backports, opt, folder, found)
     if named ~= "" then
         table.insert(found, "a category on a class the release exports is attached, and must not be named: " .. named)
     end
+    -- An alias of charon_alias.h, whose class no release of a band carries: the proxy is a class of the
+    -- band and is the class the release's name stands for there, so it is carried, while an alias whose
+    -- proxy is in no binary of the band stands for a class nothing of the band has and is named.
+    io.writefile(path.join(work, "alias.m"),
+                 "#import <Foundation/Foundation.h>\n" ..
+                 "struct charon_alias { const void *proxy; const char *name; };\n" ..
+                 "extern char charon_alias_class_NSProxied __asm__(\"_OBJC_CLASS_$_CharonNSProxied\");\n" ..
+                 "@interface CharonNSProxied : NSObject\n@end\n@implementation CharonNSProxied\n@end\n" ..
+                 "__asm__(\".globl _OBJC_CLASS_$_NSProxied\\n.set _OBJC_CLASS_$_NSProxied, _OBJC_CLASS_$_CharonNSProxied\\n\");\n" ..
+                 "__attribute__((used, section(\"__DATA,__charon_alias\"))) static const struct charon_alias charon_alias_NSProxied = { &charon_alias_class_NSProxied, \"NSProxied\"};\n")
+    fixtures.run(work, opt.clang, {"-target", "armv7-apple-ios4.3", "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-w",
+                                   "-mlinker-version=" .. fixtures.linker_version(opt.ld64), "-fuse-ld=" .. opt.ld64, "-dynamiclib",
+                                   "-framework", "Foundation", "alias.m", "-o", "libalias.dylib"})
+    local alias = path.join(work, "libalias.dylib")
+    named = table.concat(backports.unattached_categories({exports = {}}, {classes = {}}, {alias}, "armv7"), " ")
+    if named ~= "" then
+        table.insert(found, "an alias whose proxy the band defines carries the class of a release that has none, and must not be named: " .. named)
+    end
+    -- The other side of the rule needs no case of its own: the proxy is what the alias's .set resolves to,
+    -- so a band whose binaries hold an alias record and none of them define the proxy is a library that does
+    -- not link, and there is nothing to build for it.
 end
 
 function failures(opt)

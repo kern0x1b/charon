@@ -9,7 +9,7 @@
       "maximum": "8.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua. NO DEVICE MEASUREMENT: tests/backports/device/foundation15batch.m, which these rows cited as the device call test, holds no stream case at all (grep -ci stream over it is 0), so nothing here is claimed to have been run on a device"
     },
     {
       "api": "+[NSStream getBoundStreamsWithBufferSize:inputStream:outputStream:]",
@@ -19,7 +19,7 @@
       "maximum": "8.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua. NO DEVICE MEASUREMENT: tests/backports/device/foundation15batch.m, which these rows cited as the device call test, holds no stream case at all (grep -ci stream over it is 0), so nothing here is claimed to have been run on a device"
     },
     {
       "api": "NSURLSessionStreamTask",
@@ -29,7 +29,7 @@
       "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua. What the release carries of the class is measured over every held armv7 rung: nothing below 8.0 has a class of that name, 8.0 through 8.4.1 carry one in CFNetwork with no instance variable and no method of its own and export no symbol for it, and 9.0 exports it and its metaclass; so the class is carried under a name of Charon's own with the release's name exported to it, and the library's loader gives the release's class the ten methods on the 8.x bands (facts/Foundation/NSURLSessionStreamTask.md, with objc.inventory, objc.code_map and dyld.load output there, and charon_alias.h for the shape). The send is Foundation/NSURLSessionStreamTask9.m, compiled for armv7 and walked by tools/release-split.lua, whose output is in the same facts page. NO DEVICE MEASUREMENT: tests/backports/device/foundation15batch.m, which these rows cited as the device call test, holds no stream case at all (grep -ci stream over it is 0)"
     },
     {
       "api": "-[NSURLSessionStreamTask readDataOfMinLength:maxLength:timeout:completionHandler:]",
@@ -39,7 +39,7 @@
       "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua. What the release carries of the class is measured over every held armv7 rung: nothing below 8.0 has a class of that name, 8.0 through 8.4.1 carry one in CFNetwork with no instance variable and no method of its own and export no symbol for it, and 9.0 exports it and its metaclass; so the class is carried under a name of Charon's own with the release's name exported to it, and the library's loader gives the release's class the ten methods on the 8.x bands (facts/Foundation/NSURLSessionStreamTask.md, with objc.inventory, objc.code_map and dyld.load output there, and charon_alias.h for the shape). The send is Foundation/NSURLSessionStreamTask9.m, compiled for armv7 and walked by tools/release-split.lua, whose output is in the same facts page. NO DEVICE MEASUREMENT: tests/backports/device/foundation15batch.m, which these rows cited as the device call test, holds no stream case at all (grep -ci stream over it is 0)"
     },
     {
       "api": "-[NSURLSessionStreamTask writeData:timeout:completionHandler:]",
@@ -49,7 +49,7 @@
       "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua. What the release carries of the class is measured over every held armv7 rung: nothing below 8.0 has a class of that name, 8.0 through 8.4.1 carry one in CFNetwork with no instance variable and no method of its own and export no symbol for it, and 9.0 exports it and its metaclass; so the class is carried under a name of Charon's own with the release's name exported to it, and the library's loader gives the release's class the ten methods on the 8.x bands (facts/Foundation/NSURLSessionStreamTask.md, with objc.inventory, objc.code_map and dyld.load output there, and charon_alias.h for the shape). The send is Foundation/NSURLSessionStreamTask9.m, compiled for armv7 and walked by tools/release-split.lua, whose output is in the same facts page. NO DEVICE MEASUREMENT: tests/backports/device/foundation15batch.m, which these rows cited as the device call test, holds no stream case at all (grep -ci stream over it is 0)"
     },
     {
       "api": "-[NSURLSessionStreamTask captureStreams]",
@@ -59,7 +59,7 @@
       "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua. What the release carries of the class is measured over every held armv7 rung: nothing below 8.0 has a class of that name, 8.0 through 8.4.1 carry one in CFNetwork with no instance variable and no method of its own and export no symbol for it, and 9.0 exports it and its metaclass; so the class is carried under a name of Charon's own with the release's name exported to it, and the library's loader gives the release's class the ten methods on the 8.x bands (facts/Foundation/NSURLSessionStreamTask.md, with objc.inventory, objc.code_map and dyld.load output there, and charon_alias.h for the shape). The send is Foundation/NSURLSessionStreamTask9.m, compiled for armv7 and walked by tools/release-split.lua, whose output is in the same facts page. NO DEVICE MEASUREMENT: tests/backports/device/foundation15batch.m, which these rows cited as the device call test, holds no stream case at all (grep -ci stream over it is 0)"
     },
     {
       "api": "-[NSURLSessionStreamTask closeWrite]",
@@ -69,7 +69,7 @@
       "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua. What the release carries of the class is measured over every held armv7 rung: nothing below 8.0 has a class of that name, 8.0 through 8.4.1 carry one in CFNetwork with no instance variable and no method of its own and export no symbol for it, and 9.0 exports it and its metaclass; so the class is carried under a name of Charon's own with the release's name exported to it, and the library's loader gives the release's class the ten methods on the 8.x bands (facts/Foundation/NSURLSessionStreamTask.md, with objc.inventory, objc.code_map and dyld.load output there, and charon_alias.h for the shape). The send is Foundation/NSURLSessionStreamTask9.m, compiled for armv7 and walked by tools/release-split.lua, whose output is in the same facts page. NO DEVICE MEASUREMENT: tests/backports/device/foundation15batch.m, which these rows cited as the device call test, holds no stream case at all (grep -ci stream over it is 0)"
     },
     {
       "api": "-[NSURLSessionStreamTask closeRead]",
@@ -79,7 +79,7 @@
       "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua. What the release carries of the class is measured over every held armv7 rung: nothing below 8.0 has a class of that name, 8.0 through 8.4.1 carry one in CFNetwork with no instance variable and no method of its own and export no symbol for it, and 9.0 exports it and its metaclass; so the class is carried under a name of Charon's own with the release's name exported to it, and the library's loader gives the release's class the ten methods on the 8.x bands (facts/Foundation/NSURLSessionStreamTask.md, with objc.inventory, objc.code_map and dyld.load output there, and charon_alias.h for the shape). The send is Foundation/NSURLSessionStreamTask9.m, compiled for armv7 and walked by tools/release-split.lua, whose output is in the same facts page. NO DEVICE MEASUREMENT: tests/backports/device/foundation15batch.m, which these rows cited as the device call test, holds no stream case at all (grep -ci stream over it is 0)"
     },
     {
       "api": "-[NSURLSessionStreamTask startSecureConnection]",
@@ -89,7 +89,7 @@
       "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua. What the release carries of the class is measured over every held armv7 rung: nothing below 8.0 has a class of that name, 8.0 through 8.4.1 carry one in CFNetwork with no instance variable and no method of its own and export no symbol for it, and 9.0 exports it and its metaclass; so the class is carried under a name of Charon's own with the release's name exported to it, and the library's loader gives the release's class the ten methods on the 8.x bands (facts/Foundation/NSURLSessionStreamTask.md, with objc.inventory, objc.code_map and dyld.load output there, and charon_alias.h for the shape). The send is Foundation/NSURLSessionStreamTask9.m, compiled for armv7 and walked by tools/release-split.lua, whose output is in the same facts page. NO DEVICE MEASUREMENT: tests/backports/device/foundation15batch.m, which these rows cited as the device call test, holds no stream case at all (grep -ci stream over it is 0)"
     },
     {
       "api": "-[NSURLSessionStreamTask stopSecureConnection]",
@@ -111,7 +111,7 @@
       "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua. What the release carries of the class is measured over every held armv7 rung: nothing below 8.0 has a class of that name, 8.0 through 8.4.1 carry one in CFNetwork with no instance variable and no method of its own and export no symbol for it, and 9.0 exports it and its metaclass; so the class is carried under a name of Charon's own with the release's name exported to it, and the library's loader gives the release's class the ten methods on the 8.x bands (facts/Foundation/NSURLSessionStreamTask.md, with objc.inventory, objc.code_map and dyld.load output there, and charon_alias.h for the shape). The send is Foundation/NSURLSessionStreamTask9.m, compiled for armv7 and walked by tools/release-split.lua, whose output is in the same facts page. NO DEVICE MEASUREMENT: tests/backports/device/foundation15batch.m, which these rows cited as the device call test, holds no stream case at all (grep -ci stream over it is 0)"
     },
     {
       "api": "-[NSURLSession streamTaskWithNetService:]",
@@ -121,7 +121,7 @@
       "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua. What the release carries of the class is measured over every held armv7 rung: nothing below 8.0 has a class of that name, 8.0 through 8.4.1 carry one in CFNetwork with no instance variable and no method of its own and export no symbol for it, and 9.0 exports it and its metaclass; so the class is carried under a name of Charon's own with the release's name exported to it, and the library's loader gives the release's class the ten methods on the 8.x bands (facts/Foundation/NSURLSessionStreamTask.md, with objc.inventory, objc.code_map and dyld.load output there, and charon_alias.h for the shape). The send is Foundation/NSURLSessionStreamTask9.m, compiled for armv7 and walked by tools/release-split.lua, whose output is in the same facts page. NO DEVICE MEASUREMENT: tests/backports/device/foundation15batch.m, which these rows cited as the device call test, holds no stream case at all (grep -ci stream over it is 0)"
     },
     {
       "api": "-[NSURLSessionStreamDelegate URLSession:streamTask:didBecomeInputStream:outputStream:]",
