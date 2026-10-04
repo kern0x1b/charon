@@ -106,10 +106,18 @@ function write(opt)
                 table.join2(dependencies, shared and shared.packages or {})
                 for _, dependency in ipairs(dependencies) do
                     table.insert(depends, string.format("%s (%s %s)", dependency.name, dependency.relation, dependency.version))
-                    if not carried[dependency.deb] then
-                        carried[dependency.deb] = true
-                        local copied = path.join(opt.outputdir or config.builddir(), path.filename(dependency.deb))
-                        platform.copy_program(dependency.deb, copied, dependency.name)
+                    if not carried[dependency.name] then
+                        carried[dependency.name] = true
+                        local outputdir = opt.outputdir or config.builddir()
+                        local copied
+                        if dependency.meta then
+                            -- A package of the shared runtime is written here and signed with the program's own ldid: the
+                            -- recipe that staged it has no ldid, whose dependencies would reach every package depending on it.
+                            copied = import("apple.shared_runtime").deb(dependency.meta, dependency.root, platform.ldid(target),
+                                                                        path.join(config.builddir(), ".charon", "shared", dependency.name), outputdir)
+                        else
+                            copied = platform.copy_program(dependency.deb, path.join(outputdir, path.filename(dependency.deb)), dependency.name)
+                        end
                         cprint("${bright green}deb${clear} %s", copied)
                         table.insert(written, {deb = copied})
                     end

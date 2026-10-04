@@ -1,6 +1,7 @@
 import("bundle")
 import("signing")
 import("dyld")
+import("core.base.json")
 
 local ADDON = path.join(os.scriptdir(), "..", "..", "addons", "c", "charon", "xmake.lua")
 
@@ -30,18 +31,20 @@ function folder_of(name)
     return "/usr/lib/charon/" .. name
 end
 
--- Gives the libraries of one or more packages their absolute names and writes the packages.
+-- Gives the libraries of one or more packages their absolute names, and leaves each package's tree and what a Debian package
+-- of it needs to be written from. The libraries are not signed here: signing needs ldid, a tool of the host whose own
+-- dependencies (openssl, libplist) reach every package that depends on a package that has it, and the wrong openssl - the
+-- host's - reached the C++ packages that link openssl. The program that depends on these packages signs them when it writes
+-- their Debian packages (deb below).
 --   opt.packages: each {name, version, title, description, depends, libraries, extra}: the package, the packages it needs as
 --     Debian writes them, the libraries it holds, and {source, leaf} for the ones that come from elsewhere (libc++)
 --   opt.root: where the packages' trees are built, and stay, since a program links against the libraries in them
---   opt.workdir: a scratch folder; opt.outputdir: where the packages are written
---   opt.ldid, opt.strip: the signer and the strip arguments
--- Answers the packages' debs by name.
-function write(opt)
-    local debian = import("debian", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
+--   opt.metadata: the folder that holds a file of what each package is, named after it
+--   opt.strip: the strip arguments
+function stage(opt)
     os.tryrm(opt.root)
-    os.tryrm(opt.workdir)
-    os.mkdir(opt.workdir)
+    os.tryrm(opt.metadata)
+    os.mkdir(opt.metadata)
     local held = {}
     for _, described in ipairs(opt.packages) do
         local folder = folder_of(described.name)
@@ -78,26 +81,42 @@ function write(opt)
         for _, library in ipairs(entry.binaries) do
             os.vrunv("xcrun", table.join({"strip"}, opt.strip, {library}))
         end
-        for _, library in ipairs(entry.binaries) do
-            signing.sign(opt.ldid, library)
-        end
+        json.savefile(path.join(opt.metadata, entry.described.name .. ".json"),
+                      {name = entry.described.name, version = entry.described.version, title = entry.described.title,
+                       description = entry.described.description, depends = entry.described.depends or {}, folder = entry.folder})
     end
-    local debs = {}
-    for _, entry in ipairs(held) do
-        local described = entry.described
-        local control = path.join(opt.workdir, described.name .. ".control")
-        io.writefile(control, table.concat({
-            "Package: " .. described.name,
-            "Name: " .. described.title,
-            "Architecture: iphoneos-arm",
-            "Section: System",
-            "Description: " .. described.description .. " in " .. entry.folder .. "; the runtime is named after the build that holds it (by default without library evolution) and cannot be replaced by another build"
-        }, "\n") .. "\n")
-        -- The package holds its own folder and nothing of the others'.
-        local tree = path.join(opt.workdir, described.name .. "-tree")
-        os.mkdir(path.directory(path.join(tree, entry.folder)))
-        os.vcp(entry.destination, path.directory(path.join(tree, entry.folder)) .. "/")
-        debs[described.name] = debian.write({control = control, version = described.version, root = tree, depends = described.depends, outputdir = opt.outputdir})
+end
+
+-- What stage left of a package: {name, version, title, description, depends, folder}.
+function metadata(folder, name)
+    local file = path.join(folder, name .. ".json")
+    if not os.isfile(file) then
+        raise("there is no %s, and the package %s was staged there", file, name)
     end
-    return debs
+    return json.loadfile(file)
+end
+
+-- The Debian package of one staged package: its own folder of the tree, every library in it signed with the program's ldid,
+-- and the control file stage described it with. root is the tree stage built; ldid is the program's own.
+function deb(described, root, ldid, workdir, outputdir)
+    local debian = import("debian", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
+    os.tryrm(workdir)
+    local tree = path.join(workdir, "tree")
+    os.mkdir(path.directory(path.join(tree, described.folder)))
+    -- The package holds its own folder and nothing of the others'.
+    os.vcp(path.join(root, described.folder), path.directory(path.join(tree, described.folder)) .. "/")
+    for _, library in ipairs(os.files(path.join(tree, described.folder, "*.dylib"))) do
+        signing.sign(ldid, library)
+    end
+    local control = path.join(workdir, described.name .. ".control")
+    io.writefile(control, table.concat({
+        "Package: " .. described.name,
+        "Name: " .. described.title,
+        "Architecture: iphoneos-arm",
+        "Section: System",
+        "Description: " .. described.description .. " in " .. described.folder .. "; the runtime is named after the build that holds it (by default without library evolution) and cannot be replaced by another build"
+    }, "\n") .. "\n")
+    local written = debian.write({control = control, version = described.version, root = tree, depends = described.depends, outputdir = outputdir})
+    os.tryrm(workdir)
+    return written
 end

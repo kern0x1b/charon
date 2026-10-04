@@ -25,7 +25,7 @@ package("libcxx")
     -- The pair as a package of its own, /usr/lib/charon/org.charon.libcxx-<build>, which what links against it depends on
     -- instead of carrying it: a process has one copy of libc++abi, so the programs and the Swift runtime that share it
     -- name this one.
-    add_configs("packaged", {description = "Install the libraries under absolute install names and write a Debian package that holds them, which what is linked against them depends on instead of carrying them.", default = false, type = "boolean"})
+    add_configs("packaged", {description = "Install the libraries under absolute install names and leave what a Debian package holding them is written from, which what is linked against them depends on instead of carrying them: the program that depends on it writes and signs that package, so this package needs no host tool.", default = false, type = "boolean"})
 
     add_includedirs("include/c++/v1")
     add_links("c++", "c++abi")
@@ -34,12 +34,6 @@ package("libcxx")
     add_mxxflags("-nostdinc++")
     add_ldflags("-nostdlib++")
     add_shflags("-nostdlib++")
-
-    on_load("iphoneos", function (package)
-        if package:config("packaged") then
-            package:add("deps", "charon@ldid 2.1.5-procursus7+23.gaf86971", {alias = "ldid"})
-        end
-    end)
 
     on_download(function (package, opt)
         local checkout = import("checkout", {rootdir = path.join(os.scriptdir(), "..", "..", "..", "modules"), anonymous = true})
@@ -204,14 +198,12 @@ package("libcxx")
             end
             import("apple.bundle", {rootdir = modules, anonymous = true}).retarget(table.keys(identities), identities,
                                                                                     {home = shared.folder_of(name) .. "/"})
-            shared.write({packages = {{name = name, version = shared.package_version(package:buildhash()),
+            shared.stage({packages = {{name = name, version = shared.package_version(package:buildhash()),
                                        title = "C++ runtime " .. package:buildhash():sub(1, 8),
                                        description = "libc++ and libc++abi of one build of Charon's charon@libcxx,",
                                        libraries = {}, extra = held}},
-                          root = path.join(package:installdir("share"), "root"), workdir = path.absolute("shared-work"),
-                          outputdir = package:installdir("share"),
-                          ldid = path.join(package:dep("ldid"):installdir(), "bin", "ldid"), strip = {"-x"}})
-            os.tryrm(path.absolute("shared-work"))
+                          root = path.join(package:installdir("share"), "root"),
+                          metadata = path.join(package:installdir("share"), "shared-packages"), strip = {"-x"}})
             package:setenv("CHARON_SHARED_PACKAGE", name)
         end
     end)
@@ -222,7 +214,7 @@ package("libcxx")
         if package:config("packaged") then
             local shared = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
             local name = shared.package_name("libcxx", package:buildhash())
-            assert(#os.files(path.join(package:installdir("share"), name .. "_*.deb")) == 1, "the packaged libc++ wrote no package")
+            assert(os.isfile(path.join(package:installdir("share"), "shared-packages", name .. ".json")), "the packaged libc++ left no description of its package")
             local identity = os.iorunv("xcrun", {"otool", "-D", path.join(package:installdir("lib"), "libc++.1.0.dylib")})
             assert(identity:find(shared.folder_of(name) .. "/libc++.1.dylib", 1, true), "libc++ is not identified by the package's folder: " .. identity)
         end

@@ -9,6 +9,7 @@ import("signing")
 import("bundle")
 import("backports")
 import("runtime_guards")
+import("shared_runtime", {alias = "staged"})
 
 function waivers(target)
     local waived = {}
@@ -176,18 +177,17 @@ function shared_runtime(target)
         for _, entry in ipairs(package and table.wrap((package:envs() or {}).CHARON_SHARED_PACKAGE)[1] and table.wrap((package:envs() or {}).CHARON_SHARED_PACKAGE)[1]:split(";") or {}) do
             local name, needs = entry:match("^([^=]+)=?(.*)$")
             local folder = "/usr/lib/charon/" .. name
-            local debs = os.files(path.join(package:installdir(), "share", name .. "_*.deb"))
-            if #debs ~= 1 then
-                raise("target(%s) shares %s, whose install holds %d packages of that name instead of one", target:name(), name, #debs)
-            end
+            -- what the package left of itself: the tree its libraries are in, and what its Debian package is written from
+            local root = path.join(package:installdir(), "share", "root")
+            local described = staged.metadata(path.join(package:installdir(), "share", "shared-packages"), name)
             local held = {}
-            for _, file in ipairs(os.files(path.join(package:installdir(), "share", "root", folder, "*.dylib"))) do
+            for _, file in ipairs(os.files(path.join(root, folder, "*.dylib"))) do
                 held[folder .. "/" .. path.filename(file)] = true
                 identities[path.filename(file)] = folder .. "/" .. path.filename(file)
                 table.insert(libraries, file)
             end
-            table.insert(all, {deb = debs[1], name = name, relation = "=", version = path.filename(debs[1]):match("^[^_]+_([^_]+)_"),
-                               needs = needs ~= "" and needs or nil, held = held})
+            table.insert(all, {meta = described, root = root, name = name, relation = "=",
+                               version = described.version, needs = needs ~= "" and needs or nil, held = held})
         end
     end
     if #all == 0 then

@@ -123,15 +123,12 @@ package("swift-runtime")
     -- share, instead of libraries each of them carries. The build is part of the name: a program runs only against the build it was
     -- compiled with (see the mark): without library evolution because no other build answers for it, with it because the
     -- mark says so all the same.
-    add_configs("shared", {description = "Install the libraries under absolute install names and write a Debian package that holds them, which the programs built against this runtime depend on instead of carrying the libraries.", default = false, type = "boolean"})
+    add_configs("shared", {description = "Install the libraries under absolute install names and leave what a Debian package holding them is written from, which the programs built against this runtime depend on instead of carrying the libraries: the program that depends on it writes and signs that package, so this package needs no host tool.", default = false, type = "boolean"})
 
     on_load("iphoneos", function (package)
         -- A shared runtime links the C++ runtime of the package that installs it, so that its libraries name that package's
         -- libc++ and depend on that package.
         package:add("deps", "charon@libcxx", {alias = "libcxx", configs = {packaged = package:config("shared") or nil}})
-        if package:config("shared") then
-            package:add("deps", "charon@ldid 2.1.5-procursus7+23.gaf86971", {alias = "ldid"})
-        end
         if package:config("backports_uikit") and not package:config("backports") then
             raise("swift-runtime's backports_uikit config is the application half of the backports config; set backports too")
         end
@@ -810,7 +807,7 @@ package("swift-runtime")
                     table.insert(ui_depends, needed)
                 end
             end
-            runtime.write({packages = {{name = name, version = version, title = "Swift runtime " .. package:buildhash():sub(1, 8),
+            runtime.stage({packages = {{name = name, version = version, title = "Swift runtime " .. package:buildhash():sub(1, 8),
                                         description = "The Swift runtime and the overlays of one build of Charon's charon@swift-runtime,",
                                         depends = depends,
                                         libraries = libraries},
@@ -818,14 +815,12 @@ package("swift-runtime")
                                         description = "The overlays of QuartzCore and UIKit of one build of Charon's charon@swift-runtime,",
                                         depends = ui_depends,
                                         libraries = ui_libraries}},
-                           root = path.join(package:installdir("share"), "root"), workdir = path.absolute("shared-work"),
-                           outputdir = package:installdir("share"),
-                           ldid = path.join(package:dep("ldid"):installdir(), "bin", "ldid"), strip = {"-x"}})
+                           root = path.join(package:installdir("share"), "root"),
+                           metadata = path.join(package:installdir("share"), "shared-packages"), strip = {"-x"}})
             -- A program links against the libraries in the packages' trees, not against a second copy.
             for _, library in ipairs(table.join(libraries, ui_libraries)) do
                 os.rm(library)
             end
-            os.tryrm(path.absolute("shared-work"))
             package:setenv("CHARON_SHARED_PACKAGE", name .. "=" .. cxx .. ";" .. ui .. "=" .. name)
         end
         os.tryrm(path.absolute("build"))
@@ -842,8 +837,8 @@ package("swift-runtime")
             local shared = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
             libraries = path.join(package:installdir("share"), "root", shared.folder_of(shared.package_name("swift-runtime", package:buildhash())))
             for _, kind in ipairs({"swift-runtime", "swift-runtime-ui"}) do
-                assert(#os.files(path.join(package:installdir("share"), shared.package_name(kind, package:buildhash()) .. "_*.deb")) == 1,
-                       "the shared runtime wrote no " .. kind .. " package")
+                assert(os.isfile(path.join(package:installdir("share"), "shared-packages", shared.package_name(kind, package:buildhash()) .. ".json")),
+                       "the shared runtime left no description of its " .. kind .. " package")
             end
             local ui = path.join(package:installdir("share"), "root", shared.folder_of(shared.package_name("swift-runtime-ui", package:buildhash())))
             for _, library in ipairs({"swiftQuartzCore", "swiftUIKit"}) do
