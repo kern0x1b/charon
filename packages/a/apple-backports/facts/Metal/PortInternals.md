@@ -150,9 +150,8 @@ real API this port carries at its own release. Not one `CharonMetal` class symbo
 
 The two MTLHeapDescriptor lines name `MTLHeapDescriptor10.o`, and they read 10.0.1 as they always did:
 that class is the only API the object carries, so it is dropped from the release that exports it, exactly
-as it was when the descriptor shared an object with the port's `CharonMetalHeap` (v-bandtrap,
-the v-bandtrap series, "Give Metal's vertex attributes and its heap class an object that is in
-every band"). What
+as it was when the descriptor shared an object with the port's `CharonMetalHeap` (the v-bandtrap
+series, "Give Metal's vertex attributes and its heap class an object that is in every band"). What
 changed is what that object holds beside it: `CharonMetalHeap` is a class of Charon's own, so an object
 carrying only it and a `Charon` constant exports nothing and is in every band, which is where the two
 files that are categories over that class need it to be.
