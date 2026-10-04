@@ -982,7 +982,7 @@ function failures(opt)
     local function unavailables_at(node)
         local found = {}
         for _, mark in ipairs(lift.unavailables(node)) do
-            table.insert(found, string.format("%s:%s:%s", mark.file, mark.line, mark.col))
+            table.insert(found, mark.written and "written" or string.format("%s:%s:%s", mark.file, mark.line, mark.col))
         end
         return table.concat(found, ",")
     end
@@ -1001,8 +1001,12 @@ function failures(opt)
     expect_equal(found, "a mark written by a macro use is the use", unavailables_at(class), "Fix.h:12084:1")
     expect_equal(found, "and it names the declaration it belongs to", lift.unavailables(class)[1].declaration,
                  "582358:ObjCInterfaceDecl:FixGone")
-    local literal = {kind = "ObjCInterfaceDecl", name = "FixGone", inner = {attribute(false, false)}}
-    expect_equal(found, "a mark the SDK writes out is no use of anything, and no site", unavailables_at(literal), "")
+    local literal = {kind = "ObjCInterfaceDecl", name = "FixGone", range = {begin = {offset = 9, col = 1, tokLen = 1}},
+                     inner = {attribute(false, false)}}
+    expect_equal(found, "a mark the SDK writes out is no use of anything, and says so",
+                 unavailables_at(literal), "written")
+    expect_equal(found, "and it names the declaration it belongs to, as a site does",
+                 lift.unavailables(literal)[1].declaration, "9:ObjCInterfaceDecl:FixGone")
     local implicit = {kind = "ObjCMethodDecl", name = "fixName", isImplicit = true, inner = {attribute(true, true)}}
     expect_equal(found, "and an implicit member's mark names no declaration, for the reason a release mark's does not",
                  tostring(lift.unavailables(implicit)[1].declaration), "nil")
@@ -1171,6 +1175,37 @@ function failures(opt)
         expect_equal(found, "an accessor no row names and no carried superclass brings down is still refused",
                      tostring(refused and refused:match("whose accessor %-%[FixOrphan getUntitled%] is not carried") ~= nil), "true")
         os.tryrm(alone_root)
+
+        -- And the refusal of the mark this cannot take away: the same fixture as the case above with the class's
+        -- unavailable written out instead of reached through NS_UNAVAILABLE, so there is no use of anything to point
+        -- at. A declaration the registry says is implemented must not keep such a mark, and the lift says so by name
+        -- instead of leaving a header that forbids a name the port has to be able to use.
+        local written = {"#define ios(version) ios, introduced=version\n"
+                         .. "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n"
+                         .. "#define instancetype id\n",
+                         "@class NSString;\n@protocol NSObject\n@end\n@protocol NSCopying\n@end\n"
+                         .. "__attribute__((objc_root_class)) @interface NSObject <NSObject>\n- (id)init;\n@end\n",
+                         "#import <Foundation/Foundation.h>\n"
+                         .. "__attribute__((unavailable))\nAPI_AVAILABLE(ios(9.0))\n@interface FixWritten : NSObject\n"
+                         .. "@property (nonatomic, copy) NSString *label API_AVAILABLE(ios(9.0));\n@end\n",
+                         '[{"api":"FixWritten","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"FixWritten.label","kind":"property","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"}]'}
+        local written_root = path.join(os.tmpdir(), "charon-lift-written-" .. hash.strhash128(table.concat(written, "")) .. "-" .. os.getpid())
+        os.tryrm(written_root)
+        local written_frameworks = path.join(written_root, "sdk", "System", "Library", "Frameworks")
+        io.writefile(path.join(written_frameworks, "Foundation.framework", "Headers", "Foundation.h"), written[1] .. written[2])
+        io.writefile(path.join(written_frameworks, "Fix.framework", "Headers", "Fix.h"), written[3])
+        io.writefile(path.join(written_root, "registry", "Fix.json"), written[4])
+        local kept_mark
+        try {function ()
+            lift.lift({clang = clang, swiftc = swiftc, sdk = path.join(written_root, "sdk"), triple = "armv7-apple-ios6.1.3",
+                       minimum = "6.1.3", registry = written_root, outputdir = path.join(written_root, "out"), expected = false})
+        end, catch {function (why) kept_mark = tostring(why) end}}
+        expect_equal(found, "an implemented class marked unavailable by an attribute written out is refused by name",
+                     tostring(kept_mark and kept_mark:match("FixWritten is marked unavailable by an attribute the SDK writes out") ~= nil), "true")
+        os.tryrm(written_root)
     end
     return found
 end

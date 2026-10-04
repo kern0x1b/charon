@@ -1197,7 +1197,10 @@ end
 -- and its expansion location at the use, which is the place the removal happens - the same place a release mark is
 -- rewritten at, and found the same way. An attribute the SDK writes out rather than through a macro carries no
 -- expansion location at all, and then the site clang gives is the `unavailable` token itself, which is no use of
--- anything: such a mark is not returned, and the declaration that carries it keeps the mark.
+-- anything: there is nothing to point at, so such a mark is reported as `written` and the caller refuses the
+-- declaration by name rather than keeping the mark quietly. No SDK header does it: every spelling of
+-- __attribute__((unavailable)) in iPhoneOS16.4.sdk (4 headers) and iPhoneOS26.2.sdk (6) is a macro *definition* under
+-- usr/include, and what a declaration carries is a use of one of those macros (measured, 2026-10-04).
 --
 -- Why it matters beyond the lift: 'X' is unavailable is err_unavailable, a hard diagnostic that no -W turns off
 -- (measured on clang 23.1.1: the same probe with -Wno-unavailable-declarations says the same thing), and a name the
@@ -1211,12 +1214,14 @@ function unavailables(node)
         if child.kind == "UnavailableAttr" then
             local begin = child.range and child.range.begin or {}
             local where = begin.expansionLoc
+            local start = node.range and node.range.begin or {}
+            start = start.expansionLoc or start
+            local declaration = not node.isImplicit
+                and string.format("%s:%s:%s", tostring(start.offset), node.kind, node.name or "") or nil
             if where and where.file and where.line and where.col then
-                local start = node.range and node.range.begin or {}
-                start = start.expansionLoc or start
-                table.insert(found, {file = where.file, line = where.line, col = where.col,
-                                      declaration = not node.isImplicit
-                                          and string.format("%s:%s:%s", tostring(start.offset), node.kind, node.name or "") or nil})
+                table.insert(found, {file = where.file, line = where.line, col = where.col, declaration = declaration})
+            else
+                table.insert(found, {written = true, declaration = declaration})
             end
         end
     end
@@ -2007,6 +2012,9 @@ local function computed(opt)
         return held or nil
     end
     local edits, blocked, targets, unmatched = {}, {}, {}, {}
+    -- An unavailable mark an implemented declaration carries and this cannot take away, by api: a refusal by name,
+    -- because the alternative is a header that keeps forbidding a name the registry says is implemented.
+    local unavailable_written = {}
     -- regional[file][id]: a declaration a region's attribute reaches, to be given its own (see declared_at)
     local regional = {}
     local function place(mark, target)
@@ -2181,7 +2189,11 @@ local function computed(opt)
             end
             -- and the mark that names no release: an implemented declaration is not unavailable at the port's release
             for _, mark in ipairs(unavailables(node)) do
-                remove(mark)
+                if mark.written then
+                    table.insert(unavailable_written, string.format("%s is marked unavailable by an attribute the SDK writes out, which this cannot take away", entry.api))
+                else
+                    remove(mark)
+                end
             end
             if entry.kind == "type" then
                 -- a type from the header alone: the type and every value it names
@@ -2220,7 +2232,11 @@ local function computed(opt)
                         -- the same rule for the members that carry no release: a member of an implemented class that a
                         -- row keeps keeps its unavailable mark, and one no row keeps does not keep it
                         for _, mark in ipairs(unavailables(child)) do
-                            if left then
+                            if mark.written then
+                                if not left then
+                                    table.insert(unavailable_written, string.format("%s.%s is marked unavailable by an attribute the SDK writes out, which this cannot take away", entry.api, child.name or "?"))
+                                end
+                            elseif left then
                                 blocked[mark.file .. ":" .. mark.line .. ":" .. mark.col] = true
                             else
                                 remove(mark)
@@ -3120,7 +3136,7 @@ local function computed(opt)
 
     -- Both ways: what is implemented answers the lowered release, and nothing else moved. A use no one text can stand
     -- for in every language fails by its own name, whatever else it would have shown.
-    local failures = table.join(refusals, unwritable, unreachable)
+    local failures = table.join(refusals, unwritable, unreachable, unavailable_written)
     local lifted_filters = {}
     for name in pairs(lowered_types) do
         table.insert(lifted_filters, name)
