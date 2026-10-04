@@ -4,6 +4,13 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 #import <MetalPerformanceShadersGraph/MetalPerformanceShadersGraph.h>
+// The two encode forms below encode into MPSGraph's OWN command buffer, whose class is declared inside the
+// MetalPerformanceShaders umbrella and nowhere in MetalPerformanceShadersGraph. It is reachable from the
+// graph umbrella too - MetalPerformanceShadersGraph.h imports MPSGraph.h, which imports MPSGraphCore.h,
+// which imports MetalPerformanceShaders.h, which imports MPSCore/MPSCore.h - so this import states the
+// dependency rather than leaving it to that chain: a band that concluded "the class cannot be made" was
+// looking in the wrong framework for a declaration the graph umbrella already carried.
+#import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
 
 // A case has to compile against both sides, and the SDK the port builds against - the iPhoneOS 16.4 one -
@@ -19,6 +26,7 @@
 - (MPSGraphTensor *)absoluteWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
 - (MPSGraphTensor *)signWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
 - (MPSGraphTensor *)identityWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)additionWithPrimaryTensor:(MPSGraphTensor *)primary secondaryTensor:(MPSGraphTensor *)secondary name:(NSString *)name;
 // The constant a slice's gradient takes the shape of its forward input as, and the one factory that puts a
 // caller's NSData in a graph (MPSGraphMemoryOps.h, ios(14.0)).
 - (MPSGraphTensor *)constantWithData:(NSData *)data shape:(MPSShape *)shape dataType:(MPSDataType)dataType;
@@ -46,6 +54,24 @@
 - (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor startTensor:(MPSGraphTensor *)startTensor sizeTensor:(MPSGraphTensor *)sizeTensor squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
 - (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor startTensor:(MPSGraphTensor *)startTensor endTensor:(MPSGraphTensor *)endTensor strideTensor:(MPSGraphTensor *)strideTensor startMask:(uint32_t)startMask endMask:(uint32_t)endMask squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
 - (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor startTensor:(MPSGraphTensor *)startTensor sizeTensor:(MPSGraphTensor *)sizeTensor squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
+// The completion and scheduled handlers the header gives the descriptor, and MPSGraph's own command buffer -
+// the wait is on the BUFFER, which is where -waitUntilCompleted is, and a queue does not have it.
+- (void)setWaitUntilCompleted:(BOOL)waitUntilCompleted;
+// The seven run, async and encode forms of the graph, the four of the executable and the two shared-event
+// methods of an execution descriptor (MPSGraph.h, MPSGraphExecutable.h, ios(14.0) and the 16.0 events).
+- (MPSGraphTensorDataDictionary *)runWithMTLCommandQueue:(id<MTLCommandQueue>)commandQueue feeds:(NSDictionary *)feeds targetTensors:(NSArray<MPSGraphTensor *> *)targetTensors targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations;
+- (void)runWithMTLCommandQueue:(id<MTLCommandQueue>)commandQueue feeds:(NSDictionary *)feeds targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations resultsDictionary:(NSDictionary *)resultsDictionary;
+- (MPSGraphTensorDataDictionary *)runAsyncWithFeeds:(NSDictionary *)feeds targetTensors:(NSArray<MPSGraphTensor *> *)targetTensors targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations executionDescriptor:(MPSGraphExecutionDescriptor *)executionDescriptor;
+- (MPSGraphTensorDataDictionary *)runAsyncWithMTLCommandQueue:(id<MTLCommandQueue>)commandQueue feeds:(NSDictionary *)feeds targetTensors:(NSArray<MPSGraphTensor *> *)targetTensors targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations executionDescriptor:(MPSGraphExecutionDescriptor *)executionDescriptor;
+- (void)runAsyncWithMTLCommandQueue:(id<MTLCommandQueue>)commandQueue feeds:(NSDictionary *)feeds targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations resultsDictionary:(NSDictionary *)resultsDictionary executionDescriptor:(MPSGraphExecutionDescriptor *)executionDescriptor;
+- (MPSGraphTensorDataDictionary *)encodeToCommandBuffer:(MPSCommandBuffer *)commandBuffer feeds:(NSDictionary *)feeds targetTensors:(NSArray<MPSGraphTensor *> *)targetTensors targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations executionDescriptor:(MPSGraphExecutionDescriptor *)executionDescriptor;
+- (void)encodeToCommandBuffer:(MPSCommandBuffer *)commandBuffer feeds:(NSDictionary *)feeds targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations resultsDictionary:(NSDictionary *)resultsDictionary executionDescriptor:(MPSGraphExecutionDescriptor *)executionDescriptor;
+- (void)specializeWithDevice:(MPSGraphDevice *)device inputTypes:(NSArray<MPSGraphType *> *)inputTypes compilationDescriptor:(MPSGraphCompilationDescriptor *)compilationDescriptor;
+- (NSArray<MPSGraphShapedType *> *)getOutputTypesWithDevice:(MPSGraphDevice *)device inputTypes:(NSArray<MPSGraphType *> *)inputTypes compilationDescriptor:(MPSGraphCompilationDescriptor *)compilationDescriptor;
+- (NSArray<MPSGraphTensorData *> *)runAsyncWithMTLCommandQueue:(id<MTLCommandQueue>)commandQueue inputsArray:(NSArray<MPSGraphTensorData *> *)inputsArray resultsArray:(NSArray<MPSGraphTensorData *> *)resultsArray executionDescriptor:(MPSGraphExecutableExecutionDescriptor *)executionDescriptor;
+- (NSArray<MPSGraphTensorData *> *)encodeToCommandBuffer:(MPSCommandBuffer *)commandBuffer inputsArray:(NSArray<MPSGraphTensorData *> *)inputsArray resultsArray:(NSArray<MPSGraphTensorData *> *)resultsArray executionDescriptor:(MPSGraphExecutableExecutionDescriptor *)executionDescriptor;
+- (void)waitForEvent:(id<MTLSharedEvent>)event value:(uint64_t)value;
+- (void)signalEvent:(id<MTLSharedEvent>)event atExecutionEvent:(MPSGraphExecutionStage)stage value:(uint64_t)value;
 // The pad and the tile, and their two gradients (MPSGraphTensorShapeOps.h, ios(14.0)). The two periodic
 // padding modes are asked of the release in refusals.m because the release refuses them.
 - (MPSGraphTensor *)padTensor:(MPSGraphTensor *)tensor withPaddingMode:(MPSGraphPaddingMode)paddingMode leftPadding:(NSArray<NSNumber *> *)leftPadding rightPadding:(NSArray<NSNumber *> *)rightPadding constantValue:(double)constantValue name:(NSString *)name;
@@ -1206,6 +1232,166 @@ static void family_gather_slice_rest(void)
     chain_case();
 }
 
+// THE RUN, ASYNC AND ENCODE FORMS, which are all one walk - the graph's own over its operations - and the
+// only difference between them is where the answer goes. Measured on this host's own MPSGraph over a 2x4 of
+// (1, 2, 3, 4 | 10, 20, 30, 40) added to itself: the form that takes a RESULTS DICTIONARY writes the answer
+// into the tensor data the caller put in it (2, 4, 6, 8 | 20, 40, 60, 80), and the form that RETURNS a
+// dictionary hands back the release's OWN tensor data and leaves the caller's buffer untouched - which is
+// what the two cases below read, one for each shape of answer, through every form that has it.
+static void run_case(const char *name, void (^ask)(MPSGraph *, MPSGraphTensor *, MPSGraphTensor *, NSDictionary *))
+{
+    MPSGraph *one = [MPSGraph new];
+    NSArray<NSNumber *> *shape = @[@2, @4];
+    float row[8] = { 1, 2, 3, 4, 10, 20, 30, 40 };
+    MPSGraphTensor *a = [one placeholderWithShape:shape dataType:MPSDataTypeFloat32 name:@"a"];
+    MPSGraphTensor *t = [one additionWithPrimaryTensor:a secondaryTensor:a name:@"sum"];
+    id<MTLBuffer> in = [gDevice newBufferWithBytes:row length:32 options:MTLResourceStorageModeShared];
+    id<MTLBuffer> out = [gDevice newBufferWithLength:32 options:MTLResourceStorageModeShared];
+    memset([out contents], 0xbd, 32);
+    MPSGraphTensorData *input = [[MPSGraphTensorData alloc] initWithMTLBuffer:in shape:shape dataType:MPSDataTypeFloat32];
+    MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:out shape:shape
+                                                                        dataType:MPSDataTypeFloat32];
+    remember(out, resultBytes, 32);
+    ask(one, a, t, @{a: input, t: destination});
+    put(name, resultBytes, 32);
+}
+
+static void family_run_forms(void)
+{
+    id<MTLCommandQueue> queue = [gDevice newCommandQueue];
+    NSArray<NSNumber *> *shape = @[@2, @4];
+
+    // THE FORMS THAT WRITE INTO THE DICTIONARY THE CALLER GAVE, which is where the answer lands.
+    run_case("run-dictionary float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        [g runWithMTLCommandQueue:queue feeds:@{a: both[a]} targetOperations:nil
+             resultsDictionary:@{t: both[t]}];
+    });
+    // THE ASYNC FORMS ARE ASKED WITH THE DESCRIPTOR'S OWN waitUntilCompleted, which is the header's own way of
+    // saying the call returns after the work is done - so the answer is in the caller's buffer when it returns
+    // and there is nothing to wait for afterwards. That is the coordinator's correction and it is right: the
+    // previous pass of this family asked a COMMAND QUEUE for -waitUntilCompleted, which is a method of the
+    // command BUFFER, and read a buffer the release had not written yet and called that a host limit.
+    //
+    // THE ENCODE FORMS ARE CASES, and the buffer they encode into is MPSGraph's OWN MPSCommandBuffer, made the
+    // way the SDK declares it: +commandBufferFromCommandQueue: in
+    // MetalPerformanceShaders.framework/Frameworks/MPSCore.framework/Headers/MPSCommandBuffer.h, INSIDE the
+    // MetalPerformanceShaders umbrella. The class adopts MTLCommandBuffer, so -commit and -waitUntilCompleted
+    // are its own methods and the wait is on the BUFFER: encode, [buffer commit], [buffer waitUntilCompleted],
+    // and then the caller's own buffer is read. Two earlier passes of this file concluded that the class
+    // could not be made, from a bare alloc raising "-[MPSCommandBuffer device]: unrecognized selector", which
+    // measures -init (the header marks it NS_UNAVAILABLE and says to use -initWithCommandBuffer:) and not the
+    // factory. Measured on this host: the class is MPSCommandBuffer, +commandBufferFromCommandQueue: answers
+    // one, and it answers -waitUntilCompleted, on the object itself and on its -rootCommandBuffer alike.
+    run_case("run-async-dictionary float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSGraphExecutionDescriptor *descriptor = [MPSGraphExecutionDescriptor new];
+        descriptor.waitUntilCompleted = YES;
+        [g runAsyncWithMTLCommandQueue:queue feeds:@{a: both[a]} targetOperations:nil
+                   resultsDictionary:@{t: both[t]} executionDescriptor:descriptor];
+    });
+    run_case("run-async-tensors-waited float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSGraphExecutionDescriptor *descriptor = [MPSGraphExecutionDescriptor new];
+        descriptor.waitUntilCompleted = YES;
+        NSDictionary *got = [g runAsyncWithMTLCommandQueue:queue feeds:@{a: both[a]} targetTensors:@[t]
+                                targetOperations:nil executionDescriptor:descriptor];
+        printf("#case run-async-tensors-waited-entries %lu\n", (unsigned long)got.count);
+    });
+    run_case("run-async-feeds-waited float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSGraphExecutionDescriptor *descriptor = [MPSGraphExecutionDescriptor new];
+        descriptor.waitUntilCompleted = YES;
+        NSDictionary *got = [g runAsyncWithFeeds:@{a: both[a]} targetTensors:@[t] targetOperations:nil
+                             executionDescriptor:descriptor];
+        printf("#case run-async-feeds-waited-entries %lu\n", (unsigned long)got.count);
+    });
+
+    // THE EXECUTABLE'S ASYNC AND ENCODE FORMS, asked the same two ways: its descriptor carries the same
+    // waitUntilCompleted and the same completion handler, and the buffer's wait is on the buffer.
+    run_case("executable-async-waited float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSGraphExecutable *e = [g compileWithDevice:gGraphDevice feeds:@{a: [[MPSGraphShapedType alloc] initWithShape:shape dataType:MPSDataTypeFloat32]}
+                                         targetTensors:@[t] targetOperations:nil compilationDescriptor:nil];
+        MPSGraphExecutableExecutionDescriptor *descriptor = [MPSGraphExecutableExecutionDescriptor new];
+        descriptor.waitUntilCompleted = YES;
+        [e runAsyncWithMTLCommandQueue:queue inputsArray:@[both[a]] resultsArray:@[both[t]]
+                  executionDescriptor:descriptor];
+    });
+    // THE FORMS THAT RETURN A DICTIONARY: measured, they leave the caller's buffer as it was, so the case
+    // reads the buffer the port and the release both left alone - the byte 0xbd the destination was filled
+    // with is what a form that writes nothing leaves behind.
+    run_case("run-returns-dictionary float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        NSDictionary *got = [g runWithMTLCommandQueue:queue feeds:@{a: both[a]} targetTensors:@[t]
+                                targetOperations:nil];
+        printf("#case run-returns-dictionary-entries %lu\n", (unsigned long)got.count);
+    });
+    run_case("run-async-returns-dictionary float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        NSDictionary *got = [g runAsyncWithFeeds:@{a: both[a]} targetTensors:@[t] targetOperations:nil
+                             executionDescriptor:nil];
+        printf("#case run-async-returns-dictionary-entries %lu\n", (unsigned long)got.count);
+    });
+    run_case("run-encode-dictionary float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSCommandBuffer *buffer = [MPSCommandBuffer commandBufferFromCommandQueue:queue];
+        [g encodeToCommandBuffer:buffer feeds:@{a: both[a]} targetOperations:nil
+             resultsDictionary:@{t: both[t]} executionDescriptor:nil];
+        [buffer commit];
+        [buffer waitUntilCompleted];
+    });
+    run_case("run-encode-returns-dictionary float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSCommandBuffer *buffer = [MPSCommandBuffer commandBufferFromCommandQueue:queue];
+        NSDictionary *got = [g encodeToCommandBuffer:buffer feeds:@{a: both[a]} targetTensors:@[t]
+                                targetOperations:nil executionDescriptor:nil];
+        [buffer commit];
+        [buffer waitUntilCompleted];
+        printf("#case run-encode-returns-dictionary-entries %lu\n", (unsigned long)got.count);
+    });
+    // The executable's own encode form, over the same buffer: its resultsArray is where its answer lands, and
+    // it is asked with the same commit and the same wait.
+    run_case("executable-encode float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSGraphExecutable *e = [g compileWithDevice:gGraphDevice feeds:@{a: [[MPSGraphShapedType alloc] initWithShape:shape dataType:MPSDataTypeFloat32]}
+                                         targetTensors:@[t] targetOperations:nil compilationDescriptor:nil];
+        MPSCommandBuffer *buffer = [MPSCommandBuffer commandBufferFromCommandQueue:queue];
+        [e encodeToCommandBuffer:buffer inputsArray:@[both[a]] resultsArray:@[both[t]]
+                executionDescriptor:nil];
+        [buffer commit];
+        [buffer waitUntilCompleted];
+    });
+
+    // THE SPECIALIZATION AND THE OUTPUT TYPES: the output types are the targets' own shapes, printed one per
+    // line, which is the whole of what a caller can read off them.
+    {
+        MPSGraph *g = [MPSGraph new];
+        MPSGraphTensor *a = [g placeholderWithShape:shape dataType:MPSDataTypeFloat32 name:@"a"];
+        MPSGraphTensor *t = [g additionWithPrimaryTensor:a secondaryTensor:a name:@"sum"];
+        MPSGraphShapedType *input = [[MPSGraphShapedType alloc] initWithShape:shape dataType:MPSDataTypeFloat32];
+        MPSGraphExecutable *e = [g compileWithDevice:gGraphDevice feeds:@{a: input} targetTensors:@[t]
+                                     targetOperations:nil compilationDescriptor:nil];
+        [e specializeWithDevice:gGraphDevice inputTypes:@[input] compilationDescriptor:nil];
+        NSArray<MPSGraphShapedType *> *types = [e getOutputTypesWithDevice:gGraphDevice inputTypes:@[input]
+                                                   compilationDescriptor:nil];
+        printf("#case output-types-count %lu\n", (unsigned long)types.count);
+        for (MPSGraphShapedType *type in types)
+            printf("#case output-type-shape %s\n", [[type.shape componentsJoinedByString:@"x"] UTF8String]);
+    }
+
+    // THE TWO SHARED-EVENT METHODS, and what a run does with them: measured, a fresh event's signaledValue is
+    // 0 and naming it does not change it, so a run with a descriptor that SIGNALS one writes the value into
+    // it - and the case reads the event's own value after the run, which is the only thing a caller can read.
+    {
+        id<MTLSharedEvent> event = [gDevice newSharedEvent];
+        MPSGraphExecutableExecutionDescriptor *descriptor = [MPSGraphExecutableExecutionDescriptor new];
+        [descriptor signalEvent:event atExecutionEvent:MPSGraphExecutionStageCompleted value:42];
+        printf("#case event-before-run %llu\n", (unsigned long long)event.signaledValue);
+        run_case("event-signalled float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+            MPSGraphExecutable *e = [g compileWithDevice:gGraphDevice feeds:@{a: [[MPSGraphShapedType alloc] initWithShape:shape dataType:MPSDataTypeFloat32]}
+                                             targetTensors:@[t] targetOperations:nil compilationDescriptor:nil];
+            // The SYNCHRONOUS form of the run, which is the one whose answer this host can be asked for: the
+            // async one returns before the GPU work is done and the queue cannot be waited on, so a case
+            // through it would be reading nothing. The descriptor's events are honoured by both.
+            [e runWithMTLCommandQueue:queue inputsArray:@[both[a]] resultsArray:@[both[t]]
+                  executionDescriptor:descriptor];
+        });
+        printf("#case event-after-run %llu\n", (unsigned long long)event.signaledValue);
+    }
+    chain_case();
+}
+
 // PAD AND TILE, which are the gather walk with two more rules: a TILE repeats every axis, and a PAD is the
 // walk with an offset per axis and the space outside the operand filled by the padding mode. The pad's
 // gradient is the walk's other direction - a scatter, with the left padding as its offset - and the
@@ -1968,6 +2154,7 @@ static const Family kFamilies[] = {
     { "gather_slice", family_gather_slice },
     { "gather_slice_rest", family_gather_slice_rest },
     { "gather_padtile", family_gather_padtile },
+    { "run_forms", family_run_forms },
     { "gather_reshape", family_gather_reshape },
     { "gather_flatten", family_gather_flatten },
     { "gather_broadcast", family_gather_broadcast },

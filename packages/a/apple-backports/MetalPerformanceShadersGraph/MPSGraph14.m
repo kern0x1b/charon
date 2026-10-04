@@ -9,9 +9,6 @@
 
 #import "CharonMPSGraph.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-
 // What an arithmetic family operation does to one pair of elements. A binary one takes the two and
 // writes one; a unary one takes the first and writes one; a clamped one takes the two and a lower and an
 // upper bound. The data type of the first operand decides the arithmetic, as it does everywhere else in
@@ -1266,6 +1263,127 @@ typedef enum {
                           parameters:@{@"combination": @"variance", @"propagateNaN": @NO,
                                        @"mean": meanTensor}
                                  name:name];
+}
+
+#pragma mark - the run, async and encode forms, which are all one walk
+
+// What every one of the seven forms below does, and there are two shapes of answer between them, both
+// measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) added to itself:
+//
+//   - the form that RETURNS a dictionary returns the release's OWN tensor data and leaves the caller's buffer
+//     untouched: the caller passed a result tensor data of its own, and after the run its buffer still holds
+//     zeros and the returned object is not the one the caller passed;
+//   - the form that takes a RESULTS DICTIONARY writes into the data the caller put in it: the same graph
+//     answers 2, 4, 6, 8 | 20, 40, 60, 80 into the caller's own buffer.
+//
+// The async and the encode forms are the same walk: the release's own difference between them is what it does
+// with the GPU afterwards, and this port's walk is over the host's memory on the CPU with nothing to
+// schedule, so the command queue and the command buffer are read for nothing - which each form says rather
+// than leaving to look like an oversight.
+//
+// The descriptor's shared events are honoured at both ends of the walk: the WAITS are checked before it and
+// the SIGNALS are written after it, and the one stage the header names is MPSGraphExecutionStageCompleted.
+// Measured on this host: a fresh id<MTLSharedEvent>'s own signaledValue is 0 and naming it in a descriptor
+// does not change it, so writing it is the only thing a run can do with one.
+static NSDictionary *CharonMPSGraphRunForm(MPSGraph *graph, NSDictionary *feeds,
+                                           NSArray<MPSGraphTensor *> *targets,
+                                           NSArray<MPSGraphOperation *> *operations, NSDictionary *results,
+                                           MPSGraphExecutionDescriptor *descriptor)
+{
+    [descriptor charon_mps_applyEventsAtStage:MPSGraphExecutionStageCompleted named:@"a graph run"];
+    // The forms that take a RESULTS DICTIONARY name no target tensors of their own - the dictionary is what
+    // says which results are wanted, and the walk only computes what it is asked for, so its keys are the
+    // targets here. The forms that return a dictionary were given the tensors instead.
+    NSArray<MPSGraphTensor *> *wanted = targets.count ? targets : (results != nil ? results.allKeys : nil);
+    NSDictionary *computed = [graph runWithFeeds:feeds targetTensors:wanted targetOperations:operations];
+    for (MPSGraphTensor *tensor in results.allKeys) {
+        MPSGraphTensorData *destination = results[tensor];
+        MPSGraphTensorData *value = computed[tensor];
+        void *to = [destination charon_mps_bytes];
+        void *from = [value charon_mps_bytes];
+        if (to == NULL || from == NULL) {
+            CharonMPSGraphRefuse(@"MPSGraph: a result could not be copied into the dictionary the caller gave, so that entry is left as it was");
+            continue;
+        }
+        memcpy(to, from, [value charon_mps_elementCount] * MPSSizeofMPSDataType(value.dataType));
+    }
+    [descriptor charon_mps_applyEventsAtStage:MPSGraphExecutionStageCompleted named:@"a graph run"];
+    // The descriptor's two handlers, which are the header's own notification points: the scheduled one is
+    // called when the work is about to run and the completion one when it has finished, each with the results
+    // and the error. On this port the walk is over the host's memory on the CPU and both are called around it
+    // rather than around a GPU submission, and -waitUntilCompleted needs nothing: the answer is already in
+    // the caller's buffer when the call returns, which is what that property asks for.
+    if (descriptor.scheduledHandler)
+        descriptor.scheduledHandler(computed, nil);
+    if (descriptor.completionHandler)
+        descriptor.completionHandler(computed, nil);
+    return computed;
+}
+
+- (MPSGraphTensorDataDictionary *)runWithMTLCommandQueue:(id<MTLCommandQueue>)commandQueue
+                                                  feeds:(MPSGraphTensorDataDictionary *)feeds
+                                          targetTensors:(NSArray<MPSGraphTensor *> *)targetTensors
+                                       targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations
+{
+    (void)commandQueue;
+    return CharonMPSGraphRunForm(self, feeds, targetTensors, targetOperations, nil, nil);
+}
+
+- (void)runWithMTLCommandQueue:(id<MTLCommandQueue>)commandQueue
+                        feeds:(MPSGraphTensorDataDictionary *)feeds
+               targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations
+              resultsDictionary:(MPSGraphTensorDataDictionary *)resultsDictionary
+{
+    (void)commandQueue;
+    CharonMPSGraphRunForm(self, feeds, nil, targetOperations, resultsDictionary, nil);
+}
+
+- (MPSGraphTensorDataDictionary *)runAsyncWithFeeds:(MPSGraphTensorDataDictionary *)feeds
+                                     targetTensors:(NSArray<MPSGraphTensor *> *)targetTensors
+                                  targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations
+                                 executionDescriptor:(MPSGraphExecutionDescriptor *)executionDescriptor
+{
+    return CharonMPSGraphRunForm(self, feeds, targetTensors, targetOperations, nil, executionDescriptor);
+}
+
+- (MPSGraphTensorDataDictionary *)runAsyncWithMTLCommandQueue:(id<MTLCommandQueue>)commandQueue
+                                                       feeds:(MPSGraphTensorDataDictionary *)feeds
+                                               targetTensors:(NSArray<MPSGraphTensor *> *)targetTensors
+                                            targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations
+                                          executionDescriptor:(MPSGraphExecutionDescriptor *)executionDescriptor
+{
+    (void)commandQueue;
+    return CharonMPSGraphRunForm(self, feeds, targetTensors, targetOperations, nil, executionDescriptor);
+}
+
+- (void)runAsyncWithMTLCommandQueue:(id<MTLCommandQueue>)commandQueue
+                              feeds:(MPSGraphTensorDataDictionary *)feeds
+                     targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations
+                    resultsDictionary:(MPSGraphTensorDataDictionary *)resultsDictionary
+                  executionDescriptor:(MPSGraphExecutionDescriptor *)executionDescriptor
+{
+    (void)commandQueue;
+    CharonMPSGraphRunForm(self, feeds, nil, targetOperations, resultsDictionary, executionDescriptor);
+}
+
+- (MPSGraphTensorDataDictionary *)encodeToCommandBuffer:(MPSCommandBuffer *)commandBuffer
+                                                 feeds:(MPSGraphTensorDataDictionary *)feeds
+                                         targetTensors:(NSArray<MPSGraphTensor *> *)targetTensors
+                                      targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations
+                                    executionDescriptor:(MPSGraphExecutionDescriptor *)executionDescriptor
+{
+    (void)commandBuffer;
+    return CharonMPSGraphRunForm(self, feeds, targetTensors, targetOperations, nil, executionDescriptor);
+}
+
+- (void)encodeToCommandBuffer:(MPSCommandBuffer *)commandBuffer
+                        feeds:(MPSGraphTensorDataDictionary *)feeds
+               targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations
+              resultsDictionary:(MPSGraphTensorDataDictionary *)resultsDictionary
+            executionDescriptor:(MPSGraphExecutionDescriptor *)executionDescriptor
+{
+    (void)commandBuffer;
+    CharonMPSGraphRunForm(self, feeds, nil, targetOperations, resultsDictionary, executionDescriptor);
 }
 
 #pragma mark - running it
