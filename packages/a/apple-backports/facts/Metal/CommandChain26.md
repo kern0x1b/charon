@@ -299,11 +299,11 @@ wrong, and the measured answer is that the call returns. **It answers on the QUE
 until the device probe asked: it was written in the `CharonMetalDevice` category with every other member
 of the protocol, so the device answered all fourteen of them and the queue none - see the run below.
 
-**Every other member of the protocol is refused by name**, and each refusal is a line in the log rather
-than a swallowed argument: the residency sets, the sparse buffer and texture mappings, and the event and
-drawable waits and signals. Each names the facility it would need - 
-a residency set, an `MTLHeap`, an `MTLEvent`, a drawable of the queue's own -  and this port has none of
-them. **There is no `-waitForCommandBuffers:`**, because Metal 4's queue has none either.
+**The other twelve members are NOT all refusals, and the first version of this page said they were.** They
+are sorted by what this backend actually is - six whose no-op is the right answer and which therefore say
+nothing, two that do real work over the port's own event, and four that cannot be done here and say so once
+as `inert` - and the sort, with the facts line behind each group, is below. **There is no
+`-waitForCommandBuffers:`**, because Metal 4's queue has none either.
 
 ### What the device probe measured, and what is still not verified
 
@@ -368,11 +368,56 @@ answer the build gives (`modules/apple/backports.lua:2062-2071` collects those i
 declarations and the bodies are out of the file, the rows carry the reason "waits on the MTL4CommandBuffer
 family", and the two FAIL lines above are what that state looks like from a case.
 
-**THE TWELVE REFUSALS AND THE CAPTURE SCOPE ARE ASKED, and they need no device** - the queue is made with
-`[[CharonMetal4CommandQueue alloc] init]` and `[[CharonMetalQueue alloc] init]` inherits NSObject's, so the
-refusals and the scope are reachable on a guest that has no EAGL context at all. Each refusal is checked for
-its return, and `run-guest.sh` counts the `Metal:` lines the guest printed against the refusals the probe
-reported, so a refusal that went silent would be caught rather than read.
+**THE TWELVE MEMBERS ARE SORTED BY WHAT THIS BACKEND ACTUALLY IS**, because a member that logs "refused"
+and returns while its row says `implemented` is a stub. Four groups, and the sort is the claim:
+
+| group | members | status | what the probe asks, on the guest |
+| --- | --- | --- | --- |
+| (a) the no-op IS the answer | the four residency-set members, the two drawable members | `implemented`, and **no member prints a line** | all four residency members return, and nothing is printed for them |
+| (b) done over the port's own objects | `signalEvent:value:`, `waitForEvent:value:` | `implemented` | a `CharonMetalSharedEvent` is signalled through the queue, the value reads back as 7, and the wait returns at once for it |
+| (c) not possible here | the four sparse-mapping members | `inert` | each called TWICE, and the guest's output carries exactly ONE line for it |
+
+The evidence for the sort, one line each: **every resource of this port is CPU-resident whatever the
+application asked for** - a buffer is its own bytes and a texture is read and written on the CPU
+(`facts/Metal/Blits.md`, "The access hints", and `facts/Metal/Heaps.md`, "Hazard tracking and storage
+modes") - so a residency set has nothing to make resident and nothing to unmake it from. It is the same
+shape as `-optimizeContentsForCPUAccess:` in that file: doing nothing, because what the call asks for is
+already so. The drawable pair rests on the same measured fact that a draw is a call into OpenGL ES 2.0 that
+**has already been made by the time it is encoded**, so a drawable is never waiting for anything and never
+waiting to be told; `-waitForDrawable:`'s own header says it "returns immediately and doesn't perform any
+synchronization on the current thread". The sparse mappings cannot be done because **`MTLHeapTypeSparse` is
+refused at creation** and no heap this port makes is one: "a heap is already all of memory and is never
+paged" (`facts/Metal/Heaps.md`), so there is no mapping to update and none to copy. `inert` means "declared,
+does nothing, and says so once in the log the first time it is used" (`registry/README.md`), and the four now
+say so through one helper in the shape of `-[AUAudioUnit charon_noteInert:why:]` from
+`AVFAudio/AUAudioUnit9.m`.
+
+**THE EVENTS DO REAL WORK, and the guest can check it.** `CharonMetalSharedEvent` carries a state of its own
+- a signalled value, a setter, and a wait that blocks until the value is reached
+(`Metal/MTLSharedEvent12.m`) - and `@protocol MTLSharedEvent` refines `MTLEvent` in the 26.2 SDK
+(`MTLEvent.h:52`), so the port's own event is an `MTLEvent` by shape. It needs no EAGL context, so both are
+reachable there:
+
+```
+ok   MTL4CommandQueue_signalEvent: -signalEvent:value: returns (yes), and the value reads back as 7, asked for 7
+ok   MTL4CommandQueue_waitForEvent: -waitForEvent:value: returns at once for a value the port's event has reached
+expected refusal lines: 4
+metalchain: 29 check(s), 2 failure(s), 12 not answered
+run-guest.sh: 4 refusal line(s) in the guest output, 4 expected
+```
+
+**The two failures are the two `owed` commits** and nothing else. Four `Metal:` lines for four `inert`
+members, one each, from eight calls - which is the `inert` contract measured rather than asserted.
+
+### The third harness defect in this probe, and it is the same family as the arity one
+
+A helper typed `(id, SEL, id, NSUInteger)` was used for the two members whose last argument is a
+**`uint64_t`**, which on armv7 is a register pair: the high word was whatever was in the next register, and
+the run printed the value it read back - `FAIL MTL4CommandQueue_signalEvent: -signalEvent:value: returns
+(yes), and the value reads back as 44392781971463, asked for 7`. Low word 7, high word rubbish. The fix is a
+helper typed `(id, SEL, id, uint64_t)`, and the second run reads back 7. A probe's own signature is part of
+what it measures, and printing the number it got is what turned this from "the signal does not work" into
+"the probe sent the wrong width".
 
 ### Two more harness defects, one of them mine and one of them a correction
 
@@ -398,8 +443,10 @@ were `metalchain_commit_returns` and `metalchain_commit_returns_when_not_ended` 
 of `@protocol MTL4CommandQueue` below `-commit:count:` was written in the `CharonMetalDevice` category, so
 all fourteen answered on the **device** and none on the queue. `nm` on the probe agrees:
 `-[CharonMetalDevice(CharonMetal4CommandQueue26) commit:count:]` and nothing of that name on
-`CharonMetal4CommandQueue`. They are on the queue now (commit `c102d8edf`), the twelve refusals refuse by
-name instead of swallowing their argument, and the count is `0 failure(s)`.
+`CharonMetal4CommandQueue`. They are on the queue now (commit `c102d8edf`), and the twelve that came with
+them were then sorted by what this backend is, which took the run from `0 failure(s)` with twelve rows
+claiming a refusal the code did not make to `29 check(s), 2 failure(s)` with the two failures being the two
+`owed` commits and nothing else.
 
 **WHAT IS STILL NOT VERIFIED, in two named parts.**
 
