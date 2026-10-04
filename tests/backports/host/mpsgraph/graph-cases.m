@@ -2020,6 +2020,8 @@ static NSArray<NSData *> *tripleOf(const void *first, const void *second, const 
              [NSData dataWithBytes:third length:bytes]];
 }
 
+static void empty_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, NSArray<MPSGraphTensor *> *));
+
 static void family_gather_concat(void)
 {
     NSArray<NSNumber *> *twoByFour = @[@2, @4];
@@ -2220,7 +2222,34 @@ static void family_gather_concat(void)
                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
                       return [g stackTensors:in axis:1 name:@"s"];
                   });
+    // AN EMPTY ARRAY OF OPERANDS, which is NOT a refusal and which this family first got wrong by treating
+    // it as one. Measured on this host's own MPSGraph over the whole path: `[g concatTensors:@[] dimension:0]`
+    // and `[g stackTensors:@[] axis:0]` both BUILD the result tensor, its shape is nil and its data type is
+    // float32 (0x10000020), `compileWithDevice:feeds:@{} targetTensors:@[t]` returns an executable, and the
+    // run leaves the caller's destination as it was. So there are no bytes to compare and the two cases below
+    // print the SHAPE and the DATA TYPE, which is what the release answers and what the port has to answer
+    // with it - a result tensor of nil shape here would make a case that crashes the family run.
+    empty_case("concat-empty", ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g concatTensors:@[] dimension:0 name:@"c"];
+    });
+    empty_case("stack-empty", ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return [g stackTensors:@[] axis:0 name:@"s"];
+    });
     chain_case();
+}
+
+// A case over an operation of NO operands, which is the only one in this family whose result is a tensor of
+// no shape. There is nothing to run and nothing to compare, so the case prints the two things the release
+// does answer about it - the shape, which is nil, and the data type, which is float32 - and the differential
+// compares those two lines like any other. `multi_case_filled` cannot ask it: it allocates a result buffer
+// from the shape and a nil shape is not a shape.
+static void empty_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, NSArray<MPSGraphTensor *> *))
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *t = build(one, @[]);
+    printf("#case %s-shape %s\n", name,
+           t.shape == nil ? "nil" : [[t.shape componentsJoinedByString:@"x"] UTF8String]);
+    printf("#case %s-datatype 0x%x\n", name, (unsigned)t.dataType);
 }
 
 // The data types the two NaN-propagating binaries do not answer, and the feeds they are asked over: eight

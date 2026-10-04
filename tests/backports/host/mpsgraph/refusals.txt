@@ -177,12 +177,10 @@ concat-interleave-axis-outside 134 invalid axis tensor: [2], axis must be in ran
 concat-shapes-differ 134 invalid input tensor shapes, all input shapes must match except at axis
 stack-axis-outside 134 invalid axis: 3, axis must be in range -|rank| <= axis < |rank|
 stack-shapes-differ 134 invalid input tensor shapes, all input shapes must match except at axis
-# The header's two sentences the walk's plan has to have an opinion about, measured rather than assumed.
-# The EMPTY array builds a result tensor whose shape is nil and the process survives - the port raises where
-# the graph is built instead, which is a divergence from the release and the rows say so. MIXED DATA TYPES:
-# the result tensor carries the FIRST operand's data type and the release's own compiler then refuses it, so
-# the port agrees with the release on the type and not on the refusal - the refusal is a compiler's, and the
-# graph itself carries no type check.
-concat-empty 0 nil
-stack-empty 0 nil
+# MIXED DATA TYPES, the header's other sentence, measured rather than assumed: the result tensor carries the
+# FIRST operand's data type and the release's own COMPILER then refuses it, so the port agrees with the
+# release about the tensor and the refusal is a compiler's, not the graph's.
+# The EMPTY array is NOT here: it is not a refusal at all, and refusals.m's own branch for it is gone. It is
+# two cases of the differential instead (concat-empty and stack-empty in graph-cases.m), because the release
+# answers it - a result tensor of nil shape and float32 - and there was nothing to record as a refusal.
 concat-mixed-types 0 result-data-type 0x10000020

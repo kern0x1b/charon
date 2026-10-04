@@ -1441,8 +1441,11 @@ thing the gather's has not: an offset and a length per operand along the axis na
 
 Measured on this host's own MPSGraph (macOS 27.0 build 26A428, M4 Pro, Metal 4), over the case file's 2x4 of
 (1, 2, 3, 4 | 10, 20, 30, 40) beside one of (5, 6, 7, 8 | 50, 60, 70, 80) and one of
-(9, 10, 11, 12 | 90, 100, 110, 120). Compared in a process of its own (`gather_concat`): **34 cases, every
-cell byte-identical to the release, and the red control differing in 36 of the 73 case lines.**
+(9, 10, 11, 12 | 90, 100, 110, 120). Compared in a process of its own (`gather_concat`): **36 cases, every
+cell byte-identical to the release, and the red control differing in 36 of the 77 case lines.** The red
+control's count is unchanged by the two cases of an empty array, and that is right rather than a gap: those
+two carry a shape and a data type and no stored element at all, so there is nothing in them for a plant that
+shifts every stored element to move.
 
 ### The rule, which is one walk with one bit on it
 
@@ -1502,7 +1505,7 @@ and in every case `LLVM ERROR: Failed to infer result type(s):` follows and take
 ### The header's other two sentences, and one of them is not the graph's to enforce
 
 The header also says the operands "have the same type" and that the array is the operands themselves. Both
-were measured, and they come out differently:
+were measured, and they come out differently - one is the compiler's business and one is the graph's:
 
 * **MIXED DATA TYPES are the release's COMPILER's refusal, not its graph's.** A float32 2x4 beside an int32
   2x4 concatenated on axis 1 builds a result tensor of shape 2x8 whose data type is **the first operand's**
@@ -1510,12 +1513,24 @@ were measured, and they come out differently:
   result differ` - the process survives and writes nothing. So the port, which takes the result's data type
   from the operands' own, agrees with the release about the tensor and has no graph-level check the release
   has; `refusals.txt`'s `concat-mixed-types` measures both halves.
-* **AN EMPTY ARRAY builds a result tensor whose shape is nil**, and the process survives: there is no graph to
-  compile and nothing to answer (`refusals.txt`'s `concat-empty` and `stack-empty`). **The port raises
-  NSInvalidArgumentException where the graph is built instead**, which is a divergence from the release and a
-  deliberate one - a tensor of no shape is the one answer a caller cannot act on, and this library's other
-  nil-shape release answers (an axis outside the rank, in the transpose and the reduction families) are raised
-  for the same reason and named in their rows the same way.
+* **AN EMPTY ARRAY builds a result tensor whose shape is nil**, and the process survives. Measured over the
+  WHOLE path, because the first measurement here stopped at the build and the answer turns out to matter
+  exactly where a build-time answer does not: `[MPSGraph concatTensors:@[] dimension:0]` and
+  `[MPSGraph stackTensors:@[] axis:0]` build a result tensor of nil shape and **float32** (0x10000020),
+  `compileWithDevice:feeds:@{} targetTensors:@[t]` returns an executable, and the run leaves the caller's
+  destination exactly as it was. So the port builds the same tensor - no shape on it, no value in it - and the
+  run's own copy-out finds nothing to copy, which leaves the destination as the caller had it. These are
+  `graph-cases.m`'s `concat-empty` and `stack-empty`, which compare the shape and the data type on every run
+  and are the only cases in the family with no result buffer.
+
+  **This paragraph's earlier text said the port raised `NSInvalidArgumentException` here and called it a
+  deliberate divergence from the release. That was wrong and is corrected.** The reasoning behind it - that a
+  tensor of no shape is the one answer a caller cannot act on - is true of a *caller that wants an answer*, and
+  irrelevant to the caller that merely has to keep running: an application written against the release builds
+  this graph and takes no exception, so a port that raises takes down an application that works on the
+  device. The rule this library follows is the release's own answer, and where the release has none to give
+  (the eight refusal questions above, and the tile gradient's read past the end of the caller's buffer) the
+  port refuses *and says so in the row*. Here the release has an answer and the port must have it too.
 
 ## The R4 names this band adds, in full
 

@@ -49,6 +49,10 @@
 //     release does not take: measured, a 2x4 and a 2x4 beside a 1x4 stacked at axis 1 are refused by its own
 //     compiler with "'mps.concat' op invalid input tensor shapes, all input shapes must match except at axis"
 //     (MPSGraphUtilities.mm:748), and so are a 1x4 and a 2x4 stacked at axis 0. The port raises there.
+//   - an EMPTY ARRAY is not a refusal either: measured over the whole path, `stackTensors:@[]` builds a
+//     result tensor of nil shape and float32, `compileWithDevice:` returns an executable and the run leaves
+//     the caller's destination as it was. So the result tensor here carries no shape and no value, which is
+//     what the concatenation family's seam gives this method for an empty array.
 - (MPSGraphTensor *)stackTensors:(NSArray<MPSGraphTensor *> *)inputTensors
                             axis:(NSInteger)axis
                             name:(NSString *)name
