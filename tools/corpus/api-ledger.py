@@ -397,18 +397,25 @@ def _selector_present(entry, selector):
 def _ancestors(owner, built_classes, release_classes):
     """The chain above `owner`, one measured ancestor at a time, and where the walk stopped.
 
-    Returns `(chain, stopped)`. `chain` holds `(name, entry, is_built)` for every ancestor above
-    `owner` the two inventories carry, nearest first; `stopped` is the recorded superclass the walk
-    could not measure -- a name in neither the built libraries nor the 6.1.3 cache -- or "" when the
-    walk reached a root or answered the row.
+    Returns `(chain, stopped)`. `chain` holds `(name, entries)` for every ancestor above `owner` the
+    two inventories carry, nearest first, and `entries` is the list of `(entry, is_built)` pairs that
+    name carries -- one, or both where the name is in both inventories, which is the ordinary case for
+    a class the port only extends with categories (NSObject: the port's own categories plus the
+    device's own, both measured, and the caller names whichever of the two has the selector). `stopped`
+    is the recorded superclass the walk could not measure -- a name in neither the built libraries nor
+    the 6.1.3 cache -- or "" when the walk reached a root or answered the row.
 
     A member is answered from up the chain only where the ancestor that answers it is measured at the
-    release the row is measured for, and each element says which inventory that is: `is_built` names
-    the built image (the port's own libraries, loaded beside the device's frameworks) and the release
-    cache names the release. That is the whole of the rule -- the port's classes are linked beside the
-    device's, so a port class whose declared superclass is a release class inherits what the release
-    declares, and a release class inherits up the release's own chain -- and it is why an ancestor in
-    neither inventory stops the walk instead of being assumed to answer nothing.
+    release the row is measured for, and the caller's reason names the inventory that has the
+    selector. That is the whole of the rule -- the port's classes are linked beside the device's, so a
+    port class whose declared superclass is a release class inherits what the release declares, and a
+    release class inherits up the release's own chain -- and it is why an ancestor in neither inventory
+    stops the walk instead of being assumed to answer nothing.
+
+    A name in the built inventory is not the port's own class: `load_built_inventories` merges every
+    library that extends a class into one entry, so NSObject is "built" as soon as one library adds a
+    category to it, and the entry then holds the port's selectors and no other. The pair is kept apart
+    for that reason, and a `-init` found on the device's NSObject is reported as the release's.
 
     The owner itself is not in `chain`: the caller has already looked in its own selector sets. The
     walk follows the `superclass` edge `load_built_inventories` records per class, and `seen` is what
@@ -430,14 +437,16 @@ def _ancestors(owner, built_classes, release_classes):
         if not superclass or superclass in seen:
             return chain, ""
         seen.add(superclass)
+        entries = []
         found = built_classes.get(superclass)
         if found is not None:
-            chain.append((superclass, found, True))
-        else:
-            found = release_classes.get(superclass)
-            if found is None:
-                return chain, superclass
-            chain.append((superclass, found, False))
+            entries.append((found, True))
+        found = release_classes.get(superclass)
+        if found is not None:
+            entries.append((found, False))
+        if not entries:
+            return chain, superclass
+        chain.append((superclass, entries))
         current = superclass
 
 
@@ -463,10 +472,17 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
     UIKeyCommand rows are the measurement. The built 6.1.3 image holds `UIKeyCommand` with superclass
     `UICommand`, and `UICommand` declares `-action`, `-title` and
     `+commandWithTitle:image:action:propertyList:` while `UIKeyCommand` declares none of them, so all
-    ten read "selector X is not" for members the port carries. The walk is LAST -- after the owner's own
-    sets, the protocols and `+new` -- so nothing that reads implemented today can read anything else:
-    only a row that read missing moves, and only to implemented. `+new` stays ahead of it for its own
-    reason, the guard for a row a registry has decided, which the chain would answer around."""
+    ten read "selector X is not" for members the port carries.
+
+    The walk is LAST -- after the owner's own sets, the protocols and `+new` -- so nothing that reads
+    implemented today can read anything else: only a row that read missing moves, and only to
+    implemented. `+new` stays ahead of it for its own reason, and so does the guard on the row a
+    registry has decided, which the walk honours for the same reason `+new` does: an inference from
+    the release's metadata does not overrule a measurement somebody took. Measured on the whole
+    surface, that guard is 13 rows -- ten `-[VN*Request init]`/`initWithCompletionHandler:` whose
+    registry row says Apple's own header marks the initialiser unavailable, two
+    `UITextInputTraits` properties the port answers on NSObject under a row of its own, and
+    `+[NSURLSessionStreamTask new]`."""
     m = METHOD_RE.match(api)
     if not m:
         return "undecided", "method api does not parse as +/-[Class sel]: %r" % api
@@ -496,12 +512,16 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
     stopped = ""
     if built or released:
         # `built or released` keeps a protocol owner out: a protocol has no superclass to walk, and
-        # the reason below already says the owner is a protocol and not a class.
+        # the reason below already says the owner is a protocol and not a class. `api not in decided`
+        # is the guard `+new` has above, for the reason in this function's own account.
         chain, stopped = _ancestors(owner, built_classes, release_classes)
-        for name, entry, is_built in chain:
-            if _selector_present(entry, key):
-                why = built_why(entry, key) if is_built else "release-native: 6.1.3 dyld cache"
-                return "implemented", "%s (inherited from %s)" % (why, name)
+        if api in (decided or ()):
+            chain = []
+        for name, entries in chain:
+            for entry, is_built in entries:
+                if _selector_present(entry, key):
+                    why = built_why(entry, key) if is_built else "release-native: 6.1.3 dyld cache"
+                    return "implemented", "%s (inherited from %s)" % (why, name)
     if not built and not released and not (built_protocols or {}).get(owner) \
             and not (release_protocols or {}).get(owner):
         return "missing", "owner %s is neither a class nor a protocol in the built libraries or the 6.1.3 cache" % owner
@@ -512,7 +532,7 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
 
 
 def classify_property(api, built_classes, release_classes, built_protocols=None,
-                      release_protocols=None, getter=None, setter=None):
+                      release_protocols=None, getter=None, setter=None, decided=None):
     """A property row's owner is named without saying whether it is a class or a protocol, and the
     surface has both, so both are searched -- the same question classify_method answers, and for the
     same reason. A property is read through its accessors, so it is the accessors that are looked
@@ -528,7 +548,9 @@ def classify_property(api, built_classes, release_classes, built_protocols=None,
 
     The chain is walked last, for the same reason and with the same rule as classify_method: the eight
     UIKeyCommand properties the built image answers from `UICommand` are the measurement, and the two
-    accessors are looked for in every measured ancestor's own sets, the class set included."""
+    accessors are looked for in every measured ancestor's own sets, the class set included. The
+    `decided` rows keep their decision here for the reason classify_method gives: an inference from
+    the release's metadata does not overrule a measurement somebody took."""
     m = PROPERTY_RE.match(api)
     if not m:
         return "undecided", "property api does not parse as Class.prop: %r" % api
@@ -566,14 +588,17 @@ def classify_property(api, built_classes, release_classes, built_protocols=None,
         # A protocol owner is not in either, so it never reaches the walk: a protocol has no
         # superclass, and the reason below already says the owner is neither.
         chain, stopped = _ancestors(owner, built_classes, release_classes)
-        for name, entry, is_built in chain:
-            carried = carried_by(entry)
-            if carried:
-                why = built_why(entry, carried) if is_built else "release-native: 6.1.3 dyld cache"
-                return "implemented", "%s (inherited from %s)%s" % (
-                    why, name,
-                    " (a class property: read through %s)" % getter
-                    if getter in entry["class"] and getter not in entry["instance"] else "")
+        if api in (decided or ()):
+            chain = []
+        for name, entries in chain:
+            for entry, is_built in entries:
+                carried = carried_by(entry)
+                if carried:
+                    why = built_why(entry, carried) if is_built else "release-native: 6.1.3 dyld cache"
+                    return "implemented", "%s (inherited from %s)%s" % (
+                        why, name,
+                        " (a class property: read through %s)" % getter
+                        if getter in entry["class"] and getter not in entry["instance"] else "")
     if owner not in built_classes and owner not in release_classes \
             and not (built_protocols or {}).get(owner) and not (release_protocols or {}).get(owner):
         return "missing", "owner class %s not in the built libraries or the 6.1.3 cache" % owner
@@ -1356,10 +1381,11 @@ def main():
     registries = read_package_registries(args.registries or default_checkout(args.surface))
     note("package registries: %d entries, of which %d record a decision"
          % (len(registries), sum(1 for v in registries.values() if v[0] in DECIDED_STATUSES)))
-    # The rows a registry has decided, handed to classify_method so that an answer it infers from the
-    # release's own metadata -- `+new` is NSObject's and every class inherits it -- cannot overrule a
-    # decision somebody measured. decide() still runs after the classification and still stands; this
-    # only keeps the classification from making the question moot.
+    # The rows a registry has decided, handed to classify_method and classify_property so that an answer
+    # they infer from the release's own metadata -- `+new` is NSObject's and every class inherits it,
+    # and so is any member a superclass in the chain declares -- cannot overrule a decision somebody
+    # measured. decide() still runs after the classification and still stands; this only keeps the
+    # classification from making the question moot.
     decided_apis = {api for api, entry in registries.items() if entry[0] in DECIDED_STATUSES}
 
     # Pass 1: everything the built artifacts and the release cache can place on their own.
@@ -1386,7 +1412,8 @@ def main():
                                                  decided=decided_apis)
             else:
                 status, reason = classify_property(api, built_classes, release_classes, built_protocols,
-                                            release_protocols, getter=row["getter"])
+                                            release_protocols, getter=row["getter"],
+                                            decided=decided_apis)
             # The decide pass: a registry that records this row absent/inert/ignored has decided it,
             # with a reason, so it is not a row anybody is going to build.
             decided = decide(row, registries, diagnostics) if status == "missing" else None

@@ -109,10 +109,10 @@ def method(api, built=None, release=None, decided=None):
                                   PROTOCOLS_BUILT, PROTOCOLS_RELEASE, decided=decided)
 
 
-def prop(api, built=None, release=None, getter=None):
+def prop(api, built=None, release=None, getter=None, decided=None):
     return ledger.classify_property(api, BUILT if built is None else built,
                                     RELEASE if release is None else release,
-                                    PROTOCOLS_BUILT, PROTOCOLS_RELEASE, getter=getter)
+                                    PROTOCOLS_BUILT, PROTOCOLS_RELEASE, getter=getter, decided=decided)
 
 
 # The row the finding is about, one per kind: an instance property, a class method and an instance
@@ -179,6 +179,25 @@ check("an ancestor's declared getter answers the row",
 check("while the derived accessor the same chain does not hold still reads missing",
       prop("Thing.enabled", built=declared)[0], "missing")
 
+# A name in both inventories. The port's libraries extend NSObject with categories, so the built entry
+# holds the port's selectors and no others, and the release's NSObject holds the rest: `-description`
+# here is the device's, and the reason must say so rather than name the library that happened to add a
+# category to NSObject first.
+both = {"KeyCommand": entry(instance=["-input"], library="UIKitBackports", superclass="NSObject"),
+        "NSObject": entry(instance=["-conversationContext"], library="HomeKit")}
+RELEASE_BOTH = dict(RELEASE)
+RELEASE_BOTH["NSObject"] = entry(instance=["-description"], klass=["-new"])
+check("a member only the release's copy of a shared name carries reads implemented",
+      method("-[KeyCommand description]", built=both, release=RELEASE_BOTH)[0], "implemented")
+check("and the reason names the release, not the library that extended NSObject",
+      method("-[KeyCommand description]", built=both, release=RELEASE_BOTH)[1],
+      "release-native: 6.1.3 dyld cache (inherited from NSObject)")
+check("while a member only the port's copy carries reads implemented from the built image",
+      method("-[KeyCommand conversationContext]", built=both, release=RELEASE_BOTH)[0], "implemented")
+check("with the library that carries that selector",
+      method("-[KeyCommand conversationContext]", built=both, release=RELEASE_BOTH)[1],
+      "built: HomeKit (inherited from NSObject)")
+
 # What the walk must NOT answer. A member no measured ancestor holds, with the chain measured all the
 # way to its root: `MenuElement` is a root in these inventories, so this is an absence and not a
 # refusal.
@@ -213,12 +232,19 @@ check("a property of a protocol likewise", prop("Shape.inherited", built={"Other
       "missing")
 
 # A row a registry has decided keeps its decision, as `+new` already required: the chain must not
-# answer around the guard the way an unguarded walk would.
+# answer around the guard the way an unguarded walk would. Measured over the whole surface, that guard
+# is 13 rows -- the ten `-[VN*Request init]` whose registry row says Apple's header marks the
+# initialiser unavailable, the two `UITextInputTraits` properties the port answers on NSObject under a
+# row of its own, and `+[NSURLSessionStreamTask new]`.
 DECIDED = {"+[KeyCommand new]"}
 check("the chain does not answer a row a registry decided",
       method("+[KeyCommand new]", decided=DECIDED)[0], "missing")
 check("while the same row reads implemented with no decision against it",
       method("+[KeyCommand new]")[0], "implemented")
+check("and a decided property row keeps its decision too",
+      prop("KeyCommand.action", decided={"KeyCommand.action"})[0], "missing")
+check("while the same property reads implemented with no decision against it",
+      prop("KeyCommand.action")[0], "implemented")
 
 # The mutations. Each drops one thing the walk needs, and each is a way this reader can be wrong
 # with every check above still green.
@@ -257,13 +283,14 @@ check("and answers nothing rather than looping", method("-[Ping go]", built=loop
 # release inventories, or the walk has nothing to walk. It is a wiring check and says so.
 source = SOURCE
 body = source[source.index("def main("):]
-for name, arguments in (("classify_method", "classify_method"), ("classify_property", "classify_property")):
-    call = re.search(arguments + r"\(([^)]*)\)", body)
-    check("main() hands %s both class inventories" % name,
+for name in ("classify_method", "classify_property"):
+    call = re.search(name + r"\(([^)]*)\)", body)
+    check("main() hands %s both class inventories and the decided rows" % name,
           sorted(part.strip().split("=")[0] for part in call.group(1).split(",") if part.strip()),
-          ["api", "built_classes", "built_protocols", "getter", "release_classes", "release_protocols"]
-          if name == "classify_property" else
-          ["api", "built_classes", "built_protocols", "decided", "release_classes", "release_protocols"])
+          ["api", "built_classes", "built_protocols", "decided", "release_classes", "release_protocols"]
+          if name == "classify_method" else
+          ["api", "built_classes", "built_protocols", "decided", "getter", "release_classes",
+           "release_protocols"])
 
 print("\n%d checks, %d failures" % (len(CHECKS), len(failures)))
 sys.exit(1 if failures else 0)

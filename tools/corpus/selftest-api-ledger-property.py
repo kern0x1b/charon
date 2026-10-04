@@ -102,12 +102,14 @@ check("an owner in no inventory at all still reads missing",
 # source text rather than by running it, because build() needs a gate, a dyld cache and an SDK to
 # reach that line; it is a wiring check and says so. Dropping `built_protocols` from the call leaves
 # every other check in this file green. The sixth argument is the declared getter the surface
-# records (selftest-api-ledger-getter.py), which arrived after this one and has its own checks.
+# records (selftest-api-ledger-getter.py), which arrived after this one and has its own checks, and
+# the seventh is the decided rows (selftest-api-ledger-chain.py), which keep their registry decision
+# against the superclass walk the same way they keep it against `+new`.
 source = open(os.path.join(HERE, "api-ledger.py"), encoding="utf-8").read()
 call = re.search(r"classify_property\(([^)]*)\)", source[source.index("def main("):])
 check("main() passes both protocol inventories to classify_property",
-      sorted(part.strip() for part in call.group(1).split(",")),
-      ['api', 'built_classes', 'built_protocols', 'getter=row["getter"]', 'release_classes',
+      sorted(part.strip().split("=")[0] for part in call.group(1).split(",") if part.strip()),
+      ['api', 'built_classes', 'built_protocols', 'decided', 'getter', 'release_classes',
        'release_protocols'])
 
 print("\n%d checks, %d failures" % (10 + len(failures), len(failures)))
