@@ -4,6 +4,13 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 #import <MetalPerformanceShadersGraph/MetalPerformanceShadersGraph.h>
+// The two encode forms below encode into MPSGraph's OWN command buffer, whose class is declared inside the
+// MetalPerformanceShaders umbrella and nowhere in MetalPerformanceShadersGraph. It is reachable from the
+// graph umbrella too - MetalPerformanceShadersGraph.h imports MPSGraph.h, which imports MPSGraphCore.h,
+// which imports MetalPerformanceShaders.h, which imports MPSCore/MPSCore.h - so this import states the
+// dependency rather than leaving it to that chain: a band that concluded "the class cannot be made" was
+// looking in the wrong framework for a declaration the graph umbrella already carried.
+#import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
 
 // A case has to compile against both sides, and the SDK the port builds against - the iPhoneOS 16.4 one -
@@ -1265,11 +1272,16 @@ static void family_run_forms(void)
     // previous pass of this family asked a COMMAND QUEUE for -waitUntilCompleted, which is a method of the
     // command BUFFER, and read a buffer the release had not written yet and called that a host limit.
     //
-    // THE ENCODE FORMS ARE NOT CASES, and the reason is measured on this host and is a different one: MPSGraph's
-    // own MPSCommandBuffer has NO CREATION API in this SDK - MPSGraph.h and MPSGraphDevice.h only name the
-    // class in the encode parameters, and a bare alloc gives an object that raises "-[MPSCommandBuffer device]:
-    // unrecognized selector". So the buffer to encode into cannot be made here, and a case through the encode
-    // forms would pass nil and measure the port's own walk. The two rows of the encode forms say so.
+    // THE ENCODE FORMS ARE CASES, and the buffer they encode into is MPSGraph's OWN MPSCommandBuffer, made the
+    // way the SDK declares it: +commandBufferFromCommandQueue: in
+    // MetalPerformanceShaders.framework/Frameworks/MPSCore.framework/Headers/MPSCommandBuffer.h, INSIDE the
+    // MetalPerformanceShaders umbrella. The class adopts MTLCommandBuffer, so -commit and -waitUntilCompleted
+    // are its own methods and the wait is on the BUFFER: encode, [buffer commit], [buffer waitUntilCompleted],
+    // and then the caller's own buffer is read. Two earlier passes of this file concluded that the class
+    // could not be made, from a bare alloc raising "-[MPSCommandBuffer device]: unrecognized selector", which
+    // measures -init (the header marks it NS_UNAVAILABLE and says to use -initWithCommandBuffer:) and not the
+    // factory. Measured on this host: the class is MPSCommandBuffer, +commandBufferFromCommandQueue: answers
+    // one, and it answers -waitUntilCompleted, on the object itself and on its -rootCommandBuffer alike.
     run_case("run-async-dictionary float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
         MPSGraphExecutionDescriptor *descriptor = [MPSGraphExecutionDescriptor new];
         descriptor.waitUntilCompleted = YES;
@@ -1314,10 +1326,31 @@ static void family_run_forms(void)
                              executionDescriptor:nil];
         printf("#case run-async-returns-dictionary-entries %lu\n", (unsigned long)got.count);
     });
+    run_case("run-encode-dictionary float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSCommandBuffer *buffer = [MPSCommandBuffer commandBufferFromCommandQueue:queue];
+        [g encodeToCommandBuffer:buffer feeds:@{a: both[a]} targetOperations:nil
+             resultsDictionary:@{t: both[t]} executionDescriptor:nil];
+        [buffer commit];
+        [buffer waitUntilCompleted];
+    });
     run_case("run-encode-returns-dictionary float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
-        NSDictionary *got = [g encodeToCommandBuffer:nil feeds:@{a: both[a]} targetTensors:@[t]
+        MPSCommandBuffer *buffer = [MPSCommandBuffer commandBufferFromCommandQueue:queue];
+        NSDictionary *got = [g encodeToCommandBuffer:buffer feeds:@{a: both[a]} targetTensors:@[t]
                                 targetOperations:nil executionDescriptor:nil];
+        [buffer commit];
+        [buffer waitUntilCompleted];
         printf("#case run-encode-returns-dictionary-entries %lu\n", (unsigned long)got.count);
+    });
+    // The executable's own encode form, over the same buffer: its resultsArray is where its answer lands, and
+    // it is asked with the same commit and the same wait.
+    run_case("executable-encode float32", ^(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *t, NSDictionary *both) {
+        MPSGraphExecutable *e = [g compileWithDevice:gGraphDevice feeds:@{a: [[MPSGraphShapedType alloc] initWithShape:shape dataType:MPSDataTypeFloat32]}
+                                         targetTensors:@[t] targetOperations:nil compilationDescriptor:nil];
+        MPSCommandBuffer *buffer = [MPSCommandBuffer commandBufferFromCommandQueue:queue];
+        [e encodeToCommandBuffer:buffer inputsArray:@[both[a]] resultsArray:@[both[t]]
+                executionDescriptor:nil];
+        [buffer commit];
+        [buffer waitUntilCompleted];
     });
 
     // THE SPECIALIZATION AND THE OUTPUT TYPES: the output types are the targets' own shapes, printed one per
