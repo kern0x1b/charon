@@ -155,6 +155,29 @@ Every one of them is public and declared in the SDK's own `CFStream.h` (the SSL 
 and CFNetwork.framework is in the iOS SDK). So the resolution, the socket, the buffering, the timeouts
 and the native handle are the system's; nothing here reimplements a stream.
 
+**The native handle is inside a `CFData`, not in the value.** `CFStream.h` says what the property
+carries, in iPhoneOS16.4 and on the host alike: `kCFStreamPropertySocketNativeHandle` - "Value will be a
+CFData containing the native handle". Measured on the host, 2026-10-04, on a pair from
+`+[NSStream getStreamsToHostWithName:port:]` opened against a loopback listener of the test's own:
+
+```
+kCFStreamPropertySocketNativeHandle is a CFData of 4 bytes
+byte 0 = 0x06  byte 1 = 0x00  byte 2 = 0x00  byte 3 = 0x00
+the value cast to an int (what this file did)  -> 444811776, getsockname: Bad file descriptor
+the four bytes read as an int                  -> 6,            getsockname: 127.0.0.1:62140
+```
+
+So `charon_native_descriptor()` reads the bytes of the `CFData`, and a value that is not a `CFData` or
+is shorter than a descriptor is refused by name rather than read as bytes that are not there. That was
+the whole of `localAddress`, `localPort`, `remoteAddress` and `remotePort` answering nil, and it was
+not a property of the host: the property is a `CFData` here and on iOS alike, so the four rows are the
+port's own and the host differential
+(`tests/backports/host/streammetrics`) now compares them against the system's answer for the same
+socket. Two other public properties of the same object were measured for the record and are not needed:
+`kCFStreamPropertySocketRemoteHostName` answers `"127.0.0.1"` and `kCFStreamPropertySocketRemotePortNumber`
+answers the listener's port, while there is no public property for the local end at all - the three
+socket properties in `CFStream.h` are the native handle, the remote host name and the remote port.
+
 `+[NSStream getBoundStreamsWithBufferSize:inputStream:outputStream:]` is guarded to macOS by the 26.2
 header and is named by the iOS surface, so it is carried: the release exports the function, and a pair
 bound to a port is what the method promises.
@@ -179,6 +202,19 @@ why nothing in this file depends on it: the state is made on first use (see the 
 
 `-stopSecureConnection` is carried and does nothing to a connection that has TLS, because TLS cannot be
 taken off a connection once it is on -- which is the header's own reason for deprecating it.
+
+**The negotiated TLS values are asked of the stream only when this task started a TLS session.**
+`charon_negotiated_tls()` reads `kCFStreamPropertySSLContext`, which IS the stream's `SSLContext`, and
+then asks the release's own `SSLGetNegotiatedProtocolVersion` / `SSLGetNegotiatedCipher` (both looked up
+by name, as the table above says, because this library links neither framework). Asking a stream that
+never negotiated does not answer nil: measured on the host, 2026-10-04, `CFReadStreamCopyProperty(stream,
+kCFStreamPropertySSLContext)` on an open stream with no TLS session takes the process down before it
+returns -- a segfault inside the call, with the key the same flat `dlsym` finds in that process
+(`0x1eae53ba8` for the symbol, whose value is the key), so it is the read and not the lookup. So the two
+values are read only when `-startSecureConnection` was called on this task, which is the only case where
+the release's stream holds a TLS session to ask about. A connection with no TLS reports nil for both,
+which is what the host differential measured the system's own transaction saying about one
+(`tests/backports/host/streammetrics`, `ok negotiatedTLSProtocolVersion: (nil)`).
 
 ## The four delegate callbacks: what the release carries, and which three are sent
 

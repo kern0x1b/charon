@@ -17,6 +17,7 @@
 @synthesize readClosedReported = _readClosedReported;
 @synthesize openedAt = _openedAt;
 @synthesize started = _started;
+@synthesize socketNamesRead = _socketNamesRead;
 @synthesize localAddress = _localAddress;
 @synthesize localPort = _localPort;
 @synthesize remoteAddress = _remoteAddress;

@@ -27,8 +27,10 @@
 @property BOOL readClosedReported;
 @property NSDate *openedAt;
 @property BOOL started;
-/* What the release's own stream knows about the socket underneath it, read once when it opens:
-   kCFStreamPropertySocketNativeHandle for the descriptor, then getsockname and getpeername. */
+@property BOOL socketNamesRead;
+/* What the release's own stream knows about the socket underneath it, read once when the task is
+   finishing: kCFStreamPropertySocketNativeHandle for the descriptor, then getsockname and getpeername.
+   The flag is what keeps the second half-close from reading a stream the first one closed. */
 @property NSString *localAddress;
 @property NSNumber *localPort;
 @property NSString *remoteAddress;

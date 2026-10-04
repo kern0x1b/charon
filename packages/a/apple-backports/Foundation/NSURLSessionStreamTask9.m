@@ -169,12 +169,24 @@ static void charon_negotiated_tls(CFReadStreamRef stream, NSNumber **version, NS
     CFRelease(context);
 }
 
+/* The descriptor of the socket under a CFStream. CFStream.h says what the property carries, in both
+   the SDK this library is built against (iPhoneOS16.4) and the host's own: "Value will be a CFData
+   containing the native handle" - so the descriptor is INSIDE the data and the value is the address of
+   the data. Reading the value as an int is what this did, and it is the address of a CFData, which is
+   no descriptor at all: measured 2026-10-04 on the host, where the property answers a CFData of four
+   bytes holding 06 00 00 00 - getsockname on the 6 answers the stream's own 127.0.0.1:port, and
+   getsockname on the value's address answers that it is not a descriptor. Every name in the task's
+   transaction was nil because of it, on a release whose own CFStream answers a CFData as the header
+   says. A value that is not a CFData, or one too short to hold a descriptor, is refused by name here
+   rather than read as bytes that are not there. */
 static int charon_native_descriptor(CFReadStreamRef stream)
 {
     CFTypeRef handle = CFReadStreamCopyProperty(stream, kCFStreamPropertySocketNativeHandle);
     if (!handle)
         return -1;
-    int descriptor = (int)(intptr_t)handle;
+    int descriptor = -1;
+    if (CFGetTypeID(handle) == CFDataGetTypeID() && CFDataGetLength((CFDataRef)handle) >= (CFIndex)sizeof(descriptor))
+        memcpy(&descriptor, CFDataGetBytePtr((CFDataRef)handle), sizeof(descriptor));
     CFRelease(handle);
     return descriptor;
 }
@@ -266,7 +278,6 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
     [output scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [input open];
     [output open];
-    [self charon_readSocketNamesForInput:input];
     [self charon_tellDelegate:@selector(URLSession:streamTask:didBecomeInputStream:outputStream:) input:input];
 }
 
@@ -276,21 +287,40 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
     [super resume];
 }
 
-/* What the release's own stream knows about the socket underneath it, read once when it opens. */
-- (void)charon_readSocketNamesForInput:(NSInputStream *)input
+/* What the release's own stream knows about the socket underneath it, read once when the task is
+   finishing - which is the one moment when both halves of that are true: the descriptor exists only
+   after the connect has completed, and the stream is closed by the caller on the next line. Measured on
+   the host 2026-10-04, kCFStreamPropertySocketNativeHandle answering nothing at all 5 ms after -open and
+   a CFData carrying the descriptor at 62 ms, so reading it where this used to be read - in the same
+   statement as -open - answered nil for every name in the transaction, on any platform, because the
+   connect is asynchronous everywhere. The two negotiated TLS values come out of the same read and were
+   nil there for the same reason: the handshake has not happened yet when the streams are opened. */
+- (void)charon_readSocketNames
 {
     NSURLSessionStreamTaskState *state = [self charon_stateMade];
+    NSInputStream *input = state.input;
+    if (!input || state.socketNamesRead)
+        return;
     int descriptor = charon_native_descriptor((__bridge CFReadStreamRef)input);
     if (descriptor < 0)
-        return;
+        return; /* not connected yet: the other half-close asks again */
+    state.socketNamesRead = YES;
     /* The four are written through the setters, not into the properties, so the two reads are the
        only place that knows the order the descriptor is asked in. */
     NSString *localAddress = nil, *remoteAddress = nil;
     NSNumber *localPort = nil, *remotePort = nil;
     charon_socket_name(descriptor, YES, &localAddress, &localPort);
     charon_socket_name(descriptor, NO, &remoteAddress, &remotePort);
+    /* The two negotiated TLS values are asked of the release's own TLS session, and only when this task
+       started one. The property IS the stream's SSL context, so a stream that never negotiated has none
+       to hand back, and asking anyway does not answer nil: measured 2026-10-04 on the host, where
+       CFReadStreamCopyProperty(kCFStreamPropertySSLContext) on an open stream with no TLS session takes
+       the process down before it returns, with the key that the same flat lookup finds here (the probe
+       and its output are named in the facts page). A connection with no TLS has nothing to report, and
+       the system's own transaction about one says nil for both values. */
     NSNumber *version = nil, *cipher = nil;
-    charon_negotiated_tls((__bridge CFReadStreamRef)input, &version, &cipher);
+    if (state.secure)
+        charon_negotiated_tls((__bridge CFReadStreamRef)input, &version, &cipher);
     state.tlsProtocolVersion = version;
     state.tlsCipherSuite = cipher;
     state.localAddress = localAddress;
@@ -541,6 +571,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
     if (!state.readOpen)
         return;
     state.readOpen = NO;
+    [self charon_readSocketNames]; /* while the socket is still open: charon_readSocketNames says why */
     [state.input close];
     if (!state.writeOpen)
         [self charon_finishMetrics];
@@ -553,6 +584,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
     if (!state.writeOpen)
         return;
     state.writeOpen = NO;
+    [self charon_readSocketNames]; /* while the socket is still open: charon_readSocketNames says why */
     [state.output close];
     if (!state.readOpen)
         [self charon_finishMetrics];
