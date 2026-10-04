@@ -157,6 +157,10 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
     // everything after it, in one direction or the other. Which of the four it is, which direction, and
     // whether the element at a position is in its own answer are all parameters of the operation, for the
     // same reason the reduction family's are.
+CharonMPSGraphOperationKindCumulativeSum,
+    CharonMPSGraphOperationKindCumulativeProduct,
+    CharonMPSGraphOperationKindCumulativeMaximum,
+    CharonMPSGraphOperationKindCumulativeMinimum,
     // The gather family, which is one walk: the result's shape and, for each of its axes, which axis of the
     // operand feeds it and whether that one is reversed. Which transformation it is (@"gather") is what the
     // walk reads, not which of these it is, for the reason the reduction family's are read the same way.
@@ -167,11 +171,7 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
     CharonMPSGraphOperationKindExpandDims,
     CharonMPSGraphOperationKindFlatten2D,
     CharonMPSGraphOperationKindBroadcast,
-    CharonMPSGraphOperationKindReverse,
-    CharonMPSGraphOperationKindCumulativeSum,
-    CharonMPSGraphOperationKindCumulativeProduct,
-    CharonMPSGraphOperationKindCumulativeMaximum,
-    CharonMPSGraphOperationKindCumulativeMinimum
+    CharonMPSGraphOperationKindReverse
 };
 
 @class MPSGraph;
@@ -238,6 +238,28 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
 - (CharonMPSGraphOperationKind)charon_mps_kind;
 - (NSDictionary *)charon_mps_parameters;
 - (void)charon_mps_setParameters:(NSDictionary *)parameters;
+@end
+
+@interface MPSGraphExecutionDescriptor (CharonMPSGraph)
+// What a run does with the shared events this descriptor named: at the stage the caller named, every signal
+// of that stage writes its value into its event, and every wait must be satisfied or the run is refused.
+- (void)charon_mps_applyEventsAtStage:(MPSGraphExecutionStage)stage named:(NSString *)name;
+@end
+
+@interface MPSGraphExecutableExecutionDescriptor (CharonMPSGraph)
+// What a run does with the shared events this descriptor named: at the stage the caller named, every signal
+// of that stage writes its value into its event, and every wait must be satisfied or the run is refused.
+- (void)charon_mps_applyEventsAtStage:(MPSGraphExecutionStage)stage named:(NSString *)name;
+@end
+
+@interface MPSGraphExecutable (CharonMPSGraphRun)
+// The walk every run of an executable is, whether the caller came through a Metal command queue or through
+// MPSGraph's own command buffer: the executable's own feeds overlaid with the inputs, the graph's walk over
+// its operations, the answer written into the tensor data the caller allocated, and the descriptor's shared
+// events honoured at the end of it.
+- (NSArray<MPSGraphTensorData *> *)charon_mps_walkInputs:(NSArray<MPSGraphTensorData *> *)inputsArray
+                                                   results:(NSArray<MPSGraphTensorData *> *)resultsArray
+                                        executionDescriptor:(MPSGraphExecutableExecutionDescriptor *)descriptor;
 @end
 
 @interface MPSGraphOperation (CharonMPSGraphWiring)
@@ -322,6 +344,11 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
 // The shape a constant tensor holds, and nil for any other tensor: how a slice's gradient is given the
 // shape of its forward input before the graph runs. See the implementation for why that is the only way.
 - (NSArray<NSNumber *> *)charon_mps_constantShapeOfTensor:(MPSGraphTensor *)tensor;
+// What a run does with the shared events an execution descriptor named: at the stage the caller named, every
+// signal of that stage writes its value into its event, and every wait must be satisfied or the run is
+// refused. It is a method and not code in the runs because the events are the DESCRIPTOR's own state, and both
+// of this library's descriptor classes declare the two methods that put them there.
+- (void)charon_mps_applyEventsAtStage:(MPSGraphExecutionStage)stage named:(NSString *)name;
 // A cumulative operation along one axis of one operand: the result is the operand's own shape, and each
 // element holds a fold of the elements on one side of it. The axis is the caller's, so it is normalised
 // here - negative counted from the end of the rank, and an axis outside it refused the way the reduction

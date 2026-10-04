@@ -74,22 +74,22 @@ harness rather than in the library:
 * **The inputs paired with the feed tensors in the wrong order.** `-[MPSGraphExecutable
   runWithMTLCommandQueue:...]` took the feed tensors from the dictionary's key order, which is
   arbitrary, so the second operand reached the first tensor and every non-commutative operation read
-  its arguments backwards: subtraction answered `9, 18, 27...` where the release answers `-9, -18,
-  -27...`. The pairings are now in the graph's placeholder order, which is the order the caller passed
+ its arguments backwards: subtraction answered `9, 18, 27...` where the release answers `-9, -18,
+ -27...`. The pairings are now in the graph's placeholder order, which is the order the caller passed
   the inputs in.
 * **The harness overwrote its own inputs.** It remembered each *feed's* buffer as well as the result's,
   and read every remembered buffer back into the array it came from, so after the first case each input
   array held the previous case's output and both sides agreed on the wrong numbers. Only the result
   buffer is read back now.
 * **A square root of a negative, three times.** I read the chain case - where the product is positive even
-  where the sum is not, so no negative ever reaches the root - as the release's root answering a
+ where the sum is not, so no negative ever reaches the root - as the release's root answering a
   magnitude, and changed it to `fabs`. Measured over a feed of `(1, 2, 3, 4, -1, -2, -3, -4)`, the
   release answers `1, 1.41421, 1.73205, 2` and then four NaNs. It is a NaN, it is one again, and
   `MPSGraphOperationKindSqrt` now takes `sqrt(a)`: over the sixteen classes below the whole row is
   byte-identical to the release's, element for element.
 * **A branch that decided a division, a reciprocal, a square root and a logarithm by itself.** Each of the
-  four had a case for the values the arithmetic is undefined at - `b == 0.0`, `a == 0.0`, `a < 0.0`,
-  `a <= 0.0` - and each of the first two chose its infinity from the sign of the dividend alone, so it had
+ four had a case for the values the arithmetic is undefined at - `b == 0.0`, `a == 0.0`, `a < 0.0`,
+ `a <= 0.0` - and each of the first two chose its infinity from the sign of the dividend alone, so it had
   one answer where the arithmetic has two: `-1 / -0.0` is `+inf` and the division branch had only `-inf`
   for it, and a reciprocal of `-0.0` is `-inf` where the reciprocal branch had only `+inf`. The measured
   columns `reciprocal` and `divide` carry both zeroes, `ff800000` and `7f800000`, which is what the case
@@ -137,7 +137,7 @@ Four things in it are worth naming, because each one is a rule rather than a val
   shows in one row: `square` of `0x00800000` is `00000000`, because the square of the smallest normal is a
   denormal, while `square` of `0x3f7fffff` is `3f7ffffe`, which is neither.
 * **A NaN a kind computes is the arithmetic's own.** Every computing column answers `7fc00000` for
-  `ffc00000` and for the payload-carrying `7f800001` - the sign and the payload are both gone - and the
+ `ffc00000` and for the payload-carrying `7f800001` - the sign and the payload are both gone - and the
   two copying columns are the two that keep them: `abs` of `7f800001` is `7f800001`, and `identity` of
   `7f800001` is `7f800001` too.
 * **A negative zero is a negative zero.** `sqrt` of `80000000` is `80000000`, where a `fabs` before the
@@ -1150,6 +1150,55 @@ A row whose behaviour is not measured is not registered as implemented, and the 
 at all - a built method with no registry row is what `check_registry` fails on, and a registered row with a
 method whose behaviour is guessed is what this project calls a fake. Both probes are in the report and the next
 pass starts from them.
+
+## The run, async and encode forms, and the two shared events
+
+Thirteen rows, and they are all **one walk** - the graph's own over its operations - because a port whose
+operations are a walk has nothing to compile ahead of time, and the difference the release makes between the
+synchronous, the async and the encode forms is what it does with the GPU afterwards. Compared in a process of
+its own (`run_forms`): **15 case lines, every cell byte-identical to the release,
+`run_forms checks=5 failures=0 recorded=0` over 40 cells**, the red control differing in 3 of the 15.
+
+### The two shapes of answer, both measured
+
+| form | where the answer goes | measured over a 2x4 added to itself |
+| --- | --- | --- |
+| the form that **returns a dictionary** (`runWithMTLCommandQueue:...targetTensors:`, `runAsyncWithFeeds:...`, `runAsyncWithMTLCommandQueue:...targetTensors:...`, `encodeToCommandBuffer:...targetTensors:...`) | the release's **own** tensor data | one entry, the returned object is **not** the one the caller passed, and the caller's buffer still holds the byte `0xbd` it was filled with |
+| the form that takes a **results dictionary** (`runWithMTLCommandQueue:...resultsDictionary:` and its async and encode twins) | into the data the caller put in it | `(2, 4, 6, 8 \| 20, 40, 60, 80)` in the caller's own buffer, byte for byte |
+
+The dictionary form names no target tensors of its own, so **the dictionary's keys are what the walk computes**
+- a caller who passes an empty dictionary gets an empty walk.
+
+### What is compared, and the one thing that is not
+
+**The three async forms ARE compared cell for cell.** Each is asked with its descriptor's own
+`waitUntilCompleted` set, which is the header's own way of saying the call returns after the work is done, so
+the answer is in the caller's dictionary when the call returns and the case reads it there. The previous pass of
+this section said the host could not be asked at all, because a queue has no `-waitUntilCompleted`; that was
+**the harness asking the wrong object** - the method is of the command buffer - and the coordinator's correction
+is right. The descriptor's `completionHandler` and `scheduledHandler` are honoured around the walk on both
+sides, each called with the results and a nil error.
+
+**The two encode forms are not compared, and the reason is measured on this host and is not about timing**:
+MPSGraph's own `MPSCommandBuffer` has **no creation API in the SDK this harness compiles against** -
+`MPSGraph.h` and `MPSGraphDevice.h` name the class only in the encode parameters - so a bare `alloc` gives an
+object that raises `-[MPSCommandBuffer device]: unrecognized selector`, and there is no buffer to encode into.
+The port answers both forms through the same walk and writes the caller's dictionary; the two rows say what
+could not be asked rather than what was measured about it.
+
+### The two shared events, measured
+
+Both `MPSGraphExecutionDescriptor` and `MPSGraphExecutableExecutionDescriptor` declare
+`-waitForEvent:value:` and `-signalEvent:atExecutionEvent:value:`, so both hold them. Measured on this host: a
+fresh `id<MTLSharedEvent>`'s own `signaledValue` is **0**, and naming it in either descriptor does not change it -
+so the only thing a run can do with one is to write it at the stage the caller named, and the one stage the
+header names is `MPSGraphExecutionStageCompleted` (0). In the differential an event a run signals at that stage
+reads **42** afterwards and **0** before, on both sides; the walk is the release's own and the result is byte for
+byte.
+
+A **wait** is checked and a run whose event has not reached the value the caller named is **refused**, naming the
+event and the value, because this port's walk is on the CPU where there is no queue to block on - a refusal that
+says so is an answer, and running early would be a silent wrong answer.
 
 ### What is not measured here
 
