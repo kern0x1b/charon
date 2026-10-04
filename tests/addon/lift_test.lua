@@ -1041,8 +1041,13 @@ function failures(opt)
                          "#import <Foundation/Foundation.h>\n"
                          .. "@protocol NSCopying\n- (id)copyWithZone:(void *)zone API_AVAILABLE(ios(9.0));\n@end\n"
                          .. "API_AVAILABLE(ios(9.0))\n@interface FixBase : NSObject\n"
-                         .. "@property (nonatomic, copy) NSString *name API_AVAILABLE(ios(9.0));\n@end\n"
+                         .. "@property (nonatomic, copy) NSString *name API_AVAILABLE(ios(9.0));\n"
+                         -- a property whose getter the SDK gives a name of its own, which is what an accessor no row
+                         -- names looks like: FixBase is carried and declares it, so its getter comes down with it
+                         .. "@property (nonatomic, copy, getter=getTitle) NSString *title API_AVAILABLE(ios(9.0));\n"
+                         .. "@end\n"
                          .. "API_AVAILABLE(ios(9.0))\n@interface FixSpelling : FixBase\n@end\n"
+                         .. "API_AVAILABLE(ios(9.0))\n@interface FixSpelling2 : FixBase\n@end\n"
                          .. "NS_UNAVAILABLE\nAPI_AVAILABLE(ios(9.0))\n@interface FixGone : NSObject <NSCopying>\n"
                          .. "@property (nonatomic, copy) NSString *label API_AVAILABLE(ios(9.0));\n@end\n"
                          -- and a class the registry does not implement, which keeps both of its marks
@@ -1057,6 +1062,8 @@ function failures(opt)
                          .. '{"api":"-[FixSpelling init]","kind":"method","introduced":"9.0","minimum":"6.0","status":"implemented",'
                          .. '"reason":"a fixture entry","effect":"a fixture entry"},'
                          .. '{"api":"FixSpelling.description","kind":"property","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"FixSpelling2.title","kind":"property","introduced":"9.0","minimum":"6.0","status":"implemented",'
                          .. '"reason":"a fixture entry","effect":"a fixture entry"},'
                          .. '{"api":"FixGone","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
                          .. '"reason":"a fixture entry","effect":"a fixture entry"},'
@@ -1092,6 +1099,12 @@ function failures(opt)
         -- the member the SDK declares in a superclass and whose declaration has nothing to move is not written again
         expect_equal(found, "and the designated initializer it inherits is not written again",
                      tostring(staged:find("init", 1, true) ~= nil), "false")
+        -- a property whose getter the SDK gives a name of its own is redeclared on the deprecated spelling that
+        -- inherits it, and the accessor it brings is not a second uncarried one: FixBase declares title with
+        -- getter=getTitle, FixBase is carried, so -getTitle comes down with it and FixSpelling2 answers it
+        expect_equal(found, "the property with a getter of its own is redeclared",
+                     staged:match("@interface FixSpelling2 : FixBase\n([^\n]*)\n@end") or "(nothing)",
+                     "@property (nonatomic, readwrite, copy, getter=getTitle) NSString * title API_AVAILABLE(ios(6.1.3));")
         -- and the class method of the same name as a property is not an accessor of it
         expect_equal(found, "and the description a class method of the same name could have answered is not written",
                      tostring(staged:find("description", 1, true) ~= nil), "false")
@@ -1123,6 +1136,41 @@ function failures(opt)
             expect_equal(found, "the row " .. api .. " is answered and not left alone", tostring(alone:find(api, 1, true) ~= nil), "false")
         end
         os.tryrm(root)
+
+        -- The red control for the rule above: an accessor the class cannot answer is still refused, and the case that
+        -- fails is one whose superclass the backports do not carry, so nothing brings its getter down. The same fixture
+        -- as the case above with FixBase's status taken away and a property whose getter only that superclass declares
+        -- - the shape a false "answered by inheritance" would swallow.
+        local orphan = {"#define ios(version) ios, introduced=version\n"
+                        .. "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n"
+                        .. "#define instancetype id\n",
+                        -- NSCopying is what the conformance probe's own red control asks NSObject about
+                        "@class NSString;\n@protocol NSObject\n@end\n@protocol NSCopying\n@end\n"
+                        .. "__attribute__((objc_root_class)) @interface NSObject <NSObject>\n- (id)init;\n@end\n",
+                        "#import <Foundation/Foundation.h>\n"
+                        .. "API_AVAILABLE(ios(9.0))\n@interface FixAbsent : NSObject\n"
+                        .. "@property (nonatomic, copy, getter=getUntitled) NSString *untitled API_AVAILABLE(ios(9.0));\n@end\n"
+                        .. "API_AVAILABLE(ios(9.0))\n@interface FixOrphan : FixAbsent\n@end\n",
+                        '[{"api":"FixOrphan","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                        .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                        .. '{"api":"FixOrphan.untitled","kind":"property","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                        .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                        .. '{"api":"FixAbsent","kind":"class","introduced":"9.0","minimum":"6.0","status":"absent",'
+                        .. '"reason":"a fixture entry the release has","effect":"a fixture entry"}]'}
+        local alone_root = path.join(os.tmpdir(), "charon-lift-orphan-" .. hash.strhash128(table.concat(orphan, "")) .. "-" .. os.getpid())
+        os.tryrm(alone_root)
+        local orphan_frameworks = path.join(alone_root, "sdk", "System", "Library", "Frameworks")
+        io.writefile(path.join(orphan_frameworks, "Foundation.framework", "Headers", "Foundation.h"), orphan[1] .. orphan[2])
+        io.writefile(path.join(orphan_frameworks, "Fix.framework", "Headers", "Fix.h"), orphan[3])
+        io.writefile(path.join(alone_root, "registry", "Fix.json"), orphan[4])
+        local refused
+        try {function ()
+            lift.lift({clang = clang, swiftc = swiftc, sdk = path.join(alone_root, "sdk"), triple = "armv7-apple-ios6.1.3",
+                       minimum = "6.1.3", registry = alone_root, outputdir = path.join(alone_root, "out"), expected = false})
+        end, catch {function (why) refused = tostring(why) end}}
+        expect_equal(found, "an accessor no row names and no carried superclass brings down is still refused",
+                     tostring(refused and refused:match("whose accessor %-%[FixOrphan getUntitled%] is not carried") ~= nil), "true")
+        os.tryrm(alone_root)
     end
     return found
 end

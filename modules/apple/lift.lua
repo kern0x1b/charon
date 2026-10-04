@@ -2294,6 +2294,40 @@ local function computed(opt)
     local function carried(api)
         return CARRIED[(listed[api] or {}).status] or false
     end
+
+    -- The accessors a class answers by inheritance, from the superclasses the backports carry: the accessors of a
+    -- property one of them declares under the same name, with the same getter and the same setter. The chain and the
+    -- class rows are what decide it, and the dumps are of the superclasses only, which is why this is asked here and
+    -- not in property_accessors_uncarried(): that function knows a property and its accessors and nothing else.
+    local function inherited_accessors(owner, node)
+        local answered = {}
+        local sign = node.class and "+" or "-"
+        local getter = node.getter and node.getter.name or node.name
+        local setter = node.setter and node.setter.name or "set" .. node.name:sub(1, 1):upper() .. node.name:sub(2) .. ":"
+        for _, above in ipairs(superclasses(owner)) do
+            if carried(above) then
+                for _, other in ipairs(dump(above .. "::")) do
+                    if other.kind == "ObjCPropertyDecl" and other.name == node.name
+                       and (other.class == true) == (node.class == true) then
+                        local names = {other.getter and other.getter.name or other.name}
+                        if not other.readonly then
+                            table.insert(names, other.setter and other.setter.name
+                                         or "set" .. other.name:sub(1, 1):upper() .. other.name:sub(2) .. ":")
+                        end
+                        for _, name in ipairs(names) do
+                            if name == getter then
+                                answered[string.format("%s[%s %s]", sign, owner, getter)] = true
+                            end
+                            if name == setter then
+                                answered[string.format("%s[%s %s]", sign, owner, setter)] = true
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        return answered
+    end
     -- per member: the declarations a use of its owner reaches, those of protocols still to be asked about, and where else
     local pending, questions = {}, {}
     do
@@ -2483,7 +2517,26 @@ local function computed(opt)
                         table.insert(unreachable, string.format("%s is declared by %s in a form this cannot write again", api, by))
                     end
                     if node.kind == "ObjCPropertyDecl" then
-                        for _, accessor in ipairs(property_accessors_uncarried(owner, node, carried, kept, backports.spellings)) do
+                        local accessors = property_accessors_uncarried(owner, node, carried, kept, backports.spellings)
+                        -- An accessor no row names is still answered where the class inherits it from a superclass
+                        -- the backports carry, and then the redeclaration is not a lie: MTROtaSoftwareUpdateProvider
+                        -- ClusterApplyUpdateRequestParams is the deprecated spelling of MTROTASoftwareUpdateProvider
+                        -- ClusterApplyUpdateRequestParams, whose newVersion declares getter=getNewVersion and whose
+                        -- own release the class entry already lowered, so -getNewVersion comes down with it and the
+                        -- subclass answers it. A row per accessor is still what the registry check wants - it counts
+                        -- what is built - so this is the lift not refusing a redeclaration that is true, not the check
+                        -- taught to accept less.
+                        if #accessors > 0 then
+                            local inherited = inherited_accessors(owner, node)
+                            local left = {}
+                            for _, accessor in ipairs(accessors) do
+                                if not inherited[accessor] then
+                                    table.insert(left, accessor)
+                                end
+                            end
+                            accessors = left
+                        end
+                        for _, accessor in ipairs(accessors) do
                             table.insert(unreachable, string.format("%s is %s's property %s, whose accessor %s is not carried",
                                                                   api, by, node.name, accessor))
                         end
