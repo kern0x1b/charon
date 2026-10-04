@@ -52,8 +52,6 @@
 
 #import "CharonMPS.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 @implementation MPSMatrixFullyConnected {
     CHARON_MPS_NEURON_IVARS

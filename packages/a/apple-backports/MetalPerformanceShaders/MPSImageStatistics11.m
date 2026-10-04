@@ -55,7 +55,6 @@
 
 #import "CharonMPSImage.h"
 
-#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
 @implementation MPSImageStatisticsMinAndMax
 

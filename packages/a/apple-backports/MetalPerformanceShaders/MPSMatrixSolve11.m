@@ -53,7 +53,6 @@
 
 #import "CharonMPS.h"
 
-#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
 // One element of a matrix read as a double, and one written from a double: the pair every matrix kernel
 // in this package goes through, so a float16 and a float32 matrix are both walked at their own width.

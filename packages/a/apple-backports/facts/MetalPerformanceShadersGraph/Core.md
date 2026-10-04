@@ -74,22 +74,22 @@ harness rather than in the library:
 * **The inputs paired with the feed tensors in the wrong order.** `-[MPSGraphExecutable
   runWithMTLCommandQueue:...]` took the feed tensors from the dictionary's key order, which is
   arbitrary, so the second operand reached the first tensor and every non-commutative operation read
-  its arguments backwards: subtraction answered `9, 18, 27...` where the release answers `-9, -18,
-  -27...`. The pairings are now in the graph's placeholder order, which is the order the caller passed
+ its arguments backwards: subtraction answered `9, 18, 27...` where the release answers `-9, -18,
+ -27...`. The pairings are now in the graph's placeholder order, which is the order the caller passed
   the inputs in.
 * **The harness overwrote its own inputs.** It remembered each *feed's* buffer as well as the result's,
   and read every remembered buffer back into the array it came from, so after the first case each input
   array held the previous case's output and both sides agreed on the wrong numbers. Only the result
   buffer is read back now.
 * **A square root of a negative, three times.** I read the chain case - where the product is positive even
-  where the sum is not, so no negative ever reaches the root - as the release's root answering a
+ where the sum is not, so no negative ever reaches the root - as the release's root answering a
   magnitude, and changed it to `fabs`. Measured over a feed of `(1, 2, 3, 4, -1, -2, -3, -4)`, the
   release answers `1, 1.41421, 1.73205, 2` and then four NaNs. It is a NaN, it is one again, and
   `MPSGraphOperationKindSqrt` now takes `sqrt(a)`: over the sixteen classes below the whole row is
   byte-identical to the release's, element for element.
 * **A branch that decided a division, a reciprocal, a square root and a logarithm by itself.** Each of the
-  four had a case for the values the arithmetic is undefined at - `b == 0.0`, `a == 0.0`, `a < 0.0`,
-  `a <= 0.0` - and each of the first two chose its infinity from the sign of the dividend alone, so it had
+ four had a case for the values the arithmetic is undefined at - `b == 0.0`, `a == 0.0`, `a < 0.0`,
+ `a <= 0.0` - and each of the first two chose its infinity from the sign of the dividend alone, so it had
   one answer where the arithmetic has two: `-1 / -0.0` is `+inf` and the division branch had only `-inf`
   for it, and a reciprocal of `-0.0` is `-inf` where the reciprocal branch had only `+inf`. The measured
   columns `reciprocal` and `divide` carry both zeroes, `ff800000` and `7f800000`, which is what the case
@@ -137,7 +137,7 @@ Four things in it are worth naming, because each one is a rule rather than a val
   shows in one row: `square` of `0x00800000` is `00000000`, because the square of the smallest normal is a
   denormal, while `square` of `0x3f7fffff` is `3f7ffffe`, which is neither.
 * **A NaN a kind computes is the arithmetic's own.** Every computing column answers `7fc00000` for
-  `ffc00000` and for the payload-carrying `7f800001` - the sign and the payload are both gone - and the
+ `ffc00000` and for the payload-carrying `7f800001` - the sign and the payload are both gone - and the
   two copying columns are the two that keep them: `abs` of `7f800001` is `7f800001`, and `identity` of
   `7f800001` is `7f800001` too.
 * **A negative zero is a negative zero.** `sqrt` of `80000000` is `80000000`, where a `fabs` before the
@@ -1130,26 +1130,163 @@ prints `4x5x6`, and then the release's own kernel says "Invalid KernelDAG, equal
 Every rank-2 pad answers. The port answers a rank of three and the row says so; `refusals.m`'s
 `pad-rank3-clamp` and `pad-rank3-symmetric` hold the measurement.
 
-### The tile's gradient is NOT carried, and this is why
+### The tile's gradient: the rule is measured now, and the port does not reproduce it yet
 
-`-[MPSGraph tileGradientWithIncomingGradientTensor:sourceTensor:withMultiplier:name:]` stays `missing`, because
-**the release's answer is not the sum of the copies of an element**, which is what the gradient of a sum is, and
-pinning what it is instead needs measurements this pass did not finish. What is measured:
+`-[MPSGraph tileGradientWithIncomingGradientTensor:sourceTensor:withMultiplier:name:]` stays `missing`, and the
+two passes before this one left a measurement in this page that **was wrong and is corrected here**. What they
+recorded - "over an incoming gradient of ones the release answers the PRODUCT of the multiplier, 6 for (2, 3),
+3 for (1, 3) and 9 for (3, 3)" - does not reproduce. Measured over a 2x4 source with a gradient of ones, the
+release answers **1** for `(1, 1)`, `(2, 1)`, `(3, 1)` and `(4, 1)`, and **2** for `(1, 2)`, `(1, 3)`, `(2, 3)`
+and `(3, 3)`: three multipliers with three different products and one answer. Over a 8x8x4 source it answers
+**1** for `(2, 1, 1)`, `(3, 1, 1)` and `(5, 1, 1)`, **3** for `(1, 3, 1)`, **5** for `(1, 5, 1)`, **2** for
+`(1, 1, 2)`, **4** for `(2, 2, 2)` and **9** for `(3, 3, 3)`. The rule behind those numbers is measured and is
+below; the port does not reproduce it yet, and the row is not carried.
 
-* over an incoming gradient of **ones**, the release answers **the product of the multiplier** for every element
-  of the result - 6 for `(2, 3)`, 3 for `(1, 3)`, 9 for `(3, 3)` - which is the count the sum of the copies would
-  give;
-* over an incoming gradient of **(1 ... 24)** with a multiplier of `(1, 3)`, the release answers
-  **(15, 18, 21, 24 | 51, 54, 57, 60)** where the sum of the copies is **(6, 15, 24, 33 | 42, 51, 60, 69)** - so it
-  is reading a different set of elements, and not a set that is one row or one column away;
-* over an incoming gradient of (1 ... 48) with a multiplier of `(2, 3)`, the release answers
-  **(102, 108, 114, 120 | 174, 180, 186, 192)** where the sum of the copies is
-  (48, 66, 84, 102 | 192, 210, 228, 246).
+**What the operands may be, both refusals measured with the release's own words.**
 
-A row whose behaviour is not measured is not registered as implemented, and the port does not define the method
-at all - a built method with no registry row is what `check_registry` fails on, and a registered row with a
-method whose behaviour is guessed is what this project calls a fake. Both probes are in the report and the next
-pass starts from them.
+* **The incoming gradient must be of the SOURCE'S OWN SHAPE, and the result is that shape too.** A gradient
+  of the tiled result's shape is refused where the graph runs: "Incompatible shape for parameter at index 0"
+  (MPSGraphExecutable.mm:4500). So is one of the same element count in another arrangement - measured, a 2x4
+  source refuses an 8x1 and a 1x8 gradient with the same words. The result tensor is built before that and
+  prints the source's shape.
+* **The multiplier's length must be the rank.** The release's own compiler says "'mps.tile_gradient' op
+  `input` rank: 2 should match `multiplier` length: 3" (MPSGraphUtilities.mm:1258) and the process goes with
+  "Optimize Original Module MLIR pass manager failed".
+
+**The rule, over the incoming gradient held as the source's own shape.** For a source of rank R with shape
+`(s0 ... sR-1)` and a multiplier `m` of length R:
+
+* **`m[0]` is not read at all.** Every multiplier whose leading entry is above one and whose remaining entries
+  are all one answers the incoming gradient unchanged - measured over a 2x4 and over a 8x8x4, above. A
+  multiplier of `(2, 1)` is the identity where the sum of the copies would answer it twice.
+* **`m[j + 1]` is a WINDOW of `m[j + 1]` terms along axis j**, each term weighted **one**, at **axis j's own
+  stride** (the product of the extents after it). A term whose coordinate leaves the axis is **dropped and not
+  clamped**: measured over a gradient of ones and a 4x4 source, `(1, 3)` answers **3, 3, 2, 1** down the four
+  rows - three terms, then two, then one - and `(1, 5)` answers **4, 3, 2, 1**, which is the same window of five
+  with an axis of four cutting it short.
+* **The windows compose**, so two axes give the sum over the PRODUCT of the windows and not the sum of two
+  separate sums. Measured over a gradient of `(1 ... 32)` and a **4x4x2** source with a multiplier of
+  `(3, 3, 3)`, the release answers **99, 108, 117, 126 | 135, 144, 153, 162 | 171, 180, 189, 198 | 174, 182,
+  157, 164 | 138, 144, 150, 156 | 129, 134, 106, 110 | 81, 84, 87, 90 | 60, 62, 31, 32**, which is element for
+  element the sum of the 3x3 window of the leading 4x4 block around each of the first eight and around each of
+  the rest - and the sum of two separate windows would answer 5 terms where this answers 6.
+* **A multiplier of zero answers zeros** (a 2x4 source, a multiplier of `(0, 2)`, a gradient of `(1 ... 8)`:
+  eight zeros).
+
+Three whole cases the rule predicts and the release answers, each in the differential's own terms:
+
+| source | multiplier | gradient | the release answers |
+| --- | --- | --- | --- |
+| 2x4 | `(1, 1)` | 1 ... 8 | `1, 2, 3, 4, 5, 6, 7, 8` |
+| 2x4 | `(4, 1)` | 1 ... 8 | `1, 2, 3, 4, 5, 6, 7, 8` |
+| 2x4 | `(1, 3)` | 1 ... 8 | `6, 8, 10, 12, 5, 6, 7, 8` |
+| 3x3 | `(1, 2)` | 1 ... 9 | `5, 7, 9, 11, 13, 15, 7, 8, 9` |
+| 4x4 | `(1, 5)` | 1 ... 16 | `28, 30, 32, 34, 35, 37, 39, 41, 38, 40, 42, 44, 42, 44, 46, 48` |
+| 2x3x4 | `(1, 3, 1)` | 1 ... 24 | `14, 16, 18, 20 | 22, 24, 26, 28 | 30, 32, 34, 36 | 13, 14, 15, 16 | 17, 18, 19, 20 | 21, 22, 23, 24` |
+| 2x3x4 | `(1, 1, 3)` | 1 ... 24 | `15, 18, 21, 24 | 27, 30, 33, 36 | 39, 42, 45, 48 | 51, 54, 57, 60 | 38, 40, 42, 44 | 21, 22, 23, 24` |
+
+**Why the row is still `missing`.** The port's implementation of the rule is a chain of shifted slices summed
+one at a time, each shift the gradient sliced from that distance along the axis to the end of it and the
+zeros put on the right of it, and the windows taken over what the sum already is so that they compose. Six of
+the seven cases above it reproduces byte for byte - the identity, the unread leading axis, the window of three
+cut short, the window of two on an axis of three, the window along axis 0 of a rank of three and the composed
+pair over the 4x4x2 - and **three it does not**, all three of them a window on the axis just below the last:
+the 4x4 with `(1, 5)`, and the rank of three with `(1, 1, 3)` and with `(1, 3, 3)`. Over the rank of three with
+`(1, 1, 3)` the port answers `14, 18, 22, 26 | 20, 24, 28, 32 | 26, 30, 34, 38 | 16, 20, 24, 28 | 38, 40, 42, 44
+| 21, 22, 23, 24` where the release answers `14, 18, 22, 26 | 27, 30, 33, 36 | 39, 42, 45, 48 | 51, 54, 57,
+60 | 38, 40, 42, 44 | 21, 22, 23, 24`: the first row, the last two rows and the whole of the last axis agree,
+and the rows in between are the ones that are short by one term each - the release's window crosses from the
+end of one row of the leading block into the next, and the port's per-axis slice stops at the end of the axis.
+
+So the defect is named and it is in the implementation, not in the rule: **a window on the axis just below the
+last must not be cut at that axis's extent** - the release's window runs past it into the next row of the
+leading block, which is what a flat shift of the leading block is and what a per-axis slice is not. The fix is
+to build the shift on the gradient flattened to `(leading product, last extent)` - the port has
+`-flatten2DTensor:axis:name:` and `-reshapeTensor:shape:name:` for exactly that - and to slice along axis 0 of
+that view, so one shift moves a whole number of leading rows and the window crosses the row boundary.
+
+A row whose behaviour the port does not reproduce is not registered as implemented, and the port does not
+define the method at all in the tree as it stands - a built method with no registry row is what
+`check_registry` fails on, and a registered row with a method whose behaviour is guessed is what this project
+calls a fake. The measurement above is what the next pass starts from; the probe that took it is
+`.agent-work/probe/tilegrad-probe.m` in the band worktree and the ten differential cases written against it
+are `.agent-work/runs/v-mps7/graph-cases-with-tilegrad-cases.m`.
+
+## The run, async and encode forms, and the two shared events
+
+Thirteen rows, and they are all **one walk** - the graph's own over its operations - because a port whose
+operations are a walk has nothing to compile ahead of time, and the difference the release makes between the
+synchronous, the async and the encode forms is what it does with the GPU afterwards. Compared in a process of
+its own (`run_forms`): **23 case lines, every cell byte-identical to the release,
+`run_forms checks=11 failures=0 recorded=0` over 88 cells**, the red control differing in 7 of the 23.
+
+### The two shapes of answer, all of them compared now
+
+| form | where the answer goes | measured over a 2x4 added to itself |
+| --- | --- | --- |
+| the form that **returns a dictionary** (`runWithMTLCommandQueue:...targetTensors:`, `runAsyncWithFeeds:...`, `runAsyncWithMTLCommandQueue:...targetTensors:...`, `encodeToCommandBuffer:...targetTensors:...`) | the release's **own** tensor data | one entry, the returned object is **not** the one the caller passed, and the caller's buffer still holds the byte `0xbd` it was filled with |
+| the form that takes a **results dictionary** (`runWithMTLCommandQueue:...resultsDictionary:` and its async and encode twins) | into the data the caller put in it | `(2, 4, 6, 8 \| 20, 40, 60, 80)` in the caller's own buffer, byte for byte |
+
+The dictionary form names no target tensors of its own, so **the dictionary's keys are what the walk computes**
+- a caller who passes an empty dictionary gets an empty walk.
+
+### What is compared, and the one thing that is not
+
+**All three async forms ARE compared cell for cell.** Each is asked with its descriptor's own
+`waitUntilCompleted` set, which is the header's own way of saying the call returns after the work is done, so
+the answer is in the caller's dictionary when the call returns and the case reads it there. The previous pass of
+this section said the host could not be asked at all, because a queue has no `-waitUntilCompleted`; that was
+**the harness asking the wrong object** - the method is of the command buffer - and the coordinator's correction
+is right. The descriptor's `completionHandler` and `scheduledHandler` are honoured around the walk on both
+sides, each called with the results and a nil error.
+
+**All three encode forms ARE compared cell for cell too, and this page's previous two passes said they could not
+- both times for the wrong reason.** What is measured:
+
+* **Where the buffer comes from.** `+[MPSCommandBuffer commandBufferFromCommandQueue:]` in
+  `MetalPerformanceShaders.framework/Frameworks/MPSCore.framework/Headers/MPSCommandBuffer.h`, **inside the
+  MetalPerformanceShaders umbrella** and in no MetalPerformanceShadersGraph header. The class is declared
+  `@interface MPSCommandBuffer : NSObject <MTLCommandBuffer>`, so `-commit` and `-waitUntilCompleted` are its
+  own methods and **the wait is on the buffer**, not on the queue: encode, `[buffer commit]`,
+  `[buffer waitUntilCompleted]`, and then the caller's own buffer is read.
+* **What the release answers.** The graph's results-dictionary form writes `(2, 4, 6, 8 | 20, 40, 60, 80)`
+  into the destination the caller allocated - the same bytes the synchronous and the async dictionary forms
+  answer over the same graph, and the port answers them too. The graph's returning form answers one entry, the
+  release's own tensor data, and leaves the caller's buffer holding the `0xbd` it was filled with, which is the
+  shape of answer the two other returning forms give. The executable's form writes the same bytes into the
+  `resultsArray` the caller passed. The planted build answers `00004040` where the release and the port answer
+  `00000040`, so the two byte-comparing cases are checked and not merely equal.
+* **Why the earlier passes said otherwise, and both of the reasons were wrong.** A bare `alloc` raising
+  `-[MPSCommandBuffer device]: unrecognized selector` measures **`-init`**, which that header marks
+  `NS_UNAVAILABLE` and says to replace with `-initWithCommandBuffer:`; it says nothing about the factory.
+  Measured on this host: the class is `MPSCommandBuffer`, the factory answers one, and it answers
+  `-waitUntilCompleted` - on the object itself and on its `-rootCommandBuffer` alike. And "the harness imported
+  only MetalPerformanceShadersGraph, so the declaration was never in view" is wrong twice over: the declaration
+  is reachable from the graph umbrella as well, because `MetalPerformanceShadersGraph.h` imports `MPSGraph.h`,
+  which imports `MPSGraphCore.h`, which imports `MetalPerformanceShaders.h`, which imports
+  `MPSCore/MPSCore.h` - a file importing nothing but the graph umbrella compiles the call and links it against
+  `MetalPerformanceShaders`, both measured. `graph-cases.m` now imports `MetalPerformanceShaders` for the class
+  so the dependency is stated rather than transitive.
+
+**The one thing that cannot be done here is waiting on a COMMAND QUEUE**, and that is not a limit on any of the
+forms: asking a queue for `-waitUntilCompleted` raises
+`-[AGGX16XFamilyCommandQueue waitUntilCompleted]: unrecognized selector`. That is why no case in this family
+waits on a queue - the descriptor's own `waitUntilCompleted` and the command buffer's own
+`-waitUntilCompleted` are what the cases use.
+
+### The two shared events, measured
+
+Both `MPSGraphExecutionDescriptor` and `MPSGraphExecutableExecutionDescriptor` declare
+`-waitForEvent:value:` and `-signalEvent:atExecutionEvent:value:`, so both hold them. Measured on this host: a
+fresh `id<MTLSharedEvent>`'s own `signaledValue` is **0**, and naming it in either descriptor does not change it -
+so the only thing a run can do with one is to write it at the stage the caller named, and the one stage the
+header names is `MPSGraphExecutionStageCompleted` (0). In the differential an event a run signals at that stage
+reads **42** afterwards and **0** before, on both sides; the walk is the release's own and the result is byte for
+byte.
+
+A **wait** is checked and a run whose event has not reached the value the caller named is **refused**, naming the
+event and the value, because this port's walk is on the CPU where there is no queue to block on - a refusal that
+says so is an answer, and running early would be a silent wrong answer.
 
 ## The run, async and encode forms, and the two shared events
 

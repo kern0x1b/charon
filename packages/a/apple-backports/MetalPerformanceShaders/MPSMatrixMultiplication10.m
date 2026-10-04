@@ -3,8 +3,6 @@
 
 #import "CharonMPS.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 @implementation MPSMatrixMultiplication {
     NSUInteger _resultRows, _resultColumns, _interiorColumns;
