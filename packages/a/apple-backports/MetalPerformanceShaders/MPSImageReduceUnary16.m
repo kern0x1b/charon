@@ -44,7 +44,6 @@
 
 #import "CharonMPSReduce.h"
 
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 // ONE scoped suppression, and it is recorded in coordination/crutches.md with the reason. The SDK marks
 // MPSImageReduceUnary's -initWithDevice: NS_UNAVAILABLE (:44-47) and each concrete class's -initWithDevice:
 // NS_DESIGNATED_INITIALIZER, so clang requires the latter to call a designated initializer of the former
@@ -54,7 +53,6 @@
 // the base's, because the base's -initWithDevice: then becomes a convenience initializer that refuses
 // rather than one that calls self. Measured release behaviour, mirrored here: the release asserts
 // ("Cannot directly initialize MPSImageReduceUnary") and aborts, so there is no successful chain to write.
-#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
 
 @implementation MPSImageReduceUnary {
