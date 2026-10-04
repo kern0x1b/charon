@@ -793,9 +793,15 @@ def selftest():
         print("ok   the send to id<CharonWidgetDelegate> is placed: %s"
               % ("yes" if renamed in placed else "NO -- the conformers did not place it"))
         control = rewrite({})
-        # the control has to show the send UNCHANGED as well as unprefixed: a rewrite that dropped the body
-        # would pass "the prefixed name is absent" for the wrong reason
-        quiet = renamed not in control and "[delegate widgetSaysHello]" in control
+        # The control has to show the send UNCHANGED, and the assertion is about the SEND and not about the
+        # file: the definition of a carried selector inside a class the port defines is renamed in every rewrite
+        # (an ObjCImplementationDecl now carries its own class, so the method declarations below it are reached
+        # with that class as their context), so the prefixed name is in the file either way and "the name is
+        # absent" would fail for a rewrite that did the right thing. What must hold is that the send itself is
+        # left as the source wrote it without the conformer map, and is not left so with it - and a rewrite that
+        # dropped the body would fail the first half for the right reason.
+        as_written = "[delegate widgetSaysHello];"
+        quiet = as_written in control and as_written not in placed
         print("%s   the same send with no conformer map is left exactly as written, which is what proves"
               % ("ok  " if quiet else "FAIL"))
         print("     the first line is about the mechanism and not about the fixture")
