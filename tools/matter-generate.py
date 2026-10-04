@@ -977,8 +977,20 @@ def payload_classes(lines):
     name, label, target = None, None, None
     property_lines = None
     head_lines = None
+    announcement = ""
     for line in lines:
         stripped = line.strip()
+        # The class's own availability annotation, kept until the `@interface` it belongs to. It is only
+        # ever a run of annotation lines: one that opens a parenthesis it does not close on the same line
+        # continues on the next, which is how the SDK wraps a long `MTR_DEPRECATED`. Anything else clears
+        # it, so a doc comment that quotes a deprecation cannot become a class's own annotation.
+        if stripped.startswith(("MTR_DEPRECATED", "API_DEPRECATED", "MTR_AVAILABLE", "API_AVAILABLE",
+                               "MTR_PROVISIONALLY_AVAILABLE")):
+            announcement = (announcement + " " + stripped).strip() if announcement else stripped
+            continue
+        if announcement and announcement.count("(") > announcement.count(")"):
+            announcement += " " + stripped
+            continue
         if property_lines is not None:
             property_lines = property_lines + " " + stripped
             if property_lines.endswith(";"):
@@ -990,12 +1002,14 @@ def payload_classes(lines):
             head_lines = head_lines + " " + stripped
             head = CLASS_HEAD.match(head_lines)
             if head:
-                name, label, target = record_head(found, head, None)
+                name, label, target = record_head(found, head, None, announcement)
+                announcement = ""
                 head_lines = None
                 continue
             member = CATEGORY_HEAD.match(head_lines) or EXTENSION_HEAD.match(head_lines)
             if member:
                 name, label, target = record_head(found, None, member_category(member))
+                announcement = ""
                 head_lines = None
                 continue
             if stripped.startswith("@end"):
@@ -1005,34 +1019,41 @@ def payload_classes(lines):
                 # first such head was simply absent.
                 OFFENDERS.append((head_lines.split()[1] if len(head_lines.split()) > 1 else head_lines,
                                   "class head", "a declaration this reader cannot parse", head_lines))
+                announcement = ""
                 head_lines = None
             continue
         if stripped.startswith("@property") and not stripped.endswith(";"):
             property_lines = stripped
+            announcement = ""
             continue
         if stripped.startswith("@property"):
             if target is not None:
                 record_property(target, stripped)
+            announcement = ""
             continue
         if stripped.startswith("@interface"):
             head = CLASS_HEAD.match(stripped)
             if head:
-                name, label, target = record_head(found, head, None)
+                name, label, target = record_head(found, head, None, announcement)
+                announcement = ""
                 continue
             member = CATEGORY_HEAD.match(stripped) or EXTENSION_HEAD.match(stripped)
             if member:
                 name, label, target = record_head(found, None, member_category(member))
+                announcement = ""
                 continue
             head_lines = stripped
             continue
         head = CLASS_HEAD.match(line)
         if head:
-            name, label, target = record_head(found, head, None)
+            name, label, target = record_head(found, head, None, announcement)
+            announcement = ""
             continue
         if name is None:
             continue
         if line.startswith("@end"):
             name, label, target = None, None, None
+            announcement = ""
             continue
         if stripped.startswith("- ("):
             for _, declaration in declarations([line]):
@@ -1050,24 +1071,41 @@ def member_category(member):
     return member.group(1), next((each for each in member.groups()[1:] if each), "Extension")
 
 
-def record_head(found, head, member):
+def record_head(found, head, member, announcement=""):
     """(name, category label, the property list the following declarations belong to).
 
     `head` is a class declaration and `member` a category or a class extension; the port's own category is
     named after the framework's label with the port's prefix, so it can never be the same category as one
     the SDK declares for the same class.
+
+    `announcement` is the class's OWN availability annotation, the one the SDK writes on the line above the
+    `@interface`, and it is what says a class is a deprecated spelling of another one:
+
+        MTRStructsObjc.h:2828   MTR_DEPRECATED("Please use MTRUnitTestingClusterSimpleStruct", ios(16.1, 16.4), ...)
+        MTRStructsObjc.h:2829   @interface MTRTestClusterClusterSimpleStruct : MTRUnitTestingClusterSimpleStruct
+
+    That is a statement about the CLASS, and `DEPRECATED_FOR` reads the same text out of a member's own
+    annotation - where the name it holds is a MEMBER of the same class, and where 51 of them name prose
+    instead ("Please use the storage property"). The two are kept apart because the answer each gives is a
+    different kind of thing: a member's text pairs a member with a member, and the class's own text pairs a
+    CLASS with a CLASS.
     """
     if head is not None:
         name = head.group(1)
         found.setdefault(name, {"super": head.group(2),
                                 "protocols": (head.group(3) or "").split(),
-                                "properties": [], "methods": [], "categories": {}})
+                                "properties": [], "methods": [], "categories": {},
+                                "deprecated_for": None})
         found[name]["super"] = head.group(2)
         found[name]["protocols"] = (head.group(3) or "").split()
+        if announcement:
+            said = DEPRECATED_FOR.search(announcement)
+            if said:
+                found[name]["deprecated_for"] = said.group(1)
         return name, None, found[name]["properties"]
     name, label = member
     info = found.setdefault(name, {"super": "NSObject", "protocols": [], "properties": [],
-                                   "methods": [], "categories": {}})
+                                   "methods": [], "categories": {}, "deprecated_for": None})
     return name, label, info["categories"].setdefault(label, [])
 
 
@@ -1401,6 +1439,74 @@ def host_measurements(path):
     return found
 
 
+def init_defaults(path):
+    """What the framework's OWN -init stores, read out of the committed table tools/matter-init-source.py wrote.
+
+    The file is the OUTPUT of a reader over project-chip/connectedhomeip at a named tag and nothing else: one
+    line per store an `- (instancetype)init` of that tree makes, with the source's own expression and the
+    file and line it came from. It is MEASURED from the framework's code, not derived from a header, and the
+    reason it is needed is that a header says nothing about an initial value - `MTRReadParams`' `filterByFabric`
+    is a plain `BOOL` in MTRCluster.h and its -init stores YES.
+
+    Keyed by class then member, as (expression, "file:line"). A class the table has no -init for is absent,
+    and class_stores() says where its stores come from instead.
+    """
+    found = {}
+    if not path or not os.path.exists(path):
+        return found
+    with open(path) as handle:
+        for line in handle:
+            if line.startswith("#") or not line.strip():
+                continue
+            fields = line.rstrip("\n").split("\t")
+            if len(fields) < 4:
+                continue
+            found.setdefault(fields[0], {})[fields[1]] = (fields[2], fields[3])
+    return found
+
+
+# Where a class's stores came from: its own -init, an ancestor's, or nowhere. The three are counted and
+# printed, because "the framework writes no initialiser for this class" and "this class has no initialiser"
+# are different facts and the second is a gap the run has to name.
+STORE_SOURCE = {"own": 0, "inherited": 0, "none": 0}
+STORE_INHERITED = []
+STORE_UNREAD = []
+STORE_MOVED = []
+STORE_KEPT = []
+STORE_CLASSES = []
+INIT_TABLE = {}
+# The class reader for this run, so class_stores() can walk a superclass chain without threading the reader
+# through every emitter. main() sets it before anything is emitted.
+FAMILIES = {}
+
+
+def class_stores(name, families):
+    """The stores that apply to `name`: its own -init's, or the nearest ancestor's that has one.
+
+    A class the framework's source gives no -init of its own inherits its superclass's, and the stores it
+    gets are that superclass's - by MEMBER NAME, which is what the framework does, because the ivar is the
+    superclass's. 70 of the 924 are shaped so, and all but 20 of them are the deprecated aliases
+    (`MTRTestClusterClusterNestedStruct` : `MTRUnitTestingClusterNestedStruct`), where the answer is not the
+    same as the alias's own declarations: the superclass's -init stores
+    `[MTRUnitTestingClusterSimpleStruct new]` in the member the SDK declares with the DEPRECATED type, and
+    that is the whole of the class-name difference inside a nested -description.
+
+    The walk stops at the first ancestor the table has stores for, which is the one whose -init runs.
+    """
+    walk = name
+    while walk and walk in families:
+        if walk in INIT_TABLE:
+            if walk == name:
+                STORE_SOURCE["own"] += 1
+            else:
+                STORE_SOURCE["inherited"] += 1
+                STORE_INHERITED.append((name, walk))
+            return INIT_TABLE[walk]
+        walk = families[walk]["super"]
+    STORE_SOURCE["none"] += 1
+    return {}
+
+
 def payload_buckets(name, info, older):
     """Which declaration each property of one plain data class belongs to: the class's own, or a category's.
 
@@ -1535,19 +1641,25 @@ def member_accessors(prop, slots, ivar_type=None):
 #     fresh  MTRTestClusterClusterSimpleStruct  a                  NSNumber(0)
 #     fresh  MTRTestClusterClusterSimpleStruct  d                  NSData(0)
 #     fresh  MTRAccessControlClusterAccessControlEntryStruct  privilege  NSNumber(0)
+# (class, what its empty value IS as a token, the C the port writes for it). The middle column is the SAME
+# token store_value() builds for that value out of the framework's own expression, and the two have to
+# agree: `@(0)` in the source and `@0` in the port are both `number:0`, `@""` and `@""` are both `string:`,
+# and `[NSArray array]` and `@[]` are both `array:0`. Without that agreement every store looks like a
+# different value and the run says so - the first run of this named 13 moved stores where 6 are the whole
+# of it, all 13 of them the two spellings of one value.
 ZEROS = (
-    ("NSNumber", "@0"),
-    ("NSString", '@""'),
-    ("NSMutableString", '@""'),
-    ("NSData", "[NSData data]"),
-    ("NSMutableData", "[NSMutableData data]"),
-    ("NSArray", "@[]"),
-    ("NSMutableArray", "[NSMutableArray array]"),
-    ("NSDictionary", "@{}"),
-    ("NSMutableDictionary", "[NSMutableDictionary dictionary]"),
-    ("NSSet", "[NSSet set]"),
-    ("NSMutableSet", "[NSMutableSet set]"),
-    ("NSOrderedSet", "[NSOrderedSet orderedSet]"),
+    ("NSNumber", "number:0", "@0"),
+    ("NSString", "string:", '@""'),
+    ("NSMutableString", "string:", '@""'),
+    ("NSData", "data:0", "[NSData data]"),
+    ("NSMutableData", "data:0", "[NSMutableData data]"),
+    ("NSArray", "array:0", "@[]"),
+    ("NSMutableArray", "array:0", "[NSMutableArray array]"),
+    ("NSDictionary", "dictionary:0", "@{}"),
+    ("NSMutableDictionary", "dictionary:0", "[NSMutableDictionary dictionary]"),
+    ("NSSet", "set:0", "[NSSet set]"),
+    ("NSMutableSet", "set:0", "[NSMutableSet set]"),
+    ("NSOrderedSet", "orderedset:0", "[NSOrderedSet orderedSet]"),
 )
 SCALARS = ("BOOL", "NSInteger", "NSUInteger", "int", "unsigned", "long", "short", "double", "float",
            "int32_t", "uint32_t", "int64_t", "uint64_t", "char", "NSUInteger")
@@ -1568,24 +1680,35 @@ def nullable_of(prop):
     return "nullable" in [each.strip() for each in prop["attributes"].split(",")]
 
 
-def default_of(prop):
-    """The value -init stores, or None to store nothing.
+def derived_default(prop):
+    """(what the value IS, the C the port writes for it), or (None, None) to store nothing.
 
-    None is one of two right answers: a member the declaration says is nullable is left nil, which is what
-    the host holds, and a non-object member is left at zero by the allocator, which is also what the host
-    holds. A nonnull OBJECT member of a type this table has no zero for is the third case, and it is a gap:
-    the run names it rather than writing a value nobody measured.
+    The first half is a canonical token and the second the port's own spelling of it, and the two are what
+    let a store the framework's source makes be compared with the derived one WITHOUT a list of spellings
+    that mean the same thing: `[NSArray array]` and `@[]` are both `array:0`, `@(1)` is `number:1` whatever
+    it is spelled, and `nil` is `nil`. A store whose token is the derived one is the same value, so the port
+    keeps its own spelling of it; a store whose token differs is a value the derived rule does not have, and
+    that is what the object has to write.
+
+    (None, None) is one of two right answers: a member the declaration says is nullable is left nil, which is
+    what the host holds, and a non-object member is left at zero by the allocator, which is also what the
+    host holds. A nonnull OBJECT member of a type this table has no zero for is the third case, and it is a
+    gap: the run names it rather than writing a value nobody measured.
     """
     if nullable_of(prop):
-        return None
+        return "nil", None
     spelling = bare_type(prop)
     if not spelling.endswith("*"):
         kind = spelling.split()[-1] if spelling.split() else ""
-        return "NO" if kind == "BOOL" else ("0" if kind in SCALARS else None)
+        if kind == "BOOL":
+            return "bool:0", "NO"
+        if kind in SCALARS:
+            return "number:0", "0"
+        return None, None
     base = spelling.replace("*", " ").split()[-1] if spelling.replace("*", " ").split() else ""
-    for spelled, zero in ZEROS:
+    for spelled, token, zero in ZEROS:
         if base == spelled:
-            return zero
+            return token, zero
     if base.startswith("MTR"):
         # A nonnull member whose type is ANOTHER plain data class: the host allocates one and hands back a
         # fresh object, measured - `MTRDataTypeViewportStruct.viewport` reads
@@ -1593,8 +1716,92 @@ def default_of(prop):
         # declare the member `MTRDataTypeViewportStruct * nonnull`. It is [[X alloc] init] and nothing else,
         # and it is the same construction the class's own -init does, so the value a nested member starts
         # with is the value that class starts with.
-        return "[[%s alloc] init]" % base
-    return None
+        return "object:%s" % base, "[[%s alloc] init]" % base
+    return None, None
+
+
+# The value a store in tools/matter-init-defaults.tsv holds, in the same two halves. The forms are the ones
+# that tree's own initialisers use - `nil`, `YES`/`NO`, `@(n)`, `@""`, an empty value of a collection class,
+# and `[X new]` - and anything else is reported by name instead of being guessed at, which is what the four
+# stores of `MTRClusterStateCacheContainer` and `MTRDiagnosticLogsDownloader` are.
+BOOLEAN_STORE = re.compile(r"^(YES|NO)$")
+BOXED_STORE = re.compile(r"^@\((.+)\)$")
+TEXT_STORE = re.compile(r'^@"(.*)"$')
+CLASS_STORE = re.compile(r"^\[(\w+) new\]$")
+ALLOC_STORE = re.compile(r"^\[\[(\w+) alloc\] init\]$")
+EMPTY_STORE = {"[NSData data]": "data", "[NSMutableData data]": "data",
+               "[NSArray array]": "array", "[NSMutableArray array]": "array",
+               "[NSDictionary dictionary]": "dictionary",
+               "[NSMutableDictionary dictionary]": "dictionary",
+               "[NSSet set]": "set", "[NSMutableSet set]": "set",
+               "[NSOrderedSet orderedSet]": "orderedset"}
+
+
+def store_value(expression):
+    """(what the store IS, the C the port writes for it), or (None, None) for a form this cannot read."""
+    if expression == "nil":
+        return "nil", None
+    if BOOLEAN_STORE.match(expression):
+        return "bool:%d" % (1 if expression == "YES" else 0), expression
+    boxed = BOXED_STORE.match(expression)
+    if boxed:
+        return "number:%s" % boxed.group(1).strip(), expression
+    text = TEXT_STORE.match(expression)
+    if text:
+        return "string:%s" % text.group(1), expression
+    if expression in EMPTY_STORE:
+        return "%s:0" % EMPTY_STORE[expression], None
+    made = CLASS_STORE.match(expression) or ALLOC_STORE.match(expression)
+    if made:
+        return "object:%s" % made.group(1), "[[%s alloc] init]" % made.group(1)
+    return None, None
+
+
+def default_of(prop, store=None):
+    """The value -init stores for one member, or None to store nothing.
+
+    `store` is what the framework's own source stores for it, with the file and line it was read from, and it
+    decides the value of a member this SDK declares NONNULL. It is 7 members over 924 classes, and each of
+    them is a reading the host disagrees with otherwise:
+
+        MTRReadParams.filterByFabric          YES, MTRCluster.mm:120
+        MTRReadParams.assumeUnknownAttributesReportable  YES, MTRCluster.mm:121
+        MTRSubscribeParams.replaceExistingSubscriptions   YES, MTRCluster.mm:292, in the (Deprecated)
+                                               CATEGORY whose -init is the one [[X alloc] init] runs
+        MTRSubscribeParams.resubscribeAutomatically       YES, MTRCluster.mm:293
+        MTRSubscribeParams.minInterval        @(1),  MTRCluster.mm:294
+        MTRUnitTestingClusterNestedStruct.c   [MTRUnitTestingClusterSimpleStruct new], MTRStructsObjc.mm:14623
+        MTRUnitTestingClusterTestEventEvent.arg4  the same, MTRStructsObjc.mm:14788
+                                               - both members are DECLARED with the deprecated spelling
+                                               `MTRTestClusterClusterSimpleStruct *`, so a port that
+                                               allocates what the header says holds a different class than
+                                               the framework does and prints a different name inside its
+                                               nested -description.
+
+    TWO cases where the store does not decide the value, and both are a difference between two RELEASES
+    rather than a value:
+
+    * a member THIS SDK declares NULLABLE is left nil whatever that tree stores into it. The framework's
+      own generated sources write one line per member, `@(0)` for the nonnull ones and nil for the nullable
+      ones (MTRCommandPayloadsObjc.mm, MTRStructsObjc.mm), and 9 members are nullable here and nonnull
+      there - `MTRContentControlClusterAddBonusTimeParams.bonusTime` is `_Nonnull` at the tag and `_Nullable`
+      in SDK 26.2 - so the store is that release's answer to a different declaration.
+    * a store that stores NOTHING is not a value either, for the same reason read the other way round: 6
+      members are `_Nonnull` here and `_Nullable` there (`MTRGroupcastClusterMembershipStruct.endpoints`),
+      the tree writes nil into them because its header says nullable, and this port's declaration says the
+      member is not nil, so it gets its type's zero.
+
+    An expression this cannot read is not guessed at either: the derived value stands and the run names it.
+    """
+    derived, literal = derived_default(prop)
+    if store is None or derived == "nil":
+        return literal
+    token, stored = store_value(store[0])
+    if token is None or token == derived or stored is None:
+        # The same value the port already writes, an expression with no reading here, or a store that says
+        # the member is nil - which is that release's nullability and not a value.
+        return literal
+    return stored
 
 
 def describe_helpers():
@@ -1764,6 +1971,9 @@ def emit_params(path, name, info, version, buckets, copying, counts, host=None, 
     members = [prop for label in sorted(categories) for prop in categories[label]]
     alias = (host or {}).get("aliases") or {}
     unplaced = []
+    # What the framework's own -init stores for this class's members: its own, or the nearest ancestor's
+    # when the framework's source gives this class no initialiser of its own. See class_stores().
+    stores = class_stores(name, FAMILIES)
     # An alias shares the successor's ivar ONLY when the two are the same type. The host shares the storage
     # either way - MTRReadParams' `fabricFiltered` is an NSNumber and `filterByFabric` is a BOOL, and setting
     # one is visible through the other - but two declarations of different types cannot be one ivar in C, and
@@ -1883,7 +2093,44 @@ def emit_params(path, name, info, version, buckets, copying, counts, host=None, 
         body.append("- (instancetype)init\n{\n    self = [super init];\n    if (!self) {\n"
                     "        return nil;\n    }\n")
         for prop in own:
-            value = default_of(prop)
+            store = stores.get(prop["name"])
+            if store is not None:
+                token, stored = store_value(store[0])
+                derived = derived_default(prop)[0]
+                if token is None:
+                    STORE_UNREAD.append((name, prop["name"], store[0], store[1]))
+                elif token == derived:
+                    pass
+                elif derived == "nil" or stored is None:
+                    # The two cases default_of() names: this SDK declares the member nullable and that tree
+                    # stores a value into it, or that tree stores nothing and this SDK declares the member
+                    # not nullable. Both are the two SDKs' NULLABILITY differing, and the port keeps this
+                    # one's answer, so the store is listed rather than applied.
+                    STORE_KEPT.append((name, prop["name"], store[1], store[0],
+                                       "this SDK declares it nullable" if derived == "nil"
+                                       else "this SDK declares it nonnull and the store holds no value"))
+                else:
+                    STORE_MOVED.append((name, prop["name"], store[1], token))
+                    # The class a nested member is given is checked against the SDK, and the check is the
+                    # deprecated/current PAIR: a store naming a class other than the member's declared type
+                    # is right exactly when the declared type is that class's own deprecated spelling, which
+                    # is what `MTR_DEPRECATED("Please use MTRUnitTestingClusterSimpleStruct")` says above
+                    # `@interface MTRTestClusterClusterSimpleStruct : MTRUnitTestingClusterSimpleStruct`.
+                    # Any other class name is the framework's source and this SDK disagreeing, and the run
+                    # names it instead of writing it.
+                    if token.startswith("object:"):
+                        given = token.split(":", 1)[1]
+                        declared = bare_type(prop).replace("*", " ").split()
+                        declared = declared[-1] if declared else ""
+                        said = (FAMILIES.get(declared) or {}).get("deprecated_for")
+                        if given not in FAMILIES:
+                            STORE_CLASSES.append((name, prop["name"], given, store[1],
+                                                  "the SDK declares no class of that name"))
+                        elif given != declared and said != given:
+                            STORE_CLASSES.append((name, prop["name"], given, store[1],
+                                                  "the SDK declares the member %s, which is not a deprecated"
+                                                  " spelling of %s" % (declared, given)))
+            value = default_of(prop, store)
             if value:
                 body.append("    %s = %s;\n" % (slots[prop["name"]], value))
         body.append("    return self;\n}\n\n")
@@ -1918,6 +2165,47 @@ def category_label(label):
     rather than refusing it. The port's name is therefore its own, so it can never be the framework's.
     """
     return "Charon" + label
+
+
+# A member whose declared type names a class that is ITSELF a deprecated spelling, and where the port would
+# have to store something else. Written by retype_deprecated() and counted by the run.
+RETYPED = []
+
+
+def retype_deprecated(families, wanted):
+    """A property typed with a deprecated CLASS is declared with the class that one is a spelling of.
+
+    `MTRTestClusterClusterNestedStruct.c` is declared `MTRTestClusterClusterSimpleStruct * _Nonnull` in SDK
+    26.2, and SDK 26.2's own deprecated spelling is a SUBCLASS of what the member holds: the framework's
+    -init stores `[MTRUnitTestingClusterSimpleStruct new]` (zap-generated/MTRStructsObjc.mm:14623), so the
+    value in that member is the SUPERCLASS of the type the header names, and the header's promise cannot be
+    kept by anything that stores what the framework stores. Measured on the host, the reading is
+    `MTRUnitTestingClusterSimpleStruct(...)` and not `MTRTestClusterClusterSimpleStruct(...)`.
+
+    Which class is the deprecated spelling of which is not a list here: it is each class's OWN
+    `MTR_DEPRECATED("Please use X")` annotation, read by payload_classes() - 120 pairs over the SDK's 1,330
+    classes, 7 of which type a member this way. The port declares the member with the class it actually
+    holds, which is also the class whose accessor answers it in the framework, because the deprecated class
+    declares none of its own.
+    """
+    def base_of(prop):
+        spelling = bare_type(prop).replace("*", " ").split()
+        return spelling[-1] if spelling else ""
+    # Only the plain data family, because only those classes' declarations this run writes: `MTRDevice`'s
+    # `deviceController` is typed with a deprecated class too, and its declaration is Matter.h's own, which
+    # this does not touch.
+    for name in wanted:
+        info = families.get(name)
+        if info is None:
+            continue
+        for prop in info["properties"] + [each for label in sorted(info.get("categories", {}))
+                                          for each in info["categories"][label]]:
+            said = base_of(prop)
+            current = (families.get(said) or {}).get("deprecated_for")
+            if not current or current not in families:
+                continue
+            RETYPED.append((name, prop["name"], said, current))
+            prop["type"] = prop["type"].replace(said, current)
 
 
 def payload_interface(name, info, older):
@@ -2641,6 +2929,12 @@ def main():
                         help="the committed data file tests/backports/host/matter/params-probe.m wrote, and the "
                              "generator's input for two things the header cannot say: which classes override "
                              "-description, and which member a deprecated alias shares storage with")
+    parser.add_argument("--init-defaults",
+                        default=os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                             "matter-init-defaults.tsv"),
+                        help="the committed data file tools/matter-init-source.py wrote out of the framework's "
+                             "own tree, and what each class's -init stores; a header says nothing about an "
+                             "initial value, and MTRReadParams' filterByFabric is one (it stores YES)")
     parser.add_argument("--params", action="store_true",
                         help="emit one object per plain data class the SDK's own Matter headers declare")
     parser.add_argument("--params-from", help="a file of plain data class names to emit instead of all of them")
@@ -2791,6 +3085,25 @@ def main():
         # classes live in MTRCluster.h and the cluster headers, and a run that read only the payload
         # headers reported them as undeclared.
         families = payload_classes(payload_lines + lines)
+        global FAMILIES
+        FAMILIES = families
+        retype_deprecated(families, wanted)
+        # What the framework's own source stores in each class's -init, read out of the committed table.
+        # The header says nothing about an initial value, and this is the only thing that does.
+        INIT_TABLE.update(init_defaults(arguments.init_defaults))
+        print("the framework's own -init stores, read out of %s: %d classes, %d members"
+              % (os.path.basename(arguments.init_defaults),
+                 len([each for each in INIT_TABLE if each in families]),
+                 sum(len(each) for each in INIT_TABLE.values())))
+        # The deprecated CLASS names, each pair read out of the deprecated class's OWN annotation. It is
+        # what says a store naming `MTRUnitTestingClusterSimpleStruct` for a member the SDK declares with
+        # the type `MTRTestClusterClusterSimpleStruct *` is the current spelling and not a wrong one.
+        pairs = [(each, families[each]["deprecated_for"]) for each in families
+                 if families[each].get("deprecated_for")]
+        print("  %d of the %d classes the SDK declares carry their own MTR_DEPRECATED(\"Please use X\")"
+              " annotation, naming another CLASS: %d of them are in the plain data family"
+              % (len(pairs), len(families),
+                 len([each for each in pairs if each[0] in set(wanted)])))
         # What the SDK this LIBRARY builds against declares of the same classes, for the two shapes above:
         # the class itself where it declares one, and the properties it gave that class where 26.2 added
         # more. Read from its own headers the same way, not from a list.
@@ -2802,6 +3115,9 @@ def main():
         unavailable = init_unavailable_classes(arguments.sdk) & set(wanted)
         print("  %d of the %d plain data classes whose own header marks -init NS_UNAVAILABLE, and so get no"
               " -init here: %s" % (len(unavailable), len(wanted), ", ".join(sorted(unavailable))))
+        # Read once for the whole run. It was read inside the per-class loop, which is 924 reads of the same
+        # file and grew with the family.
+        hosts = host_measurements(arguments.host_measurements)
         missing, properties, emitted, interfaces = [], 0, 0, []
         declared_by_16, extended_by_26, own_by_16 = 0, 0, 0
         contracts = arguments.contracts or arguments.out
@@ -2860,8 +3176,7 @@ def main():
             if arguments.cases is not None:
                 CASES.append((name, buckets))
             properties += emit_params(path, name, info, None, buckets, copying, counts,
-                                      host_measurements(arguments.host_measurements).get(name),
-                                      unavailable=unavailable)
+                                      hosts.get(name), unavailable=unavailable)
             EMITTED_FILES[name] = os.path.basename(path)
             with open(os.path.join(contracts, stem + ".m.contract"), "w") as out:
                 out.write("%s\n" % name)
@@ -2869,6 +3184,11 @@ def main():
             emitted += 1
         print("plain data classes written: %d, %d properties; %d named but not declared in the SDK"
               % (emitted, properties, len(missing)))
+        if RETYPED:
+            print("  %d member(s) this SDK types with a DEPRECATED CLASS, declared with the class that one"
+                  " is a spelling of:" % len(RETYPED))
+            for where, member, said, current in RETYPED:
+                print("    %s.%s: %s -> %s" % (where, member, said, current))
         print("  the SDK this library builds against declares %d of them itself, so those keep the SDK's own"
               " declaration and the port adds only what a later SDK gave them: %d of them as a class"
               " extension. For the other %d the port declares the class, its superclass and every property."
@@ -2959,6 +3279,30 @@ def main():
             SHARED_STORAGE_REFUSED))
         for where, said, wanted in SHARED_STORAGE_REFUSED:
             print("  %s.%s: %s" % (where, said, wanted))
+    if STORE_SOURCE["own"] or STORE_SOURCE["inherited"] or STORE_SOURCE["none"]:
+        print("")
+        print("where each plain data class's -init stores come from: %d the framework's own source writes,"
+              " %d inherit an ancestor's, %d have none in that tree"
+              % (STORE_SOURCE["own"], STORE_SOURCE["inherited"], STORE_SOURCE["none"]))
+        if STORE_MOVED:
+            print("  %d member(s) the framework's -init stores at something other than the member's type zero,"
+                  " and the port writes that:" % len(STORE_MOVED))
+            for where, member, said, token in STORE_MOVED:
+                print("    %s.%s: %s (%s)" % (where, member, said, token))
+        if STORE_KEPT:
+            print("  %d member(s) whose store does NOT decide the value, because the two SDKs declare the"
+                  " member differently and the port keeps this one's:" % len(STORE_KEPT))
+            for where, member, said, expression, why in STORE_KEPT:
+                print("    %s.%s: %r at %s, and %s" % (where, member, expression, said, why))
+        if STORE_UNREAD:
+            print("  STORES THIS RUN CANNOT READ, and the port keeps the derived value for them: %d"
+                  % len(STORE_UNREAD))
+            for where, member, expression, said in STORE_UNREAD:
+                print("    %s.%s: %r at %s" % (where, member, expression, said))
+        if STORE_CLASSES:
+            print("  CLASS NAMES THE FRAMEWORK'S SOURCE AND THIS SDK DISAGREE ON: %d" % len(STORE_CLASSES))
+            for where, member, given, said, why in STORE_CLASSES:
+                print("    %s.%s: the source gives it %s at %s, and %s" % (where, member, given, said, why))
     if NAME_ERRORS:
         print("")
         print("EMITTED FILE NAME ERRORS: %d pair(s) that differ only by case" % len(NAME_ERRORS))
@@ -2995,7 +3339,8 @@ def main():
     else:
         print("every object names the class it implements: %d of %d" % (len(emitted), len(emitted)))
 
-    everything_clear = not (OFFENDERS or LOST or PORT_ONLY or NAME_ERRORS or PARAMS_MISSING or COMPILE_FAILURES or HEADER_NOT_ALONE or unnamed)
+    everything_clear = not (OFFENDERS or LOST or PORT_ONLY or NAME_ERRORS or PARAMS_MISSING
+                            or COMPILE_FAILURES or HEADER_NOT_ALONE or unnamed or STORE_CLASSES)
     return 0 if everything_clear else 1
 
 

@@ -328,72 +328,118 @@ Nothing was added to the link line and no encoder was written.
     params-diff: alias          37 of the hosts 37 readings the port answers identically
     params-diff: red control 11 readings move, so this comparison can fail
 
-**THE 7, PER READING, three families.**
+**THE 7 ARE CLOSED, and all 7 by the framework's own source rather than by a tolerance.**
 
-* **2 readings, the hand-written `MTRReadParams` `-init`.** `MTRReadParams.filterByFabric` and
-  `MTRReadParams.assumeUnknownAttributesReportable` - the host holds `1`, the port `0`, and both SDKs declare
-  the member `BOOL nonnull`. The framework's own source writes it:
+**`-init` now stores what the framework's own `-init` stores, read out of that framework's code.**
+`tools/matter-init-source.py` is a reader over `project-chip/connectedhomeip` at the tag this repository
+pins (`v1.7-te2`, commit `99a81bd32986c5292b0b1c9245c8e247c2ad717d`, Apache-2.0, cloned under this
+repository's `.agent-work/upstreams/chip`). It reads every `- (instancetype)init` in
+`src/darwin/Framework/CHIP` and writes one line per store into `tools/matter-init-defaults.tsv` with the
+source's own expression and the file and line it came from - **3,578 stores over 977 classes, of which 826
+are classes SDK 26.2 declares**. `tools/matter-generate.py` reads that table and writes the store.
 
-      charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/MTRCluster.mm
-          @implementation MTRReadParams
-          - (instancetype)init
-          {
-              if (self = [super init]) {
-                  _filterByFabric = YES;
-                  _assumeUnknownAttributesReportable = YES;
-              }
-              return self;
-          }
+A header says nothing about an initial value, which is the whole reason the table exists:
+`MTRReadParams.filterByFabric` is a plain `BOOL` in `MTRCluster.h` and its `-init` stores `YES`.
 
-  `MTRReadParams` lives in `MTRCluster.h` and not in the zap-generated payload headers, so the "the `-init`
-  defaults every member to its zero" rule does not apply to it: this one stores YES, not NO. 847 of the 924
-  family classes have an `-init` in that tree and every one of their stores IS the derived zero, so these two
-  are the whole of the exception among the classes that declare one.
+    where each plain data class's -init stores come from: 813 the framework's own source writes,
+    57 inherit an ancestor's, 54 have none in that tree
+      5 member(s) the framework's -init stores at something other than the member's type zero,
+      and the port writes that:
+        MTRReadParams.filterByFabric: MTRCluster.mm:120 (bool:1)
+        MTRReadParams.assumeUnknownAttributesReportable: MTRCluster.mm:121 (bool:1)
+        MTRSubscribeParams.replaceExistingSubscriptions: MTRCluster.mm:292 (bool:1)
+        MTRSubscribeParams.resubscribeAutomatically: MTRCluster.mm:293 (bool:1)
+        MTRSubscribeParams.minInterval: MTRCluster.mm:294 (number:1)
 
-* **3 readings, `MTRSubscribeParams`, and I have NOT established them.** `minInterval`,
-  `replaceExistingSubscriptions` and `resubscribeAutomatically` - the host holds `1`, the port `0`. Its
-  source has no plain `-init`; the YES values are in `initWithMinInterval:maxInterval:`, which is a different
-  method, and `minInterval` reading `1` after `[[X alloc] init]` is not explained by any line I have read.
-  **I do not know why and I am not going to guess it**: it needs the host's own method list for the class and
-  the inheritance chain, which is a measurement, not a reading.
+**`MTRSubscribeParams` WAS NOT A MYSTERY, and the measurement that settles it is in the table.**
+`params-probe.m` now walks the class and every superclass with `class_copyMethodList` and records which of
+them carries `-init` in its OWN method list - a category's method is merged into the class's list, so a
+class whose `@implementation` declares none and whose `(Deprecated)` category does is measured here the same
+as one that declares it:
 
-* **2 readings, a CLASS NAME inside a nested value.** `MTRTestClusterClusterNestedStruct.c` and
-  `MTRUnitTestingClusterNestedStruct.c`: the two strings agree member for member and value for value, and
-  differ only in the class named inside - `<MTRUnitTestingClusterSimpleStruct: ... >` on the host,
-  `<MTRTestClusterClusterSimpleStruct: ... >` from the port. The member's declared type is the deprecated
-  spelling in the port's SDK and the current one in the host's, so it is a version difference of the same kind
-  as a member set, one level down. `classify()` does not classify a differing class NAME, only a differing
-  member set, and that is a two-line change.
+    initOwner  MTRSubscribeParams  -  self,MTRReadParams
+    initOwner  MTRReadParams       -  self
 
-* **The 9+1 the base64 fix closed, kept here so the record is whole:** `MTRTestClusterClusterNestedStruct.c`,
-  `MTRTestClusterClusterSimpleStructEchoRequestParams.arg1`,
-  `MTRTestClusterClusterSimpleStructResponseParams.arg1`, `MTRTestClusterClusterTestEventEvent.arg4`,
-  `MTRTestClusterClusterTestNestedStructArgumentRequestParams.arg1`,
-  `MTRTestClusterClusterTestNestedStructListArgumentRequestParams.arg1`,
-  `MTRTestClusterClusterTestStructArgumentRequestParams.arg1`, `MTRUnitTestingClusterNestedStruct.c`,
-  `MTRUnitTestingClusterNestedStructList.c` and their twins, all of them the member `d`; and
-  `MTRTLSClientManagementClusterFindEndpointResponseParams.endpoint`, whose member is `hostname`. `MTRTestClusterClusterNestedStruct.c`,
-  `MTRTestClusterClusterSimpleStructEchoRequestParams.arg1`, `MTRTestClusterClusterSimpleStructResponseParams
-  .arg1`, `MTRTestClusterClusterTestEventEvent.arg4`,
-  `MTRTestClusterClusterTestNestedStructArgumentRequestParams.arg1`,
-  `MTRTestClusterClusterTestNestedStructListArgumentRequestParams.arg1`,
-  `MTRTestClusterClusterTestStructArgumentRequestParams.arg1`, `MTRUnitTestingClusterNestedStruct.c`,
-  `MTRUnitTestingClusterNestedStructList.c`, and their `MTRUnitTestingCluster*` twins - all of them the member
-  `d`, where the host's string prints `d:;` and the port's prints `d:{length = 0, bytes = 0x}; `. Both are an
-  EMPTY `NSData`; the difference is what an empty `NSData`'s `-description` returns on the host's Foundation
-  and on the one the port links. Nothing in the port's own code decides it, and the value is right on both
-  sides. It is a difference between two Foundation runtimes, and the comparison has to say so rather than
-  report it as a port defect.
+so `[[MTRSubscribeParams alloc] init]` runs MTRSubscribeParams' OWN `-init` and then, through `[super init]`,
+`MTRReadParams`' - and the framework's source says which one that is:
 
-* **1 reading, the same shape, on a string.** `MTRTLSClientManagementClusterFindEndpointResponseParams
-  .endpoint` - `hostname:;` on the host, `hostname:{length = 0, bytes = 0x}; ` in the port. Same cause, and it
-  names which member of `MTRTLSClientManagementClusterTLSEndpointStruct` it is.
+    charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/MTRCluster.mm:184
+        @implementation MTRSubscribeParams            <- no -init here, only initWithMinInterval:maxInterval:
+    charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/MTRCluster.mm:287
+        @implementation MTRSubscribeParams (Deprecated)
+        - (instancetype)init
+        {
+            if (self = [super init]) {
+                _replaceExistingSubscriptions = YES;
+                _resubscribeAutomatically = YES;
+                _minInterval = @(1);
+                _maxInterval = @(0);
+            }
+            return self;
+        }
 
-* **5 readings, the hand-written classes' `-init`.** `MTRReadParams.filterByFabric`,
-  `MTRReadParams.assumeUnknownAttributesReportable`, `MTRSubscribeParams.minInterval`,
-  `MTRSubscribeParams.replaceExistingSubscriptions` and `MTRSubscribeParams.resubscribeAutomatically` - the
-  host holds `1` where the port holds `0`, and both SDKs declare the member `nonnull`. These two classes are
-  hand-written in the framework (they live in `MTRCluster.h`, not in the zap-generated payload headers), so
-  the `- (instancetype)init { _x = ...; }` rule that answered the other 922 does not apply to them, and their
-  own source has to say which members it sets. That is a read of
-  `charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/MTRCluster.mm` and it is the next measurement.
+`MTRCluster.h:234` marks that `-init` and `+new` `MTR_DEPRECATED("Please use initWithMinInterval")` and
+says in prose what they do: *"initialize with minInterval set to 1 and maxInterval set to 0, which will not
+work on its own"*. `reportEventsUrgently` is the member that tells the two initialisers apart, and the host
+holds `0` in it after `[[X alloc] init]` while `initWithMinInterval:maxInterval:` stores `YES`
+(`MTRCluster.mm:189`) - so the reading is the category's initialiser and not the other one. That is
+`MTRSubscribeParams`' three readings, and `MTRReadParams`' two are `MTRCluster.mm:120-121`.
+
+**A store does not decide the value where the two SDKs declare the member differently, and the 10 that do
+not are named.** The framework's own rule is *a nonnull member gets the zero, a nullable one nil* - the
+generated sources write one line per member, `@(0)` for the nonnull ones and `nil` for the nullable ones -
+so a store only decides a value for a member THIS SDK declares nonnull. Apple relaxed the nullability on 9
+members between the tag and SDK 26.2 and tightened it on 6, and those 15 are a difference between two
+releases rather than a value:
+
+    10 member(s) whose store does NOT decide the value, because the two SDKs declare the member
+    differently and the port keeps this one's:
+      MTRContentControlClusterAddBonusTimeParams.bonusTime: '@(0)' at MTRCommandPayloadsObjc.mm:37584, and this SDK declares it nullable
+      MTRContentControlClusterUpdatePINParams.oldPIN: '@""' at MTRCommandPayloadsObjc.mm:37185, and this SDK declares it nullable
+      MTRGroupcastClusterLeaveGroupResponseParams.endpoints: '[NSArray array]' at MTRCommandPayloadsObjc.mm:16324, and this SDK declares it nullable
+      MTRGroupcastClusterMembershipStruct.endpoints: 'nil' at MTRStructsObjc.mm:4973, and this SDK declares it nonnull and the store holds no value
+      MTRGroupcastClusterMembershipStruct.hasAuxiliaryACL: 'nil' at MTRStructsObjc.mm:4977, and this SDK declares it nonnull and the store holds no value
+      MTRJointFabricAdministratorClusterICACCSRResponseParams.icaccsr: 'nil' at MTRCommandPayloadsObjc.mm:49388, and this SDK declares it nonnull and the store holds no value
+      MTRJointFabricDatastoreClusterUpdateAdminParams.nodeID: '@(0)' at MTRCommandPayloadsObjc.mm:48095, and this SDK declares it nullable
+      MTRJointFabricDatastoreClusterUpdateGroupParams.groupPermission: 'nil' at MTRCommandPayloadsObjc.mm:47795, and this SDK declares it nonnull and the store holds no value
+      MTRPushAVStreamTransportClusterCMAFContainerOptionsStruct.sessionGroup: 'nil' at MTRStructsObjc.mm:12773, and this SDK declares it nonnull and the store holds no value
+      MTRPushAVStreamTransportClusterCMAFContainerOptionsStruct.trackName: 'nil' at MTRStructsObjc.mm:12775, and this SDK declares it nonnull and the store holds no value
+
+**The two class-name readings are the deprecated/current pair, and the pair is read out of the header.**
+`MTRTestClusterClusterNestedStruct.c` and `MTRTestClusterClusterTestEventEvent.arg4` are declared with the
+DEPRECATED type `MTRTestClusterClusterSimpleStruct *`, and the framework's own `-init` stores
+`[MTRUnitTestingClusterSimpleStruct new]` into them (`MTRStructsObjc.mm:14623`, `:14788`) - the deprecated
+class is a SUBCLASS of what the member holds, so the header's promise cannot be kept by anything that stores
+what the framework stores, and a port that allocated what the header says printed
+`<MTRTestClusterClusterSimpleStruct: ... >` where the host prints `<MTRUnitTestingClusterSimpleStruct: ... >`.
+The port now stores the class it holds, and it declares the member with that class. **Which class is a
+deprecated spelling of which is not a list: it is each class's OWN annotation**, which
+`payload_classes()` reads off the line above the `@interface` -
+
+    MTRStructsObjc.h:2828   MTR_DEPRECATED("Please use MTRUnitTestingClusterSimpleStruct", ios(16.1, 16.4), ...)
+    MTRStructsObjc.h:2829   @interface MTRTestClusterClusterSimpleStruct : MTRUnitTestingClusterSimpleStruct
+
+    120 of the 1330 classes the SDK declares carry their own MTR_DEPRECATED("Please use X") annotation,
+    naming another CLASS: 62 of them are in the plain data family
+    5 member(s) this SDK types with a DEPRECATED CLASS, declared with the class that one is a spelling of:
+      MTRTestClusterClusterNestedStruct.c: MTRTestClusterClusterSimpleStruct -> MTRUnitTestingClusterSimpleStruct
+      MTRTestClusterClusterNullablesAndOptionalsStruct.nullableStruct: -> MTRUnitTestingClusterSimpleStruct
+      MTRTestClusterClusterNullablesAndOptionalsStruct.optionalStruct: -> MTRUnitTestingClusterSimpleStruct
+      MTRTestClusterClusterNullablesAndOptionalsStruct.nullableOptionalStruct: -> MTRUnitTestingClusterSimpleStruct
+      MTRTestClusterClusterTestEventEvent.arg4: MTRTestClusterClusterSimpleStruct -> MTRUnitTestingClusterSimpleStruct
+
+**What the regeneration changed, measured by `diff -rq` over the 1,068 objects: 5 files.** Four objects and
+one line of `CharonMatterTypes.h` five times over - the 5 `-init` stores above and the 5 declared types.
+Nothing else in the tree moved, which is the check that matters here: 3,267 members and the derived rule
+they used to come from agree with the framework's own source everywhere else.
+
+**What is still a shape difference from the framework, and is NOT measured by the comparison.** The
+framework declares a deprecated alias class `@dynamic` with no storage of its own - `MTRStructsObjc.mm:14650
+@implementation MTRTestClusterClusterNestedStruct : MTRUnitTestingClusterNestedStruct` with `@dynamic a; @dynamic
+b; @dynamic c;` and nothing else - so its members live in the superclass's ivars. The port gives the alias
+class its own ivars, which the host's own method list agrees is invisible for everything the comparison asks
+(`ownDescription` is `no` for 61 of the 62 alias classes and the port writes none), and it is visible in one
+place: writing a member through an ALIAS reference and reading it through a CURRENT reference sees the same
+storage in the framework and two in the port. 226 members over 60 classes are shaped so. Nothing here claims
+that difference is measured; it is the next thing to close in this family, and closing it means the alias
+objects stop holding storage at all.

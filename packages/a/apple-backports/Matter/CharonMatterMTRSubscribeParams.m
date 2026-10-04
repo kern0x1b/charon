@@ -33,9 +33,9 @@
     if (!self) {
         return nil;
     }
-    _replaceExistingSubscriptions = NO;
-    _resubscribeAutomatically = NO;
-    _minInterval = @0;
+    _replaceExistingSubscriptions = YES;
+    _resubscribeAutomatically = YES;
+    _minInterval = @(1);
     _maxInterval = @0;
     _reportEventsUrgently = NO;
     return self;

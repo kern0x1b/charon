@@ -31,8 +31,8 @@
     if (!self) {
         return nil;
     }
-    _filterByFabric = NO;
-    _assumeUnknownAttributesReportable = NO;
+    _filterByFabric = YES;
+    _assumeUnknownAttributesReportable = YES;
     return self;
 }
 

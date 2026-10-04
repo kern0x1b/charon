@@ -51,7 +51,7 @@
     _arg1 = @0;
     _arg2 = @0;
     _arg3 = @0;
-    _arg4 = [[MTRTestClusterClusterSimpleStruct alloc] init];
+    _arg4 = [[MTRUnitTestingClusterSimpleStruct alloc] init];
     _arg5 = @[];
     _arg6 = @[];
     return self;

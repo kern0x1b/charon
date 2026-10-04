@@ -44,7 +44,7 @@
     }
     _a = @0;
     _b = @0;
-    _c = [[MTRTestClusterClusterSimpleStruct alloc] init];
+    _c = [[MTRUnitTestingClusterSimpleStruct alloc] init];
     return self;
 }
 

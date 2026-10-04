@@ -8,7 +8,7 @@
 //  the alias pairs all arrive in the driver file named as argv[1], so the same source measures the host and
 //  can measure the port, and a difference between the two is a difference in behaviour and not in spelling.
 //
-//  Three questions, one per family of line in the driver:
+//  Four questions, one per family of line in the driver:
 //
 //      <Class> TAB own                                            the class's own members, in the
 //                                                                   order the header declares them
@@ -16,8 +16,9 @@
 //                                                                   own deprecation text
 //  and for each class:
 //
-//    (i)  does the CLASS ITSELF implement -description? `class_copyMethodList` on the class, not
-//        respondsToSelector:, which every class inherits; and what string does a fresh object print?
+//    (i)  does the CLASS ITSELF implement -description, and which class in its hierarchy carries -init?
+//        `class_copyMethodList` on the class and on every superclass, not respondsToSelector:, which every
+//        class inherits for both; and what string does a fresh object print?
 //    (ii) for an alias, which OTHER member of the class shares its storage, both ways: the alias is set to a
 //        sentinel and every own member is read, and then every own member is set and the alias is read. That
 //        finds the shared storage without being told the name, which is what settles the 51 deprecations
@@ -35,7 +36,7 @@
 
 /// The date the table was measured, written into the file beside the host's own version string, so a
 /// reader can tell which binary answered without asking. It is the date this tree's run happened.
-#define MEASURED "2026-10-03"
+#define MEASURED "2026-10-04"
 
 static NSString *render(id value)
 {
@@ -142,6 +143,37 @@ static BOOL ownDescription(Class cls)
     return found;
 }
 
+/// Which class in the hierarchy CARRIES -init in its own method list, the class itself first.
+///
+/// `[[X alloc] init]` runs the first -init the runtime finds walking up from X, and a CATEGORY's method is
+/// merged into the class's own list, so a class whose own @implementation declares no -init and whose
+/// CATEGORY does is measured here exactly like one that declares it. That is the whole answer to
+/// MTRSubscribeParams' minInterval reading 1 after `[[MTRSubscribeParams alloc] init]`: the -init that runs
+/// is on the class itself, and the framework's own source says which one it is -
+/// `MTRCluster.mm:287 @implementation MTRSubscribeParams (Deprecated)` with `- (instancetype)init` at :289
+/// storing `_minInterval = @(1)` at :294 - where the class's own @implementation at :184 has none.
+///
+/// NSObject is left out of the answer on purpose: a hierarchy that reaches no -init but NSObject's stores
+/// nothing, and NSObject's is not one of these classes'.
+static NSString *initOwner(Class cls)
+{
+    NSMutableArray<NSString *> *found = [NSMutableArray array];
+    Class walk = cls;
+    while (walk && walk != [NSObject class]) {
+        unsigned int count = 0;
+        Method *list = class_copyMethodList(walk, &count);
+        for (unsigned int index = 0; index < count; index++) {
+            if (sel_isEqual(method_getName(list[index]), @selector(init))) {
+                [found addObject:[found count] == 0 && walk == cls ? @"self" : NSStringFromClass(walk)];
+                break;
+            }
+        }
+        free(list);
+        walk = class_getSuperclass(walk);
+    }
+    return found.count == 0 ? @"none" : [found componentsJoinedByString:@","];
+}
+
 int main(int argc, char **argv)
 {
     @autoreleasepool {
@@ -175,6 +207,7 @@ int main(int argc, char **argv)
                 printf("present\t%s\t-\tpresent\n", name.UTF8String);
                 printf("ownDescription\t%s\t-\t%s\n", name.UTF8String,
                        (ownDescription(cls) ? @"yes" : @"no").UTF8String);
+                printf("initOwner\t%s\t-\t%s\n", name.UTF8String, initOwner(cls).UTF8String);
                 printf("description\t%s\t-\t%s\n", name.UTF8String,
                        [[[cls alloc] init] description].UTF8String);
                 for (NSString *property in ownProperties(cls)) {

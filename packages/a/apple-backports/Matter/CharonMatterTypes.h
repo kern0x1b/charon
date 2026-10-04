@@ -2531,7 +2531,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MTRTestClusterClusterNestedStruct ()
 @property (nonatomic, copy) NSNumber * _Nonnull a;
 @property (nonatomic, copy) NSNumber * _Nonnull b;
-@property (nonatomic, copy) MTRTestClusterClusterSimpleStruct * _Nonnull c;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nonnull c;
 @end
 @interface MTRTestClusterClusterNullablesAndOptionalsStruct ()
 @property (nonatomic, copy) NSNumber * _Nullable nullableInt;
@@ -2540,9 +2540,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * _Nullable nullableString;
 @property (nonatomic, copy) NSString * _Nullable optionalString;
 @property (nonatomic, copy) NSString * _Nullable nullableOptionalString;
-@property (nonatomic, copy) MTRTestClusterClusterSimpleStruct * _Nullable nullableStruct;
-@property (nonatomic, copy) MTRTestClusterClusterSimpleStruct * _Nullable optionalStruct;
-@property (nonatomic, copy) MTRTestClusterClusterSimpleStruct * _Nullable nullableOptionalStruct;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable nullableStruct;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable optionalStruct;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nullable nullableOptionalStruct;
 @property (nonatomic, copy) NSArray * _Nullable nullableList;
 @property (nonatomic, copy) NSArray * _Nullable optionalList;
 @property (nonatomic, copy) NSArray * _Nullable nullableOptionalList;
@@ -2648,7 +2648,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSNumber * _Nonnull arg1;
 @property (nonatomic, copy) NSNumber * _Nonnull arg2;
 @property (nonatomic, copy) NSNumber * _Nonnull arg3;
-@property (nonatomic, copy) MTRTestClusterClusterSimpleStruct * _Nonnull arg4;
+@property (nonatomic, copy) MTRUnitTestingClusterSimpleStruct * _Nonnull arg4;
 @property (nonatomic, copy) NSArray * _Nonnull arg5;
 @property (nonatomic, copy) NSArray * _Nonnull arg6;
 @end
