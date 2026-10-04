@@ -1,0 +1,257 @@
+The overlay's calls that take a work item or its flags are available below iOS 8, and hand the flags to the release:
+charon@apple-compat carries dispatch_block_create and the rest of dispatch_block_* and
+dispatch_queue_attr_make_with_qos_class (packages/a/apple-compat/src/), so what Queue.swift, Dispatch.swift and
+Source.swift marked iOS 8, and asked #available(iOS 8.0) for at run time, is the same code on every release. Before this
+a barrier, a class of service or any other flag given to async(group:qos:flags:), sync(flags:), asyncAfter or
+DispatchGroup.notify was dropped below 8, and the closure was dispatched plainly.
+
+The release's libdispatch reads no block's flags, so the shims' calls to it go through apple-compat's
+charon_dispatch_async, _sync, _group_async, _group_notify and _after, which submit a block made with
+DISPATCH_BLOCK_BARRIER as a barrier, as libdispatch-703 (iOS 10) and later do, and are the system's calls where the
+release has dispatch_block_create. What a class of service or a voucher asks has no counterpart before iOS 8, as
+packages/a/apple-compat/src/dispatch_block.h says, and a barrier given to a source's handler is not one below iOS 10:
+iOS 8 and 9 (libdispatch-442 and -500) did not make it one either, and the release runs a source's handler as it does
+any other.
+
+diff --git a/stdlib/public/Darwin/Dispatch/Dispatch.swift b/stdlib/public/Darwin/Dispatch/Dispatch.swift
+index 7a76ef0..eca03b6 100644
+--- a/stdlib/public/Darwin/Dispatch/Dispatch.swift
++++ b/stdlib/public/Darwin/Dispatch/Dispatch.swift
+@@ -134,7 +134,7 @@ public enum DispatchTimeoutResult {
+ 
+ extension DispatchGroup {
+ 	public func notify(qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], queue: DispatchQueue, execute work: @escaping @convention(block) () -> Void) {
+-		if #available(macOS 10.10, iOS 8.0, *), qos != .unspecified || !flags.isEmpty {
++		if #available(macOS 10.10, *), qos != .unspecified || !flags.isEmpty {
+ 			let item = DispatchWorkItem(qos: qos, flags: flags, block: work)
+ 			_swift_dispatch_group_notify(self, queue, item._block)
+ 		} else {
+@@ -142,7 +142,7 @@ extension DispatchGroup {
+ 		}
+ 	}
+ 
+-	@available(macOS 10.10, iOS 8.0, *)
++	@available(macOS 10.10, *)
+ 	public func notify(queue: DispatchQueue, work: DispatchWorkItem) {
+ 		_swift_dispatch_group_notify(self, queue, work._block)
+ 	}
+diff --git a/stdlib/public/Darwin/Dispatch/Queue.swift b/stdlib/public/Darwin/Dispatch/Queue.swift
+index 4fd0a7b..b9f757e 100644
+--- a/stdlib/public/Darwin/Dispatch/Queue.swift
++++ b/stdlib/public/Darwin/Dispatch/Queue.swift
+@@ -158,7 +158,7 @@ extension DispatchQueue {
+ 		if autoreleaseFrequency != .inherit {
+ 			attr = autoreleaseFrequency._attr(attr: attr)
+ 		}
+-		if #available(macOS 10.10, iOS 8.0, *), qos != .unspecified {
++		if #available(macOS 10.10, *), qos != .unspecified {
+ 			attr = __dispatch_queue_attr_make_with_qos_class(attr, qos.qosClass.rawValue, Int32(qos.relativePriority))
+ 		}
+ 
+@@ -196,7 +196,7 @@ extension DispatchQueue {
+ 	/// - parameter execute: The work item to be invoked on the queue.
+ 	/// - SeeAlso: `async(execute:)`
+ 	///
+-	@available(macOS 10.10, iOS 8.0, *)
++	@available(macOS 10.10, *)
+ 	public func sync(execute workItem: DispatchWorkItem) {
+ 		// _swift_dispatch_sync preserves the @convention(block) for
+ 		// work item blocks.
+@@ -220,7 +220,7 @@ extension DispatchQueue {
+ 	/// - SeeAlso: `sync(execute:)`
+ 	///
+ 	///
+-	@available(macOS 10.10, iOS 8.0, *)
++	@available(macOS 10.10, *)
+ 	public func async(execute workItem: DispatchWorkItem) {
+ 		// _swift_dispatch_async preserves the @convention(block)
+ 		// for work item blocks.
+@@ -236,7 +236,7 @@ extension DispatchQueue {
+ 	/// - parameter execute: The work item to be invoked on the queue.
+ 	/// - SeeAlso: `sync(execute:)`
+ 	///
+-	@available(macOS 10.10, iOS 8.0, *)
++	@available(macOS 10.10, *)
+ 	public func async(group: DispatchGroup, execute workItem: DispatchWorkItem) {
+ 		// _swift_dispatch_group_async preserves the @convention(block)
+ 		// for work item blocks.
+@@ -278,7 +278,7 @@ extension DispatchQueue {
+ 		}
+ 
+ 		var block: @convention(block) () -> Void = work
+-		if #available(macOS 10.10, iOS 8.0, *), (qos != .unspecified || !flags.isEmpty) {
++		if #available(macOS 10.10, *), (qos != .unspecified || !flags.isEmpty) {
+ 			let workItem = DispatchWorkItem(qos: qos, flags: flags, block: work)
+ 			block = workItem._block
+ 		}
+@@ -317,7 +317,7 @@ extension DispatchQueue {
+ 		}
+ 	}
+ 
+-	@available(macOS 10.10, iOS 8.0, *)
++	@available(macOS 10.10, *)
+ 	private func _syncHelper<T>(
+ 		fn: (DispatchWorkItem) -> Void,
+ 		flags: DispatchWorkItemFlags,
+@@ -370,7 +370,7 @@ extension DispatchQueue {
+ 	public func sync<T>(flags: DispatchWorkItemFlags, execute work: () throws -> T) rethrows -> T {
+ 		if flags == .barrier {
+ 			return try self._syncHelper(fn: _syncBarrier, execute: work, rescue: { throw $0 })
+-		} else if #available(macOS 10.10, iOS 8.0, *), !flags.isEmpty {
++		} else if #available(macOS 10.10, *), !flags.isEmpty {
+ 			return try self._syncHelper(fn: sync, flags: flags, execute: work, rescue: { throw $0 })
+ 		} else {
+ 			return try self._syncHelper(fn: sync, execute: work, rescue: { throw $0 })
+@@ -400,7 +400,7 @@ extension DispatchQueue {
+ 		flags: DispatchWorkItemFlags = [],
+ 		execute work: @escaping @convention(block) () -> Void)
+ 	{
+-		if #available(macOS 10.10, iOS 8.0, *), qos != .unspecified || !flags.isEmpty {
++		if #available(macOS 10.10, *), qos != .unspecified || !flags.isEmpty {
+ 			let item = DispatchWorkItem(qos: qos, flags: flags, block: work)
+ 			_swift_dispatch_after(deadline.rawValue, self, item._block)
+ 		} else {
+@@ -431,7 +431,7 @@ extension DispatchQueue {
+ 		flags: DispatchWorkItemFlags = [],
+ 		execute work: @escaping @convention(block) () -> Void)
+ 	{
+-		if #available(macOS 10.10, iOS 8.0, *), qos != .unspecified || !flags.isEmpty {
++		if #available(macOS 10.10, *), qos != .unspecified || !flags.isEmpty {
+ 			let item = DispatchWorkItem(qos: qos, flags: flags, block: work)
+ 			_swift_dispatch_after(wallDeadline.rawValue, self, item._block)
+ 		} else {
+@@ -449,7 +449,7 @@ extension DispatchQueue {
+ 	/// - SeeAlso: `asyncAfter(deadline:qos:flags:execute:)`
+ 	/// - SeeAlso: `DispatchTime`
+ 	///
+-	@available(macOS 10.10, iOS 8.0, *)
++	@available(macOS 10.10, *)
+ 	public func asyncAfter(deadline: DispatchTime, execute: DispatchWorkItem) {
+ 		_swift_dispatch_after(deadline.rawValue, self, execute._block)
+ 	}
+@@ -464,12 +464,12 @@ extension DispatchQueue {
+ 	/// - SeeAlso: `asyncAfter(wallDeadline:qos:flags:execute:)`
+ 	/// - SeeAlso: `DispatchTime`
+ 	///
+-	@available(macOS 10.10, iOS 8.0, *)
++	@available(macOS 10.10, *)
+ 	public func asyncAfter(wallDeadline: DispatchWallTime, execute: DispatchWorkItem) {
+ 		_swift_dispatch_after(wallDeadline.rawValue, self, execute._block)
+ 	}
+ 
+-	@available(macOS 10.10, iOS 8.0, *)
++	@available(macOS 10.10, *)
+ 	public var qos: DispatchQoS {
+ 		var relPri: Int32 = 0
+ 		let cls = DispatchQoS.QoSClass(rawValue: __dispatch_queue_get_qos_class(self, &relPri))!
+diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/Dispatch/Source.swift
+index b0a1912..f84d840 100644
+--- a/stdlib/public/Darwin/Dispatch/Source.swift
++++ b/stdlib/public/Darwin/Dispatch/Source.swift
+@@ -17,7 +17,7 @@ extension DispatchSourceProtocol {
+ 	public typealias DispatchSourceHandler = @convention(block) () -> Void
+ 
+ 	public func setEventHandler(qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], handler: DispatchSourceHandler?) {
+-		if #available(macOS 10.10, iOS 8.0, *),
++		if #available(macOS 10.10, *),
+                    let h = handler,
+                    qos != .unspecified || !flags.isEmpty {
+ 			let item = DispatchWorkItem(qos: qos, flags: flags, block: h)
+@@ -27,13 +27,13 @@ extension DispatchSourceProtocol {
+ 		}
+ 	}
+ 
+-	@available(macOS 10.10, iOS 8.0, *)
++	@available(macOS 10.10, *)
+ 	public func setEventHandler(handler: DispatchWorkItem) {
+ 		_swift_dispatch_source_set_event_handler(self as! DispatchSource, handler._block)
+ 	}
+ 
+ 	public func setCancelHandler(qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], handler: DispatchSourceHandler?) {
+-		if #available(macOS 10.10, iOS 8.0, *),
++		if #available(macOS 10.10, *),
+                    let h = handler,
+                    qos != .unspecified || !flags.isEmpty {
+ 			let item = DispatchWorkItem(qos: qos, flags: flags, block: h)
+@@ -43,13 +43,13 @@ extension DispatchSourceProtocol {
+ 		}
+ 	}
+ 
+-	@available(macOS 10.10, iOS 8.0, *)
++	@available(macOS 10.10, *)
+ 	public func setCancelHandler(handler: DispatchWorkItem) {
+ 		_swift_dispatch_source_set_cancel_handler(self as! DispatchSource, handler._block)
+ 	}
+ 
+ 	public func setRegistrationHandler(qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], handler: DispatchSourceHandler?) {
+-		if #available(macOS 10.10, iOS 8.0, *),
++		if #available(macOS 10.10, *),
+                    let h = handler,
+                    qos != .unspecified || !flags.isEmpty {
+ 			let item = DispatchWorkItem(qos: qos, flags: flags, block: h)
+@@ -59,7 +59,7 @@ extension DispatchSourceProtocol {
+ 		}
+ 	}
+ 
+-	@available(macOS 10.10, iOS 8.0, *)
++	@available(macOS 10.10, *)
+ 	public func setRegistrationHandler(handler: DispatchWorkItem) {
+ 		_swift_dispatch_source_set_registration_handler(self as! DispatchSource, handler._block)
+ 	}
+diff --git a/stdlib/public/SwiftShims/DispatchOverlayShims.h b/stdlib/public/SwiftShims/DispatchOverlayShims.h
+index 947d83d..d208dfb 100644
+--- a/stdlib/public/SwiftShims/DispatchOverlayShims.h
++++ b/stdlib/public/SwiftShims/DispatchOverlayShims.h
+@@ -161,16 +161,25 @@ static inline int _swift_dispatch_block_testcancel(
+   return dispatch_block_testcancel(block);
+ }
+ 
++/* A work item's block carries its flags, and a release before iOS 8 reads none of them: apple-compat's calls submit a
++   block made with DISPATCH_BLOCK_BARRIER as a barrier there, and are the calls themselves where the release has
++   dispatch_block_create. */
++void charon_dispatch_async(dispatch_queue_t queue, __swift_shims_dispatch_block_t block);
++void charon_dispatch_sync(dispatch_queue_t queue, __swift_shims_dispatch_block_t block);
++void charon_dispatch_group_async(dispatch_group_t group, dispatch_queue_t queue, __swift_shims_dispatch_block_t block);
++void charon_dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue, __swift_shims_dispatch_block_t block);
++void charon_dispatch_after(dispatch_time_t when, dispatch_queue_t queue, __swift_shims_dispatch_block_t block);
++
+ static inline void _swift_dispatch_async(
+     dispatch_queue_t queue,
+     __swift_shims_dispatch_block_t block) {
+-  dispatch_async(queue, block);
++  charon_dispatch_async(queue, block);
+ }
+ 
+ static inline void _swift_dispatch_sync(
+     dispatch_queue_t queue,
+     __swift_shims_dispatch_block_t block) {
+-  dispatch_sync(queue, block);
++  charon_dispatch_sync(queue, block);
+ }
+ 
+ static inline void _swift_dispatch_barrier_async(
+@@ -183,21 +192,21 @@ static inline void _swift_dispatch_group_async(
+     dispatch_group_t group,
+     dispatch_queue_t queue,
+     __swift_shims_dispatch_block_t block) {
+-  dispatch_group_async((dispatch_group_t)group, queue, block);
++  charon_dispatch_group_async((dispatch_group_t)group, queue, block);
+ }
+ 
+ static inline void _swift_dispatch_group_notify(
+     dispatch_group_t group,
+     dispatch_queue_t queue,
+     __swift_shims_dispatch_block_t block) {
+-  dispatch_group_notify(group, queue, block);
++  charon_dispatch_group_notify(group, queue, block);
+ }
+ 
+ static inline void _swift_dispatch_after(
+     dispatch_time_t when,
+     dispatch_queue_t queue,
+     __swift_shims_dispatch_block_t block) {
+-  dispatch_after(when, queue, block);
++  charon_dispatch_after(when, queue, block);
+ }
+ 
+ 
