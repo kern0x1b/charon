@@ -74,9 +74,8 @@ static NSArray *large_lines(BOOL port, UIView *view, Class interaction, UIView *
     SEL showsGet = port ? @selector(charonHostShowsLargeContentViewer) : @selector(showsLargeContentViewer), showsSet = port ? @selector(charonHostSetShowsLargeContentViewer:) : @selector(setShowsLargeContentViewer:),
         titleGet = port ? @selector(charonHostLargeContentTitle) : @selector(largeContentTitle), titleSet = port ? @selector(charonHostSetLargeContentTitle:) : @selector(setLargeContentTitle:),
         imageGet = port ? @selector(charonHostLargeContentImage) : @selector(largeContentImage), imageSet = port ? @selector(charonHostSetLargeContentImage:) : @selector(setLargeContentImage:),
-        scalesGet = port ? @selector(charonHostScalesLargeContentViewer) : @selector(scalesLargeContentImage), scalesSet = port ? @selector(charonHostSetScalesLargeContentImage:) : @selector(setScalesLargeContentImage:),
+        scalesGet = port ? @selector(charonHostScalesLargeContentImage) : @selector(scalesLargeContentImage), scalesSet = port ? @selector(charonHostSetScalesLargeContentImage:) : @selector(setScalesLargeContentImage:),
         edgeGet = port ? @selector(charonHostLargeContentImageInsets) : @selector(largeContentImageInsets), edgeSet = port ? @selector(charonHostSetLargeContentImageInsets:) : @selector(setLargeContentImageInsets:);
-    scalesGet = port ? @selector(charonHostScalesLargeContentImage) : @selector(scalesLargeContentImage);
     [lines addObject:ur_line(@"defaults", @[ur_yes(shows(view, showsGet)), title(view, titleGet) ?: @"nil", image(view, imageGet) ?: @"nil", ur_yes(shows(view, scalesGet)), insets(edge(view, edgeGet))])];
     UIImage *picture = [[UIImage alloc] init];
     NSMutableString *mutable = [NSMutableString stringWithString:@"a"];
