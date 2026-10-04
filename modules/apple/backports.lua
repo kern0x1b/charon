@@ -1454,7 +1454,13 @@ end
 function unattached_categories(release, inventory, binaries, architecture)
     local defined, aliases = {}, {}
     for _, binary in ipairs(binaries) do
-        for _, symbol in ipairs(defined_symbols(binary)) do
+        -- With the symbols a compiler hid, because the class behind an alias is exactly what a library
+        -- hides: nothing in the image names it (every reference goes to the alias), so ld64 makes it a
+        -- private external and it is there all the same. measured 2026-10-04 over the library a package
+        -- install of this tree linked: `nm -m` reads
+        --   non-external (was a private external) _OBJC_CLASS_$_CharonNSURLSessionStreamTask
+        -- where the object had it external. duplicated() reads its objects the same way.
+        for _, symbol in ipairs(defined_symbols(binary, true)) do
             defined[symbol] = true
         end
     end
