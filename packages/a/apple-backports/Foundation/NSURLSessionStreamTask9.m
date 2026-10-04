@@ -2,6 +2,7 @@
 #import <CoreFoundation/CFStream.h>
 #import "CharonStreamTaskState.h"
 #import "CharonURLSessionMetrics.h"
+#import "../charon_alias.h"
 #import <objc/runtime.h>
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -45,7 +46,33 @@
    delegate answers to that selector, and never after -captureStreams: what the header says they are
    for is the read side closing, the streams being handed to the application, and the write side
    closing. The fourth, a better route, the protocol below declares and this file never sends; the
-   comment at the end of -startSecureConnection says why. */
+   comment at the end of -startSecureConnection says why.
+
+   The class is an ALIAS and the task's own members are a CATEGORY, not a class implementation, and
+   both are because of what the releases carry. CFNetwork's __objc_classlist has carried a class of
+   this name since 8.0 with no method and no instance variable of its own -- measured over the held
+   armv7 caches with objc.code_map: NSURLSessionStreamTask superclass NSURLSessionTask, 0 own
+   ivars, 0 own methods at 8.0 and at 8.4.1, and no class anywhere in either release carrying
+   -readDataOfMinLength:maxLength:timeout:completionHandler:, -captureStreams or
+   -streamTaskWithHostName:port: -- and nothing below 8.0 carries the class at all. So there is
+   nowhere to ask the release for it, and a class implementation here would be a second class of one
+   name in every process on every band from 8.0 on. CHARON_ALIAS_OF defines CharonNSURLSessionStreamTask,
+   whose superclass is the SDK's own NSURLSessionTask (which is this package's own below 7.0), and
+   exports the release's name to it; the library's loader (attach.c) then hands the release's class
+   every member below, so an 8.x task is an instance of CFNetwork's own class carrying them. Where
+   the release has no such class the proxy is the class and its own answer is the right one. Either
+   way the seven methods, the factories and the delegate protocol are this library's API, and one
+   object carries them: it holds the class the release exports from 9.0 and nothing else, so
+   tools/release-split.lua is clean on it.
+
+   A category cannot add an instance variable and neither may the class behind it: attach.c lays the
+   proxy out from the release's class and takes that write back when the two instance sizes differ, so
+   a proxy with an instance variable of its own is never laid out after the class it stands for. The
+   task's state -- the two streams, the host and the port, the half-closes, the socket's names and TLS
+   values -- is therefore the one object beside this one, NSURLSessionStreamTaskState, reached through
+   an associated object. It is made when it is first asked for and not in -init, because on 8.x the
+   class the loader hands the members to is the release's own and -init there is the release's, which
+   knows nothing of any of this. */
 
 static char CharonStreamTaskStateKey;
 
@@ -150,54 +177,69 @@ static int charon_native_descriptor(CFReadStreamRef stream)
     return descriptor;
 }
 
-@interface NSURLSessionStreamTask ()
-@property (nonatomic, strong) NSURLSession *session;
-@property (nonatomic, copy) NSString *hostName;
-@property (nonatomic, assign) NSInteger hostPort;
-@end
+/* The class the release's name stands for. NSURLSessionTask is the SDK's own, which is this
+   package's own below 7.0, and it is the superclass every one of the seven methods below calls
+   through [super ...]: -resume and -init are the release's own task. */
+CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
 
 @interface NSURLSessionStreamTask (CharonConstruction)
 - (instancetype)initWithSession:(NSURLSession *)session hostName:(NSString *)hostName port:(NSInteger)port;
 @end
 
-@implementation NSURLSessionStreamTask
+/* A category on Charon's own name, which ld64 merges into it, and not a category on the release's
+   name: a category on NSURLSessionStreamTask implements the methods the SDK declares there, and the
+   compiler's own -Wobjc-protocol-method-implementation says so once per method. What is written on
+   the release's name here is the one declaration above, of the seam the session's factory uses. */
+@implementation CharonNSURLSessionStreamTask (CharonStreamTask9)
 
-/* The port's own build refuses an implicitly synthesised property (-Wobjc-missing-property-synthesis),
-   so each one is synthesised here by name rather than left to the compiler. */
-@synthesize session = _session;
-@synthesize hostName = _hostName;
-@synthesize hostPort = _hostPort;
-
-- (instancetype)init
+/* The task's own state, made when it is first asked for. It is an associated object and not an
+   instance variable of the class behind the alias because attach.c lays that class out from the
+   release's class and takes the write back when the two instance sizes differ. It is made here rather
+   than in -init because on the releases that carry a class of this name the object the loader gives
+   the members to is the release's own, whose -init is the release's and knows nothing of this: an
+   8.x task built by NSObject's own -init has to work all the same. The two halves start open, which
+   is what an object with no -init behind it means by them. */
+- (NSURLSessionStreamTaskState *)charon_state
 {
-    if ((self = [super init])) {
-        NSURLSessionStreamTaskState *state = [[NSURLSessionStreamTaskState alloc] init];
+    NSURLSessionStreamTaskState *state = [self charon_state];
+    if (!state) {
+        state = [[NSURLSessionStreamTaskState alloc] init];
         state.readOpen = YES;
         state.writeOpen = YES;
         objc_setAssociatedObject(self, &CharonStreamTaskStateKey, state, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    return self;
+    return state;
+}
+
+/* The header deprecates -init with "please use -[NSURLSession streamTaskWithHostName:port:]", and a
+   deprecation is a warning rather than a refusal: this answers what the release's own
+   -[NSURLSessionTask init] answers, which is NSObject's, and the state is there when it is asked
+   for. On 9.0 and later the band does not carry this file at all: the release exports the class. */
+- (instancetype)init
+{
+    return [super init];
 }
 
 - (instancetype)initWithSession:(NSURLSession *)session hostName:(NSString *)hostName port:(NSInteger)port
 {
-    if ((self = [self init])) {
-        self.session = session;
-        self.hostName = [hostName copy];
-        self.hostPort = port;
+    if ((self = [super init])) {
+        NSURLSessionStreamTaskState *state = [self charon_state];
+        state.session = session;
+        state.hostName = [hostName copy];
+        state.hostPort = port;
     }
     return self;
 }
 
 - (void)charon_open
 {
-    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    NSURLSessionStreamTaskState *state = [self charon_state];
     if (state.started)
         return;
     state.started = YES;
     NSInputStream *input = nil;
     NSOutputStream *output = nil;
-    [NSStream getStreamsToHostWithName:self.hostName ?: @"localhost" port:self.hostPort
+    [NSStream getStreamsToHostWithName:state.hostName ?: @"localhost" port:state.hostPort
                           inputStream:&input outputStream:&output];
     state.openedAt = [NSDate date];
     state.input = input;
@@ -221,7 +263,7 @@ static int charon_native_descriptor(CFReadStreamRef stream)
 /* What the release's own stream knows about the socket underneath it, read once when it opens. */
 - (void)charon_readSocketNamesForInput:(NSInputStream *)input
 {
-    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    NSURLSessionStreamTaskState *state = [self charon_state];
     int descriptor = charon_native_descriptor((__bridge CFReadStreamRef)input);
     if (descriptor < 0)
         return;
@@ -251,19 +293,19 @@ static int charon_native_descriptor(CFReadStreamRef stream)
    every other delegate call of this session arrives. */
 - (void)charon_finishMetrics
 {
-    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    NSURLSessionStreamTaskState *state = [self charon_state];
     if (state.finished)
         return;
     state.finished = YES;
-    NSURLSession *session = self.session;
+    NSURLSession *session = [self charon_state].session;
     id<NSURLSessionDelegate> sessionDelegate = session.delegate;
     SEL selector = NSSelectorFromString(@"URLSession:task:didFinishCollectingMetrics:");
     if (![sessionDelegate respondsToSelector:selector])
         return;
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:
-                                    [NSString stringWithFormat:@"stream://%@:%@", self.hostName ?: @"localhost",
-                                     @(self.hostPort)]]];
+                                    [NSString stringWithFormat:@"stream://%@:%@", [self charon_state].hostName ?: @"localhost",
+                                     @([self charon_state].hostPort)]]];
     NSURLSessionTaskTransactionMetrics *transaction =
         [[NSURLSessionTaskTransactionMetrics alloc] initCharonWithRequest:request
                                                                 fetchType:NSURLSessionTaskMetricsResourceFetchTypeNetworkLoad];
@@ -299,7 +341,7 @@ static int charon_native_descriptor(CFReadStreamRef stream)
    other three. */
 - (id<NSURLSessionStreamDelegate>)charon_delegateFor:(SEL)selector
 {
-    id<NSURLSessionDelegate> sessionDelegate = self.session.delegate;
+    id<NSURLSessionDelegate> sessionDelegate = [self charon_state].session.delegate;
     if (![sessionDelegate respondsToSelector:selector])
         return nil;
     return (id<NSURLSessionStreamDelegate>)sessionDelegate;
@@ -312,13 +354,13 @@ static int charon_native_descriptor(CFReadStreamRef stream)
    header's signatures give them. */
 - (void)charon_tellDelegate:(SEL)selector input:(NSInputStream *)input
 {
-    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    NSURLSessionStreamTaskState *state = [self charon_state];
     if (state.captured)
         return; /* the task is completed, and the header says no more messages go to the delegate */
     id<NSURLSessionStreamDelegate> delegate = [self charon_delegateFor:selector];
     if (!delegate)
         return;
-    NSURLSession *session = self.session;
+    NSURLSession *session = [self charon_state].session;
     /* The selector the protocol in this file declares, asked for by that same name. A device build
        has no other prefix to ask for, and the host differential renames the declaration and the call
        site together, which is what prefix_selectors.py exists for. */
@@ -353,7 +395,7 @@ static int charon_native_descriptor(CFReadStreamRef stream)
                      timeout:(NSTimeInterval)timeout
            completionHandler:(void (^)(NSData *, BOOL, NSError *))completionHandler
 {
-    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    NSURLSessionStreamTaskState *state = [self charon_state];
     if (!state.started)
         [self charon_open];
     NSInputStream *input = state.input;
@@ -432,7 +474,7 @@ static int charon_native_descriptor(CFReadStreamRef stream)
 
 - (void)writeData:(NSData *)data timeout:(NSTimeInterval)timeout completionHandler:(void (^)(NSError *))completionHandler
 {
-    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    NSURLSessionStreamTaskState *state = [self charon_state];
     if (!state.started)
         [self charon_open];
     NSOutputStream *output = state.output;
@@ -460,7 +502,7 @@ static int charon_native_descriptor(CFReadStreamRef stream)
 
 - (void)captureStreams
 {
-    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    NSURLSessionStreamTaskState *state = [self charon_state];
     if (state.captured)
         return;
     if (!state.started)
@@ -479,7 +521,7 @@ static int charon_native_descriptor(CFReadStreamRef stream)
 
 - (void)closeRead
 {
-    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    NSURLSessionStreamTaskState *state = [self charon_state];
     if (!state.readOpen)
         return;
     state.readOpen = NO;
@@ -491,7 +533,7 @@ static int charon_native_descriptor(CFReadStreamRef stream)
 
 - (void)closeWrite
 {
-    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    NSURLSessionStreamTaskState *state = [self charon_state];
     if (!state.writeOpen)
         return;
     state.writeOpen = NO;
@@ -546,7 +588,7 @@ static NSString *charon_ssl_level_key(void)
 
 - (void)startSecureConnection
 {
-    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    NSURLSessionStreamTaskState *state = [self charon_state];
     if (state.secure)
         return;
     state.secure = YES;
