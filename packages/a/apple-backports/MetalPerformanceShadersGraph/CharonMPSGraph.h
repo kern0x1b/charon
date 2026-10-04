@@ -184,7 +184,12 @@ CharonMPSGraphOperationKindCumulativeSum,
     // which is the one walk with no operand at all - its value IS the coordinate, so the only thing the caller
     // gives it is a shape and an axis.
     CharonMPSGraphOperationKindSplit,
-    CharonMPSGraphOperationKindCoordinates
+    CharonMPSGraphOperationKindCoordinates,
+    // The BLOCK-MOVING family over FED axes, which is the one walk of this library whose three shapes are
+    // not known when the graph is built: the axes arrive as data, so the split shape, the permutation and
+    // the result's own shape are all asked of the same plan when the graph runs - see
+    // -charon_mps_blockShufflePlan:ofShape:spatial:batch:block:toBatch:shuffle:.
+    CharonMPSGraphOperationKindBlockShuffle
 };
 
 @class MPSGraph;
@@ -283,7 +288,12 @@ CharonMPSGraphOperationKindCumulativeSum,
 
 @interface MPSGraph (CharonMPSGraph)
 // The operation of a kind over the given operands, which is what every factory method in the family
-// headers ends up calling.
+// headers ends up calling. Its result takes the first input's shape and data type unless the parameters
+// carry @shape or @dataType of their own, and carries NO shape at all when they carry
+// @"resultShapeIsFed": a result whose shape is decided by data that arrives when the graph runs is a
+// result the release's own tensor cannot carry a shape for either (measured: over a fed axis the release's
+// result tensor has no shape, before the run and after it), and the interpreter puts the shape on when it
+// walks the operation.
 - (MPSGraphTensor *)charon_mps_operation:(CharonMPSGraphOperationKind)kind
                                 inputs:(NSArray<MPSGraphTensor *> *)inputs
                             parameters:(NSDictionary *)parameters
@@ -411,6 +421,46 @@ CharonMPSGraphOperationKindCumulativeSum,
                                       shape:(NSArray<NSNumber *> *)shape
                                    fedShape:(MPSGraphTensor *)fedShape
                                        name:(NSString *)name;
+// The SPACE-TO-DEPTH family of 15.0 and 16.1 - spaceToDepth2D and depthToSpace2D, spaceToBatch and
+// batchToSpace - which is ONE chain of walks: a reshape that splits or merges each spatial axis into its block
+// rows and columns (and the batch axis the other way round), a transpose that puts the batch axis and the
+// block's coordinates into the order usePixelShuffleOrder names, and the other half of the reshape. `spatial`
+// is the list of axes the blocks are cut from, in the order the block's coordinates are stored in - the LAST
+// of them is the fastest, which is what makes the 2D form's (widthAxis, heightAxis) the general form's
+// (heightAxis, widthAxis) - `batch` is the axis the blocks go to or come from, `block` one extent per
+// spatial axis, `toBatch` which of the two directions this is and `shuffle` the header's flag. Every
+// measurement and every refusal of the family is in the implementation and in
+// facts/MetalPerformanceShadersGraph/Core.md.
+- (MPSGraphTensor *)charon_mps_blockShuffle:(MPSGraphTensor *)tensor
+                                     spatial:(NSArray<NSNumber *> *)spatial
+                                       batch:(NSInteger)batch
+                                       block:(NSArray<NSNumber *> *)block
+                                     toBatch:(BOOL)toBatch
+                                     shuffle:(BOOL)shuffle
+                                         name:(NSString *)name;
+// The PLAN of that family - the three shapes its chain of three walks carries - asked of the interpreter,
+// where the rule and every refusal of the family live, both when the graph is built (the four written-down
+// forms, whose axes are numbers the caller wrote down) and when it runs (the fed pair of 15.0, whose three
+// axes arrive as data). `operandShape` is the shape the extents are measured against: the tensor's own when
+// the graph is built, the value's own when it runs.
+- (NSDictionary *)charon_mps_blockShufflePlan:(NSString *)name
+                                       ofShape:(NSArray<NSNumber *> *)operandShape
+                                       spatial:(NSArray<NSNumber *> *)spatial
+                                         batch:(NSInteger)batch
+                                         block:(NSArray<NSNumber *> *)block
+                                       toBatch:(BOOL)toBatch
+                                       shuffle:(BOOL)shuffle;
+// The FED forms of the same family, where the spatial axes, the batch axis and the block dimensions each
+// arrive as a tensor. A parameter the graph HOLDS - a constant - is read when the graph is built and the
+// written-down seam above does the work; one the caller feeds is refused there, with the measurement of how
+// the release goes down over it.
+- (MPSGraphTensor *)charon_mps_fedBlockShuffle:(MPSGraphTensor *)tensor
+                                       spatial:(MPSGraphTensor *)spatial
+                                         batch:(MPSGraphTensor *)batch
+                                         block:(MPSGraphTensor *)block
+                                       toBatch:(BOOL)toBatch
+                                       shuffle:(BOOL)shuffle
+                                           name:(NSString *)name;
 // The SLICE family in its three directions, which are one plan over the same arithmetic - a start, an end
 // and a stride per axis with the three masks applied - and three walks, because they go three ways:
 //   - the slice itself (@"slice") is a gather: the result's axis k reads the operand's axis k from the start,

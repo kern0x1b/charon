@@ -2617,10 +2617,33 @@ typedef struct { const char *name; void (*cases)(void); } Family;
 // OPERAND's type (measured, 0x10000020 float32 for every case below) while a coordinate's is its own and not
 // the caller's at all (measured, MPSDataTypeInt32, 0x20000020, over every shape asked of it), and the two
 // lines are compared as they stand.
+static void multi_targets_shaped_case(const char *name,
+                                      NSArray<MPSGraphTensor *> *(^build)(MPSGraph *, NSArray<MPSGraphTensor *> *),
+                                      NSArray<NSArray<NSNumber *> *> *shapes, NSArray<NSData *> *values,
+                                      NSArray<NSNumber *> *types, NSArray<NSArray<NSNumber *> *> *resultShapes,
+                                      NSArray<NSNumber *> *resultTypes, unsigned char fill);
+
 static void multi_targets_case(const char *name,
                                NSArray<MPSGraphTensor *> *(^build)(MPSGraph *, NSArray<MPSGraphTensor *> *),
                                NSArray<NSArray<NSNumber *> *> *shapes, NSArray<NSData *> *values,
                                NSArray<NSNumber *> *types, unsigned char fill)
+{
+    // Every case but one sizes its own destination out of the shape its target carries, which is what a
+    // result the release could infer is for; the one that cannot - a result whose shape arrives with the run -
+    // names the destination itself, through the helper below.
+    multi_targets_shaped_case(name, build, shapes, values, types, nil, nil, fill);
+}
+
+// THE SAME HELPER over a destination the CASE names, which is the only way to compare a result the release
+// could not infer the type of: measured, over three fed axes of the block-moving pair the release builds the
+// graph with the result carrying NO shape and hands back an executable, and its run writes into the tensor
+// data the caller gave it - so the shape and the data type of that buffer are the case's to say, and the
+// shape the target carries is printed as nil on both sides and compared as the line it is.
+static void multi_targets_shaped_case(const char *name,
+                                      NSArray<MPSGraphTensor *> *(^build)(MPSGraph *, NSArray<MPSGraphTensor *> *),
+                                      NSArray<NSArray<NSNumber *> *> *shapes, NSArray<NSData *> *values,
+                                      NSArray<NSNumber *> *types, NSArray<NSArray<NSNumber *> *> *resultShapes,
+                                      NSArray<NSNumber *> *resultTypes, unsigned char fill)
 {
     MPSGraph *one = [MPSGraph new];
     NSMutableArray *operands = [NSMutableArray arrayWithCapacity:shapes.count];
@@ -2651,16 +2674,18 @@ static void multi_targets_case(const char *name,
     NSMutableArray *results = [NSMutableArray arrayWithCapacity:targets.count];
     NSMutableArray *buffers = [NSMutableArray arrayWithCapacity:targets.count];
     NSMutableArray *sizes = [NSMutableArray arrayWithCapacity:targets.count];
-    for (MPSGraphTensor *t in targets) {
+    for (NSUInteger i = 0; i < targets.count; i++) {
+        MPSGraphTensor *t = targets[i];
+        NSArray<NSNumber *> *shape = resultShapes ? resultShapes[i] : t.shape;
+        MPSDataType dataType = resultTypes ? (MPSDataType)[resultTypes[i] unsignedIntValue] : t.dataType;
         NSUInteger count = 1;
-        for (NSNumber *d in t.shape) count *= (NSUInteger)d.integerValue;
-        size_t bytes = count * MPSSizeofMPSDataType(t.dataType);
+        for (NSNumber *d in shape) count *= (NSUInteger)d.integerValue;
+        size_t bytes = count * MPSSizeofMPSDataType(dataType);
         id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
         if (fill) memset([buffer contents], fill, bytes);
         [buffers addObject:buffer];
         [sizes addObject:@(bytes)];
-        [results addObject:[[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:t.shape
-                                                                dataType:t.dataType]];
+        [results addObject:[[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:shape dataType:dataType]];
     }
     MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice feeds:feeds
                                               targetTensors:targets targetOperations:@[]
@@ -2828,6 +2853,252 @@ static void family_gather_split(void)
     chain_case();
 }
 
+// THE SPACE-TO-DEPTH FAMILY: the four operations of 15.0 and 16.1 that move a block of the spatial axes into
+// the batch axis or out of it. They are asked here over the case file's own feeds, and the case list is
+// ordered so that the pairs which must agree byte for byte are asked over the same operand: the 2D form and
+// the general form of the same walk, the two orders of the flag, and the round trip that is the header's own
+// "This operation is the inverse of" sentence.
+static float blockFeed[72] = {
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+    25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48,
+    49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72,
+};
+
+static void family_gather_spacebatch(void)
+{
+    NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+    NSData *cubeData = [NSData dataWithBytes:cubeFeed length:sizeof cubeFeed];
+    // The operand every case here is asked over where it fits: a [3, 4, 6] of 1 to 72 with a 2x2 block,
+    // whose result is a [12, 2, 3]. No two of its extents are the same, so an answer says which operand axis
+    // each coordinate of the result came from.
+    NSArray<NSNumber *> *threeByFourBySix = @[@3, @4, @6];
+    NSData *wide = [NSData dataWithBytes:blockFeed length:sizeof blockFeed];
+    // Thirty-two of the same values, for the two three-spatial-axis cases: a [2, 2, 4, 2] holds thirty-two
+    // elements and the case file's own 2x3x4 cube holds twenty-four, which the release refuses with "buffer is
+    // not large enough. Must be 128 bytes" - the harness's own mismatch, not an answer of anything.
+    NSData *thirtyTwo = [NSData dataWithBytes:blockFeed length:32 * sizeof(float)];
+    // The 2D form over the same operand: the width axis is the fastest running dimension WITHIN the block
+    // and the height axis the second, so its (widthAxis, heightAxis) is the general form's
+    // spatialAxes=@[@heightAxis, @widthAxis] - and the two cases below are the same walk asked twice.
+    multi_targets_case("spaceToDepth2D-wide float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToDepth2DTensor:in[0] widthAxis:2 heightAxis:1 depthAxis:0 blockSize:2
+                 usePixelShuffleOrder:NO name:@"s"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("spaceToDepth2D-wide-shuffle float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToDepth2DTensor:in[0] widthAxis:2 heightAxis:1 depthAxis:0 blockSize:2
+                 usePixelShuffleOrder:YES name:@"s"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("spaceToBatch-wide float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToBatchTensor:in[0] spatialAxes:@[@1, @2] batchAxis:0 blockDimensions:@[@2, @2]
+                 usePixelShuffleOrder:NO name:@"s"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("spaceToBatch-wide-shuffle float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToBatchTensor:in[0] spatialAxes:@[@1, @2] batchAxis:0 blockDimensions:@[@2, @2]
+                 usePixelShuffleOrder:YES name:@"s"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    // The other direction, over the result those build, and the ROUND TRIP - which is the header's inverse
+    // sentence measured: the second operation of the same flag must give the first one's operand back.
+    NSArray<NSNumber *> *twelveByTwoByThree = @[@12, @2, @3];
+    multi_targets_case("depthToSpace2D-wide float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g depthToSpace2DTensor:in[0] widthAxis:2 heightAxis:1 depthAxis:0 blockSize:2
+                 usePixelShuffleOrder:NO name:@"d"] ]; },
+                      @[twelveByTwoByThree], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("depthToSpace2D-wide-shuffle float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g depthToSpace2DTensor:in[0] widthAxis:2 heightAxis:1 depthAxis:0 blockSize:2
+                 usePixelShuffleOrder:YES name:@"d"] ]; },
+                      @[twelveByTwoByThree], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("batchToSpace-wide float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g batchToSpaceTensor:in[0] spatialAxes:@[@1, @2] batchAxis:0 blockDimensions:@[@2, @2]
+                 usePixelShuffleOrder:NO name:@"b"] ]; },
+                      @[twelveByTwoByThree], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("batchToSpace-wide-shuffle float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g batchToSpaceTensor:in[0] spatialAxes:@[@1, @2] batchAxis:0 blockDimensions:@[@2, @2]
+                 usePixelShuffleOrder:YES name:@"b"] ]; },
+                      @[twelveByTwoByThree], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("spaceToBatch-roundtrip float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        MPSGraphTensor *s = [g spaceToBatchTensor:in[0] spatialAxes:@[@1, @2] batchAxis:0
+                             blockDimensions:@[@2, @2] usePixelShuffleOrder:NO name:@"s"];
+        return @[ [g batchToSpaceTensor:s spatialAxes:@[@1, @2] batchAxis:0 blockDimensions:@[@2, @2]
+                 usePixelShuffleOrder:NO name:@"b"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("spaceToBatch-roundtrip-shuffle float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        MPSGraphTensor *s = [g spaceToBatchTensor:in[0] spatialAxes:@[@1, @2] batchAxis:0
+                             blockDimensions:@[@2, @2] usePixelShuffleOrder:YES name:@"s"];
+        return @[ [g batchToSpaceTensor:s spatialAxes:@[@1, @2] batchAxis:0 blockDimensions:@[@2, @2]
+                 usePixelShuffleOrder:YES name:@"b"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    // A block of ONE is the identity, over the case file's own 2x3x4.
+    multi_targets_case("spaceToBatch-block1 float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToBatchTensor:in[0] spatialAxes:@[@1, @2] batchAxis:0 blockDimensions:@[@1, @1]
+                 usePixelShuffleOrder:NO name:@"s"] ]; },
+                      @[twoByThreeByFour], @[cubeData], @[@(MPSDataTypeFloat32)], 0xbd);
+    // ONE spatial axis, which is the general form without the 2D names, and a NEGATIVE batch axis counted
+    // from the end (measured: -3 of a rank of three answers what 0 answers).
+    multi_targets_case("spaceToBatch-one-axis float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToBatchTensor:in[0] spatialAxes:@[@2] batchAxis:0 blockDimensions:@[@2]
+                 usePixelShuffleOrder:NO name:@"s"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("spaceToBatch-negative-batch float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToBatchTensor:in[0] spatialAxes:@[@1, @2] batchAxis:-3 blockDimensions:@[@2, @2]
+                 usePixelShuffleOrder:NO name:@"s"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    // The spatial list written the other way round over the case file's [2, 2, 4], whose answer is a
+    // different one with the same shape - which is what says the block list is read in the order it is
+    // written while the result's axes keep the operand's own order.
+    NSArray<NSNumber *> *twoByTwoByFour = @[@2, @2, @4];
+    // The [2, 2, 4] holds SIXTEEN values, so the feed is sixteen of them - the first version of this case
+    // passed eight and the release took the process down on the mismatch, which is the harness's own bug and
+    // not an answer of anything.
+    NSData *small = [NSData dataWithBytes:blockFeed length:16 * sizeof(float)];
+    multi_targets_case("spaceToBatch-order-reversed float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToBatchTensor:in[0] spatialAxes:@[@2, @1] batchAxis:0 blockDimensions:@[@2, @2]
+                 usePixelShuffleOrder:NO name:@"s"] ]; },
+                      @[twoByTwoByFour], @[small], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("spaceToBatch-order-forward float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToBatchTensor:in[0] spatialAxes:@[@1, @2] batchAxis:0 blockDimensions:@[@2, @2]
+                 usePixelShuffleOrder:NO name:@"s"] ]; },
+                      @[twoByTwoByFour], @[small], @[@(MPSDataTypeFloat32)], 0xbd);
+    // THREE spatial axes, which is the case that says the LAST of them is the fastest inside the block, over
+    // the case file's [2, 2, 4, 2] of 32 values.
+    multi_targets_case("spaceToBatch-three-axes float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToBatchTensor:in[0] spatialAxes:@[@0, @1, @2] batchAxis:3 blockDimensions:@[@2, @2, @2]
+                 usePixelShuffleOrder:NO name:@"s"] ]; },
+                      @[@[@2, @2, @4, @2]], @[thirtyTwo], @[@(MPSDataTypeFloat32)], 0xbd);
+    // The other direction over three spatial axes, where the batch axis has to be an AXIS OF ITS OWN: the
+    // first version of this case put the batch axis at 0 with the spatial axes @[@0, @1, @2] and the release
+    // refused it with "`batch_axis` = 0 must be unique from `spatial_axes`" - which is the family's own
+    // refusal and is measured in refusals.txt, so the case keeps its axis where the release accepts it.
+    multi_targets_case("batchToSpace-three-axes float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g batchToSpaceTensor:in[0] spatialAxes:@[@1, @2, @3] batchAxis:0
+                 blockDimensions:@[@2, @2, @2] usePixelShuffleOrder:NO name:@"b"] ]; },
+                      @[@[@16, @1, @1, @2]], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    // The FED forms over CONSTANTS of the same values, which are the only fed forms the release answers - and
+    // they answer exactly what the written-down forms answer over the same operand.
+    multi_targets_case("spaceToBatch-fed-constants float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToBatchTensor:in[0]
+                 spatialAxesTensor:forwardShapeConstant(g, @[@1, @2])
+                   batchAxisTensor:forwardShapeConstant(g, @[@0])
+             blockDimensionsTensor:forwardShapeConstant(g, @[@2, @2])
+                 usePixelShuffleOrder:NO name:@"s"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    // The FED pair of 15.0, whose THREE axes arrive as tensors and whose block size is still written down -
+    // measured over the same [3, 4, 6] and the same axes of 2, 1 and 0 with the same block of 2: an int32
+    // constant of shape [1] answers exactly what the written-down forms above answer over the same operand,
+    // byte for byte, in both directions and under both flags. A placeholder answers nothing at all and does
+    // not take the process down (the graph builds with the result carrying no shape and the compile still
+    // hands back an executable), which is measured in refusals.txt.
+    multi_targets_case("spaceToDepth2D-fed-constants float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToDepth2DTensor:in[0]
+                          widthAxisTensor:forwardShapeConstant(g, @[@2])
+                         heightAxisTensor:forwardShapeConstant(g, @[@1])
+                          depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                blockSize:2
+                     usePixelShuffleOrder:NO name:@"s"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("spaceToDepth2D-fed-constants-shuffle float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToDepth2DTensor:in[0]
+                          widthAxisTensor:forwardShapeConstant(g, @[@2])
+                         heightAxisTensor:forwardShapeConstant(g, @[@1])
+                          depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                blockSize:2
+                     usePixelShuffleOrder:YES name:@"s"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("depthToSpace2D-fed-constants float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g depthToSpace2DTensor:in[0]
+                          widthAxisTensor:forwardShapeConstant(g, @[@2])
+                         heightAxisTensor:forwardShapeConstant(g, @[@1])
+                          depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                blockSize:2
+                     usePixelShuffleOrder:NO name:@"d"] ]; },
+                      @[twelveByTwoByThree], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_case("depthToSpace2D-fed-constants-shuffle float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g depthToSpace2DTensor:in[0]
+                          widthAxisTensor:forwardShapeConstant(g, @[@2])
+                         heightAxisTensor:forwardShapeConstant(g, @[@1])
+                          depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                blockSize:2
+                     usePixelShuffleOrder:YES name:@"d"] ]; },
+                      @[twelveByTwoByThree], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    // And the fed pair's own inverse claim: the same three constants into both directions is the identity,
+    // which is what the header's "This operation is the inverse of" sentence says of the FED pair.
+    multi_targets_case("spaceToDepth2D-fed-roundtrip float32", ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        MPSGraphTensor *s = [g spaceToDepth2DTensor:in[0]
+                                   widthAxisTensor:forwardShapeConstant(g, @[@2])
+                                  heightAxisTensor:forwardShapeConstant(g, @[@1])
+                                   depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                         blockSize:2
+                              usePixelShuffleOrder:NO name:@"s"];
+        return @[ [g depthToSpace2DTensor:s
+                          widthAxisTensor:forwardShapeConstant(g, @[@2])
+                         heightAxisTensor:forwardShapeConstant(g, @[@1])
+                          depthAxisTensor:forwardShapeConstant(g, @[@0])
+                                blockSize:2
+                     usePixelShuffleOrder:NO name:@"d"] ]; },
+                      @[threeByFourBySix], @[wide], @[@(MPSDataTypeFloat32)], 0xbd);
+    // THE FED PAIR over three PLACEHOLDERS, which is the answer the release gives at RUN time and the one
+    // the port could not give at all before: measured, the graph builds with the result carrying no shape, the
+    // compile still hands back an executable, and the run writes into the destination the caller gave it
+    // exactly what the written-down axes write into theirs - so each of these four cases is compared against
+    // the release's own bytes over the same operand and the same destination, and the shape line above it
+    // prints nil on both sides.
+    int32_t width = 2, height = 1, depth = 0;
+    NSData *axisWidth = [NSData dataWithBytes:&width length:sizeof width];
+    NSData *axisHeight = [NSData dataWithBytes:&height length:sizeof height];
+    NSData *axisDepth = [NSData dataWithBytes:&depth length:sizeof depth];
+    NSArray<NSArray<NSNumber *> *> *fourInputs = @[threeByFourBySix, @[@1], @[@1], @[@1]];
+    NSArray<NSData *> *fourValues = @[wide, axisWidth, axisHeight, axisDepth];
+    NSArray<NSNumber *> *floatThenAxes = @[@(MPSDataTypeFloat32), @(MPSDataTypeInt32), @(MPSDataTypeInt32),
+                                           @(MPSDataTypeInt32)];
+    NSArray<NSArray<NSNumber *> *> *twelveByTwoByThreeShape = @[@[@12, @2, @3]];
+    multi_targets_shaped_case("spaceToDepth2D-fed-placeholders float32",
+                              ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToDepth2DTensor:in[0] widthAxisTensor:in[1] heightAxisTensor:in[2]
+                            depthAxisTensor:in[3] blockSize:2 usePixelShuffleOrder:NO name:@"s"] ]; },
+                              fourInputs, fourValues, floatThenAxes, twelveByTwoByThreeShape,
+                              @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_shaped_case("spaceToDepth2D-fed-placeholders-shuffle float32",
+                              ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToDepth2DTensor:in[0] widthAxisTensor:in[1] heightAxisTensor:in[2]
+                            depthAxisTensor:in[3] blockSize:2 usePixelShuffleOrder:YES name:@"s"] ]; },
+                              fourInputs, fourValues, floatThenAxes, twelveByTwoByThreeShape,
+                              @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_shaped_case("depthToSpace2D-fed-placeholders float32",
+                              ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g depthToSpace2DTensor:in[0] widthAxisTensor:in[1] heightAxisTensor:in[2]
+                            depthAxisTensor:in[3] blockSize:2 usePixelShuffleOrder:NO name:@"n"] ]; },
+                              @[twelveByTwoByThreeShape[0], @[@1], @[@1], @[@1]], fourValues, floatThenAxes,
+                              @[threeByFourBySix], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_shaped_case("depthToSpace2D-fed-placeholders-shuffle float32",
+                              ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g depthToSpace2DTensor:in[0] widthAxisTensor:in[1] heightAxisTensor:in[2]
+                            depthAxisTensor:in[3] blockSize:2 usePixelShuffleOrder:YES name:@"n"] ]; },
+                              @[twelveByTwoByThreeShape[0], @[@1], @[@1], @[@1]], fourValues, floatThenAxes,
+                              @[threeByFourBySix], @[@(MPSDataTypeFloat32)], 0xbd);
+    // ONE AXIS FED AND THE OTHER TWO CONSTANTS, which is the mixed case the release also answers (measured:
+    // a constant width with the height and the depth fed answers the same bytes as all three fed, in both
+    // directions), and it is what says the port reads only the tensors the caller fed - the constants are
+    // read when the graph is built, where the release reads them too.
+    multi_targets_shaped_case("spaceToDepth2D-fed-depth-only float32",
+                              ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToDepth2DTensor:in[0]
+                            widthAxisTensor:forwardShapeConstant(g, @[@2])
+                           heightAxisTensor:forwardShapeConstant(g, @[@1])
+                            depthAxisTensor:in[1] blockSize:2 usePixelShuffleOrder:NO name:@"s"] ]; },
+                              @[threeByFourBySix, @[@1]], @[wide, axisDepth],
+                              @[@(MPSDataTypeFloat32), @(MPSDataTypeInt32)], twelveByTwoByThreeShape,
+                              @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_shaped_case("depthToSpace2D-fed-width-only float32",
+                              ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g depthToSpace2DTensor:in[0] widthAxisTensor:in[1]
+                           heightAxisTensor:forwardShapeConstant(g, @[@1])
+                            depthAxisTensor:forwardShapeConstant(g, @[@0]) blockSize:2
+                            usePixelShuffleOrder:NO name:@"n"] ]; },
+                              @[twelveByTwoByThreeShape[0], @[@1]], @[wide, axisWidth],
+                              @[@(MPSDataTypeFloat32), @(MPSDataTypeInt32)], @[threeByFourBySix],
+                              @[@(MPSDataTypeFloat32)], 0xbd);
+    chain_case();
+}
+
 static const Family kFamilies[] = {
     { "misc", family_misc },
     { "arithmetic", family_arithmetic },
@@ -2847,6 +3118,7 @@ static const Family kFamilies[] = {
     { "gather_expand", family_gather_expand },
     { "gather_concat", family_gather_concat },
     { "gather_split", family_gather_split },
+    { "gather_spacebatch", family_gather_spacebatch },
 };
 
 static void family_names(void)
