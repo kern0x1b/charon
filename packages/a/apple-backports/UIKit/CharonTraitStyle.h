@@ -5,9 +5,12 @@ void charon_set_trait_style(UITraitCollection *collection, UIUserInterfaceStyle 
 
 // A listener for a trait change, called with the environments that were told and the collection each had
 // before, once the change is made. The collection of iOS 17 registers one; see UITraitCollection.m for why a
-// listener registers itself rather than being called there by name.
+// listener registers itself rather than being called there by name. Both of these are defined in
+// CharonTraitObservers.m, an object that exports no API symbol of its own, because the file that makes the
+// change and the file that listens for it are carried from two different releases and a band cannot hold both.
 typedef void (*CharonTraitChangeObserver)(NSArray *environments, NSArray *previous);
 void charon_add_trait_change_observer(CharonTraitChangeObserver observer);
+void charon_call_trait_change_observers(NSArray *environments, NSArray *previous);
 
 // A reader for the value a collection carries for the trait a name is, asked with the name the description knows
 // that trait by. known answers whether the port has a definition for the name at all, and isDefault whether the
