@@ -1933,3 +1933,73 @@ Over every phase of every shape the 6.1.3 guest dumped (`checkrows.py`, section 
   used for every phase. A reader who measured `argmax` over every row and expected one index would conclude the
   engine's `K0` was wrong; on the 0.75 five-lobe shape even **row 0** is tied
   (`73 -431 833 -627 -1224 9564 9564 -1224 ...`), and the lowest of the two is `K0 = (numTaps-2)/2 = 5`.
+
+## The 6.1.3 guest, the port's engine, and the header the reader got wrong (2026-10-04, v-tail-a15)
+
+**The armv7 header's fields do NOT start at word one, and every field from `numTaps` on was being read one
+four-byte word early.** The reader took field `k` at byte `k * slot` with a four-byte slot on armv7. The first
+field is the DOUBLE `1.0/scale` and it is two slots wide, so field 1 landed at byte 4 - inside the
+reciprocal - and the release puts `numTaps` at byte **8**, which is slot **2**. `CharonResampling.h` now
+takes field `k` at `8 + slot*(k-1)`, which on arm64 is the address `8*k` it always was.
+
+This is invisible on a Mac, where every filter is an arm64 one, and it is why 11916 host checks and a
+nineteen-shape header check never saw it. **The 6.1.3 guest saw it in one run**: the probe
+(`tests/backports/device/shearprobe/`) handed `CharonResampleFilterOf` the object `vImageNewResamplingFilter`
+had just allocated and the reader refused, printing `word 1 taps 1072693248` - which is `0x3FF00000`, the low
+word of the double `1.0` - and `word 7 table 0xc50`, which is byte 28, the offset. The release's own forty
+bytes:
+
+    00 00 00 00 00 00 f0 3f   byte 0   the double 1.0
+    06 00 00 00               byte 8   numTaps 6
+    20 00 00 00               byte 12  floatStride 32
+    10 00 00 00               byte 16  int16Stride 16
+    40 00 00 00               byte 20  phases 64
+    06 00 00 00               byte 24  the exponent 6
+    50 0c 00 00               byte 28  the offset 3152
+    50 44 90 10               byte 32  the Q14 table
+    30 3c 90 10               byte 36  the float table's base
+
+With the right addresses **every identity this file already checked holds on those bytes**: the offset is
+`3152 == 2128 + 64*16` and the table is `2080 == 32*65` past the base. The identities were never wrong; the
+addresses they were read from were. **`offset == (table - object) + phases*int16Stride` is right on the armv7
+releases as well as on arm64**, and the section above's "the offset is an OFFSET on both shapes" stands.
+
+### What the guest says about the mapping, and it is not the host's
+
+The probe puts the port's engine and the release's own `ARGB8888` shear over one filter the RELEASE made, at
+five scales, both axes and seven translates, and names each destination sample's `(phase, base)` pair out of
+each engine's OWN bytes: a source whose channel 0 carries its full value at one position along the shear and
+zero at every other, with a zero backColor, makes every other tap contribute nothing, so one shear call answers
+`store(row[p][j] * max / divisor)` and nothing else. Seventy cases, no case ended on a signal, and:
+
+| | 6.1.3, this page's arithmetic |
+| --- | --- |
+| a scale of **one**, both axes, translate 0 | **agree, 24 of 24** - the identity v-tail-a11 measured, re-established through the identification |
+| **every other scale, both axes, every translate** | **the release and the port name different pairs** |
+| an arrangement of the mapping that explains every sample the release names | **none, at scales 2, 0.5, 0.75 and 0.25 on either axis.** At a scale of one `trunc` explains 7 of 7 cases on both axes; at a scale of two, one case in seven on the horizontal |
+| the divisor | **it matters here.** The two divisors name different pairs on 12 of 19 uniquely named samples at a 0.75 vertical and on 13 at a 0.75 horizontal, where on this Mac they never differ |
+
+At a scale of 0.75 on the vertical the release's phase runs **eleven sixty-fourths below** the port's and its
+mapped centre advances at an average of exactly `4/3` a sample with a `+-1/192` wobble - two steps of
+`1.328125` and one of `1.34375` in every three - which is why it names 21, 42, 63, 21, 42, 63 where the port
+names 32, 53, 10, 32, 53, 10. **So 6.1.3's mapping is not in the family of twenty-four arrangements this
+page's host measurements search, on either axis, off a scale of one.** That is the finding and it is a
+negative one; the next measurement has to widen the family, not re-search the one already searched.
+
+### And the 0.75 vertical boundary on the HOST, which is a different thing and is still open
+
+The probe answers macOS first, and the answer narrows the boundary without closing it. Over a 24-by-9 source
+into a nine-wide destination:
+
+  * **it is the vertical alone and only at 0.75**, as before - 19 of the 19 uniquely named samples agree at
+    scales 1, 2, 0.5 and 0.25 and at 0.75 on the horizontal;
+  * **the tie direction is confirmed**: `ceil(frac*phases) - 1` explains all eight 0.75 vertical cases and
+    **breaks a scale of 0.5**, where `frac*phases` is exactly 16 and the release names row 16. It is not the
+    rule;
+  * **the single-precision far-edge anchor explains all eight 0.75 vertical cases and all four exact scales
+    over this destination, and is refuted by the differential**, whose destination is five along where this
+    one is twenty-six: with it in, the integer family goes from 524 to **574** vertical 0.75 cases;
+  * **at destination rows 18, 21 and 24 the mapped centre is EXACTLY 15.5, 19.5 and 23.5 in every arrangement
+    and in both precisions**, `frac*phases` is exactly 32, and the host's own bytes name row **31**. No rule
+    that is a function of `frac*phases` alone produces that and is right at a scale of 0.5 at the same time,
+    **so the term still missing is in the ARRANGEMENT of the position and not in the phase.**
