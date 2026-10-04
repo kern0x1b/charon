@@ -40,7 +40,7 @@ mkdir -p "$BUILD/plain" "$BUILD/renamed"
 # live (the error it answers with and the line it says once in the log) and which is the only file that
 # defines them. Nothing in this test opens a database: the store is compiled so that what the unit and
 # quantity code calls exists, not so that the store is measured.
-sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m HKWorkoutBuilder120.m HKQuantitySeriesSampleBuilder120.m HKQuantitySeriesSampleQuery120.m HKCumulativeQuantitySample130.m HKCumulativeQuantitySeriesSample120.m HKDocument10.m HKObject9.m HKSource9.m HKHealthStore.m CharonHKStore.m HKConstants120.m"
+sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m HKWorkoutBuilder120.m HKQuantitySeriesSampleBuilder120.m HKQuantitySeriesSampleQuery120.m HKCumulativeQuantitySample130.m HKCumulativeQuantitySeriesSample120.m HKDocument10.m HKObject9.m HKSource9.m HKHealthStore.m CharonHKStore.m HKConstants120.m HKConstants160.m HKConstants180.m HKConstants182.m HKConstants260.m HKConstants262.m"
 
 for source in $sources; do
     xcrun clang -fobjc-arc $quiet -I"$healthkit" -c "$healthkit/$source" -o "$BUILD/plain/$source.o"
@@ -73,6 +73,25 @@ for name in HKFHIRResourceTypeAllergyIntolerance HKFHIRResourceTypeCondition HKF
             HKPredicateKeyPathSum; do
     constants="$constants -D$name=CharonHK120_$name"
 done
+# The six of 11.2 that join HKConstants120.m take the prefix its twenty-one already take.
+for name in HKMetadataKeyAlpineSlopeGrade HKMetadataKeyAverageSpeed HKMetadataKeyElevationAscended \
+            HKMetadataKeyElevationDescended HKMetadataKeyMaximumSpeed \
+            HKQuantityTypeIdentifierDistanceDownhillSnowSports; do
+    constants="$constants -D$name=CharonHK120_$name"
+done
+# The other 187 of the measured group, renamed for the same reason the twenty-one above are: the
+# host's HealthKit exports those symbols too, so the port's definitions and the host's cannot both
+# be linked under one name. The list is taken from the plain objects' own symbol list, so a constant
+# added to an object is renamed by the next run without this list being edited; a name the two loops
+# above already gave a prefix is skipped, because two -D of one name is a redefinition and only the
+# last would take effect.
+measured=""
+for name in $(xcrun nm -gU "$BUILD"/plain/*.o | awk 'NF == 3 {print $3}' | grep -E '^_HK' \
+              | sed -e 's/^_//' | sort -u); do
+    case " $constants " in *" -D$name="*) continue ;; esac
+    measured="$measured -D$name=CharonHKMeasured_$name"
+done
+constants="$constants$measured"
 
 for source in $sources; do
     xcrun clang -fobjc-arc $quiet $renames $constants -I"$healthkit" -c "$healthkit/$source" -o "$BUILD/renamed/$source.o"
@@ -181,3 +200,10 @@ mutant HKConstants120.m '= @"HKClinicalTypeIdentifierAllergyRecord";' '= @"HKCli
 # `HKCrossTrainerDistance` in that release's image, and a value spelled as the constant's own name is
 # what a reader who never opened the image would write.
 mutant HKConstants120.m '= @"HKCrossTrainerDistance";' '= @"HKMetadataKeyCrossTrainerDistance";'
+# Two of the measured group, one of each shape. HKMetadataKeyAverageSpeed holds `HKAverageSpeed`, so
+# a value spelled from the constant's own name is what a reader who never read the binary would
+# write; and HKCategoryTypeIdentifierAbdominalCramps holds its own name, so a value one letter
+# short is what a transcription of the identifier would give. The differential compares the port's
+# own string against the host's own symbol of the same name, so neither can pass.
+mutant HKConstants120.m '= @"HKAverageSpeed";' '= @"HKMetadataKeyAverageSpeed";'
+mutant HKConstants160.m '= @"HKCategoryTypeIdentifierAbdominalCramps";' '= @"HKCategoryTypeIdentifierAbdominalCramp";'

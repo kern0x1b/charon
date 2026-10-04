@@ -358,6 +358,441 @@ extern NSString *const CharonHK120_HKPredicateKeyPathClinicalRecordFHIRResourceI
 extern NSString *const CharonHK120_HKPredicateKeyPathClinicalRecordFHIRResourceType;
 extern NSString *const CharonHK120_HKPredicateKeyPathSum;
 
+#import <dlfcn.h>
+
+// ---------------------------------------------------------------------- the 193 measured constants
+
+// The exported string constants of iOS 11.2 through 26.2 that this library now carries, as the port's own
+// objects hold them. run.sh renames every one of them, because the host's HealthKit exports the same
+// symbols and one process cannot link both under one name - so each is read out of the port's own
+// compiled object, which is the whole point: a literal here would compare the host against a string
+// written beside it.
+//
+// The host's side is read with dlsym rather than named directly, for two reasons and not for one. It is
+// the method the corpus table was measured with (coordination/corpus/ledger/constant-values-HealthKit.tsv:
+// tools/corpus/host-probe.c, dlopen + dlsym + CFStringGetCString as UTF-8), so the port's value is held
+// against the same reading of the same binary rather than against a second transcription of it - and the
+// name is given to dlsym as that probe gives it, the bare C name with no leading underscore, which is the
+// form dlsym resolves on this platform (measured: the underscore form answers NULL for all three of a spot
+// check while the bare form answers the symbol). And a name the host does not export is an answer this
+// section can report - `the host's HealthKit does not export it` - where a direct reference to it would be
+// a link error that takes the whole differential down, and 193 names is more than a reader should bet on
+// any one SDK's headers declaring.
+//
+// The six of HKConstants120.m keep the prefix the twenty-one above already use, so one object is one
+// prefix; the other 187 take one prefix of their own, HKConstants160.m through HKConstants262.m.
+extern NSString *const CharonHK120_HKMetadataKeyAlpineSlopeGrade;
+extern NSString *const CharonHK120_HKMetadataKeyAverageSpeed;
+extern NSString *const CharonHK120_HKMetadataKeyElevationAscended;
+extern NSString *const CharonHK120_HKMetadataKeyElevationDescended;
+extern NSString *const CharonHK120_HKMetadataKeyMaximumSpeed;
+extern NSString *const CharonHK120_HKQuantityTypeIdentifierDistanceDownhillSnowSports;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierAbdominalCramps;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierAcne;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierAppetiteChanges;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierAppleWalkingSteadinessEvent;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierAudioExposureEvent;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierBladderIncontinence;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierBloating;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierBreastPain;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierChestTightnessOrPain;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierChills;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierConstipation;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierContraceptive;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierCoughing;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierDiarrhea;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierDizziness;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierDrySkin;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierFainting;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierFatigue;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierFever;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierGeneralizedBodyAche;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierHairLoss;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierHandwashingEvent;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierHeadache;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierHeadphoneAudioExposureEvent;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierHeartburn;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierHighHeartRateEvent;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierHotFlashes;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierInfrequentMenstrualCycles;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierIrregularHeartRhythmEvent;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierIrregularMenstrualCycles;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierLactation;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierLossOfSmell;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierLossOfTaste;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierLowCardioFitnessEvent;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierLowHeartRateEvent;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierLowerBackPain;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierMemoryLapse;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierMoodChanges;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierNausea;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierNightSweats;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierPelvicPain;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierPersistentIntermenstrualBleeding;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierPregnancy;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierPregnancyTestResult;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierProgesteroneTestResult;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierProlongedMenstrualPeriods;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierRunnyNose;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierShortnessOfBreath;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierSinusCongestion;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierSkippedHeartbeat;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierSleepChanges;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierSoreThroat;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierToothbrushingEvent;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierVaginalDryness;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierVomiting;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierWheezing;
+extern NSString *const CharonHKMeasured_HKCharacteristicTypeIdentifierActivityMoveMode;
+extern NSString *const CharonHKMeasured_HKClinicalTypeIdentifierCoverageRecord;
+extern NSString *const CharonHKMeasured_HKDataTypeIdentifierHeartbeatSeries;
+extern NSString *const CharonHKMeasured_HKFHIRReleaseDSTU2;
+extern NSString *const CharonHKMeasured_HKFHIRReleaseR4;
+extern NSString *const CharonHKMeasured_HKFHIRReleaseUnknown;
+extern NSString *const CharonHKMeasured_HKFHIRResourceTypeCoverage;
+extern NSString *const CharonHKMeasured_HKFHIRResourceTypeMedicationRequest;
+extern NSString *const CharonHKMeasured_HKMedicationDoseEventTypeIdentifierMedicationDoseEvent;
+extern NSString *const CharonHKMeasured_HKMetadataKeyAlgorithmVersion;
+extern NSString *const CharonHKMeasured_HKMetadataKeyAppleDeviceCalibrated;
+extern NSString *const CharonHKMeasured_HKMetadataKeyAppleECGAlgorithmVersion;
+extern NSString *const CharonHKMeasured_HKMetadataKeyAudioExposureDuration;
+extern NSString *const CharonHKMeasured_HKMetadataKeyAudioExposureLevel;
+extern NSString *const CharonHKMeasured_HKMetadataKeyAverageMETs;
+extern NSString *const CharonHKMeasured_HKMetadataKeyBarometricPressure;
+extern NSString *const CharonHKMeasured_HKMetadataKeyDateOfEarliestDataUsedForEstimate;
+extern NSString *const CharonHKMeasured_HKMetadataKeyDevicePlacementSide;
+extern NSString *const CharonHKMeasured_HKMetadataKeyGlassesPrescriptionDescription;
+extern NSString *const CharonHKMeasured_HKMetadataKeyHeartRateEventThreshold;
+extern NSString *const CharonHKMeasured_HKMetadataKeyHeartRateRecoveryActivityDuration;
+extern NSString *const CharonHKMeasured_HKMetadataKeyHeartRateRecoveryActivityType;
+extern NSString *const CharonHKMeasured_HKMetadataKeyHeartRateRecoveryMaxObservedRecoveryHeartRate;
+extern NSString *const CharonHKMeasured_HKMetadataKeyHeartRateRecoveryTestType;
+extern NSString *const CharonHKMeasured_HKMetadataKeyLowCardioFitnessEventThreshold;
+extern NSString *const CharonHKMeasured_HKMetadataKeyQuantityClampedToLowerBound;
+extern NSString *const CharonHKMeasured_HKMetadataKeyQuantityClampedToUpperBound;
+extern NSString *const CharonHKMeasured_HKMetadataKeySWOLFScore;
+extern NSString *const CharonHKMeasured_HKMetadataKeySessionEstimate;
+extern NSString *const CharonHKMeasured_HKMetadataKeyUserMotionContext;
+extern NSString *const CharonHKMeasured_HKMetadataKeyVO2MaxValue;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathAverage;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathAverageHeartRate;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathCount;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathECGClassification;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathECGSymptomsStatus;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathMax;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathMin;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathMostRecent;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathMostRecentDuration;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathMostRecentEndDate;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathMostRecentStartDate;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathStatus;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutActivity;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutActivityAverageQuantity;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutActivityDuration;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutActivityEndDate;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutActivityMaximumQuantity;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutActivityMinimumQuantity;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutActivityStartDate;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutActivitySumQuantity;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutActivityType;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutAverageQuantity;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutMaximumQuantity;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutMinimumQuantity;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutSumQuantity;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierAppleMoveTime;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierAppleSleepingWristTemperature;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierAppleStandTime;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierAppleWalkingSteadiness;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierAtrialFibrillationBurden;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierEnvironmentalAudioExposure;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierEnvironmentalSoundReduction;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierHeadphoneAudioExposure;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierHeartRateRecoveryOneMinute;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierNumberOfAlcoholicBeverages;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierRunningGroundContactTime;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierRunningPower;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierRunningSpeed;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierRunningStrideLength;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierRunningVerticalOscillation;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierSixMinuteWalkTestDistance;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierStairAscentSpeed;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierStairDescentSpeed;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierUnderwaterDepth;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierWalkingAsymmetryPercentage;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierWalkingDoubleSupportPercentage;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierWalkingSpeed;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierWalkingStepLength;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierWaterTemperature;
+extern NSString *const CharonHKMeasured_HKVerifiableClinicalRecordCredentialTypeCOVID19;
+extern NSString *const CharonHKMeasured_HKVerifiableClinicalRecordCredentialTypeImmunization;
+extern NSString *const CharonHKMeasured_HKVerifiableClinicalRecordCredentialTypeLaboratory;
+extern NSString *const CharonHKMeasured_HKVerifiableClinicalRecordCredentialTypeRecovery;
+extern NSString *const CharonHKMeasured_HKVerifiableClinicalRecordSourceTypeEUDigitalCOVIDCertificate;
+extern NSString *const CharonHKMeasured_HKVerifiableClinicalRecordSourceTypeSMARTHealthCard;
+extern NSString *const CharonHKMeasured_HKVisionPrescriptionTypeIdentifier;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierBleedingAfterPregnancy;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierBleedingDuringPregnancy;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierSleepApneaEvent;
+extern NSString *const CharonHKMeasured_HKClinicalTypeIdentifierClinicalNoteRecord;
+extern NSString *const CharonHKMeasured_HKDataTypeIdentifierStateOfMind;
+extern NSString *const CharonHKMeasured_HKFHIRResourceTypeDiagnosticReport;
+extern NSString *const CharonHKMeasured_HKFHIRResourceTypeDocumentReference;
+extern NSString *const CharonHKMeasured_HKMetadataKeyActivityType;
+extern NSString *const CharonHKMeasured_HKMetadataKeyAppleFitnessPlusSession;
+extern NSString *const CharonHKMeasured_HKMetadataKeyCyclingFunctionalThresholdPowerTestType;
+extern NSString *const CharonHKMeasured_HKMetadataKeyHeadphoneGain;
+extern NSString *const CharonHKMeasured_HKMetadataKeyMaximumLightIntensity;
+extern NSString *const CharonHKMeasured_HKMetadataKeyPhysicalEffortEstimationType;
+extern NSString *const CharonHKMeasured_HKMetadataKeyWaterSalinity;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathWorkoutEffortRelationship;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierCrossCountrySkiingSpeed;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierCyclingCadence;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierCyclingFunctionalThresholdPower;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierCyclingPower;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierCyclingSpeed;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierDistanceCrossCountrySkiing;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierDistancePaddleSports;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierDistanceRowing;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierDistanceSkatingSports;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierEstimatedWorkoutEffortScore;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierPaddleSportsSpeed;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierPhysicalEffort;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierRowingSpeed;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierTimeInDaylight;
+extern NSString *const CharonHKMeasured_HKQuantityTypeIdentifierWorkoutEffortScore;
+extern NSString *const CharonHKMeasured_HKScoredAssessmentTypeIdentifierGAD7;
+extern NSString *const CharonHKMeasured_HKScoredAssessmentTypeIdentifierPHQ9;
+extern NSString *const CharonHKMeasured_HKMetadataKeyAppleFitnessPlusCatalogIdentifier;
+extern NSString *const CharonHKMeasured_HKDataTypeIdentifierUserAnnotatedMedicationConcept;
+extern NSString *const CharonHKMeasured_HKHealthConceptDomainMedication;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathLogOrigin;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathMedicationConceptIdentifier;
+extern NSString *const CharonHKMeasured_HKPredicateKeyPathScheduledDate;
+extern NSString *const CharonHKMeasured_HKUserAnnotatedMedicationPredicateKeyPathHasSchedule;
+extern NSString *const CharonHKMeasured_HKUserAnnotatedMedicationPredicateKeyPathIsArchived;
+extern NSString *const CharonHKMeasured_HKCategoryTypeIdentifierHypertensionEvent;
+
+static void CharonHKMeasuredConstants(void)
+{
+    // Not static and not const: a NSString * const of another file is not a compile-time constant in C,
+    // and an array of them has to be built at run time.
+    struct { NSString *name; NSString *port; } rows[] = {
+    {@"HKMetadataKeyAlpineSlopeGrade", CharonHK120_HKMetadataKeyAlpineSlopeGrade},
+    {@"HKMetadataKeyAverageSpeed", CharonHK120_HKMetadataKeyAverageSpeed},
+    {@"HKMetadataKeyElevationAscended", CharonHK120_HKMetadataKeyElevationAscended},
+    {@"HKMetadataKeyElevationDescended", CharonHK120_HKMetadataKeyElevationDescended},
+    {@"HKMetadataKeyMaximumSpeed", CharonHK120_HKMetadataKeyMaximumSpeed},
+    {@"HKQuantityTypeIdentifierDistanceDownhillSnowSports", CharonHK120_HKQuantityTypeIdentifierDistanceDownhillSnowSports},
+    {@"HKCategoryTypeIdentifierAbdominalCramps", CharonHKMeasured_HKCategoryTypeIdentifierAbdominalCramps},
+    {@"HKCategoryTypeIdentifierAcne", CharonHKMeasured_HKCategoryTypeIdentifierAcne},
+    {@"HKCategoryTypeIdentifierAppetiteChanges", CharonHKMeasured_HKCategoryTypeIdentifierAppetiteChanges},
+    {@"HKCategoryTypeIdentifierAppleWalkingSteadinessEvent", CharonHKMeasured_HKCategoryTypeIdentifierAppleWalkingSteadinessEvent},
+    {@"HKCategoryTypeIdentifierAudioExposureEvent", CharonHKMeasured_HKCategoryTypeIdentifierAudioExposureEvent},
+    {@"HKCategoryTypeIdentifierBladderIncontinence", CharonHKMeasured_HKCategoryTypeIdentifierBladderIncontinence},
+    {@"HKCategoryTypeIdentifierBloating", CharonHKMeasured_HKCategoryTypeIdentifierBloating},
+    {@"HKCategoryTypeIdentifierBreastPain", CharonHKMeasured_HKCategoryTypeIdentifierBreastPain},
+    {@"HKCategoryTypeIdentifierChestTightnessOrPain", CharonHKMeasured_HKCategoryTypeIdentifierChestTightnessOrPain},
+    {@"HKCategoryTypeIdentifierChills", CharonHKMeasured_HKCategoryTypeIdentifierChills},
+    {@"HKCategoryTypeIdentifierConstipation", CharonHKMeasured_HKCategoryTypeIdentifierConstipation},
+    {@"HKCategoryTypeIdentifierContraceptive", CharonHKMeasured_HKCategoryTypeIdentifierContraceptive},
+    {@"HKCategoryTypeIdentifierCoughing", CharonHKMeasured_HKCategoryTypeIdentifierCoughing},
+    {@"HKCategoryTypeIdentifierDiarrhea", CharonHKMeasured_HKCategoryTypeIdentifierDiarrhea},
+    {@"HKCategoryTypeIdentifierDizziness", CharonHKMeasured_HKCategoryTypeIdentifierDizziness},
+    {@"HKCategoryTypeIdentifierDrySkin", CharonHKMeasured_HKCategoryTypeIdentifierDrySkin},
+    {@"HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent", CharonHKMeasured_HKCategoryTypeIdentifierEnvironmentalAudioExposureEvent},
+    {@"HKCategoryTypeIdentifierFainting", CharonHKMeasured_HKCategoryTypeIdentifierFainting},
+    {@"HKCategoryTypeIdentifierFatigue", CharonHKMeasured_HKCategoryTypeIdentifierFatigue},
+    {@"HKCategoryTypeIdentifierFever", CharonHKMeasured_HKCategoryTypeIdentifierFever},
+    {@"HKCategoryTypeIdentifierGeneralizedBodyAche", CharonHKMeasured_HKCategoryTypeIdentifierGeneralizedBodyAche},
+    {@"HKCategoryTypeIdentifierHairLoss", CharonHKMeasured_HKCategoryTypeIdentifierHairLoss},
+    {@"HKCategoryTypeIdentifierHandwashingEvent", CharonHKMeasured_HKCategoryTypeIdentifierHandwashingEvent},
+    {@"HKCategoryTypeIdentifierHeadache", CharonHKMeasured_HKCategoryTypeIdentifierHeadache},
+    {@"HKCategoryTypeIdentifierHeadphoneAudioExposureEvent", CharonHKMeasured_HKCategoryTypeIdentifierHeadphoneAudioExposureEvent},
+    {@"HKCategoryTypeIdentifierHeartburn", CharonHKMeasured_HKCategoryTypeIdentifierHeartburn},
+    {@"HKCategoryTypeIdentifierHighHeartRateEvent", CharonHKMeasured_HKCategoryTypeIdentifierHighHeartRateEvent},
+    {@"HKCategoryTypeIdentifierHotFlashes", CharonHKMeasured_HKCategoryTypeIdentifierHotFlashes},
+    {@"HKCategoryTypeIdentifierInfrequentMenstrualCycles", CharonHKMeasured_HKCategoryTypeIdentifierInfrequentMenstrualCycles},
+    {@"HKCategoryTypeIdentifierIrregularHeartRhythmEvent", CharonHKMeasured_HKCategoryTypeIdentifierIrregularHeartRhythmEvent},
+    {@"HKCategoryTypeIdentifierIrregularMenstrualCycles", CharonHKMeasured_HKCategoryTypeIdentifierIrregularMenstrualCycles},
+    {@"HKCategoryTypeIdentifierLactation", CharonHKMeasured_HKCategoryTypeIdentifierLactation},
+    {@"HKCategoryTypeIdentifierLossOfSmell", CharonHKMeasured_HKCategoryTypeIdentifierLossOfSmell},
+    {@"HKCategoryTypeIdentifierLossOfTaste", CharonHKMeasured_HKCategoryTypeIdentifierLossOfTaste},
+    {@"HKCategoryTypeIdentifierLowCardioFitnessEvent", CharonHKMeasured_HKCategoryTypeIdentifierLowCardioFitnessEvent},
+    {@"HKCategoryTypeIdentifierLowHeartRateEvent", CharonHKMeasured_HKCategoryTypeIdentifierLowHeartRateEvent},
+    {@"HKCategoryTypeIdentifierLowerBackPain", CharonHKMeasured_HKCategoryTypeIdentifierLowerBackPain},
+    {@"HKCategoryTypeIdentifierMemoryLapse", CharonHKMeasured_HKCategoryTypeIdentifierMemoryLapse},
+    {@"HKCategoryTypeIdentifierMoodChanges", CharonHKMeasured_HKCategoryTypeIdentifierMoodChanges},
+    {@"HKCategoryTypeIdentifierNausea", CharonHKMeasured_HKCategoryTypeIdentifierNausea},
+    {@"HKCategoryTypeIdentifierNightSweats", CharonHKMeasured_HKCategoryTypeIdentifierNightSweats},
+    {@"HKCategoryTypeIdentifierPelvicPain", CharonHKMeasured_HKCategoryTypeIdentifierPelvicPain},
+    {@"HKCategoryTypeIdentifierPersistentIntermenstrualBleeding", CharonHKMeasured_HKCategoryTypeIdentifierPersistentIntermenstrualBleeding},
+    {@"HKCategoryTypeIdentifierPregnancy", CharonHKMeasured_HKCategoryTypeIdentifierPregnancy},
+    {@"HKCategoryTypeIdentifierPregnancyTestResult", CharonHKMeasured_HKCategoryTypeIdentifierPregnancyTestResult},
+    {@"HKCategoryTypeIdentifierProgesteroneTestResult", CharonHKMeasured_HKCategoryTypeIdentifierProgesteroneTestResult},
+    {@"HKCategoryTypeIdentifierProlongedMenstrualPeriods", CharonHKMeasured_HKCategoryTypeIdentifierProlongedMenstrualPeriods},
+    {@"HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat", CharonHKMeasured_HKCategoryTypeIdentifierRapidPoundingOrFlutteringHeartbeat},
+    {@"HKCategoryTypeIdentifierRunnyNose", CharonHKMeasured_HKCategoryTypeIdentifierRunnyNose},
+    {@"HKCategoryTypeIdentifierShortnessOfBreath", CharonHKMeasured_HKCategoryTypeIdentifierShortnessOfBreath},
+    {@"HKCategoryTypeIdentifierSinusCongestion", CharonHKMeasured_HKCategoryTypeIdentifierSinusCongestion},
+    {@"HKCategoryTypeIdentifierSkippedHeartbeat", CharonHKMeasured_HKCategoryTypeIdentifierSkippedHeartbeat},
+    {@"HKCategoryTypeIdentifierSleepChanges", CharonHKMeasured_HKCategoryTypeIdentifierSleepChanges},
+    {@"HKCategoryTypeIdentifierSoreThroat", CharonHKMeasured_HKCategoryTypeIdentifierSoreThroat},
+    {@"HKCategoryTypeIdentifierToothbrushingEvent", CharonHKMeasured_HKCategoryTypeIdentifierToothbrushingEvent},
+    {@"HKCategoryTypeIdentifierVaginalDryness", CharonHKMeasured_HKCategoryTypeIdentifierVaginalDryness},
+    {@"HKCategoryTypeIdentifierVomiting", CharonHKMeasured_HKCategoryTypeIdentifierVomiting},
+    {@"HKCategoryTypeIdentifierWheezing", CharonHKMeasured_HKCategoryTypeIdentifierWheezing},
+    {@"HKCharacteristicTypeIdentifierActivityMoveMode", CharonHKMeasured_HKCharacteristicTypeIdentifierActivityMoveMode},
+    {@"HKClinicalTypeIdentifierCoverageRecord", CharonHKMeasured_HKClinicalTypeIdentifierCoverageRecord},
+    {@"HKDataTypeIdentifierHeartbeatSeries", CharonHKMeasured_HKDataTypeIdentifierHeartbeatSeries},
+    {@"HKFHIRReleaseDSTU2", CharonHKMeasured_HKFHIRReleaseDSTU2},
+    {@"HKFHIRReleaseR4", CharonHKMeasured_HKFHIRReleaseR4},
+    {@"HKFHIRReleaseUnknown", CharonHKMeasured_HKFHIRReleaseUnknown},
+    {@"HKFHIRResourceTypeCoverage", CharonHKMeasured_HKFHIRResourceTypeCoverage},
+    {@"HKFHIRResourceTypeMedicationRequest", CharonHKMeasured_HKFHIRResourceTypeMedicationRequest},
+    {@"HKMedicationDoseEventTypeIdentifierMedicationDoseEvent", CharonHKMeasured_HKMedicationDoseEventTypeIdentifierMedicationDoseEvent},
+    {@"HKMetadataKeyAlgorithmVersion", CharonHKMeasured_HKMetadataKeyAlgorithmVersion},
+    {@"HKMetadataKeyAppleDeviceCalibrated", CharonHKMeasured_HKMetadataKeyAppleDeviceCalibrated},
+    {@"HKMetadataKeyAppleECGAlgorithmVersion", CharonHKMeasured_HKMetadataKeyAppleECGAlgorithmVersion},
+    {@"HKMetadataKeyAudioExposureDuration", CharonHKMeasured_HKMetadataKeyAudioExposureDuration},
+    {@"HKMetadataKeyAudioExposureLevel", CharonHKMeasured_HKMetadataKeyAudioExposureLevel},
+    {@"HKMetadataKeyAverageMETs", CharonHKMeasured_HKMetadataKeyAverageMETs},
+    {@"HKMetadataKeyBarometricPressure", CharonHKMeasured_HKMetadataKeyBarometricPressure},
+    {@"HKMetadataKeyDateOfEarliestDataUsedForEstimate", CharonHKMeasured_HKMetadataKeyDateOfEarliestDataUsedForEstimate},
+    {@"HKMetadataKeyDevicePlacementSide", CharonHKMeasured_HKMetadataKeyDevicePlacementSide},
+    {@"HKMetadataKeyGlassesPrescriptionDescription", CharonHKMeasured_HKMetadataKeyGlassesPrescriptionDescription},
+    {@"HKMetadataKeyHeartRateEventThreshold", CharonHKMeasured_HKMetadataKeyHeartRateEventThreshold},
+    {@"HKMetadataKeyHeartRateRecoveryActivityDuration", CharonHKMeasured_HKMetadataKeyHeartRateRecoveryActivityDuration},
+    {@"HKMetadataKeyHeartRateRecoveryActivityType", CharonHKMeasured_HKMetadataKeyHeartRateRecoveryActivityType},
+    {@"HKMetadataKeyHeartRateRecoveryMaxObservedRecoveryHeartRate", CharonHKMeasured_HKMetadataKeyHeartRateRecoveryMaxObservedRecoveryHeartRate},
+    {@"HKMetadataKeyHeartRateRecoveryTestType", CharonHKMeasured_HKMetadataKeyHeartRateRecoveryTestType},
+    {@"HKMetadataKeyLowCardioFitnessEventThreshold", CharonHKMeasured_HKMetadataKeyLowCardioFitnessEventThreshold},
+    {@"HKMetadataKeyQuantityClampedToLowerBound", CharonHKMeasured_HKMetadataKeyQuantityClampedToLowerBound},
+    {@"HKMetadataKeyQuantityClampedToUpperBound", CharonHKMeasured_HKMetadataKeyQuantityClampedToUpperBound},
+    {@"HKMetadataKeySWOLFScore", CharonHKMeasured_HKMetadataKeySWOLFScore},
+    {@"HKMetadataKeySessionEstimate", CharonHKMeasured_HKMetadataKeySessionEstimate},
+    {@"HKMetadataKeyUserMotionContext", CharonHKMeasured_HKMetadataKeyUserMotionContext},
+    {@"HKMetadataKeyVO2MaxValue", CharonHKMeasured_HKMetadataKeyVO2MaxValue},
+    {@"HKPredicateKeyPathAverage", CharonHKMeasured_HKPredicateKeyPathAverage},
+    {@"HKPredicateKeyPathAverageHeartRate", CharonHKMeasured_HKPredicateKeyPathAverageHeartRate},
+    {@"HKPredicateKeyPathCount", CharonHKMeasured_HKPredicateKeyPathCount},
+    {@"HKPredicateKeyPathECGClassification", CharonHKMeasured_HKPredicateKeyPathECGClassification},
+    {@"HKPredicateKeyPathECGSymptomsStatus", CharonHKMeasured_HKPredicateKeyPathECGSymptomsStatus},
+    {@"HKPredicateKeyPathMax", CharonHKMeasured_HKPredicateKeyPathMax},
+    {@"HKPredicateKeyPathMin", CharonHKMeasured_HKPredicateKeyPathMin},
+    {@"HKPredicateKeyPathMostRecent", CharonHKMeasured_HKPredicateKeyPathMostRecent},
+    {@"HKPredicateKeyPathMostRecentDuration", CharonHKMeasured_HKPredicateKeyPathMostRecentDuration},
+    {@"HKPredicateKeyPathMostRecentEndDate", CharonHKMeasured_HKPredicateKeyPathMostRecentEndDate},
+    {@"HKPredicateKeyPathMostRecentStartDate", CharonHKMeasured_HKPredicateKeyPathMostRecentStartDate},
+    {@"HKPredicateKeyPathStatus", CharonHKMeasured_HKPredicateKeyPathStatus},
+    {@"HKPredicateKeyPathWorkoutActivity", CharonHKMeasured_HKPredicateKeyPathWorkoutActivity},
+    {@"HKPredicateKeyPathWorkoutActivityAverageQuantity", CharonHKMeasured_HKPredicateKeyPathWorkoutActivityAverageQuantity},
+    {@"HKPredicateKeyPathWorkoutActivityDuration", CharonHKMeasured_HKPredicateKeyPathWorkoutActivityDuration},
+    {@"HKPredicateKeyPathWorkoutActivityEndDate", CharonHKMeasured_HKPredicateKeyPathWorkoutActivityEndDate},
+    {@"HKPredicateKeyPathWorkoutActivityMaximumQuantity", CharonHKMeasured_HKPredicateKeyPathWorkoutActivityMaximumQuantity},
+    {@"HKPredicateKeyPathWorkoutActivityMinimumQuantity", CharonHKMeasured_HKPredicateKeyPathWorkoutActivityMinimumQuantity},
+    {@"HKPredicateKeyPathWorkoutActivityStartDate", CharonHKMeasured_HKPredicateKeyPathWorkoutActivityStartDate},
+    {@"HKPredicateKeyPathWorkoutActivitySumQuantity", CharonHKMeasured_HKPredicateKeyPathWorkoutActivitySumQuantity},
+    {@"HKPredicateKeyPathWorkoutActivityType", CharonHKMeasured_HKPredicateKeyPathWorkoutActivityType},
+    {@"HKPredicateKeyPathWorkoutAverageQuantity", CharonHKMeasured_HKPredicateKeyPathWorkoutAverageQuantity},
+    {@"HKPredicateKeyPathWorkoutMaximumQuantity", CharonHKMeasured_HKPredicateKeyPathWorkoutMaximumQuantity},
+    {@"HKPredicateKeyPathWorkoutMinimumQuantity", CharonHKMeasured_HKPredicateKeyPathWorkoutMinimumQuantity},
+    {@"HKPredicateKeyPathWorkoutSumQuantity", CharonHKMeasured_HKPredicateKeyPathWorkoutSumQuantity},
+    {@"HKQuantityTypeIdentifierAppleMoveTime", CharonHKMeasured_HKQuantityTypeIdentifierAppleMoveTime},
+    {@"HKQuantityTypeIdentifierAppleSleepingWristTemperature", CharonHKMeasured_HKQuantityTypeIdentifierAppleSleepingWristTemperature},
+    {@"HKQuantityTypeIdentifierAppleStandTime", CharonHKMeasured_HKQuantityTypeIdentifierAppleStandTime},
+    {@"HKQuantityTypeIdentifierAppleWalkingSteadiness", CharonHKMeasured_HKQuantityTypeIdentifierAppleWalkingSteadiness},
+    {@"HKQuantityTypeIdentifierAtrialFibrillationBurden", CharonHKMeasured_HKQuantityTypeIdentifierAtrialFibrillationBurden},
+    {@"HKQuantityTypeIdentifierEnvironmentalAudioExposure", CharonHKMeasured_HKQuantityTypeIdentifierEnvironmentalAudioExposure},
+    {@"HKQuantityTypeIdentifierEnvironmentalSoundReduction", CharonHKMeasured_HKQuantityTypeIdentifierEnvironmentalSoundReduction},
+    {@"HKQuantityTypeIdentifierHeadphoneAudioExposure", CharonHKMeasured_HKQuantityTypeIdentifierHeadphoneAudioExposure},
+    {@"HKQuantityTypeIdentifierHeartRateRecoveryOneMinute", CharonHKMeasured_HKQuantityTypeIdentifierHeartRateRecoveryOneMinute},
+    {@"HKQuantityTypeIdentifierNumberOfAlcoholicBeverages", CharonHKMeasured_HKQuantityTypeIdentifierNumberOfAlcoholicBeverages},
+    {@"HKQuantityTypeIdentifierRunningGroundContactTime", CharonHKMeasured_HKQuantityTypeIdentifierRunningGroundContactTime},
+    {@"HKQuantityTypeIdentifierRunningPower", CharonHKMeasured_HKQuantityTypeIdentifierRunningPower},
+    {@"HKQuantityTypeIdentifierRunningSpeed", CharonHKMeasured_HKQuantityTypeIdentifierRunningSpeed},
+    {@"HKQuantityTypeIdentifierRunningStrideLength", CharonHKMeasured_HKQuantityTypeIdentifierRunningStrideLength},
+    {@"HKQuantityTypeIdentifierRunningVerticalOscillation", CharonHKMeasured_HKQuantityTypeIdentifierRunningVerticalOscillation},
+    {@"HKQuantityTypeIdentifierSixMinuteWalkTestDistance", CharonHKMeasured_HKQuantityTypeIdentifierSixMinuteWalkTestDistance},
+    {@"HKQuantityTypeIdentifierStairAscentSpeed", CharonHKMeasured_HKQuantityTypeIdentifierStairAscentSpeed},
+    {@"HKQuantityTypeIdentifierStairDescentSpeed", CharonHKMeasured_HKQuantityTypeIdentifierStairDescentSpeed},
+    {@"HKQuantityTypeIdentifierUnderwaterDepth", CharonHKMeasured_HKQuantityTypeIdentifierUnderwaterDepth},
+    {@"HKQuantityTypeIdentifierWalkingAsymmetryPercentage", CharonHKMeasured_HKQuantityTypeIdentifierWalkingAsymmetryPercentage},
+    {@"HKQuantityTypeIdentifierWalkingDoubleSupportPercentage", CharonHKMeasured_HKQuantityTypeIdentifierWalkingDoubleSupportPercentage},
+    {@"HKQuantityTypeIdentifierWalkingSpeed", CharonHKMeasured_HKQuantityTypeIdentifierWalkingSpeed},
+    {@"HKQuantityTypeIdentifierWalkingStepLength", CharonHKMeasured_HKQuantityTypeIdentifierWalkingStepLength},
+    {@"HKQuantityTypeIdentifierWaterTemperature", CharonHKMeasured_HKQuantityTypeIdentifierWaterTemperature},
+    {@"HKVerifiableClinicalRecordCredentialTypeCOVID19", CharonHKMeasured_HKVerifiableClinicalRecordCredentialTypeCOVID19},
+    {@"HKVerifiableClinicalRecordCredentialTypeImmunization", CharonHKMeasured_HKVerifiableClinicalRecordCredentialTypeImmunization},
+    {@"HKVerifiableClinicalRecordCredentialTypeLaboratory", CharonHKMeasured_HKVerifiableClinicalRecordCredentialTypeLaboratory},
+    {@"HKVerifiableClinicalRecordCredentialTypeRecovery", CharonHKMeasured_HKVerifiableClinicalRecordCredentialTypeRecovery},
+    {@"HKVerifiableClinicalRecordSourceTypeEUDigitalCOVIDCertificate", CharonHKMeasured_HKVerifiableClinicalRecordSourceTypeEUDigitalCOVIDCertificate},
+    {@"HKVerifiableClinicalRecordSourceTypeSMARTHealthCard", CharonHKMeasured_HKVerifiableClinicalRecordSourceTypeSMARTHealthCard},
+    {@"HKVisionPrescriptionTypeIdentifier", CharonHKMeasured_HKVisionPrescriptionTypeIdentifier},
+    {@"HKCategoryTypeIdentifierBleedingAfterPregnancy", CharonHKMeasured_HKCategoryTypeIdentifierBleedingAfterPregnancy},
+    {@"HKCategoryTypeIdentifierBleedingDuringPregnancy", CharonHKMeasured_HKCategoryTypeIdentifierBleedingDuringPregnancy},
+    {@"HKCategoryTypeIdentifierSleepApneaEvent", CharonHKMeasured_HKCategoryTypeIdentifierSleepApneaEvent},
+    {@"HKClinicalTypeIdentifierClinicalNoteRecord", CharonHKMeasured_HKClinicalTypeIdentifierClinicalNoteRecord},
+    {@"HKDataTypeIdentifierStateOfMind", CharonHKMeasured_HKDataTypeIdentifierStateOfMind},
+    {@"HKFHIRResourceTypeDiagnosticReport", CharonHKMeasured_HKFHIRResourceTypeDiagnosticReport},
+    {@"HKFHIRResourceTypeDocumentReference", CharonHKMeasured_HKFHIRResourceTypeDocumentReference},
+    {@"HKMetadataKeyActivityType", CharonHKMeasured_HKMetadataKeyActivityType},
+    {@"HKMetadataKeyAppleFitnessPlusSession", CharonHKMeasured_HKMetadataKeyAppleFitnessPlusSession},
+    {@"HKMetadataKeyCyclingFunctionalThresholdPowerTestType", CharonHKMeasured_HKMetadataKeyCyclingFunctionalThresholdPowerTestType},
+    {@"HKMetadataKeyHeadphoneGain", CharonHKMeasured_HKMetadataKeyHeadphoneGain},
+    {@"HKMetadataKeyMaximumLightIntensity", CharonHKMeasured_HKMetadataKeyMaximumLightIntensity},
+    {@"HKMetadataKeyPhysicalEffortEstimationType", CharonHKMeasured_HKMetadataKeyPhysicalEffortEstimationType},
+    {@"HKMetadataKeyWaterSalinity", CharonHKMeasured_HKMetadataKeyWaterSalinity},
+    {@"HKPredicateKeyPathWorkoutEffortRelationship", CharonHKMeasured_HKPredicateKeyPathWorkoutEffortRelationship},
+    {@"HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances", CharonHKMeasured_HKQuantityTypeIdentifierAppleSleepingBreathingDisturbances},
+    {@"HKQuantityTypeIdentifierCrossCountrySkiingSpeed", CharonHKMeasured_HKQuantityTypeIdentifierCrossCountrySkiingSpeed},
+    {@"HKQuantityTypeIdentifierCyclingCadence", CharonHKMeasured_HKQuantityTypeIdentifierCyclingCadence},
+    {@"HKQuantityTypeIdentifierCyclingFunctionalThresholdPower", CharonHKMeasured_HKQuantityTypeIdentifierCyclingFunctionalThresholdPower},
+    {@"HKQuantityTypeIdentifierCyclingPower", CharonHKMeasured_HKQuantityTypeIdentifierCyclingPower},
+    {@"HKQuantityTypeIdentifierCyclingSpeed", CharonHKMeasured_HKQuantityTypeIdentifierCyclingSpeed},
+    {@"HKQuantityTypeIdentifierDistanceCrossCountrySkiing", CharonHKMeasured_HKQuantityTypeIdentifierDistanceCrossCountrySkiing},
+    {@"HKQuantityTypeIdentifierDistancePaddleSports", CharonHKMeasured_HKQuantityTypeIdentifierDistancePaddleSports},
+    {@"HKQuantityTypeIdentifierDistanceRowing", CharonHKMeasured_HKQuantityTypeIdentifierDistanceRowing},
+    {@"HKQuantityTypeIdentifierDistanceSkatingSports", CharonHKMeasured_HKQuantityTypeIdentifierDistanceSkatingSports},
+    {@"HKQuantityTypeIdentifierEstimatedWorkoutEffortScore", CharonHKMeasured_HKQuantityTypeIdentifierEstimatedWorkoutEffortScore},
+    {@"HKQuantityTypeIdentifierPaddleSportsSpeed", CharonHKMeasured_HKQuantityTypeIdentifierPaddleSportsSpeed},
+    {@"HKQuantityTypeIdentifierPhysicalEffort", CharonHKMeasured_HKQuantityTypeIdentifierPhysicalEffort},
+    {@"HKQuantityTypeIdentifierRowingSpeed", CharonHKMeasured_HKQuantityTypeIdentifierRowingSpeed},
+    {@"HKQuantityTypeIdentifierTimeInDaylight", CharonHKMeasured_HKQuantityTypeIdentifierTimeInDaylight},
+    {@"HKQuantityTypeIdentifierWorkoutEffortScore", CharonHKMeasured_HKQuantityTypeIdentifierWorkoutEffortScore},
+    {@"HKScoredAssessmentTypeIdentifierGAD7", CharonHKMeasured_HKScoredAssessmentTypeIdentifierGAD7},
+    {@"HKScoredAssessmentTypeIdentifierPHQ9", CharonHKMeasured_HKScoredAssessmentTypeIdentifierPHQ9},
+    {@"HKMetadataKeyAppleFitnessPlusCatalogIdentifier", CharonHKMeasured_HKMetadataKeyAppleFitnessPlusCatalogIdentifier},
+    {@"HKDataTypeIdentifierUserAnnotatedMedicationConcept", CharonHKMeasured_HKDataTypeIdentifierUserAnnotatedMedicationConcept},
+    {@"HKHealthConceptDomainMedication", CharonHKMeasured_HKHealthConceptDomainMedication},
+    {@"HKPredicateKeyPathLogOrigin", CharonHKMeasured_HKPredicateKeyPathLogOrigin},
+    {@"HKPredicateKeyPathMedicationConceptIdentifier", CharonHKMeasured_HKPredicateKeyPathMedicationConceptIdentifier},
+    {@"HKPredicateKeyPathScheduledDate", CharonHKMeasured_HKPredicateKeyPathScheduledDate},
+    {@"HKUserAnnotatedMedicationPredicateKeyPathHasSchedule", CharonHKMeasured_HKUserAnnotatedMedicationPredicateKeyPathHasSchedule},
+    {@"HKUserAnnotatedMedicationPredicateKeyPathIsArchived", CharonHKMeasured_HKUserAnnotatedMedicationPredicateKeyPathIsArchived},
+    {@"HKCategoryTypeIdentifierHypertensionEvent", CharonHKMeasured_HKCategoryTypeIdentifierHypertensionEvent},
+    };
+    size_t missing = 0;
+    for (size_t index = 0; index < sizeof(rows) / sizeof(rows[0]); index++) {
+        void *host = dlsym(RTLD_DEFAULT, rows[index].name.UTF8String);
+        if (host == NULL) {
+            missing++;
+            printf("MISSING  %s  the host's HealthKit does not export it\n", rows[index].name.UTF8String);
+            continue;
+        }
+        // dlsym answers the ADDRESS OF THE VARIABLE, and the variable holds a pointer to the string, so
+        // the string is what that pointer holds - one dereference, the same one tools/corpus/host-probe.c's
+        // value_of() makes. Reading the variable's own bytes as an object is a bus error, not a difference.
+        NSString *theirs = (__bridge NSString *)(*(void **)host);
+        CharonHKCompare(rows[index].name, rows[index].port, theirs);
+    }
+    if (missing > 0)
+        printf("missing on the host: %lu of %lu\n", (unsigned long)missing,
+               (unsigned long)(sizeof(rows) / sizeof(rows[0])));
+}
+
 // ---------------------------------------------------------------------- constants of 12.0
 
 // Every constant the 12.0 object exports, the port's against the host's, by the name both know it by.
@@ -2178,6 +2613,7 @@ int main(void)
     CharonHKDefaultResolver();
     CharonHKInstallClassResolver();
     CharonHKConstants12();
+    CharonHKMeasuredConstants();
     CharonHKUnitCases();
     CharonHKPrefixedFactories();
     CharonHKUnitArithmetic();
