@@ -12,7 +12,15 @@ harness=${HARNESS:-$here/../../device}
 build=${BUILD:-$(mktemp -d)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
-flags="-fobjc-arc -fvisibility=hidden -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-incomplete-implementation -Wno-objc-property-implementation -Wno-nullability-completeness"
+# CHARON_HOST_BUILD: this is a host differential - the port's classes are renamed into names of their
+# own and the system's Foundation is in the same process, so there is no release class for a
+# charon_alias.h proxy to stand in for, nothing for the library's loader to re-parent and no name to
+# export. The header's own comment gives the two measurements: the macOS linker refuses the metaclass
+# alias ("ld: null objc class data for '_OBJC_METACLASS_$_Charon<Name>'", from the smallest file that
+# carries nothing but CHARON_ALIAS), and a name built by ## cannot be renamed the way the line below
+# renames classes. What the alias is FOR is a device band; here the class of the release's name is the
+# class, and the seven members below are measured on it.
+flags="-fobjc-arc -fvisibility=hidden -DCHARON_HOST_BUILD -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-incomplete-implementation -Wno-objc-property-implementation -Wno-nullability-completeness"
 files="NSURLSessionStreamTask9.m NSURLSession+StreamTask9.m CharonStreamTaskState.m NSURLSessionTaskMetrics.m NSURLSessionTaskTransactionMetrics+Counts13.m"
 mkdir -p "$build/plain" "$build/ported"
 . "$here/../uikit2/renames.sh"

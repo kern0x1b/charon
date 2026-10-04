@@ -99,8 +99,6 @@ struct charon_alias {
         CHARON_ALIAS_SELF(Name), #Name};
 #endif
 
-#define CHARON_ALIAS_ANSWER(Name, own, released) \
-    ((__bridge const void *)self == CHARON_ALIAS_SELF(Name) && CHARON_ALIAS_RELEASE(Name) ? (released) : (own))
 
 // What a class answers about a member, walking its own chain: the question is about the class,
 // and [super ...] answers it about the class above it, which is not the class asked about.
