@@ -16,6 +16,10 @@ function failures(opt)
     local function lifted(header)
         os.tryrm(root)
         local sdk = path.join(root, "sdk")
+        -- Foundation's umbrella, which the umbrella lift() generates imports first, and where this fixture's NSObject is
+        -- declared: one translation unit cannot declare a protocol twice, so the Fix.h below reaches it there
+        io.writefile(path.join(sdk, "System", "Library", "Frameworks", "Foundation.framework", "Headers", "Foundation.h"),
+                     "@protocol NSObject @end\n@protocol NSCopying @end\n__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\n")
         io.writefile(path.join(sdk, "System", "Library", "Frameworks", "Fix.framework", "Headers", "Fix.h"), header)
         io.writefile(path.join(root, "registry", "Fix.json"), '[{"api": "-[FixView traitDidChange:]", "kind": "method", "introduced": "8.0", "minimum": "6.0", "status": "implemented"}]')
         local result, failure
@@ -29,7 +33,7 @@ function failures(opt)
     end
     -- what the lift writes for a lowered release is the SDK's own macro; the fixture SDK spells it the way os/availability.h does in effect
     local prelude = "#define ios(version) ios, introduced=version\n#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n" ..
-                    "@protocol NSObject @end\n@protocol NSCopying @end\n__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\n" ..
+                    "#import <Foundation/Foundation.h>\n" ..
                     "@protocol FixEnv\n- (void)traitDidChange:(id)previous __attribute__((availability(ios,introduced=8.0)));\n@end\n"
 
     -- the member goes into the @interface, before its @end, and no category is made for it
