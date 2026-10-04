@@ -394,6 +394,53 @@ def _selector_present(entry, selector):
     return selector in entry["instance"] or selector in entry["class"]
 
 
+def _ancestors(owner, built_classes, release_classes):
+    """The chain above `owner`, one measured ancestor at a time, and where the walk stopped.
+
+    Returns `(chain, stopped)`. `chain` holds `(name, entry, is_built)` for every ancestor above
+    `owner` the two inventories carry, nearest first; `stopped` is the recorded superclass the walk
+    could not measure -- a name in neither the built libraries nor the 6.1.3 cache -- or "" when the
+    walk reached a root or answered the row.
+
+    A member is answered from up the chain only where the ancestor that answers it is measured at the
+    release the row is measured for, and each element says which inventory that is: `is_built` names
+    the built image (the port's own libraries, loaded beside the device's frameworks) and the release
+    cache names the release. That is the whole of the rule -- the port's classes are linked beside the
+    device's, so a port class whose declared superclass is a release class inherits what the release
+    declares, and a release class inherits up the release's own chain -- and it is why an ancestor in
+    neither inventory stops the walk instead of being assumed to answer nothing.
+
+    The owner itself is not in `chain`: the caller has already looked in its own selector sets. The
+    walk follows the `superclass` edge `load_built_inventories` records per class, and `seen` is what
+    makes it terminate on a chain that loops back on itself, which no measured inventory has and which
+    is not this reader's to assume away.
+
+    class-scoped-rows.py walks a chain as well, for its own question: one release at a time, out of
+    its own inventory line format, with no built/release split to name. This one is asked which of two
+    inventories proves the row, so it carries both.
+    """
+    chain, seen, current = [], {owner}, owner
+    while True:
+        entry = built_classes.get(current)
+        if entry is None:
+            entry = release_classes.get(current)
+        if entry is None:
+            return chain, current
+        superclass = entry["superclass"]
+        if not superclass or superclass in seen:
+            return chain, ""
+        seen.add(superclass)
+        found = built_classes.get(superclass)
+        if found is not None:
+            chain.append((superclass, found, True))
+        else:
+            found = release_classes.get(superclass)
+            if found is None:
+                return chain, superclass
+            chain.append((superclass, found, False))
+        current = superclass
+
+
 def classify_method(api, built_classes, release_classes, built_protocols=None, release_protocols=None,
                     decided=None):
     """A method row's owner is named without saying whether it is a class or a protocol, and the
@@ -410,7 +457,16 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
     has decided, and this never applies to one of them -- `+[VNFaceLandmarkRegion new]` is answered
     by NSObject's `+new` only to call the class's own NS_UNAVAILABLE `-init`, which is a measurement
     somebody took, and an inference from the release's metadata does not overrule it. Protocols are
-    not reached this way: a protocol has no metaclass chain to inherit from."""
+    not reached this way: a protocol has no metaclass chain to inherit from.
+
+    A member a superclass implements is answered from up the chain, which no own table can see: the ten
+    UIKeyCommand rows are the measurement. The built 6.1.3 image holds `UIKeyCommand` with superclass
+    `UICommand`, and `UICommand` declares `-action`, `-title` and
+    `+commandWithTitle:image:action:propertyList:` while `UIKeyCommand` declares none of them, so all
+    ten read "selector X is not" for members the port carries. The walk is LAST -- after the owner's own
+    sets, the protocols and `+new` -- so nothing that reads implemented today can read anything else:
+    only a row that read missing moves, and only to implemented. `+new` stays ahead of it for its own
+    reason, the guard for a row a registry has decided, which the chain would answer around."""
     m = METHOD_RE.match(api)
     if not m:
         return "undecided", "method api does not parse as +/-[Class sel]: %r" % api
@@ -437,10 +493,22 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
         return "implemented", ("+new is NSObject's and every class inherits it: the 6.1.3 cache's "
                                "own NSObject declares it and 2 of its 11378 classes declare one of "
                                "their own")
+    stopped = ""
+    if built or released:
+        # `built or released` keeps a protocol owner out: a protocol has no superclass to walk, and
+        # the reason below already says the owner is a protocol and not a class.
+        chain, stopped = _ancestors(owner, built_classes, release_classes)
+        for name, entry, is_built in chain:
+            if _selector_present(entry, key):
+                why = built_why(entry, key) if is_built else "release-native: 6.1.3 dyld cache"
+                return "implemented", "%s (inherited from %s)" % (why, name)
     if not built and not released and not (built_protocols or {}).get(owner) \
             and not (release_protocols or {}).get(owner):
         return "missing", "owner %s is neither a class nor a protocol in the built libraries or the 6.1.3 cache" % owner
-    return "missing", "%s is there, selector %s is not" % (owner, selector)
+    return "missing", "%s is there, selector %s is not%s" % (
+        owner, selector,
+        "" if not stopped else ", and the superclass %s above it is in neither the built libraries "
+                               "nor the 6.1.3 cache" % stopped)
 
 
 def classify_property(api, built_classes, release_classes, built_protocols=None,
@@ -456,38 +524,63 @@ def classify_property(api, built_classes, release_classes, built_protocols=None,
     name: `AVAudioSessionCapability.supported` is read through `-isSupported`, and a selector derived
     from the name alone asks for `-supported`, which no release declares. They arrive as clang prints
     them (`isSupported`, `setSupported:`) and are turned into selectors here, the same leading dash
-    the inventories carry. Where the header declared nothing the accessor is derived as it was before."""
+    the inventories carry. Where the header declared nothing the accessor is derived as it was before.
+
+    The chain is walked last, for the same reason and with the same rule as classify_method: the eight
+    UIKeyCommand properties the built image answers from `UICommand` are the measurement, and the two
+    accessors are looked for in every measured ancestor's own sets, the class set included."""
     m = PROPERTY_RE.match(api)
     if not m:
         return "undecided", "property api does not parse as Class.prop: %r" % api
     owner, prop = m.groups()
     getter = "-" + getter if getter else "-" + prop
     setter = "-" + setter if setter else "-set" + prop[0].upper() + prop[1:] + ":"
+
+    def carried_by(entry):
+        """The accessor `entry` holds, or None.
+
+        The instance set, or the class set: a `@property (class, readonly)` is read through a class
+        method, so its getter is a class selector and never an instance one -- NSUnitLength has 23
+        class selectors and no instance selector at all, and every one of its properties read missing
+        while the built library carries it."""
+        return next((sel for sel in (getter, setter)
+                     if sel in entry["instance"] or sel in entry["class"]), None)
+
     for classes, why in ((built_classes, None), (release_classes, "release-native: 6.1.3 dyld cache")):
         entry = classes.get(owner)
         if not entry:
             continue
-        # In the instance set, or in the class set: a `@property (class, readonly)` is read through
-        # a class method, so its getter is a class selector and never an instance one -- NSUnitLength
-        # has 23 class selectors and no instance selector at all, and every one of its properties was
-        # read missing while the built library carries it.
-        if any(sel in entry["instance"] or sel in entry["class"] for sel in (getter, setter)):
-            carried = next(sel for sel in (getter, setter)
-                           if sel in entry["instance"] or sel in entry["class"])
+        carried = carried_by(entry)
+        if carried:
             return "implemented", (why or built_why(entry, carried)) + (
                 " (a class property: read through %s)" % getter
                 if getter in entry["class"] and getter not in entry["instance"] else "")
     for protocols, why in ((built_protocols or {}, "built: "), (release_protocols or {},
                                                               "release-native: 6.1.3 dyld cache")):
         entry = protocols.get(owner)
-        if entry and any(sel in entry["instance"] or sel in entry["class"] for sel in (getter, setter)):
+        if entry and carried_by(entry):
             label = why + (entry.get("library", "") if why == "built: " else "")
             return "implemented", label + " (the protocol %s declares it)" % owner
+    stopped = ""
+    if owner in built_classes or owner in release_classes:
+        # A protocol owner is not in either, so it never reaches the walk: a protocol has no
+        # superclass, and the reason below already says the owner is neither.
+        chain, stopped = _ancestors(owner, built_classes, release_classes)
+        for name, entry, is_built in chain:
+            carried = carried_by(entry)
+            if carried:
+                why = built_why(entry, carried) if is_built else "release-native: 6.1.3 dyld cache"
+                return "implemented", "%s (inherited from %s)%s" % (
+                    why, name,
+                    " (a class property: read through %s)" % getter
+                    if getter in entry["class"] and getter not in entry["instance"] else "")
     if owner not in built_classes and owner not in release_classes \
             and not (built_protocols or {}).get(owner) and not (release_protocols or {}).get(owner):
         return "missing", "owner class %s not in the built libraries or the 6.1.3 cache" % owner
-    return "missing", "%s is there, neither %s nor %s is an instance or a class selector" % (
-        owner, getter, setter)
+    return "missing", "%s is there, neither %s nor %s is an instance or a class selector%s" % (
+        owner, getter, setter,
+        "" if not stopped else ", and the superclass %s above it is in neither the built libraries "
+                               "nor the 6.1.3 cache" % stopped)
 
 
 def classify_symbol(api, built_exports, release_exports):
