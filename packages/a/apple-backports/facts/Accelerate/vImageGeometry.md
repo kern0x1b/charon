@@ -2135,3 +2135,159 @@ release's conversion FLOORS, and the port must floor too.
 * **It does NOT close the family.** The engine, the 36 rows, the band files and the registry are untouched by
   this section: the change to `CharonResampling.h` and `CharonShear.h` that this reading implies is the next
   unit of work, and it is measured against the guest rather than here.
+
+## The two open terms closed: `Y` is `numTaps`, and the Q32 conversion TRUNCATES (2026-10-04, v-tail-a17)
+
+**The section above leaves two terms unresolved and both are now read out of the release's own instructions.
+The second one REFUTES the reading above: the release does not floor, it truncates toward zero.**
+
+### 1. The horizontal's `-0.5*Y` is `-0.5*numTaps`, and the register that holds it is `s2`
+
+`0x3040f37a` is `vcvt.f64.s32 d16, s2` (encoding `[0xf8,0xee,0xc1,0x0b]`; the same encoding with `0xc0` instead
+of `0xc1` is `vcvt.f64.s32 d16, s0`, which is what the vertical worker spells at `0x30413da8`, so the source
+register is read off the bytes and not off the mnemonic). **`s2` is written 22 instructions earlier, by a
+register-pair move that prints as a `d` register and not as an `s` one:**
+
+    0x3040f2c6  ldr.w  r11, [r6, #8]      ; r11 = the filter's numTaps (the armv7 header's byte 8)
+    0x3040f31a  vmov   d1, r11, r11      ; d1 = {s2, s3} = numTaps in BOTH halves
+    0x3040f37a  vcvt.f64.s32 d16, s2     ; d16 = (double) numTaps
+    0x3040f3ba  vmul.f64 d16, d16, d19   ; d19 = 0.5
+    0x3040f3dc  vstr   d16, [sp, #16]
+    0x3040f688  vsub.f64 d16, d16, d17   ; ... minus 0.5 * numTaps
+
+So `Y = numTaps`, the filter's own field, and the horizontal's term is the vertical's term. **The reading above
+was wrong about where the value comes from**: it is not "the high word of the double `vmov d16, r0, r1`
+builds" - `vmov d16, r0, r1` writes `s16`/`s17`, not `s2`, and the only two writes to `s2` in the whole
+7 KB worker are this `vmov d1, r11, r11` and two `vmov.f32 s2, s1` at `0x3040fb9e` and `0x30410bca`, which
+are a different code path and come later. A reader grepping for `s2` in the disassembly finds only the read and
+concludes the register is never set; it is set by the pair move, whose destination is printed as `d1`.
+
+The horizontal's whole per-row start, in the release's order (`0x3040f644`..`0x3040f690`):
+
+    d16 = (double)(destRow + 1 - dest->height) * (|recip| * shearSlope)
+    d16 = d16 - (|recip| * xTranslate)
+    d16 = d16 - 0.5 * numTaps
+    d13 = d16 + 1.0
+
+`|recip|` is `vorr d8, d9, d9` at `0x3040f27e` (a move that clears the sign bit) and `recip > 0` is one of the
+reader's refusals, so `|recip|` and `recip` are the same number on every filter this can be. **`dest->height`
+is the destination's ACROSS extent**, not a source extent: `vImage_Buffer` is
+`{ void *data; vImagePixelCount height; vImagePixelCount width; size_t rowBytes }` (vImage.h:94), the wrapper
+`0x303d2865` hands the worker the caller's own `&dest` unchanged (`mov r1, r11` at `0x303d29c0`, with
+`r11 = r1` the wrapper's second argument), and the worker reads it at `0x3040f65e` (`ldr r4, [r0, #8]`, the
+field the same wrapper uses as the destination's width) and `0x3040f664` (`ldr r0, [r0, #4]`, its height).
+The vertical's `C` is the same layout read the other way round: `dest->height` is the destination's extent
+ALONG a vertical shear.
+
+### 2. The Q32 conversion truncates toward zero, and there is no adjustment on either side of it
+
+**This section takes back the last paragraph of section 4 above** ("the one binary in this reading that decides
+the third sample is whether the Q32 conversion floors or truncates toward zero ... so the release's conversion
+FLOORS, and the port must floor too"). It does not floor, and the sample the paragraph names is one no
+measurement can see; the arithmetic is settled in section 3 below and by the instructions here.
+
+The stub is `0x30436bd8`, and it is followed to its target rather than named:
+
+    0x30436bd8  ldr r12, [pc, #4] ; add r12, pc, r12 ; ldr pc, [r12]   ; a __picsymbolstub4, ARM mode
+    the word at 0x30436be4 is 0x090014c8, so r12 = 0x394380ac, and the word there is 0x39263199
+    0x39263199 is inside /usr/lib/system/libcompiler_rt.dylib's __text (0x39262640 .. 0x3926492b)
+
+and that function's own code is the answer, read from its first instruction (`0x39263199 +0x87` in the
+function-starts table):
+
+    0x39263199  ubfx  r3, r1, #20, #11   ; the biased exponent out of the high word
+    0x3926319c  subw  r2, r3, #1023      ; the unbiased one
+    0x392631a0  cmp   r2, #0
+    0x392631a2  ittt  lt
+    0x392631a4  movlt r0, #0             ; |x| < 1  ->  0
+    0x392631a6  movlt r1, #0
+    0x392631a8  bxlt  lr
+    0x392631ae  asr.w r9, r1, #31        ; the sign
+    0x392631b2  bfi   r1, r12, #20, #12  ; the implicit bit
+    ... the significand is shifted RIGHT into place, and the sign is applied with
+        eor/eor/subs/sbc (0x3926320e..0x3926321a) -- a two's-complement NEGATE, not a decrement
+
+**A right shift of the significand and a conditional negate is `trunc`**: `|x| >= 1` keeps the integer part and
+drops the fraction, and the sign is put back afterwards, which is truncation toward zero. A floor would have
+to add `2^52` to the significand before the shift (the classic soft-float floor) or decrement afterwards, and
+**there is neither**: no `add`/`adds`/`fadd` on the double's bits, and no test-and-subtract on the result.
+The armv7 worker does not adjust either. The value goes in and comes straight out:
+
+    0x30413e2e  vmul.f64 d9, d16, d11     ; the start * 2^32
+    0x30413e32  vcmpe.f64 d9, d10        ; 2^63
+    0x30413e3c  vmovgt.f64 d9, d10      ; saturate from above
+    0x30413e40  vmov r0, r1, d9          ; the double's own bits, the AEABI soft-float interface
+    0x30413e44  blx 0x30436bd8           ; the int64 comes back in r0:r1
+    0x30413e48  vcmpe.f64 d9, d12        ; -2^63
+    0x30413e54  it mi
+    0x30413e56  movmi r0, #0            ; saturate from below
+    0x30413e5a  movmi r1, #2147483648
+    0x30413e62  mov r4, r0              ; and r4 IS the accumulator's low word
+    0x30413e6e  str r1, [sp, #132]       ; and [sp,#132] IS the accumulator's high word
+
+**The 7.0 arm64 worker says the same thing in one instruction of its own**, with no helper and nothing to
+resolve: `fcvtzs x8, d0` at `0x1804a59c0` on the start (`0x1804a59ac` multiplies by `2^32`, read from the
+literal pool at `0x1805a2208`, and the two saturation compares bracket it) and `fcvtzs x11, d5` at
+`0x1804a58f0` on the step. `FCVTZS` is defined by the architecture as rounding toward zero. Its start is the
+same expression in the same terms: `fmul d0, d1, d0` (recip * translate), `fadd d0, d0, d7` (+
+`destExtent * (1 - recip)` from `fsub d16, d6, d1`), `fmul d5, d5, d7` with `fmov d7, #-0.5` (-
+`0.5*numTaps`), `fadd d0, d0, d6` with `d6 = 1.0`, `fmul d0, d0, d2` (* `2^32`), `fcvtzs`, and
+`add x8, x3, x27, asr #32` for the base - the caller's along offset plus the accumulator's integer part, with
+no `K0`, exactly as the section above read on armv7.
+
+### 3. The measurement that appeared to settle the floor cannot, and where it went wrong
+
+The section above reasons that a15's run "answers 63" at `along 2` of a 0.75 vertical, and concludes the
+release floors. **It does not, and the run cannot see the sample the two spellings differ on.** From a15's
+own guest log (`v-tail-a15`'s `tests/backports/device/shearprobe/run/run.log`, the 0.75 vertical, translate 0):
+
+    along 0 boundary 0 fracPhases 32.000000000000227 BLANK release=ambig153(0:-5,0:-4,0:27,1:-5,1:-4,1:27)
+    along 1 ... BLANK ...
+    along 2 ... BLANK ...                    <-- the one sample trunc and floor disagree on
+    along 3 ... BLANK ...
+    along 4 ... AMBIG ...
+    along 6 boundary 0 fracPhases 32.000000000000114 DIFFER release=21:-1 port=32:-1
+    along 8 boundary 0 fracPhases 10.666666666666742 DIFFER release=63:1 port=10:2
+
+**`along 2` is one of the four BLANK samples of that case** - the row is out of the picture there, so no pair
+can be recovered from the release's bytes at all. And the sequence `21, 42, 63` has period three, so it is
+the same whichever sample it starts at: the named samples begin at `along 6`, and by then the two spellings
+have long since agreed. The 19 named pairs of that case are identical under both.
+
+Scored over **every** uniquely named pair in a15's whole run - 70 cases, five scales, both axes, seven
+translates including the off-grid 1/128, 1210 pairs in all - the reading above, with the conversion
+truncating, reproduces the release on **1210 of 1210**; with it flooring, on **1205 of 1210**. **The run
+decides it, against the floor**, on five samples the release names and the floor gets wrong:
+
+    horizontal scale 0.75 translate 1     along 1   release phase 0 base 0    floor says 63, -1
+    horizontal scale 0.75 translate -1    along 2   release phase 0 base 4    floor says 63,  3
+    horizontal scale 0.75 translate 0.5   along 2   release phase 0 base 2    floor says 63,  1
+    horizontal scale 0.75 translate -0.5  along 1   release phase 0 base 2    floor says 63,  1
+    horizontal scale 0.75 translate 1/128 along 2   release phase 42 base 2   floor says 41,  2
+
+The section above used a different sample - the vertical's `along 2`, which is BLANK - and so rested on a
+sample no measurement can see. The five samples where the two spellings differ *in that vertical case* are
+`along 2` (translate 0), `along 1` (translate 1), `along 3` (translate -1), `along 1` (translate -0.5) and
+`along 3` (translate 1/128), and all five are among the 737 blank or ambiguous samples of the run. That is
+why the floor looked settled on the vertical and is refuted on the horizontal: on the vertical the knife edge
+falls where the picture does not reach, and on the horizontal it falls one sample later, where it does.
+
+**So: `A0 = (int64)(start * 2^32)` with C's own truncating cast, which is what the release does. A port that
+floors here is wrong at five of the release's own answers and right at the other 1205.**
+
+### 4. The whole position, as the release computes it
+
+    vertical     A0 = (int64)((1 + recip*t + C*(1 - recip) - 0.5*T) * 2^32)      C = dest->height
+    horizontal   A0 = (int64)((1 + (row + 1 - dest->height)*recip*slope
+                                 - recip*t - 0.5*T) * 2^32)                        per destination row
+    step           S = (int64)(recip * 2^32)
+    first tap        = (A >> 32) + alongOffset
+    centre tap       = first + K0,  K0 = the row's own peak index (taps-2)/2 on every shape measured
+    phase            = ((A & 0xffffffff) >> (32 - exponent)) & (phases - 1)
+    A(along)         = A0 + along*S
+
+with every `(int64)` a C cast, i.e. truncation toward zero. **There is no half pixel anywhere in it**: the
+`1.0` and the `-0.5*numTaps` are what a half pixel does in the port's arrangement, and the `- 0.5` and
+`+ 0.5` the port carries are macOS's. **The engine, the 36 rows, the band files and the registry are still
+untouched by this section**: it is the reading, and the change that follows from it is measured on the guest
+before it lands.
