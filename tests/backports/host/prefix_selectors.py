@@ -57,10 +57,29 @@ def runtime_superclasses():
     return Chain()
 
 
+AVAILABILITY = re.compile(r"^(?:(?:API|NS)_[A-Z_]+|__attribute__)\s*(?:\((?:[^()]|\([^()]*\))*\)\s*)*")
+
+
 def bare(qualified):
     text = qualified.replace("__kindof", "").replace("_Nonnull", "").replace("_Nullable", "").replace("*", "").replace("const", "")
     text = re.sub(r"<.*?>", "", text)
-    return text.strip()
+    text = text.strip()
+    # An availability macro in front of the name. clang writes it into the qualType of a reference to a
+    # class the SDK marks unavailable for the target being built for: `[UIScreen mainScreen]` under Mac
+    # Catalyst reads as `API_UNAVAILABLE UIScreen *`, so this returned "API_UNAVAILABLE UIScreen". Every
+    # name this function returns is looked up in carried, in the superclass chain or among the protocols,
+    # so a name with the macro still on it matches nothing and the send is left exactly as written.
+    # Measured on traits13: `-[UIScreen traitCollection]` was renamed in UIScreen+TraitEnvironment.m, which
+    # defines it, and at none of its uses - so charon_current_base() reached the SYSTEM's UIScreen trait
+    # collection, the port's +traitCollectionWithTraitsFromCollections: was handed a UITraitCollection that
+    # is not a CharonHostUITraitCollection, and it raised where the class rename had moved its own check.
+    # Only a leading run of these is dropped, and the argument list may nest one level, as
+    # API_AVAILABLE(ios(13.0)) does. A qualType whose name is not preceded by one keeps what it always had.
+    while True:
+        stripped = AVAILABILITY.sub("", text, count=1).strip()
+        if stripped == text:
+            return text
+        text = stripped
 
 
 FAMILIES = ("mutableCopy", "copy", "init", "new", "alloc")
