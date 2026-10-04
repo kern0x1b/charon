@@ -329,15 +329,32 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
     for (vImagePixelCount cross = 0; cross < dstCross; cross++) {
         long sourceCross = (long)cross0 + (long)cross;
         // The horizontal's start carries the slope's cross term, so it is formed once per destination row; the
-        // vertical's does not, and its accumulator runs straight through the whole destination, which is why
-        // `position` is declared above the loops and only the horizontal resets it here. The release's own
-        // order is kept term by term: `1 - recip` first, the destination's extent multiplied by it, the
-        // translate's product added, `numTaps * -0.5` added, and `1.0` last. Any other grouping is the same
-        // expression and a different double at an inexact reciprocal, which is a whole phase.
+        // vertical's start carries none, so its accumulator runs straight through the whole destination, which
+        // is why `position` is declared above the loops and only the horizontal resets it here. The terms are
+        // the release's own, in its order - `1 - recip`, times the destination's extent, `+ recip*t`, `+
+        // numTaps * -0.5`, `+ 1.0` - because at an inexact reciprocal any other grouping is the same
+        // expression and a different double, and a different double at the conversion is a whole phase.
         if (horizontal) {
             double perRow = reciprocal * slope;
             double scaled = (double)((long)cross + 1 - (long)dstCross) * perRow;
             scaled = scaled - reciprocal * translate;
+            scaled = scaled + (double)filter->taps * -0.5;
+            position = CharonResampleQ32((scaled + 1.0) * 4294967296.0);
+        } else if (slope != 0.0) {
+            // **The vertical's slope term is NOT THE RELEASE'S, and this is the one term of the mapping that no
+            // measurement of a release covers.** The 6.1.3 vertical worker reads its `shearSlope` at the top
+            // and BRANCHES on it (0x30413d38): at zero it falls into the path this file implements, which has
+            // no cross term at all, and at anything else it jumps to 0x304151e4, which spills its state and
+            // CALLS rather than forming a start. That path is not read here, so the term below is macOS's own,
+            // measured on the host by tests/backports/host/shear, carried across in the only units this
+            // accumulator has: `slope * (cross + 0.5)` destination pixels is `... * reciprocal` source pixels,
+            // which is where the host's own arrangement put it. It is kept rather than dropped because a shear
+            // that ignored its slope would be a silent wrong answer for a parameter the header names; it is
+            // stated here and in every shear row's reason because a reader is entitled to know which engine
+            // this one term came from.
+            double scaled = ((double)cross + 0.5) * slope * reciprocal;
+            scaled = scaled + (double)dstAlong * (1.0 - reciprocal);
+            scaled = scaled + reciprocal * translate;
             scaled = scaled + (double)filter->taps * -0.5;
             position = CharonResampleQ32((scaled + 1.0) * 4294967296.0);
         }

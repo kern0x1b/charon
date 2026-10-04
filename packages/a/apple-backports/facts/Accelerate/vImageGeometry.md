@@ -2291,3 +2291,58 @@ with every `(int64)` a C cast, i.e. truncation toward zero. **There is no half p
 `+ 0.5` the port carries are macOS's. **The engine, the 36 rows, the band files and the registry are still
 untouched by this section**: it is the reading, and the change that follows from it is measured on the guest
 before it lands.
+
+### 5. Where macOS's own vImage differs from it, named case by case
+
+The host differential (`tests/backports/host/shear/run.sh`, the four band files built with the package's own
+`-Os -Wall` line) is the second opinion, and with the engine carrying the arithmetic above it is RED - as it
+has to be, because it compares the port against **macOS**, and the two are no longer the same mapping. Every
+number here is from the run made after the last change to the engine:
+
+    11916 checks, 22652 failures
+    the port and the host differ        9443 lines
+    the port and this file's own loops  13209 lines   (the harness models the HOST, so this is the same
+                                                          difference said twice, not a second defect)
+    of the 9443: 2353 at slope 0, 7090 at a non-zero slope
+    the 2353 by scale: 0.25 504, 0.5 504, 0.75 504, 1 337, 2 504
+
+**Three distinct places, and they are three different things:**
+
+1. **The start fraction.** At a scale of 0.75 the release's start fraction is `1/3` less a hundred-millionth
+   and the port's answer is the `21 42 63` cycle; macOS's own start fraction is a hair under `1/2`, and
+   v-tail-a16's host run measured macOS's own row there as **31 where the release names 21**, on both axes.
+   One phase in 64, on whichever sample lands on the knife edge - 504 checks' worth at 0.75, every scale-0.75
+   case of both axes.
+2. **The anchor, and with it a whole half pixel.** macOS's start is `position*recip + C*(1 - recip) - 0.5`
+   with `position = along + 0.5`, so the `+0.5` and the `-0.5` cancel only at a scale of one. The release's is
+   `1 + C*(1 - recip) + recip*t - 0.5*numTaps` with no half pixel anywhere, and **the two are not one pixel
+   apart at a scale of two, they are one pixel apart**: at a scale of two on the horizontal the release's first
+   tap is at -2 and its peak sits on source 0 (the identity), and the 6.1.3 guest names `(phase 0, base 0)`
+   there; macOS's centre is `-0.25`. The host's own bytes name something else again:
+   `FAIL ... translate 0.0078125 slope 0 scale 1 ... the port and the host differ at byte 0 of a 9x5 buffer,
+   1 against 216`.
+3. **The divisor, at a scale of one.** With the identity mapping on BOTH sides - a scale of one, translate 0,
+   slope 0, where the port's peak weight over its own row sum is exactly 1 and the port reproduces the source
+   value - macOS's stored value is `250` where the port's is `255`:
+   `FAIL vImageVerticalShearD_ARGB16S sweep 9x5 into 9x5 offsets 0,0 translate 0 slope 0 scale 1 flags 0x4:
+   the port and the host differ at byte 8 of a 9x5 buffer, 250 against 255`. That is a15's "the divisor matters
+   on this release and does not on the Mac" read the other way round: macOS divides by 16384 and its own rows
+   do not sum to it, while this engine divides by the row's own sum, which the 6.1.3 guest confirms.
+
+**The non-zero-slope cases, 7090 of them, and the honest state of each axis's slope term:**
+
+* The **horizontal**'s slope term IS the release's and is in the reading above:
+  `(row + 1 - dest->height) * recip * shearSlope` at `0x3040f668`..`0x3040f690`. The guest run carries slope 0
+  throughout (P15), so this term is read and unmeasured.
+* The **vertical**'s slope term is NOT the release's and is named as such in `CharonShear.h`. The 6.1.3
+  vertical worker reads its `shearSlope` and BRANCHES on it at `0x30413d38`: at zero it falls into the path
+  this engine implements, which has no cross term at all, and at anything else it jumps to `0x304151e4`,
+  which spills its state and CALLS rather than forming a start. That path is not read, so the term carried
+  there is macOS's own measured one, in the only units this accumulator has. **It is the one term of the
+  mapping that no measurement of any release covers, and every shear row says so.**
+
+**Which engine wins.** The release, and the rows are written for it: the coordinator's ruling on v-tail-a15 is
+"the 6.1.3 guest run is item 1; the release wins over macOS", and the guest run answers 1210 of 1210 named
+destination samples against the release where the host differential answers 9443 failures against macOS on
+every shape it sweeps. **A host differential in this family is not a gate; it is the map of where the host's
+own mapping differs, and this section is that map.**

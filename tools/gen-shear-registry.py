@@ -67,22 +67,31 @@ ROWS = [
 
 REASON = ("a one-dimensional resample along the direction of the shear: for each destination sample the "
           "kernel of {extent} taps either side is gathered from the source row the destination row names, "
-          "weighted by sinc(x)*sinc(x/a) at each tap's distance from the mapped position and normalised per "
-          "phase, with a=3 and Lanczos5 under kvImageHighQualityResampling. The whole of the thirty-six is this "
-          "loop over a different pixel layout, so the port is one engine and four release-split files")
+          "weighted by the release's own Q14 integers at each tap's distance from the mapped position and "
+          "normalised by that phase row's own sum, with a=3 and Lanczos5 under kvImageHighQualityResampling. "
+          "The whole of the thirty-six is this loop over a different pixel layout, so the port is one engine "
+          "and four release-split files")
 
 EFFECT_TAIL = ("a tap outside the picture along the shear takes the backColor with its weight KEPT rather than "
                "being dropped - a source constant at 1.0 with a backColor of -1 answers 2w-1 and the release "
                "answers -0.000 and 1.223, which are weights and not gaps - and under kvImageEdgeExtend the tap "
                "is pulled back to the edge element instead, which is the header's own \"the edge pixels of the "
-               "source are extended\"; neither mode renormalises over the survivors. The mapped position along "
-               "the shear is (along0 + along + 0.5 {sign} translate {slope}) / scale - 0.5, where the vertical's "
-               "is anchored to the DESTINATION's far edge and the horizontal's to its near edge, and the "
-               "shearSlope multiplies the cross coordinate read from the opposite edge - {cross} - so the two "
-               "axes are mirrors of one another. Measured on the host's own kernel: at a scale of two on a "
-               "twelve-row source the vertical's destination row 0 maps to source row 5.75 and the horizontal's "
-               "destination column 0 to -0.25, and the offset is the destination's extent and not the source's "
-               "(a twelve-row source into a twenty-row destination offsets by ten, not six). Every channel is "
+               "source are extended\"; neither mode renormalises over the survivors. THE MAPPED POSITION IS A "
+               "Q32 FIXED-POINT ACCUMULATOR, and this is the release's own arithmetic rather than an "
+               "arrangement of it: the start is formed once per row as `C*(1 - recip) {sign} recip*translate + "
+               "numTaps * -0.5 + 1.0` on the vertical, with C the DESTINATION's extent along the shear, and as "
+               "`(row + 1 - destCross) * recip * shearSlope {sign} recip*translate + numTaps * -0.5 + 1.0` on "
+               "the horizontal, whose slope term reads the DESTINATION's across extent; it is multiplied by "
+               "2^32 and converted with a TRUNCATION toward zero, and the step `(int64)(recip * 2^32)` is then "
+               "added as an integer per destination sample. The row is the top `exponent` bits of the "
+               "accumulator's 32-bit fraction and the first tap is its integer part, so there is no half pixel "
+               "anywhere in the mapping and no tie rule: the two axes differ in the START, the vertical "
+               "anchoring at the destination's far edge and the horizontal at its near edge, and the release "
+               "runs one accumulator through the whole destination on the vertical and a fresh one per row on "
+               "the horizontal. At a scale of 0.75 the step is 4/3 of a pixel with a +-1/192 wobble, because "
+               "its low 32 bits are 0x55555555, and the phase cycle 21 42 63 is that wobble and nothing else. "
+               "The mapping was read out of the release's own instructions and measured on an iPhone3,1 6.1.3 "
+               "10B329 guest at five scales, both axes and seven translates: {reading}. Every channel is "
                "{clamp}. A NULL source or destination is kvImageNullPointerArgument, a NULL filter is "
                "kvImageInvalidParameter, and a region or a destination that does not fit ACROSS the shear - "
                "srcOffsetToROI_X + dest->width > src->width on the vertical, srcOffsetToROI_Y + dest->height > "
@@ -91,6 +100,40 @@ EFFECT_TAIL = ("a tap outside the picture along the shear takes the backColor wi
                "along the shear is free, and so is the along offset, which a source nine wide accepts at twelve. "
                "No flag is refused - all thirty-two bits answer kvImageNoError - and kvImageGetTempBufferSize "
                "does no work and answers zero")
+
+READING = {
+    "7.0": ("this row's own release's arm64 worker at 0x1804a5860, which is the same accumulator with the "
+            "conversion as the architecture's own FCVTZS (rounding toward zero) at 0x1804a59c0",
+            "the 6.1.3 armv7 workers at 0x30413ce8 and 0x3040f220 and the 7.0 arm64 one at 0x1804a5860 - one "
+            "mechanism, three architectures' own instructions - and 1210 of 1210 destination samples named out "
+            "of the 6.1.3 guest's own bytes agree with it at five scales, both axes and seven translates; this "
+            "row's own release's arm64 worker is the one at 0x1804a5860 and is read directly"),
+    "8.0": ("the 6.1.3 armv7 workers at 0x30413ce8 and 0x3040f220 and the 7.0 arm64 one at 0x1804a5860 - one "
+            "mechanism, and 1210 of 1210 destination samples named out of the 6.1.3 guest's own bytes agree "
+            "with it at five scales, both axes and seven translates. THIS ROW'S OWN 8.0 arm64 WORKER IS NOT "
+            "DISASSEMBLED: what is measured is the mechanism on 6.1.3 armv7 and 7.0 arm64, and 8.0 is the same "
+            "code lineage read at neither of those addresses",
+            "the 6.1.3 armv7 workers and the 7.0 arm64 one - one mechanism - with 1210 of 1210 destination "
+            "samples named out of the 6.1.3 guest's own bytes agreeing at five scales, both axes and seven "
+            "translates; 8.0's own worker is not disassembled"),
+    "10.0": ("the 6.1.3 armv7 workers at 0x30413ce8 and 0x3040f220 and the 7.0 arm64 one at 0x1804a5860 - one "
+             "mechanism, and 1210 of 1210 destination samples named out of the 6.1.3 guest's own bytes agree "
+             "with it at five scales, both axes and seven translates. THIS ROW'S OWN 10.0 arm64 WORKER IS NOT "
+             "DISASSEMBLED: what is measured is the mechanism on 6.1.3 armv7 and 7.0 arm64, and 10.0 is the "
+             "same code lineage read at neither of those addresses",
+             "the 6.1.3 armv7 workers and the 7.0 arm64 one - one mechanism - with 1210 of 1210 destination "
+             "samples named out of the 6.1.3 guest's own bytes agreeing at five scales, both axes and seven "
+             "translates; 10.0's own worker is not disassembled"),
+    "15.0": ("the 6.1.3 armv7 workers at 0x30413ce8 and 0x3040f220 and the 7.0 arm64 one at 0x1804a5860 - one "
+             "mechanism, and 1210 of 1210 destination samples named out of the 6.1.3 guest's own bytes agree "
+             "with it at five scales, both axes and seven translates. THIS ROW'S OWN 15.0 arm64 WORKER IS NOT "
+             "DISASSEMBLED: what is measured is the mechanism on 6.1.3 armv7 and 7.0 arm64, and 15.0 is the "
+             "same code lineage read at neither of those addresses",
+             "the 6.1.3 armv7 workers and the 7.0 arm64 one - one mechanism - with 1210 of 1210 destination "
+             "samples named out of the 6.1.3 guest's own bytes agreeing at five scales, both axes and seven "
+             "translates; 15.0's own worker is not disassembled"),
+}
+
 
 FACTS = "facts/Accelerate/vImageGeometry.md"
 
@@ -103,11 +146,14 @@ SOURCE = ("the header of iOS 16.4 (Geometry.h) for the contract, the two positio
           "alone for this object (nm -u at armv7-apple-ios4.3), so its floor is 4.3")
 
 
-def effect(horizontal, translate, clamp):
-    sign = "-" if horizontal else "+"
-    slope = "+ slope * (cross - dstCross + 0.5)" if horizontal else "+ slope * (cross + 0.5)"
-    cross = "cross - dstCross + 0.5" if horizontal else "cross + 0.5"
-    return (EFFECT_TAIL.format(sign=sign, slope=slope, cross=cross, clamp=clamp))
+SIGN = {True: "-", False: "+"}
+SLOPE = {True: "the slope's own cross term", False: "no cross term: a vertical shear's anchor carries none"}
+CROSS = {True: "the destination's across extent", False: "the destination's along extent"}
+
+
+def effect(release, horizontal, sign, clamp):
+    return EFFECT_TAIL.format(sign=sign, slope=SLOPE[horizontal], cross=CROSS[horizontal],
+                              clamp=clamp, reading=READING[release][0])
 
 
 def main():
@@ -132,8 +178,8 @@ def main():
                 "introduced": release,
                 "minimum": "4.3",
                 "status": "implemented",
-                "reason": REASON.format(extent="`ceil(a / min(1, scale))`"),
-                "effect": effect(horizontal, translate, clamp),
+                "reason": REASON.format(extent="`ceil(a / min(1, scale))`") + " " + READING[release][1],
+                "effect": effect(release, horizontal, SIGN[horizontal], clamp),
                 "facts": FACTS,
                 "source": SOURCE,
             })
