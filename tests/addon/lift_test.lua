@@ -971,5 +971,158 @@ function failures(opt)
         table.insert(sizes, group.prefix .. "=" .. #group.names)
     end
     expect_equal(found, "at most forty names to a group", table.concat(sizes, " "), "NSAllocate=40 NSAllocate41=1")
+
+    -- Where a declaration marked unavailable was written, and where it was not: the mark a port that implements the
+    -- declaration has to take away, asked of the shape clang gives it. A macro use (NS_UNAVAILABLE, or a framework's own
+    -- macro that ends in it - Matter's MTR_PROVISIONALLY_AVAILABLE) carries the spelling location inside the macro and
+    -- the expansion location at the use, and the use is the place the removal happens. An attribute the SDK writes out
+    -- carries neither, and the site clang gives is then the `unavailable` token itself, which is no use of anything: such
+    -- a mark is not returned at all, and the declaration keeps it. There is no such attribute in iPhoneOS26.2.sdk
+    -- (measured: 0 headers of 7153 spell __attribute__((unavailable)) out, 928 use NS_UNAVAILABLE).
+    local function unavailables_at(node)
+        local found = {}
+        for _, mark in ipairs(lift.unavailables(node)) do
+            table.insert(found, string.format("%s:%s:%s", mark.file, mark.line, mark.col))
+        end
+        return table.concat(found, ",")
+    end
+    local function attribute(spelling, expansion)
+        local range = {begin = {offset = 7, line = 7, col = 1, tokLen = 3}}
+        if spelling then
+            range.begin.spellingLoc = {offset = 7863, file = "AvailabilityMacros.h", line = 176, col = 50, tokLen = 11}
+        end
+        if expansion then
+            range.begin.expansionLoc = {offset = 582330, file = "Fix.h", line = 12084, col = 1, tokLen = 27}
+        end
+        return {kind = "UnavailableAttr", range = range}
+    end
+    local class = {kind = "ObjCInterfaceDecl", name = "FixGone", range = {begin = {offset = 582358, col = 1, tokLen = 1}}}
+    class.inner = {attribute(true, true)}
+    expect_equal(found, "a mark written by a macro use is the use", unavailables_at(class), "Fix.h:12084:1")
+    expect_equal(found, "and it names the declaration it belongs to", lift.unavailables(class)[1].declaration,
+                 "582358:ObjCInterfaceDecl:FixGone")
+    local literal = {kind = "ObjCInterfaceDecl", name = "FixGone", inner = {attribute(false, false)}}
+    expect_equal(found, "a mark the SDK writes out is no use of anything, and no site", unavailables_at(literal), "")
+    local implicit = {kind = "ObjCMethodDecl", name = "fixName", isImplicit = true, inner = {attribute(true, true)}}
+    expect_equal(found, "and an implicit member's mark names no declaration, for the reason a release mark's does not",
+                 tostring(lift.unavailables(implicit)[1].declaration), "nil")
+    expect_equal(found, "a declaration with no such attribute at all", unavailables_at({kind = "ObjCInterfaceDecl", name = "FixGone"}), "")
+
+    -- The four shapes the lift refused against main's current registry, over one fixture SDK and with the lift's own
+    -- entry point. Every member a row reaches only through a superclass or a protocol carries a release above the
+    -- port's, because that is what makes a redeclaration worth writing at all.
+    --
+    --   FixSpelling is an @interface with no member of its own - the deprecated spelling of another class, 76 Matter
+    --   classes are this shape - so what is redeclared goes into it before its @end (the lift refused it as "the own
+    --   header ... cannot be found");
+    --   NSObject declares -init as a designated initializer and +description as a class method beside the description
+    --   property @protocol NSObject declares, so a row spelled FixSpelling.init answers to a copy of the SDK's -init
+    --   without the attribute, and a row spelled FixSpelling.description is answered twice over by two declarations
+    --   that disagree (324 and 320 rows on iPhoneOS16.4.sdk, measured);
+    --   FixGone is marked unavailable, which no flag turns off ('X' is unavailable is err_unavailable), so the probe the
+    --   lift asks its conformance questions with could not be compiled at all - 1430 errors over 286 Matter classes on
+    --   iPhoneOS26.2.sdk, every one of them an implemented row.
+    if not clang or not swiftc then
+        print("skipped: the four refused shapes need both clang under " .. path.join(store, "l/llvm") ..
+              " and swiftc under " .. path.join(store, "s/swift"))
+    else
+        local fixture = {"#define ios(version) ios, introduced=version\n" ..
+                         "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n" ..
+                         "#define NS_UNAVAILABLE __attribute__((unavailable))\n" ..
+                         "#define NS_DESIGNATED_INITIALIZER __attribute__((objc_designated_initializer))\n" ..
+                         "#define instancetype id\n",
+                         -- objc/NSObject.h of the 16.4 SDK, line for line: the root class whose -init is a designated
+                         -- initializer, the description property its protocol declares, and the +description beside it
+                         "@class NSString;\n@protocol NSObject\n"
+                         .. "@property (readonly, copy) NSString *description;\n@end\n"
+                         .. "__attribute__((objc_root_class)) @interface NSObject <NSObject>\n"
+                         .. "- (instancetype)init NS_DESIGNATED_INITIALIZER;\n"
+                         .. "+ (NSString *)description;\n@end\n",
+                         "#import <Foundation/Foundation.h>\n"
+                         .. "@protocol NSCopying\n- (id)copyWithZone:(void *)zone API_AVAILABLE(ios(9.0));\n@end\n"
+                         .. "API_AVAILABLE(ios(9.0))\n@interface FixBase : NSObject\n"
+                         .. "@property (nonatomic, copy) NSString *name API_AVAILABLE(ios(9.0));\n@end\n"
+                         .. "API_AVAILABLE(ios(9.0))\n@interface FixSpelling : FixBase\n@end\n"
+                         .. "NS_UNAVAILABLE\nAPI_AVAILABLE(ios(9.0))\n@interface FixGone : NSObject <NSCopying>\n"
+                         .. "@property (nonatomic, copy) NSString *label API_AVAILABLE(ios(9.0));\n@end\n"
+                         -- and a class the registry does not implement, which keeps both of its marks
+                         .. "NS_UNAVAILABLE\nAPI_AVAILABLE(ios(9.0))\n@interface FixKept : NSObject\n"
+                         .. "@property (nonatomic, copy) NSString *held API_AVAILABLE(ios(9.0));\n@end\n",
+                         '[{"api":"FixBase","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"FixSpelling","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"FixSpelling.name","kind":"property","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"-[FixSpelling init]","kind":"method","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"FixSpelling.description","kind":"property","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"FixGone","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"-[FixGone copyWithZone:]","kind":"method","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"-[FixGone init]","kind":"method","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"FixGone.description","kind":"property","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                         .. '{"api":"FixKept","kind":"class","introduced":"9.0","minimum":"6.0","status":"inert",'
+                         .. '"reason":"a fixture entry the backports do not carry","effect":"a fixture entry"},'
+                         .. '{"api":"FixKept.held","kind":"property","introduced":"9.0","minimum":"6.0","status":"inert",'
+                         .. '"reason":"a fixture entry the backports do not carry","effect":"a fixture entry"}]'}
+        local root = path.join(os.tmpdir(), "charon-lift-refused-" .. hash.strhash128(table.concat(fixture, "")) .. "-" .. os.getpid())
+        os.tryrm(root)
+        local frameworks = path.join(root, "sdk", "System", "Library", "Frameworks")
+        local fix = path.join(frameworks, "Fix.framework", "Headers")
+        io.writefile(path.join(frameworks, "Foundation.framework", "Headers", "Foundation.h"), fixture[1] .. fixture[2])
+        io.writefile(path.join(fix, "Fix.h"), fixture[3])
+        io.writefile(path.join(root, "registry", "Fix.json"), fixture[4])
+        local failure
+        try {function ()
+            lift.lift({clang = clang, swiftc = swiftc, sdk = path.join(root, "sdk"), triple = "armv7-apple-ios6.1.3",
+                       minimum = "6.1.3", registry = root, outputdir = path.join(root, "out"), expected = false})
+        end, catch {function (why) failure = tostring(why) end}}
+        expect_equal(found, "a lift of a fixture SDK with all four refused shapes", failure, nil)
+        local staged = io.readfile(path.join(root, "out", "headers", "System", "Library", "Frameworks", "Fix.framework",
+                                            "Headers", "Fix.h")) or ""
+        -- the deprecated spelling's empty @interface carries what is redeclared for it
+        expect_equal(found, "an @interface with no member of its own carries the redeclaration",
+                     staged:match("@interface FixSpelling : FixBase\n(.-)\n@end") or "(nothing)", 
+                     "@property (nonatomic, readwrite, copy) NSString * name API_AVAILABLE(ios(6.1.3));")
+        -- the member the SDK declares in a superclass and whose declaration has nothing to move is not written again
+        expect_equal(found, "and the designated initializer it inherits is not written again",
+                     tostring(staged:find("init", 1, true) ~= nil), "false")
+        -- and the class method of the same name as a property is not an accessor of it
+        expect_equal(found, "and the description a class method of the same name could have answered is not written",
+                     tostring(staged:find("description", 1, true) ~= nil), "false")
+        -- a class the registry says is implemented is not marked unavailable in the header the port compiles against,
+        -- and one it does not implement keeps both of its marks - the same rule read the other way round
+        expect_equal(found, "the unavailable mark of an implemented class is taken away and its release lowered",
+                     tostring(staged:find("API_AVAILABLE(ios(6.1.3))\n@interface FixGone : NSObject <NSCopying>", 1, true) ~= nil),
+                     "true")
+        expect_equal(found, "and a class no row implements keeps both of its marks",
+                     tostring(staged:find("NS_UNAVAILABLE\nAPI_AVAILABLE(ios(9.0))\n@interface FixKept : NSObject", 1, true) ~= nil),
+                     "true")
+        expect_equal(found, "and so does the member of it",
+                     tostring(staged:find("held API_AVAILABLE(ios(9.0));", 1, true) ~= nil), "true")
+        -- and the conformance question about it was still asked and answered: NSCopying's copyWithZone: is redeclared
+        expect_equal(found, "the conformance probe answered about the class whose mark was taken away",
+                     tostring(staged:find("- (id)copyWithZone:(void *)zone API_AVAILABLE(ios(6.1.3));", 1, true) ~= nil), "true")
+        -- a mark no implemented row shares stays where the SDK wrote it: the protocol the redeclaration was copied
+        -- from has no row of its own, so its own declaration keeps the release the SDK gives it
+        expect_equal(found, "and the declaration no implemented row shares keeps its release",
+                     tostring(staged:find("- (id)copyWithZone:(void *)zone API_AVAILABLE(ios(9.0));", 1, true) ~= nil), "true")
+        -- and a header with no edit at all is not staged at all: the lift writes a copy of a file it changed, and of
+        -- no other
+        expect_equal(found, "and no copy of a header with no edit is staged",
+                     tostring(os.isfile(path.join(root, "out", "headers", "System", "Library", "Frameworks",
+                                                   "Foundation.framework", "Headers", "Foundation.h"))), "false")
+        -- what the lift left alone holds none of the four rows: each is answered where the SDK already answered it
+        local alone = io.readfile(path.join(root, "out", "left-alone.txt")) or ""
+        for _, api in ipairs({"-[FixSpelling init]", "FixSpelling.description", "-[FixGone init]", "FixGone.description"}) do
+            expect_equal(found, "the row " .. api .. " is answered and not left alone", tostring(alone:find(api, 1, true) ~= nil), "false")
+        end
+        os.tryrm(root)
+    end
     return found
 end

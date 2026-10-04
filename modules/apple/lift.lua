@@ -781,7 +781,15 @@ end
 -- only where it conforms - through its class, a superclass, any category the umbrella reaches or a protocol it inherits,
 -- which no dump by name lists. A pair that conforms (NSObject to NSObject) and one that does not (NSObject to NSCopying)
 -- are asked beside the others, and a probe that tells either wrongly fails rather than answer the rest.
-local function conformer(opt, umbrella)
+--
+-- overlay() answers the overlay the probe is read through, nil where there is none: a class the SDK marks unavailable
+-- cannot be named in a probe that reads the SDK's own headers, because 'X' is unavailable is a hard diagnostic no flag
+-- turns off, so the caller stages the headers whose unavailable marks the registry says are implemented and hands the
+-- overlay here (see unavailables). It is a function and not a path because the marks it stages are found while the
+-- entries are walked, which is after this is built and before the probe runs. A question the probe could not answer at
+-- all - a receiver it cannot name, which is what a header left marked unavailable looks like - is not a wrong answer
+-- but no answer, and the probe fails by name rather than hand one back.
+local function conformer(opt, umbrella, overlay)
     return function (questions)
         local asked = table.join({{receiver = "NSObject *", protocol = "NSObject"}, {receiver = "NSObject *", protocol = "NSCopying"}},
                                  questions)
@@ -794,24 +802,46 @@ local function conformer(opt, umbrella)
         end
         local probe = path.join(opt.outputdir, "conforms.m")
         io.writefile(probe, text .. table.concat(lines, "\n") .. "\n")
-        local _, diagnostics = cache.iorunv(opt.clang, {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
-                                                     "-fsyntax-only", "-x", "objective-c", "-fno-caret-diagnostics",
-                                                     "-fno-color-diagnostics", "-Wno-unguarded-availability",
-                                                     "-Wno-unguarded-availability-new", "-Wno-unused-function", probe})
-        local refused = {}
+        local arguments = {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
+                           "-fsyntax-only", "-x", "objective-c", "-fno-caret-diagnostics",
+                           "-fno-color-diagnostics", "-Wno-unguarded-availability",
+                           "-Wno-unguarded-availability-new", "-Wno-unused-function"}
+        local staged = overlay and overlay() or nil
+        if staged then
+            table.join2(arguments, {"-ivfsoverlay", staged})
+        end
+        table.insert(arguments, probe)
+        local _, diagnostics = cache.iorunv(opt.clang, arguments)
+        local refused, broken = {}, {}
         for line in (diagnostics or ""):gmatch("[^\n]+") do
             local at = line:match("conforms%.m:(%d+):%d+: warning: returning .* from a function with incompatible result type")
             if at then
                 refused[tonumber(at) - base] = true
+            else
+                -- an error at a question of its own is not a wrong answer to it but no answer at all: clang could not
+                -- read the receiver. Asking it again would say nothing, and answering as it did would be a guess, so
+                -- the question is named below instead.
+                at = line:match("conforms%.m:(%d+):%d+: error:")
+                if at then
+                    broken[tonumber(at) - base] = true
+                end
             end
         end
         if refused[1] or not refused[2] then
             raise("the conformance probe %s tells NSObject's conformance to NSObject or to NSCopying wrongly: %s", probe,
                   diagnostics or "")
         end
-        local answers = {}
+        local answers, unanswered = {}, {}
         for index = 3, #asked do
             answers[index - 2] = not refused[index]
+            if broken[index] then
+                table.insert(unanswered, string.format("%s to %s", asked[index].receiver, asked[index].protocol))
+            end
+        end
+        if #unanswered > 0 then
+            raise("the conformance probe %s could not answer %d question(s) at all - a receiver it cannot read, which is "
+                  .. "what a header left marked unavailable looks like: %s", probe, #unanswered,
+                  table.concat(unanswered, ", "))
         end
         return answers
     end
@@ -1160,6 +1190,39 @@ local function member_api(api)
     end
 end
 
+-- Where a declaration the SDK marks unavailable was written, as a mark of its own: __attribute__((unavailable)) names no
+-- release, so there is nothing in it to rewrite and the whole of the lowering is taking it away. Clang writes the
+-- attribute's spelling location inside the macro that produced it (NS_UNAVAILABLE, or a framework's own macro that
+-- ends in it - Matter's MTR_PROVISIONALLY_AVAILABLE, which is NS_UNAVAILABLE unless MTR_ENABLE_PROVISIONAL is defined)
+-- and its expansion location at the use, which is the place the removal happens - the same place a release mark is
+-- rewritten at, and found the same way. An attribute the SDK writes out rather than through a macro carries no
+-- expansion location at all, and then the site clang gives is the `unavailable` token itself, which is no use of
+-- anything: such a mark is not returned, and the declaration that carries it keeps the mark.
+--
+-- Why it matters beyond the lift: 'X' is unavailable is err_unavailable, a hard diagnostic that no -W turns off
+-- (measured on clang 23.1.1: the same probe with -Wno-unavailable-declarations says the same thing), and a name the
+-- registry says is implemented has to be nameable by the port's own sources. On iPhoneOS26.2.sdk a use of
+-- MTRCameraAVSettingsUserLevelManagementClusterDPTZRelativeMoveParams outside a system header is refused with exactly
+-- that, and the conformance probe the lift runs - which names every class it asks a question about - could not be
+-- compiled at all: 1430 such errors over 286 classes, all of them `MTR*`, and every one of the 286 an implemented row.
+function unavailables(node)
+    local found = {}
+    for _, child in ipairs((node or {}).inner or {}) do
+        if child.kind == "UnavailableAttr" then
+            local begin = child.range and child.range.begin or {}
+            local where = begin.expansionLoc
+            if where and where.file and where.line and where.col then
+                local start = node.range and node.range.begin or {}
+                start = start.expansionLoc or start
+                table.insert(found, {file = where.file, line = where.line, col = where.col,
+                                      declaration = not node.isImplicit
+                                          and string.format("%s:%s:%s", tostring(start.offset), node.kind, node.name or "") or nil})
+            end
+        end
+    end
+    return found
+end
+
 local function setter_property(selector)
     local first, rest = selector:match("^set(%a)([%w_]*):$")
     return first and first:lower() .. rest
@@ -1198,8 +1261,15 @@ local function member_matches(member, node)
         -- a property is its getter's declaration; its setter has one of its own, implicit or written apart
         return node.name == member.selector and (node.class == true) == (member.sign == "+")
     end
+    -- A dotted row names an instance property, and what carries it is the property or one of its accessors. A
+    -- class method of the same name is a different API and is not an accessor of anything: NSObject declares +description
+    -- beside the description property @protocol NSObject declares, and both answered a row spelled X.description, so the
+    -- two were written out as two declarations that disagree with each other and the row was refused by name
+    -- (320 Matter rows on iPhoneOS16.4.sdk, measured). The class's own spelling of the member is +[X description], which
+    -- the branch above reads.
     return node.kind == "ObjCPropertyDecl" and node.name == member.property
-        or node.kind == "ObjCMethodDecl" and (node.name == member.property or setter_property(node.name) == member.property)
+        or node.kind == "ObjCMethodDecl" and node.instance ~= false
+            and (node.name == member.property or setter_property(node.name) == member.property)
 end
 
 -- An entry's own name without a trailing "(", and the member it names if it names one. Both
@@ -1818,9 +1888,10 @@ local function computed(opt)
     local system = kept_system_headers(opt, symbols)
     mark("system headers")
     local dump, umbrella, prefetch, alone, collect
+    local probe_overlay
     dump, umbrella, prefetch, alone, counted, collect = dumper(opt, frameworks, system)
     mark("dumper")
-    local conforms = conformer(opt, umbrella)
+    local conforms = conformer(opt, umbrella, function () return probe_overlay() end)
     mark("conformer")
     local languages = languages_of(opt)
     mark("languages")
@@ -1956,6 +2027,110 @@ local function computed(opt)
             edits[mark.file][at] = edit
         end
     end
+    -- Whether anything in a declaration has to move for the port's release: a release above the target written in a
+    -- header of this SDK, which is what place() would rewrite, or an unavailable mark, which is what remove() below
+    -- would take away. Exactly those two, so the question and the edit cannot disagree about what a redeclaration of a
+    -- member the SDK declares elsewhere is for.
+    local function moves(nodes, target)
+        for _, node in ipairs(nodes) do
+            if #unavailables(node) > 0 then
+                return true
+            end
+            for _, mark in ipairs(marks(node)) do
+                if later(mark.introduced, target) and mark.file:startswith(opt.sdk) then
+                    return true
+                end
+            end
+        end
+        return false
+    end
+    -- The site of one unavailable mark, written down for the same reason and by the same rule as a release mark: the
+    -- registry says the declaration is implemented, and a declaration that is implemented is not marked unavailable at
+    -- the port's release. The one edit this records removes the macro use the mark was written by - it does not lower
+    -- anything - and it shares the site table with the release edits, so a place where both are written is one site
+    -- and the removal of the use takes both down.
+    local function remove(mark)
+        if mark.file:startswith(opt.sdk) then
+            edits[mark.file] = edits[mark.file] or {}
+            local at = mark.line .. ":" .. mark.col
+            local edit = edits[mark.file][at] or {line = mark.line, col = mark.col, declarations = {}}
+            edit.remove = true
+            if mark.declaration then
+                edit.declarations[mark.declaration] = true
+            end
+            edits[mark.file][at] = edit
+        end
+    end
+    -- The one edit that takes a macro use away instead of rewriting it, written once because two callers need it: the
+    -- staged copy below, and the overlay the conformance probe is compiled over. Both apply their sites bottom-up and
+    -- right-to-left, so taking a line out moves nothing an edit still to come reads by line or column.
+    local function take_away(lines, site)
+        local last = site.line + site.count - 1
+        local before = lines[site.line]:sub(1, site.col - 1)
+        local finish = site.count == 1 and site.col - 1 + #site.use or #site.use:match("[^\n]*$")
+        local after = lines[last]:sub(finish + 1)
+        -- the SDK writes such a mark on a line of its own (MTR_PROVISIONALLY_AVAILABLE above the @interface it belongs
+        -- to), and then the line goes with it: an empty line where the use stood is noise in a staged header
+        if site.count == 1 and before:match("^%s*$") and after:match("^%s*$") then
+            table.remove(lines, site.line)
+        else
+            lines[site.line] = (before .. after):gsub("%s+$", "")
+        end
+    end
+    -- The conformance probe reads the SDK's own headers - which is how the SDK is read everywhere else the lift looks -
+    -- and a class the SDK marks unavailable cannot be named there at all. So it is compiled over a copy of each header
+    -- that carries such a mark on a declaration the registry says is implemented, with that mark taken away: the same
+    -- removal the staged copy gets, so what the probe answers about is what the port will compile against and not a
+    -- second opinion. Only the headers that carry a removal are written, and the overlay maps those; every other header
+    -- resolves from the SDK where it stands.
+    probe_overlay = function ()
+        local by_file = {}
+        for file, sites in pairs(edits) do
+            for _, edit in pairs(sites) do
+                if edit.remove then
+                    by_file[file] = by_file[file] or {}
+                    table.insert(by_file[file], edit)
+                end
+            end
+        end
+        local overlay = {version = 0, ["case-sensitive"] = "false", roots = {}}
+        local folders = {}
+        for _, file in ipairs(table.orderkeys(by_file)) do
+            local content = contents(file)
+            local sites = table.clone(by_file[file])
+            -- bottom-up, for the reason the rewrite's own order gives: a removal that takes a line out moves every
+            -- line below it, and every site here is placed by the line number clang gave
+            table.sort(sites, function (a, b)
+                return a.line > b.line
+            end)
+            local lines = content and content:split("\n", {strict = true}) or nil
+            for _, site in ipairs(sites) do
+                if lines then
+                    site.use, site.count = macro_use(lines, site.line, site.col)
+                    if site.use then
+                        take_away(lines, site)
+                    end
+                end
+            end
+            if lines then
+                local folder = path.directory(file)
+                folders[folder] = folders[folder] or {}
+                table.insert(folders[folder], {type = "file", name = path.filename(file),
+                                              ["external-contents"] = path.join(opt.outputdir, "probe-headers",
+                                                                                path.relative(file, opt.sdk))})
+                io.writefile(folders[folder][#folders[folder]]["external-contents"], table.concat(lines, "\n"))
+            end
+        end
+        for _, folder in ipairs(table.orderkeys(folders)) do
+            table.insert(overlay.roots, {type = "directory", name = folder, contents = folders[folder]})
+        end
+        if #overlay.roots == 0 then
+            return nil
+        end
+        local vfs = path.join(opt.outputdir, "probe.yaml")
+        json.savefile(vfs, overlay)
+        return vfs
+    end
     local filters = {}
     for _, entry in ipairs(entries) do
         table.insert(filters, filter_of(entry))
@@ -2004,6 +2179,10 @@ local function computed(opt)
             for _, mark in ipairs(marks(node)) do
                 place(mark, target)
             end
+            -- and the mark that names no release: an implemented declaration is not unavailable at the port's release
+            for _, mark in ipairs(unavailables(node)) do
+                remove(mark)
+            end
             if entry.kind == "type" then
                 -- a type from the header alone: the type and every value it names
                 for _, child in ipairs(node.inner or {}) do
@@ -2036,6 +2215,15 @@ local function computed(opt)
                                 blocked[mark.file .. ":" .. mark.line .. ":" .. mark.col] = true
                             else
                                 place(mark, target)
+                            end
+                        end
+                        -- the same rule for the members that carry no release: a member of an implemented class that a
+                        -- row keeps keeps its unavailable mark, and one no row keeps does not keep it
+                        for _, mark in ipairs(unavailables(child)) do
+                            if left then
+                                blocked[mark.file .. ":" .. mark.line .. ":" .. mark.col] = true
+                            else
+                                remove(mark)
                             end
                         end
                     end
@@ -2270,34 +2458,49 @@ local function computed(opt)
             if entry.minimum and later(entry.minimum, target) then
                 target = entry.minimum
             end
-            local texts, sources = {}, {}
-            for _, node in ipairs(found.reached) do
-                local by = owner_of(node)
-                table.insert(sources, by)
-                for _, kind in ipairs(uncarried_attributes(node)) do
-                    table.insert(unreachable, string.format("%s is declared by %s with %s, which a redeclaration would not carry", api, by, kind))
-                end
-                local text = member_declaration(node, node.name, target)
-                if text then
-                    texts[text] = true
-                else
-                    table.insert(unreachable, string.format("%s is declared by %s in a form this cannot write again", api, by))
-                end
-                if node.kind == "ObjCPropertyDecl" then
-                    for _, accessor in ipairs(property_accessors_uncarried(owner, node, carried, kept, backports.spellings)) do
-                        table.insert(unreachable, string.format("%s is %s's property %s, whose accessor %s is not carried",
-                                                              api, by, node.name, accessor))
+            -- What a redeclaration is for: it is a copy of the SDK's own declaration at the lowered release, so it is
+            -- only worth writing when something in that declaration has to move. Nothing has to move when the
+            -- declaration names no release above the target and is not unavailable - the member already answers at the
+            -- port's release, through the superclass or the protocol the class reaches it by, and the copy would add
+            -- nothing. It would also lose what the copy cannot carry: NSObject's -init is a designated initializer
+            -- (objc/NSObject.h, under NS_ENFORCE_NSOBJECT_DESIGNATED_INITIALIZER), so redeclaring -init on every class
+            -- the registry names it on wrote a -init that is not a designated initializer where the SDK's is, and the
+            -- check refused those 324 rows on iPhoneOS16.4.sdk. The refusal was right about the copy and wrong about
+            -- there being one. So nothing is written, the row is answered where it already was, and no target is
+            -- recorded for it: there is nothing over the overlay for the check below to look at.
+            if moves(found.reached, target) then
+                local texts, sources = {}, {}
+                for _, node in ipairs(found.reached) do
+                    local by = owner_of(node)
+                    table.insert(sources, by)
+                    for _, kind in ipairs(uncarried_attributes(node)) do
+                        table.insert(unreachable, string.format("%s is declared by %s with %s, which a redeclaration would not carry", api, by, kind))
+                    end
+                    local text = member_declaration(node, node.name, target)
+                    if text then
+                        texts[text] = true
+                    else
+                        table.insert(unreachable, string.format("%s is declared by %s in a form this cannot write again", api, by))
+                    end
+                    if node.kind == "ObjCPropertyDecl" then
+                        for _, accessor in ipairs(property_accessors_uncarried(owner, node, carried, kept, backports.spellings)) do
+                            table.insert(unreachable, string.format("%s is %s's property %s, whose accessor %s is not carried",
+                                                                  api, by, node.name, accessor))
+                        end
                     end
                 end
-            end
-            local written = table.orderkeys(texts)
-            if #written > 1 then
-                table.insert(unreachable, string.format("%s is declared differently by %s: %s", api,
-                                                        table.concat(table.unique(sources), ", "), table.concat(written, " / ")))
-            elseif #written == 1 then
-                members[owner] = members[owner] or {}
-                members[owner][written[1]] = true
-                targets[api] = target
+                local written = table.orderkeys(texts)
+                if #written > 1 then
+                    table.insert(unreachable, string.format("%s is declared differently by %s: %s", api,
+                                                            table.concat(table.unique(sources), ", "), table.concat(written, " / ")))
+                elseif #written == 1 then
+                    members[owner] = members[owner] or {}
+                    members[owner][written[1]] = true
+                    targets[api] = target
+                    resolved[api] = found.reached
+                    accounted[api] = true
+                end
+            else
                 resolved[api] = found.reached
                 accounted[api] = true
             end
@@ -2311,17 +2514,33 @@ local function computed(opt)
         -- category: Swift's importer takes the requirement of a protocol that @interface adopts over a category's
         -- redeclaration of the same method on the class (UIView's -traitCollectionDidChange: stays UITraitEnvironment's,
         -- introduced in iOS 8), where it takes a redeclaration in the @interface itself.
-        local interface
+        local interface, bare
         for _, node in ipairs(dump(owner)) do
             if node.kind == "ObjCInterfaceDecl" and node.name == owner then
+                local has_member = false
                 for _, member in ipairs(node.inner or {}) do
                     if member.kind == "ObjCMethodDecl" or member.kind == "ObjCPropertyDecl" or member.kind == "ObjCIvarDecl" then
-                        interface = node
+                        has_member = true
                         break
                     end
                 end
+                if has_member then
+                    interface = node
+                elseif bare == nil then
+                    -- An @interface with no member of its own is still where its class is declared, and what is
+                    -- redeclared goes in before its @end like any other: the deprecated spelling of another class, whose
+                    -- every member it inherits and whose own @interface is empty - 76 Matter classes on
+                    -- iPhoneOS16.4.sdk, refused as "the own header cannot be found" before this. A forward
+                    -- declaration (@class FixGone;) is not that, and its own range tells it apart: it ends at the
+                    -- name, where a definition's ends at an @end.
+                    local where = (node.loc or {}).file
+                    local last = ((node.range or {})["end"] or {}).offset
+                    local text = where and last and contents(where)
+                    bare = (text and text:sub(last, last + 3) == "@end") and node or false
+                end
             end
         end
+        interface = interface or (bare or nil)
         local file = interface and (interface.loc or {}).file
         -- clang places the @interface's end at the "end" after the "@", and a location in a macro has no offset
         local ending = file and ((interface.range or {})["end"] or {}).offset
@@ -2731,12 +2950,24 @@ local function computed(opt)
             end
             table.insert(sites, {line = line, col = entry.at + 2 - starts[line], insert = entry.text, redeclares = entry.owner})
         end
+        -- An edit that changes how many lines a file has goes after every edit that names a line, and bottom-up among
+        -- itself: every other edit here is applied at the line number marks() found it at, and a removal that takes a
+        -- line out moves every line below it. The rest keep the order they always had - a line at a time, and within a
+        -- line the rightmost column first, because a rewrite only ever touches its own macro's use.
         table.sort(sites, function (a, b)
+            local first, second = a.remove and true or false, b.remove and true or false
+            if first ~= second then
+                return not first
+            end
+            if first then
+                return a.line > b.line
+            end
             return a.line == b.line and a.col > b.col or a.line < b.line
         end)
         local expanding = {}
         for _, site in ipairs(sites) do
-            if site.use and lift_macro(site.use, site.target) == site.use then
+            -- a removal takes the use away whole, so there is nothing to expand it into
+            if site.use and not site.remove and lift_macro(site.use, site.target) == site.use then
                 table.insert(expanding, site)
             end
         end
@@ -2769,6 +3000,11 @@ local function computed(opt)
                 if not site.redeclares then
                     lifted = lifted + 1
                 end
+            elseif site.remove then
+                -- the mark written by this use is an unavailable one, and the whole of the lowering is the use going
+                -- away: __attribute__((unavailable)) names no release, so there is nothing to rewrite in place
+                take_away(lines, site)
+                lifted = lifted + 1
             else
                 local rewritten = lift_macro(site.use, site.target)
                 local declarations = table.getn(table.keys(site.declarations))
@@ -2851,7 +3087,7 @@ local function computed(opt)
     local function edited(mark)
         return edits[mark.file] and (edits[mark.file][mark.line .. ":" .. mark.col] or mark.declaration and (regional[mark.file] or {})[mark.declaration])
     end
-    local before, touched, skipped = {}, {}, 0
+    local before, touched, skipped, forbidden = {}, {}, 0, {}
     for api in pairs(kept) do
         local entry = listed[api]
         local member = member_api(api:gsub("%(%)$", ""))
@@ -2862,6 +3098,8 @@ local function computed(opt)
                     before[api] = (not before[api] or later(before[api], mark.introduced)) and mark.introduced or before[api]
                     touched[api] = touched[api] or edited(mark) and true
                 end
+                -- what it was forbidden at, read the way a release mark is: before the overlay
+                forbidden[api] = #unavailables(node) > 0 or nil
             end
         end
         if touched[api] then
@@ -2894,6 +3132,13 @@ local function computed(opt)
                             table.insert(failures, string.format("%s still says iOS %s", entry.api, mark.introduced))
                         end
                     end
+                    -- and the mark that names no release: an implemented declaration must not be forbidden at the
+                    -- port's release either, which is the other half of what remove() took away. A declaration whose
+                    -- mark is still there over the overlay is one no removal reached - a site outside this SDK, or a
+                    -- member a row keeps, which is not an entry and so is not read here.
+                    if #unavailables(node) > 0 then
+                        table.insert(failures, string.format("%s is still marked unavailable", entry.api))
+                    end
                 end
             end
         end
@@ -2911,6 +3156,18 @@ local function computed(opt)
         end
         if before[api] and after and later(before[api], after) then
             table.insert(failures, string.format("%s is %s and was lowered from iOS %s to %s", api, entry.status, before[api], after))
+        end
+        -- and the mark that names no release, the other side of the same rule: a declaration the port does not
+        -- implement keeps its unavailable mark, so a port that does not carry the API still cannot see it. Read the
+        -- way a release mark is, before and after over the overlay, and over the same apis: one the overlay cannot
+        -- move, nothing moved there either.
+        if forbidden[api] then
+            for _, node in ipairs(dump(filter_of(entry), vfs)) do
+                if matches(entry, node) and #unavailables(node) == 0 then
+                    table.insert(failures, string.format("%s is %s and is no longer marked unavailable", api, entry.status))
+                    break
+                end
+            end
         end
     end
     if #failures > 0 then
