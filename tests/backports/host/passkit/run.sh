@@ -24,6 +24,7 @@ mkdir -p "$build"
 # makes the run GREEN on an artefact the current run never produced, and the run then dies on a fresh
 # build directory. That is exactly what happened to the third mutant, and the only reason it was
 # caught is that a reviewer built it clean.
+rm -rf "$build/mut5"
 rm -f "$build"/cc.log "$build"/runner.log "$build"/*.txt "$build"/*.body "$build"/*.dylib \
       "$build"/*.mutated.m "$build"/runner "$build"/port-classes.o
 MACOSX_SDK=$(xcrun --sdk macosx --show-sdk-path)
@@ -143,6 +144,38 @@ text = text.replace(old_comment, new_comment, 1)
 open(path, "w").write(text)
 PY4
 
+# THE FIFTH MUTANT, on the view controller's SUPERCLASS -- the check that is class_getSuperclass and
+# not isSubclassOfClass, so this is the only mutant that can tell the two apart.
+#
+# The mutation is the SUBCLASS the release never had: PKPaymentAuthorizationViewController declared as
+# a UIView subclass instead of the UIViewController one the header names. It must go RED and name the
+# superclass case. Under the old isSubclassOfClass check it would have been GREEN and said nothing,
+# because a UIView is not a UIViewController either -- which is why the check is spelled the way it
+# is, and why the control has to be this one.
+#
+# It is a HEADER, and that decides where the copies go. A quoted #import resolves against the importing
+# file's own directory FIRST, so a mutated CharonPassKitStandin.h dropped beside the port's sources
+# would be reached by nothing -- every port file sits in $port and would find its own -- while the
+# copies mutants 3 and 4 already have in $build would silently be built against it too. So the fifth
+# mutant gets its own directory: the mutated header and the one port file that implements the class are
+# copied INTO it, that file's own quote-import then finds the mutated header beside it, and no other
+# mutant's sources can see either. The port-classes object is the real one, unchanged: its declaration
+# is a declaration only, and the runtime shape comes from the implementation the mutated header was
+# compiled with.
+mut5=$build/mut5
+mkdir -p "$mut5"
+cp "$port/CharonPassKitStandin.h" "$mut5/CharonPassKitStandin.h"
+cp "$port/PKPaymentAuthorizationViewController8.m" "$mut5/PKPaymentAuthorizationViewController8.m"
+python3 - "$mut5/CharonPassKitStandin.h" <<'PY5'
+import sys
+path = sys.argv[1]
+text = open(path).read()
+old = "@interface PKPaymentAuthorizationViewController : UIViewController"
+new = "@interface PKPaymentAuthorizationViewController : UIView"
+assert text.count(old) == 1, "the superclass the fifth mutant changes is not there exactly once"
+open(path, "w").write(text.replace(old, new, 1))
+PY5
+
 cp "$port/CharonPassKit.m" "$build/CharonPassKit.mutated.m"
 python3 - "$build/CharonPassKit.mutated.m" <<'PY2'
 import sys
@@ -192,6 +225,16 @@ xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RE
     "$port/PKPaymentAuthorizationViewController9.m" "$port/PKPaymentRequestStatus11.m" -o "$build/libmutant2.dylib" 2> "$build/ccmut2.log" || {
         grep -m5 ': error:' "$build/ccmut2.log" || true; exit 1; }
 
+# MUTANT 5: the view controller's superclass. Its own directory, so the mutated stand-in header is
+# reached by exactly the one file copied into it and by nothing else.
+xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RENAME \
+    -I"$port" -framework Foundation -framework PassKit -framework UIKit \
+    -DCHARON_PASSKIT_STANDIN=1 \
+    "$build/port-classes.o" "$port/CharonPassKit.m" "$port/PKSecureElement8.m" "$port/PKWallet.m" \
+    "$port/PKPaymentAuthorizationController10.m" "$mut5/PKPaymentAuthorizationViewController8.m" \
+    "$port/PKPaymentAuthorizationViewController9.m" "$port/PKPaymentRequestStatus11.m" -o "$build/libmutant5.dylib" 2> "$build/ccmut5.log" || {
+        grep -m5 ': error:' "$build/ccmut5.log" || true; exit 1; }
+
 xcrun clang -fobjc-arc -Wall $TARGET -ldl -framework Foundation -framework PassKit -framework UIKit \
     "$here/runner.m" -o "$build/runner" 2> "$build/runner.log" || {
         grep -m5 ': error:' "$build/runner.log" || true; exit 1; }
@@ -206,7 +249,9 @@ DYLD_FRAMEWORK_PATH="$MACOSX_SDK/System/iOSSupport/System/Library/Frameworks" \
     CHARON_PORT_DYLIB="$build/libmutant3.dylib" "$build/runner" > "$build/mutant3.txt" 2>&1 && true
 DYLD_FRAMEWORK_PATH="$MACOSX_SDK/System/iOSSupport/System/Library/Frameworks" \
     CHARON_PORT_DYLIB="$build/libmutant4.dylib" "$build/runner" > "$build/mutant4.txt" 2>&1 && true
-cat "$build/real.txt"; cat "$build/mutant.txt"; cat "$build/mutant2.txt"; cat "$build/mutant3.txt"; cat "$build/mutant4.txt"
+DYLD_FRAMEWORK_PATH="$MACOSX_SDK/System/iOSSupport/System/Library/Frameworks" \
+    CHARON_PORT_DYLIB="$build/libmutant5.dylib" "$build/runner" > "$build/mutant5.txt" 2>&1 && true
+cat "$build/real.txt"; cat "$build/mutant.txt"; cat "$build/mutant2.txt"; cat "$build/mutant3.txt"; cat "$build/mutant4.txt"; cat "$build/mutant5.txt"
 
 # the member lines, and the continuation lines under them: an operation's error is checked in
 # a line of its own, and a filter that drops those checks six answers without a word
@@ -216,11 +261,12 @@ body "$build/mutant.txt" > "$build/mutant.body"
 body "$build/mutant2.txt" > "$build/mutant2.body"
 body "$build/mutant3.txt" > "$build/mutant3.body"
 body "$build/mutant4.txt" > "$build/mutant4.body"
+body "$build/mutant5.txt" > "$build/mutant5.body"
 # EVERY TRANSCRIPT MUST REACH THE RUNNER'S OWN SUMMARY LINE. Found by this run: the `errors:` case
 # type-punned its argument, the runner raised on the next line, and every transcript stopped there --
 # with no FAIL in it, because the cases after the crash never ran. A crashed runner reads as a green
 # run for every case it did not reach, so the check is that it reached the end.
-for name in real mutant mutant2 mutant3 mutant4; do
+for name in real mutant mutant2 mutant3 mutant4 mutant5; do
   if ! tail -1 "$build/$name.txt" | grep -qE '^# [0-9]+ check\(s\)'; then
     echo "FAIL the $name transcript does not end with the runner's own summary line, so that runner"
     echo "     did not finish -- a crash reads as a green run for every case after it"
@@ -306,6 +352,30 @@ if grep -q 'FAIL$' "$build/mutant4.body"; then
     grep 'FAIL$' "$build/mutant4.body" | sed 's/^/   /'
 else
     echo "FAIL the fourth mutant differs but its transcript reports no failing case, so the difference"
+    echo "     is not visible in the transcript a reader would read"
+    exit 1
+fi
+
+# AND THE FIFTH, on the view controller's superclass. One change, and it has to move the transcript in
+# one named place: a renamed subclass of the wrong class is a class the release never had, and only the
+# exact-superclass case says so.
+if diff -q "$build/real.body" "$build/mutant5.body" >/dev/null 2>&1; then
+    echo "FAIL the fifth mutant does not differ: the view controller's superclass is not checked"
+    exit 1
+fi
+echo "ok the fifth mutant differs, so the view controller's superclass is read"
+diff -u "$build/real.body" "$build/mutant5.body" | sed -n '1,10p'
+if ! grep -q 'its superclass is UIViewController, the header.s own' "$build/mutant5.body"; then
+    echo "FAIL the fifth mutant's difference is not the case it changed: the view controller's superclass"
+    echo "     case is not in its transcript, so something else moved and the naming below would be a guess"
+    exit 1
+fi
+echo "ok the fifth mutant's difference is the case it names"
+if grep -q 'FAIL$' "$build/mutant5.body"; then
+    echo "ok the fifth mutant's transcript says which case is wrong, not merely that it is:"
+    grep 'FAIL$' "$build/mutant5.body" | sed 's/^/   /'
+else
+    echo "FAIL the fifth mutant differs but its transcript reports no failing case, so the difference"
     echo "     is not visible in the transcript a reader would read"
     exit 1
 fi

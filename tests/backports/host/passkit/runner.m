@@ -105,12 +105,25 @@ int main(void)
             Class viewController = PORT_CLASS(@"PKPaymentAuthorizationViewController");
             check(@"the controller class is carried, not absent",
                   controller != Nil);
-            check(@"  ... and is a class this port defines, not the host's",
+            // The SUPERCLASS, and it is the header's own for each: the 26.2 header declares
+            // @interface PKPaymentAuthorizationController : NSObject and, under TARGET_OS_IPHONE,
+            // @interface PKPaymentAuthorizationViewController : UIViewController. This port is the iOS
+            // one, so those are the two the release names.
+            // The case NAMES the superclass it expects, so the transcript says what it is checking
+            // and a reader can grep this file for "superclass" and find the check that uses it --
+            // which is the whole reason it is worded this way and not "is a class this port defines".
+            //
+            // It is class_getSuperclass and NOT isSubclassOfClass, and the difference is the point: a
+            // renamed SUBCLASS of the host's class would answer every capability question correctly and
+            // pass an isSubclassOfClass test, while being a class the release never had -- the very
+            // thing the release-split gate and the 6.1.3 gate object to. The superclass must be exactly
+            // the one the header names. run.sh's fifth mutant is that subclass, the view controller
+            // declared as a UIView, and it must go red naming the case.
+            check(@"  ... and its superclass is NSObject, the header's own",
                   controller != Nil && class_getSuperclass(controller) == [NSObject class]);
             check(@"the view controller class is carried, not absent", viewController != Nil);
-            check(@"  ... and descends from UIViewController",
-                  viewController != Nil &&
-                  [viewController isSubclassOfClass:[UIViewController class]]);
+            check(@"  ... and its superclass is UIViewController, the header's own",
+                  viewController != Nil && class_getSuperclass(viewController) == [UIViewController class]);
             // And the three questions each answers, through the runtime, on the port's own class.
             for (Class c in @[controller ?: [NSObject class], viewController ?: [NSObject class]]) {
                 NSString *which = c == controller ? @"controller" : @"view controller";

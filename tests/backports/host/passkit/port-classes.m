@@ -30,6 +30,14 @@
 // Declared, and NOT implemented: the port's own PKPaymentAuthorizationController10.m and
 // PKPaymentAuthorizationViewController8.m implement them, and a second @implementation of either
 // name here is the duplicate the stand-in exists to avoid.
+//
+// THE SUPERCLASS IS THE HEADER'S OWN for each, and it is spelled here as well as checked in the
+// runner, because this is where a reader looks: the 26.2 header declares @interface
+// PKPaymentAuthorizationController : NSObject and, under TARGET_OS_IPHONE, @interface
+// PKPaymentAuthorizationViewController : UIViewController. runner.m asserts exactly these two with
+// class_getSuperclass, and run.sh's fifth mutant -- a copy of CharonPassKitStandin.h, the header the
+// port itself is compiled against, with the view controller's superclass changed to UIView -- must go
+// red naming the case.
 @interface charonHost_PKPaymentAuthorizationController : NSObject
 @end
 
