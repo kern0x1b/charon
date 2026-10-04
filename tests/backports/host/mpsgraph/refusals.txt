@@ -22,19 +22,46 @@ broadcast-narrower 0 2x4
 # An extent of zero is a shape with no elements in it, and the release takes the process down building it.
 broadcast-zero-extent 134 device may not be nil
 
-# The five FED forms, and the reshape's own fed form below. Each is asked into a destination the CALLER gives,
-# because over a fed parameter the release cannot resolve the result's shape and carries a vector of -1 for it
-# (each line below prints that vector first, before the compile), and a destination sized off that vector is a
-# one-element buffer: the "NDArray dimension length > INT_MAX" this file used to record here was the release's
-# NDArray refusing THAT, which is a fact about the question and not about the operation. Measured again with a
-# real destination, FOUR of the five answer exit 0 and write ZEROS over it - which is the row of each method's
-# own named divergence, now measured - and the fifth, the reverse, is refused where it always was, at the run
-# and not over a buffer.
+# The five FED forms, and the reshape's own fed form below, on the CALLER-DESTINATION path: the caller builds
+# the destination and the release runs into it. Two things about the question, both of them this file's own
+# before and both measured here.
+#
+#   The destination is NOT sized off the result's own shape. Over a fed parameter the release cannot resolve that
+#   shape and carries a vector of -1 for it - each line below prints that vector first, before the compile - so
+#   a destination sized off it is a ONE-ELEMENT buffer, and the "NDArray dimension length > INT_MAX" this file
+#   used to record here was the release's NDArray refusing that buffer rather than the operation.
+#   The fed tensor is fed its OWN shape's worth of bytes. One number into a fed tensor of two is the same
+#   NDArray saying "buffer is not large enough", and a fed shape read out of a buffer that holds one number
+#   answers zeros - because a zero is a perfectly good extent.
+#
+# With both of those right, THE RELEASE COMPUTES THE GATHER: a fed flatten axis of 1 over a 2x4 answers the
+# operand's own eight values, a fed axes of [0] over a 1x2x4 answers the region's, and a fed axes of [0] of a 2x4
+# expanded answers the operand's own values once down the new axis. So the port's gather is the release's answer
+# and not a divergence. The reverse is the one form still refused, at the run and not over a buffer.
 fed-flatten-axis 0 result-shape -1x-1
 fed-broadcast-shape 0 result-shape -1
 fed-reverse-axes 134 non constant axes tensor
 fed-squeeze-axes 0 result-shape -1x-1
 fed-expand-axes 0 result-shape -1
+
+# THE OTHER RUN PATH of the same forms: -[MPSGraph runWithFeeds:targetTensors:targetOperations:], where the
+# RELEASE allocates the result and hands it back, so that nothing about the destination the caller chose can be
+# the reason for what comes back. What can be read is its SHAPE - the values of a result the release allocated
+# are not reachable through any public accessor on this host, measured: class_copyPropertyList on
+# MPSGraphTensorData gives `shape`, `dataType` and `device` and nothing that reaches the buffer, and MPSNDArray's
+# own headers are fifteen lines of imports in both the 16.4 and the 26.2 SDK. So each line is the shape the
+# release resolved for itself, which is what a caller would have to size its own buffer from.
+#
+# And it is the -1 vector with the extents RESOLVED, not the -1 vector: a flatten over a fed axis of 1 and a
+# squeeze over fed axes of [0] both allocate a 2x4, which is the written-down form's own answer, while an expand
+# over a fed axis of 0 allocates an 8 - one axis of eight elements where the written-down form answers a 1x2x4 -
+# a broadcast to a fed [2, 4] allocates the OPERAND's own 2x4 rather than the 2x2x4 the fed shape names, and a
+# reshape to a fed [4] allocates a 4, which is the fed shape's own single extent.
+fed-flatten-axis-own 0 own-shape 2x4
+fed-squeeze-axes-own 0 own-shape 2x4
+fed-expand-axes-own 0 own-shape 8
+fed-broadcast-shape-own 0 own-shape 2x4
+reshape-fed-shape-own 0 own-shape 4
 
 # The forms the port refuses, each with the release's own words.
 squeeze-not-unit 134 Failed to infer result type(s)

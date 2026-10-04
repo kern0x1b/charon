@@ -801,9 +801,14 @@ untouched - asked in a graph that ALSO holds the written-down reshape of the sam
 aborts at the compile with the same sentence (exit 134), which is what the band's probe measured and what
 `refusals.txt` used to record. Both are the release; this file records the one `run.sh` re-runs.
 
-So there is still no answer of the release's VALUES for a case to hold against - four of the five write zeros
-rather than the operand's elements - the port's answer is its header's, and the twenty-one comparable forms of
-the sixteen methods are what the differential compares. A fed parameter of a floating point type is refused by
+**What the four answering forms WRITE is the gather**, byte for byte what the written-down form of the same call
+writes - see the next section, which also retracts this band's own first claim that they write zeros. What is
+left refused over a fed parameter in this family is the reverse alone, at the run.
+
+So the four that answer are not comparable CASES for one reason only - each fed gather takes the process down
+in a process that holds the rest of the family (the reason every family is its own process) - and not because
+the release's values differ from the port's: they do not, they are the same gather. `refusals.txt`'s five fed
+rows hold the release's own bytes for it, and its five `*-own` rows the shape it allocates. A fed parameter of a floating point type is refused by
 the factory, because the release cannot build the graph over one at all; an int32 and an int64 of shape [1]
 both answer, measured.
 
@@ -855,18 +860,35 @@ claim was simply wrong. The second: the fed parameter was measured only as somet
 down. It does, over a fed tensor of two numbers or of no rank; over a fed tensor of one number four of the six
 forms ANSWER, and what they answer is this:
 
-> **Over a fed parameter the release's RUN writes zeros.** Asked into a destination the CALLER gives it, it
-> answers exit 0 and writes `+0.0` over every element of it: a fed flatten axis of 1 over a 2x4 into a 2x4,
-> fed axes of `[0]` over a 1x2x4 into a 2x4, fed axes of `[0, 1]` over a 2x3x4 into a 1x1x2x3x4, a fed shape
-> of `[2, 2]` over a 2x4 into a 2x2x4 (where it writes the first eight elements and leaves the rest as the
-> pattern they were filled with, which is the extent of the tensor's own 2x4 shape), and a fed 0D axis count
-> over a 2x4 into a 1x2x4. So over a fed parameter it computes no gather at all.
+> **Over a fed parameter the release's RUN COMPUTES THE GATHER.** On the caller's own destination, asked into
+> the shape the written-down form of the same call answers, over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40):
+> a fed flatten axis of 1 answers the operand's own eight values, fed axes of `[0]` over a 1x2x4 of the same
+> pattern answer the region's own values with axis 0 dropped, and fed axes of `[0]` of a 2x4 expanded answer the
+> operand's own values once down the new axis - byte for byte what the written-down form answers, which is what
+> the port walks. **This is the correction of the claim the first pass of this band made, and the claim was
+> wrong: it is not the release that writes zeros, it was this repository's own question, twice over.** A
+> destination sized off the release's unresolved result shape is a ONE-ELEMENT buffer, and a fed tensor fed one
+> number where its own shape says two reads its extents out of a buffer that is half empty - which, for an
+> extent, is zero. Both were in this band's own probe; the fed tensor's byte count was the second of them and
+> the first version of the probe handed it `MPSSizeofMPSDataType(type)` bytes whatever its shape said.
 
-**That is the row's own named divergence, now measured rather than assumed**: the port answers the header and
-walks the gather, where the release writes zeros. The harness therefore asks the result's SHAPE of these forms
-and not their values - `fed_shape_case` in `tests/backports/host/mpsgraph/graph-cases.m`, twelve cases over the
-six forms and the two gradient forms, one per family, compared against the release and red for a port that
-carried the operand's shape (measured: eleven of the twelve fail under the shape this port used to give).
+**On the path where the RELEASE allocates the result** - `-[MPSGraph runWithFeeds:targetTensors:targetOperations:]`,
+which is `refusals.m`'s five `*-own` questions - it allocates the shape it resolved, and that is the -1 vector
+with the extents filled in: a `2x4` for the flatten and for the squeeze, which is the written-down form's own
+answer; an **`8`** for the expand, one axis of eight elements where the written-down form answers a `1x2x4`; a
+**`4`** for a reshape to a fed `[4]`, the fed shape's own single extent; and the **operand's own `2x4`** for a
+broadcast to a fed `[2, 4]`, which is this form's one measured divergence from the written-down answer. The
+VALUES of a result the release allocated are not readable through any public accessor on this host - measured,
+`class_copyPropertyList` on `MPSGraphTensorData` gives `shape`, `dataType` and `device` and nothing that reaches
+the buffer, and `MPSNDArray`'s own headers are fifteen lines of imports in both the 16.4 and the 26.2 SDK - so
+the shapes are what that path is asked for.
+
+The harness asks the result's SHAPE of these forms and not their values, because over a fed parameter the
+release's answer to the values is the same gather the written-down form gives and the differential already
+compares that: `fed_shape_case` in `tests/backports/host/mpsgraph/graph-cases.m`, twelve cases over the six
+forms and the two gradient forms, one per family, compared against the release and red for a port that carried
+the operand's shape (measured: eleven of the twelve fail under the shape this port used to give). The VALUES
+are held by `refusals.txt`, whose five fed rows now carry the release's own bytes for the gather.
 
 **The broadcast is the one whose extents do not reduce to a rule.** Its RANK is the axes the fed tensor names in
 all seven configurations measured, but its EXTENTS are the operand's own shape at a rank of operand two whatever

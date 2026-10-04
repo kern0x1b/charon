@@ -158,15 +158,55 @@ static void fed(MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *, MPSGraphT
     memset([buffer contents], gPattern, bytes);
     MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:destinationShape
                                                                              dataType:MPSDataTypeFloat32];
+    // The fed tensor is fed its OWN shape's worth of bytes. One number into a fed tensor of two is the
+    // release's own NDArray saying "buffer is not large enough, must be 8 bytes", which says nothing about the
+    // gather - and a fed shape read out of a buffer that holds one number answers zeros, because a zero is a
+    // perfectly good extent. Measured, both of those, and both of them were this file's own question before.
+    MPSGraphTensorData *fedData = [[MPSGraphTensorData alloc] initWithMTLBuffer:
+                                      [gDevice newBufferWithBytes:&fed0
+                                                          length:fedShape.count * MPSSizeofMPSDataType(fedType)
+                                                        options:MTLResourceStorageModeShared]
+                                               shape:fedShape dataType:fedType];
     NSMutableDictionary *shaped = [NSMutableDictionary dictionary];
     shaped[a] = [[MPSGraphShapedType alloc] initWithShape:shape dataType:MPSDataTypeFloat32];
     shaped[p] = [[MPSGraphShapedType alloc] initWithShape:fedShape dataType:fedType];
     MPSGraphExecutable *executable = [one_ compileWithDevice:gGraphDevice feeds:shaped
                                               targetTensors:@[t] targetOperations:@[] compilationDescriptor:nil];
     [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
-                          inputsArray:@[feed(values, shape, MPSDataTypeFloat32), feed(&fed0, fedShape, fedType)]
+                          inputsArray:@[feed(values, shape, MPSDataTypeFloat32), fedData]
                            resultsArray:@[destination] executionDescriptor:nil];
     put(name, buffer, bytes);
+}
+
+// THE SAME GRAPH RUN SO THAT THE RELEASE ALLOCATES THE RESULT, which is the one run path where nothing about
+// the destination the caller chose can be the reason for what comes back. Its SHAPE is what can be read: the
+// VALUES of a result the release allocated are not reachable through any public accessor on this host, measured
+// - class_copyPropertyList on MPSGraphTensorData gives `shape`, `dataType` and `device` and nothing that
+// reaches the buffer, and MPSNDArray's own headers are fifteen lines of imports in both the 16.4 and the 26.2
+// SDK. So this prints the shape the release itself allocated, which is the whole of what the caller has to size
+// its own destination from.
+static void fedOwn(MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *, MPSGraphTensor *),
+                   NSArray<NSNumber *> *shape, const void *values, int32_t fed0, MPSDataType fedType,
+                   NSArray<NSNumber *> *fedShape, const char *name)
+{
+    MPSGraph *one_ = [MPSGraph new];
+    MPSGraphTensor *a = [one_ placeholderWithShape:shape dataType:MPSDataTypeFloat32 name:@"a"];
+    MPSGraphTensor *p = [one_ placeholderWithShape:fedShape dataType:fedType name:@"p"];
+    MPSGraphTensor *t = build(one_, a, p);
+    printf("%s tensor-shape %s\n", name,
+           t.shape == nil ? "nil" : [[t.shape componentsJoinedByString:@"x"] UTF8String]);
+    NSDictionary *results = [one_ runWithFeeds:@{a: feed(values, shape, MPSDataTypeFloat32),
+                                                 p: [[MPSGraphTensorData alloc] initWithMTLBuffer:
+                                                        [gDevice newBufferWithBytes:&fed0
+                                                                            length:fedShape.count
+                                                                                      * MPSSizeofMPSDataType(fedType)
+                                                                           options:MTLResourceStorageModeShared]
+                                                             shape:fedShape dataType:fedType]}
+                                targetTensors:@[t] targetOperations:@[]];
+    printf("%s own-results %lu\n", name, (unsigned long)results.count);
+    for (MPSGraphTensorData *one in results.allValues)
+        printf("%s own-shape %s\n", name,
+               one.shape == nil ? "nil" : [[one.shape componentsJoinedByString:@"x"] UTF8String]);
 }
 
 // An operation of MORE THAN ONE input, which is what the slice's gradient and the slice's update are: a
@@ -249,7 +289,9 @@ int main(int argc, const char *argv[])
             "reshape-fed-shape", "reshape-volume-mismatch", "reshape-two-dynamic", "reshape-dynamic-only",
             "slice-length-zero", "slice-start-past-end", "slice-stride-zero", "slice-length-past-end",
             "fed-flatten-axis", "fed-broadcast-shape", "fed-reverse-axes", "fed-squeeze-axes",
-            "fed-expand-axes", "squeeze-not-unit", "flatten-axis-outside", "expand-axis-outside",
+            "fed-expand-axes", "fed-flatten-axis-own", "fed-broadcast-shape-own", "fed-squeeze-axes-own",
+            "fed-expand-axes-own", "reshape-fed-shape-own",
+            "squeeze-not-unit", "flatten-axis-outside", "expand-axis-outside",
             "transpose-axis-outside", "reverse-axis-outside", "reverse-axes-empty", "squeeze-axes-empty",
             "expand-axes-empty", "transpose-same-axis", "transpose-short-permutation",
             "slice-mask-start-empty", "slice-fed-ends", "slice-fed-sizes", "slice-fed-float32",
@@ -361,6 +403,33 @@ int main(int argc, const char *argv[])
         if (strcmp(q, "reshape-dynamic-only") == 0) {
             one(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                 return [g reshapeTensor:a withShape:@[@-1] name:@"r"]; }, twoByFour, rowFeed, "reshape-dynamic-only");
+            return 0;
+        }
+        // THE OTHER RUN PATH of the five fed forms and the reshape's own: the release allocates the result, so
+        // what the caller gets is a shape rather than a buffer it chose, and the shape is what it resolved.
+        if (strcmp(q, "fed-flatten-axis-own") == 0) {
+            fedOwn(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
+                return [g flatten2DTensor:a axisTensor:p name:@"f"]; }, twoByFour, rowFeed, 1, MPSDataTypeInt32, @[@1], "fed-flatten-axis-own");
+            return 0;
+        }
+        if (strcmp(q, "fed-broadcast-shape-own") == 0) {
+            fedOwn(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
+                return [g broadcastTensor:a toShapeTensor:p name:@"b"]; }, twoByFour, rowFeed, 4, MPSDataTypeInt32, @[@1], "fed-broadcast-shape-own");
+            return 0;
+        }
+        if (strcmp(q, "fed-squeeze-axes-own") == 0) {
+            fedOwn(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
+                return [g squeezeTensor:a axesTensor:p name:@"s"]; }, @[@1, @2, @4], twoByThreeByFour, 0, MPSDataTypeInt32, @[@1], "fed-squeeze-axes-own");
+            return 0;
+        }
+        if (strcmp(q, "fed-expand-axes-own") == 0) {
+            fedOwn(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
+                return [g expandDimsOfTensor:a axesTensor:p name:@"e"]; }, twoByFour, rowFeed, 0, MPSDataTypeInt32, @[@1], "fed-expand-axes-own");
+            return 0;
+        }
+        if (strcmp(q, "reshape-fed-shape-own") == 0) {
+            fedOwn(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
+                return [g reshapeTensor:a withShapeTensor:p name:@"r"]; }, twoByFour, rowFeed, 4, MPSDataTypeInt32, @[@1], "reshape-fed-shape-own");
             return 0;
         }
         if (strcmp(q, "fed-flatten-axis") == 0) {
