@@ -45,10 +45,25 @@ if [ -n "$verdict_line" ]; then
 fi
 echo "run-guest.sh: the full log is $out/run.log and the guest's own output $out/guest.log"
 
+# AND THE REFUSALS ARE COUNTED AGAINST WHAT THE CODE SAYS. Every member of @protocol MTL4CommandQueue the
+# port refuses answers with an NSLog line naming the facility it would have needed, and those lines reach
+# this log - so if the probe reported twelve refusals that returned and the log carries fewer than twelve
+# "Metal:" lines, then some of them refused silently, which is the defect those twelve rows would be
+# claiming the absence of.
+refusals_reported=$(grep -ac '^ok   MTL4CommandQueue_refusal' "$out/run.log" || true)
+refusal_lines=$(grep -ac 'Metal: ' "$out/run.log" || true)
+printf 'run-guest.sh: %s refusal(s) reported, %s refusal line(s) in the guest output\n' \
+    "$refusals_reported" "$refusal_lines"
+
 # A probe that reported a failure or a case it could not answer has NOT passed, whatever the emulator's
 # own word is: the probe exits non-zero in both cases and prints its own counts, and those counts are
 # what this script holds it to.
 case "$summary" in
-  *"0 failure(s), 0 not answered"*) exit 0 ;;
+  *"0 failure(s), 0 not answered"*)
+    if [ "$refusal_lines" -lt "$refusals_reported" ]; then
+      echo "run-guest.sh: NOT a pass - $refusals_reported refusals reported and only $refusal_lines refusal line(s) in the guest output"
+      exit 1
+    fi
+    exit 0 ;;
   *) echo "run-guest.sh: NOT a pass - the probe reported a failure or a case it could not answer"; exit 1 ;;
 esac

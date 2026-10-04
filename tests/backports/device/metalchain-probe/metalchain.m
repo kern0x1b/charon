@@ -41,6 +41,8 @@
 #import <objc/runtime.h>
 #import "metalchain-expectations.h"
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 static int checks, failures, unanswered;
 
@@ -77,6 +79,53 @@ static id send1(id target, const char *selector, id argument)
 {
     id (*send)(id, SEL, id) = (id (*)(id, SEL, id))objc_msgSend;
     return send(target, NSSelectorFromString([NSString stringWithUTF8String:selector]), argument);
+}
+
+/* A CALL THAT MUST RETURN AND NOT RAISE, which is what a caller sees of a refusal in this port: Metal
+ * refuses a void method with an NSLog line (Metal/MTLComputeCommandEncoder8.m:145), and that line DOES
+ * reach the run's own log - measured on 2026-10-04, the guest's output carries
+ * "metalchain-probe[12:203] Metal: a residency set is refused: ..." - so run-guest.sh counts those lines
+ * against the number of refusals the probe reported, and the two numbers have to agree.
+ *
+ * Three arities, because @protocol MTL4CommandQueue spells them that way and ARC will not let one
+ * signature carry an object pointer and a C pointer at once. THE ARITY IS NOT GUESSED FROM THE SELECTOR:
+ * an earlier version sent `updateBufferMappings:heap:count:` - three arguments - through the two-argument
+ * call, so the heap arrived as the integer 1 and ARC's objc_storeStrong retained it as an object: the guest
+ * died on `fault=0x1 access=0x1 size=0x4` (run/emulator.log, 2026-10-04). A table of arities is the fix. */
+static BOOL refuses1(id object, const char *selector, id argument)
+{
+    @try {
+        void (*send)(id, SEL, id) = (void (*)(id, SEL, id))objc_msgSend;
+        send(object, NSSelectorFromString([NSString stringWithUTF8String:selector]), argument);
+        return YES;
+    } @catch (NSException *why) {
+        printf("     (-%s raised %s: %s)\n", selector, class_getName([why class]), [[why reason] UTF8String]);
+        return NO;
+    }
+}
+
+static BOOL refuses2(id object, const char *selector, id argument, NSUInteger count)
+{
+    @try {
+        void (*send)(id, SEL, id, NSUInteger) = (void (*)(id, SEL, id, NSUInteger))objc_msgSend;
+        send(object, NSSelectorFromString([NSString stringWithUTF8String:selector]), argument, count);
+        return YES;
+    } @catch (NSException *why) {
+        printf("     (-%s raised %s: %s)\n", selector, class_getName([why class]), [[why reason] UTF8String]);
+        return NO;
+    }
+}
+
+static BOOL refuses3(id object, const char *selector, id first, id second, id third)
+{
+    @try {
+        void (*send)(id, SEL, id, id, id) = (void (*)(id, SEL, id, id, id))objc_msgSend;
+        send(object, NSSelectorFromString([NSString stringWithUTF8String:selector]), first, second, third);
+        return YES;
+    } @catch (NSException *why) {
+        printf("     (-%s raised %s: %s)\n", selector, class_getName([why class]), [[why reason] UTF8String]);
+        return NO;
+    }
 }
 
 static BOOL has(id object, const char *selector)
@@ -337,6 +386,58 @@ int main(void)
                 verdict(NO, "metalchain_commit_returns", "-commit:count: returns on the header's own path");
                 verdict(NO, "metalchain_commit_returns_when_not_ended", "-commit:count: returns on the un-ended path");
                 printf("     (the commit raised %s: %s)\n", class_getName([why class]), [[why reason] UTF8String]);
+            }
+        }
+
+        /* THE TWELVE MEMBERS THAT REFUSE BY NAME, and the capture scope over a Metal 4 queue. None of
+         * these needs a device: the queue exists with no GL context ([[CharonMetalQueue alloc] init]
+         * inherits NSObject's), which is why they are asked here and why their rows can say a case asks
+         * them rather than only that the placement is verified. What a caller sees of a refusal is that
+         * the call returns - the refusal itself is an NSLog line the guest's logs do not carry, measured -
+         * so that is what is checked, one line per member, named by its own selector. */
+        if (queue) {
+            /* selector, and how many arguments the header gives it after the selector. */
+            static const char *const refusals[][2] = {
+                {"addResidencySet:", "1"},
+                {"removeResidencySet:", "1"},
+                {"addResidencySets:count:", "2"},
+                {"removeResidencySets:count:", "2"},
+                {"updateBufferMappings:heap:count:", "3"},
+                {"updateTextureMappings:heap:count:", "3"},
+                {"copyBufferMappingsFromBuffer:toBuffer:operations:count:", "3"},
+                {"copyTextureMappingsFromTexture:toTexture:operations:count:", "3"},
+                {"waitForDrawable:", "1"},
+                {"waitForEvent:value:", "2"},
+                {"signalEvent:value:", "2"},
+                {"signalDrawable:", "1"}
+            };
+            for (unsigned index = 0; index < sizeof(refusals) / sizeof(refusals[0]); index++) {
+                const char *selector = refusals[index][0];
+                unsigned arity = (unsigned)atoi(refusals[index][1]);
+                /* The queue itself stands in for a residency set, a heap, a drawable and the operations
+                 * array: every one of these members refuses before its argument is read, and what is
+                 * under test is the refusal, not the argument. The `value:` forms get 1, which is a
+                 * plausible value for the header's uint64_t. */
+                BOOL returned = arity == 1 ? refuses1(queue, selector, queue)
+                               : arity == 2 ? refuses2(queue, selector, queue, 1)
+                                            : refuses3(queue, selector, queue, queue, queue);
+                char line[160];
+                snprintf(line, sizeof(line),
+                         "the port's -[MTL4CommandQueue %s] returns and does not raise", selector);
+                verdict(returned, "MTL4CommandQueue_refusal", line);
+            }
+            /* THE CAPTURE SCOPE OVER A METAL 4 QUEUE, which needs no device either: the manager is the
+             * release's own and the scope is a device and a queue, recorded. */
+            Class managerClass = NSClassFromString(@"MTLCaptureManager");
+            id manager = managerClass ? send0(managerClass, "sharedCaptureManager") : nil;
+            id scope = manager ? send1(manager, "newCaptureScopeWithMTL4CommandQueue:", queue) : nil;
+            if (scope) {
+                verdict(YES, "MTLCaptureScope_over_a_Metal4_queue",
+                        "-[MTLCaptureManager newCaptureScopeWithMTL4CommandQueue:] answers a scope over the port's queue");
+            } else {
+                not_answered("MTLCaptureScope_over_a_Metal4_queue",
+                             manager ? "the scope factory gave nothing for the port's own queue"
+                                     : "this image has no MTLCaptureManager class");
             }
         }
 

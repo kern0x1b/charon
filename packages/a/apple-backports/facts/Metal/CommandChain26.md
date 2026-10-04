@@ -300,7 +300,8 @@ probe tests every object the library carries and not the `.deb`.
 
 `metalchain.m` asks **all fourteen** constants of `tests/backports/device/metalchain-expectations.h`, each
 by name, and prints `ok`, `FAIL` or `NOT ANSWERED` with the constant's name, so a verdict joins to an
-expectation without reading the file. A case it cannot reach says which of the two reasons it is - the port
+expectation without reading the file. It asks thirteen more besides: the twelve members of
+`@protocol MTL4CommandQueue` the port refuses by name, and the capture scope over a Metal 4 queue. A case it cannot reach says which of the two reasons it is - the port
 has no such object, or the guest has none to ask - and counts as a failure; nothing is skipped quietly.
 
 ```
@@ -331,11 +332,45 @@ ok   metalchain_queue_has_no_wait_for_command_buffers: the queue has no such wai
 ok   the_ports_own_queue_answers_as_apples_does: the queue under test is an instance of the port's own CharonMetal4CommandQueue
 NOT ANSWERED metalchain_buffer_has_no_status: there is no device to ask for a buffer
 ... (eight more, the same reason)
-NOT ANSWERED metalchain_commit_returns: the queue answers -commit:count: but there is no buffer to commit
-NOT ANSWERED metalchain_commit_returns_when_not_ended: the queue answers -commit:count: but there is no buffer to commit
-metalchain: 18 check(s), 0 failure(s), 14 not answered
-error: fail(exit 1) on iPhone3,1 6.1.3 (10B329) in 0.0 guest s / 3.7 host s at time scale 10
+FAIL metalchain_commit_returns: the queue answers -commit:count: (Apple's own queue does)
+FAIL metalchain_commit_returns_when_not_ended: the queue answers -commit:count: (Apple's own queue does)
+ok   MTL4CommandQueue_refusal: the port's -[MTL4CommandQueue addResidencySet:] returns and does not raise
+... (twelve of those, one per member the port refuses by name)
+ok   MTLCaptureScope_over_a_Metal4_queue: -[MTLCaptureManager newCaptureScopeWithMTL4CommandQueue:] answers a scope over the port's queue
+metalchain: 31 check(s), 2 failure(s), 12 not answered
+error: fail(exit 1) on iPhone3,1 6.1.3 (10B329) in 0.0 guest s / 4.2 host s at time scale 10
+run-guest.sh: 12 refusal(s) reported, 12 refusal line(s) in the guest output
 ```
+
+**THE TWO COMMITS ARE `owed`, NOT DEFINED, and the run says so.** Both take an array of
+`MTL4CommandBuffer` and this port carries no `MTL4CommandBuffer`, so a defined `-commit:count:` would refuse
+every buffer a caller could hand it and be right about none; a row that is not `implemented` may not have an
+answer the build gives (`modules/apple/backports.lua:2062-2071` collects those into `answered`). The
+declarations and the bodies are out of the file, the rows carry the reason "waits on the MTL4CommandBuffer
+family", and the two FAIL lines above are what that state looks like from a case.
+
+**THE TWELVE REFUSALS AND THE CAPTURE SCOPE ARE ASKED, and they need no device** - the queue is made with
+`[[CharonMetal4CommandQueue alloc] init]` and `[[CharonMetalQueue alloc] init]` inherits NSObject's, so the
+refusals and the scope are reachable on a guest that has no EAGL context at all. Each refusal is checked for
+its return, and `run-guest.sh` counts the `Metal:` lines the guest printed against the refusals the probe
+reported, so a refusal that went silent would be caught rather than read.
+
+### Two more harness defects, one of them mine and one of them a correction
+
+* **THE GUEST'S OUTPUT CARRIES THE REFUSAL LINES, and I first wrote that it did not.** The claim came from
+  `grep -c "Metal:" run/emulator.log` returning 0, and it was true of THAT file and wrong about the run:
+  `xmake emulate run` puts the guest's stdout and stderr in `run.log`, and the run of 2026-10-04 carries
+  `metalchain-probe[12:203] Metal: a residency set is refused: ...` for each member. The rows and the
+  comment in `metalchain.m` said the opposite and both are corrected here.
+* **AN ARITY GUESSED FROM A SELECTOR CRASHED THE GUEST, and the fault says exactly which argument was
+  wrong.** The first version of the refusal loop sent `updateBufferMappings:heap:count:` - three arguments
+  after the selector - through the two-argument call, so `heap` arrived as the integer `1`, and ARC's
+  `objc_storeStrong` for the parameter retained it as an object. The guest died with
+  `[cpu] fatal pid=12 pc=0x38dcc522 lr=0x38ddab87 fault=0x1 access=0x1 size=0x4` and
+  `[control] thread ... frames=0x1d7f7,...`, and `0x1d7f7` is inside
+  `-[CharonMetal4CommandQueue updateBufferMappings:heap:count:]` in the probe binary. A SIGBUS or a SIGSEGV
+  on an address that is a small integer is an argument-count mistake before anything else, and the table of
+  members in `metalchain.m` now carries each one's arity rather than matching on `:count:`.
 
 **WHAT IT FOUND, and it is a defect this page did not have: the queue had no members of its own.** The
 first run of the day read `metalchain: 18 check(s), 2 failure(s), 12 not answered`, and the two failures
