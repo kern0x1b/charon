@@ -262,12 +262,31 @@ $ clang -target arm64-apple-macos26.0 ... -fsyntax-only MTL4CommandChain26.m   -
 $ clang -target arm64-apple-macos26.0 ... -fsyntax-only MTL4CommandQueue26.m   -> does NOT build on a host, as it must not
 ```
 
-Both files compile for the device with **0 errors and 5 `-Wunguarded-availability-new` warnings**, which
-were 7 before the queue's members moved off the device: `MTLHeapType` and `MTLHazardTrackingMode` from
-`CharonMetal.h:181-182`, `MTLGPUAddress` from `CharonMetal26Types.h:320` and `MTL4CommandQueueDescriptor`
-twice from the two factories. `MTLEvent` is spelled `id` in this file's two event methods rather than
-`id<MTLEvent>`, because iOS 6 has no `MTLEvent` to name and the SDK annotates the type 12.0 and later; the
-selector is the header's either way, which is what a caller and the registry both see.
+**The package's compile line for `MTL4CommandQueue26.m` carries NO `-I` AT ALL**, measured rather than
+assumed - `backports.compile_arguments` over that source in this tree, which is the same function the gate
+compiles every backport with (`modules/apple/backports.lua:554-558`, and a library's own sources get no
+`includes` of their own - line 928 sets that only for the generated per-band protocol sources):
+
+```
+source: .../packages/a/apple-backports/Metal/MTL4CommandQueue26.m
+-I flags:
+  (none)
+everything else: -Os -g0 -Wall -Wno-unguarded-availability-new -Wno-unguarded-availability
+                 -Werror=objc-missing-property-synthesis -fmacro-prefix-map=<root>/=
+```
+
+So this file reaches `CharonMetal.h` and `CharonMetal26Types.h` the way clang resolves a quoted include -
+in the including file's own folder - and nothing from another backports folder is on its path at all.
+
+**A BARE SYNTAX CHECK OF THESE TWO FILES GIVES 0 ERRORS AND 5 `-Wunguarded-availability-new` WARNINGS**,
+which were 7 before the queue's members moved off the device: `MTLHeapType` and `MTLHazardTrackingMode`
+from `CharonMetal.h:181-182`, `MTLGPUAddress` from `CharonMetal26Types.h:320` and `MTL4CommandQueueDescriptor`
+twice from the two factories. **The library build itself has none of them**, because the package compiles
+with `-Wno-unguarded-availability-new -Wno-unguarded-availability` as the line above shows; the two numbers
+are of different commands and this page now says which is which. `MTLEvent` is spelled `id` in this file's
+event methods rather than `id<MTLEvent>`, which is what takes the count from 7 to 5: iOS 6 has no
+`MTLEvent` to name and the SDK annotates the type 12.0 and later, while the selector is the header's either
+way, which is what a caller and the registry both see.
 
 **The queue is the port's own `CharonMetalQueue` under a Metal 4 name.** There is one queue in this port
 and it is the one that holds the EAGL context every draw goes through, so a Metal 4 caller asking for a
