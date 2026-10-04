@@ -188,32 +188,53 @@ static int ShearSameList(const ShearPair *a, unsigned na, const ShearPair *b, un
     return 1;
 }
 
+// The port's accumulator at one destination sample: the start `CharonShearRun` forms, in the release's own
+// order, converted to Q32, advanced by the release's step. The slope is zero throughout this run, so the
+// horizontal's per-row term is the same on every row and only the translate and the scale are left.
+static long long ShearAccumulator(const CharonResampleFilter *filter, int horizontal, double translate,
+                                  vImagePixelCount dstAlong, vImagePixelCount along)
+{
+    long long position = 0;
+    if (horizontal) {
+        double scaled = 0.0 - filter->reciprocal * translate;
+        scaled = scaled + (double)filter->taps * -0.5;
+        position = CharonResampleQ32((scaled + 1.0) * 4294967296.0);
+    } else {
+        double oneMinusReciprocal = 1.0 - filter->reciprocal;
+        double scaled = (double)dstAlong * oneMinusReciprocal;
+        scaled = scaled + filter->reciprocal * translate;
+        scaled = scaled + (double)filter->taps * -0.5;
+        position = CharonResampleQ32((scaled + 1.0) * 4294967296.0);
+    }
+    return position + (long long)along * CharonResampleStep(filter);
+}
+
 // The port's own pair for one destination sample: the port's own phase function fed the mapping
-// `CharonShearRun` spells in its own header. The slope is zero throughout this run, so the slope's cross term
-// is absent and what is left is the translate and the scale. This is a TRANSCRIPTION and the port's own bytes
-// check it - the summary counts the destinations where the two disagree.
+// `CharonShearRun` spells in its own header, which is the Q32 accumulator the release computes. This is a
+// TRANSCRIPTION and the port's own bytes check it - the summary counts the destinations where the two
+// disagree.
 static void ShearPortFunction(const CharonResampleFilter *filter, int horizontal, double translate,
                               vImagePixelCount dstAlong, vImagePixelCount along, ShearPair *out)
 {
-    double position = (double)along + 0.5 + (horizontal ? -translate : translate);
-    double centre = horizontal
-        ? position * filter->reciprocal - 0.5
-        : position * filter->reciprocal + (double)dstAlong * (1.0 - filter->reciprocal) - 0.5;
     long base = 0;
     unsigned phase = 0;
-    CharonResamplePhase(filter, centre, horizontal, &phase, &base);
+    CharonResamplePhase(filter, ShearAccumulator(filter, horizontal, translate, dstAlong, along),
+                        &phase, &base);
     out->phase = phase;
     out->base = base;
 }
 
 // The port's mapped centre for one destination sample, which is what the boundary test below is stated on.
+// **It is the accumulator's own number, `(A >> 32) + (A & 0xffffffff)/2^32`, and not a double the engine ever
+// evaluates** - the engine reads a row at the top `exponent` bits of that fraction and at nothing finer, so
+// this is the finest position the engine has. `frac * phases` is a whole number here exactly where the
+// Q32 conversion's own rounding decides the row, which is the sample the two spellings of that conversion
+// disagree on.
 static double ShearCentre(const CharonResampleFilter *filter, int horizontal, double translate,
                           vImagePixelCount dstAlong, vImagePixelCount along)
 {
-    double position = (double)along + 0.5 + (horizontal ? -translate : translate);
-    return horizontal
-        ? position * filter->reciprocal - 0.5
-        : position * filter->reciprocal + (double)dstAlong * (1.0 - filter->reciprocal) - 0.5;
+    long long position = ShearAccumulator(filter, horizontal, translate, dstAlong, along);
+    return (double)(position >> 32) + (double)(position & 0xffffffff) * (1.0 / 4294967296.0);
 }
 
 // Fill the source so channel 0 carries its full value at `c` and zero at every other position along the shear,
@@ -474,10 +495,15 @@ static void ShearArmPair(const CharonResampleFilter *filter, int index, int hori
         break;
     }
     case ShearCentreFarFactoredAnchor32: {
-        // The position's product in double; the far-edge ANCHOR rounded to single precision. This is the arm
-        // the release's own bytes select, and it is the only one in the table that can: at a scale of 0.75 on
-        // the vertical, destination row 18 has an exactly-half centre in every other spelling, so no rule
-        // consistent with a scale of 0.5 can reach the row the release names.
+        // The position's product in double; the far-edge ANCHOR rounded to single precision.
+        //
+        // NOT the arm the release uses. v-tail-a17 read the release's own arithmetic out of its instructions
+        // and it is a Q32 accumulator, which no arm in this table has: the table is twenty-four arrangements
+        // of a `double` centre and the release evaluates the position once per row and then adds an integer
+        // per sample. The arm is kept because it scored best here against the HOST, which is how the
+        // arrangement below was arrived at and then refuted. What it looked like it could be, at a scale of
+        // 0.75 on the vertical, is that destination row 18 has an exactly-half centre in every other
+        // spelling, so no rule consistent with a scale of 0.5 can reach the row the host names.
         float anchor = (float)(a * (1.0 - (double)(float)recip));
         mapped = a + (position - a) * recip - 0.5 + ((double)anchor - a * (1.0 - recip));
         break;

@@ -1,46 +1,36 @@
-// The shears of vImage: the resampling engine, and the mapping it is measured to have.
+// The shears of vImage: the resampling engine, and the mapping the release's own workers compute.
 //
-// **The mapping, in full, as measured.** A destination sample's mapped position along the shear is
+// **The mapping, as the release computes it: one Q32 fixed-point accumulator, started once and advanced by a
+// 64-bit integer step.** Read instruction by instruction out of the 6.1.3 armv7 workers and the 7.0 arm64 one
+// and scored on the 6.1.3 guest against 1210 of 1210 named destination samples, at five scales, both axes and
+// seven translates (facts/Accelerate/vImageGeometry.md, "The release's own position arithmetic" and "The two
+// open terms closed"; the reading is the substrate, the count is the check). In the release's own order,
+// because its rounding depends on it:
 //
-//     position = along0 + along + 0.5
-//                      + (horizontal ? -translate : +translate)
-//                      + (horizontal ? slope*(cross - dstCross + 0.5) : slope*(cross + 0.5))
-//     centre   = (horizontal ? position
-//                           : dstAlong + (position - dstAlong)) * reciprocal - 0.5
+//     vertical     start = C*(1 - recip) + recip*t + (taps * -0.5) + 1.0        C = dest->height
+//     horizontal   start = (row + 1 - dest->height) * (recip*slope)
+//                          - recip*t + (taps * -0.5) + 1.0                     once per destination row
+//     step           S   = (int64_t)(recip * 2^32)
+//     A(along)        = (int64_t)(start * 2^32) + along*S, truncating, and one accumulator for the whole
+//                        destination on the vertical; per row on the horizontal, whose start carries the slope
+//     first tap       = (A >> 32) + the caller's offset along the shear
+//     phase          = ((A & 0xffffffff) >> (32 - exponent)) & (phases - 1)     CharonResampling.h
 //
-// with `along` and `cross` the destination's own coordinates along and across the shear, `along0` the region's
-// origin along it, `dstAlong` and `dstCross` the DESTINATION's extents along and across it, `recip` the
-// filter's own stored `1.0/scale` (CharonResampling.h), and the row each destination row reads its own:
-// `row = cross0 + cross`.
+// **There is NO half pixel in it, on either axis, at any scale.** The `1.0` and the `-0.5*numTaps` are what a
+// half pixel does in macOS's arrangement; the `- 0.5` and the `+ 0.5` this file used to carry were that
+// arrangement, and they are what four bands of host measurements converged on. **The vertical anchors at the
+// destination's FAR edge and the horizontal at its NEAR edge**, which is the mirror the two axes have always
+// shown here; `C` and the slope's row term are the two sides of it, and both are the DESTINATION's own
+// extents (`vImage_Buffer` is `{data, height, width, rowBytes}`, so a vertical shear's along extent is
+// `height` and a horizontal shear's across extent is `height` too).
 //
-// **There IS a half pixel, and it is in the scale's bracket.** `position` carries `+0.5` and `centre` carries
-// `-0.5`, so at a scale of one the two cancel and the position is exactly the coordinate - which is what
-// v-tail-a12 measured on the 6.1.3 guest and stated as "there is no half pixel", and it is true AT A SCALE OF
-// ONE AND NOWHERE ELSE. Off a scale of one the pair does not cancel: the along offset that reproduces the
-// host's bytes is 0 at a scale of one, -0.5 at two, +0.25 at a half and +0.375 at a quarter, which is exactly
-// what `(along + 0.5)*recip - 0.5` asks for. **A half pixel removed from the general rule is right at one
-// scale and wrong at the other three**, and the port was wrong at three of the four scales it is asked for.
-//
-// **Every term was decided by exhaustion over the host's own bytes**, at five scales - 1, 2, 0.5, 0.25 and
-// 0.75 - four translates, four slopes and both axes, every candidate scored on every byte of every
-// one-column delta's whole destination (`mapsearch.m`):
-//
-//   * `multiply by the stored reciprocal`, not `divide by 1/reciprocal`. Indistinguishable at 1, 2, 0.5 and
-//     0.25, where `recip` is exact; at 0.75 only the multiply survives. It is also what the release's own
-//     worker does with the `1.0/scale` it keeps beside `floor` of it.
-//   * **the translate is inside the bracket and SUBTRACTS on the horizontal, ADDS on the vertical**, on both
-//     axes at every scale.
-//   * **the slope's cross coordinate keeps its own half pixel**: `cross - dstCross + 0.5` on the horizontal,
-//     counted from the bottom row, and `cross + 0.5` on the vertical, counted from the left column. The two
-//     axes are mirrors, which is why the horizontal's is negated where the vertical's is not.
-//   * **the horizontal's scale is anchored at the near edge and the vertical's at the FAR edge** - the
-//     vertical's is `dstAlong + (position - dstAlong)`, and the offset that makes it is `dstAlong *
-//     (1 - 1/scale)`: five pixels at a scale of two on this destination, and the constant the ladder has to
-//     reach.
-//   * **0.75 closes on the horizontal, sixteen shapes of sixteen, and NOT on the vertical, zero of sixteen.**
-//     That is the one (scale, axis) pair of the ten this measurement leaves open, and it is where
-//     v-tail-a12's 28-of-624 residual has to live. It is named here rather than softened, and the rows that
-//     run at 0.75 have to carry it in their reasons.
+// **Why it is an accumulator and not an expression in the destination coordinate.** Four bands searched
+// "arrangements" of `centre = f(x)` and none of them could work, because no arrangement is a function of `x`
+// at all: the release evaluates the position once per row and then adds a constant integer per sample. At a
+// scale of 0.75 that constant is `4/3` a pixel with a `+-1/192` wobble, because `S mod 2^32` is `0x55555555`
+// - `1/3` of a pixel short of a third - and a running fraction read a third short of `1/3` cycles 21, 42, 63.
+// The port and the release were eleven sixty-fourths apart at every scale but one, and the eleven was that
+// constant: the release's start fraction is `1/3` less a hundred-millionth and the port's was `1/2`.
 //
 // **The kernel is the caller's own.** The Q14 row, the phase it is read at and the base it is read around all
 // come out of the release's filter object (CharonResampling.h), the divisor is that row's own sum, and the
@@ -317,45 +307,48 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
     ((uint8_t *)(img)->data + (size_t)(horizontal ? (cross_) : (along_)) * (img)->rowBytes \
      + (size_t)(horizontal ? (along_) : (cross_)) * pixelBytes)
 
+    // The step, once per call: the release computes it beside the reciprocal and its saturation and never
+    // recomputes it per sample (0x30413d48 on armv7, 0x1804a58dc on arm64).
+    long long step = CharonResampleStep(filter);
+    // The vertical's start, once per call, and the accumulator it runs from for the WHOLE destination: the
+    // vertical's start carries no per-row term, so one accumulator serves every row and the along loop is
+    // inside the row loop exactly as the release's is. The terms are the release's own, in its order -
+    // `1 - recip`, times the destination's along extent, plus `recip*t`, plus `taps * -0.5`, plus `1.0` -
+    // because at an inexact reciprocal any other grouping is the same expression and a different double, and a
+    // different double at the conversion is a whole phase. The horizontal's is formed per row below, where its
+    // slope term is.
+    long long position = 0;
+    if (!horizontal) {
+        double oneMinusReciprocal = 1.0 - reciprocal;
+        double scaled = (double)dstAlong * oneMinusReciprocal;
+        scaled = scaled + reciprocal * translate;
+        scaled = scaled + (double)filter->taps * -0.5;
+        position = CharonResampleQ32((scaled + 1.0) * 4294967296.0);
+    }
+
     for (vImagePixelCount cross = 0; cross < dstCross; cross++) {
         long sourceCross = (long)cross0 + (long)cross;
-        // The position's terms. The slope's is once for the whole row rather than once per tap: what moves
-        // sideways is where ALONG that row it looks, and the row it looks in is its own. Each term is the one
-        // mapsearch.m's exhaustion settled, and the two axes' mirror image is why the horizontal's slope
-        // term is negated and its translate subtracted.
+        // The horizontal's start carries the slope's cross term, so it is formed once per destination row; the
+        // vertical's does not, and its accumulator runs straight through the whole destination, which is why
+        // `position` is declared above the loops and only the horizontal resets it here. The release's own
+        // order is kept term by term: `1 - recip` first, the destination's extent multiplied by it, the
+        // translate's product added, `numTaps * -0.5` added, and `1.0` last. Any other grouping is the same
+        // expression and a different double at an inexact reciprocal, which is a whole phase.
+        if (horizontal) {
+            double perRow = reciprocal * slope;
+            double scaled = (double)((long)cross + 1 - (long)dstCross) * perRow;
+            scaled = scaled - reciprocal * translate;
+            scaled = scaled + (double)filter->taps * -0.5;
+            position = CharonResampleQ32((scaled + 1.0) * 4294967296.0);
+        }
         for (vImagePixelCount along = 0; along < dstAlong; along++) {
-            double position = (double)(along0 + along) + 0.5
-                              + (horizontal ? -translate : translate)
-                              + (horizontal ? slope * ((double)cross - (double)dstCross + 0.5)
-                                            : slope * ((double)cross + 0.5));
-            // **The vertical's centre is the DISTRIBUTED form, and the distribution is load-bearing at an inexact
-            // reciprocal.** `A + (position - A)*recip - 0.5` and `position*recip + A*(1 - recip) - 0.5` are the
-            // same expression, and at 0.75 they differ by about an ulp - which is the difference between a
-            // centre of 2.5 and one of 2.4999999999999996, and therefore between the truncated phase 32 and the
-            // phase 31 the release's own bytes name (CharonResampling.h has the table). At the four exact scales
-            // the two are the same double and the choice is invisible, which is why it has to be stated rather
-            // than discovered: either spelling is right at four scales and only one at the fifth.
-            // **The anchor's arrangement is DOUBLE, and the single-precision variant was measured and REFUTED.**
-            // `position*recip + dstAlong*(1 - recip) - 0.5` and `A + (position - A)*recip - 0.5` are the same
-            // expression and differ by about an ulp, which at an inexact reciprocal is a whole phase because the
-            // vertical truncates. A sweep of twenty-four arrangements of the mapping, each scored against the
-            // `(phase, base)` pair read out of the HOST'S OWN bytes over a 24-by-9 source, put the
-            // single-precision anchor first at every case of a 0.75 vertical AND of a 0.75 horizontal over a
-            // nine-wide destination - and the differential, which shears nine by five into nine by five and so
-            // has a `dstAlong` of 5 where that sweep had 26, then got WORSE on the integer family: 574
-            // vertical 0.75 cases against the 524 this arrangement leaves. So the single-precision anchor is not
-            // the release's rule; it is a rule that agrees with the release at one destination's extent and not
-            // at another's. It is written down here because the sweep is the instrument that refuted it and
-            // because the arrangement below is therefore a measured choice among three and not the only one
-            // anyone thought of. The 0.75 vertical boundary is still open and is named in
-            // facts/Accelerate/vImageGeometry.md with what is known about it.
-            double centre = horizontal ? position * reciprocal - 0.5
-                                       : position * reciprocal + (double)dstAlong * (1.0 - reciprocal) - 0.5;
             unsigned phase;
             long base;
-            // The two functions do not read the row the same way: the horizontal rounds the fraction to nearest
-            // with a carry and the vertical truncates it (CharonResampling.h carries the measurement).
-            CharonResamplePhase(filter, centre, horizontal, &phase, &base);
+            // The row and the tap come out of the accumulator, and the caller's offset along the shear is
+            // added where the release adds it - to the row's base address, which is the FIRST tap, so the
+            // centre this returns is `K0` above the first tap and `first` below it.
+            CharonResamplePhase(filter, position, &phase, &base);
+            base += (long)along0;
             const int16_t *row = filter->row + (size_t)phase * filter->width;
             long first = base - (long)filter->centre;
             double divisor = rowSum[phase];
@@ -396,6 +389,10 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
                 CharonChannelPut(CHARON_SHEAR_AT(dest, along, cross), 0, channel,
                                  divisor != 0.0 ? accumulator / divisor : 0.0, type);
             }
+            // The advance, after the sample and not before it: the release's first destination sample reads
+            // the accumulator as it was started, and `adds`/`adcs` sit at the END of its sample body
+            // (0x30414314 on armv7, behind the branch that leaves the body at 0x304141ce).
+            position += step;
         }
     }
 #undef CHARON_SHEAR_AT

@@ -117,6 +117,7 @@ typedef struct CharonResampleFilter {
     const int16_t *row;
     unsigned width;              // int16Stride / 2, the Q14 row's own width in int16
     unsigned phases;
+    unsigned exponent;           // the filter's own field 5: log2(phases) on every shape measured
     unsigned taps;               // numTaps
     unsigned centre;             // K0: the lowest index attaining row 0's maximum
     unsigned offset;             // the Q14 table's end, as an offset from the object
@@ -151,6 +152,7 @@ static inline int CharonResampleFilterOf(ResamplingFilter filter, CharonResample
     out->row = 0;
     out->width = 0;
     out->phases = 0;
+    out->exponent = 0;
     out->taps = 0;
     out->centre = 0;
     out->offset = 0;
@@ -162,6 +164,7 @@ static inline int CharonResampleFilterOf(ResamplingFilter filter, CharonResample
     unsigned floatStride = CHARON_RESAMPLE_SLOT(filter, 2, unsigned);
     unsigned int16Stride = CHARON_RESAMPLE_SLOT(filter, 3, unsigned);
     unsigned phases = CHARON_RESAMPLE_SLOT(filter, 4, unsigned);
+    unsigned exponent = CHARON_RESAMPLE_SLOT(filter, 5, unsigned);
     unsigned offset = CHARON_RESAMPLE_SLOT(filter, 6, unsigned);
     const char *table = (const char *)CHARON_RESAMPLE_SLOT(filter, 7, const char *);
 
@@ -207,96 +210,91 @@ static inline int CharonResampleFilterOf(ResamplingFilter filter, CharonResample
     out->row = row;
     out->width = width;
     out->phases = phases;
+    out->exponent = exponent;
     out->taps = taps;
     out->centre = centre;
     out->offset = offset;
     return 1;
 }
 
-// The pair the row is read at: which of the release's `phases` rows, and which source pixel its centre tap
-// is. The mapped position is `centre`, in source pixels, with **no half pixel** - source pixel `c` is at
-// position `c` and destination pixel `x` is at position `x`, which is why a scale of one is an exact identity
-// and why a scale of two puts source `c` at destination `2c`.
+// **The release carries the position as a Q32 FIXED-POINT ACCUMULATOR and advances it by an integer, so this
+// takes the accumulator and not a `double` centre.** Read instruction by instruction on 6.1.3 armv7 and on
+// 7.0 arm64 (facts/Accelerate/vImageGeometry.md, "The release's own position arithmetic" and "The two open
+// terms closed"), and scored on the 6.1.3 guest against 1210 of 1210 named destination samples at five
+// scales, both axes and seven translates:
 //
-// The fractional part picks the row by rounding to NEAREST with a CARRY: `q` runs from 0 to `phases` as the
-// fraction runs from 0 to 1, `q == phases` means the position has crossed the next whole pixel, and the carry
-// advances the base while the phase wraps back to zero. The carry is not decoration - it is what makes row 0's
-// peak land on the next source pixel at the top of the range instead of one pixel behind it.
+//     phase = ((A & 0xffffffff) >> (32 - exponent)) & (phases - 1)
+//     base  = (A >> 32) + K0
 //
-// **The two functions do not read the row the same way, and the difference only shows at an inexact reciprocal.**
+// Three things in that are not what a `double` centre would give, and each is the release's:
 //
-// | | horizontal | vertical |
-// | --- | --- | --- |
-// | how the position becomes a row | `q = floor(frac*phases + 0.5)`, then a carry | `phase = floor(frac*phases)`, no carry |
-// | a position at half a phase | the upper row | the lower row |
-// | the centre's arrangement | `position*recip - 0.5` | `position*recip + A*(1 - recip) - 0.5` |
+// * **the phase is a TRUNCATION of `frac(centre)*phases`, with no rounding and no carry.** There is no tie
+//   to settle anywhere: the top `exponent` bits of the fraction are the row, and a position a hair below a
+//   phase boundary reads the row below whatever the rounding would have said. At a scale of 0.75 the stored
+//   reciprocal is `1.3333333333333333`, so `S mod 2^32` is `0x55555555` - a third of a pixel short of `1/3` -
+//   and the phase cycles 21, 42, 63 with a `+-1/192` wobble, which no rounding rule produces.
+// * **the base is the accumulator's own integer part, which is the source index of the row's FIRST tap**, so
+//   the port's centre tap is `K0` above it. `K0 = (numTaps - 2)/2` on every shape measured and it is READ
+//   (the lowest index attaining row 0's maximum) rather than recomputed.
+// * **the two axes are the same arithmetic.** The horizontal does not round to nearest with a carry and the
+//   vertical does not truncate: both truncate, and what the two axes differ on is the START (see
+//   CharonShear.h), not the phase.
 //
-// At scales 1, 2, 0.5 and 0.25 the stored reciprocal is exact and every position the sweep asks for is a whole
-// phase or half a phase, so the two rows are indistinguishable and the whole family reads the same. 0.75 stores
-// `1.3333333333333333` and separates all three.
+// `exponent` is the filter's own field, read at byte 24 on armv7 and byte 40 on arm64, and it is `log2(phases)`
+// on every shape measured. **A filter's own writer clamps it to `0..6`, and `exponent == 0` is reachable -
+// `phases == 1` - where the release's own `lsr.w` by 32 leaves the phase at 0**, which is what the guard
+// below answers rather than a shift by 32 that is undefined.
 //
-// **The horizontal's tie goes UP.** Measured on the host's own bytes, both axes asked for the SAME mapped centre
-// - the horizontal's centre is `along - translate` and the vertical's is `along + translate`, so horizontal
-// translate `-t` and vertical translate `+t` land on one centre (`tie.m`, committed beside the harness because
-// a claim in this file rests on it):
-//
-// | mapped centre (scale one, slope zero) | horizontal | vertical |
-// | --- | --- | --- |
-// | 0.0078125, `x = 0.5` | phase 1 | phase 0 |
-// | 0.0234375, `x = 1.5` | phase 2 | phase 1 |
-// | 0.0390625, `x = 2.5` | phase 3 | phase 2 |
-// | 0.9921875, `x = 63.5` | phase 0, **base carried** | phase 63, no carry |
-// | -0.0078125, `x = 63.5` | phase 0, **base carried** | phase 63, no carry |
-//
-// Every non-tie agrees between the axes and every tie disagrees, at the bottom of the range, in the middle of it
-// and at the top, where the tie is where the horizontal's CARRY shows: `floor` reaches `q == phases`, wraps the
-// phase to zero and advances the base, and the horizontal does exactly that while the vertical stays at
-// `q == phases - 1`. The m = 1 tie is what rules out round-to-nearest-TIES-TO-EVEN, which would answer phase 2
-// there and which the horizontal does not do either.
-//
-// **The vertical TRUNCATES.** `phase = floor(frac*phases)` and `base = floor(centre)`, with no carry at all -
-// which is not the same rule with the tie moved, it is a different reading of the position, and the host's bytes
-// name it: at 0.75, translate zero and slope zero, the host's five destination rows read rows (32, base -2),
-// (53, base -1), (10, base 1), (31, base 2), (53, base 3), and truncating reproduces all five while rounding
-// answers 53, 11, 32, 53 and misses four of them. `base = floor(centre)` with `phase = floor(frac*phases)` is
-// the whole rule: `floor(floor(x*P)/P) == floor(x)` for a positive integer P, so the carry a rounding rule needs
-// is the identity here and there is nothing to get wrong about it.
-//
-// A tie is reachable only where the translate is a dyadic rational that lands half a phase from a whole one,
-// which is why the sweep's off-grid translate 1/128 is the only one that reaches the horizontal's tie: it is
-// exactly half of one of the 64 phases at a scale of one and half of one of the 32 at a scale of one half. **At
-// a scale of two no tie is reachable** - the reciprocal halves the translate, so the same position is a quarter
-// of a phase - and at 0.75 the product is not a tie either.
-//
-// `ceil` and `floor` are the right primitives rather than `floor` adjusted by hand because each is monotone
-// across its own boundary from both sides: `x` a hair under 0.5 gives 0 and a hair over gives 1, with no epsilon
-// and no special case.
-//
-// Measured on iPhone3,1 6.1.3 10B329 against the release's own stored bytes, by exhaustion over all 64 rows
-// and every base tap for every destination column of a one-column delta: 1344 of 1344 at a scale of two, 768
-// of 768 at one, 480 of 480 at a half, 596 of 624 at 0.75, and 32 of 32 / 56 of 56 / 32 of 32 / 32 of 32 on a
-// ramp at translates 0, 0.5, 0.25 and 0.125 - where the four other spellings of the translate score 7, 7, 5
-// and 4 of the same 56. The translate is inside the parenthesis with the coordinate and the whole is divided
-// by the scale.
-static inline void CharonResamplePhase(const CharonResampleFilter *filter, double centre, int horizontal,
+// The caller's region offset is NOT added here: the release adds it where it forms the row's base address,
+// and the caller adds it to the centre this returns (CharonShear.h).
+static inline void CharonResamplePhase(const CharonResampleFilter *filter, long long position,
                                        unsigned *phase, long *base)
 {
-    double whole = floor(centre);
-    double fraction = centre - whole;
-    long low = (long)whole;
-    long q;
-    if (horizontal) {
-        // Round to nearest, the tie to the upper row, with the carry that wraps the phase and advances the base.
-        q = (long)floor(fraction * (double)filter->phases + 0.5);
-        long carry = q / (long)filter->phases;
-        *phase = (unsigned)(q - carry * (long)filter->phases);
-        *base = low + carry;
-    } else {
-        // Truncate the fraction. No carry and no tie to settle.
-        long q = (long)floor(fraction * (double)filter->phases);
-        *phase = (unsigned)q;
-        *base = low;
-    }
+    unsigned bits = filter->exponent;
+    unsigned value = (bits >= 1u && bits <= 31u)
+        ? (unsigned)(((unsigned long long)position & 0xffffffffULL) >> (32u - bits))
+        : 0u;
+    *phase = value & (filter->phases - 1u);
+    *base = (long)(position >> 32) + (long)filter->centre;
+}
+
+// **The release's Q32 conversion: `(int64_t)(x * 2^32)`, whose C cast truncates toward zero** - and `x` here
+// is ALREADY the scaled double, because that is the shape of the release's own code: it multiplies by `2^32`
+// in a `vmul.f64` (0x30413e2e) or an `fmul` (0x1804a59ac) and hands the PRODUCT to the conversion. A caller
+// that has the start in source pixels multiplies it by 4294967296.0 first; `CharonResampleStep` below does
+// exactly that for the step.
+//
+// This is the one term four bands could not settle from the mapping alone, and it is settled here from the
+// release's own bytes rather than from an arrangement: the stub both armv7 workers call is followed through
+// its own pointer word to `0x39263199` in `libcompiler_rt`, and that function shifts the significand RIGHT
+// into place and applies the sign with `eor`/`subs`/`sbc` - a two's-complement negate, not a decrement, which
+// is truncation. There is no bias added to the significand and no test-and-subtract after the call, so there
+// is no floor anywhere. The 7.0 arm64 worker says it in one instruction of its own, `fcvtzs`, which the
+// architecture defines as rounding toward zero. **This matters, and a floor is not a harmless difference**:
+// it decides the sample whose fraction lands exactly on a phase boundary, where the truncation's fraction is
+// 0 and the floor's is `0xffffffff`, so the two name phase 0 and phase 63 and bases a whole pixel apart. Five
+// of the 6.1.3 guest's own answers are one or the other.
+//
+// The clamps are the release's own (`vcmpe`/`vmovgt` against `2^63` and `-2^63` around the call, `fcmp`/`fcsel`
+// around `fcvtzs` on arm64) and they are here so the cast is defined for every double a caller's filter can
+// produce: the saturating end the release reaches converts to `LLONG_MIN`, because its conversion shifts the
+// significand until the top bit falls off, and that is the answer spelled rather than the one a cast would
+// give by accident.
+static inline long long CharonResampleQ32(double scaled)
+{
+    if (scaled >= 9223372036854775808.0)
+        return (-9223372036854775807LL - 1);
+    if (!(scaled > -9223372036854775808.0))
+        return (-9223372036854775807LL - 1);
+    return (long long)scaled;
+}
+
+// The step between two destination samples: `(int64_t)(reciprocal * 2^32)`, advanced by an integer add per
+// sample (`adds`/`adcs` on armv7 at 0x30414314 and 0x3041431c, one `add` on arm64). The release computes it
+// once per call, beside the reciprocal and the saturation, and never recomputes it per sample.
+static inline long long CharonResampleStep(const CharonResampleFilter *filter)
+{
+    return CharonResampleQ32(filter->reciprocal * 4294967296.0);
 }
 
 // The row's own sum, which is the divisor. **Not 16384**: on 6.1.3 the rows are within 5 of it and at a scale

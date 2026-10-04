@@ -100,3 +100,53 @@ Saying so is part of the prediction: a reader must not take the run's agreement 
   vImage first, where the answer is already known: the port and macOS agree everywhere except 0.75 on the
   vertical, and they differ only at exact phase boundaries (v-tail-a14's 524 of 616). An instrument that does
   not reproduce THAT on the host does not go to the guest.
+---
+
+# The prediction for the Q32 engine (v-tail-a17), written before this run
+
+**P1 to P8 above were written for the PREVIOUS engine, the one whose mapping was a `double` centre with a
+half pixel and a per-axis tie rule. They are superseded, and they are left standing rather than edited: what
+they predicted and what the run answered is the record of how the mapping was got wrong. This section is the
+prediction for the engine that replaced it, and it is written from the reading of the release's instructions
+alone (facts/Accelerate/vImageGeometry.md, "The release's own position arithmetic" and "The two open terms
+closed") plus the 1210-pair score that reading makes against a15's own guest log - not from the port's code
+and not from anything this run will print.**
+
+The port now carries the release's own arithmetic: a Q32 fixed-point accumulator, `A0 = (int64)(start * 2^32)`
+truncating, advanced by `(int64)(recip * 2^32)` per destination sample, with
+`phase = ((A & 0xffffffff) >> (32 - exponent)) & (phases - 1)` and the centre tap at `(A >> 32) + K0`.
+
+**P9 - every scale, both axes, every translate: the release's and the port's pairs are EQUAL at every
+destination sample either engine names.** Not "off a scale of one", not "except a boundary": everywhere. The
+reading scores 1210 of 1210 named samples over exactly these seventy cases on a15's log, and the port now
+computes that reading, so the prediction is that the count of `differ` is zero in all seventy summaries.
+Confidence: high. **If this fails, the engine is not the reading** - the port's own bytes and the port's own
+function are printed side by side, so the run says which of the two moved.
+
+**P10 - the 0.75 vertical reads `21 42 63 21 42 63`, and its first four destination samples are BLANK.** The
+phase sequence is `S mod 2^32 = 0x55555555`, a third of a pixel short of a third, read a third short at every
+sample. `along 0..3` are out of the picture at that shape and no pair can be recovered there, which is why the
+earlier reading of this run could not see the one sample where a truncating and a flooring conversion differ
+- `along 2`, whose truncated fraction is exactly zero. Confidence: high.
+
+**P11 - the horizontal at 0.75 names phase 0 where a flooring conversion would name 63.** Five named samples
+in a15's log - `along 1` at translate 1, `along 2` at -1, `along 2` at 0.5, `along 1` at -0.5 and `along 2` at
+1/128 - are where the release's own bytes name phase 0 (and 42 at 1/128) and a floor names 63 (and 41). Those
+five are the run's own check on the conversion, on the axis where the knife edge falls inside the picture.
+Confidence: high, and it is the one prediction here that a wrong engine fails LOUDLY rather than quietly.
+
+**P12 - the scale of one is still an exact identity**, `(phase 0, base = the destination's coordinate)`, on both
+axes: at a scale of one the reciprocal is exactly 1, so the step is exactly `2^32`, the accumulator's fraction
+is 0 at every sample and the base advances by exactly one. Confidence: high.
+
+**P13 - the divisor is still not separable on this release**, as P6 said: the rows are within 5 of 16384 and
+the two divisors name the same pairs. The run carries it by identifying under both and reporting the count.
+Confidence: medium-high.
+
+**P14 - the twenty-four arrangements still score zero against the release**, and now for a reason the run can
+show: none of them has an accumulator in it, so none of them can produce the `21 42 63` cycle. The port's own
+arm is the Q32 model now, and the table is kept because "the release is not in this family" is a claim a
+reader will want to see scored rather than told.
+
+**P15 - the slope is still not in this run** (P8). What the run covers is the translate and the scale on both
+axes, and the slope's cross term is read from the instructions and measured by nothing yet.
