@@ -826,6 +826,38 @@ def selftest():
             print("FAIL the protocol-typed property read was not rewritten as a send on an id receiver",
                   file=sys.stderr)
             sys.exit(1)
+        # declared() on its own: a pure function of the type clang wrote, and the narrowest rule in the tool -
+        # every __kindof the port writes is in front of an SDK class (UIDropCoordinators.m's cell update
+        # handlers), so no row here claims what it does with one in front of a port class; bare() strips
+        # __kindoffrom a class NAME and that is a different function.
+        # a POINTER to one of the port's own classes becomes id, nothing else does. It has been widened twice
+        # and narrowed once ("Write declarations a file of the group can compile", then "Narrow the declaration
+        # fallback to the one shape that needs it"), both times red on groups whose parameters hold values:
+        # "implicit conversion of 'UISemanticContentAttribute' to 'id' is disallowed with ARC" and "sending
+        # 'CGRect' to parameter of incompatible type 'id'". The rows below are the shapes that decide it, and
+        # the ones that must be left alone are half of them.
+        rows = [
+            ("CharonListsMovement *", "id"),          # -charon_movement, whose type one file of listactions declares
+            ("CharonConfigurationHost *", "id"),
+            ("_Nullable CharonRows *", "id"),          # the qualifier is dropped, then the pointer rule applies
+            ("NSString *", "NSString *"),
+            ("UIView *__strong", "UIView *__strong"),
+            ("const char *", "const char *"),
+            ("CharonColour", "CharonColour"),          # not a pointer: a value of the port's class parses as written
+            ("CGRect", "CGRect"),                      # a struct by value is parenthesised by the caller
+            ("struct CGRect", "struct CGRect"),
+            ("UISemanticContentAttribute", "UISemanticContentAttribute"),   # an enum
+            ("NSUInteger", "NSUInteger"),
+            ("BOOL", "BOOL"),
+        ]
+        wrong = [(text, declared(text), want) for text, want in rows if declared(text) != want]
+        print("%s   declared() narrows a pointer to the port's own class and nothing else: %d of %d rows"
+              % ("ok  " if not wrong else "FAIL", len(rows) - len(wrong), len(rows)))
+        for text, got, want in wrong:
+            print("       %r -> %r, and it must be %r" % (text, got, want))
+        if wrong:
+            print("FAIL declared() does not hold to the one shape that needs a fallback", file=sys.stderr)
+            sys.exit(1)
     finally:
         os.unlink(path)
 
