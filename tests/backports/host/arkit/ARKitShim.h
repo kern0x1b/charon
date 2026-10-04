@@ -18,6 +18,8 @@
 #import <Foundation/Foundation.h>
 #import <SceneKit/SceneKit.h>
 #import <UIKit/UIKit.h>
+#import <CoreVideo/CoreVideo.h>
+#import <ImageIO/ImageIO.h>
 #import <simd/simd.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -141,6 +143,26 @@ typedef NS_ENUM(NSInteger, UIInterfaceOrientation) {
 @interface SCNGeometry (CharonReplace)
 - (void)charon_replaceSources:(NSArray<SCNGeometrySource *> *)sources
                      elements:(NSArray<SCNGeometryElement *> *)elements;
+@end
+
+// A reference image, of 11.3, and the only member of its surface a host can measure: the physical size
+// is arithmetic over a picture whose pixels are known, and a group is a folder and a Contents.json.
+// The declarations are the 26.2 header's own, with the orientation spelled as the header spells it -
+// the port's implementation uses CGImagePropertyOrientation, and a shim that said NSInteger would be a
+// second, conflicting declaration of the same selector.
+@interface ARReferenceImage : NSObject
+@property (nonatomic, copy, nullable) NSString *name;
+@property (nonatomic, readonly) CGSize physicalSize;
+@property (nonatomic, strong, readonly, nullable) NSString *resourceGroupName;
+- (instancetype)initWithCGImage:(CGImageRef)image
+                     orientation:(CGImagePropertyOrientation)orientation
+                  physicalWidth:(CGFloat)physicalWidth;
+- (instancetype)initWithPixelBuffer:(CVPixelBufferRef)pixelBuffer
+                         orientation:(CGImagePropertyOrientation)orientation
+                      physicalWidth:(CGFloat)physicalWidth;
++ (nullable NSSet<ARReferenceImage *> *)referenceImagesInGroupNamed:(NSString *)name
+                                                            bundle:(nullable NSBundle *)bundle;
+- (void)validateWithCompletionHandler:(void (^)(NSError *_Nullable error))completionHandler;
 @end
 
 @interface ARSCNPlaneGeometry : SCNGeometry

@@ -21,14 +21,22 @@
 #import <ImageIO/ImageIO.h>
 #import <simd/simd.h>
 
-#import "CharonARKitPrivate.h"
+// No CharonARKitPrivate.h here, and deliberately: this file needs nothing from it. Every other ARKit
+// file imports it for the tracker seams and the keyed-coding helpers, which is what it is for, and a
+// header that reaches SceneKit and AVFoundation and the tracker cannot be compiled into the host
+// differential of this one file - which is the difference between a measurement of this class and no
+// measurement of it at all.
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ARReferenceImage ()
 @property (nonatomic, assign) CGSize imageSize;
 @property (nonatomic, assign) CGFloat width;
-@property (nonatomic, copy, nullable) NSString *group;
+// resourceGroupName is readonly in the header and readwrite here, because this is where an image
+// loaded from a group is told which group it came from. There is no second property for it: the name
+// of the group is what the header calls the group's name, which is the string the caller named the
+// group by, and a second ivar holding the same string would be a second answer to one question.
+@property (nonatomic, strong, nullable) NSString *resourceGroupName;
 @end
 
 @implementation ARReferenceImage
@@ -38,7 +46,6 @@ NS_ASSUME_NONNULL_BEGIN
 @synthesize resourceGroupName = _resourceGroupName;
 @synthesize imageSize = _imageSize;
 @synthesize width = _width;
-@synthesize group = _group;
 
 /// The physical size is the width the caller gave and the picture's own aspect ratio: a 1.0 m door in a
 /// 3:2 picture is 1.0 m by 0.667 m, and that ratio is the whole of what the picture contributes.
@@ -128,7 +135,12 @@ static CGSize CharonPhysicalSize(CGSize pixels, CGFloat physicalWidth)
     if (!reference)
         return nil;
     reference.name = name;
-    reference.group = folder.lastPathComponent;
+    // The group's name, which is the string the caller named it by: the header calls the parameter of
+    // +referenceImagesInGroupNamed:bundle: "the name of the resource group" and calls this property
+    // "the AR resource group name for this image", and both are that one string. An image the caller
+    // built from a CGImage or a pixel buffer was in no group and is left nil, which is what the
+    // header's own "else be set to nil" says.
+    reference.resourceGroupName = name;
     return [NSSet setWithObject:reference];
 }
 

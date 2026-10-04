@@ -67,11 +67,29 @@ port() {
         -o "$runs/diff"
 }
 
+# The second differential: a reference image's physical size and the reading of a group. Both are
+# arithmetic over a picture and the reading of a folder, so neither needs a frame - which is the only
+# part of this family a host can answer at all. One file of the port is compiled into it, and only
+# that one: ARReferenceImage.m imports no private header, which is what lets it be compiled here.
+port_image() {
+    src=$1
+    clang -fobjc-arc -w -O1 \
+        -include "$here/ARKitShim.h" -I "$here" -I "$shim" -I "$src" \
+        "$here/arkit-image-diff.m" "$src/ARReferenceImage.m" \
+        -framework Foundation -framework CoreGraphics -framework CoreVideo -framework ImageIO \
+        -o "$runs/image-diff"
+}
+
 # ---- the plain run ----
 port "$ARKit"
 "$runs/diff" | tee "$runs/plain.txt"
 grep -q '^VERDICT ok' "$runs/plain.txt" || { echo "FAIL: the differential is not green"; exit 1; }
-[ "${1:-}" = "--mutants" ] || { echo "ok the pairing answers both ways and the geometry sources are SceneKit's"; exit 0; }
+port_image "$ARKit"
+# the bundle is named by a path relative to the repository root, because that is how the fixture is
+# found on disk and a path built out of the run's own directory would only be right here
+(cd "$repo" && "$runs/image-diff") | tee "$runs/image-plain.txt"
+grep -q '^VERDICT ok' "$runs/image-plain.txt" || { echo "FAIL: the image differential is not green"; exit 1; }
+[ "${1:-}" = "--mutants" ] || { echo "ok the pairing answers both ways, the geometry sources are SceneKit's, and a reference image's size and group are read from a file"; exit 0; }
 
 # ---- the mutants ----
 survived=0
@@ -111,6 +129,28 @@ mutant "the geometry update drops its coordinate source" ARSCNPlaneGeometry.m \
 mutant "the willUpdateNode: call is skipped" ARSCNView11.m \
     'if ([self.delegate respondsToSelector:@selector(renderer:willUpdateNode:forAnchor:)])' \
     'if (NO && [self.delegate respondsToSelector:@selector(renderer:willUpdateNode:forAnchor:)])'
+
+# And one for the image differential, because a second check that cannot fail is the same evidence
+# nothing. The mutation is the ratio written the other way round, which is the one mistake this
+# arithmetic can make: a physical size that is still a size, still uses the picture, and is wrong.
+mutant_image() {
+    label=$1; file=$2; from=$3; to=$4
+    copy="$runs/mutant-image"
+    rm -rf "$copy"; mkdir -p "$copy"
+    cp "$ARKit/ARReferenceImage.m" "$copy/"
+    python3 "$here/mutate.py" "$copy/$file" "$from" "$to" || { echo "MUTANT NOT APPLIED: $label"; survived=$((survived + 1)); return; }
+    if port_image "$copy" >/dev/null 2>&1 && (cd "$repo" && "$runs/image-diff") > "$runs/image-mutant.txt" 2>&1 && grep -q '^VERDICT ok' "$runs/image-mutant.txt"; then
+        echo "MUTANT SURVIVED: $label"
+        survived=$((survived + 1))
+    else
+        echo "ok mutant killed: $label"
+        grep 'FAIL$' "$runs/image-mutant.txt" 2>/dev/null | sed 's/^/    /' | head -2
+    fi
+}
+mutant_image "the physical size multiplies by the picture's other ratio" ARReferenceImage.m \
+    '    return CGSizeMake(physicalWidth, physicalWidth * pixels.height / pixels.width);' \
+    '    return CGSizeMake(physicalWidth, physicalWidth * pixels.width / pixels.height);'
+if [ "$survived" -eq 0 ]; then
     echo "ok every mutant is killed: the differential can fail, and it fails for the right reason"
 else
     echo "FAIL: $survived mutant(s) survived"

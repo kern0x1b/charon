@@ -1198,7 +1198,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: a picture of a thing in the world and its real width, and the session finds it in the camera's frames - no sensor beyond the camera the session is already running oracle: Apple's documentation for the signature and what it is stated to answer; not measured, because the answer depends on hardware this gate machine does not have",
+      "reason": "carried: a picture of a thing in the world and its real width, and the session finds it in the camera's frames - no sensor beyond the camera the session is already running oracle: Apple's documentation for the signature and what it is stated to answer, plus tests/backports/host/arkit/arkit-image-diff.m, which measures the physical size over a picture of known pixels and the reading of a group over a real .arreferenceimage; what is left unmeasured is tracking, which needs frames this machine does not have",
       "effect": "a caller builds one from a CGImage or a pixel buffer, physicalSize is that width and the picture's own aspect ratio, +referenceImagesInGroupNamed:bundle: reads a <name>.arreferenceimage folder and its Contents.json, and -validateWithCompletionHandler: says what can be said without frames",
       "source": "the SDK 16.4 headers of ARKit",
       "facts": "facts/ARKit/ARSCNViewFamily.md"
