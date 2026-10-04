@@ -18,6 +18,23 @@ def documents(text):
         yield node
 
 
+RUNTIME_HOOKS = ("load", "initialize")
+
+
+def runtime_hook(kind, selector):
+    """+load and +initialize are not API: the runtime calls them by name, so a prefixed one is never called.
+
+    71 of the port's files define +load to install a swizzle - CharonSelfSizing.m exchanges
+    -[UICollectionView layoutSubviews] with the pass that measures the cells that self-size - and the rewriter
+    renamed every one of them to +charonHostLoad, because a category's +load looks like any other method a
+    category carries. Nothing failed: the category still compiled, the method still existed, and the swizzle
+    simply never ran. Measured on sizedlayout on the prefixed path: with a trace in the port's own pass, not one
+    call arrived, and all twenty-one cases answered the estimated height the section declares instead of the
+    height the cell fits. The Objective-C runtime looks these two selectors up by name in the image, so the only
+    correct spelling in a prefixed build is the bare one."""
+    return kind == "+" and selector in RUNTIME_HOOKS
+
+
 def ported(objects):
     """The selectors the objects' Charon categories carry, and the classes the objects themselves define.
     A member of a class the port defines is not carried: the class is renamed, so nothing of it can reach
@@ -31,7 +48,7 @@ def ported(objects):
         if len(parts) == 3 and parts[1] != "U" and parts[2].startswith("_OBJC_CLASS_$_"):
             own.add(parts[2][len("_OBJC_CLASS_$_"):])
     for kind, owner, selector in re.findall(r"([-+])\[([A-Za-z0-9_]+)\(Charon[A-Za-z0-9_]*\) ([A-Za-z0-9_:]+)\]", names):
-        if owner not in own:
+        if owner not in own and not runtime_hook(kind, selector):
             found.add((kind, owner, selector))
     return found
 
