@@ -89,9 +89,19 @@ EFFECT_SDK_BASE = ("no member and no state of its own: 16.4's MTRCluster.h decla
                    " 26.2 adds to the class - endpointID, at 17.4 - is not carried, is owed with the *Params"
                    " family, and is named in facts/Matter/Matter.md. Each cluster class above keeps its own"
                    " device, endpoint and queue in its own storage")
+REASON_GENERIC = ("the class every concrete MTRCluster* cluster of this framework sits on, and the SDK this"
+                  " library compiles against (16.4) does not declare: MTRCluster.h:62 gives it MTR_AVAILABLE("
+                  "ios(17.4)), so the port declares AND implements it, and each of the 143 cluster objects"
+                  " below it names it as its superclass - without it they are `cannot find interface"
+                  " declaration for` and the library does not link")
+EFFECT_GENERIC = ("one member, the `device` its own header declares at MTRCluster.h:66 and nothing else: a"
+                  " readonly strong reference the caller sets, held in the object's own ivar. No read, no"
+                  " write, no subscribe and no command - MTRCluster.h:62 gives the class an empty body and the"
+                  " 143 subclasses below carry every member of the family")
 BASE_ROWS = {
     "MTRCluster": (REASON_SDK_BASE, EFFECT_SDK_BASE),
     "MTRGenericBaseCluster": (REASON_BASE, EFFECT_BASE),
+    "MTRGenericCluster": (REASON_GENERIC, EFFECT_GENERIC),
 }
 
 # The plain data classes get their own prose, for the same reason the two bases do: a row that says
