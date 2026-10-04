@@ -31,11 +31,25 @@ GENERATE = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(GENERATE)
 
 AVAILABLE = re.compile(r"MTR_AVAILABLE\(\s*ios\(([0-9.]+)\)")
+# The release out of a CLASS's own annotation, whichever of the two macros carries one. They are spelled
+# differently and the difference matters: an availability names one release, `MTR_AVAILABLE(ios(16.1), ...)`,
+# and a deprecation names a range, `MTR_DEPRECATED("Please use X", ios(16.1, 16.4), ...)`, so the reader
+# takes the FIRST number and stops there - the release the declaration is available from, which is the
+# question a class row asks. `MTR_PROVISIONALLY_AVAILABLE` is deliberately not in it: it expands to an
+# export or to NS_UNAVAILABLE and names no iOS release at all (MTRDefines.h), and the 315 classes the SDK
+# annotates that way keep the FALLBACK below, which says so.
+CLASS_RELEASE = re.compile(r"(?:MTR_|API_)(?:AVAILABLE|DEPRECATED)\(.*?ios\(([0-9.]+)")
 
 
 def re_available(line):
     """The iOS release a declaration says it arrived in, or None."""
     found = AVAILABLE.search(line)
+    return found.group(1) if found else None
+
+
+def re_class_available(annotation):
+    """The iOS release a CLASS's own annotation states, or None."""
+    found = CLASS_RELEASE.search(annotation or "")
     return found.group(1) if found else None
 
 
@@ -216,14 +230,17 @@ def class_release(lines, block):
     """The release the header states for the CLASS itself, read from the line above its @interface.
 
     Apple writes a class's availability attribute on the line above the @interface and nowhere else, so
-    that one line is the class's own statement about when it arrived. It is read only where no member of
-    the block carries an annotation, which is the case that has nothing else to read: MTRGenericBaseCluster
-    declares no member at all, and the annotation that dates it is on the line above its @interface and
-    nowhere in its block. Not a window over the lines above: a window reaches the PREVIOUS class's
-    annotation and reads a release this class never had.
+    that one line is the class's own statement about when IT arrived. It is read off the JOINED lines and
+    at the class's own position there, which are two things this used to get wrong: `lines.index(block[0])`
+    searched the RAW lines, which do not contain the head at all for a class the SDK writes with the colon
+    on the next line, and it found the FIRST line equal to it anywhere in the header rather than the one
+    above this class.
+
+    `releases_of()` reads this FIRST and only falls through to a member's own annotation when it says
+    nothing, so the reader is here and not inlined.
     """
-    index = lines.index(block[0])
-    return re_available(lines[index - 1]) if index else None
+    name = GENERATE.interface_head(block[0]).group(1)
+    return re_class_available(GENERATE.own_announcement(lines, name))
 
 
 def releases_of(sdk, cluster):
@@ -235,22 +252,32 @@ def releases_of(sdk, cluster):
     or @protocol it sits in, then a file-level one - and only when none of the three exists does the release
     fall back to the cluster's, which is counted rather than passed off as measured.
 
-    The class's own row takes the cluster's first annotated member where there is one, and the annotation
-    above the @interface where there is none. The header's (block, header) is where both are read from, so
-    a class the cluster headers do not declare - the base class, which lives in MTRCluster.h - is dated from
-    the header that declares it.
+    The class's own row takes ITS OWN annotation - the one on the line above its @interface - and the member
+    rules above fill in only for the members, never for the class. The two are different questions and the
+    order is the whole fix: `MTRCluster.h:40` says `MTR_AVAILABLE(ios(16.1))` above `@interface MTRCluster`
+    and the row said 17.4, because the rule used to read the block's FIRST annotated member and the first
+    one MTRCluster has is `endpointID` at 17.4 - a member that arrived two releases after the class holding
+    it. A member with no annotation of its own now inherits the CLASS's own release rather than the first
+    member's, which is the same statement one level up.
     """
     block, header = GENERATE.declaration_of(sdk, cluster)
     if block is None:
         return {}, None, None
-    lines = lines_of(os.path.join(sdk, header))
+    lines = GENERATE.joined_heads(lines_of(os.path.join(sdk, header)))
+    # The CLASS's own release, read FIRST and off the line above its own @interface. It is one value and
+    # both tiers use it: the class row, and the member that carries no annotation of its own. A member's own
+    # annotation still wins for that member, and it is the only thing that can date a class whose own
+    # annotation names no release at all - `MTR_PROVISIONALLY_AVAILABLE` is 315 of them.
+    first = class_release(lines, block)
+    CLASS_TIERS["the annotation above its own @interface" if first
+                else "nothing above the @interface names a release"] += 1
     # The file's own level: an annotation on a line before the first @interface applies to everything after.
     file_release = None
     for line in block:
         if GENERATE.INTERFACE.match(line) or line.lstrip().startswith("@protocol"):
             break
         file_release = file_release or re_available(line)
-    per_selector, first, cursor = {}, None, 0
+    per_selector, cursor = {}, 0
     for first_line, text in GENERATE.declarations(block):
         try:
             index = block.index(first_line, cursor)
@@ -272,8 +299,12 @@ def releases_of(sdk, cluster):
             TIERS["the enclosing @interface, category or @protocol"] += 1
         elif file_release:
             TIERS["a file-level annotation"] += 1
+        elif first:
+            TIERS["none of the three, and its class's own annotation"] += 1
         else:
-            TIERS["none: left to the cluster"] += 1
+            TIERS["none: left to the fallback"] += 1
+        # A class whose own annotation names no release is dated by its first annotated member, which is
+        # the tier this rule had for EVERY class before the class's own annotation was read first.
         if release and first is None:
             first = release
         selector = GENERATE.selector_of(GENERATE.signature(text))
@@ -281,37 +312,82 @@ def releases_of(sdk, cluster):
             per_selector[selector] = release
     # The properties, by their own annotation, in the same three tiers and read out of the same block. A
     # property row's release is a property of the property, and most of the plain data classes' properties
-    # carry one of their own - 2,230 of the 3,260 the generator synthesizes.
+    # carry one of their own - 2,230 of the 3,260 the generator synthesizes. A class the SDK declares
+    # declares no method at all, so this loop is what dated 923 of the 1,067 objects before the class's own
+    # annotation was read at all, and it still dates the classes whose own annotation names no release.
     for declared, text in property_declarations_of(block):
         release = re_available(text)
         if release:
             TIERS["a property's own annotation"] += 1
         elif first is not None:
             release = first
-            TIERS["a property with none, taking its class's release"] += 1
+            TIERS["a property with none, taking its class's own annotation"] += 1
         else:
             TIERS["none: a property with none and a class with none"] += 1
         if declared and release and declared not in per_selector:
             per_selector[declared] = release
-        # A class whose only dated members are its PROPERTIES is dated by them. That is 923 of the 1067
-        # objects: a plain data class declares no method at all, so the method loop above leaves `first` at
-        # nil, and the annotation above the @interface is a comment - which is why 2,022 class rows took the
-        # 16.0 fallback in the first run. A property's own annotation is the higher tier of the same rule,
-        # so it is read before the line above the @interface and only when nothing dated the class already.
-        if first is None and release:
+        if release and first is None:
             first = release
-    if first is None:
-        first = class_release(lines, block)
-        CLASS_TIERS["the annotation above its @interface, no member carries one" if first
-                    else "nothing in the header dates it"] += 1
-    else:
-        CLASS_TIERS["a member's own annotation"] += 1
     return per_selector, first, header
 
 
 def lines_of(path):
     with open(path) as handle:
         return handle.read().splitlines()
+
+
+def rows_over_base(entries, base):
+    """The entries in the order the base file already has them, and what that costs, said by name.
+
+    A registry file is edited BY ROWS and never rewritten: a shared file an export reorders merges today
+    only while nobody else has opened it, so the diff becomes hundreds of lines that differ only in
+    position, and the real edit is lost in it. This file is written by walking the objects' filenames
+    sorted, which is NOT the order the committed Matter file has - the 144 cluster rows were there first
+    and the 924 plain data rows were appended under them - so writing the tool's own order over it
+    replaced every row in the file and changed nothing but the order.
+
+    So with `--base`, the order is the base's: every row it holds keeps its place, rows this run adds are
+    appended in the order the run produced them, and rows the base holds that this run no longer produces
+    are DROPPED - a row for an object that is no longer built must go, and the run says which by name
+    rather than letting the diff say it. What the run prints is the whole of what a reviewer's `git diff`
+    on the file would show, so the two can be compared.
+
+    Every row that keeps its place is still compared, value for value, and a row whose value changed is
+    printed by name with what it changed: a reordering that silently rewrote a release would be the same
+    defect in a different shape.
+    """
+    held = json.load(open(base))
+    order, kept = {}, []
+    for index, entry in enumerate(held["entries"]):
+        order.setdefault(entry["api"], index)
+    fresh = {entry["api"]: entry for entry in entries}
+    moved, renamed = [], []
+    for api, index in sorted(order.items(), key=lambda pair: pair[1]):
+        entry = fresh.pop(api, None)
+        if entry is None:
+            renamed.append(api)
+            continue
+        was = dict(held["entries"][index])
+        if was != dict(entry):
+            fields = sorted(set(was) | set(entry))
+            moved.append((api, "; ".join("%s %r -> %r" % (field, was.get(field), entry.get(field))
+                                        for field in fields if was.get(field) != entry.get(field))))
+        kept.append(entry)
+    appended = [entry for entry in entries if entry["api"] in fresh]
+    print("rows over the base %s: %d kept in its order, %d appended, %d dropped" % (base, len(kept),
+                                                                                   len(appended),
+                                                                                   len(renamed)))
+    if moved:
+        print("  %d row(s) whose value changed:" % len(moved))
+        for api, what in moved:
+            print("    %s: %s" % (api, what))
+    if renamed:
+        print("  %d row(s) the base held that this run does not produce, dropped:" % len(renamed))
+        for api in renamed[:20]:
+            print("    %s" % api)
+        if len(renamed) > 20:
+            print("    ... and %d more" % (len(renamed) - 20))
+    return kept + appended
 
 
 def plain_data_classes(sdk):
@@ -332,6 +408,10 @@ def main():
     parser.add_argument("--objects", help="the directory holding the emitted objects")
     parser.add_argument("--sdk", help="the SDK the headers are read from, for the releases")
     parser.add_argument("--out", help="the registry file to write")
+    parser.add_argument("--base", help="the committed registry file this run writes over, so the rows keep"
+                                       " their places and the diff is the rows that changed and nothing"
+                                       " else; without it the rows come out in the order the objects' file"
+                                       " names sort in, which is not the committed order")
     arguments = parser.parse_args()
 
     # The classes are the objects, one class each: what the generator wrote, read back with the
@@ -421,6 +501,7 @@ def main():
                            " attribute decides the setter: copy for a copy property, a plain store"
                            " otherwise. Nothing here reaches a fabric")]))
             counts["property"] += 1
+    entries = rows_over_base(entries, arguments.base) if arguments.base else entries
     document = collections.OrderedDict([("framework", "Matter"), ("entries", entries)])
     with open(arguments.out, "w") as out:
         out.write(json.dumps(document, indent=2) + "\n")

@@ -79,11 +79,14 @@ methods the header declares answer as Apple documents: no value, and an error.
                                         library builds against declares 385 of them itself ... 72 of them as
                                         a class extension. For the other 538 the port declares the class,
                                         its superclass and every property.`
-    tools/matter-registry.py            14948 rows (1067 class, 9446 method, 4435 property) over 1067 objects;
-                                        every class an emitted object defines has a row: 1067 of 1067; 5236
-                                        rows take the 16.0 fallback the header states nowhere - 376 class,
-                                        3214 method, 1646 property - and all of them are listed in
-                                        ios16.json.unannotated (6978 declarations)
+    tools/matter-registry.py            run on the 1,068 objects of this tree: 17606 rows (1068 class, 11244
+                                        method, 5294 property) over 1068 objects, every object one class;
+                                        every class an emitted object defines has a row: 1068 of 1068; 3943
+                                        rows take the 16.0 fallback the header states nowhere - 307 class,
+                                        1976 method, 1660 property - and all of them are listed in
+                                        ios16.json.unannotated (9175 declarations); 752 class rows now
+                                        take the class's OWN annotation and 316 are dated by a member
+                                        because their own annotation names no release
     the ledger, coordination/corpus/ledger-2026-10-03/Matter.tsv
                                         2870 of the framework's 11675 `missing` rows are `implemented` by
                                         this family - 637 class, 2233 property - and all 2870 name a class
@@ -478,6 +481,45 @@ and the rest of the line landed on the next, so `fresh`/`described` rows were co
 characters and the file carried 277 lines that were the pieces of other lines. The same count on both sides,
 so such a pair still compared equal - and nothing after the cut was examined. `params-probe.m` now flattens a
 newline and a tab out of every value it prints, and the file has no continuation line left.
+
+**A CLASS ROW IS DATED BY THE CLASS'S OWN ANNOTATION, and 2,923 rows move because of it.** The rule used
+to read the block's FIRST annotated member, which is a different question: `MTRCluster.h:40` writes
+`MTR_AVAILABLE(ios(16.1), macos(13.0), watchos(9.1), tvos(16.1))` on the line above
+`@interface MTRCluster` at :41, and the first annotated member of that block is `endpointID` at 17.4, so the
+class row said 17.4 - a class dated two releases after the class that exists. Every row the committed file
+carried for `MTRCluster` is at 16.1, because the row was corrected by hand while the tool kept producing the
+other value, which is the worst of the two: a regeneration disagreed with the file it was supposed to
+reproduce. `releases_of()` now reads the annotation above the class's own `@interface` FIRST, through
+`GENERATE.own_announcement()`, and a member's own annotation dates the class only where the class's own names
+no release - `MTR_PROVISIONALLY_AVAILABLE`, which expands to an export or to `NS_UNAVAILABLE` and states no
+iOS version at all, and is 316 of the 1,068 rows.
+
+    rows over the base: 17606 kept in its order, 0 appended, 0 dropped
+    2923 row(s) whose value changed, and every one of them the `introduced` field alone:
+      185 class, 2210 method, 528 property
+    every movement is DOWN, to an EARLIER release, and none of them reaches the 16.0 fallback:
+      MTRCluster                                     17.4 -> 16.1   (MTRCluster.h:40)
+      MTRBaseClusterBridgedDeviceBasicInformation    18.4 -> 16.4   (MTRBaseClusters.h:3414)
+      MTRBaseClusterAccessControl                    18.4 -> 16.1   (MTRBackwardsCompatShims.h)
+      MTRBaseClusterOnOff                            16.4 -> 16.1   (MTRBaseClusters.h:212)
+      MTRTestClusterClusterSimpleStruct              16.0 -> 16.1   (its own MTR_DEPRECATED states ios(16.1))
+
+The last one is why the reader takes a deprecation as well as an availability: a deprecated alias class is
+annotated `MTR_DEPRECATED("Please use X", ios(16.1, 16.4), ...)`, which states a RANGE where an availability
+states one release, so the reader takes the first number - the release the class is available from, which is
+what a class row asks - and 69 class rows move off the 16.0 fallback onto the 16.1 their own annotation
+states. The `.unannotated` sidecar loses those 443 declarations and adds none.
+
+**`--base` makes the registry write ROWS, and that is the only way it may be written.** The tool writes its
+entries in the order the objects' FILE NAMES sort in, which is not the committed file's order: the 144 cluster
+rows are there first and the 924 plain data rows were appended under them, so writing the tool's own order
+replaced all 17,606 rows and changed nothing but their order - the failure `charon/AGENTS.md` records for three
+different families on 2026-09-30. With `--base` every row the file holds keeps its place, a row the run adds
+is appended, a row the file holds that the run no longer produces is DROPPED and named, and every row that
+keeps its place is compared value for value and its change printed by name. So the run's list of moved rows
+IS the file's diff, which is checked here: **2,923 insertions and 2,923 deletions, one line per moved row, no
+reformat**, and 443 deletions in the sidecar, none added. A second run over the file the first one wrote
+changes nothing at all.
 
 **What is still a shape difference from the framework, and is NOT measured by the comparison.** The
 framework declares a deprecated alias class `@dynamic` with no storage of its own - `MTRStructsObjc.mm:14650

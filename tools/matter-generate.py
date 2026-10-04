@@ -518,6 +518,48 @@ def interface_head(line):
     return INTERFACE.match(line) or CLASS_HEAD.match(line)
 
 
+# An annotation MACRO opening a line, which is what a class's own availability looks like. Not
+# ANNOTATION_WORD, which is for a line that IS the macro and nothing else (`NS_ENUM`, `API_AVAILABLE`
+# in a declaration of its own): what sits above a class's @interface is the macro with its arguments.
+ANNOTATION_HEAD = re.compile(r"^(?:MTR_|API_|NS_|CF_)[A-Z0-9_]+")
+
+
+def own_announcement(lines, name):
+    """The annotation the SDK writes on the class's OWN @interface, joined onto one line, or None.
+
+    Apple writes a class's availability on the line above its @interface and nowhere else, so that line
+    is the class's own statement about when THE CLASS arrived - a different question from when its first
+    annotated member arrived. Reading the member instead dated `MTRCluster` at 17.4 (its `endpointID`)
+    when `MTRCluster.h:40` says `MTR_AVAILABLE(ios(16.1), ...)` directly above the @interface at :41.
+
+    `lines` are the JOINED lines, which is the only spelling under which a class the SDK writes with the
+    colon on the next line has an @interface line at all, and the walk is one line up rather than a
+    window: it stops at the first line that is not an annotation, so the PREVIOUS class's annotation can
+    never be read as this one's. An annotation the SDK wraps over several lines is consumed while its
+    parentheses are still open - `MTR_DEPRECATED(\n    "Please use X", ios(16.1, 16.4), ...)` - because
+    the line above the @interface is then the last line of the argument list.
+    """
+    start = None
+    for index, line in enumerate(lines):
+        head = interface_head(line)
+        if head and head.group(1) == name:
+            start = index
+            break
+    if not start:
+        return None
+    run = lines[start - 1].strip()
+    if not ANNOTATION_HEAD.match(run):
+        return None
+    balance = run.count("(") - run.count(")")
+    index = start - 1
+    while balance > 0 and index:
+        index -= 1
+        step = lines[index].strip()
+        run = step + " " + run
+        balance += step.count("(") - step.count(")")
+    return run
+
+
 HEADERS_CACHE = {}
 
 
