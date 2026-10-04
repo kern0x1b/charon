@@ -145,6 +145,22 @@ static BOOL refuses3(id object, const char *selector, id first, id second, id th
     }
 }
 
+/* FOUR ARGUMENTS, which MTL4CommandQueue.h:366-370 and :404-408 spell as buffer-or-texture, heap, operations
+ * and count - the first version of this probe asked the two update-mapping members with three and the header
+ * says four, and the corpus names `updateBufferMappings:heap:operations:count:` where the first version of the
+ * port wrote `updateBufferMappings:heap:count:`. */
+static BOOL refuses4(id object, const char *selector, id first, id second, id third, id fourth)
+{
+    @try {
+        void (*send)(id, SEL, id, id, id, id) = (void (*)(id, SEL, id, id, id, id))objc_msgSend;
+        send(object, NSSelectorFromString([NSString stringWithUTF8String:selector]), first, second, third, fourth);
+        return YES;
+    } @catch (NSException *why) {
+        printf("     (-%s raised %s: %s)\n", selector, class_getName([why class]), [[why reason] UTF8String]);
+        return NO;
+    }
+}
+
 static BOOL has(id object, const char *selector)
 {
     return object != nil && [object respondsToSelector:NSSelectorFromString([NSString stringWithUTF8String:selector])];
@@ -249,6 +265,11 @@ int main(void)
             /* metalchain_queue_label_is_nil: nil on a fresh queue, copied when it is set. */
             id freshLabel = keyed(queue, "label");
             verdict(freshLabel == nil, "metalchain_queue_label_is_nil", "a fresh queue's label is nil");
+            /* Metal 4's queue label is readonly (MTL4CommandQueue.h:218), so there is no setter to call and
+             * -valueForKey: writes the ivar behind the property, which is what this case is about: the queue
+             * keeps the value it is given. The way an application gives it one is the descriptor, and the
+             * descriptor factory needs a device this guest has none of - see
+             * NOT ANSWERED metalchain_queue_from_descriptor_has_no_error below. */
             @try {
                 [queue setValue:@"named by the probe" forKey:@"label"];
             } @catch (NSException *why) {
@@ -437,15 +458,15 @@ int main(void)
              * second call that printed a second line would be a row contradicting its own status. The two
              * calls return; the ONE line each is counted by run-guest.sh. */
             static const char *const sparse[][2] = {
-                {"updateBufferMappings:heap:count:", "3"},
-                {"updateTextureMappings:heap:count:", "3"},
-                {"copyBufferMappingsFromBuffer:toBuffer:operations:count:", "3"},
-                {"copyTextureMappingsFromTexture:toTexture:operations:count:", "3"}
+                {"updateBufferMappings:heap:operations:count:", "4"},
+                {"updateTextureMappings:heap:operations:count:", "4"},
+                {"copyBufferMappingsFromBuffer:toBuffer:operations:count:", "4"},
+                {"copyTextureMappingsFromTexture:toTexture:operations:count:", "4"}
             };
             for (unsigned index = 0; index < sizeof(sparse) / sizeof(sparse[0]); index++) {
                 const char *selector = sparse[index][0];
-                BOOL first = refuses3(queue, selector, queue, queue, queue);
-                BOOL second = refuses3(queue, selector, queue, queue, queue);
+                BOOL first = refuses4(queue, selector, queue, queue, queue, queue);
+                BOOL second = refuses4(queue, selector, queue, queue, queue, queue);
                 char line[160];
                 snprintf(line, sizeof(line),
                          "the port's -[MTL4CommandQueue %s] returns on both calls and says so once", selector);

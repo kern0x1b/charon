@@ -167,9 +167,16 @@ def defines(node):
 
 
 def gather(path):
-    """Every ObjCProtocolDecl declaration node per name, and the class and typedef names, from one dump. A
-    node with no range is a reference to a protocol (a base, a type), not a declaration of it."""
-    protocols, classes, types = defaultdict(list), set(), set()
+    """Every ObjCProtocolDecl declaration node per name, the class names, and every record/enum name with the
+    keyword that declares it, from one dump. A node with no range is a reference to a protocol (a base, a
+    type), not a declaration of it.
+
+    The kind is kept because a header cannot declare a 26.2-only type the way it declares a class:
+    MTL4UpdateSparseTextureMappingOperation is a typedef of an anonymous struct in MTL4CommandQueue.h, and
+    `@class` on that name is not a declaration of it. Measured 2026-10-04: the gate on the Metal 4 queue's
+    ten member rows needed this protocol transcribed, this tool refused the protocol by name for that one
+    type, and a refusal writes nothing."""
+    protocols, classes, types = defaultdict(list), set(), {}
     located = Located()
 
     def visit(node):
@@ -178,7 +185,7 @@ def gather(path):
         if kind == "ObjCInterfaceDecl" and node.get("name"):
             classes.add(node["name"])
         elif kind in ("TypedefDecl", "EnumDecl", "RecordDecl") and node.get("name"):
-            types.add(node["name"])
+            types.setdefault(node["name"], kind)
         elif kind == "ObjCProtocolDecl" and node.get("name") and "range" in node:
             protocols[node["name"]].append(node)
 
@@ -216,15 +223,23 @@ def definition(name, nodes):
     return [b for b in bases if b], members
 
 
+# the C keyword that forward-declares a type the 26.2 SDK declares and the 16.4 SDK does not, keyed by the
+# kind of declaration it is; a name that is not in it is an ObjC class, which is declared @class
+TYPES26 = {}
+
 # one dump per SDK: the 26.2 that declares the protocols, and the gate's 16.4 that has to compile what is
 # written, so the two class sets are the ones a header is actually written against
 dump(sdk26, frameworks, "arm64-apple-ios26.2", "ast26.json")
 dump(sdk16, frameworks, "armv7-apple-ios6.1.3", "ast16.json")
 
-protocols26, classes26, _ = gather(os.path.join(out, "ast26.json"))
+protocols26, interfaces26, types26 = gather(os.path.join(out, "ast26.json"))
+# A type only the 26.2 SDK declares is written as the declaration a header needs for it, so it is in the set
+# a member's type is looked up in - and `typed` below remembers which declaration each one needs.
+classes26 = set(interfaces26) | set(types26)
+TYPES26.update(types26)
 decls = {name: definition(name, nodes) for name, nodes in protocols26.items()}
 protocols16, interfaces16, types16 = gather(os.path.join(out, "ast16.json"))
-classes16 = interfaces16 | types16
+classes16 = set(interfaces16) | set(types16)
 # a protocol the 16.4 SDK already defines, as the armv7 build sees it, is not declared a second time: the
 # umbrella import supplies it, and a second body is a duplicate definition clang ignores
 defined16 = {name for name, nodes in protocols16.items() if any(defines(node) for node in nodes)}
@@ -251,6 +266,26 @@ def type_of(member):
     return (member.get("returnType") if member["kind"] == "ObjCMethodDecl" else member.get("type", {})).get("qualType", "")
 
 
+def types_of(member):
+    """The member's own type and every parameter's, which is where a name it has to spell can be. The
+    refusal check reads the same list."""
+    return [type_of(member)] + [p.get("type", {}).get("qualType", "") for p in member.get("inner", [])
+                                if p.get("kind") == "ParmVarDecl"]
+
+
+def protocols_of(member):
+    """The protocol names a member's types name, `id<MTLResidencySet>` being one, return type and parameters
+    both. names_of() takes the protocols out for the refusal check - an `id<...>` is `id` to the type lookup -
+    and the header still has to spell them, so they are collected here. Measured 2026-10-04: with
+    MTL4CommandQueue transcribed and no forward declaration, the header does not compile at all - "cannot find
+    protocol declaration for 'MTL4CommandBuffer'" and "no type or protocol named 'MTLResidencySet'", the 16.4
+    SDK declaring neither (it has no Metal 4, and MTLResidencySet arrived after it)."""
+    named = set()
+    for qual in types_of(member):
+        named.update(re.findall(r"\bid\s*<\s*([A-Za-z_][A-Za-z0-9_]*)", qual))
+    return named
+
+
 per_library, refusals, missing = defaultdict(list), [], []
 for name, (framework, introduced) in wanted.items():
     if name in defined16 or name in have:
@@ -266,15 +301,14 @@ for name, (framework, introduced) in wanted.items():
         continue
     typed, refused = set(), []
     for optional, member in members:
-        types = [type_of(member)] + [p.get("type", {}).get("qualType", "") for p in member.get("inner", [])
-                                     if p.get("kind") == "ParmVarDecl"]
-        for qual in types:
+        for qual in types_of(member):
             for base in names_of(qual):
                 if base in BUILTIN or base in classes16:
                     continue
                 if base in classes26:
                     typed.add(base)
                     continue
+
                 refused.append("%s.%s needs %s, which %s does not declare"
                                % (name, member["name"], base, os.path.basename(sdk16.rstrip("/"))))
                 break
@@ -283,7 +317,8 @@ for name, (framework, introduced) in wanted.items():
     if refused:
         refusals.extend(refused)
         continue
-    per_library[(FOLDER_OF_FRAMEWORK.get(framework, framework), framework)].append((name, introduced, bases, members, typed))
+    named = {one for _, member in members for one in protocols_of(member)}
+    per_library[(FOLDER_OF_FRAMEWORK.get(framework, framework), framework)].append((name, introduced, bases, members, typed, named))
 
 for line in sorted(missing + refusals):
     print("refused: " + line)
@@ -371,6 +406,13 @@ for (folder, framework), entries in sorted(per_library.items()):
              "#import <objc/NSObject.h>"]
     if wants_framework:
         lines.insert(len(lines) - 2, "#import <%s/%s.h>" % (framework, framework))
+    # A protocol one of the members' types names, that the SDK this header is written against declares
+    # nowhere, is forward-declared here: a type has to be declared to be spelled. One this file declares with
+    # a body is not declared twice, and one the SDK declares is not declared at all.
+    transcribed = {entry[0] for entry in entries}
+    for name in sorted({one for entry in entries if len(entry) > 2 for one in entry[5]}):
+        if name not in protocols16 and name not in transcribed:
+            lines.append("@protocol %s;" % name)
     # a protocol a header of the library's own folder defines is supplied by that header, which the generated
     # source reaches through the folder on its include path; a forward declaration alone gives @protocol() an
     # empty protocol, with no base and no member
@@ -386,9 +428,15 @@ for (folder, framework), entries in sorted(per_library.items()):
             lines.append("@protocol %s;" % name)
             lines.append("")
             continue
-        _, _, bases, members, typed = entry
+        _, _, bases, members, typed, named = entry
         for one in sorted(typed):
-            lines.append("@class %s;" % one)
+            keyword = TYPES26.get(one)
+            if keyword == "RecordDecl":
+                lines.append("typedef struct %s %s;" % (one, one))
+            elif keyword == "EnumDecl":
+                lines.append("typedef enum %s %s;" % (one, one))
+            else:
+                lines.append("@class %s;" % one)
         lines.append("API_AVAILABLE(ios(%s))" % introduced)
         lines.append("@protocol %s <%s>" % (name, ", ".join(bases) if bases else "NSObject"))
         lines.extend(render(members, folder))

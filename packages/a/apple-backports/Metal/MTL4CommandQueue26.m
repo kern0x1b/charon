@@ -1,7 +1,18 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
+// THE PROTOCOL'S TWO COMMITS ARE NOT IN THIS FILE and clang says so once per method when this class adopts
+// @protocol MTL4CommandQueue: their rows -[MTL4CommandQueue commit:count:] and
+// -[MTL4CommandQueue commit:count:options:] are `owed` until Metal/MTL4CommandBuffer26.m exists, and defining
+// either now would refuse every buffer a caller could hand it. This is the same suppression
+// Metal/CharonMetalDevice.m:2 and Metal/CharonMetalQueue.m:2 carry for the same reason, and it is scoped to
+// this file and to this warning.
+#pragma clang diagnostic ignored "-Wprotocol"
+
 #import "CharonMetal.h"
 #import "CharonMetal26Types.h"
+// THE TRANSCRIBED @protocol MTL4CommandQueue, which the 16.4 SDK this file compiles against does not
+// declare and which the class below adopts: facts only, written by tools/transcribe-protocols.py.
+#import "CharonMetalProtocols.h"
 
 // THE METAL 4 QUEUE, over the port's own CharonMetalQueue, which is the queue that works: it holds the
 // EAGL context over OpenGL ES 2.0 that every draw in this port goes through. So a Metal 4 caller asking
@@ -63,9 +74,25 @@
 // nothing of that name on the queue (tests/backports/device/metalchain-probe/run/run.log). The ledger
 // agrees and was not guessing: all fourteen were status `missing` - they are the queue's members, so with
 // none of them on the queue the queue did not exist as far as the corpus was concerned.
-@interface CharonMetal4CommandQueue : NSObject
-- (id<MTLDevice>)device;
-@property (nonatomic, copy) NSString *label;
+// **THE CLASS CONFORMS TO @protocol MTL4CommandQueue, and that is what makes the ten member rows
+// answerable.** iOS 6 has no Metal 4 protocol to adopt, so the declaration is transcribed from the SDK that
+// has it into CharonMetalProtocols.h (tools/transcribe-protocols.py, facts only), and this conformance is
+// what makes clang emit __OBJC_PROTOCOL_$_MTL4CommandQueue with the protocol's method list into this object.
+// The corpus asks for exactly that: MTL4CommandQueue is a `header-ok`, `needs lift` row. Without it the
+// methods are the port's own names on a Charon* class and every row naming the protocol is a row nothing
+// answers for - measured 2026-10-04, when the landing gate failed all ten with "listed as implemented, but
+// nothing of that name is built" (the eight members below plus MTL4CommandQueue.device and .label).
+// The generated per-band source MetalBackportsProtocols26.m then finds this conformance and does NOT force
+// the object, which is the duplicate check modules/apple/backports.lua makes.
+@interface CharonMetal4CommandQueue : NSObject <MTL4CommandQueue>
+// THE LABEL IS READONLY AND ATOMIC, which is what MTL4CommandQueue.h:218 declares - `@property (readonly,
+// nullable) NSString* label` - and atomic is the default a property has, so that is the spelling that matches
+// the protocol's own and not a copy and not nonatomic. The label therefore arrives the way Metal 4 says it
+// does, through the descriptor, and there is no setter for a caller to reach; -charonSetLabel: is the port's
+// own seam for the one place that sets it, the same shape as -[MTLFunction charonCheckHeapOf:what:] and
+// -[UIPasteboard charonRecordOptions:] and carrying its own registry row.
+@property (atomic, readonly) NSString *label;
+- (void)charonSetLabel:(NSString *)label;
 // **-commit:count: AND -commit:count:options: ARE NOT HERE, and that is a dependency and not an
 // oversight.** Both take an array of MTL4CommandBuffer, and this port carries no MTL4CommandBuffer: the
 // buffer is the next family (Metal/MTL4CommandBuffer26.m does not exist yet) and every buffer a Metal 4
@@ -78,12 +105,17 @@
 - (void)removeResidencySet:(id)residencySet;
 - (void)addResidencySets:(const id *)sets count:(NSUInteger)count;
 - (void)removeResidencySets:(const id *)sets count:(NSUInteger)count;
-- (void)updateBufferMappings:(const void *)operations heap:(id<MTLHeap>)heap count:(NSUInteger)count;
-- (void)updateTextureMappings:(const void *)operations heap:(id<MTLHeap>)heap count:(NSUInteger)count;
+// THE SPARSE FOUR ARE SPELLED AS MTL4CommandQueue.h SPELLS THEM - `heap:operations:count:` and four
+// parameters, not the three and `heap:count:` of the first version of this file, which the corpus never
+// named and the landing gate of 2026-10-04 would have failed the same way it failed the rows.
+- (void)updateBufferMappings:(id<MTLBuffer>)buffer heap:(id<MTLHeap>)heap
+                  operations:(const MTL4UpdateSparseBufferMappingOperation *)operations count:(NSUInteger)count;
+- (void)updateTextureMappings:(id<MTLTexture>)texture heap:(id<MTLHeap>)heap
+                   operations:(const MTL4UpdateSparseTextureMappingOperation *)operations count:(NSUInteger)count;
 - (void)copyBufferMappingsFromBuffer:(id<MTLBuffer>)source toBuffer:(id<MTLBuffer>)destination
-                           operations:(const void *)operations count:(NSUInteger)count;
+                           operations:(const MTL4CopySparseBufferMappingOperation *)operations count:(NSUInteger)count;
 - (void)copyTextureMappingsFromTexture:(id<MTLTexture>)source toTexture:(id<MTLTexture>)destination
-                              operations:(const void *)operations count:(NSUInteger)count;
+                              operations:(const MTL4CopySparseTextureMappingOperation *)operations count:(NSUInteger)count;
 - (void)waitForDrawable:(id<MTLDrawable>)drawable;
 // MTL4CommandQueue.h:274 and :308 spell the event `id<MTLEvent>`, and it is spelled `id` here: iOS 6 has
 // no MTLEvent for the port to name, the SDK annotates the type as 12.0 and later, and naming it would
@@ -142,7 +174,7 @@ static void CharonMetal4NoteInert(NSString *member, NSString *why)
     return _label;
 }
 
-- (void)setLabel:(NSString *)label
+- (void)charonSetLabel:(NSString *)label
 {
     _label = [label copy];
 }
@@ -182,26 +214,30 @@ static void CharonMetal4NoteInert(NSString *member, NSString *why)
 // a line in the log, because "a heap is already all of memory and is never paged"
 // (facts/Metal/Heaps.md). So there is no mapping to update, and the copy forms have nothing to copy
 // because nothing can be made to map. `inert`, with one line each the first time it is used.
-- (void)updateBufferMappings:(const void *)operations heap:(id<MTLHeap>)heap count:(NSUInteger)count
+- (void)updateBufferMappings:(id<MTLBuffer>)buffer heap:(id<MTLHeap>)heap
+                  operations:(const MTL4UpdateSparseBufferMappingOperation *)operations count:(NSUInteger)count
 {
-    (void)operations;
+    (void)buffer;
     (void)heap;
+    (void)operations;
     (void)count;
-    CharonMetal4NoteInert(@"-updateBufferMappings:heap:count:",
+    CharonMetal4NoteInert(@"-updateBufferMappings:heap:operations:count:",
                           @"a sparse buffer mapping needs an MTLHeap with a sparse residency mode, and no heap this port makes is sparse (facts/Metal/Heaps.md)");
 }
 
-- (void)updateTextureMappings:(const void *)operations heap:(id<MTLHeap>)heap count:(NSUInteger)count
+- (void)updateTextureMappings:(id<MTLTexture>)texture heap:(id<MTLHeap>)heap
+                   operations:(const MTL4UpdateSparseTextureMappingOperation *)operations count:(NSUInteger)count
 {
-    (void)operations;
+    (void)texture;
     (void)heap;
+    (void)operations;
     (void)count;
-    CharonMetal4NoteInert(@"-updateTextureMappings:heap:count:",
+    CharonMetal4NoteInert(@"-updateTextureMappings:heap:operations:count:",
                           @"a sparse texture mapping needs an MTLHeap with a sparse residency mode, and no heap this port makes is sparse (facts/Metal/Heaps.md)");
 }
 
 - (void)copyBufferMappingsFromBuffer:(id<MTLBuffer>)source toBuffer:(id<MTLBuffer>)destination
-                           operations:(const void *)operations count:(NSUInteger)count
+                           operations:(const MTL4CopySparseBufferMappingOperation *)operations count:(NSUInteger)count
 {
     (void)source;
     (void)destination;
@@ -212,7 +248,7 @@ static void CharonMetal4NoteInert(NSString *member, NSString *why)
 }
 
 - (void)copyTextureMappingsFromTexture:(id<MTLTexture>)source toTexture:(id<MTLTexture>)destination
-                              operations:(const void *)operations count:(NSUInteger)count
+                              operations:(const MTL4CopySparseTextureMappingOperation *)operations count:(NSUInteger)count
 {
     (void)source;
     (void)destination;
@@ -301,7 +337,7 @@ static void CharonMetal4NoteInert(NSString *member, NSString *why)
 - (id)newMTL4CommandQueueWithDescriptor:(MTL4CommandQueueDescriptor *)descriptor error:(NSError **)error
 {
     CharonMetal4CommandQueue *queue = [[CharonMetal4CommandQueue alloc] init];
-    queue.label = descriptor.label;
+    [queue charonSetLabel:descriptor.label];
     return queue;
 }
 
