@@ -335,6 +335,20 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
             // phase 31 the release's own bytes name (CharonResampling.h has the table). At the four exact scales
             // the two are the same double and the choice is invisible, which is why it has to be stated rather
             // than discovered: either spelling is right at four scales and only one at the fifth.
+            // **The anchor's arrangement is DOUBLE, and the single-precision variant was measured and REFUTED.**
+            // `position*recip + dstAlong*(1 - recip) - 0.5` and `A + (position - A)*recip - 0.5` are the same
+            // expression and differ by about an ulp, which at an inexact reciprocal is a whole phase because the
+            // vertical truncates. A sweep of twenty-four arrangements of the mapping, each scored against the
+            // `(phase, base)` pair read out of the HOST'S OWN bytes over a 24-by-9 source, put the
+            // single-precision anchor first at every case of a 0.75 vertical AND of a 0.75 horizontal over a
+            // nine-wide destination - and the differential, which shears nine by five into nine by five and so
+            // has a `dstAlong` of 5 where that sweep had 26, then got WORSE on the integer family: 574
+            // vertical 0.75 cases against the 524 this arrangement leaves. So the single-precision anchor is not
+            // the release's rule; it is a rule that agrees with the release at one destination's extent and not
+            // at another's. It is written down here because the sweep is the instrument that refuted it and
+            // because the arrangement below is therefore a measured choice among three and not the only one
+            // anyone thought of. The 0.75 vertical boundary is still open and is named in
+            // facts/Accelerate/vImageGeometry.md with what is known about it.
             double centre = horizontal ? position * reciprocal - 0.5
                                        : position * reciprocal + (double)dstAlong * (1.0 - reciprocal) - 0.5;
             unsigned phase;
