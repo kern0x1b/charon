@@ -41,14 +41,23 @@ CKRecord *CharonCKRecordFromResult(NSDictionary *result, NSSet *desiredKeys)
         [record setObject:fields[key] forKey:key];
     }
 
-    // The service's own answers about the record, written through the record's own object file, which
-    // owns that state.
-    CharonCKRecordApplyServerFields(record,
-                                    [result[@"recordChangeTag"] isKindOfClass:[NSString class]] ? result[@"recordChangeTag"] : nil,
-                                    CharonCKRecordIDFromDocument(result[@"creatorUserRecordID"]),
-                                    CharonCKDateFromJSON(result[@"creationDate"]),
-                                    CharonCKRecordIDFromDocument(result[@"lastModifiedUserRecordID"]),
-                                    CharonCKDateFromJSON(result[@"modificationDate"]));
+    // The service's own answers about the record, and only the ones the answer carries, so a record
+    // that has never been saved keeps nil for all of them.
+    //
+    // They go in through the record's own properties. Below iOS 8.0 the record is this port's class
+    // and CKRecords8.m writes out the five setters, which CharonCKRecordPrivate.h declares readwrite
+    // for exactly this. From 8.0 on the record is the release's class, which carries all five readonly
+    // and so cannot be given them at all: the answer is nil, which is what this library's own readers
+    // already read there - CharonCKDocuments.m builds the outgoing document out of record.recordChangeTag
+    // and skips what a record does not hold, and CKOperations8.m calls the same record an update or a
+    // create on that one value. So the property is asked, once, whether this record takes the answers.
+    if ([record respondsToSelector:@selector(setRecordChangeTag:)]) {
+        record.recordChangeTag = [result[@"recordChangeTag"] isKindOfClass:[NSString class]] ? result[@"recordChangeTag"] : nil;
+        record.creatorUserRecordID = CharonCKRecordIDFromDocument(result[@"creatorUserRecordID"]);
+        record.creationDate = CharonCKDateFromJSON(result[@"creationDate"]);
+        record.lastModifiedUserRecordID = CharonCKRecordIDFromDocument(result[@"lastModifiedUserRecordID"]);
+        record.modificationDate = CharonCKDateFromJSON(result[@"modificationDate"]);
+    }
     return record;
 }
 

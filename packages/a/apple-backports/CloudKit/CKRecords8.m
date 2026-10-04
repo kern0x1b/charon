@@ -619,9 +619,16 @@ static NSString *CharonZoneText(CKRecordZoneID *zone)
 // Equality is identity: CKRecord does not override isEqual:, so two records of the same type with the
 // same ID are still different records, and a copy is a different record carrying the same fields. That
 // is measured in both directions and is not a shortcut here.
-// The seven properties of the class that the other object file also needs are declared readwrite in
-// CharonCKRecordPrivate.h and their accessors written out here: @synthesize would make the ivar
-// private to this @implementation, and CKRecords10.m reads recordID.
+// The seven service's answers are declared readwrite in CharonCKRecordPrivate.h and their accessors
+// written out here: @synthesize would make the ivar private to this @implementation, and the decoders
+// in CharonCKRecords.m write them through the same properties.
+//
+// This is the only object that touches CKRecord's ivars. From iOS 8.0 on the release carries the
+// class, a band links this file for its re-exported symbols alone and the record in a process is the
+// release's, whose layout is the release's - so the 10.0 half of the class (CKRecords10.m, which is in
+// every band) keeps the parent and the share beside the record and reads nothing of these. The service's
+// own answers are written the same way, through the properties above, so no file outside this one names
+// an offset into the record.
 @implementation CKRecord
 - (NSString *)recordType { return _recordType; }
 - (void)setRecordType:(NSString *)recordType { _recordType = [recordType copy]; }
@@ -789,16 +796,26 @@ static NSString *CharonZoneText(CKRecordZoneID *zone)
             (unsigned long)_fields.count];
 }
 
+// parent and share are the 10.0 half of the class and are @dynamic here for that reason: they are
+// implemented once, in CKRecords10.m, over storage that belongs to the record rather than to this
+// class's layout, because from iOS 8.0 on the record in a process is the release's and its offsets are
+// the release's. Left to synthesis they would be implemented here as well - two bodies for one
+// selector, of which the linker picks one by link order.
+@dynamic parent, share;
+
+// The two SDK wrappers are the same method on both sides of iOS 8.0, so their bodies are in
+// CKRecords10.m and this class forwards to them. They are here because @implementation CKRecord has to
+// answer everything @interface CKRecord declares, and they are only the port's own class that needs it
+// to: for a band of 8.0 to 9.3, where the record is the release's, the installer in that file adds
+// them to the class, and from 10.0 the release answers them itself.
+- (void)setParentReferenceFromRecordID:(CKRecordID *)parentRecordID
+{
+    CharonCKRecordSetParentReferenceFromRecordID(self, parentRecordID);
+}
 
 - (void)setParentReferenceFromRecord:(CKRecord *)parentRecord
 {
-    _parent = parentRecord ? [[CKReference alloc] initWithRecordID:parentRecord.recordID
-                                                            action:CKReferenceActionDeleteSelf] : nil;
-}
-- (void)setParentReferenceFromRecordID:(CKRecordID *)parentRecordID
-{
-    _parent = parentRecordID ? [[CKReference alloc] initWithRecordID:parentRecordID
-                                                              action:CKReferenceActionDeleteSelf] : nil;
+    CharonCKRecordSetParentReferenceFromRecord(self, parentRecord);
 }
 - (id<CKRecordKeyValueSetting>)encryptedValues
 {
@@ -832,19 +849,3 @@ static NSString *CharonZoneText(CKRecordZoneID *zone)
 }
 
 @end
-
-// The service's own answers, written for the decoders. Only the ones the answer carries are set, so a
-// record that has never been saved keeps nil for all of them.
-void CharonCKRecordApplyServerFields(CKRecord *record, NSString *changeTag, CKRecordID *creatorUserRecordID,
-                                     NSDate *creationDate, CKRecordID *lastModifiedUserRecordID,
-                                     NSDate *modificationDate)
-{
-    if (!record) {
-        return;
-    }
-    record.recordChangeTag = changeTag;
-    record.creatorUserRecordID = creatorUserRecordID;
-    record.creationDate = creationDate;
-    record.lastModifiedUserRecordID = lastModifiedUserRecordID;
-    record.modificationDate = modificationDate;
-}
