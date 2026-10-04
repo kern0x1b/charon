@@ -57,6 +57,53 @@ Two things about the 6.x/7.x row are worth writing down rather than leaving to b
   release's class already answers somewhere in its chain, and `NSObject` answers `-init`. That is
   why the task's state is made when it is first asked for (`-charon_state`) and not in `-init`.
 
+## What `-resume` reaches on 8.0 - 8.4.1, and the one step nobody has run
+
+The port's `-resume` is `[self charon_open]; [super resume];`, and on an 8.x band `[super resume]` is
+CFNetwork's own `-[NSURLSessionTask resume]` -- the 8.4 band's `libFoundationBackports.dylib` defines
+`NSURLSessionStreamTask` and `NSURLSessionStreamTaskState` and *references* `NSURLSessionTask` "(from
+CFNetwork)", so the port's own task class is not in that chain. What that `resume` then drives is not
+below the class the port's task is re-parented onto, and that is measured, over the held armv7 caches
+with `apple.objc.inventory` (`.agent-work/measure/stream-hierarchy.lua` and `stream-gap.lua` in the
+worktree that measured it):
+
+| release | `NSURLSessionStreamTask` | classes below it | the concrete stream task class | `_onqueue_resume` lives on |
+| --- | --- | --- | --- | --- |
+| 8.0 | 0 own instance methods | **none** | `__NSCFLocalStreamTask` : `__NSCFLocalSessionTask` | both of those |
+| 8.4.1 | 0 own instance methods | **none** | `__NSCFLocalStreamTask` : `__NSCFLocalSessionTask` | both of those |
+| 9.0 | 0 own instance methods | **none** | `__NSCFURLLocalStreamTask` : `__NSCFURLSessionTask` | not asked on this rung |
+
+`__NSCFLocalStreamTask` carries 13 own instance methods and `__NSCFLocalSessionTask` 88, and **94 of
+those 101 are selectors neither `NSURLSessionTask` nor `NSURLSessionStreamTask` answers** -- the whole
+`_onqueue_*` layer (`_onqueue_resume`, `_onqueue_suspend`, `_onqueue_cancel`, `_onqueue_newStreams`,
+`_onqueue_createBoundStreams`, `_onqueue_issueWrite`, `_onqueue_adjustPoolPriority`,
+`_onqueue_completeInitialization`, `_onqueue_didFinishWithError:` and the rest), `_task_onqueue_*`, the
+`connection:*` callbacks and the connection's own accessors. `NSURLSessionTask`'s own 147 methods on 8.0
+(146 on 8.4.1) hold `-resume`, `-suspend`, `-cancel`, `-_onqueue_adjustPriorityHint:` and
+`-_onqueue_releasePowerAsssertion` (the release's own spelling) and **not** `-_onqueue_resume`.
+
+So the port's 8.x task, which the loader lays out from a class with no own instance variable and no own
+method, is not below any of that vocabulary, and `[super resume]` is the release's own method driving
+it. Whether that raises `unrecognized selector` is **not measured here**, and this page does not claim
+either way:
+
+* The metadata names the vocabulary and says which class holds it. It cannot say which selectors
+  `-[NSURLSessionTask resume]` sends, because that is in its code and not in its method list.
+* The one level that would answer it is the emulator or hardware, and **this machine has no image of a
+  release from 8.0 on**: `~/.charon/firmware/rootfs/iPhone4,1` holds 6.0 and 6.1.3 and
+  `~/.charon/emulator/golden.noindex` four golden images (iPhone2,1 4.0 and 4.3.2, iPhone3,1 4.3.2 and
+  7.1.2), while `shade profile --list` does offer iPhone4,1 and `shade abi` knows Darwin 14.0.0. So the
+  probe is possible and it costs what the skill says: the 8.4.1 iPhone4,1 firmware (1.55 GB) fetched and
+  extracted, then one boot past first-boot migration to make the golden image. Nothing was booted and
+  nothing was run.
+* An 8.x armv7s band cannot be asked either: the newest firmware Shade has a profile for is iPhone4,1
+  at 9.3.6, so 10.3.4 - the top of the armv7s ladder - is not emulable on this machine at all.
+
+One earlier reading of these caches said no class in 8.0 or 8.4.1 carries `-_onqueue_resume` at all,
+and it was wrong: `apple.objc.inventory`'s `instance` map is keyed **with the leading sign**, so an
+index on the bare selector reads nil while `pairs` yields `-_onqueue_resume`. The measurement above
+iterates the map.
+
 The seven methods are not a CATEGORY on the release's name here, and that is a measured choice too:
 a category on `NSURLSessionStreamTask` implements the methods the SDK's own interface declares there,
 and clang's `-Wobjc-protocol-method-implementation` says so once per method, which the wave's rules
