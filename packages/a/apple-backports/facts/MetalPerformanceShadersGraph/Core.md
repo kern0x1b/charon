@@ -1179,12 +1179,18 @@ this section said the host could not be asked at all, because a queue has no `-w
 is right. The descriptor's `completionHandler` and `scheduledHandler` are honoured around the walk on both
 sides, each called with the results and a nil error.
 
-**The two encode forms are not compared, and the reason is measured on this host and is not about timing**:
-MPSGraph's own `MPSCommandBuffer` has **no creation API in the SDK this harness compiles against** -
-`MPSGraph.h` and `MPSGraphDevice.h` name the class only in the encode parameters - so a bare `alloc` gives an
-object that raises `-[MPSCommandBuffer device]: unrecognized selector`, and there is no buffer to encode into.
-The port answers both forms through the same walk and writes the caller's dictionary; the two rows say what
-could not be asked rather than what was measured about it.
+**The two encode forms CAN be compared, and this page's previous two passes said they could not - both times for
+the wrong reason, so the correction is here as well as in the commit message.** MPSGraph's own
+`MPSCommandBuffer` has its creation API in
+`MetalPerformanceShaders.framework/Frameworks/MPSCore.framework/Headers/MPSCommandBuffer.h`, **inside the
+MetalPerformanceShaders umbrella**, as `+commandBufferFromCommandQueue:`. The harness imported only
+`MetalPerformanceShadersGraph`, so the declaration was never in view; this band then concluded from a bare
+`alloc` raising `-[MPSCommandBuffer device]: unrecognized selector` that the class could not be made. It can.
+**The case is not in the family yet** - this band ran out of context before adding it, and this page does not
+claim it is there. What the case is: an `MPSCommandBuffer` from the queue, encode, `[buffer commit]`,
+`[buffer waitUntilCompleted]` - the wait is on the **buffer**, which is where that method is - and then the
+caller's dictionary is read. The port answers both forms through the same walk as every other and writes that
+dictionary, so what is left to measure is the release's own answer and not the port's.
 
 ### The two shared events, measured
 
