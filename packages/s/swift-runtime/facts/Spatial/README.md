@@ -58,21 +58,28 @@ Closed against it, each one a measured difference:
 | `Point3D.rotation(to:)` | the rotation of the two points' own vectors | the rotation of their difference onto zero, which is no rotation |
 | the Float half's pi | `Float.pi` | the Double's, so the Float's arithmetic left the Float |
 
-Still open, three values, and the coordinator's to rule on:
+Three values do not agree with the host, and the coordinator ruled on 2026-10-04 that they are
+**named, measured divergences** rather than a widened tolerance. `check.py` carries them in
+`DIVERGENCES`, each with the host's value, the port's value and the reason, and then compares both
+columns **exactly** against what the run produced - so a difference anywhere else still fails, and
+one of the three moving in either column fails too. No tolerance is widened anywhere, and the
+green suite is what lets the mutation control run at all:
 
-- `d.rotation.eulerAngles.xyz.z` - host 0.61327141523361206, ours 0.61327139037901746, 4e-8 relative
-- `d.rotation.eulerAngles.zxy.y` - host 0.40688398480415344, ours 0.40688398209126875, 6.6e-9
-- `f.description` - the host's `Angle2DFloat.degrees(30).radians` prints `(radians: 0.5235988)` and
-  ours `(radians: 0.52359873)`, three ulps apart
+```
+values: 943, agree: 940, named divergences: 3, differ: 0, largest relative difference: 4.76667e-07
+mutations: all caught
+```
 
-The two angles are the last term of an extraction whose other two terms agree with the host to one
-ulp, and the matrix they read is bit-identical on the two sides: the host's and this module's
-`AffineTransform3D(rotation: r).matrix3x4` print the same seventeen digits for all nine entries.
-Six candidate formulas for each of the two, the Float-rounded ones included, were computed on that
-matrix and none reproduces the host's value to better than 4e-9, so the extraction the host uses is
-not one of them. The Float pi is the same number on both sides - `Float.pi` prints 3.1415925 either
-way - and `Float(30) * Float.pi / Float(180)` is 0.5235988 on the host, so the last one is a
-rounding route this tree does not reproduce either.
+The three, as recorded:
+
+| value | host | port | why |
+| --- | --- | --- | --- |
+| `d.rotation.eulerAngles.xyz.z` | 0.61327141523361206 | 0.61327139037901746 | the last term of the extraction, on a matrix the two sides print the same seventeen digits for; the other two terms agree to one ulp |
+| `d.rotation.eulerAngles.zxy.y` | 0.40688398480415344 | 0.40688398209126875 | the last term of that order's extraction, on the same matrix; six formulas computed on it, the Float-rounded ones included, reach no better than 4e-9 |
+| `f.description` | `(radians: 0.5235988)` | `(radians: 0.52359873)` | the Float half's degrees to radians rounds three ulps from the host's, on operands both sides agree on - `Float.pi` prints 3.1415925 either way |
+
+Both controls, run on this tree: a planted 0.5 over `d.angle.radians` exits 1, and one of the three
+moved by a unit in the last place exits 1.
 
 ## What of Apple's surface this module does not carry
 
