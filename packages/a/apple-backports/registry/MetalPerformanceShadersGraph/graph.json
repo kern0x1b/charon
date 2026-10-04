@@ -1901,6 +1901,166 @@
     "effect": "the gather walk with EVERY AXIS REPEATED: the result's axis k is the operand's axis k at multiplier[k] times its extent, and the coordinate of the result counts the operand's own extent over again. Measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40): a multiplier of (2, 3) answers a 4x12 holding the operand three times over twice down, a multiplier of (1, 3) a 2x12 holding it three times across, a multiplier of (2, 1) the same twice down, a multiplier of one the operand itself byte for byte, and a multiplier of (2, 2, 2) over a 2x3x4 the 4x6x8 of 192 elements - so a rank of three is answered here where a pad of a rank of three is not. A multiplier below one is refused where the graph is built, and so is one that is not an entry per axis. the run's verdict line is \"gather_padtile checks=17 failures=0 recorded=0\" over 536 cells in 37 cases, the red control differing from the release in 18 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
     "facts": "facts/MetalPerformanceShadersGraph/Core.md",
     "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraph runWithMTLCommandQueue:feeds:targetTensors:targetOperations:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the run over the operations the graph holds, returning the results the caller named as tensors. the walk is the graph's own over its operations - there is nothing to compile ahead of time on a port whose operations are a walk, and the async and the encode forms are the same walk, because the release's own difference between them is what it does with the GPU afterwards and this port's walk is over the host's memory on the CPU with nothing to schedule. THE TWO SHAPES OF ANSWER, both measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) added to itself and both in the differential: the form that returns a dictionary hands back the release's OWN tensor data and leaves the caller's buffer untouched - the returned object is not the one the caller passed and the buffer still holds the byte 0xbd it was filled with - while the form that takes a RESULTS DICTIONARY writes the answer into the data the caller put in it, (2, 4, 6, 8 | 20, 40, 60, 80), and the dictionary's KEYS are what the walk computes, because that form names no target tensors of its own. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraph runWithMTLCommandQueue:feeds:targetOperations:resultsDictionary:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the run whose results go into the dictionary the caller gave, one entry per tensor in it. the walk is the graph's own over its operations - there is nothing to compile ahead of time on a port whose operations are a walk, and the async and the encode forms are the same walk, because the release's own difference between them is what it does with the GPU afterwards and this port's walk is over the host's memory on the CPU with nothing to schedule. THE TWO SHAPES OF ANSWER, both measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) added to itself and both in the differential: the form that returns a dictionary hands back the release's OWN tensor data and leaves the caller's buffer untouched - the returned object is not the one the caller passed and the buffer still holds the byte 0xbd it was filled with - while the form that takes a RESULTS DICTIONARY writes the answer into the data the caller put in it, (2, 4, 6, 8 | 20, 40, 60, 80), and the dictionary's KEYS are what the walk computes, because that form names no target tensors of its own. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraph runAsyncWithFeeds:targetTensors:targetOperations:executionDescriptor:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the same walk as the synchronous form, with the descriptor's shared events honoured at both ends of it. the walk is the graph's own over its operations - there is nothing to compile ahead of time on a port whose operations are a walk, and the async and the encode forms are the same walk, because the release's own difference between them is what it does with the GPU afterwards and this port's walk is over the host's memory on the CPU with nothing to schedule. THE TWO SHAPES OF ANSWER, both measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) added to itself and both in the differential: the form that returns a dictionary hands back the release's OWN tensor data and leaves the caller's buffer untouched - the returned object is not the one the caller passed and the buffer still holds the byte 0xbd it was filled with - while the form that takes a RESULTS DICTIONARY writes the answer into the data the caller put in it, (2, 4, 6, 8 | 20, 40, 60, 80), and the dictionary's KEYS are what the walk computes, because that form names no target tensors of its own. WHAT CANNOT BE OBSERVED HERE, measured and named rather than asserted: the ASYNC and the ENCODE forms write the caller's dictionary after the release's GPU work is done, and this host's own command queue has no -waitUntilCompleted to wait for it with (\"-[AGXG16XFamilyCommandQueue waitUntilCompleted]: unrecognized selector\"), so on this host there is nothing to read back for those forms. The port's answer is in the caller's buffer when the call returns, which is the same answer at the moment a caller who CAN wait would look, and the rows say so. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraph runAsyncWithMTLCommandQueue:feeds:targetTensors:targetOperations:executionDescriptor:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the same walk again, through a command queue the port reads for nothing, because there is nothing to schedule. the walk is the graph's own over its operations - there is nothing to compile ahead of time on a port whose operations are a walk, and the async and the encode forms are the same walk, because the release's own difference between them is what it does with the GPU afterwards and this port's walk is over the host's memory on the CPU with nothing to schedule. THE TWO SHAPES OF ANSWER, both measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) added to itself and both in the differential: the form that returns a dictionary hands back the release's OWN tensor data and leaves the caller's buffer untouched - the returned object is not the one the caller passed and the buffer still holds the byte 0xbd it was filled with - while the form that takes a RESULTS DICTIONARY writes the answer into the data the caller put in it, (2, 4, 6, 8 | 20, 40, 60, 80), and the dictionary's KEYS are what the walk computes, because that form names no target tensors of its own. WHAT CANNOT BE OBSERVED HERE, measured and named rather than asserted: the ASYNC and the ENCODE forms write the caller's dictionary after the release's GPU work is done, and this host's own command queue has no -waitUntilCompleted to wait for it with (\"-[AGXG16XFamilyCommandQueue waitUntilCompleted]: unrecognized selector\"), so on this host there is nothing to read back for those forms. The port's answer is in the caller's buffer when the call returns, which is the same answer at the moment a caller who CAN wait would look, and the rows say so. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraph runAsyncWithMTLCommandQueue:feeds:targetOperations:resultsDictionary:executionDescriptor:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the same walk with the results dictionary, through a command queue. the walk is the graph's own over its operations - there is nothing to compile ahead of time on a port whose operations are a walk, and the async and the encode forms are the same walk, because the release's own difference between them is what it does with the GPU afterwards and this port's walk is over the host's memory on the CPU with nothing to schedule. THE TWO SHAPES OF ANSWER, both measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) added to itself and both in the differential: the form that returns a dictionary hands back the release's OWN tensor data and leaves the caller's buffer untouched - the returned object is not the one the caller passed and the buffer still holds the byte 0xbd it was filled with - while the form that takes a RESULTS DICTIONARY writes the answer into the data the caller put in it, (2, 4, 6, 8 | 20, 40, 60, 80), and the dictionary's KEYS are what the walk computes, because that form names no target tensors of its own. WHAT CANNOT BE OBSERVED HERE, measured and named rather than asserted: the ASYNC and the ENCODE forms write the caller's dictionary after the release's GPU work is done, and this host's own command queue has no -waitUntilCompleted to wait for it with (\"-[AGXG16XFamilyCommandQueue waitUntilCompleted]: unrecognized selector\"), so on this host there is nothing to read back for those forms. The port's answer is in the caller's buffer when the call returns, which is the same answer at the moment a caller who CAN wait would look, and the rows say so. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraph encodeToCommandBuffer:feeds:targetTensors:targetOperations:executionDescriptor:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the same walk encoded into MPSGraph's OWN command buffer, which is not a Metal one, so there is no Metal queue in this form at all. the walk is the graph's own over its operations - there is nothing to compile ahead of time on a port whose operations are a walk, and the async and the encode forms are the same walk, because the release's own difference between them is what it does with the GPU afterwards and this port's walk is over the host's memory on the CPU with nothing to schedule. THE TWO SHAPES OF ANSWER, both measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) added to itself and both in the differential: the form that returns a dictionary hands back the release's OWN tensor data and leaves the caller's buffer untouched - the returned object is not the one the caller passed and the buffer still holds the byte 0xbd it was filled with - while the form that takes a RESULTS DICTIONARY writes the answer into the data the caller put in it, (2, 4, 6, 8 | 20, 40, 60, 80), and the dictionary's KEYS are what the walk computes, because that form names no target tensors of its own. WHAT CANNOT BE OBSERVED HERE, measured and named rather than asserted: the ASYNC and the ENCODE forms write the caller's dictionary after the release's GPU work is done, and this host's own command queue has no -waitUntilCompleted to wait for it with (\"-[AGXG16XFamilyCommandQueue waitUntilCompleted]: unrecognized selector\"), so on this host there is nothing to read back for those forms. The port's answer is in the caller's buffer when the call returns, which is the same answer at the moment a caller who CAN wait would look, and the rows say so. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraph encodeToCommandBuffer:feeds:targetOperations:resultsDictionary:executionDescriptor:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the same walk with the results dictionary, encoded into MPSGraph's own command buffer. the walk is the graph's own over its operations - there is nothing to compile ahead of time on a port whose operations are a walk, and the async and the encode forms are the same walk, because the release's own difference between them is what it does with the GPU afterwards and this port's walk is over the host's memory on the CPU with nothing to schedule. THE TWO SHAPES OF ANSWER, both measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) added to itself and both in the differential: the form that returns a dictionary hands back the release's OWN tensor data and leaves the caller's buffer untouched - the returned object is not the one the caller passed and the buffer still holds the byte 0xbd it was filled with - while the form that takes a RESULTS DICTIONARY writes the answer into the data the caller put in it, (2, 4, 6, 8 | 20, 40, 60, 80), and the dictionary's KEYS are what the walk computes, because that form names no target tensors of its own. WHAT CANNOT BE OBSERVED HERE, measured and named rather than asserted: the ASYNC and the ENCODE forms write the caller's dictionary after the release's GPU work is done, and this host's own command queue has no -waitUntilCompleted to wait for it with (\"-[AGXG16XFamilyCommandQueue waitUntilCompleted]: unrecognized selector\"), so on this host there is nothing to read back for those forms. The port's answer is in the caller's buffer when the call returns, which is the same answer at the moment a caller who CAN wait would look, and the rows say so. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraphExecutable specializeWithDevice:inputTypes:compilationDescriptor:]",
+    "kind": "method",
+    "introduced": "15.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "there is nothing to specialize on a port whose executable is the graph itself - the work is a walk over the operations and nothing is compiled - so what the call does is KEEP what it was told, which is what a caller asks it for. Measured in the differential: the output types answered after a specialization are the targets' own shapes, (2x4) over the case's 2x4 sum. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraphExecutable getOutputTypesWithDevice:inputTypes:compilationDescriptor:]",
+    "kind": "method",
+    "introduced": "16.3",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the shape and data type of each result, which is the targets' own - measured, one entry of shape 2x4 over the case's 2x4 sum, with and without a specialization before it. The header's own words for a call that has not specialized are that it specializes for the shapes it is given, and that is what answering from the targets does. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraphExecutable runAsyncWithMTLCommandQueue:inputsArray:resultsArray:executionDescriptor:]",
+    "kind": "method",
+    "introduced": "15.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the same walk as the synchronous form of this executable, with the descriptor's shared events honoured at the end of it. the walk is the graph's own over its operations - there is nothing to compile ahead of time on a port whose operations are a walk, and the async and the encode forms are the same walk, because the release's own difference between them is what it does with the GPU afterwards and this port's walk is over the host's memory on the CPU with nothing to schedule. WHAT CANNOT BE OBSERVED HERE, measured and named rather than asserted: the ASYNC and the ENCODE forms write the caller's dictionary after the release's GPU work is done, and this host's own command queue has no -waitUntilCompleted to wait for it with (\"-[AGXG16XFamilyCommandQueue waitUntilCompleted]: unrecognized selector\"), so on this host there is nothing to read back for those forms. The port's answer is in the caller's buffer when the call returns, which is the same answer at the moment a caller who CAN wait would look, and the rows say so. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraphExecutable encodeToCommandBuffer:inputsArray:resultsArray:executionDescriptor:]",
+    "kind": "method",
+    "introduced": "15.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the same walk, encoded into MPSGraph's own command buffer rather than through a Metal queue. the walk is the graph's own over its operations - there is nothing to compile ahead of time on a port whose operations are a walk, and the async and the encode forms are the same walk, because the release's own difference between them is what it does with the GPU afterwards and this port's walk is over the host's memory on the CPU with nothing to schedule. WHAT CANNOT BE OBSERVED HERE, measured and named rather than asserted: the ASYNC and the ENCODE forms write the caller's dictionary after the release's GPU work is done, and this host's own command queue has no -waitUntilCompleted to wait for it with (\"-[AGXG16XFamilyCommandQueue waitUntilCompleted]: unrecognized selector\"), so on this host there is nothing to read back for those forms. The port's answer is in the caller's buffer when the call returns, which is the same answer at the moment a caller who CAN wait would look, and the rows say so. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraphExecutionDescriptor waitForEvent:value:]",
+    "kind": "method",
+    "introduced": "16.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the event is KEPT and checked when the run reaches it, and a run whose event has not reached the value the caller named is REFUSED rather than pretended: this port's walk is on the CPU, where there is no queue to block on, and the refusal names which event and which value. Measured on this host: a fresh id<MTLSharedEvent>'s own signaledValue is 0, and naming it in either descriptor does not change it. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraphExecutionDescriptor signalEvent:atExecutionEvent:value:]",
+    "kind": "method",
+    "introduced": "16.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "effect": "the event is kept and WRITTEN when the run reaches the stage the caller named, which is the only stage the header names - MPSGraphExecutionStageCompleted, 0. Measured in the differential and byte for byte: an event a run signals at that stage reads 42 afterwards, and it read 0 before the run. the run's verdict line is \"run_forms checks=5 failures=0 recorded=0\" over 40 cells in 15 cases, the red control differing from the release in 3 of them, and facts/MetalPerformanceShadersGraph/Core.md carries every measurement",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraphExecutable charon_mps_walkInputs:results:executionDescriptor:]",
+    "kind": "method",
+    "introduced": "14.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "a name no SDK header declares: the walk every run of an executable is, whether the caller came through a Metal command queue or through MPSGraph's own command buffer - the executable's own feeds overlaid with the inputs, the graph's walk over its operations, the answer written into the tensor data the caller allocated, and the descriptor's shared events honoured at the end of it. It is one function because the synchronous, the async and the encode forms are one walk; its own files share it and an application never calls it",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraphExecutionDescriptor charon_mps_applyEventsAtStage:named:]",
+    "kind": "method",
+    "introduced": "16.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "a name no SDK header declares: what a run does with the shared events a descriptor named - at the stage the caller named, every signal of that stage writes its value into its event, and every wait must be satisfied or the run is refused. It is a method and not code in the runs because the events are the DESCRIPTOR's own state, and BOTH of this library's descriptor classes declare the two methods that put them there; its own files share it and an application never calls it",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+  },
+  {
+    "api": "-[MPSGraphExecutableExecutionDescriptor charon_mps_applyEventsAtStage:named:]",
+    "kind": "method",
+    "introduced": "16.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "a name no SDK header declares: the same one on the executable's own descriptor, which declares the two event methods as well and so holds the same two arrays; its own files share it and an application never calls it",
+    "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+    "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
   }
   ]
 }
