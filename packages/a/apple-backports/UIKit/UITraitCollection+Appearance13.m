@@ -206,7 +206,6 @@ static void charon_add_trait(UITraitCollection *collection, NSMutableArray *trai
             [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, printed]];
         return;
     }
-    const CharonTraitDefinition *definition = NULL;
     id stored = charon_trait_extras(collection)[kind.name];
     if (!stored)
         return;
