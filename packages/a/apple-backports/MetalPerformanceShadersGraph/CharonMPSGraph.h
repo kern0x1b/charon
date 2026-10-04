@@ -171,7 +171,13 @@ CharonMPSGraphOperationKindCumulativeSum,
     CharonMPSGraphOperationKindExpandDims,
     CharonMPSGraphOperationKindFlatten2D,
     CharonMPSGraphOperationKindBroadcast,
-    CharonMPSGraphOperationKindReverse
+    CharonMPSGraphOperationKindReverse,
+    // The CONCAT family, which is not one walk over ONE operand: its result is several of them laid end to
+    // end along one axis, or one new axis that says which of them an element came from. So it is a walk of
+    // its own, over every input of the operation, and the operation's own parameters say which of the two it
+    // is: the axis of the result the operands are laid along, and whether they interleave along it.
+    CharonMPSGraphOperationKindConcat,
+    CharonMPSGraphOperationKindStack
 };
 
 @class MPSGraph;
@@ -318,6 +324,45 @@ CharonMPSGraphOperationKindCumulativeSum,
 - (NSArray<NSNumber *> *)charon_mps_gatherShapeOfTensor:(MPSGraphTensor *)tensor
                                              parameters:(NSDictionary *)parameters
                                                     named:(NSString *)name;
+// The CONCAT and STACK family, the one walk of this library whose result is SEVERAL operands: the result is
+// every input laid end to end along one axis of it, or one new axis of extent as many as there are inputs.
+// A release's factory fills in the axis and whether the operands interleave along it and names only its own
+// methods - concat is 14.0's three forms and stack is 15.4's one - and the walk derives the result's shape
+// from the inputs' own shapes, so this is where that shape comes from.
+// Measured on this host's own MPSGraph, over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) beside one of
+// (5, 6, 7, 8 | 50, 60, 70, 80) and one of (9, 10, 11, 12 | 90, 100, 110, 120):
+//   - laid END TO END along the axis, in the order the caller wrote them: axis 0 of the three is a 6x4
+//     holding the three 2x4s in that order, axis 1 a 2x12 holding their rows side by side.
+//   - INTERLEAVING along the axis, which puts operand i's coordinate c at the result's coordinate
+//     i + c * (the number of operands): axis 1 of two is a 2x8 of (1, 5, 2, 6, 3, 7, 4, 8 | 10, 50, 20, 60,
+//     30, 70, 40, 80), and axis 1 of three a 2x12 of (1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 | 10, 50, 90,
+//     20, 60, 100, 30, 70, 110, 40, 80, 120). The result's extent on that axis is the SUM either way.
+//   - a NEGATIVE axis is counted from the end of the RESULT's rank, which for a stack is one more than the
+//     operands': axis -3, -2 and -1 of two 2x4s are what axes 0, 1 and 2 answer.
+//   - every axis but that one must hold the SAME extent in every input. The header says "broadcast
+//     compatible" and the release does not take it: a 1x4 beside a 2x4 with the concat on axis 1 is refused
+//     by its own compiler with "'mps.concat' op invalid input tensor shapes, all input shapes must match
+//     except at axis" (MPSGraphUtilities.mm:748), and the refusal is the same for a stack, which has no
+//     extent to differ on. An extent of one on the concat axis itself is not a broadcast either: it is one
+//     element of the result.
+//   - a STACK is the same walk with one axis ADDED: the result's axis of extent as many operands says which
+//     operand an element came from, and the axes around it are the operands' own - axis 1 of two 2x4s is a
+//     2x2x4 of (1, 2, 3, 4, 5, 6, 7, 8 | 10, 20, 30, 40, 50, 60, 70, 80) and axis -1 a 2x4x2 of (1, 5, 2, 6,
+//     3, 7, 4, 8 | 10, 50, 20, 60, 30, 70, 40, 80).
+- (MPSGraphTensor *)charon_mps_concat:(CharonMPSGraphOperationKind)kind
+                               tensors:(NSArray<MPSGraphTensor *> *)tensors
+                                  axis:(NSInteger)axis
+                            interleave:(BOOL)interleave
+                                 name:(NSString *)name;
+// The result's shape of such a walk, asked when the graph is BUILT so that the output tensor carries it
+// before anything runs - the same reason, and the same arrangement, as the gather's shape above: it is the
+// walk's own plan over the inputs' shapes, and `stacked` says whether the axis named is one the operands
+// already have or one the result adds.
+- (NSArray<NSNumber *> *)charon_mps_concatShapeOfTensors:(NSArray<MPSGraphTensor *> *)tensors
+                                                    axis:(NSInteger)axis
+                                              interleave:(BOOL)interleave
+                                                stacked:(BOOL)stacked
+                                                   named:(NSString *)name;
 // The SLICE family in its three directions, which are one plan over the same arithmetic - a start, an end
 // and a stride per axis with the three masks applied - and three walks, because they go three ways:
 //   - the slice itself (@"slice") is a gather: the result's axis k reads the operand's axis k from the start,

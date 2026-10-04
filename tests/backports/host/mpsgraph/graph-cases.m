@@ -1979,6 +1979,250 @@ static void family_gather_expand(void)
     chain_case();
 }
 
+// THE CONCAT AND STACK FAMILY, which is the one walk of this library whose result is SEVERAL operands, so it
+// cannot be a gather of one: a region of ONE axis of the result per operand, laid end to end, or one new axis
+// that says which operand an element came from. The three concatenations arrived with MPSGraph in 14.0 and
+// the stack in 15.4; all four are measured here against this host's own MPSGraph.
+//
+// Every case below feeds TWO or THREE operands of the SAME shape out of the family's own feeds, so an answer
+// says which operand an element came from and which axis it was put on. The destination is filled with the
+// byte 0xbd first, because a concatenation writes every element of its result and a destination that starts
+// as zero could not tell one it wrote from one it did not.
+static float secondFeed[8] = { 5.0f, 6.0f, 7.0f, 8.0f, 50.0f, 60.0f, 70.0f, 80.0f };
+static float thirdFeed[8] = { 9.0f, 10.0f, 11.0f, 12.0f, 90.0f, 100.0f, 110.0f, 120.0f };
+static float secondCubeFeed[24] = {
+    101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
+    113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124,
+};
+// The row of four the one-element-on-the-concat-axis case is asked over: distinguishable by value from the
+// 2x4 it is laid beside, so an answer says which operand an element came from.
+static float thinRow2[4] = { 101.0f, 102.0f, 103.0f, 104.0f };
+static float rankOneFeed[3] = { 71.0f, 72.0f, 73.0f };
+static float rankOneSecond[3] = { 81.0f, 82.0f, 83.0f };
+
+static void concat_filled(const char *name, NSArray<NSArray<NSNumber *> *> *shapes, NSArray<NSData *> *values,
+                          MPSGraphTensor *(^build)(MPSGraph *, NSArray<MPSGraphTensor *> *))
+{
+    multi_case_filled(name, build, shapes, values,
+                      @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32), @(MPSDataTypeFloat32)], 0xbd);
+}
+
+// The two feeds of every two-operand case of the family, and the three of every three-operand case, as the
+// data a case hands the harness.
+static NSArray<NSData *> *pairOf(const void *first, const void *second, size_t bytes)
+{
+    return @[[NSData dataWithBytes:first length:bytes], [NSData dataWithBytes:second length:bytes]];
+}
+
+static NSArray<NSData *> *tripleOf(const void *first, const void *second, const void *third, size_t bytes)
+{
+    return @[[NSData dataWithBytes:first length:bytes], [NSData dataWithBytes:second length:bytes],
+             [NSData dataWithBytes:third length:bytes]];
+}
+
+static void family_gather_concat(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+    NSArray<NSNumber *> *three = @[@3];
+    NSArray<NSData *> *pair = pairOf(rowFeed, secondFeed, 32);
+    NSArray<NSData *> *triple = tripleOf(rowFeed, secondFeed, thirdFeed, 32);
+
+    // END TO END along the axis, in the order the caller wrote them: axis 0 of two 2x4s is a 4x4 of
+    // (1, 2, 3, 4, 10, 20, 30, 40 | 5, 6, 7, 8, 50, 60, 70, 80) and axis 1 a 2x8 of the same eight values
+    // each - which is the same walk with the extents added rather than the rows beside one another.
+    concat_filled("concat-axis0 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:0 name:@"c"];
+                  });
+    concat_filled("concat-axis1 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:1 name:@"c"];
+                  });
+    // A NEGATIVE axis counted from the end, which answers what its positive does on both axes: measured on
+    // this host's own MPSGraph, axis -2 of two 2x4s answers what axis 0 answers and axis -1 what axis 1
+    // answers, and the release's own compiler takes the range as -rank <= axis < rank.
+    concat_filled("concat-axisNeg1 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:-1 name:@"c"];
+                  });
+    concat_filled("concat-axisNeg2 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:-2 name:@"c"];
+                  });
+    // The header's TWO-TENSOR form, which is the many-operand one over two and answers the same bytes.
+    concat_filled("concat-two-axis0 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensor:in[0] withTensor:in[1] dimension:0 name:@"c"];
+                  });
+    concat_filled("concat-two-axis1 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensor:in[0] withTensor:in[1] dimension:1 name:@"c"];
+                  });
+    // THREE operands, whose regions are the caller's order down the axis and across it. The 6x4 of axis 0
+    // is the three 2x4s one under another; the 2x12 of axis 1 is their rows side by side.
+    concat_filled("concat3-axis0 float32", @[twoByFour, twoByFour, twoByFour], triple,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:0 name:@"c"];
+                  });
+    concat_filled("concat3-axis1 float32", @[twoByFour, twoByFour, twoByFour], triple,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:1 name:@"c"];
+                  });
+    concat_filled("concat3-axisNeg1 float32", @[twoByFour, twoByFour, twoByFour], triple,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:-1 name:@"c"];
+                  });
+    // ONE operand is the identity: measured on this host's own MPSGraph, a 2x4 on its own is a 2x4 of its
+    // own eight values, and not a 3x4 or anything with an element of it missing.
+    concat_filled("concat-one-axis0 float32", @[twoByFour], @[pair[0]],
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:0 name:@"c"];
+                  });
+    // INTERLEAVED along the axis, which is the header's third form: operand i's coordinate c lands at the
+    // result's coordinate i + c * (the number of operands). Measured on this host's own MPSGraph, axis 1 of
+    // two is a 2x8 of (1, 5, 2, 6, 3, 7, 4, 8 | 10, 50, 20, 60, 30, 70, 40, 80), and axis 1 of three a 2x12
+    // of (1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 | 10, 50, 90, 20, 60, 100, 30, 70, 110, 40, 80, 120).
+    concat_filled("concat-interleave-axis1 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:1 interleave:YES name:@"c"];
+                  });
+    concat_filled("concat-interleave-axis0 float32", @[twoByFour, twoByFour, twoByFour], triple,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:0 interleave:YES name:@"c"];
+                  });
+    concat_filled("concat3-interleave-axis1 float32", @[twoByFour, twoByFour, twoByFour], triple,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:1 interleave:YES name:@"c"];
+                  });
+    // The interleave form with NO is exactly the many-operand form, byte for byte, which is what the header
+    // says of it ("When interleave is specified, all tensors will be interleaved") and what makes the flag
+    // one bit rather than a second walk.
+    concat_filled("concat3-interleave-no-axis1 float32", @[twoByFour, twoByFour, twoByFour], triple,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:1 interleave:NO name:@"c"];
+                  });
+    // A RANK OF THREE, where the axis named is neither the first nor the last, so that the mapping of the
+    // axes below and above the one laid along is asked at a rank where there is one of each.
+    concat_filled("concat-rank3-axis0 float32", @[twoByThreeByFour, twoByThreeByFour],
+                  pairOf(cubeFeed, secondCubeFeed, 96),
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:0 name:@"c"];
+                  });
+    concat_filled("concat-rank3-axis1 float32", @[twoByThreeByFour, twoByThreeByFour],
+                  pairOf(cubeFeed, secondCubeFeed, 96),
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:1 name:@"c"];
+                  });
+    // AN EXTENT OF ONE ON THE AXIS LAID ALONG is not a broadcast: it is one element of the result, and the
+    // two extents are added. Measured on this host's own MPSGraph, a 1x4 of (101, 102, 103, 104) laid along
+    // axis 0 beside a 2x4 is a 3x4 of (101, 102, 103, 104 | 5, 6, 7, 8 | 50, 60, 70, 80) and not a 2x4 with
+    // the row repeated. The same two operands with axis 1 the one laid along are REFUSED, because then the
+    // extent that differs is one the concatenation does not touch - refusals.m's concat-shapes-differ.
+    concat_filled("concat-thin-axis0 float32", @[@[@1, @4], twoByFour],
+                  @[[NSData dataWithBytes:thinRow2 length:16], pair[1]],
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:0 name:@"c"];
+                  });
+    // THE SIXTEEN CLASSES through it, because a concatenation copies and a copy that recomputed a value would
+    // lose a NaN's sign and a negative zero's - the two things the classes exist for.
+    concat_filled("concat-classes-axis0 float32", @[twoByFour, twoByFour],
+                  pairOf(gatherClasses, gatherClasses, 32),
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:0 name:@"c"];
+                  });
+    concat_filled("concat-classes-axis1 float32", @[twoByFour, twoByFour],
+                  pairOf(gatherClasses, gatherClasses, 32),
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g concatTensors:in dimension:1 name:@"c"];
+                  });
+
+    // THE STACK, which is the same walk with one axis ADDED: the result's axis of extent as many operands
+    // says which operand an element came from, and the axes around it are the operands' own. Measured on
+    // this host's own MPSGraph, axis 1 of two 2x4s is a 2x2x4 of (1, 2, 3, 4, 5, 6, 7, 8 | 10, 20, 30, 40,
+    // 50, 60, 70, 80) and axis 2 a 2x4x2 of (1, 5, 2, 6, 3, 7, 4, 8 | 10, 50, 20, 60, 30, 70, 40, 80).
+    concat_filled("stack-axis0 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:0 name:@"s"];
+                  });
+    concat_filled("stack-axis1 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:1 name:@"s"];
+                  });
+    concat_filled("stack-axis2 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:2 name:@"s"];
+                  });
+    // A NEGATIVE axis counted from the end of the RESULT's rank, which is one more than the operands' -
+    // so axis -3 answers what axis 0 answers and axis -1 what axis 2 does, which is what the header's own
+    // range says (`-rank + 1 <= dimension < rank + 1`).
+    concat_filled("stack-axisNeg1 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:-1 name:@"s"];
+                  });
+    concat_filled("stack-axisNeg2 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:-2 name:@"s"];
+                  });
+    concat_filled("stack-axisNeg3 float32", @[twoByFour, twoByFour], pair,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:-3 name:@"s"];
+                  });
+    // THREE operands, whose new axis is of extent three, and a stack of ONE, which is the operand itself
+    // with that axis of extent one - measured, a 2x4 on its own is a 1x2x4 of its own eight values.
+    concat_filled("stack3-axis0 float32", @[twoByFour, twoByFour, twoByFour], triple,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:0 name:@"s"];
+                  });
+    concat_filled("stack3-axis1 float32", @[twoByFour, twoByFour, twoByFour], triple,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:1 name:@"s"];
+                  });
+    concat_filled("stack3-axis2 float32", @[twoByFour, twoByFour, twoByFour], triple,
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:2 name:@"s"];
+                  });
+    concat_filled("stack-one-axis0 float32", @[twoByFour], @[pair[0]],
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:0 name:@"s"];
+                  });
+    // A RANK OF ONE, where the new axis is the only axis of the result and the operands' own has nowhere to
+    // go: measured, two 3s stacked at axis 0 are a 2x3 of (71, 72, 73 | 81, 82, 83) and at axis -1 a 3x2 of
+    // (71, 81, 72, 82, 73, 83), which is the same walk with the operands' axis on the other side of it.
+    concat_filled("stack-rank1-axis0 float32", @[three, three], pairOf(rankOneFeed, rankOneSecond, 12),
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:0 name:@"s"];
+                  });
+    concat_filled("stack-rank1-axisNeg1 float32", @[three, three],
+                  pairOf(rankOneFeed, rankOneSecond, 12),
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:-1 name:@"s"];
+                  });
+    // A RANK OF THREE at two different axes of the new rank, so that the mapping of the axes below and
+    // above the new one is asked at a rank where there is one of each.
+    concat_filled("stack-rank3-axis1 float32", @[twoByThreeByFour, twoByThreeByFour],
+                  pairOf(cubeFeed, secondCubeFeed, 96),
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:1 name:@"s"];
+                  });
+    concat_filled("stack-rank3-axis2 float32", @[twoByThreeByFour, twoByThreeByFour],
+                  pairOf(cubeFeed, secondCubeFeed, 96),
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:2 name:@"s"];
+                  });
+    concat_filled("stack-classes-axis0 float32", @[twoByFour, twoByFour],
+                  pairOf(gatherClasses, gatherClasses, 32),
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:0 name:@"s"];
+                  });
+    concat_filled("stack-classes-axis1 float32", @[twoByFour, twoByFour],
+                  pairOf(gatherClasses, gatherClasses, 32),
+                  ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                      return [g stackTensors:in axis:1 name:@"s"];
+                  });
+    chain_case();
+}
+
 // The data types the two NaN-propagating binaries do not answer, and the feeds they are asked over: eight
 // ascending bytes against eight descending ones, so every type here reads the same two numbers.
 static unsigned char refusedBytes[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -2335,6 +2579,7 @@ static const Family kFamilies[] = {
     { "gather_reverse", family_gather_reverse },
     { "gather_squeeze", family_gather_squeeze },
     { "gather_expand", family_gather_expand },
+    { "gather_concat", family_gather_concat },
 };
 
 static void family_names(void)
