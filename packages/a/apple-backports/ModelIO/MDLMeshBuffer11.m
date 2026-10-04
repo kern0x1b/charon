@@ -59,11 +59,11 @@
 // with, and the release's name is exported to it.
 CHARON_ALIAS(MDLMeshBufferZoneDefault)
 
-@interface CharonMDLMeshBufferZoneDefault (CharonZone)
+@interface CHARON_ALIAS_CLASS(MDLMeshBufferZoneDefault) (CharonZone)
 - (void)charon_setCapacity:(NSUInteger)capacity allocator:(id<MDLMeshBufferAllocator>)allocator;
 @end
 
-@implementation CharonMDLMeshBufferZoneDefault (CharonZone)
+@implementation CHARON_ALIAS_CLASS(MDLMeshBufferZoneDefault) (CharonZone)
 
 static const void *CharonMeshBufferZoneStateKey = &CharonMeshBufferZoneStateKey;
 

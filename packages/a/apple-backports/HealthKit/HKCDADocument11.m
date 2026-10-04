@@ -86,7 +86,7 @@ static CharonHKCDADocumentState *CharonHKCDADocumentStateOf(id document)
     return state;
 }
 
-@implementation CharonHKCDADocument (CharonHKCDADocument11)
+@implementation CHARON_ALIAS_CLASS(HKCDADocument) (CharonHKCDADocument11)
 
 + (BOOL)supportsSecureCoding
 {
@@ -102,7 +102,7 @@ static CharonHKCDADocumentState *CharonHKCDADocumentStateOf(id document)
                                   authorName:(nullable NSString *)authorName
                                custodianName:(nullable NSString *)custodianName
 {
-    CharonHKCDADocument *document = [super init];
+    CHARON_ALIAS_CLASS(HKCDADocument) *document = [super init];
     if (document) {
         CharonHKCDADocumentState *state = CharonHKCDADocumentStateOf(document);
         state.documentData = documentData;
@@ -116,7 +116,7 @@ static CharonHKCDADocumentState *CharonHKCDADocumentStateOf(id document)
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
-    CharonHKCDADocument *document = [super init];
+    CHARON_ALIAS_CLASS(HKCDADocument) *document = [super init];
     if (document) {
         CharonHKCDADocumentState *state = CharonHKCDADocumentStateOf(document);
         state.documentData = [[coder decodeObjectOfClass:[NSData class] forKey:@"documentData"] copy];

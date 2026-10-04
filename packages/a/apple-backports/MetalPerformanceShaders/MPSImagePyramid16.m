@@ -98,7 +98,7 @@
 // own above it, which is what CHARON_ALIAS_OF declares.
 CHARON_ALIAS_OF(MPSImagePyramid, MPSUnaryImageKernel)
 
-@implementation CharonMPSImagePyramid (CharonMPSPyramidFilter)
+@implementation CHARON_ALIAS_CLASS(MPSImagePyramid) (CharonMPSPyramidFilter)
 
 // MPSImageConvolution.h marks -initWithDevice:kernelWidth:kernelHeight:weights: the designated
 // initializer of MPSImagePyramid (:578 area) and -initWithCoder:device: another, and this class refuses
