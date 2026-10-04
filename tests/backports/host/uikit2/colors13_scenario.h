@@ -42,9 +42,30 @@ static UIColor *ur_dynamic(UIColor *(^provider)(UITraitCollection *))
     return ((UIColor * (*)(Class, SEL, id))objc_msgSend)([UIColor class], ur_sel("colorWithDynamicProvider:"), provider);
 }
 
+// The port's own spelling of -initWithDynamicProvider:, declared so that the send below is a real message
+// send. An initializer consumes its receiver: [UIColor alloc] is +1 and -initWithCGColor: gives it back, which
+// is why ARC emits no release for a typed `[[UIColor alloc] init...]`. Through an objc_msgSend cast the
+// compiler cannot see the family, so it treats the call as an ordinary function returning an unretained object
+// and releases the [UIColor alloc] result as well - one release too many. UIColor on this host is a class
+// cluster whose +allocWithZone: hands back ONE shared placeholder (measured: two allocations answer the same
+// pointer, and a fresh one answers retainCount 2), so the extra release destroys it and the next [UIColor
+// alloc] returns freed memory:
+//
+//   #0 objc_retainAutoreleaseReturnValue  #1 +[UIColor allocWithZone:]  #2 charon_dynamic UIColorDynamic.m:22
+//
+// which is the SIGSEGV (exit 139) this group died on. Measured on both sides of the differential, with the
+// port's object linked and with none: the placeholder's retainCount is 3 before the call and 2 after it, the
+// system's own -[UIColor initWithDynamicProvider:] included. With the send spelled out, the group is green.
+@interface UIColor (UrHostDynamicInit)
+- (instancetype)initCharonHostWithDynamicProvider:(UIColor *(^)(UITraitCollection *))provider;
+@end
+
 static UIColor *ur_dynamic_init(UIColor *(^provider)(UITraitCollection *))
 {
-    return ((UIColor * (*)(id, SEL, id))objc_msgSend)([UIColor alloc], ur_sel("initWithDynamicProvider:"), provider);
+    UIColor *allocated = [UIColor alloc];
+    if (ur_port_mode)
+        return [allocated initCharonHostWithDynamicProvider:provider];
+    return [allocated initWithDynamicProvider:provider];
 }
 
 static UIColor *ur_resolve(UIColor *color, UITraitCollection *t)
