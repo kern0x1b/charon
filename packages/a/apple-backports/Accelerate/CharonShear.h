@@ -2,42 +2,57 @@
 //
 // **The mapping, in full, as measured.** A destination sample's mapped position along the shear is
 //
-//     horizontal:  alongPosition = along0 + along + 0.5 - translate + slope * (cross - dstCross + 0.5)
-//                  centre        = alongPosition / scale - 0.5
+//     position = along0 + along + 0.5
+//                      + (horizontal ? -translate : +translate)
+//                      + (horizontal ? slope*(cross - dstCross + 0.5) : slope*(cross + 0.5))
+//     centre   = (horizontal ? position
+//                           : dstAlong + (position - dstAlong)) * reciprocal - 0.5
 //
-//     vertical:    alongPosition = along0 + along + 0.5 + translate + slope * (cross + 0.5)
-//                  centre        = dstAlong + (alongPosition - dstAlong) / scale - 0.5
+// with `along` and `cross` the destination's own coordinates along and across the shear, `along0` the region's
+// origin along it, `dstAlong` and `dstCross` the DESTINATION's extents along and across it, `recip` the
+// filter's own stored `1.0/scale` (CharonResampling.h), and the row each destination row reads its own:
+// `row = cross0 + cross`.
 //
-// with `along` and `cross` the destination's own coordinates along and across the shear, `along0` and `cross0`
-// the region's origins, `dstAlong` and `dstCross` the DESTINATION's extents, and the row each destination row
-// reads its own: `row = cross0 + cross`. Every term of that was read off the host's own kernel rather than
-// assumed, and the two lines that were wrong before are named:
+// **There IS a half pixel, and it is in the scale's bracket.** `position` carries `+0.5` and `centre` carries
+// `-0.5`, so at a scale of one the two cancel and the position is exactly the coordinate - which is what
+// v-tail-a12 measured on the 6.1.3 guest and stated as "there is no half pixel", and it is true AT A SCALE OF
+// ONE AND NOWHERE ELSE. Off a scale of one the pair does not cancel: the along offset that reproduces the
+// host's bytes is 0 at a scale of one, -0.5 at two, +0.25 at a half and +0.375 at a quarter, which is exactly
+// what `(along + 0.5)*recip - 0.5` asks for. **A half pixel removed from the general rule is right at one
+// scale and wrong at the other three**, and the port was wrong at three of the four scales it is asked for.
 //
-// - **the vertical's scale is anchored to the destination's far edge and the horizontal's to its near edge.**
-//   At a scale of two on a twelve-row source the vertical's destination row 0 maps to source row 5.75 and the
-//   horizontal's destination column 0 to source column -0.25, and the offset is exactly
-//   `dstAlong * (1 - 1/scale)` on one axis and zero on the other. The offset is the DESTINATION's extent and
-//   not the source's: a twelve-row source into a twenty-row destination offsets by ten and not by six.
-// - **the slope's cross coordinate is read from the opposite edge on each axis.** On the horizontal the amount
-//   of shear grows as the distance from the bottom row, and on the vertical as the distance from the left
-//   column, so the term is `slope * (cross - dstCross + 0.5)` and `slope * (cross + 0.5)` respectively. The two
-//   axes are mirrors of each other, which is why the horizontal's is negated where the vertical's is not.
+// **Every term was decided by exhaustion over the host's own bytes**, at five scales - 1, 2, 0.5, 0.25 and
+// 0.75 - four translates, four slopes and both axes, every candidate scored on every byte of every
+// one-column delta's whole destination (`mapsearch.m`):
 //
-// The kernel is the published one and needs nothing measured here: Lanczos3, or Lanczos5 under
-// `kvImageHighQualityResampling`, over `ceil(lobes / min(1, scale))` taps each side, normalised per phase.
-// CharonResampling.h carries it, and the host's own weights agree with it to the fourth decimal (the
-// residual of a fit is at rounding size in every case in facts/Accelerate/vImageGeometry.md).
+//   * `multiply by the stored reciprocal`, not `divide by 1/reciprocal`. Indistinguishable at 1, 2, 0.5 and
+//     0.25, where `recip` is exact; at 0.75 only the multiply survives. It is also what the release's own
+//     worker does with the `1.0/scale` it keeps beside `floor` of it.
+//   * **the translate is inside the bracket and SUBTRACTS on the horizontal, ADDS on the vertical**, on both
+//     axes at every scale.
+//   * **the slope's cross coordinate keeps its own half pixel**: `cross - dstCross + 0.5` on the horizontal,
+//     counted from the bottom row, and `cross + 0.5` on the vertical, counted from the left column. The two
+//     axes are mirrors, which is why the horizontal's is negated where the vertical's is not.
+//   * **the horizontal's scale is anchored at the near edge and the vertical's at the FAR edge** - the
+//     vertical's is `dstAlong + (position - dstAlong)`, and the offset that makes it is `dstAlong *
+//     (1 - 1/scale)`: five pixels at a scale of two on this destination, and the constant the ladder has to
+//     reach. **0.75 is open on both axes**, which is v-tail-a12's 28-of-624 residual and is named, not fixed.
+//
+// **The kernel is the caller's own.** The Q14 row, the phase it is read at and the base it is read around all
+// come out of the release's filter object (CharonResampling.h), the divisor is that row's own sum, and the
+// store rounds half up. Nothing here generates a weight: the release's stored integers are its own
+// single-precision `sinf`, and a generated table would differ from the caller's numbers by construction.
 //
 // **The edging.** A tap outside the picture along the shear is REPLACED BY THE BACKCOLOR with its weight kept,
-// not dropped: a source constant at 1.0 with a backColor of -1 makes the answer `2w - 1` and the host answers
-// -0.000 and 1.223, which are weights and not gaps. Under `kvImageEdgeExtend` the tap is pulled back to the
-// edge instead, which is the header's own "the edge pixels of the source are extended". Neither mode
-// renormalises over the survivors, which is what the overshoot at the last row is.
+// not dropped: a source constant at 1.0 with a backColor of -1 makes the answer `2w - 1`. Under
+// `kvImageEdgeExtend` the tap is pulled back to the edge instead, which is the header's own "the edge pixels of
+// the source are extended". Neither mode renormalises over the survivors, which is what the overshoot at the
+// last row is.
 //
-// **The refusals**, and they are the release's own, measured on the host's own shears: a NULL buffer is
-// `kvImageNullPointerArgument`, a NULL filter is `kvImageInvalidParameter`, and a region or a destination that
-// does not fit across the shear is `kvImageBufferSizeMismatch`. No flag is refused - every one of the
-// thirty-two bits comes back `kvImageNoError`.
+// **The refusals**, and they are the release's own: a NULL buffer is `kvImageNullPointerArgument`, a filter
+// that is not a resampling filter is `kvImageInvalidParameter`, and a region or a destination that does not fit
+// across the shear is `kvImageBufferSizeMismatch`. No flag is refused - every one of the thirty-two bits comes
+// back `kvImageNoError`.
 
 #pragma once
 
@@ -228,21 +243,21 @@ static inline unsigned CharonShearFlags(enum CharonPixelType type)
 // volatile read is a memory access the optimizer has to honour. The four spellings and their disassembly are
 // in CharonChannels.h's own comment, and that is where the measurement lives.
 //
-// `filter` is NOT attributed (`VIMAGE_NON_NULL(1,2)` names only the two buffers), so CharonResampleFilterOf's
-// plain test survives at -Os and needs nothing; it returns NULL for a NULL filter and for a buffer that is not
-// one of the port's, and the host answers `kvImageInvalidParameter` for the first of those.
+// **`filter` is NOT attributed** (`VIMAGE_NON_NULL(1,2)` names only the two buffers), so a plain NULL test
+// survives at -Os. `ours` is NULL when the caller's object is not one of the measured filter shapes, which is
+// what `CharonResampleFilterOf` answers, and the host answers `kvImageInvalidParameter` for that case.
 //
 // The cross extent is the one the release checks: `cross0 + destCross > srcCross` is
 // `kvImageBufferSizeMismatch`, measured over three destination extents and both axes, and it is the ONLY shape
 // condition - the destination's along extent is free, and so is the along offset, which a source nine wide
 // accepts at twelve.
 static inline vImage_Error CharonShearReady(const vImage_Buffer *src, const vImage_Buffer *dest,
-                                            const CharonResampleFilter *filter, int horizontal,
+                                            const CharonResampleFilter *ours, int horizontal,
                                             vImagePixelCount offsetX, vImagePixelCount offsetY)
 {
     if (CharonChannelsIsNull(src) || CharonChannelsIsNull(dest))
         return kvImageNullPointerArgument;
-    if (!filter || filter->magic != CharonResampleMagic)
+    if (!ours || !ours->row)
         return kvImageInvalidParameter;
     vImagePixelCount cross0 = horizontal ? offsetY : offsetX;
     vImagePixelCount dstCross = horizontal ? dest->height : dest->width;
@@ -266,19 +281,21 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
     // CharonShearReady, which has already answered the other three by the time the engine is reached.
     if (flags & ~CharonShearFlags(type))
         return kvImageUnknownFlagsBit;
-    vImagePixelCount extent = CharonResampleExtent(filter->scale, filter->lobes);
-    int taps = (int)(2 * extent) + 1;
-    double weights[2 * 32 + 1];
-    if (taps > (int)(sizeof weights / sizeof *weights))
-        taps = (int)(sizeof weights / sizeof *weights);
     unsigned channels = CharonChannels(type);
     vImagePixelCount srcAlong = horizontal ? src->width : src->height;
     vImagePixelCount dstAlong = horizontal ? dest->width : dest->height;
     vImagePixelCount dstCross = horizontal ? dest->height : dest->width;
     vImagePixelCount along0 = horizontal ? offsetX : offsetY;
     vImagePixelCount cross0 = horizontal ? offsetY : offsetX;
-    double scale = (double)filter->scale;
+    double reciprocal = filter->reciprocal;
     int extend = (flags & kvImageEdgeExtend) ? 1 : 0;
+
+    // Every phase's own sum, read once for the call rather than once per destination sample. `phases` is at
+    // most the writer's own 64, so this is a fixed array and not an allocation, and the divisor is the sum of
+    // the row the port is about to use - which on 6.1.3 is not 16384 (CharonResampling.h).
+    double rowSum[CharonResampleMaxPhases];
+    for (unsigned phase = 0; phase < filter->phases; phase++)
+        rowSum[phase] = CharonResampleRowSum(filter, phase);
 
     // The two axes are kept apart on purpose, because they are different and mixing them is what read past
     // the caller's buffer. `at` is the position ALONG the shear and is bounded by srcAlong - the width for
@@ -298,50 +315,60 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
 
     for (vImagePixelCount cross = 0; cross < dstCross; cross++) {
         long sourceCross = (long)cross0 + (long)cross;
+        // The position's terms. The slope's is once for the whole row rather than once per tap: what moves
+        // sideways is where ALONG that row it looks, and the row it looks in is its own. Each term is the one
+        // mapsearch.m's exhaustion settled, and the two axes' mirror image is why the horizontal's slope
+        // term is negated and its translate subtracted.
         for (vImagePixelCount along = 0; along < dstAlong; along++) {
-            // The shear shifts the ALONG position by the slope times the CROSS coordinate of the destination,
-            // once for the whole row - not once per tap. The row a destination row reads is its own; what
-            // moves sideways is where along that row it looks. The half pixel is in the cross coordinate
-            // because a row is sampled at its centre.
-            //
-            // `edge` is that cross coordinate counted from the edge the axis reads it at: the horizontal's
-            // amounts grow as the distance from the BOTTOM row, so `edge` runs down from `dstCross`, and the
-            // vertical's grow as the distance from the LEFT column, so `edge` runs up from zero. The two
-            // axes are mirrors, which is why the horizontal's term carries the slope negated and the
-            // vertical's does not - and the vertical's near edge is one further than the horizontal's, so
-            // that both come out of the same `edge - 0.5`.
-            double edge = horizontal ? (double)dstCross - (double)cross : (double)cross + 1.0;
-            double alongPosition = (double)(along0 + along) + 0.5
-                                   + (horizontal ? -translate : translate)
-                                   + (horizontal ? -slope : slope) * (edge - 0.5);
-            // The scale's anchor: the horizontal's near edge is the origin, the vertical's far edge is.
-            double centre = horizontal ? alongPosition / scale - 0.5
-                                       : (double)dstAlong + (alongPosition - (double)dstAlong) / scale - 0.5;
-            int base = (int)floor(centre);
-            CharonResampleWeights(centre, base, extent, filter->lobes, filter->scale, weights);
-            long first = (long)base - (long)extent;
+            double position = (double)(along0 + along) + 0.5
+                              + (horizontal ? -translate : translate)
+                              + (horizontal ? slope * ((double)cross - (double)dstCross + 0.5)
+                                            : slope * ((double)cross + 0.5));
+            double centre = horizontal ? position * reciprocal - 0.5
+                                       : (double)dstAlong
+                                         + (position - (double)dstAlong) * reciprocal - 0.5;
+            unsigned phase;
+            long base;
+            CharonResamplePhase(filter, centre, &phase, &base);
+            const int16_t *row = filter->row + (size_t)phase * filter->width;
+            long first = base - (long)filter->centre;
+            double divisor = rowSum[phase];
             for (unsigned channel = 0; channel < channels; channel++) {
-                double sum = 0.0;
-                for (int k = 0; k < taps; k++) {
-                    long at = first + k;
-                    // A tap outside ALONG the shear is replaced by the BACKCOLOR with its weight kept, not
-                    // dropped: a source constant at 1.0 with a backColor of -1 makes the answer `2w - 1`,
-                    // and the system answers -0.000 and 1.223, which are weights and not gaps. At a
-                    // whole-pixel phase the out-of-range lobes are exactly zero, so the two cannot be
-                    // told apart there.
+                // The accumulator is a double and not an integer, because three of the pixel types carry real
+                // samples and a truncation would throw away their fractions. **For the integer types it is
+                // still exact**: the weights are integers and a row of at most the writer's 64 phases holds
+                // at most `int16Stride/2` of them, so the largest product is 32768 * 65535 and the largest sum
+                // is under 2^40, every bit of it an integer a double holds.
+                double accumulator = 0.0;
+                for (unsigned k = 0; k < filter->width; k++) {
+                    long at = first + (long)k;
+                    long weight = row[k];
+                    // A zero weight contributes nothing, so the tap is not read at all - which also means an
+                    // out-of-picture tap under kvImageEdgeExtend cannot be pulled back to the edge for nothing.
+                    if (!weight)
+                        continue;
+                    double value;
                     if (at < 0 || at >= (long)srcAlong) {
                         // kvImageEdgeExtend is the header's own "the edge pixels of the source are
                         // extended": the tap is pulled back to the edge and keeps its weight, where
                         // kvImageBackgroundColorFill substitutes the backColor instead.
                         if (!extend) {
-                            sum += weights[k] * backColor[channel];
-                            continue;
+                            value = backColor[channel];
+                        } else {
+                            at = at < 0 ? 0 : (srcAlong ? (long)srcAlong - 1 : 0);
+                            value = CharonChannelAt(CHARON_SHEAR_AT(src, at, sourceCross), 0, channel, type);
                         }
-                        at = at < 0 ? 0 : (srcAlong ? (long)srcAlong - 1 : 0);
+                    } else {
+                        value = CharonChannelAt(CHARON_SHEAR_AT(src, at, sourceCross), 0, channel, type);
                     }
-                    sum += weights[k] * CharonChannelAt(CHARON_SHEAR_AT(src, at, sourceCross), 0, channel, type);
+                    accumulator += (double)weight * value;
                 }
-                CharonChannelPut(CHARON_SHEAR_AT(dest, along, cross), 0, channel, sum, type);
+                // The divisor is the row's own sum. A row that sums to zero cannot come out of the release's
+                // own writer - every row measured is within 5 of 16384 - so this arm is not a behaviour and is
+                // here only so that a filter whose table has been overwritten answers a number rather than a
+                // NaN. It is not a tolerance and it does not loosen anything else.
+                CharonChannelPut(CHARON_SHEAR_AT(dest, along, cross), 0, channel,
+                                 divisor != 0.0 ? accumulator / divisor : 0.0, type);
             }
         }
     }
