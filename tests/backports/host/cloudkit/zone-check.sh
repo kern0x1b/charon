@@ -172,8 +172,8 @@ if build_initializers tests/backports/host/cloudkit/initializers-host.m "$WORK/i
 import sys
 path = sys.argv[1]
 text = open(path).read()
-old = '#define REFUSES(C) @"raises NSInternalInconsistencyException: You must use a concrete subclass of CKOperation"'
-new = '#define REFUSES(C) @"raises NSInvalidArgumentException: You must instantiate one of the CKOperation subclasses"'
+old = '#define REFUSES @"raises NSInternalInconsistencyException: You must use a concrete subclass of CKOperation"'
+new = '#define REFUSES @"raises NSInvalidArgumentException: You must instantiate one of the CKOperation subclasses"'
 assert text.count(old) == 1, "the expectation the control changes is not there exactly once"
 open(path, "w").write(text.replace(old, new, 1))
 PY

@@ -41,13 +41,14 @@ static NSString *answer(Class c, BOOL instance)
 
 // The base class refuses, in the host's own exception class and the host's own words. Every concrete
 // subclass this port carries answers for both spellings, which is what makes its -init the designated
-// initializer the header declares: a modify built with -init is a modify with nothing in it.
-#define REFUSES(C) @"raises NSInternalInconsistencyException: You must use a concrete subclass of CKOperation"
+// initializer the header declares: a modify built with -init is a modify with nothing in it. One
+// constant for the refusal, because it is one answer to two cases and the host gives it twice.
+#define REFUSES @"raises NSInternalInconsistencyException: You must use a concrete subclass of CKOperation"
 #define MAKES(C)  @"answers " C
 
 static const struct { const char *name; BOOL instance; NSString *expected; } CASES[] = {
-    { "CKOperation", NO, REFUSES("CKOperation") },
-    { "CKOperation", YES, REFUSES("CKOperation") },
+    { "CKOperation", NO, REFUSES },
+    { "CKOperation", YES, REFUSES },
 
     { "CKDatabaseOperation", NO, MAKES("CKDatabaseOperation") },
     { "CKDatabaseOperation", YES, MAKES("CKDatabaseOperation") },
