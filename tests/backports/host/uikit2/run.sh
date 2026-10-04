@@ -308,7 +308,7 @@ windowed_renamed_expected() {
 }
 
 status=0
-group traits "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImageSymbolGlyphs.m UIImage+Baseline13.m UIImage+iOS13.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m UITraitCollection+ForceTouch.m UITraitCollection+TraitStore.m" traits_test.m
+group traits "UITraitCollection.m CharonTraitObservers.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImageSymbolGlyphs.m UIImage+Baseline13.m UIImage+iOS13.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m UITraitCollection+ForceTouch.m UITraitCollection+TraitStore.m" traits_test.m
 
 group notifications "UIUserNotificationSettings.m" notifications_test.m
 
@@ -410,7 +410,7 @@ windowed inert "UILargeContentViewer.m UIScreenshotService.m UITextFormattingCoo
 # -[CharonHostUITraitCollection _hasSpecifiedEssentialTraits]: unrecognized selector. Both are that
 # one send in that file, which is main's and not this branch's; the group goes on prefixed_windowed
 # when the send can be placed.
-windowed traits13 "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UIScreen+TraitEnvironment.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImageSymbolGlyphs.m UIImage+Baseline13.m UIImage+iOS13.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m UITraitCollection+ForceTouch.m UITraitCollection+TraitStore.m" traits13_test.m
+windowed traits13 "UITraitCollection.m CharonTraitObservers.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UIScreen+TraitEnvironment.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImageSymbolGlyphs.m UIImage+Baseline13.m UIImage+iOS13.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m UITraitCollection+ForceTouch.m UITraitCollection+TraitStore.m" traits13_test.m
 
 windowed_expected controlactions "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m UICommand.m UIControl+Actions14.m UIControl+Menus14.m UIButton+Actions14.m" controlactions_test.m controlactions_system.m
 
@@ -480,7 +480,7 @@ group foundation14resourcekeys "../Foundation/NSURLResourceKeys14.m" foundation1
 group foundation14useractivity "../Foundation/NSUserActivity.m ../Foundation/NSUserActivity+TargetContent13.m" foundation14_useractivity_test.m
 
 group foundation14urlcache "../Foundation/NSURLCache+DirectoryURL13.m" foundation14_urlcache_test.m
-prefixed_group traits17 "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UITraitCollection+Traits10.m UITraitCollection+ForceTouch.m UITrait17.m UITraitList18.m UITrait26.m UITraitCollection+TraitStore.m UITraitCollection+Traits17.m UITraitOverrides17.m" traits17_test.m
+prefixed_group traits17 "UITraitCollection.m CharonTraitObservers.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UITraitCollection+Traits10.m UITraitCollection+ForceTouch.m UITrait17.m UITraitList18.m UITrait26.m UITraitCollection+TraitStore.m UITraitCollection+Traits17.m UITraitOverrides17.m" traits17_test.m
 group textkit2 "NSTextRange15.m NSTextSelection15.m NSTextElement15.m NSTextElement16.m NSTextSelectionNavigation15.m" textkit2_test.m
 group content15 "NSTextContentManager15.m NSTextContentStorage15.m NSTextListElement16.m NSTextElement15.m NSTextElement16.m CharonTextLocation.m" content15_test.m
 group buttonconfig "UIButtonConfiguration.m" buttonconfig_test.m
