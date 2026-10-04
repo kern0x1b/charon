@@ -240,7 +240,7 @@ int main(int argc, const char *argv[])
             "pad-periodic", "pad-antiperiodic", "pad-reflect-past-extent",
             "pad-thin-reflect", "pad-thin-symmetric",
             "concat-axis-outside", "concat-shapes-differ", "concat-interleave-axis-outside",
-            "concat-interleave-unequal",
+            "concat-interleave-unequal", "concat-zero-extent",
             "stack-axis-outside", "stack-shapes-differ",
             "concat-mixed-types",
         };
@@ -746,6 +746,17 @@ int main(int argc, const char *argv[])
                 shapes = @[@[@2, @4], @[@2, @1]];
                 values = @[[NSData dataWithBytes:rowFeed length:sizeof rowFeed],
                            [NSData dataWithBytes:rowFeed length:2 * sizeof(float)]];
+            }
+            if (strstr(q, "zero-extent")) {
+                // The zero is the FIRST operand, which is the harder case for a walk that lays regions out
+                // by offset: the two regions then START at the same place and nothing in the offsets says
+                // which of them an element belongs to. The release builds the result tensor of the other
+                // operand's length and then fails inside its own array; the port refuses where the graph is
+                // built.
+                axis = 1;
+                shapes = @[@[@2, @0], twoByFour];
+                values = @[[NSData dataWithBytes:thinRow length:0],
+                           [NSData dataWithBytes:rowFeed length:sizeof rowFeed]];
             }
             if (strstr(q, "shapes-differ")) {
                 axis = 1;
