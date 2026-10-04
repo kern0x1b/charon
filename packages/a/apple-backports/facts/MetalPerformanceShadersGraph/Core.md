@@ -1547,8 +1547,11 @@ input along `axis` is **divisible by** `numSplits`" - and both halves are measur
 `2 2 1` and 7 into 4 is `2 2 2 1`, which are not equal sizes, over extents that are not divisible by the
 counts. It is the same kind of loose sentence as the concatenation family's "broadcast compatible" above, and
 the row of the method says so with the measurement. The rule is measured
-over **every pair of an extent E in 1..8 and a count N in 1..4**, and then over (9,3), (9,4), (10,3), (10,4),
-(11,4), (12,5), (13,5), (9,5), (16,5) and (17,6) - sixty-six pairs, one process each:
+over **forty-two pairs**, one process each - every extent E in 1..8 against every count N in 1..4, which is
+thirty-two, and then (9,3), (9,4), (10,3), (10,4), (11,4), (12,5), (13,5), (9,5), (16,5) and (17,6), which is
+ten more - of which **the release refused twelve and answered thirty**, and **thirteen of those thirty have
+sizes that are not all equal**, so those thirteen are the pairs where a walk that divided evenly would answer
+something else. The rule is:
 
 > **the first N-1 sizes are `ceil(E/N)` and the LAST is what is left.**
 
@@ -1563,8 +1566,57 @@ over **every pair of an extent E in 1..8 and a count N in 1..4**, and then over 
 | 10, 4 | 3 3 3 1 | 11, 4 | 3 3 3 2 |
 | 13, 5 | 3 3 3 3 1 | 17, 6 | 3 3 3 3 3 2 |
 
-Six of those pairs are cases where this rule and "divide evenly" disagree, and a walk that divided evenly
-would fail every one of them. The count is **refused exactly when the last size would not be positive**, which
+### Every pair measured, which is the whole of the table the rule was read off
+
+Forty-two rows, one process each, from `.agent-work/probe/numsplit.m`; the raw run is
+`.agent-work/runs/v-mps10/numsplit-table.txt` and a reader can re-ask any of them.
+
+| E | N | the sizes the release answers |
+| --- | --- | --- |
+| 1 | 1 | `1` |
+| 1 | 2 | **refused** |
+| 1 | 3 | **refused** |
+| 1 | 4 | **refused** |
+| 2 | 1 | `2` |
+| 2 | 2 | `1 1` |
+| 2 | 3 | **refused** |
+| 2 | 4 | **refused** |
+| 3 | 1 | `3` |
+| 3 | 2 | `2 1` |
+| 3 | 3 | `1 1 1` |
+| 3 | 4 | **refused** |
+| 4 | 1 | `4` |
+| 4 | 2 | `2 2` |
+| 4 | 3 | **refused** |
+| 4 | 4 | `1 1 1 1` |
+| 5 | 1 | `5` |
+| 5 | 2 | `3 2` |
+| 5 | 3 | `2 2 1` |
+| 5 | 4 | **refused** |
+| 6 | 1 | `6` |
+| 6 | 2 | `3 3` |
+| 6 | 3 | `2 2 2` |
+| 6 | 4 | **refused** |
+| 7 | 1 | `7` |
+| 7 | 2 | `4 3` |
+| 7 | 3 | `3 3 1` |
+| 7 | 4 | `2 2 2 1` |
+| 8 | 1 | `8` |
+| 8 | 2 | `4 4` |
+| 8 | 3 | `3 3 2` |
+| 8 | 4 | `2 2 2 2` |
+| 9 | 3 | `3 3 3` |
+| 9 | 4 | **refused** |
+| 10 | 3 | `4 4 2` |
+| 10 | 4 | `3 3 3 1` |
+| 11 | 4 | `3 3 3 2` |
+| 12 | 5 | **refused** |
+| 13 | 5 | `3 3 3 3 1` |
+| 9 | 5 | `2 2 2 2 1` |
+| 16 | 5 | **refused** |
+| 17 | 6 | `3 3 3 3 3 2` |
+
+The count is **refused exactly when the last size would not be positive**, which
 is when `(N-1)*ceil(E/N)` is not less than E: E=4 N=3, E=6 N=4, E=9 N=4, E=12 N=5, E=16 N=5, and every N above
 E. The release's own compiler says so in its own words - `infer split sizes from total size=E and
 num_splits=N failed.` (MPSGraphUtilities.mm:1543), then `LLVM ERROR: Failed to infer result type(s):` - and a
