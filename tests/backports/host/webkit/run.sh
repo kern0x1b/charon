@@ -7,6 +7,10 @@
 #      - webextension.m          the 77 recorded answers of the extension, pattern, action and context families
 #      - webextension-controller  the controller family, asked of the SYSTEM with no port code in the process
 #                                and then asked of the PORT, with the two answers compared case by case
+#      - contentrulelist          the content rule list store of iOS 11, the same shape again: the SYSTEM's
+#                                answers recorded against one store directory, then the PORT asked the same
+#                                questions against that same directory, which is also what holds the store's
+#                                own persistence across the two processes
 #
 # The controller test exists because a row that says implemented has to be held to something. Neither program
 # was built or run by this script before, so a wrong answer in the port could not fail anything: the
@@ -61,7 +65,7 @@ fi
 # and the SDK's @interface from being two declarations of one name. Pass two adds the renames, and the test is
 # compiled with the same flags, so the scenario's class names name the port's classes and not Apple's.
 . "$here/renames.sh"
-port_files="WKWebExtension.m WKWebExtensionAction.m WKWebExtensionContext.m WKWebExtensionController.m WKWebExtensionMatchPattern.m"
+port_files="WKContentRuleList11.m WKWebExtension.m WKWebExtensionAction.m WKWebExtensionContext.m WKWebExtensionController.m WKWebExtensionMatchPattern.m"
 port_headers="CharonWebExtension.h CharonWebExtensionController.h"
 port_flags="-DCHARON_HOST_DIFFERENTIAL=1 -fobjc-arc -fvisibility=hidden -w"
 mkdir -p "$build/plain" "$build/port"
@@ -136,6 +140,64 @@ fi
 grep -v '^ok ' "$build/ext/port.log" || true
 note "extension-port: exit=$result log=$build/ext/port.log"
 [ "$result" = 0 ] || failed "the port's extension family does not answer what this host answers"
+
+# ---------------------------------------------------------------- the content rule list store, port against system
+# The same shape as the two sections above, and it needs what they built: the port's objects and the
+# renames. The store both sides are given is ONE directory under $build, and the system side runs first
+# and the port side second against it, so a list the system compiled is still in the store when the port
+# is asked -- which is what makes "a compiled list survives the process" a thing this comparison holds
+# rather than a thing it assumes.
+mkdir -p "$build/rules"
+rule_store="$build/rules/store"
+rule_expected="$build/rules/expected"
+export CHARON_RULE_STORE="$rule_store"
+xcrun clang $target -fobjc-arc -w -I"$harness" -I"$here" "$here/contentrulelist_system.m" "$harness/check.m" $frameworks -o "$build/rules/system"
+if CHARON_EXPECTED="$rule_expected" "$build/rules/system" > "$build/rules/system.log" 2>&1; then
+    note "rules-system: exit=0 answers=$(grep -c '^case ' "$rule_expected" | tr -d ' ') log=$build/rules/system.log"
+else
+    failed "rules-system: exit=$? log=$build/rules/system.log"
+fi
+xcrun clang $target -fobjc-arc -w -I"$harness" -I"$here" -I"$sources" -DCHARON_HOST_DIFFERENTIAL=1 $(cat "$build/renames.flags") \
+    "$here/contentrulelist_test.m" "$harness/check.m" $built $frameworks -o "$build/rules/port"
+if CHARON_EXPECTED="$rule_expected" "$build/rules/port" > "$build/rules/port.log" 2>&1; then
+    result=0
+else
+    result=$?
+fi
+grep -v '^ok ' "$build/rules/port.log" || true
+note "rules-port: exit=$result log=$build/rules/port.log"
+[ "$result" = 0 ] || failed "the port's content rule list store does not answer what this host answers"
+
+# The red control for THIS family, on the same principle as the one below: a copy of the port's own
+# source with one refusal taken out, so every case that case was refusing has to go red. The mutation is
+# a copy, so the tree is never edited, and the sed asserts its own landing: str.replace on a missing
+# needle is a silent no-op and a planted run over an unplanted file would report the mutant as applied.
+rule_mutant="$build/rules/mutant"
+mkdir -p "$rule_mutant"
+sed 's|NSError \*refusal = charon_rule_refusal(rule);|NSError *refusal = nil; /* PLANTED */|' \
+    "$sources/WKContentRuleList11.m" > "$rule_mutant/WKContentRuleList11.m"
+if grep -q PLANTED "$rule_mutant/WKContentRuleList11.m"; then
+    xcrun clang $target $port_flags -I"$sources" $(cat "$build/renames.flags") -c "$rule_mutant/WKContentRuleList11.m" \
+        -o "$rule_mutant/WKContentRuleList11.o" 2> "$rule_mutant/compile.log"
+    rule_objects=""
+    for o in $built; do
+        if [ "$o" = "$build/port/WKContentRuleList11.m.o" ]; then
+            rule_objects="$rule_objects $rule_mutant/WKContentRuleList11.o"
+        else
+            rule_objects="$rule_objects $o"
+        fi
+    done
+    xcrun clang $target -fobjc-arc -w -I"$harness" -I"$here" -I"$sources" -DCHARON_HOST_DIFFERENTIAL=1 $(cat "$build/renames.flags") \
+        "$here/contentrulelist_test.m" "$harness/check.m" $rule_objects $frameworks -o "$build/rules/port-mutant"
+    if CHARON_EXPECTED="$rule_expected" "$build/rules/port-mutant" > "$build/rules/port-mutant.log" 2>&1; then
+        failed "RED CONTROL: the rule list comparison is green with a planted refusal, so it is reading nothing"
+    else
+        note "rules red control: exit=$? with a planted refusal, and the cases that moved are:"
+        grep -E '^ +(port|system) +case' "$build/rules/port-mutant.log" | sed 's/^ */    /' | head -6
+    fi
+else
+    failed "RED CONTROL: the rule list mutation did not land, so no mutant was built and nothing was proven"
+fi
 
 # The red control, IN the harness: one answer of the port is changed, and this comparison has to go red on
 # it. A comparison that has only ever been green is not evidence -- it would be equally green with the cases

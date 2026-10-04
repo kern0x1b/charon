@@ -1702,5 +1702,115 @@
     "effect": "a caller reads the version the manifest declares",
     "facts": "facts/WebKit/WebExtension.md",
     "source": "the host's own WebKit under Mac Catalyst, in the case extension.version of tests/backports/host/webkit/webextension-extension_scenario.h, for the manifest committed beside it"
+  },
+{
+    "api": "WKContentRuleList",
+    "kind": "class",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the release builds one in its store and there is no public way to build one, and what a caller reads of it is the identifier it was compiled under: measured, lookUpContentRuleListForIdentifier: answers a list whose own identifier is the one that was asked for",
+    "effect": "a caller keeps the list its compile handed it and reads back the identifier it was stored under",
+    "facts": "facts/WebKit/WKContentRuleList.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the cases stored.lookUp and stored.identifiers of tests/backports/host/webkit/contentrulelist_scenario.h, with the answers recorded by contentrulelist_system.m and held against the port by contentrulelist_test.m"
+  },
+  {
+    "api": "WKContentRuleList.identifier",
+    "kind": "property",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the identifier the list was compiled under, which is what the release answers for a list it built: measured for a named identifier, for the empty string and for none at all (a list compiled with none answers the empty string)",
+    "effect": "a caller reads the identifier it compiled under",
+    "facts": "facts/WebKit/WKContentRuleList.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the cases good.nilIdentifier, good.emptyIdentifier and stored.lookUp of tests/backports/host/webkit/contentrulelist_scenario.h"
+  },
+  {
+    "api": "WKContentRuleListStore",
+    "kind": "class",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the release's store is a directory at a url holding one file per compiled list, and the port keeps the same shape and its own file in it; measured: a list compiled in one process is in the store the next store object over that url reads",
+    "effect": "a list a caller compiled is still there for the next store object, and for the next process",
+    "facts": "facts/WebKit/WKContentRuleList.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the cases second.identifiers and stored.identifiers of tests/backports/host/webkit/contentrulelist_scenario.h, where the system side and the port side run against the SAME directory in that order"
+  },
+  {
+    "api": "+[WKContentRuleListStore defaultStore]",
+    "kind": "method",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "one store for the process, which is what the release answers: measured, two calls give the same object",
+    "effect": "a caller that asks for the default store twice gets the same store and the same lists",
+    "facts": "facts/WebKit/WKContentRuleList.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the case store.defaultStore.isOneObject of tests/backports/host/webkit/contentrulelist_scenario.h"
+  },
+  {
+    "api": "+[WKContentRuleListStore storeWithURL:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "a store over a url of the caller's choosing, holding what that url holds: measured, a second store object over the same url sees the list the first one compiled, and a compile into a directory that is not there yet creates it",
+    "effect": "two stores over one url are two objects reading one store",
+    "facts": "facts/WebKit/WKContentRuleList.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the cases store.overUrl.isAnObject and second.identifiers of tests/backports/host/webkit/contentrulelist_scenario.h"
+  },
+  {
+    "api": "-[WKContentRuleListStore compileContentRuleListForIdentifier:encodedContentRuleList:completionHandler:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "a compile is a validation and a store, and the release refuses exactly what this port refuses: 106 cases in the differential, each one the list, the error's domain and code and the sentence under NSHelpAnchor, covering the JSON shape, the rule shape, the order the checks are reported in, the five action types, the resource-type and load-type sets, the url-filter grammar and the order getAvailableContentRuleListIdentifiers answers (which is compared sorted, because the release answers its own directory's order)",
+    "effect": "a caller is handed a list it can name, or the release's own sentence for what is wrong with the one it wrote",
+    "facts": "facts/WebKit/WKContentRuleList.md",
+    "source": "the host's own WebKit under Mac Catalyst, all 106 cases of tests/backports/host/webkit/contentrulelist_scenario.h, with a red control that plants a refusal and this comparison goes red on it"
+  },
+  {
+    "api": "-[WKContentRuleListStore lookUpContentRuleListForIdentifier:completionHandler:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the list stored under that identifier, or nil and WKErrorContentRuleListStoreLookUpFailed; measured, and no identifier at all is the same answer as one nothing is stored under",
+    "effect": "a caller reads back a list it compiled, or learns there is none",
+    "facts": "facts/WebKit/WKContentRuleList.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the cases empty.lookUp, empty.lookUpNil, stored.lookUp, stored.lookUpSlash and remove.lookUpAfter of tests/backports/host/webkit/contentrulelist_scenario.h"
+  },
+  {
+    "api": "-[WKContentRuleListStore removeContentRuleListForIdentifier:completionHandler:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the list leaves the store, or nothing happens and WKErrorContentRuleListStoreRemoveFailed is answered; measured, removing what is not there is refused and removing the same identifier twice is refused the second time",
+    "effect": "a list a caller compiled is out of the store, and the store no longer answers it",
+    "facts": "facts/WebKit/WKContentRuleList.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the cases remove.one, remove.oneAgain and remove.identifiers of tests/backports/host/webkit/contentrulelist_scenario.h"
+  },
+  {
+    "api": "-[WKContentRuleListStore getAvailableContentRuleListIdentifiers:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the identifiers the store holds, and their ORDER is not part of the API: the release answers whatever order its directory hands over, which is neither the order the lists were stored in nor sorted, so the port answers the order it stored them in and the differential compares both sides sorted",
+    "effect": "a caller learns which identifiers it can look up",
+    "facts": "facts/WebKit/WKContentRuleList.md",
+    "source": "the host's own WebKit under Mac Catalyst, in the cases empty.identifiers, afterRefusals.identifiers, stored.identifiers and stored.identifiersAfterRewrite of tests/backports/host/webkit/contentrulelist_scenario.h, and the unsorted order measured over fifteen lists in facts/WebKit/WKContentRuleList.md"
+  },
+  {
+    "api": "-[WKContentRuleList charon_initWithIdentifier:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "no SDK header declares this name: it is the port's own initialiser for a class the release builds only inside its store, and it is charon_-prefixed and carries objc_method_family(init) for the same reason WKWebExtension's is",
+    "effect": "the port's store builds a list; an application cannot call it and does not need to",
+    "facts": "facts/WebKit/WKContentRuleList.md",
+    "source": "the port's own WebKit/WKContentRuleList11.m, held to the release by the 106 cases of tests/backports/host/webkit/contentrulelist_scenario.h"
   }
 ]}
