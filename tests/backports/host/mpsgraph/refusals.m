@@ -239,6 +239,10 @@ int main(int argc, const char *argv[])
             "pad-destination-narrower-rank2",
             "pad-periodic", "pad-antiperiodic", "pad-reflect-past-extent",
             "pad-thin-reflect", "pad-thin-symmetric",
+            "concat-axis-outside", "concat-shapes-differ", "concat-interleave-axis-outside",
+            "concat-interleave-unequal",
+            "stack-axis-outside", "stack-shapes-differ",
+            "concat-mixed-types",
         };
         unsigned i;
         for (i = 0; i < sizeof(kQuestions) / sizeof(kQuestions[0]); i++)
@@ -670,6 +674,127 @@ int main(int argc, const char *argv[])
                                    resultsArray:@[destination] executionDescriptor:nil];
             put(q, buffer, count * sizeof(float));
             free(bytes);
+            return 0;
+        }
+        // MIXED DATA TYPES, the header's sentence about the operands' type, measured here because the port
+        // does not refuse it: a float32 2x4 beside an int32 2x4 builds a result tensor whose data type is the
+        // FIRST operand's (a float32 beside an int32 answers a float32 result, 0x10000020) and only the
+        // release's own compiler refuses it - "'mps.concat' op element type of operand and result differ" -
+        // with the process still alive and nothing written. So the port, which takes the result's data type
+        // from the operands' own, agrees with the release about the tensor; what the release has and the port
+        // has not is the refusal, and that refusal is a compiler's and not the graph's.
+        //
+        // The header's OTHER sentence, the array being the operands themselves, is NOT here because it is not
+        // a refusal: measured over the whole path, an empty array builds a result tensor of nil shape and
+        // float32, the compile returns an executable and the run leaves the destination as it was. It is two
+        // cases of the differential instead - graph-cases.m's concat-empty and stack-empty - and the port
+        // answers it the same way after the correction that removed the raise.
+        if (strcmp(q, "concat-mixed-types") == 0) {
+            MPSGraph *graph = [MPSGraph new];
+            MPSGraphTensor *a = [graph placeholderWithShape:twoByFour dataType:MPSDataTypeFloat32 name:@"a"];
+            MPSGraphTensor *b = [graph placeholderWithShape:twoByFour dataType:MPSDataTypeInt32 name:@"b"];
+            MPSGraphTensor *t = [graph concatTensors:@[a, b] dimension:1 name:@"c"];
+            printf("%s shape %s result-data-type 0x%x\n", q,
+                   t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil", (unsigned)t.dataType);
+            fflush(stdout);
+            NSUInteger n = 16;
+            id<MTLBuffer> out = [gDevice newBufferWithLength:n * sizeof(float)
+                                                   options:MTLResourceStorageModeShared];
+            memset([out contents], gPattern, n * sizeof(float));
+            int32_t other[8] = { -1, -2, -3, -4, -5, -6, -7, -8 };
+            MPSGraphExecutable *executable = [graph compileWithDevice:gGraphDevice
+                    feeds:@{a: [[MPSGraphShapedType alloc] initWithShape:twoByFour dataType:MPSDataTypeFloat32],
+                            b: [[MPSGraphShapedType alloc] initWithShape:twoByFour dataType:MPSDataTypeInt32]}
+            targetTensors:@[t] targetOperations:@[] compilationDescriptor:nil];
+            [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                                  inputsArray:@[feed(rowFeed, twoByFour, MPSDataTypeFloat32),
+                                                feed(other, twoByFour, MPSDataTypeInt32)]
+                                   resultsArray:@[[[MPSGraphTensorData alloc] initWithMTLBuffer:out
+                                                                                          shape:@[@2, @8]
+                                                                                       dataType:MPSDataTypeFloat32]]
+                               executionDescriptor:nil];
+            put(q, out, n * sizeof(float));
+            return 0;
+        }
+        // THE CONCAT AND STACK FAMILY, the one walk whose result is several operands, and the two things the
+        // release refuses about it. Both are refused where the graph is BUILT, by its own compiler, and the
+        // compiler's own message is what is recorded - so this is a measurement of the release rather than a
+        // question the port has to have an opinion about.
+        //
+        //   - an axis outside the rank. A concat takes `-rank <= axis < rank` and a stack takes
+        //     `-rank + 1 <= axis < rank + 1` over the RESULT's rank, one more than the operands', and one
+        //     past either end of that is refused. The two carry different messages, which is why they are two
+        //     questions: the release builds a stack out of an expanded dimension per operand and then a
+        //     concatenation, and the expanded dimension is what names the axis first (MPSGraphUtilities.mm
+        //     3237) while the concatenation is what names it for a concat (MPSGraphUtilities.mm:748).
+        //   - operands whose shapes differ anywhere but the axis they are laid along. The header says the
+        //     inputs must be "broadcast compatible" and the release does not take it at all: a 1x4 beside a
+        //     2x4 is refused with axis 1 the one laid along, and so is a stack of two 2x4s beside a 1x4.
+        if (strncmp(q, "concat-", 7) == 0 || strncmp(q, "stack-", 6) == 0) {
+            int stacked = strncmp(q, "stack-", 6) == 0;
+            NSInteger axis = stacked ? 3 : 2;
+            NSArray<NSArray<NSNumber *> *> *shapes = @[twoByFour, twoByFour];
+            NSArray<NSData *> *values = @[[NSData dataWithBytes:rowFeed length:sizeof rowFeed],
+                                          [NSData dataWithBytes:rowFeed length:sizeof rowFeed]];
+            NSString *question = [NSString stringWithUTF8String:q];
+            if (strstr(q, "interleave-unequal")) {
+                // The operands are a 2x4 and a 2x1, so the axis they are laid along is the ONLY one whose
+                // extent differs between them - which end to end answers a 2x5 and is the case
+                // concat-unequal-axis1 in the differential. Interleaved it is refused, and that refusal is the
+                // whole of the invariant the walk's division rests on.
+                axis = 1;
+                shapes = @[@[@2, @4], @[@2, @1]];
+                values = @[[NSData dataWithBytes:rowFeed length:sizeof rowFeed],
+                           [NSData dataWithBytes:rowFeed length:2 * sizeof(float)]];
+            }
+            if (strstr(q, "shapes-differ")) {
+                axis = 1;
+                // The extent that differs is on axis 0, and the axis the operands are laid along is axis 1,
+                // so the difference is one the release's own words say it cannot take.
+                shapes = stacked ? @[twoByFour, twoByFour, @[@1, @4]] : @[@[@1, @4], twoByFour];
+                values = stacked ? @[[NSData dataWithBytes:rowFeed length:sizeof rowFeed],
+                                      [NSData dataWithBytes:rowFeed length:sizeof rowFeed],
+                                      [NSData dataWithBytes:thinRow length:sizeof thinRow]]
+                                 : @[[NSData dataWithBytes:thinRow length:sizeof thinRow],
+                                     [NSData dataWithBytes:rowFeed length:sizeof rowFeed]];
+            }
+            MPSGraph *graph = [MPSGraph new];
+            NSMutableArray *operands = [NSMutableArray array];
+            NSMutableDictionary *feeds = [NSMutableDictionary dictionary];
+            NSMutableArray *inputs = [NSMutableArray array];
+            for (NSUInteger i = 0; i < shapes.count; i++) {
+                MPSGraphTensor *p = [graph placeholderWithShape:shapes[i] dataType:MPSDataTypeFloat32 name:@"i"];
+                [operands addObject:p];
+                feeds[p] = [[MPSGraphShapedType alloc] initWithShape:shapes[i] dataType:MPSDataTypeFloat32];
+                [inputs addObject:[[MPSGraphTensorData alloc] initWithMTLBuffer:
+                                   [gDevice newBufferWithBytes:values[i].bytes length:values[i].length
+                                                        options:MTLResourceStorageModeShared]
+                                                         shape:shapes[i] dataType:MPSDataTypeFloat32]];
+            }
+            // The interleave form of the same question, so that the flag is measured to change nothing about
+            // what the release refuses: the axis is named by the same concatenation either way.
+            int interleaved = strstr(q, "interleave") != NULL;
+            MPSGraphTensor *t = stacked ? [graph stackTensors:operands axis:axis name:@"s"]
+                                        : interleaved ? [graph concatTensors:operands dimension:axis
+                                                             interleave:YES name:@"c"]
+                                                      : [graph concatTensors:operands dimension:axis name:@"c"];
+            // The result's own shape is printed whatever it is, because a process that is gone writes nothing
+            // this file can match and the shape is what the release did answer before it went.
+            printf("%s result-shape %s\n", question.UTF8String,
+                   t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil");
+            fflush(stdout);
+            NSUInteger count = 1;
+            for (NSNumber *dimension in t.shape) count *= (NSUInteger)dimension.integerValue;
+            size_t bytes = count * sizeof(float);
+            id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+            memset([buffer contents], gPattern, bytes);
+            MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:t.shape
+                                                                                 dataType:MPSDataTypeFloat32];
+            MPSGraphExecutable *executable = [graph compileWithDevice:gGraphDevice feeds:feeds targetTensors:@[t]
+                                                   targetOperations:@[] compilationDescriptor:nil];
+            [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                                  inputsArray:inputs resultsArray:@[destination] executionDescriptor:nil];
+            put(q, buffer, bytes);
             return 0;
         }
         fprintf(stderr, "unknown question '%s'\n", q);

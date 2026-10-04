@@ -1424,10 +1424,136 @@ says so is an answer, and running early would be a silent wrong answer.
 
 ### What is not measured here
 
-The rest of the shape family (`concat`, `stack`, `split`, `spaceToDepth`, `depthToSpace`, `spaceToBatch`,
-`batchToSpace`, `coordinateAlongAxis`, `nonZeroIndices`, the `gather*` and `scatter*` forms and the `topK`/
-`bottomK` pair), and the tile's gradient whose measurement is in the section above, is not in this page and not
-in the tree: it is the rest of the rows the ledger carries as `missing` for this family.
+The rest of the shape family - `split`, `spaceToDepth`, `depthToSpace`, `spaceToBatch`, `batchToSpace`,
+`coordinateAlongAxis`, `nonZeroIndices`, the `gather*` and `scatter*` forms and the `topK`/`bottomK` pair -
+is not in this page and not in the tree, and the tile's gradient is in the section above with its measurement
+there. `concat` and `stack` have been in the tree since the section above was written and their measurement
+is there now; this list is the rest of the rows the ledger carried as `missing` for this family.
+
+## The concat and stack family: the one walk whose result is SEVERAL operands
+
+Four rows - the three concatenations MPSGraph arrived with in 14.0 and the stack of 15.4 - and they are the
+first walk in this library that is **not** a gather of one operand. A gather maps each axis of the result to
+an axis of THE operand; a concatenation maps a REGION of one axis of the result to each of the operands in
+turn, and a stack maps one axis of the result - a new one, of extent as many operands - to which operand the
+element came from. So the walk reads every input of the operation rather than the first, and the plan has one
+thing the gather's has not: an offset and a length per operand along the axis named.
+
+Measured on this host's own MPSGraph (macOS 27.0 build 26A428, M4 Pro, Metal 4), over the case file's 2x4 of
+(1, 2, 3, 4 | 10, 20, 30, 40) beside one of (5, 6, 7, 8 | 50, 60, 70, 80) and one of
+(9, 10, 11, 12 | 90, 100, 110, 120). Compared in a process of its own (`gather_concat`): **38 cases, every
+cell byte-identical to the release, and the red control differing in 38 of the 81 case lines.** The red
+control's count is unchanged by the two cases of an empty array, and that is right rather than a gap: those
+two carry a shape and a data type and no stored element at all, so there is nothing in them for a plant that
+shifts every stored element to move.
+
+### The rule, which is one walk with one bit on it
+
+| question | the release answers |
+| --- | --- |
+| end to end along an axis, two 2x4s | axis 0 is a 4x4 of the first 2x4 then the second; axis 1 is a 2x8 of their rows side by side |
+| the same with three | axis 0 is a 6x4 of the three in the order written; axis 1 a 2x12 of their rows side by side |
+| a negative axis | counted from the end: -2 answers what 0 answers and -1 what 1 answers |
+| ONE operand | the identity: a 2x4 alone is a 2x4 of its own eight values |
+| an extent of ONE **on** the axis laid along | not a broadcast but one element of the result: a 1x4 of (101, 102, 103, 104) laid along axis 0 beside a 2x4 is a 3x4 of (101, 102, 103, 104 \| 5, 6, 7, 8 \| 50, 60, 70, 80) |
+| operands of DIFFERING LENGTH on the axis laid along | allowed, and the result is then neither of their lengths: a 2x4 beside a 2x1 laid along axis 1 is a 2x5 of (1, 2, 3, 4, 10 \| 20, 30, 40, 5, 6) |
+| INTERLEAVED along an axis | operand i's coordinate c lands at the result's coordinate `i + c * (the number of operands)`, and the extent is the sum either way |
+| INTERLEAVED with the operands of DIFFERENT length on that axis | **refused** - see below |
+| stack at an axis | the result is of the operands' rank plus one and that axis is of extent as many operands: axis 1 of two 2x4s is a 2x2x4, axis 2 a 2x4x2 |
+| a stack's negative axis | counted from the end of the RESULT's rank, one more than the operands': -3, -2, -1 answer what 0, 1, 2 answer |
+| a stack of ONE operand | the operand itself with the new axis of extent one: a 1x2x4 of its own eight values |
+| `interleave:NO` | exactly what the many-operand form answers, byte for byte |
+
+The interleave measurement in full, because the header's own example covers one operand's worth and not the
+rule: axis 1 of **two** is a 2x8 of (1, 5, 2, 6, 3, 7, 4, 8 | 10, 50, 20, 60, 30, 70, 40, 80); axis 1 of
+**three** is a 2x12 of (1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 | 10, 50, 90, 20, 60, 100, 30, 70, 110,
+40, 80, 120); and axis 0 of three is a 6x4 whose rows are the operands' rows round again - row 0 the first
+operand's row 0, row 1 the second's row 0, row 2 the third's row 0, row 3 the first's row 1 - which is the
+same rule on the slowest-moving axis of the result, and is what says the rule is about the coordinate and not
+about which axis of the result it happens to be.
+
+### "Broadcast compatible" is not what the release takes
+
+The header says of both (`MPSGraphTensorShapeOps.h`, `concatTensor:` and `stackTensors:`) that the inputs
+"must be broadcast compatible along all other dimensions". **It is refused**, by its own compiler, with its
+own words - `'mps.concat' op invalid input tensor shapes, all input shapes must match except at axis`
+(MPSGraphUtilities.mm:748), after which the process goes down:
+
+* a 1x4 beside a 2x4 with the concatenation on axis **1** is refused, because then the extent that differs is
+  one the concatenation does not touch;
+* two 2x4s beside a 1x4 stacked at axis **1** are refused, and so are a 1x4 and a 2x4 stacked at axis **0** -
+  a stack has no extent to differ on, so *every* axis has to match.
+
+An extent of one ON the axis laid along is therefore not a broadcast either, and that direction answers: it is
+one element of the result, which is what `concat-thin-axis0` compares. So the header's sentence is loose in
+both directions and the release's rule is the strict one; the port raises where the graph is built and the row
+of each method says so.
+
+### Interleaving is the one form that needs the operands to agree on the axis, and the release says so
+
+The interleaved walk divides the result's coordinate by the number of operands, which lands inside the
+operand it names **only if every operand is the same length on that axis**. The release enforces exactly
+that, and says so in a sentence of its own which is neither of the two above:
+
+    'mps.concat' op all input shapes must match along axis dimension when interleaving
+
+(MPSGraphUtilities.mm:748), measured over the shape where the axis laid along is the only one whose extent
+differs: a `2x4` beside a `2x1` on axis 1 is a `2x5` **end to end** - `concat-unequal-axis1`, which answers -
+and is refused when they interleave, which is `refusals.txt`'s `concat-interleave-unequal`.
+
+This is worth writing down because the port got it wrong first and a compiler warning is what said so. The
+plan computed a per-operand `extents` list that nothing read, which is what `-Wunused-variable` names; the
+list was the residue of the check that belongs there, and deleting the line instead of writing the check
+would have left a documented public call - `concatTensors:dimension:interleave:` over operands of different
+lengths, which is the very thing the header invites - reading past the end of the shorter operand's buffer,
+because the division would have answered its elements 2, 3 and 4 where it holds two. The check is in the
+plan rather than in the walk's per-element path, which is where the release has it too and where it costs
+nothing: three orders of magnitude fewer comparisons for the same answer.
+
+### An axis outside the rank, and the two messages
+
+Both are refused where the graph is BUILT, by the same compiler, with different words - because the release
+builds a stack out of an **expanded dimension per operand** and then a concatenation, so for a stack the
+expanded dimension is what names the axis first:
+
+| question | the release's own words | where |
+| --- | --- | --- |
+| a concatenation at axis 2 of a rank of two | `invalid axis tensor: [2], axis must be in range -rank <= axis < rank, rank = 2` | MPSGraphUtilities.mm:748 |
+| the interleave form at the same axis | the same sentence, byte for byte - so the flag changes nothing about what is refused | MPSGraphUtilities.mm:748 |
+| a stack at axis 3 of two 2x4s | `invalid axis: 3, axis must be in range -\|rank\| <= axis < \|rank\|` | MPSGraphUtilities.mm:3237 |
+
+and in every case `LLVM ERROR: Failed to infer result type(s):` follows and takes the process down. They are
+`refusals.txt`'s `concat-axis-outside`, `concat-interleave-axis-outside` and `stack-axis-outside`.
+
+### The header's other two sentences, and one of them is not the graph's to enforce
+
+The header also says the operands "have the same type" and that the array is the operands themselves. Both
+were measured, and they come out differently - one is the compiler's business and one is the graph's:
+
+* **MIXED DATA TYPES are the release's COMPILER's refusal, not its graph's.** A float32 2x4 beside an int32
+  2x4 concatenated on axis 1 builds a result tensor of shape 2x8 whose data type is **the first operand's**
+  (0x10000020, float32), and only the compile refuses it, with `'mps.concat' op element type of operand and
+  result differ` - the process survives and writes nothing. So the port, which takes the result's data type
+  from the operands' own, agrees with the release about the tensor and has no graph-level check the release
+  has; `refusals.txt`'s `concat-mixed-types` measures both halves.
+* **AN EMPTY ARRAY builds a result tensor whose shape is nil**, and the process survives. Measured over the
+  WHOLE path, because the first measurement here stopped at the build and the answer turns out to matter
+  exactly where a build-time answer does not: `[MPSGraph concatTensors:@[] dimension:0]` and
+  `[MPSGraph stackTensors:@[] axis:0]` build a result tensor of nil shape and **float32** (0x10000020),
+  `compileWithDevice:feeds:@{} targetTensors:@[t]` returns an executable, and the run leaves the caller's
+  destination exactly as it was. So the port builds the same tensor - no shape on it, no value in it - and the
+  run's own copy-out finds nothing to copy, which leaves the destination as the caller had it. These are
+  `graph-cases.m`'s `concat-empty` and `stack-empty`, which compare the shape and the data type on every run
+  and are the only cases in the family with no result buffer.
+
+  **This paragraph's earlier text said the port raised `NSInvalidArgumentException` here and called it a
+  deliberate divergence from the release. That was wrong and is corrected.** The reasoning behind it - that a
+  tensor of no shape is the one answer a caller cannot act on - is true of a *caller that wants an answer*, and
+  irrelevant to the caller that merely has to keep running: an application written against the release builds
+  this graph and takes no exception, so a port that raises takes down an application that works on the
+  device. The rule this library follows is the release's own answer, and where the release has none to give
+  (the eight refusal questions above, and the tile gradient's read past the end of the caller's buffer) the
+  port refuses *and says so in the row*. Here the release has an answer and the port must have it too.
 
 ## The R4 names this band adds, in full
 

@@ -163,3 +163,29 @@ tilegrad-1x2-zero 0 0000c0400000004100002041000040410000604100008041000090410000
 tilegrad-1x3 0 00007041000090410000a8410000c0410000d8410000f04100000442000010420000b0410000c8410000e0410000f841000088410000a0410000b8410000d041
 tilegrad-1x5 0 0000e041000004420000184200002c420000f8410000104200002442000038420000084200001c420000304200004442000014420000284200003c4200005042
 tilegrad-1x3-short 0 0000c04000001041000040410000704100001041000040410000704100009041
+# The concat and stack family, whose result is SEVERAL operands. Both refusals are the release's own
+# compiler refusing to build the graph, and the message is its own: an axis outside the rank, and operands
+# whose shapes differ anywhere but the axis they are laid along. The header says the inputs must be
+# "broadcast compatible" and the release does not take it at all - which is why concat-thin-axis0 in
+# graph-cases.m is a case (an extent of one ON the axis laid along is one element of the result, not a
+# repeat) and this pair is a refusal (an extent of one anywhere else is not taken).
+# The two axis refusals carry different messages because the release builds a stack out of an expanded
+# dimension per operand and then a concatenation, and the expanded dimension is what names the axis first
+# (MPSGraphUtilities.mm:3237) where the concatenation names it for a concat (MPSGraphUtilities.mm:748).
+concat-axis-outside 134 invalid axis tensor: [2], axis must be in range -rank <= axis < rank, rank = 2
+concat-interleave-axis-outside 134 invalid axis tensor: [2], axis must be in range -rank <= axis < rank, rank = 2
+concat-shapes-differ 134 invalid input tensor shapes, all input shapes must match except at axis
+# The operands of DIFFERING LENGTH ON THE AXIS THEY ARE LAID ALONG: end to end that is a 2x5 and answers
+# (concat-unequal-axis1 in the differential), and interleaved it is REFUSED. That refusal is the whole of the
+# invariant the walk's division by the number of operands rests on, so it is recorded here and enforced in
+# the plan - see CharonMPSGraphConcatPlan.
+concat-interleave-unequal 134 all input shapes must match along axis dimension when interleaving
+stack-axis-outside 134 invalid axis: 3, axis must be in range -|rank| <= axis < |rank|
+stack-shapes-differ 134 invalid input tensor shapes, all input shapes must match except at axis
+# MIXED DATA TYPES, the header's other sentence, measured rather than assumed: the result tensor carries the
+# FIRST operand's data type and the release's own COMPILER then refuses it, so the port agrees with the
+# release about the tensor and the refusal is a compiler's, not the graph's.
+# The EMPTY array is NOT here: it is not a refusal at all, and refusals.m's own branch for it is gone. It is
+# two cases of the differential instead (concat-empty and stack-empty in graph-cases.m), because the release
+# answers it - a result tensor of nil shape and float32 - and there was nothing to record as a refusal.
+concat-mixed-types 0 result-data-type 0x10000020
