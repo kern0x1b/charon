@@ -19,16 +19,36 @@
    No certificate and no TLS: those are the other two rows and another test, because a TLS listener
    the test owns needs a certificate and a trust decision inside the test's own delegate.
 
-   IT FAILS, and the failure is the host, not the port:
+   WHERE IT STOPS, and the measurement that says why:
 
        -[CharonHostNSURLSessionStreamTask _onqueue_resume]: unrecognized selector sent to instance
 
-   The port's -resume ends in [super resume], and the host's NSURLSessionTask carries that selector
-   mangled to -_onqueue_resume, so the superclass call cannot be exercised in a host differential for
-   this class at all, and the metrics delivery behind it cannot be observed here either. What the run
-   does prove is that it *finishes*: the listener writes a byte, every wait is bounded, and a run that
-   goes wrong fails with a line instead of hanging the host test sweep. The level that can hold the
-   delivery is the 6.1.3 emulator, where [super resume] is the release's own class. */
+   Every check before that line passes, and the side this test calls the host's own IS the host's own
+   (the check named "the host's own stream task is not the port's" is what says so, and it fails on the
+   tree this file was written against: the port's -[NSURLSession streamTaskWithHostName:port:] is a
+   category on a class the RELEASE owns and used to be applied by the loader over the release's own
+   method of that name, so the task made on the left of the differential was a port task - measured
+   2026-10-04: the host's own stream task was a CharonHostNSURLSessionStreamTask).
+
+   What stops it is the port's own -resume, and it is the release's machinery, measured on the host
+   2026-10-04 with the runtime and with the held caches:
+
+       the host's own stream task is a __NSCFTCPIOStreamTask: superclass NSURLSessionTask, 54 own
+           instance methods of which _onqueue_resume is one, 27 own ivars, instance size 920
+       NSURLSessionStreamTask, the class of the RELEASE'S NAME: superclass NSURLSessionTask, 0 own
+           instance methods, instance size 728, and _onqueue_resume is in no class of its chain
+       __NSCFTCPIOStreamTask is NOT a subclass of NSURLSessionStreamTask
+
+   -[NSURLSessionTask resume] is the release's and sends _onqueue_resume to self, so a task that is to
+   be resumed by the release has to inherit that selector from the class the release really makes. On a
+   band from 8.0 on the port's task is a subclass of CFNetwork's own NSURLSessionStreamTask and reaches
+   it; on this host that reparenting is not available, and attach.c's mechanism cannot be used at all
+   here: it writes the superclass word and reads the layout back, and on a host build every compiled
+   class is already realized before the first constructor runs - measured by writing the word and
+   reading the instance size back (728, the old layout, where the class written in had 16), in the main
+   executable and in a dylib alike. So the wall is real and it is the host's, and the run fails with a
+   line instead of hanging the host test sweep. The level that can hold the delivery is the 6.1.3
+   emulator, where [super resume] is the release's own class. */
 
 void host_attach_prefixed(const char *prefix);
 
@@ -169,6 +189,11 @@ int main(void)
         printf("note the listener is on the loopback at port %lu\n", (unsigned long)port);
 
         /* ---- the host's own stream task, and the transaction it reports ---- */
+        /* The port's class, named first: the check below is the red control for the harness's own
+           defect, that the port's factory answered the release's and the left side of this differential
+           was the port. */
+        Class ourTaskClass = NSClassFromString(@"CharonHostNSURLSessionStreamTask");
+        charon_check(ourTaskClass != Nil, "the port defines a stream task", @"no such class");
         CharonMetricsCollector *systemDelegate = [[CharonMetricsCollector alloc] init];
         Class systemSessionClass = [NSURLSession class];
         NSURLSession *systemSession = [systemSessionClass sessionWithConfiguration:
@@ -177,6 +202,8 @@ int main(void)
                                                                 delegateQueue:nil];
         NSURLSessionTask *systemTask = [systemSession streamTaskWithHostName:@"127.0.0.1" port:(NSInteger)port];
         charon_check(systemTask != nil, "the host makes a stream task", @"nil");
+        charon_check(systemTask && ourTaskClass && ![systemTask isKindOfClass:ourTaskClass],
+                     "the host's own stream task is not the port's", @"the port's factory answered it");
         accept_once(listener);
         [systemTask resume];
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
@@ -192,8 +219,6 @@ int main(void)
            NSURLSession, and the port's own session is two thousand lines that this build does not
            need. The task is made through that category, renamed, on the host's own session, which is
            the shape a differential has when the port adds to a class the release already has. */
-        Class ourTaskClass = NSClassFromString(@"CharonHostNSURLSessionStreamTask");
-        charon_check(ourTaskClass != Nil, "the port defines a stream task", @"no such class");
         SEL ourFactory = NSSelectorFromString(@"charonHost_streamTaskWithHostName:port:");
         charon_check([NSURLSession instancesRespondToSelector:ourFactory],
                      "the port's factory is attached to the session", @"the category is not attached");
