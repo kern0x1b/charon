@@ -76,7 +76,11 @@ prefixed_build() {
     for file in $files; do
         base=$(basename "$file")
         source=$build/rewritten/$name/$base
-        if [ -s "$build/$name.carried" ]; then
+        case "$file" in
+            *.m | *.mm) objective_c=1 ;;
+            *) objective_c= ;;
+        esac
+        if [ -n "$objective_c" ] && [ -s "$build/$name.carried" ]; then
             if ! python3 "$prefixer" "$sources/$file" "$source" charonHost \
                 --declarations="$build/$name.declarations.h" \
                 --sources="$(for f in $files; do printf '%s,' "$sources/$f"; done | sed 's/,$//')" \
@@ -96,8 +100,25 @@ prefixed_build() {
     for file in $files; do
         base=$(basename "$file").o
         source=$build/rewritten/$name/${base%.o}
+        # A file that is not Objective-C is compiled WITHOUT the declarations header, which force-includes
+        # <UIKit/UIKit.h>: a C file cannot parse it, and Foundation's NSObjCRuntime.h then fails at its
+        # first Objective-C declaration with "error: expected identifier or '('". There are no selectors in
+        # a C file to prefix either, so the rewriter above skips it for the same reason. The renames still
+        # apply - they come from the flags, which every file of the group gets - so a C symbol this group
+        # defines is still prefixed, which is the whole of what foundation14networkaccess needs of its .c.
+        # Both words of the option go, not the flag alone: leaving the header path behind made it a second
+        # input file and clang answered "cannot specify -o when generating multiple output files".
+        case "$file" in
+            *.m | *.mm) header="-include" ;;
+            *) header="forced-header off" ;;
+        esac
+        if [ "$header" = "-include" ]; then
+            set -- -include "$build/$name.declarations.h"
+        else
+            set --
+        fi
         if ! xcrun clang $target $flags -I"$sources" -I"$(dirname "$sources/$file")" \
-            -include "$build/$name.declarations.h" $(cat "$build/$name.flags") -c "$source" -o "$build/$name/$base" \
+            "$@" $(cat "$build/$name.flags") -c "$source" -o "$build/$name/$base" \
             2> "$build/$name/$base.diagnostic"; then
             printf 'FAIL %s: the rewritten %s does not compile\n' "$name" "$file"
             grep -m1 'error:' "$build/$name/$base.diagnostic" | sed "s|$source|$file|; s|^|  |"
@@ -458,9 +479,9 @@ prefixed_windowed_expected controlactions "UIMenuElement.m UIAction.m UIAction+i
 
 prefixed_windowed_expected controlmenus "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m UICommand.m UIControl+Actions14.m UIControl+Menus14.m UIButton+Actions14.m UIButton+iOS13.m UIBarButtonItem+Actions14.m UISegmentedControl+Actions14.m" controlmenus_test.m controlmenus_system.m
 
-prefixed_windowed_expected views13 "UIView+iOS13.m UIViewController+iOS13.m UIDatePicker+Style134.m UIPanGestureRecognizer+ScrollTypes134.m UISwitch+Style14.m UIPageControl+Indicators14.m UILabel+LineBreakStrategy14.m UIView+FocusGroup14.m UIScrollView+IndicatorInsets13.m UISegmentedControl+SelectedTint13.m UISplitViewController+Background13.m UITextView+TextScaling13.m UISearchBar+ScopeBar13.m UIScreen+Latency13.m UIAccessibility13.m UIAccessibility14.m UIAccessibilityCustomAction+Handler13.m UIAccessibilityCustomAction+Image14.m NSLayoutManager+Text13.m UIResponder+ItemsConfiguration.m UIVibrancyEffect+Style13.m UIFontSystemDesign.m UIViewController+Appearing13.m UIViewController+Unwind13.m NSAttributedString+Constants13.m NSAttributedString+Tracking14.m UIPasteboard+Detection14.m UINavigationItem+BackDisplayMode14.m UITextInput+AttributedReplace13.m UICommand.m UIMenuElement.m" views13_test.m views13_system.m
+windowed_expected views13 "UIView+iOS13.m UIViewController+iOS13.m UIDatePicker+Style134.m UIPanGestureRecognizer+ScrollTypes134.m UISwitch+Style14.m UIPageControl+Indicators14.m UILabel+LineBreakStrategy14.m UIView+FocusGroup14.m UIScrollView+IndicatorInsets13.m UISegmentedControl+SelectedTint13.m UISplitViewController+Background13.m UITextView+TextScaling13.m UISearchBar+ScopeBar13.m UIScreen+Latency13.m UIAccessibility13.m UIAccessibility14.m UIAccessibilityCustomAction+Handler13.m UIAccessibilityCustomAction+Image14.m NSLayoutManager+Text13.m UIResponder+ItemsConfiguration.m UIVibrancyEffect+Style13.m UIFontSystemDesign.m UIViewController+Appearing13.m UIViewController+Unwind13.m NSAttributedString+Constants13.m NSAttributedString+Tracking14.m UIPasteboard+Detection14.m UINavigationItem+BackDisplayMode14.m UITextInput+AttributedReplace13.m UICommand.m UIMenuElement.m" views13_test.m views13_system.m
 
-prefixed_windowed_expected images13 "UIImage+iOS13.m UIImage+Baseline13.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImageSymbolGlyphs.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" images13_test.m images13_system.m
+windowed_expected images13 "UIImage+iOS13.m UIImage+Baseline13.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImageSymbolGlyphs.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" images13_test.m images13_system.m
 
 prefixed_windowed_expected colors13 "UIColorDynamic.m" colors13_test.m colors13_system.m
 
@@ -479,7 +500,7 @@ prefixed_windowed compositionallayout "NSCollectionLayoutValues.m NSCollectionLa
 
 prefixed_windowed orthogonal "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m CharonOrthogonalScroll.m CharonSelfSizing.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m CharonLists.m UICollectionViewCompositionalLayout+ListConfiguration.m" orthogonal_test.m
 
-prefixed_windowed sizedlayout "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m CharonOrthogonalScroll.m CharonSelfSizing.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m CharonLists.m UICollectionViewCompositionalLayout+ListConfiguration.m" sizedlayout_test.m
+windowed sizedlayout "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m CharonOrthogonalScroll.m CharonSelfSizing.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m CharonLists.m UICollectionViewCompositionalLayout+ListConfiguration.m" sizedlayout_test.m
 
 prefixed_group listvalues "CharonLists.m UICellAccessory.m UIViewConfigurationState.m UIListContentProperties.m UIListContentConfiguration.m UIBackgroundConfiguration.m UIListContentView.m" listvalues_test.m
 
