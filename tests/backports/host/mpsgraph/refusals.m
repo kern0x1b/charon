@@ -132,20 +132,31 @@ static void one(MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *), NSArray<
 
 // A parameter fed at run time: the axis, the axes or the shape arrives as the operation's second input, and
 // its own value is fed beside the operand's.
+//
+// THE DESTINATION IS ONE THE CALLER GIVES, never one derived from the result's own shape, and that is the
+// whole of what this helper had wrong: over a fed parameter the release cannot resolve the result's shape and
+// carries a vector of -1 for it (measured, and printed below), so a destination sized off that vector is a
+// buffer of ONE element asked to hold the result, and the release's own NDArray then asserts what it asserts
+// about any short buffer - "Error: NDArray dimension length > INT_MAX" - which is a fact about the question
+// and not about the operation. Measured with a destination of the written-down form's own shape, four of the
+// six fed forms ANSWER (exit 0) and write zeros over the destination; the two that do not are refused where
+// they always were.
 static void fed(MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *, MPSGraphTensor *),
                NSArray<NSNumber *> *shape, const void *values, int32_t fed0, MPSDataType fedType,
-               NSArray<NSNumber *> *fedShape, const char *name)
+               NSArray<NSNumber *> *fedShape, NSArray<NSNumber *> *destinationShape, const char *name)
 {
     MPSGraph *one_ = [MPSGraph new];
     MPSGraphTensor *a = [one_ placeholderWithShape:shape dataType:MPSDataTypeFloat32 name:@"a"];
     MPSGraphTensor *p = [one_ placeholderWithShape:fedShape dataType:fedType name:@"p"];
     MPSGraphTensor *t = build(one_, a, p);
+    printf("%s result-shape %s\n", name,
+           t.shape == nil ? "nil" : [[t.shape componentsJoinedByString:@"x"] UTF8String]);
     NSUInteger count = 1;
-    for (NSNumber *dimension in t.shape) count *= (NSUInteger)dimension.integerValue;
+    for (NSNumber *dimension in destinationShape) count *= (NSUInteger)dimension.integerValue;
     size_t bytes = count * MPSSizeofMPSDataType(MPSDataTypeFloat32);
     id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
     memset([buffer contents], gPattern, bytes);
-    MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:t.shape
+    MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:destinationShape
                                                                              dataType:MPSDataTypeFloat32];
     NSMutableDictionary *shaped = [NSMutableDictionary dictionary];
     shaped[a] = [[MPSGraphShapedType alloc] initWithShape:shape dataType:MPSDataTypeFloat32];
@@ -334,7 +345,7 @@ int main(int argc, const char *argv[])
         }
         if (strcmp(q, "reshape-fed-shape") == 0) {
             fed(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
-                return [g reshapeTensor:a withShapeTensor:p name:@"r"]; }, twoByFour, rowFeed, 4, MPSDataTypeInt32, @[@1], "reshape-fed-shape");
+                return [g reshapeTensor:a withShapeTensor:p name:@"r"]; }, twoByFour, rowFeed, 4, MPSDataTypeInt32, @[@1], @[@4], "reshape-fed-shape");
             return 0;
         }
         if (strcmp(q, "reshape-volume-mismatch") == 0) {
@@ -354,27 +365,27 @@ int main(int argc, const char *argv[])
         }
         if (strcmp(q, "fed-flatten-axis") == 0) {
             fed(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
-                return [g flatten2DTensor:a axisTensor:p name:@"f"]; }, twoByFour, rowFeed, 1, MPSDataTypeInt32, @[@1], "fed-flatten-axis");
+                return [g flatten2DTensor:a axisTensor:p name:@"f"]; }, twoByFour, rowFeed, 1, MPSDataTypeInt32, @[@1], @[@2, @4], "fed-flatten-axis");
             return 0;
         }
         if (strcmp(q, "fed-broadcast-shape") == 0) {
             fed(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
-                return [g broadcastTensor:a toShapeTensor:p name:@"b"]; }, twoByFour, rowFeed, 4, MPSDataTypeInt32, @[@1], "fed-broadcast-shape");
+                return [g broadcastTensor:a toShapeTensor:p name:@"b"]; }, twoByFour, rowFeed, 4, MPSDataTypeInt32, @[@1], @[@4], "fed-broadcast-shape");
             return 0;
         }
         if (strcmp(q, "fed-reverse-axes") == 0) {
             fed(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
-                return [g reverseTensor:a axesTensor:p name:@"r"]; }, twoByFour, rowFeed, 0, MPSDataTypeInt32, @[@1], "fed-reverse-axes");
+                return [g reverseTensor:a axesTensor:p name:@"r"]; }, twoByFour, rowFeed, 0, MPSDataTypeInt32, @[@1], @[@2, @4], "fed-reverse-axes");
             return 0;
         }
         if (strcmp(q, "fed-squeeze-axes") == 0) {
             fed(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
-                return [g squeezeTensor:a axesTensor:p name:@"s"]; }, @[@1, @2, @4], twoByThreeByFour, 0, MPSDataTypeInt32, @[@1], "fed-squeeze-axes");
+                return [g squeezeTensor:a axesTensor:p name:@"s"]; }, @[@1, @2, @4], twoByThreeByFour, 0, MPSDataTypeInt32, @[@1], @[@2, @4], "fed-squeeze-axes");
             return 0;
         }
         if (strcmp(q, "fed-expand-axes") == 0) {
             fed(^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *p) {
-                return [g expandDimsOfTensor:a axesTensor:p name:@"e"]; }, twoByFour, rowFeed, 0, MPSDataTypeInt32, @[@1], "fed-expand-axes");
+                return [g expandDimsOfTensor:a axesTensor:p name:@"e"]; }, twoByFour, rowFeed, 0, MPSDataTypeInt32, @[@1], @[@1, @2, @4], "fed-expand-axes");
             return 0;
         }
         // The forms the port refuses and what the release does with each of them.

@@ -815,6 +815,39 @@ typedef enum {
 // is the only way it can be asked at all: over a destination filled with the byte 0xbd the zeros are written
 // and not left, so the gradient is a scatter over a zeroed result and not a copy of the region.
 //
+// The parameters of the slice's GRADIENT, for both of the forms whose starts, ends and strides the caller
+// wrote down and only the forward input's shape can be fed. The forward shape is in the parameters only when
+// the caller made it a CONSTANT, whose value the factory reads here; a fed one is not in the parameters at
+// all, because a dictionary cannot hold a nil and because the walk reads it out of the operation's second
+// input when the graph runs instead (measured: with the shape fed the release's own result tensor carries no
+// shape at all, before the run and after it).
+- (NSDictionary *)charon_mps_sliceGradientParameters:(MPSGraphTensor *)fwdInShapeTensor
+                                             starts:(NSArray<NSNumber *> *)starts
+                                               ends:(NSArray<NSNumber *> *)ends
+                                            strides:(NSArray<NSNumber *> *)strides
+                                            gradient:(MPSGraphTensor *)inputGradientTensor
+                                          startMask:(uint32_t)startMask
+                                            endMask:(uint32_t)endMask
+                                         squeezeMask:(uint32_t)squeezeMask
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"gather"] = @"sliceGradient";
+    parameters[@"sliceStarts"] = starts ?: @[];
+    parameters[@"sliceEnds"] = ends ?: @[];
+    parameters[@"sliceStrides"] = strides ?: @[];
+    parameters[@"sliceScatteredShape"] = inputGradientTensor.shape;
+    if (startMask != 0)
+        parameters[@"sliceStartMask"] = @(startMask);
+    if (endMask != 0)
+        parameters[@"sliceEndMask"] = @(endMask);
+    if (squeezeMask != 0)
+        parameters[@"sliceSqueezeMask"] = @(squeezeMask);
+    NSArray<NSNumber *> *forward = [self charon_mps_constantShapeOfTensor:fwdInShapeTensor];
+    if (forward != nil)
+        parameters[@"sliceForwardShape"] = forward;
+    return parameters;
+}
+
 // The shape arrives as data, and a shape that arrives as data is the one thing the release cannot build a
 // graph over - measured: the result tensor's shape is nil at build and after the run, and the process writes
 // the gradient's element 0 into the destination's element 0 and nothing else, whatever the destination's
@@ -830,11 +863,10 @@ typedef enum {
 {
     return [self charon_mps_slice:CharonMPSGraphOperationKindSlice
                           inputs:@[inputGradientTensor, fwdInShapeTensor]
-                      parameters:@{@"gather": @"sliceGradient",
-                                   @"sliceStarts": starts ?: @[], @"sliceEnds": ends ?: @[],
-                                   @"sliceStrides": strides ?: @[],
-                                   @"sliceForwardShape": [self charon_mps_constantShapeOfTensor:fwdInShapeTensor],
-                                   @"sliceScatteredShape": inputGradientTensor.shape}
+                      parameters:[self charon_mps_sliceGradientParameters:fwdInShapeTensor
+                                                                      starts:starts ends:ends strides:strides
+                                                                      gradient:inputGradientTensor
+                                                                    startMask:0 endMask:0 squeezeMask:0]
                              name:name];
 }
 
@@ -850,13 +882,11 @@ typedef enum {
 {
     return [self charon_mps_slice:CharonMPSGraphOperationKindSlice
                           inputs:@[inputGradientTensor, fwdInShapeTensor]
-                      parameters:@{@"gather": @"sliceGradient",
-                                   @"sliceStarts": starts ?: @[], @"sliceEnds": ends ?: @[],
-                                   @"sliceStrides": strides ?: @[],
-                                   @"sliceStartMask": @(startMask), @"sliceEndMask": @(endMask),
-                                   @"sliceSqueezeMask": @(squeezeMask),
-                                   @"sliceForwardShape": [self charon_mps_constantShapeOfTensor:fwdInShapeTensor],
-                                   @"sliceScatteredShape": inputGradientTensor.shape}
+                      parameters:[self charon_mps_sliceGradientParameters:fwdInShapeTensor
+                                                                      starts:starts ends:ends strides:strides
+                                                                      gradient:inputGradientTensor
+                                                                    startMask:startMask endMask:endMask
+                                                                   squeezeMask:squeezeMask]
                              name:name];
 }
 
@@ -1263,6 +1293,77 @@ typedef enum {
     return result;
 }
 
+// HOW MANY AXES A FED PARAMETER NAMES, which is the one number the release reads out of it when the graph is
+// built, and it reads it out of a fed tensor of rank ONE: a fed shape of [2] over a 2x4 gives a result of rank
+// two and one of [4] a result of rank four, and the same fed tensor of [1] a result of rank one. A fed tensor
+// of no rank, or of two axes or more, gives a result with NO shape at all - measured, a fed 0D reshape prints
+// `result-shape nil` and so does a fed [2, 2], and the release's own compiler then refuses the second of those
+// two with its own rule about the operand: "'mps.reshape' op operand #1 must be 0D tensor of mps index type
+// values or 1D tensor of mps index type values or unranked tensor of mps index type values, but got
+// 'tensor<2x2xsi32>'" (MPSGraphUtilities.mm:310). The fed [1] the port answers is that rule's own case.
+static NSUInteger CharonMPSGraphFedAxisCount(NSArray<NSNumber *> *fedShape)
+{
+    if (fedShape.count != 1)
+        return 0;
+    NSInteger named = fedShape.firstObject.integerValue;
+    return named > 0 ? (NSUInteger)named : 0;
+}
+
+// WHAT THE RELEASE'S OWN TENSOR CARRIES OVER A FED PARAMETER, which is neither the operand's shape nor
+// nothing: the release infers the result's type when the graph is built, and over a fed parameter it infers
+// as far as the graph already knows and writes -1 for every extent the fed value decides. The -1 is its own
+// marker for an extent it could not resolve (the same one the two dynamic extents of a written-down reshape
+// print), and it is on the tensor before the run and after it.
+//
+// Measured on this host's own MPSGraph over thirty-seven configurations - .agent-work/probe/fedshape.m, one
+// case per process under a timeout, the raw run beside it - the rank of that vector is:
+//
+//   reshape   the axes the fed tensor names, so a fed shape of [2] of a 2x4 gives -1x-1 and one of [4] gives
+//             -1x-1x-1x-1, and a fed shape of no rank or of two axes gives no shape at all.
+//   expand    the axes the fed tensor names, at every rank of operand from two to four: a fed axis count of
+//             one gives -1 and of two -1x-1.
+//   flatten   TWO, whatever the axis is, because a flatten2D's result is of rank two whatever it collapses -
+//             measured over a fed tensor of rank one, of two and of none.
+//   squeeze   the operand's rank LESS the axes the fed tensor names, because that is how many axes it takes
+//             off - one axis of a 1x2x4 gives -1x-1, two axes of the same give -1, one axis of a 1x1x2x4 gives
+//             -1x-1x-1 and two axes of that give -1x-1 - and as many axes as the operand has is a result of
+//             rank ZERO, which the release answers with an EMPTY shape rather than with none.
+//   broadcast and reverse  the OPERAND'S OWN SHAPE, and that is what this function hands back for them.
+//
+// The broadcast is the one whose extents the measurements do not reduce: its RANK is the axes the fed tensor
+// names in every one of the seven configurations measured, but the extents are the operand's own shape at a
+// rank of operand two whatever the fed numbers are (a 2x4 to a fed [2] answers 2x4, whatever its two numbers
+// are), a 2x2x4 to a fed [3] answers 2x2x4, and a 1x2x4 answers -1x2x4, -1x-1x2x4 and -1x-1 where its own
+// extents and its own rank say 1x2x4 and 2x4. No rule over the operand's rank, the fed tensor's own shape and
+// the two ranks reproduces those extents - the release's own answer describes neither the operand nor the
+// broadcast - so the port carries the operand's own shape there, which is the release's answer in two of the
+// seven, and the row of the broadcast names the five it does not, with this measurement.
+static NSArray<NSNumber *> *CharonMPSGraphFedGatherResultShape(NSString *gather, NSArray<NSNumber *> *operandShape,
+                                                               NSArray<NSNumber *> *fedShape)
+{
+    if ([gather isEqualToString:@"flatten"])
+        return @[@(-1), @(-1)];
+    NSUInteger named = CharonMPSGraphFedAxisCount(fedShape);
+    if ([gather isEqualToString:@"squeeze"]) {
+        if (named == 0)
+            return nil;
+        NSUInteger left = operandShape.count - named;
+        NSMutableArray<NSNumber *> *unresolved = [NSMutableArray arrayWithCapacity:left];
+        for (NSUInteger k = 0; k < left; k++)
+            [unresolved addObject:@(-1)];
+        return unresolved;
+    }
+    if ([gather isEqualToString:@"reshape"] || [gather isEqualToString:@"expand"]) {
+        if (named == 0)
+            return nil;
+        NSMutableArray<NSNumber *> *unresolved = [NSMutableArray arrayWithCapacity:named];
+        for (NSUInteger k = 0; k < named; k++)
+            [unresolved addObject:@(-1)];
+        return unresolved;
+    }
+    return operandShape;
+}
+
 // The gather whose parameter is fed rather than written down: the axis, the axes or the shape arrives as the
 // operation's second input, and the walk reads it when the graph runs. Measured, an int32 and an int64 of
 // shape [1] both answer for an axis, and a floating point one is refused by the factory because the release
@@ -1284,7 +1385,15 @@ typedef enum {
     // Nothing is added to the parameters here: the shape of a fed parameter is not known until the graph runs,
     // so the count of its elements is read out of the fed tensor data itself then, and the parameters say
     // only which of the operation's inputs carries it.
-    return [self charon_mps_operation:kind inputs:@[tensor, fedParameter] parameters:parameters name:name];
+    MPSGraphTensor *result = [self charon_mps_operation:kind inputs:@[tensor, fedParameter]
+                                             parameters:parameters name:name];
+    // And the result does NOT carry the operand's shape, which is what every other operation of this framework
+    // does fall back to: over a fed parameter that shape is a shape nobody asked for, and the release's own
+    // tensor carries the measured vector of CharonMPSGraphFedGatherResultShape instead. The walk puts the real
+    // shape on when the graph runs, which is the only moment a fed value is there to read it from.
+    [result charon_mps_setShape:CharonMPSGraphFedGatherResultShape(parameters[@"gather"], tensor.shape,
+                                                                   fedParameter.shape)];
+    return result;
 }
 
 #pragma mark - pad and tile, which arrived with the framework itself
@@ -1552,8 +1661,19 @@ typedef enum {
     NSArray<NSNumber *> *shape = [self charon_mps_gatherShapeOfTensor:inputs.firstObject
                                                           parameters:parameters
                                                                  named:name];
-    if (shape != nil)
+    if (shape != nil) {
         [result charon_mps_setShape:shape];
+    } else if ([parameters[@"gather"] isEqualToString:@"sliceGradient"] && parameters[@"sliceForwardShape"] == nil) {
+        // The GRADIENT's result is a tensor of the shape the forward pass's INPUT had, and that shape arrives
+        // as the operation's second input: a constant's value is read here, when the graph is built, and a
+        // feed's value only there when the graph runs. Over a feed the release's own result tensor carries NO
+        // shape at all, before the run and after it - measured, refusals.m's slice-gradient-fed-shape and
+        // slice-gradient-fed both print `result-shape nil`, and the harness asks the same of both forms of the
+        // row in gather_slice_rest - so what charon_mps_operation: left on the tensor, which is the shape of
+        // the INCOMING GRADIENT and so of the region rather than of the result, is taken off rather than left
+        // to a caller that would read it as the answer.
+        [result charon_mps_setShape:nil];
+    }
     return result;
 }
 

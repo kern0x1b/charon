@@ -50,11 +50,11 @@
                           axisTensor:(MPSGraphTensor *)axisTensor
                                 name:(NSString *)name
 {
-    // The shape here is the widest the family can produce: every axis collapsed into one, which the walk
-    // narrows by the axis it reads when the graph runs. Measured, an int32 and an int64 axis of shape [1]
-    // both answer.
-    NSMutableArray<NSNumber *> *collapsed = [NSMutableArray array];
-    [collapsed addObject:@(CharonMPSGraphElementCount(tensor.shape))];
+    // The axis is the caller's and it is read when the graph runs, because a fed axis is data: a flatten2D's
+    // result is of rank two whatever axis it collapses - the product of the extents before the axis and the
+    // product of the rest - so there is nothing to write down here. Measured, an int32 and an int64 axis of
+    // shape [1] both answer. The result's own shape is not the operand's either: over a fed axis the
+    // release's own tensor carries -1x-1, and that is what the seam below puts on it.
     return [self charon_mps_gather:CharonMPSGraphOperationKindFlatten2D
                              tensor:tensor
                       fedParameter:axisTensor

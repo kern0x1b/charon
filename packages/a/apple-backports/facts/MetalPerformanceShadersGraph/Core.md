@@ -779,23 +779,104 @@ the reverse are one gather with them not.
 
 ### The five FED forms, which the differential cannot compare
 
-The parameter a caller FEEDS - an axis, a set of axes, a shape - arrives as the operation's second input, and
-**asked in a process of its own, each of the five takes the release down**. The outputs are in
-`.agent-work/runs/` of this worktree, one file per question (`probe-fed-flatten-axis.txt` and the four beside
-it), and each row of those five methods carries its own:
+The parameter a caller FEEDS - an axis, a set of axes, a shape - arrives as the operation's second input. The
+first pass at this asked each of the five in a process of its own and recorded that **each of the five takes
+the release down**, and that table was **this repository's own question asked into the wrong destination**:
+`refusals.m`'s `fed()` helper sized the destination off the result's own shape, which over a fed parameter is
+a vector of `-1` (the next section measures it), so the release was handed a buffer of ONE element and its
+NDArray asserted about the buffer rather than about the operation. Re-measured with a destination the caller
+gives - the written-down form's own shape - the table is:
 
-| form | what the release does |
+| form | what the release does, asked into a destination of the written-down form's shape |
 | --- | --- |
-| `flatten2DTensor:axisTensor:` | `MPSNDArray.mm:831` asserts "NDArray dimension length > INT_MAX" (exit 134) |
-| `broadcastTensor:toShapeTensor:` | the process dies with SIGSEGV and writes nothing (exit 139) |
-| `reverseTensor:axesTensor:` | the framework asserts "non constant axes tensor" (exit 134) |
-| `squeezeTensor:axesTensor:` | `MPSNDArray.mm:831` asserts "NDArray dimension length > INT_MAX" (exit 134) |
-| `expandDimsOfTensor:axesTensor:` | the process dies with SIGSEGV and writes nothing (exit 139) |
+| `flatten2DTensor:axisTensor:` | answers exit 0, prints `result-shape -1x-1`, and writes **zeros** over the destination |
+| `broadcastTensor:toShapeTensor:` | answers exit 0, prints `result-shape -1` (a fed `[4]`), and writes zeros |
+| `reverseTensor:axesTensor:` | the framework asserts "non constant axes tensor" at the RUN (exit 134) - the one form of the five that is refused for its own sake |
+| `squeezeTensor:axesTensor:` | answers exit 0, prints `result-shape -1x-1`, and writes zeros |
+| `expandDimsOfTensor:axesTensor:` | answers exit 0, prints `result-shape -1`, and writes zeros |
 
-So there is no answer of the release for a case to hold against, the port's answer is its header's, and the
-twenty-one comparable forms of the sixteen methods are what the differential compares. A fed parameter of a
-floating point type is refused by the factory, because the release cannot build the graph over one at all;
-an int32 and an int64 of shape [1] both answer, measured.
+and the reshape's own fed form prints `result-shape -1`, has its compiler print "the result shape is not
+compatible with the input shape" (`MPSGraphUtilities.mm:310`), and then answers exit 0 with the destination
+untouched - asked in a graph that ALSO holds the written-down reshape of the same operand, the same call
+aborts at the compile with the same sentence (exit 134), which is what the band's probe measured and what
+`refusals.txt` used to record. Both are the release; this file records the one `run.sh` re-runs.
+
+So there is still no answer of the release's VALUES for a case to hold against - four of the five write zeros
+rather than the operand's elements - the port's answer is its header's, and the twenty-one comparable forms of
+the sixteen methods are what the differential compares. A fed parameter of a floating point type is refused by
+the factory, because the release cannot build the graph over one at all; an int32 and an int64 of shape [1]
+both answer, measured.
+
+### What the release's own RESULT TENSOR carries over a fed parameter, measured, and the port's answer
+
+The paragraph above is about what the release does to the PROCESS. This one is about what its own tensor says,
+which is a question the harness can ask and the port could not answer before, because every fed form went
+through `charon_mps_operation:` and took the FIRST INPUT's shape - a shape nobody asked for.
+
+Measured on this host's own MPSGraph over **thirty-seven configurations**, one case per process under a
+timeout: `.agent-work/probe/fedshape.m`, driven by `fedshape.sh`, every stage flushed before the next is
+entered so a case that dies says which stage it was in, and the raw run of every case beside it under
+`.agent-work/runs/v-mps13/fedshape-<case>.out`. The release infers the result's type when the graph is built,
+and over a fed parameter it infers as far as the graph already knows and writes **-1 for every extent the fed
+value decides**. The `-1` is its own marker for an extent it could not resolve - the same one the two dynamic
+extents of a written-down reshape print - and it is on the tensor **before the run and after it**.
+
+The one number it reads out of the fed tensor is its own **single extent**, which is the count of axes the fed
+parameter names. Everything else follows from that:
+
+| form | the release's own result tensor, over a fed parameter |
+| --- | --- |
+| `reshapeTensor:withShapeTensor:` | the axes the fed tensor names: a fed `[2]` of a 2x4 is `-1x-1`, a fed `[1]` is `-1`, a fed `[4]` is `-1x-1x-1x-1`, and a fed 0D or a fed `[2, 2]` is **nil** |
+| `flatten2DTensor:axisTensor:` | always `-1x-1`, whatever the axis is - a flatten2D's result is of rank two whatever it collapses - measured over a fed tensor of rank one, of two and of none |
+| `squeezeTensor:axesTensor:` | the operand's rank LESS the axes named: one axis of a 1x2x4 is `-1x-1`, two axes of the same `-1`, one axis of a 1x1x2x4 `-1x-1x-1`, two axes of that `-1x-1`, and as many axes as the operand has is a result of rank ZERO, which is an **empty** shape |
+| `expandDimsOfTensor:axesTensor:` | the axes the fed tensor names: a fed count of one is `-1`, of two `-1x-1`, at every rank of operand from two to four - the axis's own VALUE does not enter it |
+| `reverseTensor:axesTensor:` | **the operand's own shape**, measured over fed axes of one and of two numbers at ranks of operand two and three |
+| `broadcastTensor:toShapeTensor:` | the operand's own shape where the release carries one and a vector of `-1` where it does not - see below |
+| the slice's gradient, both fed forms | **nil**, before the run and after it (`refusals.m`'s `slice-gradient-fed-shape` and `slice-gradient-fed`) |
+
+**The port now carries the same vector**, in `CharonMPSGraphFedGatherResultShape` in `MPSGraph14.m`, asked from
+`-[MPSGraph charon_mps_gather:tensor:fedParameter:parameters:name:]`, and the walk puts the real shape on when
+the graph runs - the only moment a fed value is there to read it from. The slice's gradient carries no shape
+at all, because what `charon_mps_operation:` left on it was the shape of the INCOMING GRADIENT, which is the
+shape of the region and not of the result.
+
+The fed parameter of a rank the release will not read is refused by its own compiler with its own rule, and
+that rule names the case the port answers: *"'mps.reshape' op operand #1 must be 0D tensor of mps index type
+values or 1D tensor of mps index type values or unranked tensor of mps index type values, but got
+'tensor<2x2xsi32'"* (`MPSGraphUtilities.mm:310`) over a fed shape of `[2, 2]`, whose result is `nil`; the fed
+`[1]` the port answers is that rule's own case. A fed tensor of no rank is the rule's other case and its result
+is `nil` as well.
+
+**Two claims this page carried are corrected by the measurement.** The first: "the release's own result tensor
+then carries no shape at all, before the run and after it" was true of the slice's gradient and of nothing
+else. Over a fed gather parameter the release carries a vector of `-1`, or the operand's own shape, and the
+`reverse` is the one form where that is the operand's own - so for that row nothing changed in the port and the
+claim was simply wrong. The second: the fed parameter was measured only as something that takes the process
+down. It does, over a fed tensor of two numbers or of no rank; over a fed tensor of one number four of the six
+forms ANSWER, and what they answer is this:
+
+> **Over a fed parameter the release's RUN writes zeros.** Asked into a destination the CALLER gives it, it
+> answers exit 0 and writes `+0.0` over every element of it: a fed flatten axis of 1 over a 2x4 into a 2x4,
+> fed axes of `[0]` over a 1x2x4 into a 2x4, fed axes of `[0, 1]` over a 2x3x4 into a 1x1x2x3x4, a fed shape
+> of `[2, 2]` over a 2x4 into a 2x2x4 (where it writes the first eight elements and leaves the rest as the
+> pattern they were filled with, which is the extent of the tensor's own 2x4 shape), and a fed 0D axis count
+> over a 2x4 into a 1x2x4. So over a fed parameter it computes no gather at all.
+
+**That is the row's own named divergence, now measured rather than assumed**: the port answers the header and
+walks the gather, where the release writes zeros. The harness therefore asks the result's SHAPE of these forms
+and not their values - `fed_shape_case` in `tests/backports/host/mpsgraph/graph-cases.m`, twelve cases over the
+six forms and the two gradient forms, one per family, compared against the release and red for a port that
+carried the operand's shape (measured: eleven of the twelve fail under the shape this port used to give).
+
+**The broadcast is the one whose extents do not reduce to a rule.** Its RANK is the axes the fed tensor names in
+all seven configurations measured, but its EXTENTS are the operand's own shape at a rank of operand two whatever
+the fed numbers are (a 2x4 to a fed `[2]` holding `[2, 4]`, to one holding `[4, 4]` and to one holding
+`[2, 2, 4]` all answer `2x4`), and a 2x2x4 to a fed `[3]` holding `[1, 2, 4]` answers `2x2x4` - while at the
+same rank of operand a 1x2x4 answers `-1x2x4`, `-1x-1x2x4` and `-1x-1` where its own extents and its own rank
+say `1x2x4` and `2x4`. No rule over the operand's rank, the fed tensor's own shape and the two ranks reproduces
+all seven, and the release's own answer there describes neither the operand nor the broadcast. So the port
+carries the operand's own shape, which is the release's answer in **two** of the seven, and the row of the
+broadcast names the five it is not, with this measurement.
 
 ### The refusals, each measured, each with the release's own words
 

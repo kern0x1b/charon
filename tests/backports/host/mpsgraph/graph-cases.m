@@ -776,6 +776,9 @@ static void cumulative_families(MPSDataType type, const void *values, const char
 // file - the six gather families come before it in the file's order because they come before the table of
 // families in the run order, and a declaration here is what lets them end with it.
 static void chain_case(void);
+static void fed_shape_case(const char *name,
+                           MPSGraphTensor *(^build)(MPSGraph *, NSArray<MPSGraphTensor *> *),
+                           NSArray<NSNumber *> *operandShape, NSArray<NSArray<NSNumber *> *> *fedShapes);
 static void tile_gradient_cases(void);
 static void tile_gradient_case(const char *name, NSArray<NSNumber *> *multiplier,
                                NSArray<NSNumber *> *shape, const void *gradient, const void *source,
@@ -1239,6 +1242,22 @@ static void family_gather_slice_rest(void)
                           @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32), @(MPSDataTypeInt32),
                             @(MPSDataTypeInt32), @(MPSDataTypeInt32)], 0);
     }
+    // THE SLICE'S GRADIENT with the forward input's shape fed, which is the one fed parameter whose result
+    // the release's own tensor carries NO shape on at all: nil, before the run and after it, and the two
+    // forms of the row are the same measurement. Nothing else about them is asked here - what the run writes
+    // is refusals.m's slice-gradient-fed-shape and slice-gradient-fed.
+    fed_shape_case("fed-gradient-shape-14",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g sliceGradientTensor:in[0] fwdInShapeTensor:in[1] starts:@[@0, @1]
+                                               ends:@[@1, @3] strides:@[@1, @1] name:@"grad"]; },
+                   @[@1, @2], @[@[@2]]);
+    fed_shape_case("fed-gradient-shape-182",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g sliceGradientTensor:in[0] fwdInShapeTensor:in[1] startTensor:in[2]
+                                              endTensor:in[3] strideTensor:in[4] startMask:0 endMask:0
+                                           squeezeMask:0 name:@"grad"]; },
+                   @[@1, @2], @[@[@2], @[@2], @[@2], @[@2]]);
+
     chain_case();
 }
 
@@ -1748,6 +1767,21 @@ static void family_gather_reshape(void)
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g reshapeTensor:a withShape:@[@2, @4] name:@"r"]; },
                 MPSDataTypeFloat32, twoByFour, rowFeed);
+    // The fed form of the reshape, whose result's shape is the fed tensor's own rank with -1 for every
+    // extent, and - for a fed shape of no rank - no shape at all. Measured on this host's own MPSGraph.
+    fed_shape_case("fed-reshape-shape-rank2",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g reshapeTensor:in[0] withShapeTensor:in[1] name:@"r"]; },
+                   @[@2, @4], @[@[@2]]);
+    fed_shape_case("fed-reshape-shape-rank1",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g reshapeTensor:in[0] withShapeTensor:in[1] name:@"r"]; },
+                   @[@2, @4], @[@[@1]]);
+    fed_shape_case("fed-reshape-shape-unranked",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g reshapeTensor:in[0] withShapeTensor:in[1] name:@"r"]; },
+                   @[@2, @4], @[@[]]);
+
     chain_case();
 }
 
@@ -1782,6 +1816,18 @@ static void family_gather_flatten(void)
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g flatten2DTensor:a axis:0 name:@"f"]; },
                 MPSDataTypeFloat32, twoByFour, gatherClasses);
+    // A flatten2D's result is of rank two whatever axis the walk collapses, so the release's own tensor
+    // carries two -1s over a fed axis of any rank - measured, over a fed axis of shape [1], of shape [2]
+    // and of no rank at all.
+    fed_shape_case("fed-flatten-shape-rank1",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g flatten2DTensor:in[0] axisTensor:in[1] name:@"f"]; },
+                   @[@2, @4], @[@[@1]]);
+    fed_shape_case("fed-flatten-shape-unranked",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g flatten2DTensor:in[0] axisTensor:in[1] name:@"f"]; },
+                   @[@2, @3, @4], @[@[]]);
+
     chain_case();
 }
 
@@ -1829,6 +1875,15 @@ static void family_gather_broadcast(void)
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g broadcastTensor:a toShape:@[@1, @4] name:@"b"]; },
                 MPSDataTypeFloat32, twoByFour, rowFeed);
+    // The broadcast is the one fed form whose result the release's own tensor DOES carry a real shape on:
+    // over a fed shape of the operand's own rank it carries the operand's own shape whatever the fed
+    // numbers are, so this line is the operand's. At a higher rank of operand it carries a vector of -1
+    // instead, which the row names with the measurement.
+    fed_shape_case("fed-broadcast-shape-rank2",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g broadcastTensor:in[0] toShapeTensor:in[1] name:@"b"]; },
+                   @[@2, @4], @[@[@2]]);
+
     chain_case();
 }
 
@@ -1869,6 +1924,14 @@ static void family_gather_reverse(void)
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g reverseTensor:a name:@"r"]; },
                 MPSDataTypeFloat32, @[@1, @2, @4], cubeFeed);
+    // A reverse's result is the operand's own shape whatever axes it is given, so over fed axes the
+    // release's own tensor carries the operand's shape too - measured over fed axes of one and of two
+    // numbers, at ranks of operand two and three.
+    fed_shape_case("fed-reverse-shape-rank3",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g reverseTensor:in[0] axesTensor:in[1] name:@"r"]; },
+                   @[@1, @2, @4], @[@[@1]]);
+
     chain_case();
 }
 
@@ -1928,6 +1991,18 @@ static void family_gather_squeeze(void)
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g squeezeTensor:a axes:@[] name:@"s"]; },
                 MPSDataTypeFloat32, @[@2, @1, @4], cubeFeed);
+    // A squeeze over fed axes takes one axis off the result's rank per axis the fed tensor names, so the
+    // release's own tensor carries that many -1s: one axis of a 1x2x4 is two of them, two axes of a 1x1x2x4
+    // are two of them again.
+    fed_shape_case("fed-squeeze-shape-rank1",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g squeezeTensor:in[0] axesTensor:in[1] name:@"s"]; },
+                   @[@1, @2, @4], @[@[@1]]);
+    fed_shape_case("fed-squeeze-shape-rank2",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g squeezeTensor:in[0] axesTensor:in[1] name:@"s"]; },
+                   @[@1, @1, @2, @4], @[@[@2]]);
+
     chain_case();
 }
 
@@ -1976,6 +2051,17 @@ static void family_gather_expand(void)
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g expandDimsOfTensor:a axis:1 name:@"e"]; },
                 MPSDataTypeFloat32, @[@2, @3, @4], cubeFeed);
+    // An expanded dimension over fed axes carries as many -1s as the fed tensor names - measured at ranks of
+    // operand two, three and four - which is not the rank the axis would give and is the release's own.
+    fed_shape_case("fed-expand-shape-rank1",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g expandDimsOfTensor:in[0] axesTensor:in[1] name:@"e"]; },
+                   @[@2, @3, @4], @[@[@1]]);
+    fed_shape_case("fed-expand-shape-rank2",
+                   ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                       return [g expandDimsOfTensor:in[0] axesTensor:in[1] name:@"e"]; },
+                   @[@2, @3, @4], @[@[@2]]);
+
     chain_case();
 }
 
@@ -2266,6 +2352,31 @@ static void empty_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, NS
     printf("#case %s-shape %s\n", name,
            t.shape == nil ? "nil" : [[t.shape componentsJoinedByString:@"x"] UTF8String]);
     printf("#case %s-datatype 0x%x\n", name, (unsigned)t.dataType);
+}
+
+// THE RESULT TENSOR'S SHAPE AND NOTHING ELSE, over a parameter the caller FEEDS: the axis, the axes, the
+// shape, or the shape of the slice's forward input. Nothing is compiled and nothing is run, and that is the
+// whole of the question: over a fed parameter the release infers the result's type as far as the graph
+// already knows and writes -1 for every extent the fed value decides, before the run and after it, and for
+// the slice's gradient there is no shape at all. What the RUN writes into a destination the caller names is
+// a different question and is measured in refusals.m.
+//
+// The line has fewer than five fields, so the comparison reads it as the whole line, which is what a shape
+// is: there is no result buffer here and the red control's plant, which perturbs what a kernel stores, does
+// not reach a line of this kind. What proves these lines can fail is in the hand-over of the band that added
+// them, where the one line that puts the shape on is reverted and the families go red.
+static void fed_shape_case(const char *name,
+                           MPSGraphTensor *(^build)(MPSGraph *, NSArray<MPSGraphTensor *> *),
+                           NSArray<NSNumber *> *operandShape, NSArray<NSArray<NSNumber *> *> *fedShapes)
+{
+    MPSGraph *one = [MPSGraph new];
+    NSMutableArray<MPSGraphTensor *> *operands = [NSMutableArray arrayWithCapacity:fedShapes.count + 1];
+    [operands addObject:[one placeholderWithShape:operandShape dataType:MPSDataTypeFloat32 name:@"a"]];
+    for (NSUInteger i = 0; i < fedShapes.count; i++)
+        [operands addObject:[one placeholderWithShape:fedShapes[i] dataType:MPSDataTypeInt32 name:@"p"]];
+    MPSGraphTensor *t = build(one, operands);
+    printf("#case %s result-shape %s\n", name,
+           t.shape == nil ? "nil" : [[t.shape componentsJoinedByString:@"x"] UTF8String]);
 }
 
 // The data types the two NaN-propagating binaries do not answer, and the feeds they are asked over: eight
