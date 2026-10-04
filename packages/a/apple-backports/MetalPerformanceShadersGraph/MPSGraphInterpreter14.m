@@ -2148,10 +2148,6 @@ static NSDictionary *CharonMPSGraphBlockShufflePlan(NSString *name, NSArray<NSNu
 {
     NSUInteger rank = operandShape.count;
     NSUInteger count = spatial.count;
-    long long product = 1;
-    for (NSUInteger i = 0; i < count; i++)
-        product *= block[i].longLongValue;
-    long long batchExtent = operandShape.count > 0 ? operandShape[(NSUInteger)(batch < 0 ? batch + (NSInteger)rank : batch)].longLongValue : 0;
 
     // The axes as the release takes them: a negative one counted from the end, and every refusal of this
     // family asked here where the graph is built rather than left to be discovered as a wrong number.
@@ -2219,6 +2215,11 @@ static NSDictionary *CharonMPSGraphBlockShufflePlan(NSString *name, NSArray<NSNu
                            @"sam\" - and it says the same for the batch axis", name, (unsigned long)block.count,
                   (unsigned long)count];
     }
+    // Read the batch axis and the blocks only once the checks above have said they are there to be read.
+    long long product = 1;
+    for (NSUInteger i = 0; i < count; i++)
+        product *= block[i].longLongValue;
+    long long batchExtent = operandShape[(NSUInteger)where].longLongValue;
     // A BLOCK HAS TO BE AN EXTENT OF ONE AND TO FIT THE AXIS IT IS A BLOCK OF - and which of the two rules
     // that is depends on the direction, measured, because the two directions move the blocks opposite ways:
     // moving them TO the batch axis makes every spatial axis extent/block, so each block must DIVIDE its own
