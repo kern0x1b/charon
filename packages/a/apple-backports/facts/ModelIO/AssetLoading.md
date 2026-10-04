@@ -88,6 +88,64 @@ division, and `union`/`intersect`/`difference` with another array put the other 
 this one's space through the two boxes they sit in. `setVoxelsForMesh:` fills every voxel the mesh's
 own triangles pass through, widened by the patch radius.
 
+## The one class of this surface a release carries without exporting: `MDLMeshBufferZoneDefault`
+
+Measured 2026-10-04 with `apple.objc.inventory` and `apple.dyld` over the caches this package is
+built for, one class and one export table at a time:
+
+| release | the class in ModelIO's `__objc_classlist` | `_OBJC_CLASS_$_MDLMeshBufferZoneDefault` |
+| --- | --- | --- |
+| 6.1.3 - 8.4 (armv7) | absent (no ModelIO at all) | absent |
+| 9.0, 9.1, 9.2, 9.3, 9.3.5, 9.3.6 (armv7) | present: superclass `NSObject`, six own methods (`-initWithCapacity:allocator:`, `-capacity`, `-allocator`, `-reserveMemory:allocator:`, `-cancelMemory:`, `-cxx_destruct`), adopting `MDLMeshBufferZone` | **no image exports it**, nor its metaclass |
+| 10.0.1, 10.1, 10.2, 10.3, 10.3.4 (armv7s) | present, the same six methods | **no image exports it** |
+| 11.0, 12.0 (arm64) | present, the same six methods | exported by ModelIO, metaclass with it |
+
+`_OBJC_CLASS_$_MDLMeshBufferDataAllocator`, `_OBJC_CLASS_$_MDLMeshBufferData` and
+`_OBJC_CLASS_$_MDLMeshBufferMap` are exported by ModelIO from 9.0 on, so the allocator that makes a
+zone is the release's own from 9.0 up and the port's only below 9.0. That is what the SDK says too
+(`MDLMeshBufferZoneDefault` is `API_AVAILABLE(... ios(11.0))` at `MDLMeshBuffer.h:274`) and the registry's
+`introduced` is the measured 11.0, taken from the export trie rather than from that annotation.
+
+So a band of 9.0 to 10.3.4 that linked a class implementation of this name would hold **two** classes
+of one name in every process, and the runtime keeps the one it registered first - the release's - so
+a lookup answered one of the two and the program holding the port's symbol held the other. The name
+is therefore an alias through `charon_alias.h` (`MDLMeshBuffer11.m`), which is what
+`modules/apple/backports.lua`'s own `check_categories` asks for when it reads this reading ("the
+release carries MDLMeshBufferZoneDefault in ModelIO without exporting it: alias it through
+charon_alias.h"), and what `NSTextList` and `NSTextTab` already are for the same one - UIFoundation
+carries `NSTextList` from 6.0 and exports it from 9.0. The two members are a category on Charon's own
+name, and the two values they hold are an associated object, because a category cannot add an
+instance variable and neither can the class behind an alias: `attach.c` lays the proxy out from the
+release's class and takes that write back when the two instance sizes differ.
+
+What each band answers, and which of the three is measured where:
+
+- **From 11.0** the release exports the name, so `band()` reexports the symbol and links neither the
+  category's object nor the proxy: the release's own class answers. (release-split over this library's
+  28 objects: `_OBJC_CLASS_$_MDLMeshBufferZoneDefault` and its metaclass first appear at 11.0.)
+- **On 9.0 to 10.3.4** the release's class answers `-capacity` and `-allocator` and the category is
+  not attached at all - `attach.c` adds a category method only where the class does not answer the
+  selector - so a zone is Apple's own zone with Apple's own answers. Nothing in such a band makes one:
+  `MDLMeshBuffer9.o` is out of those bands too (measured: `band()` reexports its three class symbols
+  at 9.0).
+- **Below 9.0** the release has no ModelIO, the proxy IS the class, and the category answers the
+  capacity the allocator was asked to make.
+
+Two things about the alias that are written down rather than left to be discovered, and
+`charon_alias.h` says the first in its own comment: an application that asks the runtime for the name
+with `NSClassFromString` gets nil on a release that has no class of the name, where the port's own
+class answered before - the name belongs to a class of Charon's own there. And the proxy adopts
+`MDLMeshBufferZone` from a `+load` (`class_addProtocol`), because `CHARON_ALIAS` declares the proxy
+with a superclass and nothing else, and a category's protocol list belongs to the category: measured
+with `otool -o` over a class with a category declaring `<P>`, `baseProtocols 0x0` on the class and
+`count 1` on the category. Without that, `[zone conformsToProtocol:@protocol(MDLMeshBufferZone)]`
+would answer NO on a band where it answered YES before, and on a release that carries the class the
+macro's own `+conformsToProtocol:` answers the release's YES.
+
+**Not measured**: none of this was run on a device. A zone Apple's own allocator hands out on 9.0 and
+the port's zone below 9.0 are different objects by construction, and what a program that mixes the two
+does with `-capacity` is a question about that program, not about this port.
+
 ## What is measured, and what is reasoned
 
 - **Measured**: that iOS 6 carries no ModelIO (the release's own selector table and dyld cache, read
