@@ -133,6 +133,18 @@ static double CharonMPSPyramidInterpolated(const float *source, NSUInteger width
     const float *kernel = [self charon_mps_filter];
     NSUInteger kernelWidth = [self charon_mps_filterWidth];
     NSUInteger kernelHeight = [self charon_mps_filterHeight];
+    // The weights are the release's own storage on the bands of 10.0.1 to 10.3.4, and are this port's
+    // below 10.0.1 and from 12.0 - measured, and written out beside MPSImagePyramid16.m: the release
+    // carries MPSImagePyramid from 10.0.1 without exporting it, the name is therefore an alias, and
+    // attach.c hands the release's class the five members it already has, so a pyramid built here
+    // inherits the RELEASE's initializers and this port never wrote these weights. MPSImageConvolution.h
+    // keeps the weights private, so there is no way to read them and no filter to interpolate with:
+    // the walk is refused by name rather than made with a kernel this port did not build.
+    if (!kernel || !kernelWidth || !kernelHeight) {
+        CharonMPSRefuse(@"%@: the MPSImagePyramid of this iOS is the release's own class, and its filter's"
+                        @" weights are in storage no header declares, so no level was written", what);
+        return;
+    }
     // The two pointwise parameters through the getters the header spells out at MPSImageConvolution.h:667 -
     // getLaplacianBias and getLaplacianScale - which are public and so visible from a category, where
     // the ivars behind them are not.
@@ -226,6 +238,18 @@ static double CharonMPSPyramidInterpolated(const float *source, NSUInteger width
     const float *kernel = [self charon_mps_filter];
     NSUInteger kernelWidth = [self charon_mps_filterWidth];
     NSUInteger kernelHeight = [self charon_mps_filterHeight];
+    // The weights are the release's own storage on the bands of 10.0.1 to 10.3.4, and are this port's
+    // below 10.0.1 and from 12.0 - measured, and written out beside MPSImagePyramid16.m: the release
+    // carries MPSImagePyramid from 10.0.1 without exporting it, the name is therefore an alias, and
+    // attach.c hands the release's class the five members it already has, so a pyramid built here
+    // inherits the RELEASE's initializers and this port never wrote these weights. MPSImageConvolution.h
+    // keeps the weights private, so there is no way to read them and no filter to interpolate with:
+    // the walk is refused by name rather than made with a kernel this port did not build.
+    if (!kernel || !kernelWidth || !kernelHeight) {
+        CharonMPSRefuse(@"%@: the MPSImagePyramid of this iOS is the release's own class, and its filter's"
+                        @" weights are in storage no header declares, so no level was written", what);
+        return;
+    }
     double laplacianBias = [self getLaplacianBias];
     double laplacianScale = [self getLaplacianScale];
     // One level of the answer at a time, from the top down (:713-719). The level ABOVE the first one is

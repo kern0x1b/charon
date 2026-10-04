@@ -176,6 +176,57 @@ The header says at `:109-116` that this class is "an optimized variant of the MP
 filter" reachable by building an `MPSCNNConvolution` with the same weights, so the walk is
 `MPSImageConvolution13.m`'s and this object holds only the bias.
 
+## The pyramid base is an ALIAS from 10.0.1, and what that costs the Laplacian kernels
+
+Measured 2026-10-04 with `apple.objc.inventory` and `apple.dyld` over the caches this package is built
+for, one class and one export table at a time:
+
+| release | `MPSImagePyramid` in MPS's `__objc_classlist` | `_OBJC_CLASS_$_MPSImagePyramid` |
+| --- | --- | --- |
+| 6.1.3 - 10.0 (armv7) | absent | absent |
+| 10.0.1, 10.1, 10.2, 10.3, 10.3.4 (armv7s) | present: superclass `MPSUnaryImageKernel`, **seven own methods** - `-initWithDevice:`, `-initWithDevice:centerWeight:`, `-initWithDevice:kernelWidth:kernelHeight:weights:`, `-kernelWidth`, `-kernelHeight`, `-dealloc`, `-copyWithZone:device:` | **no image exports it**, nor its metaclass |
+| 11.0 (arm64) | present in `MPSImage.framework/MPSImage`, 9 own methods | **no image exports it** |
+| 16.0 | present | exported, with its metaclass |
+
+That is the whole of the window: the release carries the class for four releases and exports it for
+none, so a band of 10.0.1 to 10.3.4 that linked the class implementation held two classes of one name
+in every process and the runtime kept the one it registered first. The name therefore goes through
+`charon_alias.h` - what `modules/apple/backports.lua`'s own `check_categories` asks for when it reads
+this reading, and what `MDLMeshBufferZoneDefault`, `HKCDADocument`, `NSTextList` and `NSTextTab`
+already are. `MPSUnaryImageKernel` is the superclass the alias is declared with, and that one *is*
+exported from 10.0.1 (measured, `apple.dyld` over the armv7s caches of 10.0.1 and 10.3.4), so the
+proxy's chain is the release's own `MPSUnaryImageKernel` on those bands and the port's below 10.0.1.
+
+**What it costs, and why the Laplacian kernels refuse on those four bands.** `attach.c`'s
+`charon_adopt_methods` replaces the proxy's own copy of every member the release's class already has,
+and the list above is all five members of this class. So on 10.0.1 to 10.3.4:
+
+- a pyramid a program builds through our `MPSImageLaplacianPyramid` gets the **release's**
+  initializers, because the port's class inherits them and the inherited copies are the release's;
+- the filter's weights are then in the release's own private storage - `MPSImageConvolution.h` declares
+  `kernelWidth` and `kernelHeight` and keeps the weights themselves private - and no header declares
+  them, so this port cannot read them, by any public mechanism;
+- `MPSImageLaplacianPyramidSubtract` and `MPSImageLaplacianPyramidAdd` read the weights through
+  `-charon_mps_filter`, which answers NULL there, and they **refuse by name** rather than interpolate
+  with a filter this port never wrote. Their rows and MPSImagePyramid's row say so.
+
+Below 10.0.1 nothing of this happens: the release has no class of the name, the proxy IS the class,
+`attach.c`'s constructor skips the alias entirely (`objc_getClass` answers nil), and every member
+answers out of the associated object the filter's weights live in. From 12.0 the release exports the
+Laplacian classes themselves and `band()` reexports that object, so the port's kernels are not in such
+a band at all; at 16.0 the release exports `MPSImagePyramid` and the band links neither this object nor
+the proxy. **No band of this machine reaches 16.0** (the armv7 ladder ends at 9.3.6 and armv7s at
+10.3.4), which is why the last two sentences are measurements of the ladder rather than of a link.
+
+`MPSImagePyramid10.m`'s Gaussian kernel is **not** in the four bands: the release exports
+`_OBJC_CLASS_$_MPSImageGaussianPyramid` from 10.0.1, and `band()` reexports that object there (measured
+at 10.0.1 and 10.3.4), so its inherited initializers are the proxy's own and its weights are the port's.
+
+**Not measured**: nothing here was run on a device. What a release-made pyramid answers for
+`-kernelWidth` and `-kernelHeight` is the release's own reading of its own storage, which is the
+truthful answer there; what this port cannot do on those four bands is read the weights, and that is
+the refusal above.
+
 ## The image side, in its own harness
 
 `tests/backports/host/mpsimage10/run.sh` is the harness for the image classes of this slice, and the

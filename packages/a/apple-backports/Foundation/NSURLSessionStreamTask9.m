@@ -56,7 +56,9 @@
    -readDataOfMinLength:maxLength:timeout:completionHandler:, -captureStreams or
    -streamTaskWithHostName:port: -- and nothing below 8.0 carries the class at all. So there is
    nowhere to ask the release for it, and a class implementation here would be a second class of one
-   name in every process on every band from 8.0 on. CHARON_ALIAS_OF defines CharonNSURLSessionStreamTask,
+   name in every process on every band from 8.0 on. CHARON_ALIAS_OF defines CharonNSURLSessionStreamTask (named
+   CHARON_ALIAS_CLASS(NSURLSessionStreamTask) below, which is the class of the release's name on a device and the
+   release's name itself in a host differential - see charon_alias.h),
    whose superclass is the SDK's own NSURLSessionTask (which is this package's own below 7.0), and
    exports the release's name to it; the library's loader (attach.c) then hands the release's class
    every member below, so an 8.x task is an instance of CFNetwork's own class carrying them. Where
@@ -190,7 +192,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
    name: a category on NSURLSessionStreamTask implements the methods the SDK declares there, and the
    compiler's own -Wobjc-protocol-method-implementation says so once per method. What is written on
    the release's name here is the one declaration above, of the seam the session's factory uses. */
-@implementation CharonNSURLSessionStreamTask (CharonStreamTask9)
+@implementation CHARON_ALIAS_CLASS(NSURLSessionStreamTask) (CharonStreamTask9)
 
 /* The task's own state, made when it is first asked for. It is an associated object and not an
    instance variable of the class behind the alias because attach.c lays that class out from the
@@ -200,6 +202,20 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
    8.x task built by NSObject's own -init has to work all the same. The two halves start open, which
    is what an object with no -init behind it means by them. */
 - (NSURLSessionStreamTaskState *)charon_state
+{
+    // The state already beside the task, or nil. This is the READER and it used to be written as a
+    // call to itself - `NSURLSessionStreamTaskState *state = [self charon_state];` - which is
+    // unbounded recursion, measured on 2026-10-04: the host differential of this family, built for the
+    // first time since the alias landed, walked the stack until it ran out of it
+    // (test`-[CharonHostNSURLSessionStreamTask(CharonStreamTask9) charon_state] + 4, EXC_BAD_ACCESS at
+    // 0x16f603fc0). Nothing reached it before: the file could not be compiled by a host differential
+    // (the -D renaming and the ##-built proxy name) and no device test ran this family, so the two
+    // halves below are the reader and the maker, which is the shape CarPlay's row and ModelIO's zone
+    // use.
+    return objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+}
+
+- (NSURLSessionStreamTaskState *)charon_stateMade
 {
     NSURLSessionStreamTaskState *state = [self charon_state];
     if (!state) {
@@ -223,7 +239,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
 - (instancetype)initWithSession:(NSURLSession *)session hostName:(NSString *)hostName port:(NSInteger)port
 {
     if ((self = [super init])) {
-        NSURLSessionStreamTaskState *state = [self charon_state];
+        NSURLSessionStreamTaskState *state = [self charon_stateMade];
         state.session = session;
         state.hostName = [hostName copy];
         state.hostPort = port;
@@ -233,7 +249,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
 
 - (void)charon_open
 {
-    NSURLSessionStreamTaskState *state = [self charon_state];
+    NSURLSessionStreamTaskState *state = [self charon_stateMade];
     if (state.started)
         return;
     state.started = YES;
@@ -263,7 +279,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
 /* What the release's own stream knows about the socket underneath it, read once when it opens. */
 - (void)charon_readSocketNamesForInput:(NSInputStream *)input
 {
-    NSURLSessionStreamTaskState *state = [self charon_state];
+    NSURLSessionStreamTaskState *state = [self charon_stateMade];
     int descriptor = charon_native_descriptor((__bridge CFReadStreamRef)input);
     if (descriptor < 0)
         return;
@@ -293,19 +309,19 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
    every other delegate call of this session arrives. */
 - (void)charon_finishMetrics
 {
-    NSURLSessionStreamTaskState *state = [self charon_state];
+    NSURLSessionStreamTaskState *state = [self charon_stateMade];
     if (state.finished)
         return;
     state.finished = YES;
-    NSURLSession *session = [self charon_state].session;
+    NSURLSession *session = [self charon_stateMade].session;
     id<NSURLSessionDelegate> sessionDelegate = session.delegate;
     SEL selector = NSSelectorFromString(@"URLSession:task:didFinishCollectingMetrics:");
     if (![sessionDelegate respondsToSelector:selector])
         return;
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:
-                                    [NSString stringWithFormat:@"stream://%@:%@", [self charon_state].hostName ?: @"localhost",
-                                     @([self charon_state].hostPort)]]];
+                                    [NSString stringWithFormat:@"stream://%@:%@", [self charon_stateMade].hostName ?: @"localhost",
+                                     @([self charon_stateMade].hostPort)]]];
     NSURLSessionTaskTransactionMetrics *transaction =
         [[NSURLSessionTaskTransactionMetrics alloc] initCharonWithRequest:request
                                                                 fetchType:NSURLSessionTaskMetricsResourceFetchTypeNetworkLoad];
@@ -341,7 +357,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
    other three. */
 - (id<NSURLSessionStreamDelegate>)charon_delegateFor:(SEL)selector
 {
-    id<NSURLSessionDelegate> sessionDelegate = [self charon_state].session.delegate;
+    id<NSURLSessionDelegate> sessionDelegate = [self charon_stateMade].session.delegate;
     if (![sessionDelegate respondsToSelector:selector])
         return nil;
     return (id<NSURLSessionStreamDelegate>)sessionDelegate;
@@ -354,13 +370,13 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
    header's signatures give them. */
 - (void)charon_tellDelegate:(SEL)selector input:(NSInputStream *)input
 {
-    NSURLSessionStreamTaskState *state = [self charon_state];
+    NSURLSessionStreamTaskState *state = [self charon_stateMade];
     if (state.captured)
         return; /* the task is completed, and the header says no more messages go to the delegate */
     id<NSURLSessionStreamDelegate> delegate = [self charon_delegateFor:selector];
     if (!delegate)
         return;
-    NSURLSession *session = [self charon_state].session;
+    NSURLSession *session = [self charon_stateMade].session;
     /* The selector the protocol in this file declares, asked for by that same name. A device build
        has no other prefix to ask for, and the host differential renames the declaration and the call
        site together, which is what prefix_selectors.py exists for. */
@@ -395,7 +411,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
                      timeout:(NSTimeInterval)timeout
            completionHandler:(void (^)(NSData *, BOOL, NSError *))completionHandler
 {
-    NSURLSessionStreamTaskState *state = [self charon_state];
+    NSURLSessionStreamTaskState *state = [self charon_stateMade];
     if (!state.started)
         [self charon_open];
     NSInputStream *input = state.input;
@@ -474,7 +490,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
 
 - (void)writeData:(NSData *)data timeout:(NSTimeInterval)timeout completionHandler:(void (^)(NSError *))completionHandler
 {
-    NSURLSessionStreamTaskState *state = [self charon_state];
+    NSURLSessionStreamTaskState *state = [self charon_stateMade];
     if (!state.started)
         [self charon_open];
     NSOutputStream *output = state.output;
@@ -502,7 +518,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
 
 - (void)captureStreams
 {
-    NSURLSessionStreamTaskState *state = [self charon_state];
+    NSURLSessionStreamTaskState *state = [self charon_stateMade];
     if (state.captured)
         return;
     if (!state.started)
@@ -521,7 +537,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
 
 - (void)closeRead
 {
-    NSURLSessionStreamTaskState *state = [self charon_state];
+    NSURLSessionStreamTaskState *state = [self charon_stateMade];
     if (!state.readOpen)
         return;
     state.readOpen = NO;
@@ -533,7 +549,7 @@ CHARON_ALIAS_OF(NSURLSessionStreamTask, NSURLSessionTask)
 
 - (void)closeWrite
 {
-    NSURLSessionStreamTaskState *state = [self charon_state];
+    NSURLSessionStreamTaskState *state = [self charon_stateMade];
     if (!state.writeOpen)
         return;
     state.writeOpen = NO;
@@ -588,7 +604,7 @@ static NSString *charon_ssl_level_key(void)
 
 - (void)startSecureConnection
 {
-    NSURLSessionStreamTaskState *state = [self charon_state];
+    NSURLSessionStreamTaskState *state = [self charon_stateMade];
     if (state.secure)
         return;
     state.secure = YES;

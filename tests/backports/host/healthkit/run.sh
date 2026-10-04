@@ -21,7 +21,14 @@ here=$(cd "$(dirname "$0")" && pwd)
 healthkit=${HEALTHKIT:-$here/../../../../packages/a/apple-backports/HealthKit}
 BUILD=${BUILD:-$(mktemp -d)}
 sdk=$(xcrun --show-sdk-path)
-quiet="-w"
+# CHARON_HOST_BUILD: this is a host differential - the port's process links no framework of the name it
+# measures, so there is no release class for a charon_alias.h proxy to stand in for, nothing for the
+# library's loader to re-parent and no name to export. The header's own comment gives the two
+# measurements: the macOS linker refuses the metaclass alias ("ld: null objc class data for
+# '_OBJC_METACLASS_$_Charon<Name>'", from the smallest file that carries nothing but CHARON_ALIAS), and
+# a name built by ## cannot be renamed the way this harness renames classes. What the alias is FOR is a
+# device band; here the class of the release's name is the class and every member of it is measured.
+quiet="-w -DCHARON_HOST_BUILD"
 # The whole build directory goes and not only its two object subdirectories. A run that fails to link
 # then leaves no differential at all, where before it left the one the previous run built, and the line
 # after this one ran that: a stale binary answering for a fixed source. The mutant step below, which
