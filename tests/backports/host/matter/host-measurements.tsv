@@ -65,15 +65,13 @@ described	MTRAccessControlClusterAccessControlTargetStruct	deviceType	(null)
 present	MTRAccessControlClusterAccessRestrictionEntryStruct	-	present
 ownDescription	MTRAccessControlClusterAccessRestrictionEntryStruct	-	yes
 initOwner	MTRAccessControlClusterAccessRestrictionEntryStruct	-	self
-description	MTRAccessControlClusterAccessRestrictionEntryStruct	-	<MTRAccessControlClusterAccessRestrictionEntryStruct: endpoint:0; cluster:0; restrictions:(
-); fabricIndex:0; >
+description	MTRAccessControlClusterAccessRestrictionEntryStruct	-	<MTRAccessControlClusterAccessRestrictionEntryStruct: endpoint:0; cluster:0; restrictions:( ); fabricIndex:0; >
 fresh	MTRAccessControlClusterAccessRestrictionEntryStruct	endpoint	NSNumber(0)
 described	MTRAccessControlClusterAccessRestrictionEntryStruct	endpoint	0
 fresh	MTRAccessControlClusterAccessRestrictionEntryStruct	cluster	NSNumber(0)
 described	MTRAccessControlClusterAccessRestrictionEntryStruct	cluster	0
 fresh	MTRAccessControlClusterAccessRestrictionEntryStruct	restrictions	NSArray(0)
-described	MTRAccessControlClusterAccessRestrictionEntryStruct	restrictions	(
-)
+described	MTRAccessControlClusterAccessRestrictionEntryStruct	restrictions	( )
 fresh	MTRAccessControlClusterAccessRestrictionEntryStruct	fabricIndex	NSNumber(0)
 described	MTRAccessControlClusterAccessRestrictionEntryStruct	fabricIndex	0
 present	MTRAccessControlClusterAccessRestrictionStruct	-	present
@@ -87,15 +85,13 @@ described	MTRAccessControlClusterAccessRestrictionStruct	id	(null)
 present	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	-	present
 ownDescription	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	-	yes
 initOwner	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	-	self
-description	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	-	<MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct: endpoint:0; cluster:0; restrictions:(
-); >
+description	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	-	<MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct: endpoint:0; cluster:0; restrictions:( ); >
 fresh	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	endpoint	NSNumber(0)
 described	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	endpoint	0
 fresh	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	cluster	NSNumber(0)
 described	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	cluster	0
 fresh	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	restrictions	NSArray(0)
-described	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	restrictions	(
-)
+described	MTRAccessControlClusterCommissioningAccessRestrictionEntryStruct	restrictions	( )
 present	MTRAccessControlClusterFabricRestrictionReviewUpdateEvent	-	present
 ownDescription	MTRAccessControlClusterFabricRestrictionReviewUpdateEvent	-	yes
 initOwner	MTRAccessControlClusterFabricRestrictionReviewUpdateEvent	-	self
@@ -111,11 +107,9 @@ described	MTRAccessControlClusterFabricRestrictionReviewUpdateEvent	fabricIndex	
 present	MTRAccessControlClusterReviewFabricRestrictionsParams	-	present
 ownDescription	MTRAccessControlClusterReviewFabricRestrictionsParams	-	yes
 initOwner	MTRAccessControlClusterReviewFabricRestrictionsParams	-	self
-description	MTRAccessControlClusterReviewFabricRestrictionsParams	-	<MTRAccessControlClusterReviewFabricRestrictionsParams: arl:(
-); >
+description	MTRAccessControlClusterReviewFabricRestrictionsParams	-	<MTRAccessControlClusterReviewFabricRestrictionsParams: arl:( ); >
 fresh	MTRAccessControlClusterReviewFabricRestrictionsParams	arl	NSArray(0)
-described	MTRAccessControlClusterReviewFabricRestrictionsParams	arl	(
-)
+described	MTRAccessControlClusterReviewFabricRestrictionsParams	arl	( )
 fresh	MTRAccessControlClusterReviewFabricRestrictionsParams	timedInvokeTimeoutMs	(nil)
 described	MTRAccessControlClusterReviewFabricRestrictionsParams	timedInvokeTimeoutMs	(null)
 fresh	MTRAccessControlClusterReviewFabricRestrictionsParams	serverSideProcessingTimeout	(nil)
@@ -259,8 +253,7 @@ described	MTRActionsClusterEnableActionWithDurationParams	serverSideProcessingTi
 present	MTRActionsClusterEndpointListStruct	-	present
 ownDescription	MTRActionsClusterEndpointListStruct	-	yes
 initOwner	MTRActionsClusterEndpointListStruct	-	self
-description	MTRActionsClusterEndpointListStruct	-	<MTRActionsClusterEndpointListStruct: endpointListID:0; name:; type:0; endpoints:(
-); >
+description	MTRActionsClusterEndpointListStruct	-	<MTRActionsClusterEndpointListStruct: endpointListID:0; name:; type:0; endpoints:( ); >
 fresh	MTRActionsClusterEndpointListStruct	endpointListID	NSNumber(0)
 described	MTRActionsClusterEndpointListStruct	endpointListID	0
 fresh	MTRActionsClusterEndpointListStruct	name	NSString()
@@ -268,8 +261,7 @@ described	MTRActionsClusterEndpointListStruct	name
 fresh	MTRActionsClusterEndpointListStruct	type	NSNumber(0)
 described	MTRActionsClusterEndpointListStruct	type	0
 fresh	MTRActionsClusterEndpointListStruct	endpoints	NSArray(0)
-described	MTRActionsClusterEndpointListStruct	endpoints	(
-)
+described	MTRActionsClusterEndpointListStruct	endpoints	( )
 present	MTRActionsClusterInstantActionParams	-	present
 ownDescription	MTRActionsClusterInstantActionParams	-	yes
 initOwner	MTRActionsClusterInstantActionParams	-	self
@@ -905,21 +897,15 @@ described	MTRCameraAVSettingsUserLevelManagementClusterMPTZSetPositionParams	ser
 present	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	-	present
 ownDescription	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	-	yes
 initOwner	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	-	self
-description	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	-	<MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct: maxNumberOfChannels:0; supportedCodecs:(
-); supportedSampleRates:(
-); supportedBitDepths:(
-); >
+description	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	-	<MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct: maxNumberOfChannels:0; supportedCodecs:( ); supportedSampleRates:( ); supportedBitDepths:( ); >
 fresh	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	maxNumberOfChannels	NSNumber(0)
 described	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	maxNumberOfChannels	0
 fresh	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	supportedCodecs	NSArray(0)
-described	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	supportedCodecs	(
-)
+described	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	supportedCodecs	( )
 fresh	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	supportedSampleRates	NSArray(0)
-described	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	supportedSampleRates	(
-)
+described	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	supportedSampleRates	( )
 fresh	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	supportedBitDepths	NSArray(0)
-described	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	supportedBitDepths	(
-)
+described	MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct	supportedBitDepths	( )
 present	MTRCameraAVStreamManagementClusterAudioStreamAllocateParams	-	present
 ownDescription	MTRCameraAVStreamManagementClusterAudioStreamAllocateParams	-	yes
 initOwner	MTRCameraAVStreamManagementClusterAudioStreamAllocateParams	-	self
@@ -1019,11 +1005,9 @@ described	MTRCameraAVStreamManagementClusterRateDistortionTradeOffPointsStruct	m
 present	MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams	-	present
 ownDescription	MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams	-	yes
 initOwner	MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams	-	self
-description	MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams	-	<MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams: streamPriorities:(
-); >
+description	MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams	-	<MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams: streamPriorities:( ); >
 fresh	MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams	streamPriorities	NSArray(0)
-described	MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams	streamPriorities	(
-)
+described	MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams	streamPriorities	( )
 fresh	MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams	timedInvokeTimeoutMs	(nil)
 described	MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams	timedInvokeTimeoutMs	(null)
 fresh	MTRCameraAVStreamManagementClusterSetStreamPrioritiesParams	serverSideProcessingTimeout	(nil)
@@ -1233,15 +1217,13 @@ described	MTRChannelClusterAdditionalInfoStruct	value
 present	MTRChannelClusterCancelRecordProgramParams	-	present
 ownDescription	MTRChannelClusterCancelRecordProgramParams	-	yes
 initOwner	MTRChannelClusterCancelRecordProgramParams	-	self
-description	MTRChannelClusterCancelRecordProgramParams	-	<MTRChannelClusterCancelRecordProgramParams: programIdentifier:; shouldRecordSeries:0; externalIDList:(
-); data:; >
+description	MTRChannelClusterCancelRecordProgramParams	-	<MTRChannelClusterCancelRecordProgramParams: programIdentifier:; shouldRecordSeries:0; externalIDList:( ); data:; >
 fresh	MTRChannelClusterCancelRecordProgramParams	programIdentifier	NSString()
 described	MTRChannelClusterCancelRecordProgramParams	programIdentifier	
 fresh	MTRChannelClusterCancelRecordProgramParams	shouldRecordSeries	NSNumber(0)
 described	MTRChannelClusterCancelRecordProgramParams	shouldRecordSeries	0
 fresh	MTRChannelClusterCancelRecordProgramParams	externalIDList	NSArray(0)
-described	MTRChannelClusterCancelRecordProgramParams	externalIDList	(
-)
+described	MTRChannelClusterCancelRecordProgramParams	externalIDList	( )
 fresh	MTRChannelClusterCancelRecordProgramParams	data	NSData(0)
 described	MTRChannelClusterCancelRecordProgramParams	data	{length = 0, bytes = 0x}
 fresh	MTRChannelClusterCancelRecordProgramParams	timedInvokeTimeoutMs	(nil)
@@ -1369,13 +1351,11 @@ described	MTRChannelClusterProgramCategoryStruct	subCategory	(null)
 present	MTRChannelClusterProgramGuideResponseParams	-	present
 ownDescription	MTRChannelClusterProgramGuideResponseParams	-	yes
 initOwner	MTRChannelClusterProgramGuideResponseParams	-	self
-description	MTRChannelClusterProgramGuideResponseParams	-	<MTRChannelClusterProgramGuideResponseParams: paging:<MTRChannelClusterChannelPagingStruct: previousToken:(null); nextToken:(null); >; programList:(
-); >
+description	MTRChannelClusterProgramGuideResponseParams	-	<MTRChannelClusterProgramGuideResponseParams: paging:<MTRChannelClusterChannelPagingStruct: previousToken:(null); nextToken:(null); >; programList:( ); >
 fresh	MTRChannelClusterProgramGuideResponseParams	paging	MTRChannelClusterChannelPagingStruct(<MTRChannelClusterChannelPagingStruct: previousToken:(null); nextToken:(null); >)
 described	MTRChannelClusterProgramGuideResponseParams	paging	<MTRChannelClusterChannelPagingStruct: previousToken:(null); nextToken:(null); >
 fresh	MTRChannelClusterProgramGuideResponseParams	programList	NSArray(0)
-described	MTRChannelClusterProgramGuideResponseParams	programList	(
-)
+described	MTRChannelClusterProgramGuideResponseParams	programList	( )
 present	MTRChannelClusterSeriesInfoStruct	-	present
 ownDescription	MTRChannelClusterSeriesInfoStruct	-	yes
 initOwner	MTRChannelClusterSeriesInfoStruct	-	self
@@ -1429,15 +1409,13 @@ described	MTRChannelClusterProgramStruct	externalIDList	(null)
 present	MTRChannelClusterRecordProgramParams	-	present
 ownDescription	MTRChannelClusterRecordProgramParams	-	yes
 initOwner	MTRChannelClusterRecordProgramParams	-	self
-description	MTRChannelClusterRecordProgramParams	-	<MTRChannelClusterRecordProgramParams: programIdentifier:; shouldRecordSeries:0; externalIDList:(
-); data:; >
+description	MTRChannelClusterRecordProgramParams	-	<MTRChannelClusterRecordProgramParams: programIdentifier:; shouldRecordSeries:0; externalIDList:( ); data:; >
 fresh	MTRChannelClusterRecordProgramParams	programIdentifier	NSString()
 described	MTRChannelClusterRecordProgramParams	programIdentifier	
 fresh	MTRChannelClusterRecordProgramParams	shouldRecordSeries	NSNumber(0)
 described	MTRChannelClusterRecordProgramParams	shouldRecordSeries	0
 fresh	MTRChannelClusterRecordProgramParams	externalIDList	NSArray(0)
-described	MTRChannelClusterRecordProgramParams	externalIDList	(
-)
+described	MTRChannelClusterRecordProgramParams	externalIDList	( )
 fresh	MTRChannelClusterRecordProgramParams	data	NSData(0)
 described	MTRChannelClusterRecordProgramParams	data	{length = 0, bytes = 0x}
 fresh	MTRChannelClusterRecordProgramParams	timedInvokeTimeoutMs	(nil)
@@ -1507,11 +1485,9 @@ description	MTRClosureControlClusterMovementCompletedEvent	-	<MTRClosureControlC
 present	MTRClosureControlClusterOperationalErrorEvent	-	present
 ownDescription	MTRClosureControlClusterOperationalErrorEvent	-	yes
 initOwner	MTRClosureControlClusterOperationalErrorEvent	-	self
-description	MTRClosureControlClusterOperationalErrorEvent	-	<MTRClosureControlClusterOperationalErrorEvent: errorState:(
-); >
+description	MTRClosureControlClusterOperationalErrorEvent	-	<MTRClosureControlClusterOperationalErrorEvent: errorState:( ); >
 fresh	MTRClosureControlClusterOperationalErrorEvent	errorState	NSArray(0)
-described	MTRClosureControlClusterOperationalErrorEvent	errorState	(
-)
+described	MTRClosureControlClusterOperationalErrorEvent	errorState	( )
 present	MTRClosureControlClusterOverallCurrentStateStruct	-	present
 ownDescription	MTRClosureControlClusterOverallCurrentStateStruct	-	yes
 initOwner	MTRClosureControlClusterOverallCurrentStateStruct	-	self
@@ -1997,11 +1973,9 @@ described	MTRCommissionerControlClusterReverseOpenCommissioningWindowParams	salt
 present	MTRCommodityMeteringClusterMeteredQuantityStruct	-	present
 ownDescription	MTRCommodityMeteringClusterMeteredQuantityStruct	-	yes
 initOwner	MTRCommodityMeteringClusterMeteredQuantityStruct	-	self
-description	MTRCommodityMeteringClusterMeteredQuantityStruct	-	<MTRCommodityMeteringClusterMeteredQuantityStruct: tariffComponentIDs:(
-); quantity:0; >
+description	MTRCommodityMeteringClusterMeteredQuantityStruct	-	<MTRCommodityMeteringClusterMeteredQuantityStruct: tariffComponentIDs:( ); quantity:0; >
 fresh	MTRCommodityMeteringClusterMeteredQuantityStruct	tariffComponentIDs	NSArray(0)
-described	MTRCommodityMeteringClusterMeteredQuantityStruct	tariffComponentIDs	(
-)
+described	MTRCommodityMeteringClusterMeteredQuantityStruct	tariffComponentIDs	( )
 fresh	MTRCommodityMeteringClusterMeteredQuantityStruct	quantity	NSNumber(0)
 described	MTRCommodityMeteringClusterMeteredQuantityStruct	quantity	0
 present	MTRCommodityPriceClusterCommodityPriceComponentStruct	-	present
@@ -2045,11 +2019,9 @@ described	MTRCommodityPriceClusterGetDetailedForecastRequestParams	serverSidePro
 present	MTRCommodityPriceClusterGetDetailedForecastResponseParams	-	present
 ownDescription	MTRCommodityPriceClusterGetDetailedForecastResponseParams	-	yes
 initOwner	MTRCommodityPriceClusterGetDetailedForecastResponseParams	-	self
-description	MTRCommodityPriceClusterGetDetailedForecastResponseParams	-	<MTRCommodityPriceClusterGetDetailedForecastResponseParams: priceForecast:(
-); >
+description	MTRCommodityPriceClusterGetDetailedForecastResponseParams	-	<MTRCommodityPriceClusterGetDetailedForecastResponseParams: priceForecast:( ); >
 fresh	MTRCommodityPriceClusterGetDetailedForecastResponseParams	priceForecast	NSArray(0)
-described	MTRCommodityPriceClusterGetDetailedForecastResponseParams	priceForecast	(
-)
+described	MTRCommodityPriceClusterGetDetailedForecastResponseParams	priceForecast	( )
 present	MTRCommodityPriceClusterGetDetailedPriceRequestParams	-	present
 ownDescription	MTRCommodityPriceClusterGetDetailedPriceRequestParams	-	yes
 initOwner	MTRCommodityPriceClusterGetDetailedPriceRequestParams	-	self
@@ -2083,13 +2055,11 @@ described	MTRCommodityTariffClusterAuxiliaryLoadSwitchSettingsStruct	requiredSta
 present	MTRCommodityTariffClusterCalendarPeriodStruct	-	present
 ownDescription	MTRCommodityTariffClusterCalendarPeriodStruct	-	yes
 initOwner	MTRCommodityTariffClusterCalendarPeriodStruct	-	self
-description	MTRCommodityTariffClusterCalendarPeriodStruct	-	<MTRCommodityTariffClusterCalendarPeriodStruct: startDate:(null); dayPatternIDs:(
-); >
+description	MTRCommodityTariffClusterCalendarPeriodStruct	-	<MTRCommodityTariffClusterCalendarPeriodStruct: startDate:(null); dayPatternIDs:( ); >
 fresh	MTRCommodityTariffClusterCalendarPeriodStruct	startDate	(nil)
 described	MTRCommodityTariffClusterCalendarPeriodStruct	startDate	(null)
 fresh	MTRCommodityTariffClusterCalendarPeriodStruct	dayPatternIDs	NSArray(0)
-described	MTRCommodityTariffClusterCalendarPeriodStruct	dayPatternIDs	(
-)
+described	MTRCommodityTariffClusterCalendarPeriodStruct	dayPatternIDs	( )
 present	MTRCommodityTariffClusterDayEntryStruct	-	present
 ownDescription	MTRCommodityTariffClusterDayEntryStruct	-	yes
 initOwner	MTRCommodityTariffClusterDayEntryStruct	-	self
@@ -2107,27 +2077,23 @@ described	MTRCommodityTariffClusterDayEntryStruct	randomizationType	(null)
 present	MTRCommodityTariffClusterDayPatternStruct	-	present
 ownDescription	MTRCommodityTariffClusterDayPatternStruct	-	yes
 initOwner	MTRCommodityTariffClusterDayPatternStruct	-	self
-description	MTRCommodityTariffClusterDayPatternStruct	-	<MTRCommodityTariffClusterDayPatternStruct: dayPatternID:0; daysOfWeek:0; dayEntryIDs:(
-); >
+description	MTRCommodityTariffClusterDayPatternStruct	-	<MTRCommodityTariffClusterDayPatternStruct: dayPatternID:0; daysOfWeek:0; dayEntryIDs:( ); >
 fresh	MTRCommodityTariffClusterDayPatternStruct	dayPatternID	NSNumber(0)
 described	MTRCommodityTariffClusterDayPatternStruct	dayPatternID	0
 fresh	MTRCommodityTariffClusterDayPatternStruct	daysOfWeek	NSNumber(0)
 described	MTRCommodityTariffClusterDayPatternStruct	daysOfWeek	0
 fresh	MTRCommodityTariffClusterDayPatternStruct	dayEntryIDs	NSArray(0)
-described	MTRCommodityTariffClusterDayPatternStruct	dayEntryIDs	(
-)
+described	MTRCommodityTariffClusterDayPatternStruct	dayEntryIDs	( )
 present	MTRCommodityTariffClusterDayStruct	-	present
 ownDescription	MTRCommodityTariffClusterDayStruct	-	yes
 initOwner	MTRCommodityTariffClusterDayStruct	-	self
-description	MTRCommodityTariffClusterDayStruct	-	<MTRCommodityTariffClusterDayStruct: date:0; dayType:0; dayEntryIDs:(
-); >
+description	MTRCommodityTariffClusterDayStruct	-	<MTRCommodityTariffClusterDayStruct: date:0; dayType:0; dayEntryIDs:( ); >
 fresh	MTRCommodityTariffClusterDayStruct	date	NSNumber(0)
 described	MTRCommodityTariffClusterDayStruct	date	0
 fresh	MTRCommodityTariffClusterDayStruct	dayType	NSNumber(0)
 described	MTRCommodityTariffClusterDayStruct	dayType	0
 fresh	MTRCommodityTariffClusterDayStruct	dayEntryIDs	NSArray(0)
-described	MTRCommodityTariffClusterDayStruct	dayEntryIDs	(
-)
+described	MTRCommodityTariffClusterDayStruct	dayEntryIDs	( )
 present	MTRCommodityTariffClusterGetDayEntryParams	-	present
 ownDescription	MTRCommodityTariffClusterGetDayEntryParams	-	yes
 initOwner	MTRCommodityTariffClusterGetDayEntryParams	-	self
@@ -2209,13 +2175,11 @@ described	MTRCommodityTariffClusterTariffComponentStruct	externalID	(null)
 present	MTRCommodityTariffClusterGetTariffComponentResponseParams	-	present
 ownDescription	MTRCommodityTariffClusterGetTariffComponentResponseParams	-	yes
 initOwner	MTRCommodityTariffClusterGetTariffComponentResponseParams	-	self
-description	MTRCommodityTariffClusterGetTariffComponentResponseParams	-	<MTRCommodityTariffClusterGetTariffComponentResponseParams: label:(null); dayEntryIDs:(
-); tariffComponent:<MTRCommodityTariffClusterTariffComponentStruct: tariffComponentID:0; price:(null); friendlyCredit:(null); auxiliaryLoad:(null); peakPeriod:(null); powerThreshold:(null); threshold:(null); label:(null); predicted:(null); externalID:(null); >; >
+description	MTRCommodityTariffClusterGetTariffComponentResponseParams	-	<MTRCommodityTariffClusterGetTariffComponentResponseParams: label:(null); dayEntryIDs:( ); tariffComponent:<MTRCommodityTariffClusterTariffComponentStruct: tariffComponentID:0; price:(null); friendlyCredit:(null); auxiliaryLoad:(null); peakPeriod:(null); powerThreshold:(null); threshold:(null); label:(null); predicted:(null); externalID:(null); >; >
 fresh	MTRCommodityTariffClusterGetTariffComponentResponseParams	label	(nil)
 described	MTRCommodityTariffClusterGetTariffComponentResponseParams	label	(null)
 fresh	MTRCommodityTariffClusterGetTariffComponentResponseParams	dayEntryIDs	NSArray(0)
-described	MTRCommodityTariffClusterGetTariffComponentResponseParams	dayEntryIDs	(
-)
+described	MTRCommodityTariffClusterGetTariffComponentResponseParams	dayEntryIDs	( )
 fresh	MTRCommodityTariffClusterGetTariffComponentResponseParams	tariffComponent	MTRCommodityTariffClusterTariffComponentStruct(<MTRCommodityTariffClusterTariffComponentStruct: tariffComponentID:0; price:(null); friendlyCredit:(null); auxiliaryLoad:(null); peakPeriod:(null); powerThreshold:(null); threshold:(null); label:(null); predicted:(null); externalID:(null); >)
 described	MTRCommodityTariffClusterGetTariffComponentResponseParams	tariffComponent	<MTRCommodityTariffClusterTariffComponentStruct: tariffComponentID:0; price:(null); friendlyCredit:(null); auxiliaryLoad:(null); peakPeriod:(null); powerThreshold:(null); threshold:(null); label:(null); predicted:(null); externalID:(null); >
 present	MTRDataTypeCurrencyStruct	-	present
@@ -2241,17 +2205,13 @@ described	MTRCommodityTariffClusterTariffInformationStruct	blockMode	(null)
 present	MTRCommodityTariffClusterTariffPeriodStruct	-	present
 ownDescription	MTRCommodityTariffClusterTariffPeriodStruct	-	yes
 initOwner	MTRCommodityTariffClusterTariffPeriodStruct	-	self
-description	MTRCommodityTariffClusterTariffPeriodStruct	-	<MTRCommodityTariffClusterTariffPeriodStruct: label:(null); dayEntryIDs:(
-); tariffComponentIDs:(
-); >
+description	MTRCommodityTariffClusterTariffPeriodStruct	-	<MTRCommodityTariffClusterTariffPeriodStruct: label:(null); dayEntryIDs:( ); tariffComponentIDs:( ); >
 fresh	MTRCommodityTariffClusterTariffPeriodStruct	label	(nil)
 described	MTRCommodityTariffClusterTariffPeriodStruct	label	(null)
 fresh	MTRCommodityTariffClusterTariffPeriodStruct	dayEntryIDs	NSArray(0)
-described	MTRCommodityTariffClusterTariffPeriodStruct	dayEntryIDs	(
-)
+described	MTRCommodityTariffClusterTariffPeriodStruct	dayEntryIDs	( )
 fresh	MTRCommodityTariffClusterTariffPeriodStruct	tariffComponentIDs	NSArray(0)
-described	MTRCommodityTariffClusterTariffPeriodStruct	tariffComponentIDs	(
-)
+described	MTRCommodityTariffClusterTariffPeriodStruct	tariffComponentIDs	( )
 present	MTRContentAppObserverClusterContentAppMessageParams	-	present
 ownDescription	MTRContentAppObserverClusterContentAppMessageParams	-	yes
 initOwner	MTRContentAppObserverClusterContentAppMessageParams	-	self
@@ -2437,11 +2397,9 @@ described	MTRContentLauncherClusterBrandingInformationStruct	waterMark	(null)
 present	MTRContentLauncherClusterContentSearchStruct	-	present
 ownDescription	MTRContentLauncherClusterContentSearchStruct	-	yes
 initOwner	MTRContentLauncherClusterContentSearchStruct	-	self
-description	MTRContentLauncherClusterContentSearchStruct	-	<MTRContentLauncherClusterContentSearchStruct: parameterList:(
-); >
+description	MTRContentLauncherClusterContentSearchStruct	-	<MTRContentLauncherClusterContentSearchStruct: parameterList:( ); >
 fresh	MTRContentLauncherClusterContentSearchStruct	parameterList	NSArray(0)
-described	MTRContentLauncherClusterContentSearchStruct	parameterList	(
-)
+described	MTRContentLauncherClusterContentSearchStruct	parameterList	( )
 present	MTRContentLauncherClusterTrackPreferenceStruct	-	present
 ownDescription	MTRContentLauncherClusterTrackPreferenceStruct	-	yes
 initOwner	MTRContentLauncherClusterTrackPreferenceStruct	-	self
@@ -2465,12 +2423,9 @@ described	MTRContentLauncherClusterPlaybackPreferencesStruct	audioTracks	(null)
 present	MTRContentLauncherClusterLaunchContentParams	-	present
 ownDescription	MTRContentLauncherClusterLaunchContentParams	-	yes
 initOwner	MTRContentLauncherClusterLaunchContentParams	-	self
-description	MTRContentLauncherClusterLaunchContentParams	-	<MTRContentLauncherClusterLaunchContentParams: search:<MTRContentLauncherClusterContentSearchStruct: parameterList:(
-); >; autoPlay:0; data:(null); playbackPreferences:(null); useCurrentContext:(null); contentAppVendorID:(null); contentAppProductID:(null); >
-fresh	MTRContentLauncherClusterLaunchContentParams	search	MTRContentLauncherClusterContentSearchStruct(<MTRContentLauncherClusterContentSearchStruct: parameterList:(
-); >)
-described	MTRContentLauncherClusterLaunchContentParams	search	<MTRContentLauncherClusterContentSearchStruct: parameterList:(
-); >
+description	MTRContentLauncherClusterLaunchContentParams	-	<MTRContentLauncherClusterLaunchContentParams: search:<MTRContentLauncherClusterContentSearchStruct: parameterList:( ); >; autoPlay:0; data:(null); playbackPreferences:(null); useCurrentContext:(null); contentAppVendorID:(null); contentAppProductID:(null); >
+fresh	MTRContentLauncherClusterLaunchContentParams	search	MTRContentLauncherClusterContentSearchStruct(<MTRContentLauncherClusterContentSearchStruct: parameterList:( ); >)
+described	MTRContentLauncherClusterLaunchContentParams	search	<MTRContentLauncherClusterContentSearchStruct: parameterList:( ); >
 fresh	MTRContentLauncherClusterLaunchContentParams	autoPlay	NSNumber(0)
 described	MTRContentLauncherClusterLaunchContentParams	autoPlay	0
 fresh	MTRContentLauncherClusterLaunchContentParams	data	(nil)
@@ -2546,7 +2501,7 @@ described	MTRContentLauncherClusterParameterStruct	externalIDList	(null)
 present	MTRDeviceControllerFactoryParams	-	present
 ownDescription	MTRDeviceControllerFactoryParams	-	no
 initOwner	MTRDeviceControllerFactoryParams	-	none
-description	MTRDeviceControllerFactoryParams	-	<MTRDeviceControllerFactoryParams: 0x7b71074040>
+description	MTRDeviceControllerFactoryParams	-	<MTRDeviceControllerFactoryParams: 0x75b0c68040>
 fresh	MTRDeviceControllerFactoryParams	hasStorage	NSNumber(0)
 described	MTRDeviceControllerFactoryParams	hasStorage	0
 fresh	MTRDeviceControllerFactoryParams	storage	(nil)
@@ -2564,7 +2519,7 @@ described	MTRDeviceControllerFactoryParams	shouldStartServer	0
 present	MTRControllerFactoryParams	-	present
 ownDescription	MTRControllerFactoryParams	-	no
 initOwner	MTRControllerFactoryParams	-	none
-description	MTRControllerFactoryParams	-	<MTRControllerFactoryParams: 0x7b71074040>
+description	MTRControllerFactoryParams	-	<MTRControllerFactoryParams: 0x75b0c68040>
 fresh	MTRControllerFactoryParams	storageDelegate	(nil)
 described	MTRControllerFactoryParams	storageDelegate	(null)
 fresh	MTRControllerFactoryParams	startServer	NSNumber(0)
@@ -2594,11 +2549,9 @@ described	MTRDataTypeICECandidateStruct	sdpmLineIndex	(null)
 present	MTRDataTypeICEServerStruct	-	present
 ownDescription	MTRDataTypeICEServerStruct	-	yes
 initOwner	MTRDataTypeICEServerStruct	-	self
-description	MTRDataTypeICEServerStruct	-	<MTRDataTypeICEServerStruct: urls:(
-); username:(null); credential:(null); caid:(null); >
+description	MTRDataTypeICEServerStruct	-	<MTRDataTypeICEServerStruct: urls:( ); username:(null); credential:(null); caid:(null); >
 fresh	MTRDataTypeICEServerStruct	urls	NSArray(0)
-described	MTRDataTypeICEServerStruct	urls	(
-)
+described	MTRDataTypeICEServerStruct	urls	( )
 fresh	MTRDataTypeICEServerStruct	username	(nil)
 described	MTRDataTypeICEServerStruct	username	(null)
 fresh	MTRDataTypeICEServerStruct	credential	(nil)
@@ -2638,8 +2591,7 @@ described	MTRDataTypeMeasurementAccuracyRangeStruct	fixedTypical	(null)
 present	MTRDataTypeMeasurementAccuracyStruct	-	present
 ownDescription	MTRDataTypeMeasurementAccuracyStruct	-	yes
 initOwner	MTRDataTypeMeasurementAccuracyStruct	-	self
-description	MTRDataTypeMeasurementAccuracyStruct	-	<MTRDataTypeMeasurementAccuracyStruct: measurementType:0; measured:0; minMeasuredValue:0; maxMeasuredValue:0; accuracyRanges:(
-); >
+description	MTRDataTypeMeasurementAccuracyStruct	-	<MTRDataTypeMeasurementAccuracyStruct: measurementType:0; measured:0; minMeasuredValue:0; maxMeasuredValue:0; accuracyRanges:( ); >
 fresh	MTRDataTypeMeasurementAccuracyStruct	measurementType	NSNumber(0)
 described	MTRDataTypeMeasurementAccuracyStruct	measurementType	0
 fresh	MTRDataTypeMeasurementAccuracyStruct	measured	NSNumber(0)
@@ -2649,8 +2601,7 @@ described	MTRDataTypeMeasurementAccuracyStruct	minMeasuredValue	0
 fresh	MTRDataTypeMeasurementAccuracyStruct	maxMeasuredValue	NSNumber(0)
 described	MTRDataTypeMeasurementAccuracyStruct	maxMeasuredValue	0
 fresh	MTRDataTypeMeasurementAccuracyStruct	accuracyRanges	NSArray(0)
-described	MTRDataTypeMeasurementAccuracyStruct	accuracyRanges	(
-)
+described	MTRDataTypeMeasurementAccuracyStruct	accuracyRanges	( )
 present	MTRDataTypePriceStruct	-	present
 ownDescription	MTRDataTypePriceStruct	-	yes
 initOwner	MTRDataTypePriceStruct	-	self
@@ -2720,7 +2671,7 @@ aliasBack	MTRDescriptorClusterDeviceTypeStruct	deviceType	type	NSNumber(42)
 present	MTRDeviceControllerStartupParams	-	present
 ownDescription	MTRDeviceControllerStartupParams	-	no
 initOwner	MTRDeviceControllerStartupParams	-	none
-description	MTRDeviceControllerStartupParams	-	<MTRDeviceControllerStartupParams: 0x7b70c70000>
+description	MTRDeviceControllerStartupParams	-	<MTRDeviceControllerStartupParams: 0x75b0c80000>
 fresh	MTRDeviceControllerStartupParams	fabricId	NSNumber(0)
 described	MTRDeviceControllerStartupParams	fabricId	0
 fresh	MTRDeviceControllerStartupParams	vendorId	(nil)
@@ -2803,8 +2754,7 @@ described	MTRDeviceEnergyManagementClusterCostStruct	currency	(null)
 present	MTRDeviceEnergyManagementClusterForecastStruct	-	present
 ownDescription	MTRDeviceEnergyManagementClusterForecastStruct	-	yes
 initOwner	MTRDeviceEnergyManagementClusterForecastStruct	-	self
-description	MTRDeviceEnergyManagementClusterForecastStruct	-	<MTRDeviceEnergyManagementClusterForecastStruct: forecastID:0; activeSlotNumber:(null); startTime:0; endTime:0; earliestStartTime:(null); latestEndTime:(null); isPausable:0; slots:(
-); forecastUpdateReason:0; >
+description	MTRDeviceEnergyManagementClusterForecastStruct	-	<MTRDeviceEnergyManagementClusterForecastStruct: forecastID:0; activeSlotNumber:(null); startTime:0; endTime:0; earliestStartTime:(null); latestEndTime:(null); isPausable:0; slots:( ); forecastUpdateReason:0; >
 fresh	MTRDeviceEnergyManagementClusterForecastStruct	forecastID	NSNumber(0)
 described	MTRDeviceEnergyManagementClusterForecastStruct	forecastID	0
 fresh	MTRDeviceEnergyManagementClusterForecastStruct	activeSlotNumber	(nil)
@@ -2820,20 +2770,17 @@ described	MTRDeviceEnergyManagementClusterForecastStruct	latestEndTime	(null)
 fresh	MTRDeviceEnergyManagementClusterForecastStruct	isPausable	NSNumber(0)
 described	MTRDeviceEnergyManagementClusterForecastStruct	isPausable	0
 fresh	MTRDeviceEnergyManagementClusterForecastStruct	slots	NSArray(0)
-described	MTRDeviceEnergyManagementClusterForecastStruct	slots	(
-)
+described	MTRDeviceEnergyManagementClusterForecastStruct	slots	( )
 fresh	MTRDeviceEnergyManagementClusterForecastStruct	forecastUpdateReason	NSNumber(0)
 described	MTRDeviceEnergyManagementClusterForecastStruct	forecastUpdateReason	0
 present	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	-	present
 ownDescription	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	-	yes
 initOwner	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	-	self
-description	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	-	<MTRDeviceEnergyManagementClusterModifyForecastRequestParams: forecastID:0; slotAdjustments:(
-); cause:0; >
+description	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	-	<MTRDeviceEnergyManagementClusterModifyForecastRequestParams: forecastID:0; slotAdjustments:( ); cause:0; >
 fresh	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	forecastID	NSNumber(0)
 described	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	forecastID	0
 fresh	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	slotAdjustments	NSArray(0)
-described	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	slotAdjustments	(
-)
+described	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	slotAdjustments	( )
 fresh	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	cause	NSNumber(0)
 described	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	cause	0
 fresh	MTRDeviceEnergyManagementClusterModifyForecastRequestParams	timedInvokeTimeoutMs	(nil)
@@ -2907,11 +2854,9 @@ described	MTRDeviceEnergyManagementClusterPowerAdjustStruct	maxDuration	0
 present	MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams	-	present
 ownDescription	MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams	-	yes
 initOwner	MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams	-	self
-description	MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams	-	<MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams: constraints:(
-); cause:0; >
+description	MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams	-	<MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams: constraints:( ); cause:0; >
 fresh	MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams	constraints	NSArray(0)
-described	MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams	constraints	(
-)
+described	MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams	constraints	( )
 fresh	MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams	cause	NSNumber(0)
 described	MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams	cause	0
 fresh	MTRDeviceEnergyManagementClusterRequestConstraintBasedForecastParams	timedInvokeTimeoutMs	(nil)
@@ -3015,15 +2960,13 @@ described	MTRDeviceEnergyManagementModeClusterChangeToModeResponseParams	statusT
 present	MTRDeviceEnergyManagementModeClusterModeOptionStruct	-	present
 ownDescription	MTRDeviceEnergyManagementModeClusterModeOptionStruct	-	yes
 initOwner	MTRDeviceEnergyManagementModeClusterModeOptionStruct	-	self
-description	MTRDeviceEnergyManagementModeClusterModeOptionStruct	-	<MTRDeviceEnergyManagementModeClusterModeOptionStruct: label:; mode:0; modeTags:(
-); >
+description	MTRDeviceEnergyManagementModeClusterModeOptionStruct	-	<MTRDeviceEnergyManagementModeClusterModeOptionStruct: label:; mode:0; modeTags:( ); >
 fresh	MTRDeviceEnergyManagementModeClusterModeOptionStruct	label	NSString()
 described	MTRDeviceEnergyManagementModeClusterModeOptionStruct	label	
 fresh	MTRDeviceEnergyManagementModeClusterModeOptionStruct	mode	NSNumber(0)
 described	MTRDeviceEnergyManagementModeClusterModeOptionStruct	mode	0
 fresh	MTRDeviceEnergyManagementModeClusterModeOptionStruct	modeTags	NSArray(0)
-described	MTRDeviceEnergyManagementModeClusterModeOptionStruct	modeTags	(
-)
+described	MTRDeviceEnergyManagementModeClusterModeOptionStruct	modeTags	( )
 present	MTRDeviceEnergyManagementModeClusterModeTagStruct	-	present
 ownDescription	MTRDeviceEnergyManagementModeClusterModeTagStruct	-	yes
 initOwner	MTRDeviceEnergyManagementModeClusterModeTagStruct	-	self
@@ -3121,15 +3064,13 @@ described	MTRDishwasherModeClusterChangeToModeResponseParams	statusText	(null)
 present	MTRDishwasherModeClusterModeOptionStruct	-	present
 ownDescription	MTRDishwasherModeClusterModeOptionStruct	-	yes
 initOwner	MTRDishwasherModeClusterModeOptionStruct	-	self
-description	MTRDishwasherModeClusterModeOptionStruct	-	<MTRDishwasherModeClusterModeOptionStruct: label:; mode:0; modeTags:(
-); >
+description	MTRDishwasherModeClusterModeOptionStruct	-	<MTRDishwasherModeClusterModeOptionStruct: label:; mode:0; modeTags:( ); >
 fresh	MTRDishwasherModeClusterModeOptionStruct	label	NSString()
 described	MTRDishwasherModeClusterModeOptionStruct	label	
 fresh	MTRDishwasherModeClusterModeOptionStruct	mode	NSNumber(0)
 described	MTRDishwasherModeClusterModeOptionStruct	mode	0
 fresh	MTRDishwasherModeClusterModeOptionStruct	modeTags	NSArray(0)
-described	MTRDishwasherModeClusterModeOptionStruct	modeTags	(
-)
+described	MTRDishwasherModeClusterModeOptionStruct	modeTags	( )
 present	MTRDishwasherModeClusterModeTagStruct	-	present
 ownDescription	MTRDishwasherModeClusterModeTagStruct	-	yes
 initOwner	MTRDishwasherModeClusterModeTagStruct	-	self
@@ -3721,9 +3662,7 @@ described	MTREcosystemInformationClusterDeviceTypeStruct	revision	0
 present	MTREcosystemInformationClusterEcosystemDeviceStruct	-	present
 ownDescription	MTREcosystemInformationClusterEcosystemDeviceStruct	-	yes
 initOwner	MTREcosystemInformationClusterEcosystemDeviceStruct	-	self
-description	MTREcosystemInformationClusterEcosystemDeviceStruct	-	<MTREcosystemInformationClusterEcosystemDeviceStruct: deviceName:(null); deviceNameLastEdit:(null); bridgedEndpoint:0; originalEndpoint:0; deviceTypes:(
-); uniqueLocationIDs:(
-); uniqueLocationIDsLastEdit:0; fabricIndex:0; >
+description	MTREcosystemInformationClusterEcosystemDeviceStruct	-	<MTREcosystemInformationClusterEcosystemDeviceStruct: deviceName:(null); deviceNameLastEdit:(null); bridgedEndpoint:0; originalEndpoint:0; deviceTypes:( ); uniqueLocationIDs:( ); uniqueLocationIDsLastEdit:0; fabricIndex:0; >
 fresh	MTREcosystemInformationClusterEcosystemDeviceStruct	deviceName	(nil)
 described	MTREcosystemInformationClusterEcosystemDeviceStruct	deviceName	(null)
 fresh	MTREcosystemInformationClusterEcosystemDeviceStruct	deviceNameLastEdit	(nil)
@@ -3733,11 +3672,9 @@ described	MTREcosystemInformationClusterEcosystemDeviceStruct	bridgedEndpoint	0
 fresh	MTREcosystemInformationClusterEcosystemDeviceStruct	originalEndpoint	NSNumber(0)
 described	MTREcosystemInformationClusterEcosystemDeviceStruct	originalEndpoint	0
 fresh	MTREcosystemInformationClusterEcosystemDeviceStruct	deviceTypes	NSArray(0)
-described	MTREcosystemInformationClusterEcosystemDeviceStruct	deviceTypes	(
-)
+described	MTREcosystemInformationClusterEcosystemDeviceStruct	deviceTypes	( )
 fresh	MTREcosystemInformationClusterEcosystemDeviceStruct	uniqueLocationIDs	NSArray(0)
-described	MTREcosystemInformationClusterEcosystemDeviceStruct	uniqueLocationIDs	(
-)
+described	MTREcosystemInformationClusterEcosystemDeviceStruct	uniqueLocationIDs	( )
 fresh	MTREcosystemInformationClusterEcosystemDeviceStruct	uniqueLocationIDsLastEdit	NSNumber(0)
 described	MTREcosystemInformationClusterEcosystemDeviceStruct	uniqueLocationIDsLastEdit	0
 fresh	MTREcosystemInformationClusterEcosystemDeviceStruct	fabricIndex	NSNumber(0)
@@ -3815,8 +3752,7 @@ described	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyRangeStruct	fi
 present	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	-	present
 ownDescription	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	-	yes
 initOwner	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	-	self
-description	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	-	<MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct: measurementType:0; measured:0; minMeasuredValue:0; maxMeasuredValue:0; accuracyRanges:(
-); >
+description	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	-	<MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct: measurementType:0; measured:0; minMeasuredValue:0; maxMeasuredValue:0; accuracyRanges:( ); >
 fresh	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	measurementType	NSNumber(0)
 described	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	measurementType	0
 fresh	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	measured	NSNumber(0)
@@ -3826,8 +3762,7 @@ described	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	minMeas
 fresh	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	maxMeasuredValue	NSNumber(0)
 described	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	maxMeasuredValue	0
 fresh	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	accuracyRanges	NSArray(0)
-described	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	accuracyRanges	(
-)
+described	MTRElectricalEnergyMeasurementClusterMeasurementAccuracyStruct	accuracyRanges	( )
 present	MTRElectricalEnergyMeasurementClusterPeriodicEnergyMeasuredEvent	-	present
 ownDescription	MTRElectricalEnergyMeasurementClusterPeriodicEnergyMeasuredEvent	-	yes
 initOwner	MTRElectricalEnergyMeasurementClusterPeriodicEnergyMeasuredEvent	-	self
@@ -3875,8 +3810,7 @@ described	MTRElectricalMeasurementClusterGetMeasurementProfileCommandParams	serv
 present	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	-	present
 ownDescription	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	-	yes
 initOwner	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	-	self
-description	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	-	<MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams: startTime:0; status:0; profileIntervalPeriod:0; numberOfIntervalsDelivered:0; attributeId:0; intervals:(
-); >
+description	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	-	<MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams: startTime:0; status:0; profileIntervalPeriod:0; numberOfIntervalsDelivered:0; attributeId:0; intervals:( ); >
 fresh	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	startTime	NSNumber(0)
 described	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	startTime	0
 fresh	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	status	NSNumber(0)
@@ -3888,8 +3822,7 @@ described	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandPar
 fresh	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	attributeId	NSNumber(0)
 described	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	attributeId	0
 fresh	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	intervals	NSArray(0)
-described	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	intervals	(
-)
+described	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	intervals	( )
 fresh	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	timedInvokeTimeoutMs	(nil)
 described	MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams	timedInvokeTimeoutMs	(null)
 present	MTRElectricalMeasurementClusterGetProfileInfoCommandParams	-	present
@@ -3903,8 +3836,7 @@ described	MTRElectricalMeasurementClusterGetProfileInfoCommandParams	serverSideP
 present	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	-	present
 ownDescription	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	-	yes
 initOwner	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	-	self
-description	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	-	<MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams: profileCount:0; profileIntervalPeriod:0; maxNumberOfIntervals:0; listOfAttributes:(
-); >
+description	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	-	<MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams: profileCount:0; profileIntervalPeriod:0; maxNumberOfIntervals:0; listOfAttributes:( ); >
 fresh	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	profileCount	NSNumber(0)
 described	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	profileCount	0
 fresh	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	profileIntervalPeriod	NSNumber(0)
@@ -3912,8 +3844,7 @@ described	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	pro
 fresh	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	maxNumberOfIntervals	NSNumber(0)
 described	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	maxNumberOfIntervals	0
 fresh	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	listOfAttributes	NSArray(0)
-described	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	listOfAttributes	(
-)
+described	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	listOfAttributes	( )
 fresh	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	timedInvokeTimeoutMs	(nil)
 described	MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams	timedInvokeTimeoutMs	(null)
 present	MTRElectricalPowerMeasurementClusterHarmonicMeasurementStruct	-	present
@@ -3947,8 +3878,7 @@ described	MTRElectricalPowerMeasurementClusterMeasurementAccuracyRangeStruct	fix
 present	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	-	present
 ownDescription	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	-	yes
 initOwner	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	-	self
-description	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	-	<MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct: measurementType:0; measured:0; minMeasuredValue:0; maxMeasuredValue:0; accuracyRanges:(
-); >
+description	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	-	<MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct: measurementType:0; measured:0; minMeasuredValue:0; maxMeasuredValue:0; accuracyRanges:( ); >
 fresh	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	measurementType	NSNumber(0)
 described	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	measurementType	0
 fresh	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	measured	NSNumber(0)
@@ -3958,16 +3888,13 @@ described	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	minMeasu
 fresh	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	maxMeasuredValue	NSNumber(0)
 described	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	maxMeasuredValue	0
 fresh	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	accuracyRanges	NSArray(0)
-described	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	accuracyRanges	(
-)
+described	MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct	accuracyRanges	( )
 present	MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent	-	present
 ownDescription	MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent	-	yes
 initOwner	MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent	-	self
-description	MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent	-	<MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent: ranges:(
-); >
+description	MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent	-	<MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent: ranges:( ); >
 fresh	MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent	ranges	NSArray(0)
-described	MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent	ranges	(
-)
+described	MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent	ranges	( )
 present	MTRElectricalPowerMeasurementClusterMeasurementRangeStruct	-	present
 ownDescription	MTRElectricalPowerMeasurementClusterMeasurementRangeStruct	-	yes
 initOwner	MTRElectricalPowerMeasurementClusterMeasurementRangeStruct	-	self
@@ -3997,13 +3924,11 @@ described	MTRElectricalPowerMeasurementClusterMeasurementRangeStruct	maxSystime	
 present	MTREnergyEVSEClusterChargingTargetScheduleStruct	-	present
 ownDescription	MTREnergyEVSEClusterChargingTargetScheduleStruct	-	yes
 initOwner	MTREnergyEVSEClusterChargingTargetScheduleStruct	-	self
-description	MTREnergyEVSEClusterChargingTargetScheduleStruct	-	<MTREnergyEVSEClusterChargingTargetScheduleStruct: dayOfWeekForSequence:0; chargingTargets:(
-); >
+description	MTREnergyEVSEClusterChargingTargetScheduleStruct	-	<MTREnergyEVSEClusterChargingTargetScheduleStruct: dayOfWeekForSequence:0; chargingTargets:( ); >
 fresh	MTREnergyEVSEClusterChargingTargetScheduleStruct	dayOfWeekForSequence	NSNumber(0)
 described	MTREnergyEVSEClusterChargingTargetScheduleStruct	dayOfWeekForSequence	0
 fresh	MTREnergyEVSEClusterChargingTargetScheduleStruct	chargingTargets	NSArray(0)
-described	MTREnergyEVSEClusterChargingTargetScheduleStruct	chargingTargets	(
-)
+described	MTREnergyEVSEClusterChargingTargetScheduleStruct	chargingTargets	( )
 present	MTREnergyEVSEClusterChargingTargetStruct	-	present
 ownDescription	MTREnergyEVSEClusterChargingTargetStruct	-	yes
 initOwner	MTREnergyEVSEClusterChargingTargetStruct	-	self
@@ -4125,11 +4050,9 @@ described	MTREnergyEVSEClusterGetTargetsParams	serverSideProcessingTimeout	(null
 present	MTREnergyEVSEClusterGetTargetsResponseParams	-	present
 ownDescription	MTREnergyEVSEClusterGetTargetsResponseParams	-	yes
 initOwner	MTREnergyEVSEClusterGetTargetsResponseParams	-	self
-description	MTREnergyEVSEClusterGetTargetsResponseParams	-	<MTREnergyEVSEClusterGetTargetsResponseParams: chargingTargetSchedules:(
-); >
+description	MTREnergyEVSEClusterGetTargetsResponseParams	-	<MTREnergyEVSEClusterGetTargetsResponseParams: chargingTargetSchedules:( ); >
 fresh	MTREnergyEVSEClusterGetTargetsResponseParams	chargingTargetSchedules	NSArray(0)
-described	MTREnergyEVSEClusterGetTargetsResponseParams	chargingTargetSchedules	(
-)
+described	MTREnergyEVSEClusterGetTargetsResponseParams	chargingTargetSchedules	( )
 present	MTREnergyEVSEClusterRFIDEvent	-	present
 ownDescription	MTREnergyEVSEClusterRFIDEvent	-	yes
 initOwner	MTREnergyEVSEClusterRFIDEvent	-	self
@@ -4139,11 +4062,9 @@ described	MTREnergyEVSEClusterRFIDEvent	uid	{length = 0, bytes = 0x}
 present	MTREnergyEVSEClusterSetTargetsParams	-	present
 ownDescription	MTREnergyEVSEClusterSetTargetsParams	-	yes
 initOwner	MTREnergyEVSEClusterSetTargetsParams	-	self
-description	MTREnergyEVSEClusterSetTargetsParams	-	<MTREnergyEVSEClusterSetTargetsParams: chargingTargetSchedules:(
-); >
+description	MTREnergyEVSEClusterSetTargetsParams	-	<MTREnergyEVSEClusterSetTargetsParams: chargingTargetSchedules:( ); >
 fresh	MTREnergyEVSEClusterSetTargetsParams	chargingTargetSchedules	NSArray(0)
-described	MTREnergyEVSEClusterSetTargetsParams	chargingTargetSchedules	(
-)
+described	MTREnergyEVSEClusterSetTargetsParams	chargingTargetSchedules	( )
 fresh	MTREnergyEVSEClusterSetTargetsParams	timedInvokeTimeoutMs	(nil)
 described	MTREnergyEVSEClusterSetTargetsParams	timedInvokeTimeoutMs	(null)
 fresh	MTREnergyEVSEClusterSetTargetsParams	serverSideProcessingTimeout	(nil)
@@ -4177,15 +4098,13 @@ described	MTREnergyEVSEModeClusterChangeToModeResponseParams	statusText	(null)
 present	MTREnergyEVSEModeClusterModeOptionStruct	-	present
 ownDescription	MTREnergyEVSEModeClusterModeOptionStruct	-	yes
 initOwner	MTREnergyEVSEModeClusterModeOptionStruct	-	self
-description	MTREnergyEVSEModeClusterModeOptionStruct	-	<MTREnergyEVSEModeClusterModeOptionStruct: label:; mode:0; modeTags:(
-); >
+description	MTREnergyEVSEModeClusterModeOptionStruct	-	<MTREnergyEVSEModeClusterModeOptionStruct: label:; mode:0; modeTags:( ); >
 fresh	MTREnergyEVSEModeClusterModeOptionStruct	label	NSString()
 described	MTREnergyEVSEModeClusterModeOptionStruct	label	
 fresh	MTREnergyEVSEModeClusterModeOptionStruct	mode	NSNumber(0)
 described	MTREnergyEVSEModeClusterModeOptionStruct	mode	0
 fresh	MTREnergyEVSEModeClusterModeOptionStruct	modeTags	NSArray(0)
-described	MTREnergyEVSEModeClusterModeOptionStruct	modeTags	(
-)
+described	MTREnergyEVSEModeClusterModeOptionStruct	modeTags	( )
 present	MTREnergyEVSEModeClusterModeTagStruct	-	present
 ownDescription	MTREnergyEVSEModeClusterModeTagStruct	-	yes
 initOwner	MTREnergyEVSEModeClusterModeTagStruct	-	self
@@ -4323,27 +4242,19 @@ described	MTRGeneralDiagnosticsClusterBootReasonEvent	bootReason	0
 present	MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent	-	present
 ownDescription	MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent	-	yes
 initOwner	MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent	-	self
-description	MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent	-	<MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent: current:(
-); previous:(
-); >
+description	MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent	-	<MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent: current:( ); previous:( ); >
 fresh	MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent	current	NSArray(0)
-described	MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent	current	(
-)
+described	MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent	current	( )
 fresh	MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent	previous	NSArray(0)
-described	MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent	previous	(
-)
+described	MTRGeneralDiagnosticsClusterHardwareFaultChangeEvent	previous	( )
 present	MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent	-	present
 ownDescription	MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent	-	yes
 initOwner	MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent	-	self
-description	MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent	-	<MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent: current:(
-); previous:(
-); >
+description	MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent	-	<MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent: current:( ); previous:( ); >
 fresh	MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent	current	NSArray(0)
-described	MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent	current	(
-)
+described	MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent	current	( )
 fresh	MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent	previous	NSArray(0)
-described	MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent	previous	(
-)
+described	MTRGeneralDiagnosticsClusterNetworkFaultChangeEvent	previous	( )
 present	MTRGeneralDiagnosticsClusterPayloadTestRequestParams	-	present
 ownDescription	MTRGeneralDiagnosticsClusterPayloadTestRequestParams	-	yes
 initOwner	MTRGeneralDiagnosticsClusterPayloadTestRequestParams	-	self
@@ -4367,15 +4278,11 @@ described	MTRGeneralDiagnosticsClusterPayloadTestResponseParams	payload	{length 
 present	MTRGeneralDiagnosticsClusterRadioFaultChangeEvent	-	present
 ownDescription	MTRGeneralDiagnosticsClusterRadioFaultChangeEvent	-	yes
 initOwner	MTRGeneralDiagnosticsClusterRadioFaultChangeEvent	-	self
-description	MTRGeneralDiagnosticsClusterRadioFaultChangeEvent	-	<MTRGeneralDiagnosticsClusterRadioFaultChangeEvent: current:(
-); previous:(
-); >
+description	MTRGeneralDiagnosticsClusterRadioFaultChangeEvent	-	<MTRGeneralDiagnosticsClusterRadioFaultChangeEvent: current:( ); previous:( ); >
 fresh	MTRGeneralDiagnosticsClusterRadioFaultChangeEvent	current	NSArray(0)
-described	MTRGeneralDiagnosticsClusterRadioFaultChangeEvent	current	(
-)
+described	MTRGeneralDiagnosticsClusterRadioFaultChangeEvent	current	( )
 fresh	MTRGeneralDiagnosticsClusterRadioFaultChangeEvent	previous	NSArray(0)
-described	MTRGeneralDiagnosticsClusterRadioFaultChangeEvent	previous	(
-)
+described	MTRGeneralDiagnosticsClusterRadioFaultChangeEvent	previous	( )
 present	MTRGeneralDiagnosticsClusterTestEventTriggerParams	-	present
 ownDescription	MTRGeneralDiagnosticsClusterTestEventTriggerParams	-	yes
 initOwner	MTRGeneralDiagnosticsClusterTestEventTriggerParams	-	self
@@ -4407,13 +4314,11 @@ described	MTRGeneralDiagnosticsClusterTimeSnapshotResponseParams	posixTimeMs	(nu
 present	MTRGroupKeyManagementClusterGroupInfoMapStruct	-	present
 ownDescription	MTRGroupKeyManagementClusterGroupInfoMapStruct	-	yes
 initOwner	MTRGroupKeyManagementClusterGroupInfoMapStruct	-	self
-description	MTRGroupKeyManagementClusterGroupInfoMapStruct	-	<MTRGroupKeyManagementClusterGroupInfoMapStruct: groupId:0; endpoints:(
-); groupName:(null); fabricIndex:0; >
+description	MTRGroupKeyManagementClusterGroupInfoMapStruct	-	<MTRGroupKeyManagementClusterGroupInfoMapStruct: groupId:0; endpoints:( ); groupName:(null); fabricIndex:0; >
 fresh	MTRGroupKeyManagementClusterGroupInfoMapStruct	groupId	NSNumber(0)
 described	MTRGroupKeyManagementClusterGroupInfoMapStruct	groupId	0
 fresh	MTRGroupKeyManagementClusterGroupInfoMapStruct	endpoints	NSArray(0)
-described	MTRGroupKeyManagementClusterGroupInfoMapStruct	endpoints	(
-)
+described	MTRGroupKeyManagementClusterGroupInfoMapStruct	endpoints	( )
 fresh	MTRGroupKeyManagementClusterGroupInfoMapStruct	groupName	(nil)
 described	MTRGroupKeyManagementClusterGroupInfoMapStruct	groupName	(null)
 fresh	MTRGroupKeyManagementClusterGroupInfoMapStruct	fabricIndex	NSNumber(0)
@@ -4461,11 +4366,9 @@ described	MTRGroupKeyManagementClusterKeySetReadAllIndicesParams	serverSideProce
 present	MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams	-	present
 ownDescription	MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams	-	yes
 initOwner	MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams	-	self
-description	MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams	-	<MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams: groupKeySetIDs:(
-); >
+description	MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams	-	<MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams: groupKeySetIDs:( ); >
 fresh	MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams	groupKeySetIDs	NSArray(0)
-described	MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams	groupKeySetIDs	(
-)
+described	MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams	groupKeySetIDs	( )
 fresh	MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams	timedInvokeTimeoutMs	(nil)
 described	MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams	timedInvokeTimeoutMs	(null)
 present	MTRGroupKeyManagementClusterKeySetReadParams	-	present
@@ -4522,13 +4425,11 @@ present	MTRGroupcastClusterExpireGracePeriodParams	-	absent
 present	MTRGroupcastClusterJoinGroupParams	-	present
 ownDescription	MTRGroupcastClusterJoinGroupParams	-	yes
 initOwner	MTRGroupcastClusterJoinGroupParams	-	self
-description	MTRGroupcastClusterJoinGroupParams	-	<MTRGroupcastClusterJoinGroupParams: groupID:0; endpoints:(
-); keySetID:0; key:(null); useAuxiliaryACL:(null); replaceEndpoints:(null); mcastAddrPolicy:(null); >
+description	MTRGroupcastClusterJoinGroupParams	-	<MTRGroupcastClusterJoinGroupParams: groupID:0; endpoints:( ); keySetID:0; key:(null); useAuxiliaryACL:(null); replaceEndpoints:(null); mcastAddrPolicy:(null); >
 fresh	MTRGroupcastClusterJoinGroupParams	groupID	NSNumber(0)
 described	MTRGroupcastClusterJoinGroupParams	groupID	0
 fresh	MTRGroupcastClusterJoinGroupParams	endpoints	NSArray(0)
-described	MTRGroupcastClusterJoinGroupParams	endpoints	(
-)
+described	MTRGroupcastClusterJoinGroupParams	endpoints	( )
 fresh	MTRGroupcastClusterJoinGroupParams	keySetID	NSNumber(0)
 described	MTRGroupcastClusterJoinGroupParams	keySetID	0
 fresh	MTRGroupcastClusterJoinGroupParams	key	(nil)
@@ -4558,13 +4459,11 @@ described	MTRGroupcastClusterLeaveGroupParams	serverSideProcessingTimeout	(null)
 present	MTRGroupcastClusterLeaveGroupResponseParams	-	present
 ownDescription	MTRGroupcastClusterLeaveGroupResponseParams	-	yes
 initOwner	MTRGroupcastClusterLeaveGroupResponseParams	-	self
-description	MTRGroupcastClusterLeaveGroupResponseParams	-	<MTRGroupcastClusterLeaveGroupResponseParams: groupID:0; endpoints:(
-); >
+description	MTRGroupcastClusterLeaveGroupResponseParams	-	<MTRGroupcastClusterLeaveGroupResponseParams: groupID:0; endpoints:( ); >
 fresh	MTRGroupcastClusterLeaveGroupResponseParams	groupID	NSNumber(0)
 described	MTRGroupcastClusterLeaveGroupResponseParams	groupID	0
 fresh	MTRGroupcastClusterLeaveGroupResponseParams	endpoints	NSArray(0)
-described	MTRGroupcastClusterLeaveGroupResponseParams	endpoints	(
-)
+described	MTRGroupcastClusterLeaveGroupResponseParams	endpoints	( )
 present	MTRGroupcastClusterMembershipStruct	-	present
 ownDescription	MTRGroupcastClusterMembershipStruct	-	yes
 initOwner	MTRGroupcastClusterMembershipStruct	-	self
@@ -4644,11 +4543,9 @@ aliasBack	MTRGroupsClusterAddGroupResponseParams	groupID	groupId	NSNumber(42)
 present	MTRGroupsClusterGetGroupMembershipParams	-	present
 ownDescription	MTRGroupsClusterGetGroupMembershipParams	-	yes
 initOwner	MTRGroupsClusterGetGroupMembershipParams	-	self
-description	MTRGroupsClusterGetGroupMembershipParams	-	<MTRGroupsClusterGetGroupMembershipParams: groupList:(
-); >
+description	MTRGroupsClusterGetGroupMembershipParams	-	<MTRGroupsClusterGetGroupMembershipParams: groupList:( ); >
 fresh	MTRGroupsClusterGetGroupMembershipParams	groupList	NSArray(0)
-described	MTRGroupsClusterGetGroupMembershipParams	groupList	(
-)
+described	MTRGroupsClusterGetGroupMembershipParams	groupList	( )
 fresh	MTRGroupsClusterGetGroupMembershipParams	timedInvokeTimeoutMs	(nil)
 described	MTRGroupsClusterGetGroupMembershipParams	timedInvokeTimeoutMs	(null)
 fresh	MTRGroupsClusterGetGroupMembershipParams	serverSideProcessingTimeout	(nil)
@@ -4656,13 +4553,11 @@ described	MTRGroupsClusterGetGroupMembershipParams	serverSideProcessingTimeout	(
 present	MTRGroupsClusterGetGroupMembershipResponseParams	-	present
 ownDescription	MTRGroupsClusterGetGroupMembershipResponseParams	-	yes
 initOwner	MTRGroupsClusterGetGroupMembershipResponseParams	-	self
-description	MTRGroupsClusterGetGroupMembershipResponseParams	-	<MTRGroupsClusterGetGroupMembershipResponseParams: capacity:(null); groupList:(
-); >
+description	MTRGroupsClusterGetGroupMembershipResponseParams	-	<MTRGroupsClusterGetGroupMembershipResponseParams: capacity:(null); groupList:( ); >
 fresh	MTRGroupsClusterGetGroupMembershipResponseParams	capacity	(nil)
 described	MTRGroupsClusterGetGroupMembershipResponseParams	capacity	(null)
 fresh	MTRGroupsClusterGetGroupMembershipResponseParams	groupList	NSArray(0)
-described	MTRGroupsClusterGetGroupMembershipResponseParams	groupList	(
-)
+described	MTRGroupsClusterGetGroupMembershipResponseParams	groupList	( )
 fresh	MTRGroupsClusterGetGroupMembershipResponseParams	timedInvokeTimeoutMs	(nil)
 described	MTRGroupsClusterGetGroupMembershipResponseParams	timedInvokeTimeoutMs	(null)
 present	MTRGroupsClusterRemoveAllGroupsParams	-	present
@@ -5372,15 +5267,13 @@ described	MTRLaundryWasherModeClusterChangeToModeResponseParams	statusText	(null
 present	MTRLaundryWasherModeClusterModeOptionStruct	-	present
 ownDescription	MTRLaundryWasherModeClusterModeOptionStruct	-	yes
 initOwner	MTRLaundryWasherModeClusterModeOptionStruct	-	self
-description	MTRLaundryWasherModeClusterModeOptionStruct	-	<MTRLaundryWasherModeClusterModeOptionStruct: label:; mode:0; modeTags:(
-); >
+description	MTRLaundryWasherModeClusterModeOptionStruct	-	<MTRLaundryWasherModeClusterModeOptionStruct: label:; mode:0; modeTags:( ); >
 fresh	MTRLaundryWasherModeClusterModeOptionStruct	label	NSString()
 described	MTRLaundryWasherModeClusterModeOptionStruct	label	
 fresh	MTRLaundryWasherModeClusterModeOptionStruct	mode	NSNumber(0)
 described	MTRLaundryWasherModeClusterModeOptionStruct	mode	0
 fresh	MTRLaundryWasherModeClusterModeOptionStruct	modeTags	NSArray(0)
-described	MTRLaundryWasherModeClusterModeOptionStruct	modeTags	(
-)
+described	MTRLaundryWasherModeClusterModeOptionStruct	modeTags	( )
 present	MTRLaundryWasherModeClusterModeTagStruct	-	present
 ownDescription	MTRLaundryWasherModeClusterModeTagStruct	-	yes
 initOwner	MTRLaundryWasherModeClusterModeTagStruct	-	self
@@ -5778,11 +5671,9 @@ described	MTRMediaPlaybackClusterTrackStruct	trackAttributes	(null)
 present	MTRMessagesClusterCancelMessagesRequestParams	-	present
 ownDescription	MTRMessagesClusterCancelMessagesRequestParams	-	yes
 initOwner	MTRMessagesClusterCancelMessagesRequestParams	-	self
-description	MTRMessagesClusterCancelMessagesRequestParams	-	<MTRMessagesClusterCancelMessagesRequestParams: messageIDs:(
-); >
+description	MTRMessagesClusterCancelMessagesRequestParams	-	<MTRMessagesClusterCancelMessagesRequestParams: messageIDs:( ); >
 fresh	MTRMessagesClusterCancelMessagesRequestParams	messageIDs	NSArray(0)
-described	MTRMessagesClusterCancelMessagesRequestParams	messageIDs	(
-)
+described	MTRMessagesClusterCancelMessagesRequestParams	messageIDs	( )
 fresh	MTRMessagesClusterCancelMessagesRequestParams	timedInvokeTimeoutMs	(nil)
 described	MTRMessagesClusterCancelMessagesRequestParams	timedInvokeTimeoutMs	(null)
 fresh	MTRMessagesClusterCancelMessagesRequestParams	serverSideProcessingTimeout	(nil)
@@ -5890,15 +5781,13 @@ described	MTRMicrowaveOvenControlClusterSetCookingParametersParams	serverSidePro
 present	MTRMicrowaveOvenModeClusterModeOptionStruct	-	present
 ownDescription	MTRMicrowaveOvenModeClusterModeOptionStruct	-	yes
 initOwner	MTRMicrowaveOvenModeClusterModeOptionStruct	-	self
-description	MTRMicrowaveOvenModeClusterModeOptionStruct	-	<MTRMicrowaveOvenModeClusterModeOptionStruct: label:; mode:0; modeTags:(
-); >
+description	MTRMicrowaveOvenModeClusterModeOptionStruct	-	<MTRMicrowaveOvenModeClusterModeOptionStruct: label:; mode:0; modeTags:( ); >
 fresh	MTRMicrowaveOvenModeClusterModeOptionStruct	label	NSString()
 described	MTRMicrowaveOvenModeClusterModeOptionStruct	label	
 fresh	MTRMicrowaveOvenModeClusterModeOptionStruct	mode	NSNumber(0)
 described	MTRMicrowaveOvenModeClusterModeOptionStruct	mode	0
 fresh	MTRMicrowaveOvenModeClusterModeOptionStruct	modeTags	NSArray(0)
-described	MTRMicrowaveOvenModeClusterModeOptionStruct	modeTags	(
-)
+described	MTRMicrowaveOvenModeClusterModeOptionStruct	modeTags	( )
 present	MTRMicrowaveOvenModeClusterModeTagStruct	-	present
 ownDescription	MTRMicrowaveOvenModeClusterModeTagStruct	-	yes
 initOwner	MTRMicrowaveOvenModeClusterModeTagStruct	-	self
@@ -5920,15 +5809,13 @@ described	MTRModeSelectClusterChangeToModeParams	serverSideProcessingTimeout	(nu
 present	MTRModeSelectClusterModeOptionStruct	-	present
 ownDescription	MTRModeSelectClusterModeOptionStruct	-	yes
 initOwner	MTRModeSelectClusterModeOptionStruct	-	self
-description	MTRModeSelectClusterModeOptionStruct	-	<MTRModeSelectClusterModeOptionStruct: label:; mode:0; semanticTags:(
-); >
+description	MTRModeSelectClusterModeOptionStruct	-	<MTRModeSelectClusterModeOptionStruct: label:; mode:0; semanticTags:( ); >
 fresh	MTRModeSelectClusterModeOptionStruct	label	NSString()
 described	MTRModeSelectClusterModeOptionStruct	label	
 fresh	MTRModeSelectClusterModeOptionStruct	mode	NSNumber(0)
 described	MTRModeSelectClusterModeOptionStruct	mode	0
 fresh	MTRModeSelectClusterModeOptionStruct	semanticTags	NSArray(0)
-described	MTRModeSelectClusterModeOptionStruct	semanticTags	(
-)
+described	MTRModeSelectClusterModeOptionStruct	semanticTags	( )
 present	MTRModeSelectClusterSemanticTagStruct	-	present
 ownDescription	MTRModeSelectClusterSemanticTagStruct	-	yes
 initOwner	MTRModeSelectClusterSemanticTagStruct	-	self
@@ -6166,8 +6053,7 @@ described	MTROTASoftwareUpdateProviderClusterNotifyUpdateAppliedParams	serverSid
 present	MTROTASoftwareUpdateProviderClusterQueryImageParams	-	present
 ownDescription	MTROTASoftwareUpdateProviderClusterQueryImageParams	-	yes
 initOwner	MTROTASoftwareUpdateProviderClusterQueryImageParams	-	self
-description	MTROTASoftwareUpdateProviderClusterQueryImageParams	-	<MTROTASoftwareUpdateProviderClusterQueryImageParams: vendorID:0; productID:0; softwareVersion:0; protocolsSupported:(
-); hardwareVersion:(null); location:(null); requestorCanConsent:(null); metadataForProvider:(null); >
+description	MTROTASoftwareUpdateProviderClusterQueryImageParams	-	<MTROTASoftwareUpdateProviderClusterQueryImageParams: vendorID:0; productID:0; softwareVersion:0; protocolsSupported:( ); hardwareVersion:(null); location:(null); requestorCanConsent:(null); metadataForProvider:(null); >
 fresh	MTROTASoftwareUpdateProviderClusterQueryImageParams	vendorId	NSNumber(0)
 described	MTROTASoftwareUpdateProviderClusterQueryImageParams	vendorId	0
 fresh	MTROTASoftwareUpdateProviderClusterQueryImageParams	productId	NSNumber(0)
@@ -6179,8 +6065,7 @@ described	MTROTASoftwareUpdateProviderClusterQueryImageParams	productID	0
 fresh	MTROTASoftwareUpdateProviderClusterQueryImageParams	softwareVersion	NSNumber(0)
 described	MTROTASoftwareUpdateProviderClusterQueryImageParams	softwareVersion	0
 fresh	MTROTASoftwareUpdateProviderClusterQueryImageParams	protocolsSupported	NSArray(0)
-described	MTROTASoftwareUpdateProviderClusterQueryImageParams	protocolsSupported	(
-)
+described	MTROTASoftwareUpdateProviderClusterQueryImageParams	protocolsSupported	( )
 fresh	MTROTASoftwareUpdateProviderClusterQueryImageParams	hardwareVersion	(nil)
 described	MTROTASoftwareUpdateProviderClusterQueryImageParams	hardwareVersion	(null)
 fresh	MTROTASoftwareUpdateProviderClusterQueryImageParams	location	(nil)
@@ -6684,13 +6569,11 @@ described	MTROtaSoftwareUpdateProviderClusterNotifyUpdateAppliedParams	serverSid
 present	MTROtaSoftwareUpdateProviderClusterQueryImageParams	-	present
 ownDescription	MTROtaSoftwareUpdateProviderClusterQueryImageParams	-	no
 initOwner	MTROtaSoftwareUpdateProviderClusterQueryImageParams	-	MTROTASoftwareUpdateProviderClusterQueryImageParams
-description	MTROtaSoftwareUpdateProviderClusterQueryImageParams	-	<MTROtaSoftwareUpdateProviderClusterQueryImageParams: vendorID:0; productID:0; softwareVersion:0; protocolsSupported:(
-); hardwareVersion:(null); location:(null); requestorCanConsent:(null); metadataForProvider:(null); >
+description	MTROtaSoftwareUpdateProviderClusterQueryImageParams	-	<MTROtaSoftwareUpdateProviderClusterQueryImageParams: vendorID:0; productID:0; softwareVersion:0; protocolsSupported:( ); hardwareVersion:(null); location:(null); requestorCanConsent:(null); metadataForProvider:(null); >
 fresh	MTROtaSoftwareUpdateProviderClusterQueryImageParams	softwareVersion	NSNumber(0)
 described	MTROtaSoftwareUpdateProviderClusterQueryImageParams	softwareVersion	0
 fresh	MTROtaSoftwareUpdateProviderClusterQueryImageParams	protocolsSupported	NSArray(0)
-described	MTROtaSoftwareUpdateProviderClusterQueryImageParams	protocolsSupported	(
-)
+described	MTROtaSoftwareUpdateProviderClusterQueryImageParams	protocolsSupported	( )
 fresh	MTROtaSoftwareUpdateProviderClusterQueryImageParams	hardwareVersion	(nil)
 described	MTROtaSoftwareUpdateProviderClusterQueryImageParams	hardwareVersion	(null)
 fresh	MTROtaSoftwareUpdateProviderClusterQueryImageParams	location	(nil)
@@ -6848,15 +6731,13 @@ described	MTROvenModeClusterChangeToModeResponseParams	statusText	(null)
 present	MTROvenModeClusterModeOptionStruct	-	present
 ownDescription	MTROvenModeClusterModeOptionStruct	-	yes
 initOwner	MTROvenModeClusterModeOptionStruct	-	self
-description	MTROvenModeClusterModeOptionStruct	-	<MTROvenModeClusterModeOptionStruct: label:; mode:0; modeTags:(
-); >
+description	MTROvenModeClusterModeOptionStruct	-	<MTROvenModeClusterModeOptionStruct: label:; mode:0; modeTags:( ); >
 fresh	MTROvenModeClusterModeOptionStruct	label	NSString()
 described	MTROvenModeClusterModeOptionStruct	label	
 fresh	MTROvenModeClusterModeOptionStruct	mode	NSNumber(0)
 described	MTROvenModeClusterModeOptionStruct	mode	0
 fresh	MTROvenModeClusterModeOptionStruct	modeTags	NSArray(0)
-described	MTROvenModeClusterModeOptionStruct	modeTags	(
-)
+described	MTROvenModeClusterModeOptionStruct	modeTags	( )
 present	MTROvenModeClusterModeTagStruct	-	present
 ownDescription	MTROvenModeClusterModeTagStruct	-	yes
 initOwner	MTROvenModeClusterModeTagStruct	-	self
@@ -6868,39 +6749,27 @@ described	MTROvenModeClusterModeTagStruct	value	0
 present	MTRPowerSourceClusterBatChargeFaultChangeEvent	-	present
 ownDescription	MTRPowerSourceClusterBatChargeFaultChangeEvent	-	yes
 initOwner	MTRPowerSourceClusterBatChargeFaultChangeEvent	-	self
-description	MTRPowerSourceClusterBatChargeFaultChangeEvent	-	<MTRPowerSourceClusterBatChargeFaultChangeEvent: current:(
-); previous:(
-); >
+description	MTRPowerSourceClusterBatChargeFaultChangeEvent	-	<MTRPowerSourceClusterBatChargeFaultChangeEvent: current:( ); previous:( ); >
 fresh	MTRPowerSourceClusterBatChargeFaultChangeEvent	current	NSArray(0)
-described	MTRPowerSourceClusterBatChargeFaultChangeEvent	current	(
-)
+described	MTRPowerSourceClusterBatChargeFaultChangeEvent	current	( )
 fresh	MTRPowerSourceClusterBatChargeFaultChangeEvent	previous	NSArray(0)
-described	MTRPowerSourceClusterBatChargeFaultChangeEvent	previous	(
-)
+described	MTRPowerSourceClusterBatChargeFaultChangeEvent	previous	( )
 present	MTRPowerSourceClusterBatFaultChangeEvent	-	present
 ownDescription	MTRPowerSourceClusterBatFaultChangeEvent	-	yes
 initOwner	MTRPowerSourceClusterBatFaultChangeEvent	-	self
-description	MTRPowerSourceClusterBatFaultChangeEvent	-	<MTRPowerSourceClusterBatFaultChangeEvent: current:(
-); previous:(
-); >
+description	MTRPowerSourceClusterBatFaultChangeEvent	-	<MTRPowerSourceClusterBatFaultChangeEvent: current:( ); previous:( ); >
 fresh	MTRPowerSourceClusterBatFaultChangeEvent	current	NSArray(0)
-described	MTRPowerSourceClusterBatFaultChangeEvent	current	(
-)
+described	MTRPowerSourceClusterBatFaultChangeEvent	current	( )
 fresh	MTRPowerSourceClusterBatFaultChangeEvent	previous	NSArray(0)
-described	MTRPowerSourceClusterBatFaultChangeEvent	previous	(
-)
+described	MTRPowerSourceClusterBatFaultChangeEvent	previous	( )
 present	MTRPowerSourceClusterWiredFaultChangeEvent	-	present
 ownDescription	MTRPowerSourceClusterWiredFaultChangeEvent	-	yes
 initOwner	MTRPowerSourceClusterWiredFaultChangeEvent	-	self
-description	MTRPowerSourceClusterWiredFaultChangeEvent	-	<MTRPowerSourceClusterWiredFaultChangeEvent: current:(
-); previous:(
-); >
+description	MTRPowerSourceClusterWiredFaultChangeEvent	-	<MTRPowerSourceClusterWiredFaultChangeEvent: current:( ); previous:( ); >
 fresh	MTRPowerSourceClusterWiredFaultChangeEvent	current	NSArray(0)
-described	MTRPowerSourceClusterWiredFaultChangeEvent	current	(
-)
+described	MTRPowerSourceClusterWiredFaultChangeEvent	current	( )
 fresh	MTRPowerSourceClusterWiredFaultChangeEvent	previous	NSArray(0)
-described	MTRPowerSourceClusterWiredFaultChangeEvent	previous	(
-)
+described	MTRPowerSourceClusterWiredFaultChangeEvent	previous	( )
 present	MTRPowerTopologyClusterCircuitNodeStruct	-	present
 ownDescription	MTRPowerTopologyClusterCircuitNodeStruct	-	yes
 initOwner	MTRPowerTopologyClusterCircuitNodeStruct	-	self
@@ -7108,11 +6977,9 @@ described	MTRPushAVStreamTransportClusterFindTransportParams	serverSideProcessin
 present	MTRPushAVStreamTransportClusterFindTransportResponseParams	-	present
 ownDescription	MTRPushAVStreamTransportClusterFindTransportResponseParams	-	yes
 initOwner	MTRPushAVStreamTransportClusterFindTransportResponseParams	-	self
-description	MTRPushAVStreamTransportClusterFindTransportResponseParams	-	<MTRPushAVStreamTransportClusterFindTransportResponseParams: transportConfigurations:(
-); >
+description	MTRPushAVStreamTransportClusterFindTransportResponseParams	-	<MTRPushAVStreamTransportClusterFindTransportResponseParams: transportConfigurations:( ); >
 fresh	MTRPushAVStreamTransportClusterFindTransportResponseParams	transportConfigurations	NSArray(0)
-described	MTRPushAVStreamTransportClusterFindTransportResponseParams	transportConfigurations	(
-)
+described	MTRPushAVStreamTransportClusterFindTransportResponseParams	transportConfigurations	( )
 present	MTRPushAVStreamTransportClusterManuallyTriggerTransportParams	-	present
 ownDescription	MTRPushAVStreamTransportClusterManuallyTriggerTransportParams	-	yes
 initOwner	MTRPushAVStreamTransportClusterManuallyTriggerTransportParams	-	self
@@ -7214,15 +7081,13 @@ described	MTRRVCCleanModeClusterChangeToModeResponseParams	statusText	(null)
 present	MTRRVCCleanModeClusterModeOptionStruct	-	present
 ownDescription	MTRRVCCleanModeClusterModeOptionStruct	-	yes
 initOwner	MTRRVCCleanModeClusterModeOptionStruct	-	self
-description	MTRRVCCleanModeClusterModeOptionStruct	-	<MTRRVCCleanModeClusterModeOptionStruct: label:; mode:0; modeTags:(
-); >
+description	MTRRVCCleanModeClusterModeOptionStruct	-	<MTRRVCCleanModeClusterModeOptionStruct: label:; mode:0; modeTags:( ); >
 fresh	MTRRVCCleanModeClusterModeOptionStruct	label	NSString()
 described	MTRRVCCleanModeClusterModeOptionStruct	label	
 fresh	MTRRVCCleanModeClusterModeOptionStruct	mode	NSNumber(0)
 described	MTRRVCCleanModeClusterModeOptionStruct	mode	0
 fresh	MTRRVCCleanModeClusterModeOptionStruct	modeTags	NSArray(0)
-described	MTRRVCCleanModeClusterModeOptionStruct	modeTags	(
-)
+described	MTRRVCCleanModeClusterModeOptionStruct	modeTags	( )
 present	MTRRVCCleanModeClusterModeTagStruct	-	present
 ownDescription	MTRRVCCleanModeClusterModeTagStruct	-	yes
 initOwner	MTRRVCCleanModeClusterModeTagStruct	-	self
@@ -7316,15 +7181,13 @@ described	MTRRVCRunModeClusterChangeToModeResponseParams	statusText	(null)
 present	MTRRVCRunModeClusterModeOptionStruct	-	present
 ownDescription	MTRRVCRunModeClusterModeOptionStruct	-	yes
 initOwner	MTRRVCRunModeClusterModeOptionStruct	-	self
-description	MTRRVCRunModeClusterModeOptionStruct	-	<MTRRVCRunModeClusterModeOptionStruct: label:; mode:0; modeTags:(
-); >
+description	MTRRVCRunModeClusterModeOptionStruct	-	<MTRRVCRunModeClusterModeOptionStruct: label:; mode:0; modeTags:( ); >
 fresh	MTRRVCRunModeClusterModeOptionStruct	label	NSString()
 described	MTRRVCRunModeClusterModeOptionStruct	label	
 fresh	MTRRVCRunModeClusterModeOptionStruct	mode	NSNumber(0)
 described	MTRRVCRunModeClusterModeOptionStruct	mode	0
 fresh	MTRRVCRunModeClusterModeOptionStruct	modeTags	NSArray(0)
-described	MTRRVCRunModeClusterModeOptionStruct	modeTags	(
-)
+described	MTRRVCRunModeClusterModeOptionStruct	modeTags	( )
 present	MTRRVCRunModeClusterModeTagStruct	-	present
 ownDescription	MTRRVCRunModeClusterModeTagStruct	-	yes
 initOwner	MTRRVCRunModeClusterModeTagStruct	-	self
@@ -7336,7 +7199,7 @@ described	MTRRVCRunModeClusterModeTagStruct	value	0
 present	MTRReadParams	-	present
 ownDescription	MTRReadParams	-	no
 initOwner	MTRReadParams	-	self
-description	MTRReadParams	-	<MTRReadParams: 0x7b710fedc0>
+description	MTRReadParams	-	<MTRReadParams: 0x75b0cd7ae0>
 fresh	MTRReadParams	fabricFiltered	NSNumber(1)
 described	MTRReadParams	fabricFiltered	1
 fresh	MTRReadParams	filterByFabric	NSNumber(1)
@@ -7380,15 +7243,13 @@ described	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterChangeToModeR
 present	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	-	present
 ownDescription	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	-	yes
 initOwner	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	-	self
-description	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	-	<MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct: label:; mode:0; modeTags:(
-); >
+description	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	-	<MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct: label:; mode:0; modeTags:( ); >
 fresh	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	label	NSString()
 described	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	label	
 fresh	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	mode	NSNumber(0)
 described	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	mode	0
 fresh	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	modeTags	NSArray(0)
-described	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	modeTags	(
-)
+described	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct	modeTags	( )
 present	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeTagStruct	-	present
 ownDescription	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeTagStruct	-	yes
 initOwner	MTRRefrigeratorAndTemperatureControlledCabinetModeClusterModeTagStruct	-	self
@@ -7434,8 +7295,7 @@ described	MTRSampleMEIClusterPingParams	serverSideProcessingTimeout	(null)
 present	MTRScenesManagementClusterAddSceneParams	-	present
 ownDescription	MTRScenesManagementClusterAddSceneParams	-	yes
 initOwner	MTRScenesManagementClusterAddSceneParams	-	self
-description	MTRScenesManagementClusterAddSceneParams	-	<MTRScenesManagementClusterAddSceneParams: groupID:0; sceneID:0; transitionTime:0; sceneName:; extensionFieldSetStructs:(
-); >
+description	MTRScenesManagementClusterAddSceneParams	-	<MTRScenesManagementClusterAddSceneParams: groupID:0; sceneID:0; transitionTime:0; sceneName:; extensionFieldSetStructs:( ); >
 fresh	MTRScenesManagementClusterAddSceneParams	groupID	NSNumber(0)
 described	MTRScenesManagementClusterAddSceneParams	groupID	0
 fresh	MTRScenesManagementClusterAddSceneParams	sceneID	NSNumber(0)
@@ -7445,8 +7305,7 @@ described	MTRScenesManagementClusterAddSceneParams	transitionTime	0
 fresh	MTRScenesManagementClusterAddSceneParams	sceneName	NSString()
 described	MTRScenesManagementClusterAddSceneParams	sceneName	
 fresh	MTRScenesManagementClusterAddSceneParams	extensionFieldSetStructs	NSArray(0)
-described	MTRScenesManagementClusterAddSceneParams	extensionFieldSetStructs	(
-)
+described	MTRScenesManagementClusterAddSceneParams	extensionFieldSetStructs	( )
 fresh	MTRScenesManagementClusterAddSceneParams	timedInvokeTimeoutMs	(nil)
 described	MTRScenesManagementClusterAddSceneParams	timedInvokeTimeoutMs	(null)
 fresh	MTRScenesManagementClusterAddSceneParams	serverSideProcessingTimeout	(nil)
@@ -7514,13 +7373,11 @@ described	MTRScenesManagementClusterCopySceneResponseParams	sceneIdentifierFrom	
 present	MTRScenesManagementClusterExtensionFieldSetStruct	-	present
 ownDescription	MTRScenesManagementClusterExtensionFieldSetStruct	-	yes
 initOwner	MTRScenesManagementClusterExtensionFieldSetStruct	-	self
-description	MTRScenesManagementClusterExtensionFieldSetStruct	-	<MTRScenesManagementClusterExtensionFieldSetStruct: clusterID:0; attributeValueList:(
-); >
+description	MTRScenesManagementClusterExtensionFieldSetStruct	-	<MTRScenesManagementClusterExtensionFieldSetStruct: clusterID:0; attributeValueList:( ); >
 fresh	MTRScenesManagementClusterExtensionFieldSetStruct	clusterID	NSNumber(0)
 described	MTRScenesManagementClusterExtensionFieldSetStruct	clusterID	0
 fresh	MTRScenesManagementClusterExtensionFieldSetStruct	attributeValueList	NSArray(0)
-described	MTRScenesManagementClusterExtensionFieldSetStruct	attributeValueList	(
-)
+described	MTRScenesManagementClusterExtensionFieldSetStruct	attributeValueList	( )
 present	MTRScenesManagementClusterGetSceneMembershipParams	-	present
 ownDescription	MTRScenesManagementClusterGetSceneMembershipParams	-	yes
 initOwner	MTRScenesManagementClusterGetSceneMembershipParams	-	self
@@ -7712,11 +7569,9 @@ described	MTRServiceAreaClusterProgressStruct	estimatedTime	(null)
 present	MTRServiceAreaClusterSelectAreasParams	-	present
 ownDescription	MTRServiceAreaClusterSelectAreasParams	-	yes
 initOwner	MTRServiceAreaClusterSelectAreasParams	-	self
-description	MTRServiceAreaClusterSelectAreasParams	-	<MTRServiceAreaClusterSelectAreasParams: newAreas:(
-); >
+description	MTRServiceAreaClusterSelectAreasParams	-	<MTRServiceAreaClusterSelectAreasParams: newAreas:( ); >
 fresh	MTRServiceAreaClusterSelectAreasParams	newAreas	NSArray(0)
-described	MTRServiceAreaClusterSelectAreasParams	newAreas	(
-)
+described	MTRServiceAreaClusterSelectAreasParams	newAreas	( )
 fresh	MTRServiceAreaClusterSelectAreasParams	timedInvokeTimeoutMs	(nil)
 described	MTRServiceAreaClusterSelectAreasParams	timedInvokeTimeoutMs	(null)
 fresh	MTRServiceAreaClusterSelectAreasParams	serverSideProcessingTimeout	(nil)
@@ -7844,7 +7699,7 @@ described	MTRSoftwareDiagnosticsClusterThreadMetricsStruct	stackSize	(null)
 present	MTRSubscribeParams	-	present
 ownDescription	MTRSubscribeParams	-	no
 initOwner	MTRSubscribeParams	-	self,MTRReadParams
-description	MTRSubscribeParams	-	<MTRSubscribeParams: 0x7b711145d0>
+description	MTRSubscribeParams	-	<MTRSubscribeParams: 0x75b117d5f0>
 fresh	MTRSubscribeParams	keepPreviousSubscriptions	NSNumber(0)
 described	MTRSubscribeParams	keepPreviousSubscriptions	0
 fresh	MTRSubscribeParams	autoResubscribe	NSNumber(1)
@@ -7948,11 +7803,9 @@ described	MTRTLSCertificateManagementClusterFindClientCertificateParams	serverSi
 present	MTRTLSCertificateManagementClusterFindClientCertificateResponseParams	-	present
 ownDescription	MTRTLSCertificateManagementClusterFindClientCertificateResponseParams	-	yes
 initOwner	MTRTLSCertificateManagementClusterFindClientCertificateResponseParams	-	self
-description	MTRTLSCertificateManagementClusterFindClientCertificateResponseParams	-	<MTRTLSCertificateManagementClusterFindClientCertificateResponseParams: certificateDetails:(
-); >
+description	MTRTLSCertificateManagementClusterFindClientCertificateResponseParams	-	<MTRTLSCertificateManagementClusterFindClientCertificateResponseParams: certificateDetails:( ); >
 fresh	MTRTLSCertificateManagementClusterFindClientCertificateResponseParams	certificateDetails	NSArray(0)
-described	MTRTLSCertificateManagementClusterFindClientCertificateResponseParams	certificateDetails	(
-)
+described	MTRTLSCertificateManagementClusterFindClientCertificateResponseParams	certificateDetails	( )
 present	MTRTLSCertificateManagementClusterFindRootCertificateParams	-	present
 ownDescription	MTRTLSCertificateManagementClusterFindRootCertificateParams	-	yes
 initOwner	MTRTLSCertificateManagementClusterFindRootCertificateParams	-	self
@@ -7966,11 +7819,9 @@ described	MTRTLSCertificateManagementClusterFindRootCertificateParams	serverSide
 present	MTRTLSCertificateManagementClusterFindRootCertificateResponseParams	-	present
 ownDescription	MTRTLSCertificateManagementClusterFindRootCertificateResponseParams	-	yes
 initOwner	MTRTLSCertificateManagementClusterFindRootCertificateResponseParams	-	self
-description	MTRTLSCertificateManagementClusterFindRootCertificateResponseParams	-	<MTRTLSCertificateManagementClusterFindRootCertificateResponseParams: certificateDetails:(
-); >
+description	MTRTLSCertificateManagementClusterFindRootCertificateResponseParams	-	<MTRTLSCertificateManagementClusterFindRootCertificateResponseParams: certificateDetails:( ); >
 fresh	MTRTLSCertificateManagementClusterFindRootCertificateResponseParams	certificateDetails	NSArray(0)
-described	MTRTLSCertificateManagementClusterFindRootCertificateResponseParams	certificateDetails	(
-)
+described	MTRTLSCertificateManagementClusterFindRootCertificateResponseParams	certificateDetails	( )
 present	MTRTLSCertificateManagementClusterLookupClientCertificateParams	-	present
 ownDescription	MTRTLSCertificateManagementClusterLookupClientCertificateParams	-	yes
 initOwner	MTRTLSCertificateManagementClusterLookupClientCertificateParams	-	self
@@ -8006,15 +7857,13 @@ described	MTRTLSCertificateManagementClusterLookupRootCertificateResponseParams	
 present	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	-	present
 ownDescription	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	-	yes
 initOwner	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	-	self
-description	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	-	<MTRTLSCertificateManagementClusterProvisionClientCertificateParams: ccdid:0; clientCertificate:; intermediateCertificates:(
-); >
+description	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	-	<MTRTLSCertificateManagementClusterProvisionClientCertificateParams: ccdid:0; clientCertificate:; intermediateCertificates:( ); >
 fresh	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	ccdid	NSNumber(0)
 described	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	ccdid	0
 fresh	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	clientCertificate	NSData(0)
 described	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	clientCertificate	{length = 0, bytes = 0x}
 fresh	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	intermediateCertificates	NSArray(0)
-described	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	intermediateCertificates	(
-)
+described	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	intermediateCertificates	( )
 fresh	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	timedInvokeTimeoutMs	(nil)
 described	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	timedInvokeTimeoutMs	(null)
 fresh	MTRTLSCertificateManagementClusterProvisionClientCertificateParams	serverSideProcessingTimeout	(nil)
@@ -8180,11 +8029,9 @@ described	MTRTargetNavigatorClusterTargetInfoStruct	name
 present	MTRTargetNavigatorClusterTargetUpdatedEvent	-	present
 ownDescription	MTRTargetNavigatorClusterTargetUpdatedEvent	-	yes
 initOwner	MTRTargetNavigatorClusterTargetUpdatedEvent	-	self
-description	MTRTargetNavigatorClusterTargetUpdatedEvent	-	<MTRTargetNavigatorClusterTargetUpdatedEvent: targetList:(
-); currentTarget:0; data:; >
+description	MTRTargetNavigatorClusterTargetUpdatedEvent	-	<MTRTargetNavigatorClusterTargetUpdatedEvent: targetList:( ); currentTarget:0; data:; >
 fresh	MTRTargetNavigatorClusterTargetUpdatedEvent	targetList	NSArray(0)
-described	MTRTargetNavigatorClusterTargetUpdatedEvent	targetList	(
-)
+described	MTRTargetNavigatorClusterTargetUpdatedEvent	targetList	( )
 fresh	MTRTargetNavigatorClusterTargetUpdatedEvent	currentTarget	NSNumber(0)
 described	MTRTargetNavigatorClusterTargetUpdatedEvent	currentTarget	0
 fresh	MTRTargetNavigatorClusterTargetUpdatedEvent	data	NSData(0)
@@ -8728,9 +8575,7 @@ described	MTRTestClusterClusterTestEnumsResponseParams	timedInvokeTimeoutMs	(nul
 present	MTRUnitTestingClusterTestEventEvent	-	present
 ownDescription	MTRUnitTestingClusterTestEventEvent	-	yes
 initOwner	MTRUnitTestingClusterTestEventEvent	-	self
-description	MTRUnitTestingClusterTestEventEvent	-	<MTRUnitTestingClusterTestEventEvent: arg1:0; arg2:0; arg3:0; arg4:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; arg5:(
-); arg6:(
-); >
+description	MTRUnitTestingClusterTestEventEvent	-	<MTRUnitTestingClusterTestEventEvent: arg1:0; arg2:0; arg3:0; arg4:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; arg5:( ); arg6:( ); >
 fresh	MTRUnitTestingClusterTestEventEvent	arg1	NSNumber(0)
 described	MTRUnitTestingClusterTestEventEvent	arg1	0
 fresh	MTRUnitTestingClusterTestEventEvent	arg2	NSNumber(0)
@@ -8740,17 +8585,13 @@ described	MTRUnitTestingClusterTestEventEvent	arg3	0
 fresh	MTRUnitTestingClusterTestEventEvent	arg4	MTRUnitTestingClusterSimpleStruct(<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >)
 described	MTRUnitTestingClusterTestEventEvent	arg4	<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >
 fresh	MTRUnitTestingClusterTestEventEvent	arg5	NSArray(0)
-described	MTRUnitTestingClusterTestEventEvent	arg5	(
-)
+described	MTRUnitTestingClusterTestEventEvent	arg5	( )
 fresh	MTRUnitTestingClusterTestEventEvent	arg6	NSArray(0)
-described	MTRUnitTestingClusterTestEventEvent	arg6	(
-)
+described	MTRUnitTestingClusterTestEventEvent	arg6	( )
 present	MTRTestClusterClusterTestEventEvent	-	present
 ownDescription	MTRTestClusterClusterTestEventEvent	-	no
 initOwner	MTRTestClusterClusterTestEventEvent	-	MTRUnitTestingClusterTestEventEvent
-description	MTRTestClusterClusterTestEventEvent	-	<MTRTestClusterClusterTestEventEvent: arg1:0; arg2:0; arg3:0; arg4:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; arg5:(
-); arg6:(
-); >
+description	MTRTestClusterClusterTestEventEvent	-	<MTRTestClusterClusterTestEventEvent: arg1:0; arg2:0; arg3:0; arg4:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; arg5:( ); arg6:( ); >
 fresh	MTRTestClusterClusterTestEventEvent	arg1	NSNumber(0)
 described	MTRTestClusterClusterTestEventEvent	arg1	0
 fresh	MTRTestClusterClusterTestEventEvent	arg2	NSNumber(0)
@@ -8760,11 +8601,9 @@ described	MTRTestClusterClusterTestEventEvent	arg3	0
 fresh	MTRTestClusterClusterTestEventEvent	arg4	MTRUnitTestingClusterSimpleStruct(<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >)
 described	MTRTestClusterClusterTestEventEvent	arg4	<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >
 fresh	MTRTestClusterClusterTestEventEvent	arg5	NSArray(0)
-described	MTRTestClusterClusterTestEventEvent	arg5	(
-)
+described	MTRTestClusterClusterTestEventEvent	arg5	( )
 fresh	MTRTestClusterClusterTestEventEvent	arg6	NSArray(0)
-described	MTRTestClusterClusterTestEventEvent	arg6	(
-)
+described	MTRTestClusterClusterTestEventEvent	arg6	( )
 present	MTRUnitTestingClusterTestFabricScopedEventEvent	-	present
 ownDescription	MTRUnitTestingClusterTestFabricScopedEventEvent	-	yes
 initOwner	MTRUnitTestingClusterTestFabricScopedEventEvent	-	self
@@ -8780,11 +8619,9 @@ described	MTRTestClusterClusterTestFabricScopedEventEvent	fabricIndex	0
 present	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	-	present
 ownDescription	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	-	yes
 initOwner	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	-	self
-description	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	-	<MTRUnitTestingClusterTestListInt8UArgumentRequestParams: arg1:(
-); >
+description	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	-	<MTRUnitTestingClusterTestListInt8UArgumentRequestParams: arg1:( ); >
 fresh	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	arg1	NSArray(0)
-described	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	arg1	(
-)
+described	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	arg1	( )
 fresh	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	timedInvokeTimeoutMs	(nil)
 described	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	timedInvokeTimeoutMs	(null)
 fresh	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	serverSideProcessingTimeout	(nil)
@@ -8792,11 +8629,9 @@ described	MTRUnitTestingClusterTestListInt8UArgumentRequestParams	serverSideProc
 present	MTRTestClusterClusterTestListInt8UArgumentRequestParams	-	present
 ownDescription	MTRTestClusterClusterTestListInt8UArgumentRequestParams	-	no
 initOwner	MTRTestClusterClusterTestListInt8UArgumentRequestParams	-	MTRUnitTestingClusterTestListInt8UArgumentRequestParams
-description	MTRTestClusterClusterTestListInt8UArgumentRequestParams	-	<MTRTestClusterClusterTestListInt8UArgumentRequestParams: arg1:(
-); >
+description	MTRTestClusterClusterTestListInt8UArgumentRequestParams	-	<MTRTestClusterClusterTestListInt8UArgumentRequestParams: arg1:( ); >
 fresh	MTRTestClusterClusterTestListInt8UArgumentRequestParams	arg1	NSArray(0)
-described	MTRTestClusterClusterTestListInt8UArgumentRequestParams	arg1	(
-)
+described	MTRTestClusterClusterTestListInt8UArgumentRequestParams	arg1	( )
 fresh	MTRTestClusterClusterTestListInt8UArgumentRequestParams	timedInvokeTimeoutMs	(nil)
 described	MTRTestClusterClusterTestListInt8UArgumentRequestParams	timedInvokeTimeoutMs	(null)
 fresh	MTRTestClusterClusterTestListInt8UArgumentRequestParams	serverSideProcessingTimeout	(nil)
@@ -8804,11 +8639,9 @@ described	MTRTestClusterClusterTestListInt8UArgumentRequestParams	serverSideProc
 present	MTRUnitTestingClusterTestListInt8UReverseRequestParams	-	present
 ownDescription	MTRUnitTestingClusterTestListInt8UReverseRequestParams	-	yes
 initOwner	MTRUnitTestingClusterTestListInt8UReverseRequestParams	-	self
-description	MTRUnitTestingClusterTestListInt8UReverseRequestParams	-	<MTRUnitTestingClusterTestListInt8UReverseRequestParams: arg1:(
-); >
+description	MTRUnitTestingClusterTestListInt8UReverseRequestParams	-	<MTRUnitTestingClusterTestListInt8UReverseRequestParams: arg1:( ); >
 fresh	MTRUnitTestingClusterTestListInt8UReverseRequestParams	arg1	NSArray(0)
-described	MTRUnitTestingClusterTestListInt8UReverseRequestParams	arg1	(
-)
+described	MTRUnitTestingClusterTestListInt8UReverseRequestParams	arg1	( )
 fresh	MTRUnitTestingClusterTestListInt8UReverseRequestParams	timedInvokeTimeoutMs	(nil)
 described	MTRUnitTestingClusterTestListInt8UReverseRequestParams	timedInvokeTimeoutMs	(null)
 fresh	MTRUnitTestingClusterTestListInt8UReverseRequestParams	serverSideProcessingTimeout	(nil)
@@ -8816,11 +8649,9 @@ described	MTRUnitTestingClusterTestListInt8UReverseRequestParams	serverSideProce
 present	MTRTestClusterClusterTestListInt8UReverseRequestParams	-	present
 ownDescription	MTRTestClusterClusterTestListInt8UReverseRequestParams	-	no
 initOwner	MTRTestClusterClusterTestListInt8UReverseRequestParams	-	MTRUnitTestingClusterTestListInt8UReverseRequestParams
-description	MTRTestClusterClusterTestListInt8UReverseRequestParams	-	<MTRTestClusterClusterTestListInt8UReverseRequestParams: arg1:(
-); >
+description	MTRTestClusterClusterTestListInt8UReverseRequestParams	-	<MTRTestClusterClusterTestListInt8UReverseRequestParams: arg1:( ); >
 fresh	MTRTestClusterClusterTestListInt8UReverseRequestParams	arg1	NSArray(0)
-described	MTRTestClusterClusterTestListInt8UReverseRequestParams	arg1	(
-)
+described	MTRTestClusterClusterTestListInt8UReverseRequestParams	arg1	( )
 fresh	MTRTestClusterClusterTestListInt8UReverseRequestParams	timedInvokeTimeoutMs	(nil)
 described	MTRTestClusterClusterTestListInt8UReverseRequestParams	timedInvokeTimeoutMs	(null)
 fresh	MTRTestClusterClusterTestListInt8UReverseRequestParams	serverSideProcessingTimeout	(nil)
@@ -8828,31 +8659,25 @@ described	MTRTestClusterClusterTestListInt8UReverseRequestParams	serverSideProce
 present	MTRUnitTestingClusterTestListInt8UReverseResponseParams	-	present
 ownDescription	MTRUnitTestingClusterTestListInt8UReverseResponseParams	-	yes
 initOwner	MTRUnitTestingClusterTestListInt8UReverseResponseParams	-	self
-description	MTRUnitTestingClusterTestListInt8UReverseResponseParams	-	<MTRUnitTestingClusterTestListInt8UReverseResponseParams: arg1:(
-); >
+description	MTRUnitTestingClusterTestListInt8UReverseResponseParams	-	<MTRUnitTestingClusterTestListInt8UReverseResponseParams: arg1:( ); >
 fresh	MTRUnitTestingClusterTestListInt8UReverseResponseParams	arg1	NSArray(0)
-described	MTRUnitTestingClusterTestListInt8UReverseResponseParams	arg1	(
-)
+described	MTRUnitTestingClusterTestListInt8UReverseResponseParams	arg1	( )
 fresh	MTRUnitTestingClusterTestListInt8UReverseResponseParams	timedInvokeTimeoutMs	(nil)
 described	MTRUnitTestingClusterTestListInt8UReverseResponseParams	timedInvokeTimeoutMs	(null)
 present	MTRTestClusterClusterTestListInt8UReverseResponseParams	-	present
 ownDescription	MTRTestClusterClusterTestListInt8UReverseResponseParams	-	no
 initOwner	MTRTestClusterClusterTestListInt8UReverseResponseParams	-	MTRUnitTestingClusterTestListInt8UReverseResponseParams
-description	MTRTestClusterClusterTestListInt8UReverseResponseParams	-	<MTRTestClusterClusterTestListInt8UReverseResponseParams: arg1:(
-); >
+description	MTRTestClusterClusterTestListInt8UReverseResponseParams	-	<MTRTestClusterClusterTestListInt8UReverseResponseParams: arg1:( ); >
 fresh	MTRTestClusterClusterTestListInt8UReverseResponseParams	arg1	NSArray(0)
-described	MTRTestClusterClusterTestListInt8UReverseResponseParams	arg1	(
-)
+described	MTRTestClusterClusterTestListInt8UReverseResponseParams	arg1	( )
 fresh	MTRTestClusterClusterTestListInt8UReverseResponseParams	timedInvokeTimeoutMs	(nil)
 described	MTRTestClusterClusterTestListInt8UReverseResponseParams	timedInvokeTimeoutMs	(null)
 present	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	-	present
 ownDescription	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	-	yes
 initOwner	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	-	self
-description	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	-	<MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams: arg1:(
-); >
+description	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	-	<MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams: arg1:( ); >
 fresh	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	arg1	NSArray(0)
-described	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	arg1	(
-)
+described	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	arg1	( )
 fresh	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	timedInvokeTimeoutMs	(nil)
 described	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	timedInvokeTimeoutMs	(null)
 fresh	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	serverSideProcessingTimeout	(nil)
@@ -8860,11 +8685,9 @@ described	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams	ser
 present	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	-	present
 ownDescription	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	-	no
 initOwner	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	-	MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams
-description	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	-	<MTRTestClusterClusterTestListNestedStructListArgumentRequestParams: arg1:(
-); >
+description	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	-	<MTRTestClusterClusterTestListNestedStructListArgumentRequestParams: arg1:( ); >
 fresh	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	arg1	NSArray(0)
-described	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	arg1	(
-)
+described	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	arg1	( )
 fresh	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	timedInvokeTimeoutMs	(nil)
 described	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	timedInvokeTimeoutMs	(null)
 fresh	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	serverSideProcessingTimeout	(nil)
@@ -8872,11 +8695,9 @@ described	MTRTestClusterClusterTestListNestedStructListArgumentRequestParams	ser
 present	MTRUnitTestingClusterTestListStructArgumentRequestParams	-	present
 ownDescription	MTRUnitTestingClusterTestListStructArgumentRequestParams	-	yes
 initOwner	MTRUnitTestingClusterTestListStructArgumentRequestParams	-	self
-description	MTRUnitTestingClusterTestListStructArgumentRequestParams	-	<MTRUnitTestingClusterTestListStructArgumentRequestParams: arg1:(
-); >
+description	MTRUnitTestingClusterTestListStructArgumentRequestParams	-	<MTRUnitTestingClusterTestListStructArgumentRequestParams: arg1:( ); >
 fresh	MTRUnitTestingClusterTestListStructArgumentRequestParams	arg1	NSArray(0)
-described	MTRUnitTestingClusterTestListStructArgumentRequestParams	arg1	(
-)
+described	MTRUnitTestingClusterTestListStructArgumentRequestParams	arg1	( )
 fresh	MTRUnitTestingClusterTestListStructArgumentRequestParams	timedInvokeTimeoutMs	(nil)
 described	MTRUnitTestingClusterTestListStructArgumentRequestParams	timedInvokeTimeoutMs	(null)
 fresh	MTRUnitTestingClusterTestListStructArgumentRequestParams	serverSideProcessingTimeout	(nil)
@@ -8884,11 +8705,9 @@ described	MTRUnitTestingClusterTestListStructArgumentRequestParams	serverSidePro
 present	MTRTestClusterClusterTestListStructArgumentRequestParams	-	present
 ownDescription	MTRTestClusterClusterTestListStructArgumentRequestParams	-	no
 initOwner	MTRTestClusterClusterTestListStructArgumentRequestParams	-	MTRUnitTestingClusterTestListStructArgumentRequestParams
-description	MTRTestClusterClusterTestListStructArgumentRequestParams	-	<MTRTestClusterClusterTestListStructArgumentRequestParams: arg1:(
-); >
+description	MTRTestClusterClusterTestListStructArgumentRequestParams	-	<MTRTestClusterClusterTestListStructArgumentRequestParams: arg1:( ); >
 fresh	MTRTestClusterClusterTestListStructArgumentRequestParams	arg1	NSArray(0)
-described	MTRTestClusterClusterTestListStructArgumentRequestParams	arg1	(
-)
+described	MTRTestClusterClusterTestListStructArgumentRequestParams	arg1	( )
 fresh	MTRTestClusterClusterTestListStructArgumentRequestParams	timedInvokeTimeoutMs	(nil)
 described	MTRTestClusterClusterTestListStructArgumentRequestParams	timedInvokeTimeoutMs	(null)
 fresh	MTRTestClusterClusterTestListStructArgumentRequestParams	serverSideProcessingTimeout	(nil)
@@ -8916,11 +8735,7 @@ described	MTRTestClusterClusterTestNestedStructArgumentRequestParams	serverSideP
 present	MTRUnitTestingClusterNestedStructList	-	present
 ownDescription	MTRUnitTestingClusterNestedStructList	-	yes
 initOwner	MTRUnitTestingClusterNestedStructList	-	self
-description	MTRUnitTestingClusterNestedStructList	-	<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:(
-); e:(
-); f:(
-); g:(
-); >
+description	MTRUnitTestingClusterNestedStructList	-	<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:( ); e:( ); f:( ); g:( ); >
 fresh	MTRUnitTestingClusterNestedStructList	a	NSNumber(0)
 described	MTRUnitTestingClusterNestedStructList	a	0
 fresh	MTRUnitTestingClusterNestedStructList	b	NSNumber(0)
@@ -8928,35 +8743,19 @@ described	MTRUnitTestingClusterNestedStructList	b	0
 fresh	MTRUnitTestingClusterNestedStructList	c	MTRUnitTestingClusterSimpleStruct(<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >)
 described	MTRUnitTestingClusterNestedStructList	c	<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >
 fresh	MTRUnitTestingClusterNestedStructList	d	NSArray(0)
-described	MTRUnitTestingClusterNestedStructList	d	(
-)
+described	MTRUnitTestingClusterNestedStructList	d	( )
 fresh	MTRUnitTestingClusterNestedStructList	e	NSArray(0)
-described	MTRUnitTestingClusterNestedStructList	e	(
-)
+described	MTRUnitTestingClusterNestedStructList	e	( )
 fresh	MTRUnitTestingClusterNestedStructList	f	NSArray(0)
-described	MTRUnitTestingClusterNestedStructList	f	(
-)
+described	MTRUnitTestingClusterNestedStructList	f	( )
 fresh	MTRUnitTestingClusterNestedStructList	g	NSArray(0)
-described	MTRUnitTestingClusterNestedStructList	g	(
-)
+described	MTRUnitTestingClusterNestedStructList	g	( )
 present	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	-	present
 ownDescription	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	-	yes
 initOwner	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	-	self
-description	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	-	<MTRUnitTestingClusterTestNestedStructListArgumentRequestParams: arg1:<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:(
-); e:(
-); f:(
-); g:(
-); >; >
-fresh	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	arg1	MTRUnitTestingClusterNestedStructList(<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:(
-); e:(
-); f:(
-); g:(
-); >)
-described	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	arg1	<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:(
-); e:(
-); f:(
-); g:(
-); >
+description	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	-	<MTRUnitTestingClusterTestNestedStructListArgumentRequestParams: arg1:<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:( ); e:( ); f:( ); g:( ); >; >
+fresh	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	arg1	MTRUnitTestingClusterNestedStructList(<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:( ); e:( ); f:( ); g:( ); >)
+described	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	arg1	<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:( ); e:( ); f:( ); g:( ); >
 fresh	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	timedInvokeTimeoutMs	(nil)
 described	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	timedInvokeTimeoutMs	(null)
 fresh	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	serverSideProcessingTimeout	(nil)
@@ -8964,21 +8763,9 @@ described	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams	serverS
 present	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	-	present
 ownDescription	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	-	no
 initOwner	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	-	MTRUnitTestingClusterTestNestedStructListArgumentRequestParams
-description	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	-	<MTRTestClusterClusterTestNestedStructListArgumentRequestParams: arg1:<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:(
-); e:(
-); f:(
-); g:(
-); >; >
-fresh	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	arg1	MTRUnitTestingClusterNestedStructList(<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:(
-); e:(
-); f:(
-); g:(
-); >)
-described	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	arg1	<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:(
-); e:(
-); f:(
-); g:(
-); >
+description	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	-	<MTRTestClusterClusterTestNestedStructListArgumentRequestParams: arg1:<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:( ); e:( ); f:( ); g:( ); >; >
+fresh	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	arg1	MTRUnitTestingClusterNestedStructList(<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:( ); e:( ); f:( ); g:( ); >)
+described	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	arg1	<MTRUnitTestingClusterNestedStructList: a:0; b:0; c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; c:0; d:; e:; f:0; g:0; h:0; i:(null); >; d:( ); e:( ); f:( ); g:( ); >
 fresh	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	timedInvokeTimeoutMs	(nil)
 described	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	timedInvokeTimeoutMs	(null)
 fresh	MTRTestClusterClusterTestNestedStructListArgumentRequestParams	serverSideProcessingTimeout	(nil)
@@ -9174,23 +8961,15 @@ described	MTRTestClusterClusterTestStructArgumentRequestParams	serverSideProcess
 present	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	-	present
 ownDescription	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	-	yes
 initOwner	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	-	self
-description	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	-	<MTRUnitTestingClusterTestStructArrayArgumentRequestParams: arg1:(
-); arg2:(
-); arg3:(
-); arg4:(
-); arg5:0; arg6:0; >
+description	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	-	<MTRUnitTestingClusterTestStructArrayArgumentRequestParams: arg1:( ); arg2:( ); arg3:( ); arg4:( ); arg5:0; arg6:0; >
 fresh	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg1	NSArray(0)
-described	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg1	(
-)
+described	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg1	( )
 fresh	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg2	NSArray(0)
-described	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg2	(
-)
+described	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg2	( )
 fresh	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg3	NSArray(0)
-described	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg3	(
-)
+described	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg3	( )
 fresh	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg4	NSArray(0)
-described	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg4	(
-)
+described	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg4	( )
 fresh	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg5	NSNumber(0)
 described	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg5	0
 fresh	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	arg6	NSNumber(0)
@@ -9202,23 +8981,15 @@ described	MTRUnitTestingClusterTestStructArrayArgumentRequestParams	serverSidePr
 present	MTRTestClusterClusterTestStructArrayArgumentRequestParams	-	present
 ownDescription	MTRTestClusterClusterTestStructArrayArgumentRequestParams	-	no
 initOwner	MTRTestClusterClusterTestStructArrayArgumentRequestParams	-	MTRUnitTestingClusterTestStructArrayArgumentRequestParams
-description	MTRTestClusterClusterTestStructArrayArgumentRequestParams	-	<MTRTestClusterClusterTestStructArrayArgumentRequestParams: arg1:(
-); arg2:(
-); arg3:(
-); arg4:(
-); arg5:0; arg6:0; >
+description	MTRTestClusterClusterTestStructArrayArgumentRequestParams	-	<MTRTestClusterClusterTestStructArrayArgumentRequestParams: arg1:( ); arg2:( ); arg3:( ); arg4:( ); arg5:0; arg6:0; >
 fresh	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg1	NSArray(0)
-described	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg1	(
-)
+described	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg1	( )
 fresh	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg2	NSArray(0)
-described	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg2	(
-)
+described	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg2	( )
 fresh	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg3	NSArray(0)
-described	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg3	(
-)
+described	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg3	( )
 fresh	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg4	NSArray(0)
-described	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg4	(
-)
+described	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg4	( )
 fresh	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg5	NSNumber(0)
 described	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg5	0
 fresh	MTRTestClusterClusterTestStructArrayArgumentRequestParams	arg6	NSNumber(0)
@@ -9230,23 +9001,15 @@ described	MTRTestClusterClusterTestStructArrayArgumentRequestParams	serverSidePr
 present	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	-	present
 ownDescription	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	-	yes
 initOwner	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	-	self
-description	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	-	<MTRUnitTestingClusterTestStructArrayArgumentResponseParams: arg1:(
-); arg2:(
-); arg3:(
-); arg4:(
-); arg5:0; arg6:0; >
+description	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	-	<MTRUnitTestingClusterTestStructArrayArgumentResponseParams: arg1:( ); arg2:( ); arg3:( ); arg4:( ); arg5:0; arg6:0; >
 fresh	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg1	NSArray(0)
-described	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg1	(
-)
+described	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg1	( )
 fresh	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg2	NSArray(0)
-described	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg2	(
-)
+described	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg2	( )
 fresh	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg3	NSArray(0)
-described	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg3	(
-)
+described	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg3	( )
 fresh	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg4	NSArray(0)
-described	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg4	(
-)
+described	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg4	( )
 fresh	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg5	NSNumber(0)
 described	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg5	0
 fresh	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	arg6	NSNumber(0)
@@ -9256,23 +9019,15 @@ described	MTRUnitTestingClusterTestStructArrayArgumentResponseParams	timedInvoke
 present	MTRTestClusterClusterTestStructArrayArgumentResponseParams	-	present
 ownDescription	MTRTestClusterClusterTestStructArrayArgumentResponseParams	-	no
 initOwner	MTRTestClusterClusterTestStructArrayArgumentResponseParams	-	MTRUnitTestingClusterTestStructArrayArgumentResponseParams
-description	MTRTestClusterClusterTestStructArrayArgumentResponseParams	-	<MTRTestClusterClusterTestStructArrayArgumentResponseParams: arg1:(
-); arg2:(
-); arg3:(
-); arg4:(
-); arg5:0; arg6:0; >
+description	MTRTestClusterClusterTestStructArrayArgumentResponseParams	-	<MTRTestClusterClusterTestStructArrayArgumentResponseParams: arg1:( ); arg2:( ); arg3:( ); arg4:( ); arg5:0; arg6:0; >
 fresh	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg1	NSArray(0)
-described	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg1	(
-)
+described	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg1	( )
 fresh	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg2	NSArray(0)
-described	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg2	(
-)
+described	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg2	( )
 fresh	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg3	NSArray(0)
-described	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg3	(
-)
+described	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg3	( )
 fresh	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg4	NSArray(0)
-described	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg4	(
-)
+described	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg4	( )
 fresh	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg5	NSNumber(0)
 described	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg5	0
 fresh	MTRTestClusterClusterTestStructArrayArgumentResponseParams	arg6	NSNumber(0)
@@ -9350,13 +9105,11 @@ described	MTRThermostatClusterAddThermostatSuggestionResponseParams	uniqueID	0
 present	MTRThermostatClusterAtomicRequestParams	-	present
 ownDescription	MTRThermostatClusterAtomicRequestParams	-	yes
 initOwner	MTRThermostatClusterAtomicRequestParams	-	self
-description	MTRThermostatClusterAtomicRequestParams	-	<MTRThermostatClusterAtomicRequestParams: requestType:0; attributeRequests:(
-); timeout:(null); >
+description	MTRThermostatClusterAtomicRequestParams	-	<MTRThermostatClusterAtomicRequestParams: requestType:0; attributeRequests:( ); timeout:(null); >
 fresh	MTRThermostatClusterAtomicRequestParams	requestType	NSNumber(0)
 described	MTRThermostatClusterAtomicRequestParams	requestType	0
 fresh	MTRThermostatClusterAtomicRequestParams	attributeRequests	NSArray(0)
-described	MTRThermostatClusterAtomicRequestParams	attributeRequests	(
-)
+described	MTRThermostatClusterAtomicRequestParams	attributeRequests	( )
 fresh	MTRThermostatClusterAtomicRequestParams	timeout	(nil)
 described	MTRThermostatClusterAtomicRequestParams	timeout	(null)
 fresh	MTRThermostatClusterAtomicRequestParams	timedInvokeTimeoutMs	(nil)
@@ -9366,13 +9119,11 @@ described	MTRThermostatClusterAtomicRequestParams	serverSideProcessingTimeout	(n
 present	MTRThermostatClusterAtomicResponseParams	-	present
 ownDescription	MTRThermostatClusterAtomicResponseParams	-	yes
 initOwner	MTRThermostatClusterAtomicResponseParams	-	self
-description	MTRThermostatClusterAtomicResponseParams	-	<MTRThermostatClusterAtomicResponseParams: statusCode:0; attributeStatus:(
-); timeout:(null); >
+description	MTRThermostatClusterAtomicResponseParams	-	<MTRThermostatClusterAtomicResponseParams: statusCode:0; attributeStatus:( ); timeout:(null); >
 fresh	MTRThermostatClusterAtomicResponseParams	statusCode	NSNumber(0)
 described	MTRThermostatClusterAtomicResponseParams	statusCode	0
 fresh	MTRThermostatClusterAtomicResponseParams	attributeStatus	NSArray(0)
-described	MTRThermostatClusterAtomicResponseParams	attributeStatus	(
-)
+described	MTRThermostatClusterAtomicResponseParams	attributeStatus	( )
 fresh	MTRThermostatClusterAtomicResponseParams	timeout	(nil)
 described	MTRThermostatClusterAtomicResponseParams	timeout	(null)
 present	MTRThermostatClusterClearWeeklyScheduleParams	-	present
@@ -9398,8 +9149,7 @@ described	MTRThermostatClusterGetWeeklyScheduleParams	serverSideProcessingTimeou
 present	MTRThermostatClusterGetWeeklyScheduleResponseParams	-	present
 ownDescription	MTRThermostatClusterGetWeeklyScheduleResponseParams	-	yes
 initOwner	MTRThermostatClusterGetWeeklyScheduleResponseParams	-	self
-description	MTRThermostatClusterGetWeeklyScheduleResponseParams	-	<MTRThermostatClusterGetWeeklyScheduleResponseParams: numberOfTransitionsForSequence:0; dayOfWeekForSequence:0; modeForSequence:0; transitions:(
-); >
+description	MTRThermostatClusterGetWeeklyScheduleResponseParams	-	<MTRThermostatClusterGetWeeklyScheduleResponseParams: numberOfTransitionsForSequence:0; dayOfWeekForSequence:0; modeForSequence:0; transitions:( ); >
 fresh	MTRThermostatClusterGetWeeklyScheduleResponseParams	numberOfTransitionsForSequence	NSNumber(0)
 described	MTRThermostatClusterGetWeeklyScheduleResponseParams	numberOfTransitionsForSequence	0
 fresh	MTRThermostatClusterGetWeeklyScheduleResponseParams	dayOfWeekForSequence	NSNumber(0)
@@ -9407,8 +9157,7 @@ described	MTRThermostatClusterGetWeeklyScheduleResponseParams	dayOfWeekForSequen
 fresh	MTRThermostatClusterGetWeeklyScheduleResponseParams	modeForSequence	NSNumber(0)
 described	MTRThermostatClusterGetWeeklyScheduleResponseParams	modeForSequence	0
 fresh	MTRThermostatClusterGetWeeklyScheduleResponseParams	transitions	NSArray(0)
-described	MTRThermostatClusterGetWeeklyScheduleResponseParams	transitions	(
-)
+described	MTRThermostatClusterGetWeeklyScheduleResponseParams	transitions	( )
 fresh	MTRThermostatClusterGetWeeklyScheduleResponseParams	timedInvokeTimeoutMs	(nil)
 described	MTRThermostatClusterGetWeeklyScheduleResponseParams	timedInvokeTimeoutMs	(null)
 present	MTRThermostatClusterLocalTemperatureChangeEvent	-	present
@@ -9480,8 +9229,7 @@ described	MTRThermostatClusterRunningStateChangeEvent	currentRunningState	0
 present	MTRThermostatClusterScheduleStruct	-	present
 ownDescription	MTRThermostatClusterScheduleStruct	-	yes
 initOwner	MTRThermostatClusterScheduleStruct	-	self
-description	MTRThermostatClusterScheduleStruct	-	<MTRThermostatClusterScheduleStruct: scheduleHandle:(null); systemMode:0; name:(null); presetHandle:(null); transitions:(
-); builtIn:(null); >
+description	MTRThermostatClusterScheduleStruct	-	<MTRThermostatClusterScheduleStruct: scheduleHandle:(null); systemMode:0; name:(null); presetHandle:(null); transitions:( ); builtIn:(null); >
 fresh	MTRThermostatClusterScheduleStruct	scheduleHandle	(nil)
 described	MTRThermostatClusterScheduleStruct	scheduleHandle	(null)
 fresh	MTRThermostatClusterScheduleStruct	systemMode	NSNumber(0)
@@ -9491,8 +9239,7 @@ described	MTRThermostatClusterScheduleStruct	name	(null)
 fresh	MTRThermostatClusterScheduleStruct	presetHandle	(nil)
 described	MTRThermostatClusterScheduleStruct	presetHandle	(null)
 fresh	MTRThermostatClusterScheduleStruct	transitions	NSArray(0)
-described	MTRThermostatClusterScheduleStruct	transitions	(
-)
+described	MTRThermostatClusterScheduleStruct	transitions	( )
 fresh	MTRThermostatClusterScheduleStruct	builtIn	(nil)
 described	MTRThermostatClusterScheduleStruct	builtIn	(null)
 present	MTRThermostatClusterScheduleTransitionStruct	-	present
@@ -9544,8 +9291,7 @@ described	MTRThermostatClusterSetActiveScheduleRequestParams	serverSideProcessin
 present	MTRThermostatClusterSetWeeklyScheduleParams	-	present
 ownDescription	MTRThermostatClusterSetWeeklyScheduleParams	-	yes
 initOwner	MTRThermostatClusterSetWeeklyScheduleParams	-	self
-description	MTRThermostatClusterSetWeeklyScheduleParams	-	<MTRThermostatClusterSetWeeklyScheduleParams: numberOfTransitionsForSequence:0; dayOfWeekForSequence:0; modeForSequence:0; transitions:(
-); >
+description	MTRThermostatClusterSetWeeklyScheduleParams	-	<MTRThermostatClusterSetWeeklyScheduleParams: numberOfTransitionsForSequence:0; dayOfWeekForSequence:0; modeForSequence:0; transitions:( ); >
 fresh	MTRThermostatClusterSetWeeklyScheduleParams	numberOfTransitionsForSequence	NSNumber(0)
 described	MTRThermostatClusterSetWeeklyScheduleParams	numberOfTransitionsForSequence	0
 fresh	MTRThermostatClusterSetWeeklyScheduleParams	dayOfWeekForSequence	NSNumber(0)
@@ -9553,8 +9299,7 @@ described	MTRThermostatClusterSetWeeklyScheduleParams	dayOfWeekForSequence	0
 fresh	MTRThermostatClusterSetWeeklyScheduleParams	modeForSequence	NSNumber(0)
 described	MTRThermostatClusterSetWeeklyScheduleParams	modeForSequence	0
 fresh	MTRThermostatClusterSetWeeklyScheduleParams	transitions	NSArray(0)
-described	MTRThermostatClusterSetWeeklyScheduleParams	transitions	(
-)
+described	MTRThermostatClusterSetWeeklyScheduleParams	transitions	( )
 fresh	MTRThermostatClusterSetWeeklyScheduleParams	timedInvokeTimeoutMs	(nil)
 described	MTRThermostatClusterSetWeeklyScheduleParams	timedInvokeTimeoutMs	(null)
 fresh	MTRThermostatClusterSetWeeklyScheduleParams	serverSideProcessingTimeout	(nil)
@@ -9698,15 +9443,11 @@ described	MTRThreadNetworkDiagnosticsClusterNeighborTableStruct	isChild	0
 present	MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent	-	present
 ownDescription	MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent	-	yes
 initOwner	MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent	-	self
-description	MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent	-	<MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent: current:(
-); previous:(
-); >
+description	MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent	-	<MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent: current:( ); previous:( ); >
 fresh	MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent	current	NSArray(0)
-described	MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent	current	(
-)
+described	MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent	current	( )
 fresh	MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent	previous	NSArray(0)
-described	MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent	previous	(
-)
+described	MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent	previous	( )
 present	MTRThreadNetworkDiagnosticsClusterResetCountsParams	-	present
 ownDescription	MTRThreadNetworkDiagnosticsClusterResetCountsParams	-	yes
 initOwner	MTRThreadNetworkDiagnosticsClusterResetCountsParams	-	self
@@ -9822,11 +9563,9 @@ description	MTRTimeSynchronizationClusterMissingTrustedTimeSourceEvent	-	<MTRTim
 present	MTRTimeSynchronizationClusterSetDSTOffsetParams	-	present
 ownDescription	MTRTimeSynchronizationClusterSetDSTOffsetParams	-	yes
 initOwner	MTRTimeSynchronizationClusterSetDSTOffsetParams	-	self
-description	MTRTimeSynchronizationClusterSetDSTOffsetParams	-	<MTRTimeSynchronizationClusterSetDSTOffsetParams: dstOffset:(
-); >
+description	MTRTimeSynchronizationClusterSetDSTOffsetParams	-	<MTRTimeSynchronizationClusterSetDSTOffsetParams: dstOffset:( ); >
 fresh	MTRTimeSynchronizationClusterSetDSTOffsetParams	dstOffset	NSArray(0)
-described	MTRTimeSynchronizationClusterSetDSTOffsetParams	dstOffset	(
-)
+described	MTRTimeSynchronizationClusterSetDSTOffsetParams	dstOffset	( )
 fresh	MTRTimeSynchronizationClusterSetDSTOffsetParams	timedInvokeTimeoutMs	(nil)
 described	MTRTimeSynchronizationClusterSetDSTOffsetParams	timedInvokeTimeoutMs	(null)
 fresh	MTRTimeSynchronizationClusterSetDSTOffsetParams	serverSideProcessingTimeout	(nil)
@@ -9844,11 +9583,9 @@ described	MTRTimeSynchronizationClusterSetDefaultNTPParams	serverSideProcessingT
 present	MTRTimeSynchronizationClusterSetTimeZoneParams	-	present
 ownDescription	MTRTimeSynchronizationClusterSetTimeZoneParams	-	yes
 initOwner	MTRTimeSynchronizationClusterSetTimeZoneParams	-	self
-description	MTRTimeSynchronizationClusterSetTimeZoneParams	-	<MTRTimeSynchronizationClusterSetTimeZoneParams: timeZone:(
-); >
+description	MTRTimeSynchronizationClusterSetTimeZoneParams	-	<MTRTimeSynchronizationClusterSetTimeZoneParams: timeZone:( ); >
 fresh	MTRTimeSynchronizationClusterSetTimeZoneParams	timeZone	NSArray(0)
-described	MTRTimeSynchronizationClusterSetTimeZoneParams	timeZone	(
-)
+described	MTRTimeSynchronizationClusterSetTimeZoneParams	timeZone	( )
 fresh	MTRTimeSynchronizationClusterSetTimeZoneParams	timedInvokeTimeoutMs	(nil)
 described	MTRTimeSynchronizationClusterSetTimeZoneParams	timedInvokeTimeoutMs	(null)
 fresh	MTRTimeSynchronizationClusterSetTimeZoneParams	serverSideProcessingTimeout	(nil)
@@ -10142,15 +9879,13 @@ described	MTRWaterHeaterModeClusterChangeToModeResponseParams	statusText	(null)
 present	MTRWaterHeaterModeClusterModeOptionStruct	-	present
 ownDescription	MTRWaterHeaterModeClusterModeOptionStruct	-	yes
 initOwner	MTRWaterHeaterModeClusterModeOptionStruct	-	self
-description	MTRWaterHeaterModeClusterModeOptionStruct	-	<MTRWaterHeaterModeClusterModeOptionStruct: label:; mode:0; modeTags:(
-); >
+description	MTRWaterHeaterModeClusterModeOptionStruct	-	<MTRWaterHeaterModeClusterModeOptionStruct: label:; mode:0; modeTags:( ); >
 fresh	MTRWaterHeaterModeClusterModeOptionStruct	label	NSString()
 described	MTRWaterHeaterModeClusterModeOptionStruct	label	
 fresh	MTRWaterHeaterModeClusterModeOptionStruct	mode	NSNumber(0)
 described	MTRWaterHeaterModeClusterModeOptionStruct	mode	0
 fresh	MTRWaterHeaterModeClusterModeOptionStruct	modeTags	NSArray(0)
-described	MTRWaterHeaterModeClusterModeOptionStruct	modeTags	(
-)
+described	MTRWaterHeaterModeClusterModeOptionStruct	modeTags	( )
 present	MTRWaterHeaterModeClusterModeTagStruct	-	present
 ownDescription	MTRWaterHeaterModeClusterModeTagStruct	-	yes
 initOwner	MTRWaterHeaterModeClusterModeTagStruct	-	self
@@ -10186,13 +9921,11 @@ described	MTRWebRTCTransportProviderClusterProvideAnswerParams	serverSideProcess
 present	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	-	present
 ownDescription	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	-	yes
 initOwner	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	-	self
-description	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	-	<MTRWebRTCTransportProviderClusterProvideICECandidatesParams: webRTCSessionID:0; iceCandidates:(
-); >
+description	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	-	<MTRWebRTCTransportProviderClusterProvideICECandidatesParams: webRTCSessionID:0; iceCandidates:( ); >
 fresh	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	webRTCSessionID	NSNumber(0)
 described	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	webRTCSessionID	0
 fresh	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	iceCandidates	NSArray(0)
-described	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	iceCandidates	(
-)
+described	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	iceCandidates	( )
 fresh	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	timedInvokeTimeoutMs	(nil)
 described	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	timedInvokeTimeoutMs	(null)
 fresh	MTRWebRTCTransportProviderClusterProvideICECandidatesParams	serverSideProcessingTimeout	(nil)
@@ -10316,13 +10049,11 @@ described	MTRWebRTCTransportRequestorClusterEndParams	serverSideProcessingTimeou
 present	MTRWebRTCTransportRequestorClusterICECandidatesParams	-	present
 ownDescription	MTRWebRTCTransportRequestorClusterICECandidatesParams	-	yes
 initOwner	MTRWebRTCTransportRequestorClusterICECandidatesParams	-	self
-description	MTRWebRTCTransportRequestorClusterICECandidatesParams	-	<MTRWebRTCTransportRequestorClusterICECandidatesParams: webRTCSessionID:0; iceCandidates:(
-); >
+description	MTRWebRTCTransportRequestorClusterICECandidatesParams	-	<MTRWebRTCTransportRequestorClusterICECandidatesParams: webRTCSessionID:0; iceCandidates:( ); >
 fresh	MTRWebRTCTransportRequestorClusterICECandidatesParams	webRTCSessionID	NSNumber(0)
 described	MTRWebRTCTransportRequestorClusterICECandidatesParams	webRTCSessionID	0
 fresh	MTRWebRTCTransportRequestorClusterICECandidatesParams	iceCandidates	NSArray(0)
-described	MTRWebRTCTransportRequestorClusterICECandidatesParams	iceCandidates	(
-)
+described	MTRWebRTCTransportRequestorClusterICECandidatesParams	iceCandidates	( )
 fresh	MTRWebRTCTransportRequestorClusterICECandidatesParams	timedInvokeTimeoutMs	(nil)
 described	MTRWebRTCTransportRequestorClusterICECandidatesParams	timedInvokeTimeoutMs	(null)
 fresh	MTRWebRTCTransportRequestorClusterICECandidatesParams	serverSideProcessingTimeout	(nil)
@@ -10456,7 +10187,7 @@ described	MTRWindowCoveringClusterUpOrOpenParams	serverSideProcessingTimeout	(nu
 present	MTRWriteParams	-	present
 ownDescription	MTRWriteParams	-	no
 initOwner	MTRWriteParams	-	self
-description	MTRWriteParams	-	<MTRWriteParams: 0x7b7112e580>
+description	MTRWriteParams	-	<MTRWriteParams: 0x75b0d0e680>
 fresh	MTRWriteParams	timedWriteTimeout	(nil)
 described	MTRWriteParams	timedWriteTimeout	(null)
 fresh	MTRWriteParams	dataVersion	(nil)
@@ -10490,26 +10221,21 @@ described	MTRZoneManagementClusterCreateOrUpdateTriggerParams	serverSideProcessi
 present	MTRZoneManagementClusterTwoDCartesianZoneStruct	-	present
 ownDescription	MTRZoneManagementClusterTwoDCartesianZoneStruct	-	yes
 initOwner	MTRZoneManagementClusterTwoDCartesianZoneStruct	-	self
-description	MTRZoneManagementClusterTwoDCartesianZoneStruct	-	<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:(
-); color:(null); >
+description	MTRZoneManagementClusterTwoDCartesianZoneStruct	-	<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:( ); color:(null); >
 fresh	MTRZoneManagementClusterTwoDCartesianZoneStruct	name	NSString()
 described	MTRZoneManagementClusterTwoDCartesianZoneStruct	name	
 fresh	MTRZoneManagementClusterTwoDCartesianZoneStruct	use	NSNumber(0)
 described	MTRZoneManagementClusterTwoDCartesianZoneStruct	use	0
 fresh	MTRZoneManagementClusterTwoDCartesianZoneStruct	vertices	NSArray(0)
-described	MTRZoneManagementClusterTwoDCartesianZoneStruct	vertices	(
-)
+described	MTRZoneManagementClusterTwoDCartesianZoneStruct	vertices	( )
 fresh	MTRZoneManagementClusterTwoDCartesianZoneStruct	color	(nil)
 described	MTRZoneManagementClusterTwoDCartesianZoneStruct	color	(null)
 present	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	-	present
 ownDescription	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	-	yes
 initOwner	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	-	self
-description	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	-	<MTRZoneManagementClusterCreateTwoDCartesianZoneParams: zone:<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:(
-); color:(null); >; >
-fresh	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	zone	MTRZoneManagementClusterTwoDCartesianZoneStruct(<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:(
-); color:(null); >)
-described	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	zone	<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:(
-); color:(null); >
+description	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	-	<MTRZoneManagementClusterCreateTwoDCartesianZoneParams: zone:<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:( ); color:(null); >; >
+fresh	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	zone	MTRZoneManagementClusterTwoDCartesianZoneStruct(<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:( ); color:(null); >)
+described	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	zone	<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:( ); color:(null); >
 fresh	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	timedInvokeTimeoutMs	(nil)
 described	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	timedInvokeTimeoutMs	(null)
 fresh	MTRZoneManagementClusterCreateTwoDCartesianZoneParams	serverSideProcessingTimeout	(nil)
@@ -10551,14 +10277,11 @@ described	MTRZoneManagementClusterTwoDCartesianVertexStruct	y	0
 present	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	-	present
 ownDescription	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	-	yes
 initOwner	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	-	self
-description	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	-	<MTRZoneManagementClusterUpdateTwoDCartesianZoneParams: zoneID:0; zone:<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:(
-); color:(null); >; >
+description	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	-	<MTRZoneManagementClusterUpdateTwoDCartesianZoneParams: zoneID:0; zone:<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:( ); color:(null); >; >
 fresh	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	zoneID	NSNumber(0)
 described	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	zoneID	0
-fresh	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	zone	MTRZoneManagementClusterTwoDCartesianZoneStruct(<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:(
-); color:(null); >)
-described	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	zone	<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:(
-); color:(null); >
+fresh	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	zone	MTRZoneManagementClusterTwoDCartesianZoneStruct(<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:( ); color:(null); >)
+described	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	zone	<MTRZoneManagementClusterTwoDCartesianZoneStruct: name:; use:0; vertices:( ); color:(null); >
 fresh	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	timedInvokeTimeoutMs	(nil)
 described	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	timedInvokeTimeoutMs	(null)
 fresh	MTRZoneManagementClusterUpdateTwoDCartesianZoneParams	serverSideProcessingTimeout	(nil)

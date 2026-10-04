@@ -433,6 +433,52 @@ one line of `CharonMatterTypes.h` five times over - the 5 `-init` stores above a
 Nothing else in the tree moved, which is the check that matters here: 3,267 members and the derived rule
 they used to come from agree with the framework's own source everywhere else.
 
+**`predict.py` classifies a differing CLASS NAME the same way it classifies a differing member set, and the
+third red control holds that down.** A class name that differs is predicted exactly when one of the two is
+the deprecated spelling of the other, read out of the same annotation; a name that is not in such a pair is
+UNEXPLAINED. The port's own run has **no** class-name difference left to predict - the two readings are
+identical now - so the clause is exercised by a plant: `MTRUnitTestingClusterNestedStruct`'s
+`NSStringFromClass([self class])` is replaced by a class name no annotation pairs, and the run requires it to
+come out UNEXPLAINED.
+
+**The run, whole, and its exit status 0:**
+
+    params-diff: description  3238 identical, 42 predicted by the SDK difference, 0 unexplained
+    params-diff: fresh        3239 identical, 41 predicted by the SDK difference, 0 unexplained
+    params-diff: classes the host has 919, absent 5, raised 0
+    params-diff: ownDescription 919 of the hosts 919 readings the port answers identically
+    params-diff: alias          37 of the hosts 37 readings the port answers identically
+    params-diff: red control 13 readings move, so this comparison can fail
+    params-diff: red control 2 readings become UNEXPLAINED, so the prediction looks at the port
+    params-diff: nested red control 30 reading(s) name plantedByTheRedControl, so a planted nested
+    params-diff: class-name red control 4 reading(s) name an unpaired class as UNEXPLAINED, and 4
+    params-diff:   reading(s) name a PAIRED one as predicted, so the clause excuses the spelling and
+    params-diff:   nothing else, and the reading of the unmutated port is 0 unexplained either way
+
+**Three defects in the harness itself, found by running it, all three fixed at the cause.**
+
+* `compile()` took its OBJECT directory and always read the sources from `$build/port`, so both planted
+  binaries were built from the pristine tree and the controls measured nothing - and the run then printed
+  the message that the control had failed, which is what a control that measured nothing looks like from the
+  outside. The source directory is an argument now, and a plant is compared with the file it was made from
+  before it is compiled.
+* `predict.py` exits non-zero when a reading is unexplained, which is what a mutant is FOR, and under
+  `set -e` that ended the script at its first red control. That is why the previous turn's log stops there
+  and why this one was committed unrun.
+* `split_members()` split a member body on every `"; "`, and a nested `-description` carries its own `"; "`
+  separators: `c:<MTRUnitTestingClusterSimpleStruct: a:0; b:0; ... >` is ONE member and splitting it gave
+  `['a:0', 'b:0', 'c:<MTRUnitTestingClusterSimpleStruct: a:0', 'b:0', ...]`, a list that compares EQUAL on
+  both sides for any two values differing only in the class they name. Only a separator at bracket depth
+  zero separates, and `level()` now keeps BOTH class names of a wrapped string - the one inside and the one
+  around it - because a difference in either is a difference in the class the value has.
+
+**132 of the 6,560 readings the probe took were cut short, and are not any more.** A TSV field cannot hold a
+newline and an empty `NSArray`'s `-description` is one: a struct holding one printed its members up to `d:(`
+and the rest of the line landed on the next, so `fresh`/`described` rows were compared over their first 180
+characters and the file carried 277 lines that were the pieces of other lines. The same count on both sides,
+so such a pair still compared equal - and nothing after the cut was examined. `params-probe.m` now flattens a
+newline and a tab out of every value it prints, and the file has no continuation line left.
+
 **What is still a shape difference from the framework, and is NOT measured by the comparison.** The
 framework declares a deprecated alias class `@dynamic` with no storage of its own - `MTRStructsObjc.mm:14650
 @implementation MTRTestClusterClusterNestedStruct : MTRUnitTestingClusterNestedStruct` with `@dynamic a; @dynamic

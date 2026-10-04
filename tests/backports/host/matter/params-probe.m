@@ -26,6 +26,9 @@
 //    (iii) a class the host does not have is reported absent, and the port keeps its header-derived answer
 //        for it; the caller says so per class.
 //
+//  Every value is flattened before it is printed, because a TSV field cannot hold a newline and an empty
+//  NSArray's -description is one.
+//
 //  The output is the data file tools/matter-generate.py reads, and its provenance - the host's own version
 //  string and the date - is written with it.
 //
@@ -37,6 +40,21 @@
 /// The date the table was measured, written into the file beside the host's own version string, so a
 /// reader can tell which binary answered without asking. It is the date this tree's run happened.
 #define MEASURED "2026-10-04"
+
+/// One TSV field cannot hold a newline, and several of these values carry one: an empty NSArray's
+/// `-description` is `(` and a newline and `)` on this Foundation, so a struct holding one printed its
+/// members up to `d:(` and the rest of the line landed on the next one. 132 of 6,560 readings were cut
+/// short that way and 277 lines of the file were the pieces of them - the same count on both sides, so the
+/// comparison still called such a pair equal, and it could not see the tail of any of them. The value is
+/// what it is; the FIELD is flattened, and only the field.
+static NSString *flatten(NSString *value)
+{
+    if (value == nil) {
+        return nil;
+    }
+    NSString *spaced = [value stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+    return [spaced stringByReplacingOccurrencesOfString:@"\t" withString:@" "];
+}
 
 static NSString *render(id value)
 {
@@ -55,7 +73,7 @@ static NSString *render(id value)
     if ([value isKindOfClass:[NSArray class]]) {
         return [NSString stringWithFormat:@"NSArray(%lu)", (unsigned long)[(NSArray *)value count]];
     }
-    return [NSString stringWithFormat:@"%@(%@)", NSStringFromClass([value class]), value];
+    return flatten([NSString stringWithFormat:@"%@(%@)", NSStringFromClass([value class]), value]);
 }
 
 static id safeRead(id object, NSString *key)
@@ -209,7 +227,7 @@ int main(int argc, char **argv)
                        (ownDescription(cls) ? @"yes" : @"no").UTF8String);
                 printf("initOwner\t%s\t-\t%s\n", name.UTF8String, initOwner(cls).UTF8String);
                 printf("description\t%s\t-\t%s\n", name.UTF8String,
-                       [[[cls alloc] init] description].UTF8String);
+                       flatten([[[cls alloc] init] description]).UTF8String);
                 for (NSString *property in ownProperties(cls)) {
                     id value = safeRead([[cls alloc] init], property);
                     printf("fresh\t%s\t%s\t%s\n", name.UTF8String, property.UTF8String,
@@ -219,7 +237,7 @@ int main(int argc, char **argv)
                     // The predictor lays these out in the HOST SDK's declaration order and compares the
                     // string that comes out with the host's own, so this is the row it needs.
                     printf("described\t%s\t%s\t%s\n", name.UTF8String, property.UTF8String,
-                           (value == nil ? @"(null)" : [value description]).UTF8String);
+                           flatten(value == nil ? @"(null)" : [value description]).UTF8String);
                 }
                 continue;
             }
