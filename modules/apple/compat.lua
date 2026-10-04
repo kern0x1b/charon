@@ -7,6 +7,7 @@ ARRIVED = {
     __floatunsisf = {iOS = "3.0"},
     aligned_alloc = {iOS = "13.0", Macos = "10.15", tvOS = "13.0", watchOS = "6.0"},
     arc4random_buf = {iOS = "4.3", Macos = "10.7"},
+    __progname = {iOS = "6.0"},
     clock_gettime = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     os_system_version_get_current_version = {iOS = "10.0"},
     fdopendir = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},

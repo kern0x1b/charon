@@ -1875,6 +1875,7 @@ LATER_CALLS = r"""
 
 int charon_memset_s(void *, size_t, int, size_t);
 void charon_arc4random_buf(void *, size_t);
+extern const char *__progname;
 void *voucher_copy(void);
 void *voucher_adopt(void *);
 unsigned int qos_class_self(void);
@@ -1931,6 +1932,20 @@ static void memsets(void)
                  cases[index].capacity, cases[index].count, cases[index].null ? ", NULL" : "", wanted);
         expect(got == wanted && memcmp(mine, theirs, sizeof mine) == 0, what);
     }
+}
+
+/* The name of the running program, which no SDK header declares and which iOS 6.0 is the first release to export
+   (the held caches' export tries, 53 rungs of the armv7 and armv7s ladder). This host's own dyld has one, so which
+   copy this program reads is asked with dladdr: a check that read the system's would pass whatever the shim does,
+   which is what the memset_s case above found when it compared Apple's memset_s with itself. */
+static void names(void)
+{
+    expect(__progname != NULL, "the program's name is there to read");
+    expect(__progname && strcmp(__progname, getprogname()) == 0, "the program's name is the one the system gives");
+    Dl_info found;
+    expect(dladdr((const void *)&__progname, &found) != 0 && found.dli_fname != NULL &&
+           strstr(found.dli_fname, "/lib") == NULL,
+           "the name read is this program's own copy, not the system's");
 }
 
 /* The stream the fallback reads from, so what it writes is exactly what this says. The shim is compiled here with
@@ -2167,6 +2182,7 @@ int main(int argc, char **argv)
     if (argc > 1)
         return scenario(argv[1]);
     memsets();
+    names();
     randoms();
     vouchers();
     classes();
@@ -2481,7 +2497,7 @@ def failures():
             else:
                 found += outcome("forwarded lock", run("./forward", cwd=forwarding))
 
-        later = ["memset_s", "arc4random_buf", "voucher_copy", "voucher_adopt", "qos_class_self", "clock_getres", "dispatch_get_global_queue",
+        later = ["memset_s", "__progname", "arc4random_buf", "voucher_copy", "voucher_adopt", "qos_class_self", "clock_getres", "dispatch_get_global_queue",
                  "dispatch_activate", "dispatch_assert_queue$V2"]
         (folder / "calls.c").write_text(LATER_CALLS)
         built = run("xcrun", "clang", "-O2", "-w", "-DCHARON_COMPAT_SYSTEM=0", *[SHIMS / "{}.c".format(symbol) for symbol in later],
