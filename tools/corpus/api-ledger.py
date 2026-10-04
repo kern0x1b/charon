@@ -307,6 +307,53 @@ def run_nm_exports(dylib):
     return names
 
 
+# `@interface NAME` and `@interface NAME : SUPER`, which is how a class's superclass is declared in a
+# header. The space before the colon may be a newline (GameKit's GKGameCenterViewController is declared
+# that way), and a category -- `@interface NAME (Category)` -- has no colon and so declares no
+# superclass, which is what the walk below has to hear about.
+INTERFACE_RE = re.compile(r"^@interface\s+(\w+)\s*(?::\s*(\w+))?", re.M)
+
+# What the 26.2 headers declare, for one row's framework: which frameworks the reader found headers
+# for, and which class each of them names as a superclass. A name may be declared more than once (a
+# class and a category of it, two headers of the same framework), so a name carries the SET of
+# superclasses declared for it and the walk below asks whether the release's is among them.
+Headers = collections.namedtuple("Headers", "framework supers")
+
+
+def header_superclasses(sdk):
+    """Every class the 26.2 SDK's own framework headers declare a superclass for, by framework.
+
+    `{framework: {class: {superclasses}}}`, read from
+    `<sdk>/System/Library/Frameworks/<F>.framework/Headers/*.h` with the reader's own regex, 4196
+    headers in 1.0 s. These are the real SDK's headers, not the lift's overlay: the overlay lowers
+    availability attributes and changes no declaration, and the surface these rows come from was built
+    from this SDK. What the surface builder reads through a clang AST walk
+    (`surface-diff-latest.py`'s own `superclass`) is the same declaration read a heavier way.
+
+    This is here because a class NAME is not a class: the 6.1.3 cache's `SKOverlay` is the iOS 6
+    overlay, superclass SKLayer -> CALayer, while StoreKit's 26.2 header declares
+    `@interface SKOverlay : NSObject` with `id<SKOverlayDelegate> delegate`. A walk that trusts the
+    release chain by name alone credits CALayer's `-delegate` for a StoreKit property.
+    """
+    out = {}
+    root = os.path.join(sdk, "System", "Library", "Frameworks")
+    for entry in sorted(os.listdir(root)):
+        headers = os.path.join(root, entry, "Headers")
+        if not entry.endswith(".framework") or not os.path.isdir(headers):
+            continue
+        declared = {}
+        for name in sorted(os.listdir(headers)):
+            if not name.endswith(".h"):
+                continue
+            with open(os.path.join(headers, name), encoding="utf-8", errors="ignore") as f:
+                for cls, superclass in INTERFACE_RE.findall(f.read()):
+                    if superclass:
+                        declared.setdefault(cls, set()).add(superclass)
+        if declared:
+            out[entry[:-len(".framework")]] = declared
+    return out
+
+
 def load_built_inventories(gate_dir):
     """Every lib*Backports.dylib in gate_dir merged into one view, keeping which framework's
     library carried each name (for the reason column, not for the decision).
@@ -394,16 +441,16 @@ def _selector_present(entry, selector):
     return selector in entry["instance"] or selector in entry["class"]
 
 
-def _ancestors(owner, built_classes, release_classes):
+def _ancestors(owner, built_classes, release_classes, header=None):
     """The chain above `owner`, one measured ancestor at a time, and where the walk stopped.
 
-    Returns `(chain, stopped)`. `chain` holds `(name, entries)` for every ancestor above `owner` the
-    two inventories carry, nearest first, and `entries` is the list of `(entry, is_built)` pairs that
-    name carries -- one, or both where the name is in both inventories, which is the ordinary case for
-    a class the port only extends with categories (NSObject: the port's own categories plus the
-    device's own, both measured, and the caller names whichever of the two has the selector). `stopped`
-    is the recorded superclass the walk could not measure -- a name in neither the built libraries nor
-    the 6.1.3 cache -- or "" when the walk reached a root or answered the row.
+    Returns `(chain, held)`. `chain` holds `(name, entries)` for every ancestor above `owner` the two
+    inventories carry, nearest first, and `entries` is the list of `(entry, is_built)` pairs that name
+    carries -- one, or both where the name is in both inventories, which is the ordinary case for a
+    class the port only extends with categories (NSObject: the port's own categories plus the
+    device's own, both measured, and the caller names whichever of the two has the selector). `held` is
+    the clause a missing row's reason carries, or "": the recorded superclass the walk could not
+    measure, or the release edge the 26.2 header disagrees with.
 
     A member is answered from up the chain only where the ancestor that answers it is measured at the
     release the row is measured for, and the caller's reason names the inventory that has the
@@ -417,6 +464,18 @@ def _ancestors(owner, built_classes, release_classes):
     category to it, and the entry then holds the port's selectors and no other. The pair is kept apart
     for that reason, and a `-init` found on the device's NSObject is reported as the release's.
 
+    `header` is what the 26.2 headers declare for the row's own framework (`header_superclasses`), and
+    it is asked about one thing only: **a step taken in the RELEASE inventory's chain is taken only
+    while the header agrees with it.** A class NAME is not a class -- the 6.1.3 cache's `SKOverlay` is
+    the iOS 6 overlay, superclass SKLayer -> CALayer, where StoreKit's 26.2 header declares
+    `@interface SKOverlay : NSObject` -- and a member of the release's namesake is not the row's member.
+    So where the release records a superclass for the class the step leaves and the header declares a
+    superclass that is not it, the walk stops and says so, and the row keeps its own reading. A step
+    taken in the BUILT image is the port's own compiled hierarchy and is never questioned: the port
+    declares its own superclass and the release cache's chain above it is not what the port ran
+    against. Where the header declares no superclass for the class -- a category-only declaration, or a
+    class this SDK's headers do not name -- there is nothing to disagree with and the walk goes on.
+
     The owner itself is not in `chain`: the caller has already looked in its own selector sets. The
     walk follows the `superclass` edge `load_built_inventories` records per class, and `seen` is what
     makes it terminate on a chain that loops back on itself, which no measured inventory has and which
@@ -428,14 +487,21 @@ def _ancestors(owner, built_classes, release_classes):
     """
     chain, seen, current = [], {owner}, owner
     while True:
-        entry = built_classes.get(current)
+        built = built_classes.get(current)
+        entry = built if built is not None else release_classes.get(current)
         if entry is None:
-            entry = release_classes.get(current)
-        if entry is None:
-            return chain, current
+            return chain, (", and %s is in neither the built libraries nor the 6.1.3 cache, so the "
+                           "walk could not start" % current)
         superclass = entry["superclass"]
         if not superclass or superclass in seen:
             return chain, ""
+        if built is None and header is not None:
+            declared = header.supers.get(current)
+            if declared and superclass not in declared:
+                return chain, (", and the 6.1.3 cache's %s has superclass %s where %s's 26.2 header "
+                               "declares %s, so the class above it was not asked"
+                               % (current, superclass, header.framework,
+                                  " or ".join(sorted(declared))))
         seen.add(superclass)
         entries = []
         found = built_classes.get(superclass)
@@ -445,7 +511,8 @@ def _ancestors(owner, built_classes, release_classes):
         if found is not None:
             entries.append((found, False))
         if not entries:
-            return chain, superclass
+            return chain, (", and the superclass %s above %s is in neither the built libraries nor "
+                           "the 6.1.3 cache, so nothing above it could answer" % (superclass, current))
         chain.append((superclass, entries))
         current = superclass
 
@@ -468,7 +535,7 @@ def _held_note(unavailable, api, decided):
 
 
 def classify_method(api, built_classes, release_classes, built_protocols=None, release_protocols=None,
-                    decided=None, unavailable=False):
+                    decided=None, unavailable=False, header=None):
     """A method row's owner is named without saying whether it is a class or a protocol, and the
     surface has both, so both are searched: a protocol that declares the selector is the release
     carrying that API. Looking only at classes read `-[CLLocationManagerDelegate
@@ -531,16 +598,15 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
         return "implemented", ("+new is NSObject's and every class inherits it: the 6.1.3 cache's "
                                "own NSObject declares it and 2 of its 11378 classes declare one of "
                                "their own")
-    stopped, held = "", _held_note(unavailable, api, decided)
-    if built or released:
-        # `built or released` keeps a protocol owner out: a protocol has no superclass to walk, and
-        # the reason below already says the owner is a protocol and not a class. The two guards are
-        # `+new`'s, for the reason in this function's own account: a row a registry has decided, and a
-        # row Apple's own header marks NS_UNAVAILABLE, are both facts about the row that an inference
-        # from the release's metadata must not overrule.
-        chain, stopped = _ancestors(owner, built_classes, release_classes)
-        if held:
-            chain = []
+    # `built or released` keeps a protocol owner out: a protocol has no superclass to walk, and the
+    # reason below already says the owner is a protocol and not a class. The two guards are `+new`'s,
+    # for the reason in this function's own account: a row a registry has decided, and a row Apple's
+    # own header marks NS_UNAVAILABLE, are both facts about the row that an inference from the
+    # release's metadata must not overrule -- and a held-back row is not walked at all, so it carries
+    # its guard's clause and not the walk's.
+    held, stopped = _held_note(unavailable, api, decided), ""
+    if (built or released) and not held:
+        chain, stopped = _ancestors(owner, built_classes, release_classes, header)
         for name, entries in chain:
             for entry, is_built in entries:
                 if _selector_present(entry, key):
@@ -549,15 +615,12 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
     if not built and not released and not (built_protocols or {}).get(owner) \
             and not (release_protocols or {}).get(owner):
         return "missing", "owner %s is neither a class nor a protocol in the built libraries or the 6.1.3 cache" % owner
-    return "missing", "%s is there, selector %s is not%s%s" % (
-        owner, selector, held,
-        "" if not stopped else ", and the superclass %s above it is in neither the built libraries "
-                               "nor the 6.1.3 cache" % stopped)
+    return "missing", "%s is there, selector %s is not%s%s" % (owner, selector, held, stopped)
 
 
 def classify_property(api, built_classes, release_classes, built_protocols=None,
                       release_protocols=None, getter=None, setter=None, decided=None,
-                      unavailable=False):
+                      unavailable=False, header=None):
     """A property row's owner is named without saying whether it is a class or a protocol, and the
     surface has both, so both are searched -- the same question classify_method answers, and for the
     same reason. A property is read through its accessors, so it is the accessors that are looked
@@ -609,13 +672,12 @@ def classify_property(api, built_classes, release_classes, built_protocols=None,
         if entry and carried_by(entry):
             label = why + (entry.get("library", "") if why == "built: " else "")
             return "implemented", label + " (the protocol %s declares it)" % owner
-    stopped, held = "", _held_note(unavailable, api, decided)
-    if owner in built_classes or owner in release_classes:
+    held = _held_note(unavailable, api, decided)
+    stopped = ""
+    if (owner in built_classes or owner in release_classes) and not held:
         # A protocol owner is not in either, so it never reaches the walk: a protocol has no
         # superclass, and the reason below already says the owner is neither.
-        chain, stopped = _ancestors(owner, built_classes, release_classes)
-        if held:
-            chain = []
+        chain, stopped = _ancestors(owner, built_classes, release_classes, header)
         for name, entries in chain:
             for entry, is_built in entries:
                 carried = carried_by(entry)
@@ -629,9 +691,7 @@ def classify_property(api, built_classes, release_classes, built_protocols=None,
             and not (built_protocols or {}).get(owner) and not (release_protocols or {}).get(owner):
         return "missing", "owner class %s not in the built libraries or the 6.1.3 cache" % owner
     return "missing", "%s is there, neither %s nor %s is an instance or a class selector%s%s" % (
-        owner, getter, setter, held,
-        "" if not stopped else ", and the superclass %s above it is in neither the built libraries "
-                               "nor the 6.1.3 cache" % stopped)
+        owner, getter, setter, held, stopped)
 
 
 def classify_symbol(api, built_exports, release_exports):
@@ -1404,6 +1464,13 @@ def main():
     note("  %d classes, %d protocols, %d exported symbols"
          % (len(release_classes), len(release_protocols), len(release_exports)))
 
+    # What the 26.2 headers declare a superclass for, per framework: the walk may not climb a release
+    # chain past a class the header says has a different one, and a class NAME is not a class.
+    note("reading the 26.2 headers' own @interface declarations from %s" % args.sdk)
+    headers = header_superclasses(args.sdk)
+    note("  %d frameworks, %d class declarations"
+         % (len(headers), sum(len(v) for v in headers.values())))
+
     registries = read_package_registries(args.registries or default_checkout(args.surface))
     note("package registries: %d entries, of which %d record a decision"
          % (len(registries), sum(1 for v in registries.values() if v[0] in DECIDED_STATUSES)))
@@ -1430,16 +1497,20 @@ def main():
                 status, reason, introduced, needs = classify_swift(api, row, swift, matched)
                 results.append((row, status, reason, introduced, needs))
         elif (kind, lang) in RUNTIME_KINDS:
+            declared = headers.get(row["framework"])
+            declared = Headers(row["framework"], declared) if declared else None
             if kind == "class":
                 status, reason = classify_class(api, built_classes, built_protocols, release_classes, release_protocols)
             elif kind == "method":
                 status, reason = classify_method(api, built_classes, release_classes,
                                                  built_protocols, release_protocols,
-                                                 decided=decided_apis, unavailable=row["unavailable"])
+                                                 decided=decided_apis, unavailable=row["unavailable"],
+                                                 header=declared)
             else:
                 status, reason = classify_property(api, built_classes, release_classes, built_protocols,
                                             release_protocols, getter=row["getter"],
-                                            decided=decided_apis, unavailable=row["unavailable"])
+                                            decided=decided_apis, unavailable=row["unavailable"],
+                                            header=declared)
             # The decide pass: a registry that records this row absent/inert/ignored has decided it,
             # with a reason, so it is not a row anybody is going to build.
             decided = decide(row, registries, diagnostics) if status == "missing" else None

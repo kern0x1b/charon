@@ -32,6 +32,7 @@ import importlib.util
 import os
 import re
 import sys
+import tempfile
 
 HERE = os.path.dirname(os.path.realpath(__file__))
 LEDGER = os.path.join(HERE, "api-ledger.py")
@@ -103,18 +104,18 @@ PROTOCOLS_BUILT = {"Shape": entry(instance=["-area"], library="UIKitBackports")}
 PROTOCOLS_RELEASE = {}
 
 
-def method(api, built=None, release=None, decided=None, unavailable=False):
+def method(api, built=None, release=None, decided=None, unavailable=False, header=None):
     return ledger.classify_method(api, BUILT if built is None else built,
                                   RELEASE if release is None else release,
                                   PROTOCOLS_BUILT, PROTOCOLS_RELEASE, decided=decided,
-                                  unavailable=unavailable)
+                                  unavailable=unavailable, header=header)
 
 
-def prop(api, built=None, release=None, getter=None, decided=None, unavailable=False):
+def prop(api, built=None, release=None, getter=None, decided=None, unavailable=False, header=None):
     return ledger.classify_property(api, BUILT if built is None else built,
                                     RELEASE if release is None else release,
                                     PROTOCOLS_BUILT, PROTOCOLS_RELEASE, getter=getter, decided=decided,
-                                    unavailable=unavailable)
+                                    unavailable=unavailable, header=header)
 
 
 # The row the finding is about, one per kind: an instance property, a class method and an instance
@@ -216,12 +217,13 @@ check("a chain that reaches an unmeasured class reads missing",
       method("-[KeyCommand title]", built=unmeasured)[0], "missing")
 check("and the reason names where the walk stopped",
       method("-[KeyCommand title]", built=unmeasured)[1],
-      "KeyCommand is there, selector title is not, and the superclass Absent above it is in neither "
-      "the built libraries nor the 6.1.3 cache")
+      "KeyCommand is there, selector title is not, and the superclass Absent above KeyCommand is in "
+      "neither the built libraries nor the 6.1.3 cache, so nothing above it could answer")
 check("the same for a property row",
       prop("KeyCommand.title", built=unmeasured)[1],
       "KeyCommand is there, neither -title nor -setTitle: is an instance or a class selector, and the "
-      "superclass Absent above it is in neither the built libraries nor the 6.1.3 cache")
+      "superclass Absent above KeyCommand is in neither the built libraries nor the 6.1.3 cache, so "
+      "nothing above it could answer")
 
 # A protocol owner is not walked: a protocol has no superclass, and this is why the walk is inside
 # `if built or released` in both functions. The owner here is in neither class inventory.
@@ -232,6 +234,46 @@ check("and keeps the reason it always had, with no stop clause for a chain it do
       "Shape is there, selector inherited is not")
 check("a property of a protocol likewise", prop("Shape.inherited", built={"Other": BUILT["Command"]})[0],
       "missing")
+
+# A CLASS NAME IS NOT A CLASS. The 6.1.3 cache's SKOverlay is the iOS 6 overlay -- superclass SKLayer,
+# then CALayer -- while StoreKit's 26.2 header declares `@interface SKOverlay : NSObject` with
+# `id<SKOverlayDelegate> delegate`. Crediting CALayer's `-delegate` for that property is crediting a
+# member of a different class that happens to share a name, so a release step is taken only while the
+# header agrees with it. The numbers here are measured: `header_superclasses` on the 26.2 SDK reads
+# StoreKit SKOverlay -> NSObject and declares no superclass for SKLayer at all, and the 6.1.3 cache's
+# own inventory reads SKOverlay super SKLayer, SKLayer super CALayer.
+RELEASE_SK = {
+    "SKOverlay": entry(superclass="SKLayer"),
+    "SKLayer": entry(superclass="CALayer"),
+    "CALayer": entry(instance=["-delegate", "-setDelegate:"]),
+    "NSObject": entry(instance=["-description"]),
+}
+STOREKIT = ledger.Headers("StoreKit", {"SKOverlay": {"NSObject"}})
+check("a release chain the header disagrees with is not climbed",
+      prop("SKOverlay.delegate", built={}, release=RELEASE_SK, header=STOREKIT)[0], "missing")
+check("and the reason names both superclasses",
+      prop("SKOverlay.delegate", built={}, release=RELEASE_SK, header=STOREKIT)[1],
+      "SKOverlay is there, neither -delegate nor -setDelegate: is an instance or a class selector, "
+      "and the 6.1.3 cache's SKOverlay has superclass SKLayer where StoreKit's 26.2 header declares "
+      "NSObject, so the class above it was not asked")
+check("a header that agrees is climbed as before",
+      prop("SKOverlay.delegate", built={}, release=RELEASE_SK,
+           header=ledger.Headers("StoreKit", {"SKOverlay": {"SKLayer"}}))[0], "implemented")
+check("a class the header declares no superclass for is climbed -- there is nothing to disagree with",
+      prop("SKOverlay.delegate", built={}, release=RELEASE_SK,
+           header=ledger.Headers("StoreKit", {}))[0], "implemented")
+check("and with no header information at all the walk is what it was",
+      prop("SKOverlay.delegate", built={}, release=RELEASE_SK)[0], "implemented")
+check("a method row takes the same rule",
+      method("-[SKOverlay something]", built={}, release=RELEASE_SK, header=STOREKIT)[0], "missing")
+# The built image is the port's own compiled hierarchy and is never questioned: the port declares its
+# own superclass, and the release cache's chain above it is not what the port ran against. UIKeyCommand
+# is the measured case -- the port declares `: UICommand`, the header agrees, and nothing is at stake;
+# this check is the shape with a header that disagrees.
+check("a built chain is walked whatever the header says about it",
+      prop("KeyCommand.action", built=BUILT, release=RELEASE,
+           header=ledger.Headers("UIKit", {"KeyCommand": {"UIPressentationController"},
+                                             "Command": {"UIMenuElement"}}))[0], "implemented")
 
 # A row a registry has decided keeps its decision, as `+new` already required: the chain must not
 # answer around the guard the way an unguarded walk would. Measured over the whole surface, that guard
@@ -245,6 +287,10 @@ check("while the same row reads implemented with no decision against it",
       method("+[KeyCommand new]")[0], "implemented")
 check("and a decided property row keeps its decision too",
       prop("KeyCommand.action", decided={"KeyCommand.action"})[0], "missing")
+check("a held-back row carries its guard's clause and not the walk's",
+      prop("KeyCommand.action", decided={"KeyCommand.action"}, header=ledger.Headers("UIKit", {}))[1],
+      "KeyCommand is there, neither -action nor -setAction: is an instance or a class selector, and a "
+      "registry has decided this row, so the class above it was not asked")
 check("while the same property reads implemented with no decision against it",
       prop("KeyCommand.action")[0], "implemented")
 
@@ -287,13 +333,16 @@ source = SOURCE
 body = source[source.index("def main("):]
 for name in ("classify_method", "classify_property"):
     call = re.search(name + r"\(([^)]*)\)", body)
-    check("main() hands %s both class inventories, the decided rows and the unavailable column" % name,
+    check("main() hands %s both class inventories, the decided rows, the unavailable column and the "
+          "headers" % name,
           sorted(part.strip().split("=")[0] for part in call.group(1).split(",") if part.strip()),
-          ["api", "built_classes", "built_protocols", "decided", "release_classes",
+          ["api", "built_classes", "built_protocols", "decided", "header", "release_classes",
            "release_protocols", "unavailable"]
           if name == "classify_method" else
-          ["api", "built_classes", "built_protocols", "decided", "getter", "release_classes",
+          ["api", "built_classes", "built_protocols", "decided", "getter", "header", "release_classes",
            "release_protocols", "unavailable"])
+check("and the headers it hands over are the ones the SDK's own headers declare",
+      sorted(re.findall(r"headers = header_superclasses\(args\.sdk\)", body)), ["headers = header_superclasses(args.sdk)"])
 
 # NS_UNAVAILABLE. When Apple's own header marks a member unavailable, a program that names it must not
 # compile, so nothing answers it at run time and an ancestor's selector table is not an answer -- the
@@ -327,6 +376,29 @@ check("main() hands both functions the surface's own unavailable column",
       len(re.findall(r'unavailable=row\["unavailable"\]', body)), 2)
 check("and the header pass keeps its own form of the rule",
       "NS_UNAVAILABLE in the lifted headers" in source, True)
+
+# The reader itself, on a written header tree rather than the SDK: the rule is only as good as the
+# declarations it reads, and a category declaration must not be taken for a class with no superclass.
+tree = tempfile.mkdtemp(prefix="charon-header-selftest.")
+toy = os.path.join(tree, "System", "Library", "Frameworks", "Toy.framework", "Headers")
+os.makedirs(toy)
+with open(os.path.join(toy, "Toy.h"), "w", encoding="utf-8") as f:
+    f.write("@interface Plain\n@end\n"
+            "@interface Root : NSObject <NSCopying>\n@end\n"
+            "@interface Middle : Root\n@end\n"
+            "@interface Middle (Extra)\n@end\n"
+            "@interface Leaf\n  : Middle\n@end\n"
+            "@protocol OnlyAProtocol <NSObject>\n@end\n")
+read = ledger.header_superclasses(tree)
+check("the reader finds the framework by its Headers directory",
+      sorted(read), ["Toy"])
+check("and every @interface's superclass, through a newline and past a protocol list",
+      {k: sorted(v) for k, v in read["Toy"].items()},
+      {"Middle": ["Root"], "Leaf": ["Middle"], "Root": ["NSObject"]})
+check("a declaration with no colon declares no superclass, so it is not in the map at all",
+      sorted(read["Toy"]), ["Leaf", "Middle", "Root"])
+check("a category does not overwrite the class's own superclass",
+      ledger.header_superclasses(tree)["Toy"]["Middle"], {"Root"})
 
 print("\n%d checks, %d failures" % (len(CHECKS), len(failures)))
 sys.exit(1 if failures else 0)

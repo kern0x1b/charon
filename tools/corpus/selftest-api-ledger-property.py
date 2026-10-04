@@ -105,12 +105,14 @@ check("an owner in no inventory at all still reads missing",
 # records (selftest-api-ledger-getter.py), which arrived after this one and has its own checks, and
 # the seventh is the decided rows (selftest-api-ledger-chain.py), which keep their registry decision
 # against the superclass walk the same way they keep it against `+new`, and the eighth is the surface's
-# own NS_UNAVAILABLE column, which holds the walk back from a row Apple's header refuses a program.
+# own NS_UNAVAILABLE column, which holds the walk back from a row Apple's header refuses a program, and
+# the ninth is what the 26.2 headers declare a superclass for, which decides whether a release chain
+# may be climbed at all (selftest-api-ledger-chain.py).
 source = open(os.path.join(HERE, "api-ledger.py"), encoding="utf-8").read()
 call = re.search(r"classify_property\(([^)]*)\)", source[source.index("def main("):])
 check("main() passes both protocol inventories to classify_property",
       sorted(part.strip().split("=")[0] for part in call.group(1).split(",") if part.strip()),
-      ['api', 'built_classes', 'built_protocols', 'decided', 'getter', 'release_classes',
+      ['api', 'built_classes', 'built_protocols', 'decided', 'getter', 'header', 'release_classes',
        'release_protocols', 'unavailable'])
 
 print("\n%d checks, %d failures" % (10 + len(failures), len(failures)))
