@@ -151,7 +151,8 @@ real API this port carries at its own release. Not one `CharonMetal` class symbo
 The two MTLHeapDescriptor lines name `MTLHeapDescriptor10.o`, and they read 10.0.1 as they always did:
 that class is the only API the object carries, so it is dropped from the release that exports it, exactly
 as it was when the descriptor shared an object with the port's `CharonMetalHeap` (v-bandtrap,
-0a8abbfa0, "Give Metal's vertex attributes and its heap class an object that is in every band"). What
+the v-bandtrap series, "Give Metal's vertex attributes and its heap class an object that is in
+every band"). What
 changed is what that object holds beside it: `CharonMetalHeap` is a class of Charon's own, so an object
 carrying only it and a `Charon` constant exports nothing and is in every band, which is where the two
 files that are categories over that class need it to be.
@@ -235,7 +236,8 @@ Four objects every band carries depend on exactly that:
 
 `CharonMetalLibrary.o` was a fifth and is not one any more: it is where the definition of
 `_CharonAttributesFromFunction` and its two callers now are, one static in one object, so nothing
-crosses an object boundary and the row has no placement left to do (v-bandtrap, 0a8abbfa0 - it was
+crosses an object boundary and the row has no placement left to do (v-bandtrap, "Give Metal's
+vertex attributes and its heap class an object that is in every band" - it was
 defined in `MTLReflection8.m`, an object of iOS 8.0's API, which a band from 8.0 does not link).
 
 Without the rows the 4.3 band has no minimum for those four, cannot place them, and cannot link - while
