@@ -188,63 +188,117 @@
                                       name:name];
 }
 
-// The FED pair of 15.0, the two methods above with their THREE axes arriving as tensors and the block size
-// still written down - which is what the header declares:
-//   spaceToDepth2DTensor:widthAxisTensor:heightAxisTensor:depthAxisTensor:blockSize:usePixelShuffleOrder:name:
-//   depthToSpace2DTensor:widthAxisTensor:heightAxisTensor:depthAxisTensor:blockSize:usePixelShuffleOrder:name:
-// MEASURED on this host's own MPSGraph over the same [3, 4, 6] of 1 to 72 the written-down forms use, and
-// with the same three axes of 2, 1 and 0 and the same block of 2:
-//
-//   - AN INT32 CONSTANT OF SHAPE [1] ANSWERS EXACTLY WHAT THE WRITTEN-DOWN FORM ANSWERS, byte for byte, in
-//     both directions and under both flags - which is the whole of what a caller is asking when it makes
-//     these three parameters tensors. An int64 of shape [1] answers the same, so the release takes a shape
-//     of four or of eight bytes, as it does for every other fed shape of this library.
-//   - A CONSTANT OF NO RANK IS NOT CONSTRUCTIBLE: the release's own +constantWithData:shape:dataType: takes
-//     the process down with "failed assertion `shape.count > 0 failed, a constant must be passed a ranked
-//     shape'" (exit 134), so the axis tensor has to be written with a rank at all.
-//   - A CONSTANT OF MORE THAN ONE NUMBER answers NOTHING: the graph builds and the result carries no shape
-//     at all, so there is nothing to read or to run into.
-//   - A PLACEHOLDER answers NOTHING EITHER, and unlike the 16.1 fed forms it does not take the process
-//     down: the graph builds, the result carries no shape, and -compileWithDevice: still hands back an
-//     executable (measured, both directions, exit 0). The rule for the port is the rule the rest of this
-//     library's fed parameters already follow: read the value where the graph is built when the graph HOLDS
-//     it, and refuse it there when the caller FEEDS it, because a parameter that arrives as data is not a
-//     parameter this port can build the chain over.
-//   - THE REFUSALS ARE THE TWO FORMS' OWN, over a constant as much as over a written-down axis: an axis
-//     outside the rank is refused where the graph is built ("invalid width_axis (3) for shape of rank 3",
-//     with the result's shape nil and the graph's own "Failed to infer result type(s)" behind it), while the
-//     depth axis among the two spatial ones and a block that does not divide are refused where the graph is
-//     COMPILED ("'mps.space_to_depth_2d' op Invalid degenerate axes: depth_axis (1) height_axis (1) for
-//     shape of rank 3", "'mps.space_to_depth_2d' op block_size (3) must be multiple of height 4", and
-//     "'mps.depth_to_space_2d' op block_size (3) squared (9) must be multiple of depth 12"). The port asks
-//     each of them where the graph is built, which is this library's rule everywhere and which the two rows
-//     of this pair say in their own words.
-static NSInteger CharonMPSGraphBlockAxis(MPSGraph *graph, MPSGraphTensor *tensor, NSString *axisName,
-                                         NSString *name)
+// How a tensor is named in the release's own refusal, which prints the MLIR type it lowered to: measured, an
+// int32 axis of shape [1] is 'tensor<1xsi32>', a float32 one 'tensor<1xf32>' and a placeholder of two numbers
+// 'tensor<2xsi32>'. A data type the release spells another way is named as this port names a data type
+// everywhere else, in hex, rather than spelled from a guess.
+static NSString *CharonMPSGraphTensorTypeName(MPSGraphTensor *tensor)
 {
-    NSArray<NSNumber *> *one = [graph charon_mps_constantShapeOfTensor:tensor];
-    if (one == nil) {
-        MPSDataType type = tensor.dataType;
-        if (type == MPSDataTypeFloat32 || type == MPSDataTypeFloat16 || type == MPSDataTypeBool) {
+    NSString *element = nil;
+    switch (tensor.dataType) {
+        case MPSDataTypeFloat32: element = @"f32"; break;
+        case MPSDataTypeFloat16: element = @"f16"; break;
+        case MPSDataTypeInt32: element = @"si32"; break;
+        case MPSDataTypeInt64: element = @"si64"; break;
+        case MPSDataTypeBool: element = @"i1"; break;
+        default: break;
+    }
+    if (element == nil)
+        return [NSString stringWithFormat:@"a tensor of data type 0x%x", (unsigned)tensor.dataType];
+    return [NSString stringWithFormat:@"tensor<%@x%@>", [tensor.shape componentsJoinedByString:@"x"], element];
+}
+
+// WHAT THE RELEASE'S OWN VERIFIER WANTS OF AN AXIS TENSOR THE CALLER FEEDS, which is a rule about the tensor
+// and not about its value: one number, of an index type - and both refusals of it are where the release
+// refuses them, which is the COMPILE rather than the build (measured: the result tensor comes back with no
+// shape at all and it is -compileWithDevice: that takes the process down). This port asks them where the graph
+// is built, which is the moment every other extent of this library is asked at and the only moment a graph
+// can be refused in:
+//   - a fed float32 axis: "'mps.space_to_depth_2d' op operand #1 must be 0D tensor of mps index type values or
+//     static-shape defined tensor with shape equal to [1] or unranked tensor of mps index type values, but got
+//     'tensor<1xf32>'", exit 134, and nothing is compiled;
+//   - a fed placeholder of two numbers: the same sentence with 'tensor<2xsi32>', exit 134;
+//   - an int64 axis, fed: taken, like an int32 one, and answered the same - measured over the same [3, 4, 6]
+//     and the same three axes, where the fed int64 answers byte for byte what the fed int32 answers.
+static void CharonMPSGraphBlockAxisTensor(MPSGraphTensor *tensor, NSString *axisName, NSUInteger operand,
+                                          NSString *operation, NSString *name)
+{
+    MPSDataType type = tensor.dataType;
+    NSUInteger rank = tensor.shape.count;
+    if (type != MPSDataTypeInt32 && type != MPSDataTypeInt64) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was given its %@ as %@, and an axis is an index rather than a value: "
+                           @"measured, the release's own verifier refuses the tensor where the graph is COMPILED "
+                           @"with \"'mps.%@' op operand #%lu must be 0D tensor of mps index type values or "
+                           @"static-shape defined tensor with shape equal to [1] or unranked tensor of mps index "
+                           @"type values, but got '%@'\" (exit 134)", name, axisName,
+                       CharonMPSGraphTensorTypeName(tensor), operation, (unsigned long)operand,
+                       CharonMPSGraphTensorTypeName(tensor)];
+    }
+    if (rank != 0 && rank != 1) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was given its %@ as a tensor of %lu axes, and the release's own "
+                           @"verifier refuses that where the graph is COMPILED with \"'mps.%@' op operand #%lu "
+                           @"must be 0D tensor of mps index type values or static-shape defined tensor with "
+                           @"shape equal to [1] or unranked tensor of mps index type values, but got '%@'\" "
+                           @"(exit 134)", name, axisName, (unsigned long)rank, operation, (unsigned long)operand,
+                       CharonMPSGraphTensorTypeName(tensor)];
+    }
+}
+
+// The ONE question both the pair's methods ask of their three axis tensors, and the two answers it has. A
+// tensor the graph HOLDS - a constant - is read here, when the graph is built, and the written-down forms
+// above do the work: measured, a constant of shape [1] answers exactly what the written-down axes answer,
+// byte for byte, in both directions and under both flags. A tensor the caller FEEDS is read when the graph
+// RUNS, because nothing about the result's type can be known before then: the release builds a graph whose
+// result carries no shape, hands back an executable, and its run answers the written-down form's values into
+// the destination the caller gave it. Both answers are the same chain of three walks over the same plan,
+// which is why there is one plan and both paths go through it.
+static MPSGraphTensor *CharonMPSGraphFed2DBlockShuffle(MPSGraph *graph, MPSGraphTensor *tensor,
+                                                       MPSGraphTensor *widthTensor, MPSGraphTensor *heightTensor,
+                                                       MPSGraphTensor *depthTensor, NSUInteger blockSize,
+                                                       BOOL toBatch, BOOL shuffle, NSString *name)
+{
+    NSArray<NSNumber *> *width = [graph charon_mps_constantShapeOfTensor:widthTensor];
+    NSArray<NSNumber *> *height = [graph charon_mps_constantShapeOfTensor:heightTensor];
+    NSArray<NSNumber *> *depth = [graph charon_mps_constantShapeOfTensor:depthTensor];
+    if (width != nil && height != nil && depth != nil) {
+        NSUInteger w = (NSUInteger)width.firstObject.integerValue;
+        NSUInteger h = (NSUInteger)height.firstObject.integerValue;
+        NSUInteger d = (NSUInteger)depth.firstObject.integerValue;
+        return toBatch ? [graph spaceToDepth2DTensor:tensor
+                                           widthAxis:w heightAxis:h depthAxis:d blockSize:blockSize
+                                usePixelShuffleOrder:shuffle name:name]
+                       : [graph depthToSpace2DTensor:tensor
+                                           widthAxis:w heightAxis:h depthAxis:d blockSize:blockSize
+                                usePixelShuffleOrder:shuffle name:name];
+    }
+    // ONE FED AXIS IS ENOUGH for the whole chain to be unreadable, so every tensor is asked what the release
+    // asks of it: a constant among them is read here, as above, and anything the caller feeds is checked
+    // here, where the graph is built, which is where the release refuses it.
+    MPSGraphTensor *tensors[3] = { widthTensor, heightTensor, depthTensor };
+    for (NSUInteger i = 0; i < 3; i++) {
+        NSArray<NSNumber *> *held = [graph charon_mps_constantShapeOfTensor:tensors[i]];
+        NSString *axisName = i == 0 ? @"width axis" : (i == 1 ? @"height axis" : @"depth axis");
+        if (held != nil && held.count != 1) {
             [NSException raise:NSInvalidArgumentException
-                        format:@"MPSGraph: %@ was given its %@ as a tensor of data type 0x%x, and an axis is "
-                               @"an index: measured, the release builds a graph whose result carries no shape "
-                               @"at all over one, for both of this pair's directions", name, axisName,
-                              (unsigned)type];
+                        format:@"MPSGraph: %@ was given %lu numbers as its %@, and an axis is one of them: "
+                               @"measured, the release takes an axis as a 0D tensor or one of shape [1], and "
+                               @"over a constant of anything else it builds a result that carries no shape", name,
+                       (unsigned long)held.count, axisName];
         }
-        [NSException raise:NSInvalidArgumentException
-                    format:@"MPSGraph: %@ was given its %@ as a tensor the caller feeds, and an axis that "
-                           "arrives as data is not an axis this port can build the chain over: measured, the "
-                           "release builds the graph with the result carrying no shape and hands back an "
-                           "executable, for both of this pair's directions", name, axisName];
+        if (held == nil)
+            CharonMPSGraphBlockAxisTensor(tensors[i], axisName, i + 1,
+                                          toBatch ? @"space_to_depth_2d" : @"depth_to_space_2d", name);
     }
-    if (one.count != 1) {
-        [NSException raise:NSInvalidArgumentException
-                    format:@"MPSGraph: %@ was given %lu numbers as its %@, and an axis is one of them: measured, "
-                           "the release takes an axis as a 0D tensor or one of shape [1], and over anything else "
-                           "it builds a result that carries no shape", name, (unsigned long)one.count, axisName];
-    }
-    return one.firstObject.integerValue;
+    return [graph charon_mps_operation:CharonMPSGraphOperationKindBlockShuffle
+                                inputs:@[tensor, widthTensor, heightTensor, depthTensor]
+                            parameters:@{@"blockShuffle": @YES,
+                                         @"blockShuffleBlock": @(blockSize),
+                                         @"blockShuffleToBatch": @(toBatch),
+                                         @"blockShuffleShuffle": @(shuffle),
+                                         @"resultShapeIsFed": @YES}
+                                   name:name];
 }
 
 - (MPSGraphTensor *)spaceToDepth2DTensor:(MPSGraphTensor *)tensor
@@ -255,16 +309,8 @@ static NSInteger CharonMPSGraphBlockAxis(MPSGraph *graph, MPSGraphTensor *tensor
                    usePixelShuffleOrder:(BOOL)usePixelShuffleOrder
                                    name:(NSString *)name
 {
-    NSUInteger width = (NSUInteger)CharonMPSGraphBlockAxis(self, widthAxisTensor, @"width axis", name);
-    NSUInteger height = (NSUInteger)CharonMPSGraphBlockAxis(self, heightAxisTensor, @"height axis", name);
-    NSUInteger depth = (NSUInteger)CharonMPSGraphBlockAxis(self, depthAxisTensor, @"depth axis", name);
-    return [self spaceToDepth2DTensor:tensor
-                            widthAxis:width
-                           heightAxis:height
-                            depthAxis:depth
-                            blockSize:blockSize
-                 usePixelShuffleOrder:usePixelShuffleOrder
-                                 name:name];
+    return CharonMPSGraphFed2DBlockShuffle(self, tensor, widthAxisTensor, heightAxisTensor, depthAxisTensor,
+                                            blockSize, YES, usePixelShuffleOrder, name);
 }
 
 - (MPSGraphTensor *)depthToSpace2DTensor:(MPSGraphTensor *)tensor
@@ -275,16 +321,8 @@ static NSInteger CharonMPSGraphBlockAxis(MPSGraph *graph, MPSGraphTensor *tensor
                    usePixelShuffleOrder:(BOOL)usePixelShuffleOrder
                                    name:(NSString *)name
 {
-    NSUInteger width = (NSUInteger)CharonMPSGraphBlockAxis(self, widthAxisTensor, @"width axis", name);
-    NSUInteger height = (NSUInteger)CharonMPSGraphBlockAxis(self, heightAxisTensor, @"height axis", name);
-    NSUInteger depth = (NSUInteger)CharonMPSGraphBlockAxis(self, depthAxisTensor, @"depth axis", name);
-    return [self depthToSpace2DTensor:tensor
-                            widthAxis:width
-                           heightAxis:height
-                            depthAxis:depth
-                            blockSize:blockSize
-                 usePixelShuffleOrder:usePixelShuffleOrder
-                                 name:name];
+    return CharonMPSGraphFed2DBlockShuffle(self, tensor, widthAxisTensor, heightAxisTensor, depthAxisTensor,
+                                            blockSize, NO, usePixelShuffleOrder, name);
 }
 
 @end

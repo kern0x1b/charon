@@ -1817,12 +1817,14 @@ The port asks every one of them **where the graph is built**, with the release's
 library's rule for every extent the release will not run. That is a difference of moment and not of rule, and
 the rows of the family say so.
 
-### The 15.0 FED pair, measured before any row claimed it
+### The 15.0 FED pair, measured before any row claimed it - and again, because one of the four answers was wrong
 
 `spaceToDepth2DTensor:widthAxisTensor:heightAxisTensor:depthAxisTensor:blockSize:usePixelShuffleOrder:name:`
 and its partner take their **three axes as tensors** and their block size written down - which is the header's
-own shape, and which the previous pass had declared but **never asked of the release**. The probe is
-`.agent-work/probe/fed2d.m`; the raw run is `.agent-work/runs/v-mps11/fed2d-all.txt`.
+own shape, and which the previous pass had declared but **never asked of the release**. The first probe is
+`.agent-work/probe/fed2d.m` and its raw run `.agent-work/runs/v-mps11/fed2d-all.txt`; the second is
+`.agent-work/probe/fedrun.m` of this band with `.agent-work/runs/v-mps12/fedrun-*.out` beside it, and the
+differential's own questions are in `refusals.txt` (`block-s2d-fed-axis-*`, `block-d2s-fed-axis-placeholder`).
 
 * **A CONSTANT of shape `[1]` answers exactly what the written-down axes answer**, byte for byte, in both
   directions and under both flags - measured over the same `[3, 4, 6]` of 1 to 72 with the same axes of 2, 1 and
@@ -1833,21 +1835,48 @@ own shape, and which the previous pass had declared but **never asked of the rel
   constant must be passed a ranked shape'`` (exit 134), so the axis tensor has to be written with a rank.
 * **A constant of MORE THAN ONE NUMBER builds the graph and leaves the result carrying no shape**, so there is
   nothing for a caller to read before the run and nothing to run into.
-* **A PLACEHOLDER is the one of the four the release does not refuse, and the one this port does.** The release
-  builds the graph with the result carrying **no shape at all**, hands back an executable, and its own run
-  answers the written-down form's values into the destination the caller gave it - measured: the `12x2x3` of
-  `(1, 3, 5, 13, 15, 17, 25, ... | 2, 4, 6, 14, ...)` over the three axes of 2, 1 and 0 fed one each, exit 0
-  (`block-s2d-fed-axis-placeholder`). The port raises where the graph is built instead, because the whole
-  chain - the split shape, the permutation and the result's own shape - would have to be built at run time
-  rather than at build time, which is the interpreter's own `fedParameter` arrangement and not a line in a
-  seam. **That is the one measured answer of this pair the port does not give, and it is the whole of what is
-  left of it.**
+* **A PLACEHOLDER answers at RUN TIME, in BOTH directions and under both flags**, which is the answer this pair
+  is built on: the release builds the graph with the result carrying **no shape at all**,
+  `-compileWithDevice:` still hands back an executable, and the run writes **exactly what the written-down axes
+  write** into the destination the caller gave it - the `12x2x3` of `(1, 3, 5, 13, 15, 17, 25, ... | 2, 4, 6,
+  14, ...)` and, without the flag, `(1, 3, 5, 13, 15, 17, 2, 4, 6, ...)`, and the `3x4x6` of
+  `(1, 19, 2, 20, 3, 21, 37, ... | 1, 7, 2, 8, 3, 9, 13, ...)` under the flag - exit 0. A placeholder of
+  shape `[0]` (0D) answers the same, an **int64** placeholder answers the same as an int32 one, and one fed
+  axis with the other two constants answers the same again in both directions.
+* **A fed placeholder of MORE THAN ONE NUMBER, and a fed float32 axis, are refused by the release's own
+  verifier**, at the **COMPILE** - the result tensor comes back with no shape at all and it is
+  `-compileWithDevice:` that takes the process down - with the verifier's own rule about the tensor:
+  `'mps.space_to_depth_2d' op operand #1 must be 0D tensor of mps index type values or static-shape defined
+  tensor with shape equal to [1] or unranked tensor of mps index type values`, naming what it got,
+  `'tensor<2xsi32>'` and `'tensor<1xf32>'` (exit 134, both directions). This port asks the same rule with the
+  same sentence, **where the graph is built** - the moment every other extent of this library is asked at, and
+  the only moment this port has for it.
+* **A fed axis whose VALUE the release cannot use is refused by the release in the RUN**, which is the only
+  moment there is: a width axis of 3 over a rank of 3 takes the process down with the written-down form's own
+  sentence, `'mps.space_to_depth_2d' op invalid width_axis (3) for shape of rank 3` (exit 134). The other two
+  of the family's refusals the release answers with a buffer it flags as an error in the same breath - a
+  degenerate pair of axes (`'mps.space_to_depth_2d' op Invalid degenerate axes: depth_axis (1) height_axis (1)
+  for shape of rank 3`, exit 0, the first eighteen elements and then zeros) and a block of 3 over a height of 4
+  (`block_size (3) must be multiple of height 4`, exit 0, a partial buffer) - so this port refuses all three,
+  at the run, with the release's own sentence.
 
-One thing measured on the way, which decides which of these questions can be asked at all: the
-**depth-to-space** over fed placeholder axes **was measured not to return within 300 s** on this host - it
-builds the graph and writes its `result-shape nil` line, and then the process is still there - so it is **not**
-in `refusals.txt` (a question that hangs would hang `run.sh`), and it is recorded here instead. Its
-space-to-depth counterpart, which is the one that is asked, returns (exit 0).
+### The depth-to-space over fed axes DOES answer, and the previous pass's hang was not this question
+
+The previous pass recorded that the **depth-to-space over fed placeholder axes was measured not to return
+within 300 s**, and left it out of `refusals.txt` because a question that hangs would hang `run.sh`. Measured
+again here under a timeout of 120 s per case, over six configurations - both directions, both flags, an int32
+and an int64 axis, a 0D axis, one axis fed with the other two constant, and a destination of the other
+direction's shape - **it answers in every one of them, and five consecutive runs of it are byte for byte the
+same**: the graph builds, the compile hands back an executable, the run writes the written-down form's values
+into the caller's destination and the process exits 0 (`block-d2s-fed-axis-placeholder`, which asks for it in
+`run.sh` itself, with no timeout, because it does not need one).
+
+Two things the second probe found on the way, both of them its own and neither of them an answer of the
+release: a destination of the **other** direction's shape does not hang either - the release writes its own
+flat bytes into the caller's buffer and reads them back through the shape the caller gave, so an answer
+differs from the same operation asked into a buffer of the right shape - and an int64 axis has to be fed in a
+buffer of **eight** bytes, or the release refuses the caller's own feed in its NDArray (`buffer is not large
+enough. Must be 8 bytes`, exit 134), which is a probe's artefact and not the pair's answer.
 
 ## The R4 names this band adds, in full
 

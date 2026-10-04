@@ -285,10 +285,23 @@ block-d2s-block-does-not-divide 134 block_size (3) squared (9) must be multiple 
 # THE FED PAIR of 15.0's own three questions, and they are the only ones of the family the release does NOT
 # refuse. A PLACEHOLDER for the three axes builds a graph whose result carries NO shape - so there is nothing
 # for a caller to read before the run - and its own run then answers the written-down form's values into the
-# destination the caller gave it, over the three axes of 2, 1 and 0 fed one each. A CONSTANT of NO RANK is
+# destination the caller gave it, over the three axes of 2, 1 and 0 fed one each - and the DEPTH-TO-SPACE answers the same way, which the previous pass recorded as measured not
+# to return. An int64 axis fed is taken and answered exactly as an int32 one is. A fed float32 axis and a fed
+# placeholder of two numbers are refused where the graph is COMPILED, with the verifier's own rule about the
+# tensor. A fed axis whose value the release cannot use is refused by the release in the RUN - a width axis
+# outside the rank takes the process down with the written-down form's own sentence - or answered with a buffer
+# the verifier flags at the same time, which is the degenerate pair of axes and a block that does not divide.
+# A CONSTANT of NO RANK is
 # not constructible at all: the release's own +constantWithData:shape:dataType: takes the process down. A
 # constant of MORE THAN ONE NUMBER builds the graph and leaves the result with no shape, as a placeholder
 # does, and nothing is written into the destination.
 block-s2d-fed-axis-placeholder 0 result-shape nil
 block-s2d-fed-axis-unranked 134 a constant must be passed a ranked shape
 block-s2d-fed-axis-two-numbers 0 result-shape nil
+block-s2d-fed-axis-float32 134 operand #1 must be 0D tensor of mps index type values or static-shape defined tensor with shape equal to [1] or unranked tensor of mps index type values, but got 'tensor<1xf32>'
+block-s2d-fed-axis-two-fed-numbers 134 operand #1 must be 0D tensor of mps index type values or static-shape defined tensor with shape equal to [1] or unranked tensor of mps index type values, but got 'tensor<2xsi32>'
+block-d2s-fed-axis-placeholder 0 result-shape nil
+block-s2d-fed-axis-outside-at-run 134 invalid width_axis (3) for shape of rank 3
+block-s2d-fed-axis-int64-at-run 0 0000803f000040400000a0400000504100007041000088410000c8410000d8410000e84100001442
+block-s2d-fed-axis-degenerate-at-run 0 Invalid degenerate axes: depth_axis (1) height_axis (1) for shape of rank 3
+block-s2d-fed-axis-block3-at-run 0 block_size (3) must be multiple of height 4

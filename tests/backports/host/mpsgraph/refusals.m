@@ -47,6 +47,7 @@
 - (MPSGraphTensor *)spaceToDepth2DTensor:(MPSGraphTensor *)tensor widthAxis:(NSUInteger)widthAxis heightAxis:(NSUInteger)heightAxis depthAxis:(NSUInteger)depthAxis blockSize:(NSUInteger)blockSize usePixelShuffleOrder:(BOOL)usePixelShuffleOrder name:(NSString *)name;
 - (MPSGraphTensor *)depthToSpace2DTensor:(MPSGraphTensor *)tensor widthAxis:(NSUInteger)widthAxis heightAxis:(NSUInteger)heightAxis depthAxis:(NSUInteger)depthAxis blockSize:(NSUInteger)blockSize usePixelShuffleOrder:(BOOL)usePixelShuffleOrder name:(NSString *)name;
 - (MPSGraphTensor *)spaceToDepth2DTensor:(MPSGraphTensor *)tensor widthAxisTensor:(MPSGraphTensor *)widthAxisTensor heightAxisTensor:(MPSGraphTensor *)heightAxisTensor depthAxisTensor:(MPSGraphTensor *)depthAxisTensor blockSize:(NSUInteger)blockSize usePixelShuffleOrder:(BOOL)usePixelShuffleOrder name:(NSString *)name;
+- (MPSGraphTensor *)depthToSpace2DTensor:(MPSGraphTensor *)tensor widthAxisTensor:(MPSGraphTensor *)widthAxisTensor heightAxisTensor:(MPSGraphTensor *)heightAxisTensor depthAxisTensor:(MPSGraphTensor *)depthAxisTensor blockSize:(NSUInteger)blockSize usePixelShuffleOrder:(BOOL)usePixelShuffleOrder name:(NSString *)name;
 - (MPSGraphTensor *)spaceToBatchTensor:(MPSGraphTensor *)tensor spatialAxes:(NSArray<NSNumber *> *)spatialAxes batchAxis:(NSInteger)batchAxis blockDimensions:(NSArray<NSNumber *> *)blockDimensions usePixelShuffleOrder:(BOOL)usePixelShuffleOrder name:(NSString *)name;
 - (MPSGraphTensor *)batchToSpaceTensor:(MPSGraphTensor *)tensor spatialAxes:(NSArray<NSNumber *> *)spatialAxes batchAxis:(NSInteger)batchAxis blockDimensions:(NSArray<NSNumber *> *)blockDimensions usePixelShuffleOrder:(BOOL)usePixelShuffleOrder name:(NSString *)name;
 @end
@@ -267,6 +268,10 @@ int main(int argc, const char *argv[])
             "block-s2d-block-does-not-divide", "block-d2s-block-does-not-divide",
             "block-s2d-fed-axis-placeholder",
             "block-s2d-fed-axis-unranked", "block-s2d-fed-axis-two-numbers",
+            "block-s2d-fed-axis-float32", "block-s2d-fed-axis-two-fed-numbers",
+            "block-d2s-fed-axis-placeholder", "block-s2d-fed-axis-outside-at-run",
+            "block-s2d-fed-axis-int64-at-run", "block-s2d-fed-axis-degenerate-at-run",
+            "block-s2d-fed-axis-block3-at-run",
         };
         unsigned i;
         for (i = 0; i < sizeof(kQuestions) / sizeof(kQuestions[0]); i++)
@@ -871,6 +876,98 @@ int main(int argc, const char *argv[])
                                            usePixelShuffleOrder:NO name:@"s"];
                     printf("%s result-shape %s\n", question.UTF8String,
                            t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil");
+                    return 0;
+                }
+                // WHAT THE RELEASE'S OWN VERIFIER WANTS OF A FED AXIS TENSOR, which is a rule about the
+                // tensor and not about its value and which the port asks where the graph is built: one
+                // number, of an index type. A fed float32 axis and a fed placeholder of two numbers are each
+                // refused there, before anything is compiled.
+                if (strstr(q, "float32") || strstr(q, "two-fed-numbers")) {
+                    // Asked through multi() and not by building and printing, because these two are refused
+                    // where the graph is COMPILED rather than built: measured, the result tensor comes back
+                    // with no shape at all and it is -compileWithDevice: that takes the process down.
+                    MPSDataType type = strstr(q, "float32") ? MPSDataTypeFloat32 : MPSDataTypeInt32;
+                    NSArray<NSNumber *> *shape = strstr(q, "float32") ? @[@1] : @[@2];
+                    // Each axis is fed its own number, in a buffer of the width the axis tensor declares: the
+                    // release reads the axis out of the caller's own buffer and refuses a short one in its own
+                    // NDArray ("buffer is not large enough. Must be 8 bytes"), which would be this question's
+                    // harness and not the release's answer to the pair.
+                    int32_t fed[3][2] = { { 2, 2 }, { 1, 1 }, { 0, 0 } };
+                    NSMutableArray *values = [NSMutableArray array];
+                    [values addObject:[NSData dataWithBytes:wideFeed length:72 * sizeof(float)]];
+                    for (int i = 0; i < 3; i++)
+                        [values addObject:[NSData dataWithBytes:fed[i] length:sizeof fed[i]]];
+                    multi(^(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g spaceToDepth2DTensor:in[0] widthAxisTensor:in[1] heightAxisTensor:in[2]
+                                        depthAxisTensor:in[3] blockSize:2 usePixelShuffleOrder:NO name:@"s"]; },
+                          @[threeByFourBySix, shape, shape, shape], values,
+                          @[@(MPSDataTypeFloat32), @(type), @(type), @(type)], twelveByTwoByThree, q);
+                    return 0;
+                }
+                // THE DEPTH-TO-SPACE over three fed axes, which the previous pass recorded as measured not to
+                // return within 300 s and which answers: the graph builds with the result carrying no shape,
+                // the compile hands back an executable, the run writes the written-down form's values into the
+                // destination the caller gave it, and the process exits 0. Measured under a timeout of 120 s in
+                // a probe of its own (.agent-work/probe/fedrun.m of the band that measured it), five runs of
+                // it byte for byte the same, so the hang was never this question's answer.
+                if (strstr(q, "depth-to-space")) {
+                    int32_t w = 2, h = 1, d = 0;
+                    MPSGraphTensor *operand = [graph placeholderWithShape:twelveByTwoByThree
+                                                                  dataType:MPSDataTypeFloat32 name:@"a"];
+                    MPSGraphTensor *widthT = [graph placeholderWithShape:@[@1] dataType:MPSDataTypeInt32 name:@"x"];
+                    MPSGraphTensor *heightT = [graph placeholderWithShape:@[@1] dataType:MPSDataTypeInt32 name:@"x"];
+                    MPSGraphTensor *depthT = [graph placeholderWithShape:@[@1] dataType:MPSDataTypeInt32 name:@"x"];
+                    MPSGraphTensor *t = [graph depthToSpace2DTensor:operand widthAxisTensor:widthT
+                                                 heightAxisTensor:heightT depthAxisTensor:depthT blockSize:2
+                                              usePixelShuffleOrder:NO name:@"n"];
+                    printf("%s result-shape %s\n", question.UTF8String,
+                           t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil");
+                    fflush(stdout);
+                    multi(^(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g depthToSpace2DTensor:in[0] widthAxisTensor:in[1] heightAxisTensor:in[2]
+                                        depthAxisTensor:in[3] blockSize:2 usePixelShuffleOrder:NO name:@"n"]; },
+                          @[twelveByTwoByThree, @[@1], @[@1], @[@1]],
+                          @[[NSData dataWithBytes:wideFeed length:72 * sizeof(float)],
+                            [NSData dataWithBytes:&w length:sizeof w],
+                            [NSData dataWithBytes:&h length:sizeof h],
+                            [NSData dataWithBytes:&d length:sizeof d]],
+                          @[@(MPSDataTypeFloat32), @(MPSDataTypeInt32), @(MPSDataTypeInt32), @(MPSDataTypeInt32)],
+                          threeByFourBySix, q);
+                    return 0;
+                }
+                // THE AXES A RUN IS REFUSED OVER, or answered wrongly by: the graph builds and the compile hands
+                // back an executable in every one of them, and it is the run that finds out.
+                if (strstr(q, "outside-at-run") || strstr(q, "int64-at-run") || strstr(q, "degenerate-at-run")
+                    || strstr(q, "block3-at-run")) {
+                    // What each question asks, and each over the axes it names and no other: a width axis
+                    // outside the rank, which takes the process down in the RUN; the same three axes as int64,
+                    // which the release takes and answers exactly as it answers int32; the depth axis among
+                    // the two spatial ones; and a block of 3 over a height of 4. The last two are the two the
+                    // release answers with a buffer it flags as an error in the same breath, and they are here
+                    // because the port refuses them where the graph runs and a reader has to see what it
+                    // refuses.
+                    BOOL wide = strstr(q, "int64-at-run") != NULL;
+                    int64_t wide64[3] = { 2, 1, 0 };
+                    int32_t narrow[3] = { 3, 1, 0 };
+                    if (strstr(q, "degenerate-at-run")) { narrow[0] = 2; narrow[1] = 1; narrow[2] = 1; }
+                    if (strstr(q, "block3-at-run")) { narrow[0] = 2; narrow[1] = 1; narrow[2] = 0; }
+                    NSUInteger block = strstr(q, "block3-at-run") ? 3 : 2;
+                    NSArray<NSNumber *> *axisShape = @[@1];
+                    NSMutableArray *values = [NSMutableArray array];
+                    [values addObject:[NSData dataWithBytes:wideFeed length:72 * sizeof(float)]];
+                    for (int i = 0; i < 3; i++)
+                        [values addObject:[NSData dataWithBytes:wide ? (const void *)&wide64[i]
+                                                                 : (const void *)&narrow[i]
+                                                         length:wide ? sizeof(int64_t) : sizeof(int32_t)]];
+                    multi(^(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g spaceToDepth2DTensor:in[0] widthAxisTensor:in[1] heightAxisTensor:in[2]
+                                        depthAxisTensor:in[3] blockSize:block usePixelShuffleOrder:NO name:@"s"]; },
+                          @[threeByFourBySix, axisShape, axisShape, axisShape], values,
+                          @[@(MPSDataTypeFloat32),
+                            @(wide ? MPSDataTypeInt64 : MPSDataTypeInt32),
+                            @(wide ? MPSDataTypeInt64 : MPSDataTypeInt32),
+                            @(wide ? MPSDataTypeInt64 : MPSDataTypeInt32)],
+                          twelveByTwoByThree, q);
                     return 0;
                 }
                 // The three axes of 2, 1 and 0, ONE EACH: the release reads all three where the graph runs, so
