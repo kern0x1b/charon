@@ -24,19 +24,17 @@ set_defaultarchs("iphoneos|armv7")
 target("sourcehandlers")
     add_rules("@addon/charon/daemon")
     add_files(path.join(os.scriptdir(), "sourcehandlers.c"))
-    -- The six shims and the call that makes a barrier block on a release with no dispatch_block_create of
-    -- its own, compiled exactly as packages/a/apple-compat/xmake.lua compiles them: one plain
-    -- `clang -Os -fvisibility=hidden -c`, and NO forced include of the renaming headers. The forced
-    -- include is what an IMAGE gets, so that the calls in the image bind to the shim. A shim's own call to
-    -- the release must not see it - with it, dispatch_source_cancel.c's `dispatch_source_cancel(source)`
-    -- is this file's own function again and the shim recurses until the stack runs out - and the probe
-    -- must not see it either, or its system column reaches the shim and the two columns are one column.
+    -- The release's own calls are what this program measures, so no shim of the cancellation or
+    -- registration kind is linked into it and the project builds from origin/main on its own. What it does
+    -- link is the call that makes a barrier block on a release with no dispatch_block_create of its own,
+    -- because a barrier handler has to be made somehow on 6.1.3, and this is the way a caller on this
+    -- release makes one.
+    --
+    -- Everything linked here is compiled exactly as packages/a/apple-compat/xmake.lua compiles it: one
+    -- plain `clang -Os -fvisibility=hidden -c`, and NO forced include of the renaming headers. A forced
+    -- include is what an IMAGE gets, so that the calls in the image bind to the shim; it must not reach
+    -- this program, or the readings below would be a shim's and not the release's.
     local shims = path.join(root, "packages", "a", "apple-compat", "src")
-    for _, symbol in ipairs({"dispatch_source_create", "dispatch_set_target_queue",
-                             "dispatch_source_set_cancel_handler", "dispatch_source_set_registration_handler",
-                             "dispatch_source_cancel", "dispatch_resume"}) do
-        add_files(path.join(shims, symbol .. ".c"))
-    end
     add_files(path.join(shims, "dispatch_block_create.c"))
     add_includedirs(shims)
     add_frameworks("Foundation")

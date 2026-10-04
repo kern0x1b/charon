@@ -1,10 +1,18 @@
-/* A barrier source's cancellation and registration handlers on the emulated iPhone3,1 at 6.1.3: the
-   release's own calls beside this package's shims, one scenario per process.
+/* What the release itself does with a barrier source's cancellation and registration handlers on the
+   emulated iPhone3,1 at 6.1.3 (10B329), one scenario per process.
 
-   This is tests/compat_test.py's DISPATCH_SOURCE_HANDLERS program - the same case body, the same line
-   format, the same readings, so the guest's answers can be laid beside the host's field by field - driven
-   the way this guest has to be driven. Two things about the emulated iPhone3,1 at 6.1.3 (10B329) are
-   measured, not assumed, and both are why:
+   This is the standing evidence for one measured fact about this release: libdispatch-228 already runs
+   both of those handlers alone on a concurrent target queue. The shims that used to stand beside these
+   readings are withdrawn - they answered alone=yes where the release already answers alone=yes, and the
+   step where they take the handler off the source ends the process on signal 5 here - so this program
+   now asks the release alone and builds from origin/main, with no shim of the cancellation or
+   registration kind in the binary at all. `nm` in run.sh checks that, next to the LC_UUID gate.
+
+   The case body, the line format and the readings are those of tests/compat_test.py's
+   DISPATCH_SOURCE_HANDLERS, so the guest's answers can be laid beside the host's field by field; what
+   is gone is the second column, which is why this file is its own program and not a copy of that one.
+
+   Two things about this guest are measured, not assumed, and both are why it is driven the way it is:
 
      - `xmake emulate run` takes a bare path. A command with words after the path comes back
        `fail(spawn error 2)`, and the program is run with argc == 1 and nothing else: measured 2026-10-04
@@ -16,10 +24,7 @@
        exit 0 on this release; measured 2026-10-04, the six children in main's first loop. So with no
        arguments the process forks one child per scenario, which is what one scenario per process needs.
 
-   The line is what the harness's parse() reads, so the keys are the same and in the same order, with one
-   addition: `the target queue record`, which is what tells the two columns apart when the shims found
-   nothing to work on. The harness's own check for it ("the two columns would agree because the shims did
-   nothing") could not fire before, because nothing printed the phrase it looks for.
+   The line is what the harness's parse() reads, so the keys are the same and in the same order.
 
    A scenario whose child ends on a signal says so, and names the signal: WEXITSTATUS of a signalled child
    is 0, so a probe that reads only the exit status reports a clean end for a process that died. */
@@ -75,32 +80,20 @@
    answer is not an answer. The source is never released either, because libdispatch traps on releasing a
    source that was never resumed and neverresumed asks about one.
 
-   system  the release's own calls, named as the SDK names them. No shim in this program defines a plain
-           dispatch name, so the program's own dispatch_* calls reach the release whether or not a shim is
-           linked in, and nothing renames them for it: the guest project compiles the shims exactly as
-           packages/a/apple-compat/xmake.lua compiles them, one plain `clang -Os -fvisibility=hidden -c`
-           with no forced include of the renaming headers. A forced include is what an image gets, so that
-           the calls in the image bind to the shim; a shim's own call to the release must not see it, or
-           dispatch_source_cancel.c calls itself, and the probe must not see it either, or its system
-           column would reach the shim.
-   shim    this package's six renamed shims, reached by the names their headers carry, and the source is
-           made through charon_dispatch_source_create too: with the release's own dispatch_source_create
-           there is no target queue record for the shims to find, and the two columns would then agree
-           because the shims had done nothing. The line says whether that record is there.
+   Every call below is the release's own, named as the SDK names it, and nothing renames it for this
+   program: the guest project compiles what it links exactly as packages/a/apple-compat/xmake.lua
+   compiles it, one plain `clang -Os -fvisibility=hidden -c` with no forced include of the renaming
+   headers. A forced include is what an IMAGE gets, so that the calls in the image bind to a shim; it
+   must not reach a shim's own translation unit either, or the shim's call to the release is the shim
+   again, and it must not reach this program, or these readings would be the shims' and not the
+   release's. run.sh's nm gate checks that no plain dispatch name is claimed by the binary at all.
 
    The handler is made through dispatch_block_create with DISPATCH_BLOCK_BARRIER, which on this release is
    this package's own call: dispatch_block_create arrived in iOS 8, and this package's reads the release's
    when there is one and makes the block itself when there is not, which is what puts the barrier bit
-   where its own dispatch_block.h can read it. A plain block literal carries no such bit, so the shims
-   would not see a barrier handler and would hand it to the release as it is, and the two columns would
-   agree for the wrong reason. */
-
-dispatch_source_t charon_dispatch_source_create(dispatch_source_type_t, uintptr_t, uintptr_t, dispatch_queue_t);
-void charon_dispatch_resume(dispatch_object_t);
-void charon_dispatch_set_target_queue(dispatch_object_t, dispatch_queue_t);
-void charon_dispatch_source_set_cancel_handler(dispatch_source_t, dispatch_block_t);
-void charon_dispatch_source_set_registration_handler(dispatch_source_t, dispatch_block_t);
-void charon_dispatch_source_cancel(dispatch_source_t);
+   where its own dispatch_block.h can read it. A plain block literal carries no such bit, so a caller on
+   this release that wants a barrier block has to make it this way - and the question this program asks
+   is what the release does with such a handler when nobody has renamed anything for it. */
 
 static volatile int holderInside;
 static volatile int handlerAlone;
@@ -111,7 +104,6 @@ static volatile int returned;
    capture a char array, so both handlers append to this one. */
 static char order[8];
 
-static int useSystem;
 static int registration;
 static int never;
 static int onQueue;
@@ -122,7 +114,6 @@ static dispatch_queue_t second;
 static dispatch_queue_t held;
 static dispatch_semaphore_t handlerDone;
 static const char *width;
-static int record;
 /* Where an answer goes. It is stdout when this program is run with a scenario named on the command line,
    and it is the writing end of a pipe when it is run on this guest with no arguments at all: a forked
    child's writes to this guest's standard output do not reach the runner's capture, which is measured - on
@@ -144,48 +135,32 @@ static void *where(void)
 
 static void *make_source(dispatch_queue_t queue)
 {
-    return useSystem ? dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue)
-                     : charon_dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    return dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
 }
 
 static void set_cancel(dispatch_source_t target, dispatch_block_t handler)
 {
-    if (useSystem)
-        dispatch_source_set_cancel_handler(target, handler);
-    else
-        charon_dispatch_source_set_cancel_handler(target, handler);
+    dispatch_source_set_cancel_handler(target, handler);
 }
 
 static void set_registration(dispatch_source_t target, dispatch_block_t handler)
 {
-    if (useSystem)
-        dispatch_source_set_registration_handler(target, handler);
-    else
-        charon_dispatch_source_set_registration_handler(target, handler);
+    dispatch_source_set_registration_handler(target, handler);
 }
 
 static void retarget(dispatch_object_t target, dispatch_queue_t queue)
 {
-    if (useSystem)
-        dispatch_set_target_queue(target, queue);
-    else
-        charon_dispatch_set_target_queue(target, queue);
+    dispatch_set_target_queue(target, queue);
 }
 
 static void resume_it(dispatch_object_t target)
 {
-    if (useSystem)
-        dispatch_resume(target);
-    else
-        charon_dispatch_resume(target);
+    dispatch_resume(target);
 }
 
 static void cancel_it(dispatch_source_t target)
 {
-    if (useSystem)
-        dispatch_source_cancel(target);
-    else
-        charon_dispatch_source_cancel(target);
+    dispatch_source_cancel(target);
 }
 
 static void call_under_test(void)
@@ -222,23 +197,19 @@ static void *runner(void *ignored)
 
 static void say(const char *which, const char *held, const char *ran)
 {
-    fprintf(answers, "%s %s %s: held=%s ran=%s alone=%s second=%s returned=%s order=%s%s\n", which, width,
-            useSystem ? "system" : "shim", held, ran,
+    fprintf(answers, "%s %s system: held=%s ran=%s alone=%s second=%s returned=%s order=%s\n", which, width,
+            held, ran,
             handlerAlone < 0 ? "n/a" : (handlerAlone ? "yes" : "no"),
             handlerOnSecond < 0 ? "n/a" : (handlerOnSecond ? "yes" : "no"),
-            returned ? "yes" : "no", order[0] ? order : "-",
-            record < 0 ? "" : (record ? " the target queue record: yes" : " the target queue record: NO"));
+            returned ? "yes" : "no", order[0] ? order : "-");
 }
 
-/* One scenario. The scenario is named by the arguments when there are any, which is how the host
-   differential runs this same program; on this guest there are none, and main forks one child per
-   scenario and calls this in the child with the arguments it would have been given. */
-static int scenario(int argc, char **argv)
+/* One scenario, named by its two arguments because this guest names nothing on the command line: main
+   forks one child per scenario and calls this in the child. The gap is the wait resumecancel leaves
+   between its two calls. */
+static int scenario(const char *which, int isSerial, int gapMs)
 {
-    const char *which = argc > 1 ? argv[1] : "cancel";
-    width = argc > 2 && strcmp(argv[2], "serial") == 0 ? "serial" : "concurrent";
-    useSystem = argc > 3 && strcmp(argv[3], "system") == 0;
-    int gapMs = argc > 4 ? atoi(argv[4]) : 0;
+    width = isSerial ? "serial" : "concurrent";
     registration = strcmp(which, "registration") == 0;
     never = strcmp(which, "neverresumed") == 0;
     int retargetBefore = strcmp(which, "retargetbefore") == 0;
@@ -296,8 +267,6 @@ static int scenario(int argc, char **argv)
         retarget(source, second);
         firstIsTarget = 0;
     }
-    record = useSystem ? -1 : (charon_source_target(source) != NULL ? 1 : 0);
-
     if (resumeCancel) {
         dispatch_block_t registration_handler = dispatch_block_create(DISPATCH_BLOCK_BARRIER, ^{
             size_t length = strlen(order);
@@ -440,66 +409,59 @@ static void check_guest(void)
    child that died is reported as the signal it died of rather than as a clean end. The fork is before any
    queue exists, so a child inherits no thread pool and creates its own, and it exits with _exit because the
    atexit handlers of a forked child are not this child's to run. */
-int main(int argc, char **argv)
+int main(void)
 {
     setvbuf(stdout, NULL, _IONBF, 0);
     answers = stdout;
     printf("the guest reports %ld processors, and OS_dispatch_source is %s\n",
            sysconf(_SC_NPROCESSORS_ONLN), objc_getClass("OS_dispatch_source") ? "present" : "ABSENT");
-    if (argc >= 4)
-        return scenario(argc, argv);
     check_guest();
 
     static const char *cases[] = {"cancel", "registration", "neverresumed", "retargetbefore",
                                   "retargetafter", "onqueue", "resumecancel", "ordinaryasync"};
-    static const char *widths[] = {"concurrent", "serial"};
     for (unsigned c = 0; c < sizeof cases / sizeof cases[0]; c++) {
-        for (unsigned w = 0; w < sizeof widths / sizeof widths[0]; w++) {
-            for (int api = 0; api < 2; api++) {
-                char *arguments[] = {argv[0], (char *)cases[c], (char *)widths[w],
-                                     (char *)(api ? "shim" : "system"), (char *)"50", NULL};
-                int ends[2];
-                if (pipe(ends) != 0) {
-                    printf("%s %s %s: PIPE FAILED\n", cases[c], widths[w], api ? "shim" : "system");
-                    continue;
-                }
-                fflush(stdout);
-                pid_t child = fork();
-                if (child == 0) {
-                    close(ends[0]);
-                    answers = fdopen(ends[1], "w");
-                    if (answers)
-                        setvbuf(answers, NULL, _IONBF, 0);
-                    int code = scenario(5, arguments);
-                    if (answers)
-                        fflush(answers);
-                    _exit(code);
-                }
-                close(ends[1]);
-                if (child < 0) {
-                    close(ends[0]);
-                    printf("%s %s %s: FORK FAILED\n", cases[c], widths[w], api ? "shim" : "system");
-                    continue;
-                }
-                int status = 0;
-                waitpid(child, &status, 0);
-                /* What the child answered, read to the end of its pipe: a child that ended on a signal has
-                   closed it, so this is empty for one, which is how "no answer" is told from an answer. */
-                FILE *reader = fdopen(ends[0], "r");
-                char line[512];
-                if (reader) {
-                    while (fgets(line, sizeof line, reader))
-                        fputs(line, stdout);
-                    fclose(reader);
-                }
-                close(ends[0]);
-                if (WIFSIGNALED(status))
-                    printf("%s %s %s: CHILD ENDED ON SIGNAL %d (%s), no answer\n", cases[c], widths[w],
-                           api ? "shim" : "system", WTERMSIG(status), strsignal(WTERMSIG(status)));
-                else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-                    printf("%s %s %s: CHILD ENDED status=%d\n", cases[c], widths[w],
-                           api ? "shim" : "system", WEXITSTATUS(status));
+        for (int serial = 0; serial < 2; serial++) {
+            int ends[2];
+            if (pipe(ends) != 0) {
+                printf("%s %s: PIPE FAILED\n", cases[c], serial ? "serial" : "concurrent");
+                continue;
             }
+            fflush(stdout);
+            pid_t child = fork();
+            if (child == 0) {
+                close(ends[0]);
+                answers = fdopen(ends[1], "w");
+                if (answers)
+                    setvbuf(answers, NULL, _IONBF, 0);
+                int code = scenario(cases[c], serial, 50);
+                if (answers)
+                    fflush(answers);
+                _exit(code);
+            }
+            close(ends[1]);
+            if (child < 0) {
+                close(ends[0]);
+                printf("%s %s: FORK FAILED\n", cases[c], serial ? "serial" : "concurrent");
+                continue;
+            }
+            int status = 0;
+            waitpid(child, &status, 0);
+            /* What the child answered, read to the end of its pipe: a child that ended on a signal has
+               closed it, so this is empty for one, which is how "no answer" is told from an answer. */
+            FILE *reader = fdopen(ends[0], "r");
+            char line[512];
+            if (reader) {
+                while (fgets(line, sizeof line, reader))
+                    fputs(line, stdout);
+                fclose(reader);
+            }
+            close(ends[0]);
+            if (WIFSIGNALED(status))
+                printf("%s %s: CHILD ENDED ON SIGNAL %d (%s), no answer\n", cases[c],
+                       serial ? "serial" : "concurrent", WTERMSIG(status), strsignal(WTERMSIG(status)));
+            else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+                printf("%s %s: CHILD ENDED status=%d\n", cases[c], serial ? "serial" : "concurrent",
+                       WEXITSTATUS(status));
         }
     }
     return 0;
