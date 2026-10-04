@@ -68,7 +68,14 @@ enum {
     ShearDivisorRowSum = 1
 };
 
+// **The arrays are sized by the MAXIMUM the loops allow and initialised with fewer, so the loops run over the
+// COUNT and not over `sizeof`.** The first version looped over `sizeof ShearScales / sizeof *ShearScales`,
+// which is the array's declared size: three zero scales and one zero translate were measured as if they were
+// cases, which is why the first guest run reported 128 cases where there are 70. A scale of zero is refused by
+// the release's own writer, so those cases printed the refusal and no measurement - harmless here, but a
+// count in a report that does not match the enumeration is exactly the kind of thing a reader cannot check.
 static const float ShearScales[ShearMaxScales] = { 1.0f, 2.0f, 0.5f, 0.75f, 0.25f };
+enum { ShearScaleCount = 5, ShearTranslateCount = 7 };
 static const double ShearTranslates[ShearMaxTranslates] = { 0.0, 1.0, -1.0, 0.5, -0.5, 2.5, 0.0078125 };
 
 typedef struct ShearPair {
@@ -538,9 +545,9 @@ int main(void)
     fflush(stdout);
 
     unsigned cases = 0, signalled = 0;
-    for (unsigned si = 0; si < sizeof ShearScales / sizeof *ShearScales; si++) {
+    for (unsigned si = 0; si < (unsigned)ShearScaleCount; si++) {
         for (int horizontal = 0; horizontal < 2; horizontal++) {
-            for (unsigned ti = 0; ti < sizeof ShearTranslates / sizeof *ShearTranslates; ti++) {
+            for (unsigned ti = 0; ti < (unsigned)ShearTranslateCount; ti++) {
                 float scale = ShearScales[si];
                 double translate = ShearTranslates[ti];
                 fflush(stdout);
@@ -575,7 +582,41 @@ int main(void)
                         _exit(0);
                     }
                     if (!CharonResampleFilterOf(run.filter, &run.ours)) {
+                        // A refusal with no numbers is not a measurement, so every field the reader reads and
+                        // both sides of every identity it checks are printed. The reader is
+                        // CharonResampling.h's, unchanged; this only says WHICH of its six checks failed and
+                        // on what, on the release's own object.
+                        const char *base = (const char *)run.filter;
                         printf("  the port refused the release's own filter at a scale of %g\n", (double)scale);
+                        printf("    object %p, slot %d bytes\n", (void *)run.filter, (int)CharonResampleSlot);
+                        printf("    word 0 reciprocal %g\n", *(double *)(void *)(base + 0 * CharonResampleSlot));
+                        printf("    word 1 taps       %u\n", *(unsigned *)(void *)(base + 1 * CharonResampleSlot));
+                        printf("    word 2 floatStride %u\n", *(unsigned *)(void *)(base + 2 * CharonResampleSlot));
+                        printf("    word 3 int16Stride %u\n", *(unsigned *)(void *)(base + 3 * CharonResampleSlot));
+                        printf("    word 4 phases     %u\n", *(unsigned *)(void *)(base + 4 * CharonResampleSlot));
+                        printf("    word 5 exponent   %u\n", *(unsigned *)(void *)(base + 5 * CharonResampleSlot));
+                        printf("    word 6 offset     %u\n", *(unsigned *)(void *)(base + 6 * CharonResampleSlot));
+                        const char *table = *(const char *const *)(void *)(base + 7 * CharonResampleSlot);
+                        const char *fbase = *(const char *const *)(void *)(base + 8 * CharonResampleSlot);
+                        unsigned i16 = *(unsigned *)(void *)(base + 3 * CharonResampleSlot);
+                        unsigned ph = *(unsigned *)(void *)(base + 4 * CharonResampleSlot);
+                        unsigned off = *(unsigned *)(void *)(base + 6 * CharonResampleSlot);
+                        printf("    word 7 table      %p (inside %ld)\n", (const void *)table,
+                               table ? (long)(table - base) : -1L);
+                        printf("    word 8 base       %p\n", (const void *)fbase);
+                        if (table && ph && i16) {
+                            printf("    identity 1 offset == (table - object) + phases*int16Stride:"
+                                   " %u against %ld + %u\n", off, (long)(table - base), ph * i16);
+                            printf("    identity 2 offset == (table - object) + int16Stride:"
+                                   " %u against %ld + %u\n", off, (long)(table - base), i16);
+                            printf("    identity 3 table - base == floatStride*(phases+1): %ld against %u\n",
+                                   (long)(table - fbase),
+                                   *(unsigned *)(void *)(base + 2 * CharonResampleSlot) * (ph + 1));
+                        }
+                        printf("    first 40 bytes of the object:");
+                        for (int z = 0; z < 40; z++)
+                            printf(" %02x", (unsigned char)base[z]);
+                        printf("\n");
                         fflush(stdout);
                         _exit(0);
                     }

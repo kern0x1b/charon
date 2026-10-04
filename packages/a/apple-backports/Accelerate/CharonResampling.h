@@ -67,17 +67,46 @@
 #import <Accelerate/Accelerate.h>
 
 enum {
-    // A field is a 32-bit slot at byte 4k on armv7 and armv7s, and a 64-bit slot at byte 8k on arm64. The
-    // compiler's own architecture macros name which, so the port keys the layout on the target and not on a
-    // release number it cannot see from here.
+    // A field is a 32-bit slot on armv7 and armv7s and a 64-bit slot on arm64. The compiler's own architecture
+    // macros name which, so the port keys the layout on the target and not on a release number it cannot see
+    // from here.
     CharonResampleSlot = (int)(sizeof(void *) >= 8 ? 8 : 4),
     // The phase count the release's own writer clamps to, and the bound the sum array below is sized by.
     CharonResampleMaxPhases = 64
 };
 
+// **The first field is the DOUBLE and it is TWO slots wide, so field `index` is NOT at `index * slot`.** On
+// arm64 the double occupies bytes 0..7 and field `k` is at byte `8 * k`, which is `index * slot` with an 8-byte
+// slot. On armv7 the same double occupies bytes 0..7 out of four-byte slots, so field 1 would land at byte 4 -
+// inside the double - and the release puts `numTaps` at byte **8**, which is slot **2**. Every field from
+// `numTaps` on was therefore read one word early on every armv7 release: `taps` came back as the double's own
+// mantissa (`1072693248`, which is `0x3FF00000` - the low word of `1.0`), the table pointer came back as the
+// offset, and the reader refused the caller's filter, so every shear answered `kvImageInvalidParameter`.
+//
+// Measured on iPhone3,1 6.1.3 10B329, the release's own object, forty bytes, and `taps` is the `06` at byte 8:
+//
+//     00 00 00 00 00 00 f0 3f   byte 0   the double 1.0
+//     06 00 00 00               byte 8   numTaps 6
+//     20 00 00 00               byte 12  floatStride 32
+//     10 00 00 00               byte 16  int16Stride 16
+//     40 00 00 00               byte 20  phases 64
+//     06 00 00 00               byte 24  the exponent 6
+//     50 0c 00 00               byte 28  the offset 3152
+//     50 44 90 10               byte 32  the Q14 table
+//     30 3c 90 10               byte 36  the float table's base
+//
+// and with these offsets every identity below holds on it: `offset == (table - object) + phases*int16Stride`
+// is `3152 == 2128 + 64*16`, and `table - base == floatStride*(phases+1)` is `2080 == 32*65`.
+//
+// Nothing here changes arm64, where `8 + 8*(k-1)` is `8*k` - the same address it always was. It is invisible on
+// this Mac, where every filter the host differential reads is an arm64 one, and it was invisible in 11916 host
+// checks for that reason.
+#define CHARON_RESAMPLE_OFFSET(index) \
+    ((index) == 0 ? (size_t)0 : (size_t)8 + (size_t)(CharonResampleSlot) * (size_t)((index) - 1))
+
 // Field `index` of the object, as the width that architecture gives it.
 #define CHARON_RESAMPLE_SLOT(object, index, type) \
-    (*(type *)(void *)((const char *)(object) + (size_t)(index) * (size_t)CharonResampleSlot))
+    (*(type *)(void *)((const char *)(object) + CHARON_RESAMPLE_OFFSET(index)))
 
 // The filter, as the engine wants it: the release's table, described. `reciprocal` is the release's own double
 // and the engine multiplies positions by it, because that is what the release's worker does with the value it
