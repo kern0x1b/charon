@@ -23,7 +23,32 @@ xmake=/opt/homebrew/bin/xmake
 mkdir -p "$out"
 cd "$here"
 
-/opt/homebrew/bin/xmake emulate -d "$device" -r "$release" -t 900 -s 300 run "/usr/libexec/metalchain-probe" > "$out/run.log" 2>&1 || true
+"$xmake" emulate -d "$device" -r "$release" -t 900 -s 300 run "/usr/libexec/metalchain-probe" > "$out/run.log" 2>&1 || true
 "$xmake" emulate log > "$out/guest.log" 2>&1 || true
-echo
-echo "run-guest.sh: the verdict is in $out/run.log and the guest's own output in $out/guest.log"
+
+# THE VERDICT IS ANSWERED HERE, not left in a file for a reader to find: `xmake emulate run` exits
+# non-zero on a failed verdict BY DESIGN - a FAIL is a result - so `|| true` above keeps that exit from
+# stopping the script before the result is read, and what decides the exit below is the probe's own
+# summary line and the framework's verdict word. Both are printed with the line they came from.
+summary=$(grep -a 'check(s),' "$out/run.log" | tail -1 || true)
+if [ -z "$summary" ]; then
+  echo "run-guest.sh: the run left no summary line, so the probe did not finish; the log is $out/run.log"
+  exit 1
+fi
+# The emulator's own word is on the line that names the device and the release - "error: fail(exit 1) on
+# iPhone3,1 6.1.3 (10B329) in 0.0 guest s" - and the line is read whole rather than through a pattern, so
+# the verdict word cannot be missed by a regexp that does not know how xmake spells it.
+verdict_line=$(grep -a 'on iPhone' "$out/run.log" | tail -1 || true)
+printf 'run-guest.sh: %s\n' "$summary"
+if [ -n "$verdict_line" ]; then
+  printf 'run-guest.sh: the emulator says: %s\n' "$verdict_line"
+fi
+echo "run-guest.sh: the full log is $out/run.log and the guest's own output $out/guest.log"
+
+# A probe that reported a failure or a case it could not answer has NOT passed, whatever the emulator's
+# own word is: the probe exits non-zero in both cases and prints its own counts, and those counts are
+# what this script holds it to.
+case "$summary" in
+  *"0 failure(s), 0 not answered"*) exit 0 ;;
+  *) echo "run-guest.sh: NOT a pass - the probe reported a failure or a case it could not answer"; exit 1 ;;
+esac
