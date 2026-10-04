@@ -24,6 +24,7 @@ package("apple-backports")
     -- this package made itself over the archive, and every name it needs begins with Charon.
     add_deps("charon@micro-ecc", {alias = "micro-ecc"})
 
+    local add_configs = add_configs
     local modules = path.join(os.scriptdir(), "..", "..", "..", "modules")
     local inputs = table.join(os.files(path.join(os.scriptdir(), "*.c")), os.files(path.join(os.scriptdir(), "*.h")),
                               os.files(path.join(os.scriptdir(), "*", "*.m")), os.files(path.join(os.scriptdir(), "*", "*.mm")), os.files(path.join(os.scriptdir(), "*", "*.h")),
