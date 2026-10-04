@@ -19,9 +19,12 @@ function failures(opt)
     -- the macros in a header of their own, as the SDK has them: the location of a use that names a file only where it differs from the last
     io.writefile(path.join(sdk, path.directory(header), "Avail.h"), "#define ios(version) ios, introduced=version\n" ..
                  "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n")
+    -- Foundation's umbrella, which the umbrella lift() generates imports first, and where this fixture's NSObject is
+    -- declared: one translation unit cannot declare a protocol twice, so Fix.h reaches it there and does not declare it
+    io.writefile(path.join(sdk, "System", "Library", "Frameworks", "Foundation.framework", "Headers", "Foundation.h"),
+                 "@protocol NSObject @end\n@protocol NSCopying @end\n__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\n")
     io.writefile(path.join(sdk, header), table.concat({
-        "@protocol NSObject @end", "@protocol NSCopying @end", "__attribute__((objc_root_class)) @interface NSObject <NSObject> @end",
-        '#include "Avail.h"',
+        '#include "Avail.h"', '#import <Foundation/Foundation.h>',
         "enum FixFlagsKind { FixFlagsKindA API_AVAILABLE(ios(8.0)) = 1, FixFlagsKindB API_AVAILABLE(ios(9.0)) = 2 };",
         "void FixOpenAlpha(void) API_AVAILABLE(ios(8.0));",
         "void FixOpenBeta(void) API_AVAILABLE(ios(9.0));",
