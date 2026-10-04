@@ -28,10 +28,16 @@ only=${UIKIT2_ONLY:-}
 prefixer="$here/../prefix_selectors.py"
 
 defines_what_it_calls() {
-    # $1: the test's binary, rest: the port's objects. A prefixed selector the test names and no object
-    # defines is a link-time no-op and an unrecognized selector when the test reaches it, which nothing in
-    # the gate sees; check-private-selectors.py is the check, and it runs over what this group just built.
-    if ! python3 "$here/../check-private-selectors.py" "$@"; then
+    # $1: the test's binary, $2: the test's source, rest: the port's objects. A prefixed selector the test names
+    # and no object defines is a link-time no-op and an unrecognized selector when the test reaches it, which
+    # nothing in the gate sees; check-private-selectors.py is the check, and it runs over what this group just
+    # built. The source goes with it so the check can tell a whole selector from a piece of one: a test that
+    # spells the name it sends at run time holds that name's pieces as literals, and
+    # [@"charonHostSet" stringByAppendingString:...] is not a selector anything has to define.
+    binary=$1
+    source=$2
+    shift 2
+    if ! python3 "$here/../check-private-selectors.py" --source "$source" "$binary" "$@"; then
         status=1
     fi
 }
@@ -143,7 +149,7 @@ prefixed_group() {
     prefixed_build "$name" "$2" || return 0
     test=$3
     xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/$test" "$harness/check.m" $built $frameworks -o "$build/$name-test"
-    defines_what_it_calls "$build/$name-test" $built
+    defines_what_it_calls "$build/$name-test" "$here/$test" $built
     if "$build/$name-test" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
     grep -v '^ok ' "$build/$name.log" || true
     echo "$name: exit=$result log=$build/$name.log"
@@ -169,7 +175,7 @@ prefixed_windowed() {
     xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/windowed.m" "$here/$test" "$harness/check.m" $built $frameworks -o "$bundle/Contents/MacOS/app"
     cp "$here/windowed.plist" "$bundle/Contents/Info.plist"
     codesign -s - --force "$bundle" > /dev/null 2>&1
-    defines_what_it_calls "$bundle/Contents/MacOS/app" $built
+    defines_what_it_calls "$bundle/Contents/MacOS/app" "$here/$test" $built
     if "$bundle/Contents/MacOS/app" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
     grep -v '^ok ' "$build/$name.log" | grep -a 'FAIL\|checks=\|info' || true
     echo "$name: exit=$result log=$build/$name.log"
