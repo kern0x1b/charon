@@ -319,6 +319,8 @@ int main(int argc, const char *argv[])
             "block-b2s-batch-among-spatial", "block-b2s-block-list-short",
             "block-s2b-batch-outside", "block-s2b-batch-negoutside",
             "block-b2s-batch-outside", "block-b2s-batch-negoutside",
+            "block-s2b-fed-axes", "block-s2b-fed-batch", "block-s2b-fed-block",
+            "block-b2s-fed-axes", "block-b2s-fed-batch", "block-b2s-fed-block",
             "block-s2d-axis-outside", "block-s2d-axis-negoutside", "block-s2d-degenerate-axes",
             "block-s2d-block-does-not-divide", "block-d2s-block-does-not-divide",
             "block-s2d-fed-axis-placeholder",
@@ -407,6 +409,90 @@ int main(int argc, const char *argv[])
                 return [g reshapeTensor:a withShape:@[@-1] name:@"r"]; }, twoByFour, rowFeed, "reshape-dynamic-only");
             return 0;
         }
+            // THE 16.1 GENERAL FORM over its THREE FED LISTS, which is the arrangement the 15.0 fed pair
+            // established: the result tensor carries no shape at build, the compile hands back an executable,
+            // and the RUN reads the lists and answers. Six questions - both directions, each of the three
+            // parameters fed in turn - over the [3, 4, 6] of 1 to 72 with the spatial axes @[@1, @2], the
+            // batch axis @0 and the block @[@2, @2], the other two held as constants.
+            else if (strstr(q, "block-s2b-fed-axes") || strstr(q, "block-s2b-fed-batch") ||
+                     strstr(q, "block-s2b-fed-block") || strstr(q, "block-b2s-fed-axes") ||
+                     strstr(q, "block-b2s-fed-batch") || strstr(q, "block-b2s-fed-block")) {
+                int32_t axes[2] = { 1, 2 }, batch = 0, block[2] = { 2, 2 };
+                MPSGraph *graph = [MPSGraph new];
+                NSArray<NSNumber *> *threeByFourBySix = @[@3, @4, @6];
+                NSArray<NSNumber *> *twelveByTwoByThree = @[@12, @2, @3];
+                BOOL toBatch = strstr(q, "s2b") != NULL;
+                int which = strstr(q, "axes") ? 1 : (strstr(q, "batch") ? 2 : 3);
+                MPSGraphTensor *src = [graph placeholderWithShape:toBatch ? threeByFourBySix : twelveByTwoByThree
+                                                            dataType:MPSDataTypeFloat32 name:@"a"];
+                MPSGraphTensor *ax = which == 1
+                    ? [graph placeholderWithShape:@[@2] dataType:MPSDataTypeInt32 name:@"x"]
+                    : [graph constantWithData:[NSData dataWithBytes:axes length:sizeof axes] shape:@[@2]
+                                 dataType:MPSDataTypeInt32];
+                MPSGraphTensor *wh = which == 2
+                    ? [graph placeholderWithShape:@[@1] dataType:MPSDataTypeInt32 name:@"y"]
+                    : [graph constantWithData:[NSData dataWithBytes:&batch length:sizeof batch] shape:@[@1]
+                                 dataType:MPSDataTypeInt32];
+                MPSGraphTensor *sz = which == 3
+                    ? [graph placeholderWithShape:@[@2] dataType:MPSDataTypeInt32 name:@"z"]
+                    : [graph constantWithData:[NSData dataWithBytes:block length:sizeof block] shape:@[@2]
+                                 dataType:MPSDataTypeInt32];
+                MPSGraphTensor *fed = toBatch
+                    ? [graph spaceToBatchTensor:src spatialAxesTensor:ax batchAxisTensor:wh
+                            blockDimensionsTensor:sz usePixelShuffleOrder:NO name:@"s"]
+                    : [graph batchToSpaceTensor:src spatialAxesTensor:ax batchAxisTensor:wh
+                            blockDimensionsTensor:sz usePixelShuffleOrder:NO name:@"b"];
+                // ONLY THE FED LIST goes into the feeds and the inputs: a constant is in the graph and not a
+                // feed, and one there is the release's own "Input feed tensor not found in placeholders,
+                // tensor corresponds to operation: mps_constant" (MPSGraphExecutable.mm:1990), which says
+                // nothing about the fed list - measured, and it is what this question asked first.
+                NSMutableDictionary *shaped = [NSMutableDictionary dictionary];
+                NSMutableArray *inputs = [NSMutableArray array];
+                NSArray<NSNumber *> *operandShape = toBatch ? threeByFourBySix : twelveByTwoByThree;
+                shaped[src] = [[MPSGraphShapedType alloc] initWithShape:operandShape dataType:MPSDataTypeFloat32];
+                [inputs addObject:[[MPSGraphTensorData alloc] initWithMTLBuffer:
+                                      [gDevice newBufferWithBytes:wideFeed length:72 * sizeof(float)
+                                                          options:MTLResourceStorageModeShared]
+                                               shape:operandShape dataType:MPSDataTypeFloat32]];
+                NSArray<NSNumber *> *fedShape = which == 2 ? @[@1] : @[@2];
+                const void *fedBytes = which == 1 ? (const void *)axes
+                    : (which == 2 ? (const void *)&batch : (const void *)block);
+                shaped[which == 1 ? ax : (which == 2 ? wh : sz)] =
+                    [[MPSGraphShapedType alloc] initWithShape:fedShape dataType:MPSDataTypeInt32];
+                // The fed list's buffer is its own ELEMENT COUNT and not its rank: a list of two axes is
+                // declared [2] - one axis of extent two - and fed eight bytes, and handing it the four a rank
+                // would give is the release's own NDArray saying "buffer is not large enough. Must be 8
+                // bytes", which says nothing about the operation - measured, and it is what this question
+                // asked first.
+                NSUInteger fedCount = 1;
+                for (NSNumber *one in fedShape) fedCount *= (NSUInteger)one.integerValue;
+                [inputs addObject:[[MPSGraphTensorData alloc] initWithMTLBuffer:
+                                      [gDevice newBufferWithBytes:fedBytes
+                                                          length:fedCount * sizeof(int32_t)
+                                                        options:MTLResourceStorageModeShared]
+                                               shape:fedShape dataType:MPSDataTypeInt32]];
+                printf("%s result-shape %s\n", q,
+                       fed.shape ? [[fed.shape componentsJoinedByString:@"x"] UTF8String] : "nil");
+                NSArray<NSNumber *> *destination = toBatch ? twelveByTwoByThree : threeByFourBySix;
+                size_t outBytes = 72 * sizeof(float);
+                id<MTLBuffer> out = [gDevice newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
+                memset([out contents], gPattern, outBytes);
+                MPSGraphExecutable *e2 = [graph compileWithDevice:gGraphDevice feeds:shaped targetTensors:@[fed]
+                                                  targetOperations:@[] compilationDescriptor:nil];
+                printf("%s executable %s\n", q, e2 == nil ? "nil" : "built");
+                if (e2 == nil) return 0;
+                [e2 runWithMTLCommandQueue:[gDevice newCommandQueue] inputsArray:inputs
+                              resultsArray:@[[[MPSGraphTensorData alloc] initWithMTLBuffer:out shape:destination
+                                                                                       dataType:MPSDataTypeFloat32]]
+                       executionDescriptor:nil];
+                printf("%s run returned\n", q);
+                const float *p2 = (const float *)[out contents];
+                printf("%s bytes", q);
+                for (size_t i = 0; i < 72; i++) printf(" %.0f", p2[i]);
+                printf("\n");
+                fflush(stdout);
+                return 0;
+            }
         // THE OTHER RUN PATH of the five fed forms and the reshape's own: the release allocates the result, so
         // what the caller gets is a shape rather than a buffer it chose, and the shape is what it resolved.
         if (strcmp(q, "fed-flatten-axis-own") == 0) {

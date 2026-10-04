@@ -1221,10 +1221,12 @@ typedef enum {
 
 // The FED forms of the block-moving family, where the spatial axes, the batch axis and the block dimensions
 // each arrive as a tensor. A parameter the graph HOLDS - a CONSTANT - is read here, when the graph is built,
-// and one the caller FEEDS is refused here: measured, the release answers a constant of the same values with
-// exactly what the written-down form answers, and takes the process down over a placeholder, which is the rule
-// this library follows for every fed parameter of this framework's shape family (the split's sizes, the
-// coordinate's axis and shape, and here the three of this one).
+// and one the caller FEEDS is read when the graph RUNS instead, by the same plan the 2D form's fed pair is:
+// measured on this host's own MPSGraph over the [3, 4, 6] of 1 to 72, both directions and each of the three
+// parameters fed in turn, the release builds a graph whose result carries no shape, the compile hands back an
+// executable, and the run writes exactly what the written-down axes write over the same operand. What the
+// release refuses over a fed parameter is a FLOATING POINT one, at the graph's own building, with the sentence
+// below - which is the same rule the 2D form's fed pair carries and not the rule this comment used to state.
 - (MPSGraphTensor *)charon_mps_fedBlockShuffle:(MPSGraphTensor *)tensor
                                        spatial:(MPSGraphTensor *)spatial
                                          batch:(MPSGraphTensor *)batch
@@ -1247,11 +1249,22 @@ typedef enum {
                                @"space_to_batch' op operand #%lu must be 0D tensor of mps index type values\"",
                               name, (unsigned)type, (unsigned long)(fed == spatial ? 1 : (fed == batch ? 2 : 3))];
         }
-        [NSException raise:NSInvalidArgumentException
-                    format:@"MPSGraph: %@ was given a parameter of this family as a tensor the caller feeds, "
-                           @"and a parameter that arrives as data is not one the release can build a graph over: "
-                           @"measured, it answers a CONSTANT of the same values with exactly what the written-"
-                           @"down form answers and takes the process down over a placeholder", name];
+        // A PARAMETER THE CALLER FEEDS IS ANSWERED, at run time, by the same plan the 2D form's fed pair is:
+        // measured on this host's own MPSGraph over the [3, 4, 6] of 1 to 72, both directions and each of the
+        // three parameters fed in turn, the release builds a graph whose result carries NO shape,
+        // -compileWithDevice: hands back an executable, and the run writes exactly what the written-down axes
+        // write over the same operand - so the previous claim here, that a fed parameter is one the release
+        // cannot build a graph over, was true of the 2D form's verifier and NOT of these. A floating point one
+        // is still refused above, with the release's own compiler sentence, because that one it refuses at the
+        // graph's own building.
+        return [self charon_mps_operation:CharonMPSGraphOperationKindBlockShuffle
+                                      inputs:@[tensor, spatial, batch, block]
+                                  parameters:@{@"blockShuffle": @YES,
+                                               @"blockShuffleGeneral": @YES,
+                                               @"blockShuffleToBatch": @(toBatch),
+                                               @"blockShuffleShuffle": @(shuffle),
+                                               @"resultShapeIsFed": @YES}
+                                         name:name];
     }
     if (where.count != 1) {
         [NSException raise:NSInvalidArgumentException

@@ -13,10 +13,10 @@
 // result's spatial axes keep the OPERAND's order whichever order the list is written in, and the list of
 // block dimensions is read in the order it is written - all three measured.
 //
-// The FED forms are the header's own and the release's answer to them is the same as everywhere else in this
-// library's shape family: a CONSTANT of the values answers, and exactly what the written-down form answers,
-// and a PLACEHOLDER - which is what a caller who wants the axes to arrive as data makes - takes the release
-// down. refusals.m measures both.
+// The FED forms are the header's own and the release answers all three of their parameters, as data: a CONSTANT
+// of the values at the graph's own building, and a PLACEHOLDER - which is what a caller who wants the axes to
+// arrive as data makes - at the run, where the three LISTS are read and the plan is asked. refusals.m measures
+// the six cases and facts/MetalPerformanceShadersGraph/Core.md carries every number.
 #import "CharonMPSGraph.h"
 
 @implementation MPSGraph (CharonMPSGraphTensorShape161)
@@ -68,11 +68,13 @@
 }
 
 // The FED forms of the two above, where the spatial axes, the batch axis and the block dimensions each
-// arrive as a tensor. The port reads a fed parameter the graph HOLDS - a constant - when the graph is built,
-// which is the only fed form the release answers (measured: int32 constants of the same values answer
-// exactly what the written-down axes answer, over the same operand), and refuses a placeholder there, because
-// the release takes the process down over one: the split family measured the same rule for a split's sizes,
-// and this is the same header's fed shape.
+// arrive as a tensor. The port reads a parameter the graph HOLDS - a constant - when the graph is built and a
+// parameter the caller FEEDS when the graph runs, both through the one plan the family's written-down forms
+// build the graph from: measured on this host's own MPSGraph over the [3, 4, 6] of 1 to 72, int32 constants
+// answer exactly what the written-down axes answer over the same operand, and a PLACEHOLDER answers the same
+// thing one stage later - the result tensor carries no shape, the compile hands back an executable and the run
+// writes the written-down answer into the destination the caller gave - in BOTH directions and with each of the
+// three parameters fed in turn. What it refuses is a floating point parameter, at the graph's own building.
 - (MPSGraphTensor *)spaceToBatchTensor:(MPSGraphTensor *)tensor
                     spatialAxesTensor:(MPSGraphTensor *)spatialAxesTensor
                       batchAxisTensor:(MPSGraphTensor *)batchAxisTensor

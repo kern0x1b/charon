@@ -1963,6 +1963,42 @@ differential's own questions are in `refusals.txt` (`block-s2d-fed-axis-*`, `blo
   (`block_size (3) must be multiple of height 4`, exit 0, a partial buffer) - so this port refuses all three,
   at the run, with the release's own sentence.
 
+### The 16.1 fed LISTS answer, and the rows that said they do not were measuring the wrong thing
+
+The general form's two fed rows - `spaceToBatchTensor:spatialAxesTensor:batchAxisTensor:blockDimensionsTensor:...`
+and its inverse - said a parameter that arrives as data is one the release cannot build a graph over, and the
+port **refused a placeholder where the graph is built**. Measured over the `[3, 4, 6]` of 1 to 72 with the
+spatial axes `@[@1, @2]`, the batch axis `@0` and the block `@[@2, @2]`, **each of the three parameters fed in
+turn and in both directions** (`.agent-work/probe/fedlists.m`, one case per process under a timeout):
+
+* the release builds a graph whose result tensor carries **no shape**,
+* `-compileWithDevice:` **hands back an executable**,
+* the **run writes exactly what the written-down axes write** over the same operand - the `12x2x3` of
+  `(1, 3, 5, 13, 15, 17, 25, ... | 2, 4, 6, 14, ...)` and, the other way, the `3x4x6` of
+  `(1, 19, 2, 20, 3, 21, 37, ...)` - **exit 0** in all six.
+
+So this is the 2D form's fed pair with the **lists** the general form hands over, and the plan takes them as it
+takes the 2D form's two. `charon_mps_fedBlockShuffle:` now builds one operation of the family with the operand
+and the three tensors, and the interpreter reads the three lists when the graph runs and asks
+`CharonMPSGraphBlockShufflePlan` - through `charon_mps_runBlockShuffleChain:into:from:operation:values:`, which
+is the 2D pair's own three walks (a reshape into the split shape, the permutation transpose and the merge back)
+factored out so that both ask it rather than one of them repeating it. What the release refuses over a fed list
+is a **floating point** one, at the graph's own building, and that is where the port refuses it.
+
+Three things the measurement had to get right, each of them this band's own first attempt:
+
+* **only the FED list goes into the feeds.** A constant is in the graph and not a feed, and one there is the
+  release's own *"Input feed tensor not found in placeholders, tensor corresponds to operation: mps_constant"*
+  (`MPSGraphExecutable.mm:1990`) - which is what the first version of the probe asked, in all six cases.
+* **the fed list's buffer is its ELEMENT COUNT and not its rank.** A list of two axes is declared `[2]` - one
+  axis of extent two - and fed **eight** bytes; four is the release's *"buffer is not large enough. Must be 8
+  bytes"* (`MPSNDArray.mm:893`), the same refusal this page already records once for a destination sized off a
+  `-1`.
+* **the feeds go in the graph's own PLACEHOLDER ORDER**, so the operand's placeholder is made first; otherwise
+  the release reads the float operand where it expects the int32 list - *"Incompatible element type for
+  parameter at index 0, mlir module expected element type si32 but received f32"*
+  (`MPSGraphExecutable.mm:4490`).
+
 ### The BATCH AXIS outside the rank, both directions, and the port's own sentence was wrong twice
 
 The general form's batch axis had **no question in the harness at all**: the fed 2D form's own question

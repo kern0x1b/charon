@@ -2732,6 +2732,47 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
     return CharonMPSGraphConcatPlan(name, shapes, axis, interleave, stacked)[@"shape"];
 }
 
+// THE CHAIN of the block-moving family at RUN time, over a plan the graph could not be built from: a reshape
+// into the split shape, the permutation transpose and the merge back - the very three walks
+// -charon_mps_blockShuffle: builds into the graph when the axes are numbers the caller wrote down. Each of the
+// three is the gather of its own kind with the shape or the permutation the plan carries, so the walk is the
+// gather walk and not a second one, and the 2D form's fed pair and 16.1's fed general form both come through
+// here. The result's shape is the last step's own and it goes on the output tensor, because it was not known
+// when the graph was built: the caller's destination is sized by the caller, and this is what the answer is
+// copied into.
+- (void)charon_mps_runBlockShuffleChain:(NSDictionary *)chain
+                                     into:(MPSGraphTensor *)output
+                                     from:(MPSGraphTensorData *)source
+                               operation:(MPSGraphOperation *)operation
+                                  values:(NSMutableDictionary *)values
+{
+    MPSGraphTensorData *carrying = source;
+    NSArray *transforms = @[@"reshape", @"transpose", @"reshape"];
+    NSArray *carried = @[chain[@"splitShape"], chain[@"permutation"], chain[@"resultShape"]];
+    NSArray *keys = @[@"gatherShape", @"gatherPermutation", @"gatherShape"];
+    MPSDataType dataType = output.dataType;
+    for (NSUInteger step = 0; step < transforms.count; step++) {
+        NSDictionary *walk = CharonMPSGraphGatherPlan([operation name], carrying.shape,
+                                                      @{@"gather": transforms[step], keys[step]: carried[step]},
+                                                      nil);
+        if (walk == nil) {
+            CharonMPSGraphRefuse(@"MPSGraph: the block-moving operation named %@ wanted a step of its chain "
+                                 @"the gather does not know, so nothing was written to its output",
+                                 [operation name]);
+            return;
+        }
+        MPSGraphTensorData *next = [[MPSGraphTensorData alloc] initWithDevice:source.device
+                                                                 elementCount:CharonMPSGraphElementCount(walk[@"shape"])
+                                                                        shape:walk[@"shape"]
+                                                                     dataType:dataType];
+        [next charon_mps_bytes];
+        CharonMPSGraphGather(operation, carrying, next, walk);
+        carrying = next;
+    }
+    [output charon_mps_setShape:carrying.shape];
+    values[output] = carrying;
+}
+
 - (void)charon_mps_runOperation:(MPSGraphOperation *)operation values:(NSMutableDictionary *)values
 {
     CharonMPSGraphOperationKind kind = [operation charon_mps_kind];
@@ -2922,6 +2963,46 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
             return;
         }
         NSMutableArray<NSNumber *> *axes = [NSMutableArray arrayWithCapacity:3];
+        // THE GENERAL FORM of 16.1, whose THREE LISTS arrive as data: the spatial axes are a list of any
+        // length, the batch axis is one number and the block is one extent per spatial axis. Measured on this
+        // host's own MPSGraph over the [3, 4, 6] of 1 to 72, both directions and each of the three parameters
+        // fed in turn, the release builds a graph whose result carries NO shape, -compileWithDevice: hands back
+        // an executable, and the run writes exactly what the written-down axes write over the same operand (the
+        // 12x2x3 of (1, 3, 5, 13, ... | 2, 4, 6, 14, ...) and the 3x4x6 of (1, 19, 2, 20, 3, 21, 37, ...)) -
+        // so this is the 2D pair's own arrangement with the lists the general form hands over, and the plan
+        // takes them as it takes the 2D form's two.
+        if ([operation.charon_mps_parameters[@"blockShuffleGeneral"] boolValue]) {
+            NSArray<NSNumber *> *spatial = CharonMPSGraphGatherIntegers(values[inputs[1]]);
+            NSArray<NSNumber *> *where = CharonMPSGraphGatherIntegers(values[inputs[2]]);
+            NSArray<NSNumber *> *sizes = CharonMPSGraphGatherIntegers(values[inputs[3]]);
+            NSArray<NSArray<NSNumber *> *> *fed = @[spatial ?: @[], where ?: @[], sizes ?: @[]];
+            for (NSUInteger i = 0; i < 3; i++) {
+                if (fed[i].count != 0)
+                    continue;
+                CharonMPSGraphRefuse(@"MPSGraph: the block-moving operation named %@ was fed nothing at all for "
+                                     @"its parameter %lu, and every one of the three is a list of numbers the "
+                                     @"plan reads, so nothing was written to its output",
+                                     [operation name], (unsigned long)i + 1);
+                return;
+            }
+            if (where.count != 1) {
+                CharonMPSGraphRefuse(@"MPSGraph: the block-moving operation named %@ was fed %lu numbers as its "
+                                     @"batch axis, and the batch axis is one of them: measured, the release "
+                                     @"takes it as a 0D tensor or one of shape [1]",
+                                     [operation name], (unsigned long)where.count);
+                return;
+            }
+            NSDictionary *general = [self charon_mps_blockShufflePlan:[operation name]
+                                                              ofShape:source.shape
+                                                              spatial:spatial
+                                                                batch:where.firstObject.integerValue
+                                                                block:sizes
+                                                              toBatch:[operation.charon_mps_parameters[@"blockShuffleToBatch"] boolValue]
+                                                              shuffle:[operation.charon_mps_parameters[@"blockShuffleShuffle"] boolValue]];
+            [self charon_mps_runBlockShuffleChain:general into:output from:source operation:operation
+                                            values:values];
+            return;
+        }
         for (NSUInteger i = 1; i < 4 && i < inputs.count; i++) {
             NSArray<NSNumber *> *read = CharonMPSGraphGatherIntegers(values[inputs[i]]);
             // The axis is ONE number, and the release's own rule for the tensor that carries it is quoted by
@@ -2954,37 +3035,7 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
                                                          block:block
                                                        toBatch:[operation.charon_mps_parameters[@"blockShuffleToBatch"] boolValue]
                                                        shuffle:[operation.charon_mps_parameters[@"blockShuffleShuffle"] boolValue]];
-        // THE CHAIN, the three walks the written-down form builds into the graph, asked here over the plan's
-        // three shapes: a reshape into the split shape, the permutation transpose and the merge back. Each of
-        // the three is the gather of its own kind with the shape or the permutation the plan carries, so the
-        // walk is the one above rather than a second one.
-        NSArray *transforms = @[@"reshape", @"transpose", @"reshape"];
-        NSArray *carried = @[chain[@"splitShape"], chain[@"permutation"], chain[@"resultShape"]];
-        NSArray *keys = @[@"gatherShape", @"gatherPermutation", @"gatherShape"];
-        MPSGraphTensorData *carrying = source;
-        for (NSUInteger step = 0; step < transforms.count; step++) {
-            NSDictionary *walk = CharonMPSGraphGatherPlan([operation name], carrying.shape,
-                                                          @{@"gather": transforms[step], keys[step]: carried[step]},
-                                                          nil);
-            if (walk == nil) {
-                CharonMPSGraphRefuse(@"MPSGraph: the block-moving operation named %@ wanted a step of its "
-                                     @"chain the gather does not know, so nothing was written to its output",
-                                     [operation name]);
-                return;
-            }
-            MPSGraphTensorData *next = [[MPSGraphTensorData alloc] initWithDevice:source.device
-                                                                     elementCount:CharonMPSGraphElementCount(walk[@"shape"])
-                                                                            shape:walk[@"shape"]
-                                                                         dataType:dataType];
-            [next charon_mps_bytes];
-            CharonMPSGraphGather(operation, carrying, next, walk);
-            carrying = next;
-        }
-        // The result's shape is the last step's own, and it goes on the output tensor here because it was not
-        // known when the graph was built: the caller's destination is sized by the caller, and this is what the
-        // answer is copied into.
-        [output charon_mps_setShape:carrying.shape];
-        values[output] = carrying;
+        [self charon_mps_runBlockShuffleChain:chain into:output from:source operation:operation values:values];
         return;
     }
     if (operation.charon_mps_parameters[@"gather"]) {

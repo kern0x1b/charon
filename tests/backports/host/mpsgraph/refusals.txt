@@ -314,6 +314,29 @@ block-s2b-batch-outside 134 invalid axis: 3, axis must be in range
 block-b2s-batch-outside 134 invalid axis: 3, axis must be in range
 block-s2b-batch-negoutside 134 invalid axis: -4, axis must be in range
 block-b2s-batch-negoutside 134 invalid axis: -4, axis must be in range
+
+# THE 16.1 GENERAL FORM over its THREE FED LISTS, and the measurement that CORRECTS this file's own file-header
+# claim about them: a parameter that arrives as data is one the release answers, at the RUN, exactly as the 2D
+# form's fed pair is. Six questions - both directions, each of the three parameters fed in turn - over the
+# [3, 4, 6] of 1 to 72 with the spatial axes @[@1, @2], the batch axis @0 and the block @[@2, @2], the other two
+# held as constants. Each prints the result's shape (nil, the release's own), that the compile hands back an
+# executable, and the 72 values it writes, which are the written-down form's own answer byte for byte.
+#
+# Three things this question had to get right, all of them its own first attempt, all measured:
+#   - only the FED list goes into the feeds and the inputs. A constant is in the graph and not a feed, and one
+#     there is the release's "Input feed tensor not found in placeholders, tensor corresponds to operation:
+#     mps_constant" (MPSGraphExecutable.mm:1990).
+#   - the fed list's buffer is its ELEMENT COUNT and not its rank: a list of two axes is declared [2] and fed
+#     EIGHT bytes, and four is the release's "buffer is not large enough. Must be 8 bytes" (MPSNDArray.mm:893).
+#   - the feeds go in the graph's own PLACEHOLDER ORDER, so the operand's placeholder is made first: otherwise
+#     the release reads the float operand where it expects the int32 list, "Incompatible element type for
+#     parameter at index 0, mlir module expected element type si32 but received f32" (MPSGraphExecutable.mm:4490).
+block-s2b-fed-axes 0 run returned
+block-s2b-fed-batch 0 run returned
+block-s2b-fed-block 0 run returned
+block-b2s-fed-axes 0 run returned
+block-b2s-fed-batch 0 run returned
+block-b2s-fed-block 0 run returned
 block-s2b-block-list-short 134 must have same size as `block_dimensions`
 block-s2b-block-does-not-divide 134 Invalid `block_dimensions[1] = 5 for input size[2] = 6
 # And the batch-to-space's own two, over an [8, 2, 2] whose batch axis holds eight. The sentence names

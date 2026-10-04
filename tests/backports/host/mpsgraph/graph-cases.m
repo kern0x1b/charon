@@ -3185,6 +3185,44 @@ static void family_gather_spacebatch(void)
                             depthAxisTensor:in[3] blockSize:2 usePixelShuffleOrder:YES name:@"n"] ]; },
                               @[twelveByTwoByThreeShape[0], @[@1], @[@1], @[@1]], fourValues, floatThenAxes,
                               @[threeByFourBySix], @[@(MPSDataTypeFloat32)], 0xbd);
+    // THE 16.1 GENERAL FORM over its THREE FED LISTS, which is the same arrangement with the lists the
+    // general form hands over: the result tensor carries no shape at the build, the compile hands back an
+    // executable, and the run writes the written-down form's own answer into the destination the case names.
+    // All three lists fed at once here; refusals.txt holds the six questions that feed them one at a time, in
+    // both directions, because a case that fed only one of them would not say that the port reads the others.
+    int32_t generalAxes[2] = { 1, 2 };
+    int32_t generalBatch = 0;
+    int32_t generalBlock[2] = { 2, 2 };
+    NSData *axesList = [NSData dataWithBytes:generalAxes length:sizeof generalAxes];
+    NSData *batchOne = [NSData dataWithBytes:&generalBatch length:sizeof generalBatch];
+    NSData *blockList = [NSData dataWithBytes:generalBlock length:sizeof generalBlock];
+    NSArray<NSArray<NSNumber *> *> *generalInputs =
+        @[threeByFourBySix, @[@2], @[@1], @[@2]];
+    NSArray<NSData *> *generalValues = @[wide, axesList, batchOne, blockList];
+    multi_targets_shaped_case("spaceToBatch-fed-lists float32",
+                              ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToBatchTensor:in[0] spatialAxesTensor:in[1] batchAxisTensor:in[2]
+                            blockDimensionsTensor:in[3] usePixelShuffleOrder:NO name:@"s"] ]; },
+                              generalInputs, generalValues, floatThenAxes, twelveByTwoByThreeShape,
+                              @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_shaped_case("spaceToBatch-fed-lists-shuffle float32",
+                              ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g spaceToBatchTensor:in[0] spatialAxesTensor:in[1] batchAxisTensor:in[2]
+                            blockDimensionsTensor:in[3] usePixelShuffleOrder:YES name:@"s"] ]; },
+                              generalInputs, generalValues, floatThenAxes, twelveByTwoByThreeShape,
+                              @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_shaped_case("batchToSpace-fed-lists float32",
+                              ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g batchToSpaceTensor:in[0] spatialAxesTensor:in[1] batchAxisTensor:in[2]
+                            blockDimensionsTensor:in[3] usePixelShuffleOrder:NO name:@"b"] ]; },
+                              @[twelveByTwoByThreeShape[0], @[@2], @[@1], @[@2]], generalValues, floatThenAxes,
+                              @[threeByFourBySix], @[@(MPSDataTypeFloat32)], 0xbd);
+    multi_targets_shaped_case("batchToSpace-fed-lists-shuffle float32",
+                              ^NSArray<MPSGraphTensor *> *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+        return @[ [g batchToSpaceTensor:in[0] spatialAxesTensor:in[1] batchAxisTensor:in[2]
+                            blockDimensionsTensor:in[3] usePixelShuffleOrder:YES name:@"b"] ]; },
+                              @[twelveByTwoByThreeShape[0], @[@2], @[@1], @[@2]], generalValues, floatThenAxes,
+                              @[threeByFourBySix], @[@(MPSDataTypeFloat32)], 0xbd);
     // ONE AXIS FED AND THE OTHER TWO CONSTANTS, which is the mixed case the release also answers (measured:
     // a constant width with the height and the depth fed answers the same bytes as all three fed, in both
     // directions), and it is what says the port reads only the tensors the caller fed - the constants are
