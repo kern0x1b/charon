@@ -71,11 +71,14 @@ for f in $CL/*.m; do
     xcrun clang -c -target arm64-apple-ios13.1-macabi -isysroot "$HOST_SDK" -fobjc-arc \
         $INC -o "$WORK/obj/$(basename "${f%.m}").o" "$f" 2>/dev/null
 done
+# CKRecords10.o is beside CKRecords8.o and not optional: CKRecord's 10.0 half - the parent, the share
+# and the two wrappers that build one - is in that object and CKRecords8.m forwards to it, so the class
+# is one object and the two halves of it (see CloudKit/CKRecords10.m).
 link_port() {   # $1 = the CKRecords8 object to use, $2 = the binary
     xcrun clang -target arm64-apple-ios13.1-macabi -isysroot "$HOST_SDK" -fobjc-arc \
         -framework Foundation -framework CoreLocation $INC -I tests/backports/host/cloudkit \
         -o "$2" tests/backports/host/cloudkit/zone-port.m tests/backports/host/cloudkit/database-cases.m \
-        "$1" "$WORK/obj/CKConstants8.o" 2>"$WORK.link.log"
+        "$1" "$WORK/obj/CKConstants8.o" "$WORK/obj/CKRecords10.o" 2>"$WORK.link.log"
 }
 if link_port "$WORK/obj/CKRecords8.o" "$WORK/zone-port"; then
     echo "  exit 0, binary $(stat -f %z "$WORK/zone-port") bytes"
