@@ -103,16 +103,18 @@ PROTOCOLS_BUILT = {"Shape": entry(instance=["-area"], library="UIKitBackports")}
 PROTOCOLS_RELEASE = {}
 
 
-def method(api, built=None, release=None, decided=None):
+def method(api, built=None, release=None, decided=None, unavailable=False):
     return ledger.classify_method(api, BUILT if built is None else built,
                                   RELEASE if release is None else release,
-                                  PROTOCOLS_BUILT, PROTOCOLS_RELEASE, decided=decided)
+                                  PROTOCOLS_BUILT, PROTOCOLS_RELEASE, decided=decided,
+                                  unavailable=unavailable)
 
 
-def prop(api, built=None, release=None, getter=None, decided=None):
+def prop(api, built=None, release=None, getter=None, decided=None, unavailable=False):
     return ledger.classify_property(api, BUILT if built is None else built,
                                     RELEASE if release is None else release,
-                                    PROTOCOLS_BUILT, PROTOCOLS_RELEASE, getter=getter, decided=decided)
+                                    PROTOCOLS_BUILT, PROTOCOLS_RELEASE, getter=getter, decided=decided,
+                                    unavailable=unavailable)
 
 
 # The row the finding is about, one per kind: an instance property, a class method and an instance
@@ -285,12 +287,31 @@ source = SOURCE
 body = source[source.index("def main("):]
 for name in ("classify_method", "classify_property"):
     call = re.search(name + r"\(([^)]*)\)", body)
-    check("main() hands %s both class inventories and the decided rows" % name,
+    check("main() hands %s both class inventories, the decided rows and the unavailable column" % name,
           sorted(part.strip().split("=")[0] for part in call.group(1).split(",") if part.strip()),
-          ["api", "built_classes", "built_protocols", "decided", "release_classes", "release_protocols"]
+          ["api", "built_classes", "built_protocols", "decided", "release_classes",
+           "release_protocols", "unavailable"]
           if name == "classify_method" else
           ["api", "built_classes", "built_protocols", "decided", "getter", "release_classes",
-           "release_protocols"])
+           "release_protocols", "unavailable"])
+
+# NS_UNAVAILABLE. When Apple's own header marks a member unavailable, a program that names it must not
+# compile, so nothing answers it at run time and an ancestor's selector table is not an answer -- the
+# two UIKeyCommand factories are this: UIKeyCommand.h:108 and :113 mark both NS_UNAVAILABLE, and the
+# port carries them anyway, which is harmless, while the ledger must not call the row done. The
+# header pass has said this for a constant, a function and a type since it was written; a method and a
+# property row is placed before that pass, so the walk carries the guard and this is a wiring check
+# against its source text, like the two above it.
+check("the walk is held back for a row Apple's header marks unavailable",
+      prop("KeyCommand.action", unavailable=True)[0], "missing")
+check("and the method side too",
+      method("-[KeyCommand state]", unavailable=True)[0], "missing")
+check("while the same rows read implemented without the flag",
+      (prop("KeyCommand.action")[0], method("-[KeyCommand state]")[0]), ("implemented", "implemented"))
+check("main() hands both functions the surface's own unavailable column",
+      len(re.findall(r'unavailable=row\["unavailable"\]', body)), 2)
+check("and the header pass keeps its own form of the rule",
+      "NS_UNAVAILABLE in the lifted headers" in source, True)
 
 print("\n%d checks, %d failures" % (len(CHECKS), len(failures)))
 sys.exit(1 if failures else 0)

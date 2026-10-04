@@ -451,7 +451,7 @@ def _ancestors(owner, built_classes, release_classes):
 
 
 def classify_method(api, built_classes, release_classes, built_protocols=None, release_protocols=None,
-                    decided=None):
+                    decided=None, unavailable=False):
     """A method row's owner is named without saying whether it is a class or a protocol, and the
     surface has both, so both are searched: a protocol that declares the selector is the release
     carrying that API. Looking only at classes read `-[CLLocationManagerDelegate
@@ -476,13 +476,18 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
 
     The walk is LAST -- after the owner's own sets, the protocols and `+new` -- so nothing that reads
     implemented today can read anything else: only a row that read missing moves, and only to
-    implemented. `+new` stays ahead of it for its own reason, and so does the guard on the row a
-    registry has decided, which the walk honours for the same reason `+new` does: an inference from
-    the release's metadata does not overrule a measurement somebody took. Measured on the whole
-    surface, that guard is 13 rows -- ten `-[VN*Request init]`/`initWithCompletionHandler:` whose
-    registry row says Apple's own header marks the initialiser unavailable, two
-    `UITextInputTraits` properties the port answers on NSObject under a row of its own, and
-    `+[NSURLSessionStreamTask new]`."""
+    implemented.
+
+    It is also held back by two facts about the row, for the reason `+new` gives: a row a registry has
+    decided, and a row Apple's own header marks NS_UNAVAILABLE, are not answered by an inference from
+    the release's metadata. Measured on the whole surface, the first is 13 rows -- ten
+    `-[VN*Request init]`/`initWithCompletionHandler:` whose registry row says Apple's own header marks
+    the initialiser unavailable, two `UITextInputTraits` properties the port answers on NSObject under
+    a row of its own, and `+[NSURLSessionStreamTask new]`. The second is 59, and it holds the two
+    UIKeyCommand factories this walk was written for: UIKeyCommand.h:108 and :113 mark
+    `+commandWithTitle:image:action:propertyList:` and its `alternates:` form NS_UNAVAILABLE, so a
+    program that names them does not compile and no release answers them. The eight UIKeyCommand
+    properties are not marked, and they move."""
     m = METHOD_RE.match(api)
     if not m:
         return "undecided", "method api does not parse as +/-[Class sel]: %r" % api
@@ -512,10 +517,12 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
     stopped = ""
     if built or released:
         # `built or released` keeps a protocol owner out: a protocol has no superclass to walk, and
-        # the reason below already says the owner is a protocol and not a class. `api not in decided`
-        # is the guard `+new` has above, for the reason in this function's own account.
+        # the reason below already says the owner is a protocol and not a class. The two guards are
+        # `+new`'s, for the reason in this function's own account: a row a registry has decided, and a
+        # row Apple's own header marks NS_UNAVAILABLE, are both facts about the row that an inference
+        # from the release's metadata must not overrule.
         chain, stopped = _ancestors(owner, built_classes, release_classes)
-        if api in (decided or ()):
+        if unavailable or api in (decided or ()):
             chain = []
         for name, entries in chain:
             for entry, is_built in entries:
@@ -532,7 +539,8 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
 
 
 def classify_property(api, built_classes, release_classes, built_protocols=None,
-                      release_protocols=None, getter=None, setter=None, decided=None):
+                      release_protocols=None, getter=None, setter=None, decided=None,
+                      unavailable=False):
     """A property row's owner is named without saying whether it is a class or a protocol, and the
     surface has both, so both are searched -- the same question classify_method answers, and for the
     same reason. A property is read through its accessors, so it is the accessors that are looked
@@ -549,8 +557,9 @@ def classify_property(api, built_classes, release_classes, built_protocols=None,
     The chain is walked last, for the same reason and with the same rule as classify_method: the eight
     UIKeyCommand properties the built image answers from `UICommand` are the measurement, and the two
     accessors are looked for in every measured ancestor's own sets, the class set included. The
-    `decided` rows keep their decision here for the reason classify_method gives: an inference from
-    the release's metadata does not overrule a measurement somebody took."""
+    `decided` and `unavailable` rows are held back from the walk here for the reason
+    classify_method gives: an inference from the release's metadata does not overrule a fact about the
+    row itself."""
     m = PROPERTY_RE.match(api)
     if not m:
         return "undecided", "property api does not parse as Class.prop: %r" % api
@@ -588,7 +597,7 @@ def classify_property(api, built_classes, release_classes, built_protocols=None,
         # A protocol owner is not in either, so it never reaches the walk: a protocol has no
         # superclass, and the reason below already says the owner is neither.
         chain, stopped = _ancestors(owner, built_classes, release_classes)
-        if api in (decided or ()):
+        if unavailable or api in (decided or ()):
             chain = []
         for name, entries in chain:
             for entry, is_built in entries:
@@ -1409,11 +1418,11 @@ def main():
             elif kind == "method":
                 status, reason = classify_method(api, built_classes, release_classes,
                                                  built_protocols, release_protocols,
-                                                 decided=decided_apis)
+                                                 decided=decided_apis, unavailable=row["unavailable"])
             else:
                 status, reason = classify_property(api, built_classes, release_classes, built_protocols,
                                             release_protocols, getter=row["getter"],
-                                            decided=decided_apis)
+                                            decided=decided_apis, unavailable=row["unavailable"])
             # The decide pass: a registry that records this row absent/inert/ignored has decided it,
             # with a reason, so it is not a row anybody is going to build.
             decided = decide(row, registries, diagnostics) if status == "missing" else None
