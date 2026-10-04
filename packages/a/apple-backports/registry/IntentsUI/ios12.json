@@ -125,7 +125,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "source": "the header of iPhoneOS 16.4",
-      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries. The protocol is declared with a body in that SDK at INUIAddVoiceShortcutButton.h:25, and the package installs the declaration through IntentsUI/CharonIntentsUIProtocols.h, which forward-declares the protocol and imports <IntentsUI/IntentsUI.h> for its body; the class that conforms on the port's side is INUIAddVoiceShortcutButton (CharonIntentsUI120.m:41), which sends the add half of this pair at :150 and this edit half to no one, because the controller it would present is the application's to own. Measured on the gate's own reader over the 69 libraries of the 6.1.3 gate: the row is not among the rows its owner class alone answers, so what answers it is that declaration.",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -231,7 +231,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "source": "the header of iPhoneOS 16.4",
-      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries. The protocol is declared with a body in that SDK at INUIEditVoiceShortcutViewController.h:37, and the package installs the declaration through IntentsUI/CharonIntentsUIProtocols.h, which forward-declares the protocol and imports <IntentsUI/IntentsUI.h> for its body; the class that holds the delegate on the port's side is INUIEditVoiceShortcutViewController (CharonIntentsUI120.m:245), which sends the delete half of this protocol at :304 and the update half at :302 and this cancel to no one. Measured on the gate's own reader over the 69 libraries of the 6.1.3 gate: the row is not among the rows its owner class alone answers, so what answers it is that declaration.",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {

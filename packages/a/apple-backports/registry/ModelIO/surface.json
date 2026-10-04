@@ -1173,8 +1173,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLAreaLight itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -areaRadius as one of MDLAreaLight's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1228,8 +1228,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLAreaLight itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -superEllipticPower as one of MDLAreaLight's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1272,8 +1272,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -apertureBladeCount as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1283,8 +1283,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -barrelDistortion as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1305,8 +1305,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -chromaticAberration as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1316,8 +1316,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -exposureCompression as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1338,8 +1338,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -fStop as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1349,8 +1349,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -farVisibilityDistance as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1371,8 +1371,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -fisheyeDistortion as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1448,8 +1448,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -maximumCircleOfConfusion as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1459,8 +1459,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -nearVisibilityDistance as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1470,8 +1470,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -opticalVignetting as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1514,8 +1514,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -sensorAspect as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1525,8 +1525,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -sensorEnlargement as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1536,8 +1536,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -sensorShift as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1547,8 +1547,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -sensorVerticalAperture as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1800,8 +1800,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -shutterOpenInterval as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1811,8 +1811,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -worldToMetersConversionScale as one of MDLCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1855,8 +1855,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLLight itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -lightType as one of MDLLight's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1921,8 +1921,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLLightProbe itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -reflectiveTexture as one of MDLLightProbe's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1932,8 +1932,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLLightProbe itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -sphericalHarmonicsCoefficients as one of MDLLightProbe's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -1943,8 +1943,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLLightProbe itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -sphericalHarmonicsLevel as one of MDLLightProbe's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -2548,8 +2548,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLPackedJointAnimation itself into the port's own @implementation, and ModelIO/MDIO110.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -translations as one of MDLPackedJointAnimation's own selectors in MDIO110.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -2603,8 +2603,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLPhotometricLight itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -lightCubeMap as one of MDLPhotometricLight's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -2614,8 +2614,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLPhotometricLight itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -sphericalHarmonicsCoefficients as one of MDLPhotometricLight's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -2625,8 +2625,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLPhotometricLight itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -sphericalHarmonicsLevel as one of MDLPhotometricLight's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -2669,8 +2669,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLPhysicallyPlausibleLight itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -innerConeAngle as one of MDLPhysicallyPlausibleLight's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -2691,8 +2691,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLPhysicallyPlausibleLight itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -outerConeAngle as one of MDLPhysicallyPlausibleLight's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -2790,8 +2790,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLSkeleton itself into the port's own @implementation, and ModelIO/MDIO110.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -jointBindTransforms as one of MDLSkeleton's own selectors in MDIO110.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -2812,8 +2812,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLSkeleton itself into the port's own @implementation, and ModelIO/MDIO110.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -jointRestTransforms as one of MDLSkeleton's own selectors in MDIO110.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -2889,8 +2889,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLSkyCubeTexture itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -highDynamicRangeCompression as one of MDLSkyCubeTexture's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -2900,8 +2900,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLSkyCubeTexture itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -horizonElevation as one of MDLSkyCubeTexture's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -3131,8 +3131,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLStereoscopicCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -interPupillaryDistance as one of MDLStereoscopicCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -3142,8 +3142,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLStereoscopicCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -leftProjectionMatrix as one of MDLStereoscopicCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -3153,8 +3153,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLStereoscopicCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -leftVergence as one of MDLStereoscopicCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -3164,8 +3164,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLStereoscopicCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -leftViewMatrix as one of MDLStereoscopicCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -3186,8 +3186,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLStereoscopicCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -rightProjectionMatrix as one of MDLStereoscopicCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -3197,8 +3197,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLStereoscopicCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -rightVergence as one of MDLStereoscopicCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
@@ -3208,8 +3208,8 @@
       "introduced": "9.0",
       "kind": "selector",
       "minimum": "6.0",
-      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
-      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
+      "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed. The accessor is a member of the build and not only of the class: clang synthesizes every property the 16.4 header declares on MDLStereoscopicCamera itself into the port's own @implementation, and ModelIO/MDIO90.m imports the header that declares it and carries no spelling of this selector in any source file - which is why a search of the sources for it finds nothing and the gate, which reads the object, finds the member.",
+      "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node, and the accessor measured in the object the package compiles: modules/apple/objc.lua over the 28 objects of coordination/work-2026-10-03/tools/relcheck.lua ('compiled 28 objects of ModelIOBackports') reads -rightViewMatrix as one of MDLStereoscopicCamera's own selectors in MDIO90.m.o, and no source file of the library spells the selector at all.",
       "status": "implemented"
     },
     {
