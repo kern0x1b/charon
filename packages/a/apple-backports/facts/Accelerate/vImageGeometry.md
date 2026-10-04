@@ -1852,9 +1852,23 @@ spellings say:
 - **`multiply by the stored reciprocal`, not `divide by 1/reciprocal`.** The two are identical at 1, 2, 0.5
   and 0.25, where the reciprocal is exact; **at 0.75 only the multiply survives.** It is also what the
   release's own worker does with the `1.0/scale` it keeps beside `floor` of it.
-- **0.75 has no candidate on either axis**, at every translate and slope swept. That is a12's 28-of-624
-  residual, reproduced on the host, and it is **not fixed**: the cause is a rounding of a mapped position whose
-  `1/scale` is not a binary fraction, and it is named in the rows' reasons rather than softened.
+- **0.75 closes on the horizontal and NOT on the vertical.** Sixteen of sixteen shapes on the horizontal, at
+  every translate and slope swept; **zero of sixteen on the vertical**. That is the one (scale, axis) pair of
+  the ten this measurement leaves open, and it is where the 28-of-624 residual has to live.
+
+  **A correction to the correction, and it may be the residual's cause.** The claim above first said "no
+  candidate on either axis", which the log does not support: `mapsearch.log`'s 0.75 block holds 1728 `ALL`
+  lines in its horizontal half and its 16 `NO CANDIDATE` lines in its vertical half, and a first pass counted
+  both halves together. So the 28-of-624 is **not** reproduced on the host's horizontal - and the one thing
+  that differs between the two measurements is the DIVISOR. This search divides by **the row's own sum**; a12's
+  `mapping.py` divides by **16384**, and on the guest the two are not always the same because 6.1.3's rows are
+  within 5 of 16384 and at a scale of 0.25 all sixteen rows are not equal to it. a12's own table shows the two
+  spellings scoring identically in every row of section B - but section B's model used the mapping this section
+  has just replaced, so it scored 0 to 21 of 168 either way and **the divisor was never separated on a model
+  that was right**. That makes "the row's own sum instead of 16384" the first thing to test against the 28, and
+  it is what the port now does. **It is a hypothesis, not a finding**: it is one re-run of a12's own
+  `mapping.py` with one constant changed, and until that run exists the residual stays named rather than
+  closed.
 
 ## The arm64 header, verified on the bytes, and the host's own filter is the same shape (2026-10-04, v-tail-a13)
 

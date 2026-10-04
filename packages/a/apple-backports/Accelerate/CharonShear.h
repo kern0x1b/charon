@@ -36,7 +36,11 @@
 //   * **the horizontal's scale is anchored at the near edge and the vertical's at the FAR edge** - the
 //     vertical's is `dstAlong + (position - dstAlong)`, and the offset that makes it is `dstAlong *
 //     (1 - 1/scale)`: five pixels at a scale of two on this destination, and the constant the ladder has to
-//     reach. **0.75 is open on both axes**, which is v-tail-a12's 28-of-624 residual and is named, not fixed.
+//     reach.
+//   * **0.75 closes on the horizontal, sixteen shapes of sixteen, and NOT on the vertical, zero of sixteen.**
+//     That is the one (scale, axis) pair of the ten this measurement leaves open, and it is where
+//     v-tail-a12's 28-of-624 residual has to live. It is named here rather than softened, and the rows that
+//     run at 0.75 have to carry it in their reasons.
 //
 // **The kernel is the caller's own.** The Q14 row, the phase it is read at and the base it is read around all
 // come out of the release's filter object (CharonResampling.h), the divisor is that row's own sum, and the
