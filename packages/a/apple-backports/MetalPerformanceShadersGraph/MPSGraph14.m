@@ -909,6 +909,95 @@ typedef enum {
     return [self charon_mps_operation:kind inputs:@[tensor, fedParameter] parameters:parameters name:name];
 }
 
+#pragma mark - pad and tile, which arrived with the framework itself
+
+// The TILE, which is the gather walk with every axis REPEATED: the result's axis k is the operand's axis k at
+// `multiplier[k]` times its extent. Measured on this host's own MPSGraph over a 2x4 of
+// (1, 2, 3, 4 | 10, 20, 30, 40): a multiplier of (2, 3) answers a 4x12 holding the operand three times over
+// twice down, and a multiplier of (1, 3) a 2x12 holding it three times across - so the copies run along the
+// LAST axis first, which is the row-major order every other operation of this family answers in too.
+- (MPSGraphTensor *)tileTensor:(MPSGraphTensor *)tensor
+                withMultiplier:(NSArray<NSNumber *> *)multiplier
+                          name:(NSString *)name
+{
+    return [self charon_mps_slice:CharonMPSGraphOperationKindSlice
+                          inputs:@[tensor]
+                      parameters:@{@"gather": @"tile", @"tileMultiplier": multiplier ?: @[]}
+                             name:name];
+}
+
+// The PAD, and the whole of what its five answered modes are, each measured on this host's own MPSGraph:
+//
+//   MPSGraphPaddingModeConstant  the caller's constantValue, written in the result's own type (measured, a
+//                                constant of 99 over a float32 2x4 answers 99 and not 99.0);
+//   MPSGraphPaddingModeZero      zero, which is the same constant with a different name and is a mode of its
+//                                own in the header;
+//   MPSGraphPaddingModeClampToEdge  the nearest element of the axis - measured (1, 1, 1, 2, 3, 4) for one at
+//                                each end of axis 1 of a 2x4;
+//   MPSGraphPaddingModeReflect   the mirror ACROSS THE EDGE, so index -1 is the element at index +1 - measured
+//                                (2, 1, 2, 3, 4, 3) for one at each end, which is neither the mirror about the
+//                                last element (3, 1, 2, 3, 4, 3) nor one that repeats the edge;
+//   MPSGraphPaddingModeSymmetric the mirror that DOES repeat the edge - measured (1, 1, 2, 3, 4, 4).
+//
+// Both mirrors are refused by the release when the padding reaches the axis's own extent - measured, a left
+// padding of three on an axis of two is refused by its compiler ("Optimize Original Module MLIR pass manager
+// failed") while one on the same axis answers - and PERIODIC and ANTI-PERIODIC are refused outright, with the
+// release's own words "Unsupported paddingMode", after it has built the result tensor. So the two modes the
+// release does not answer are refused where the graph is built, and the other five are the walk's own.
+- (MPSGraphTensor *)padTensor:(MPSGraphTensor *)tensor
+             withPaddingMode:(MPSGraphPaddingMode)paddingMode
+                 leftPadding:(NSArray<NSNumber *> *)leftPadding
+                rightPadding:(NSArray<NSNumber *> *)rightPadding
+               constantValue:(double)constantValue
+                        name:(NSString *)name
+{
+    if (paddingMode == MPSGraphPaddingModePeriodic || paddingMode == MPSGraphPaddingModeAntiPeriodic) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked to pad with mode %ld, and the release refuses both of the "
+                           @"periodic modes with its own words, \"Unsupported paddingMode\", after it has "
+                           @"built the result tensor", name, (long)paddingMode];
+    }
+    return [self charon_mps_slice:CharonMPSGraphOperationKindSlice
+                          inputs:@[tensor]
+                      parameters:@{@"gather": @"pad", @"padMode": @(paddingMode),
+                                   @"padLeft": leftPadding ?: @[], @"padRight": rightPadding ?: @[],
+                                   @"padConstant": @(constantValue)}
+                             name:name];
+}
+
+// The pad's GRADIENT, which is the forward pass's output copied back into a tensor of the input's own shape:
+// the incoming gradient is of the PADDED shape, and every element of it outside the region the padding
+// covered is dropped, which is the same scatter the slice's gradient is with the left padding as the offset.
+// Measured: over a padded 4x6 of (1 ... 24) and a padding of (1, 2) at the left and (1, 0) at the right, the
+// gradient of a 2x4 answers (102, 108, 114, 120 | 174, 180, 186, 192) - the sum of the incoming gradient over
+// the copies that land on each element, which for a pad is the one copy and so is that element's value.
+- (MPSGraphTensor *)padGradientWithIncomingGradientTensor:(MPSGraphTensor *)incomingGradientTensor
+                                            sourceTensor:(MPSGraphTensor *)sourceTensor
+                                             paddingMode:(MPSGraphPaddingMode)paddingMode
+                                             leftPadding:(NSArray<NSNumber *> *)leftPadding
+                                            rightPadding:(NSArray<NSNumber *> *)rightPadding
+                                                    name:(NSString *)name
+{
+    (void)paddingMode;
+    NSUInteger rank = sourceTensor.shape.count;
+    NSMutableArray<NSNumber *> *oneEach = [NSMutableArray arrayWithCapacity:rank];
+    for (NSUInteger k = 0; k < rank; k++)
+        [oneEach addObject:@1];
+    // The offset is the NEGATED left padding, and that is the whole of what a gradient of a pad is: the
+    // region sits `leftPadding` elements into the incoming gradient, which is of the PADDED shape, so the
+    // destination's coordinate is the incoming gradient's less that - measured, a gradient of (1 ... 24) over
+    // a padding of (1, 2) at the left and (1, 0) at the right answers 9, 10, 11, 12 | 21, 22, 23, 24, which is
+    // the incoming gradient's own rows 1 and 2, columns 2 to 5.
+    NSMutableArray<NSNumber *> *behind = [NSMutableArray arrayWithCapacity:leftPadding.count];
+    for (NSNumber *before in leftPadding)
+        [behind addObject:@(-before.integerValue)];
+    return [self charon_mps_slice:CharonMPSGraphOperationKindSlice
+                          inputs:@[incomingGradientTensor, sourceTensor]
+                      parameters:@{@"gather": @"scatter", @"shape": sourceTensor.shape,
+                                   @"offsets": behind, @"strides": oneEach}
+                             name:name];
+}
+
 #pragma mark - the slice family: the one seam its three directions go through
 
 // The slice family's operation, of whichever direction the factory names in `parameters`, over the inputs

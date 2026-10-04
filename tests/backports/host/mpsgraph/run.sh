@@ -40,6 +40,7 @@ cumulative:0
 gather_transpose:0
 gather_slice:0
 gather_slice_rest:0
+gather_padtile:0
 gather_reshape:0
 gather_flatten:0
 gather_broadcast:0
