@@ -132,9 +132,19 @@
     }
     // The descriptor's shared events are honoured at both ends of the walk, the same as the graph's own run
     // forms do: the waits are checked before it and the signals written after it.
-    if (executionDescriptor != nil)
+    if (executionDescriptor != nil) {
         [executionDescriptor charon_mps_applyEventsAtStage:MPSGraphExecutionStageCompleted
                                                         named:@"an executable execution descriptor"];
+        // The same two handlers the graph's own descriptor has, called around this walk - see
+        // CharonMPSGraphRunForm in MPSGraph14.m, which says why -waitUntilCompleted needs nothing here.
+        // The results are the returned ARRAY - the executable's handler is declared over an array of tensor
+        // data, where the graph's own is over a dictionary - and the error is nil, because this walk either
+        // wrote every result or refused the one it could not copy.
+        if (executionDescriptor.scheduledHandler)
+            executionDescriptor.scheduledHandler(returned, nil);
+        if (executionDescriptor.completionHandler)
+            executionDescriptor.completionHandler(returned, nil);
+    }
     return returned;
 }
 
