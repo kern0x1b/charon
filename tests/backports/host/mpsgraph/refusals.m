@@ -240,6 +240,7 @@ int main(int argc, const char *argv[])
             "pad-periodic", "pad-antiperiodic", "pad-reflect-past-extent",
             "pad-thin-reflect", "pad-thin-symmetric",
             "concat-axis-outside", "concat-shapes-differ", "concat-interleave-axis-outside",
+            "concat-interleave-unequal",
             "stack-axis-outside", "stack-shapes-differ",
             "concat-mixed-types",
         };
@@ -736,6 +737,16 @@ int main(int argc, const char *argv[])
             NSArray<NSData *> *values = @[[NSData dataWithBytes:rowFeed length:sizeof rowFeed],
                                           [NSData dataWithBytes:rowFeed length:sizeof rowFeed]];
             NSString *question = [NSString stringWithUTF8String:q];
+            if (strstr(q, "interleave-unequal")) {
+                // The operands are a 2x4 and a 2x1, so the axis they are laid along is the ONLY one whose
+                // extent differs between them - which end to end answers a 2x5 and is the case
+                // concat-unequal-axis1 in the differential. Interleaved it is refused, and that refusal is the
+                // whole of the invariant the walk's division rests on.
+                axis = 1;
+                shapes = @[@[@2, @4], @[@2, @1]];
+                values = @[[NSData dataWithBytes:rowFeed length:sizeof rowFeed],
+                           [NSData dataWithBytes:rowFeed length:2 * sizeof(float)]];
+            }
             if (strstr(q, "shapes-differ")) {
                 axis = 1;
                 // The extent that differs is on axis 0, and the axis the operands are laid along is axis 1,

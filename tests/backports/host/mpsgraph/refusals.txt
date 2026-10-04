@@ -175,6 +175,11 @@ tilegrad-1x3-short 0 0000c040000010410000404100007041000010410000404100007041000
 concat-axis-outside 134 invalid axis tensor: [2], axis must be in range -rank <= axis < rank, rank = 2
 concat-interleave-axis-outside 134 invalid axis tensor: [2], axis must be in range -rank <= axis < rank, rank = 2
 concat-shapes-differ 134 invalid input tensor shapes, all input shapes must match except at axis
+# The operands of DIFFERING LENGTH ON THE AXIS THEY ARE LAID ALONG: end to end that is a 2x5 and answers
+# (concat-unequal-axis1 in the differential), and interleaved it is REFUSED. That refusal is the whole of the
+# invariant the walk's division by the number of operands rests on, so it is recorded here and enforced in
+# the plan - see CharonMPSGraphConcatPlan.
+concat-interleave-unequal 134 all input shapes must match along axis dimension when interleaving
 stack-axis-outside 134 invalid axis: 3, axis must be in range -|rank| <= axis < |rank|
 stack-shapes-differ 134 invalid input tensor shapes, all input shapes must match except at axis
 # MIXED DATA TYPES, the header's other sentence, measured rather than assumed: the result tensor carries the
