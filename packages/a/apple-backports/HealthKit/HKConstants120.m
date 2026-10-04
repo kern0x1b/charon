@@ -1,4 +1,4 @@
-// The twenty-one exported constants of iOS 12.0.
+// The twenty-seven exported constants the held ladder first sees exported by iOS 12.0.
 //
 // Fourteen of them hold a value that is not the constant's own name - a key path, a metadata key or an
 // FHIR type name - and the seven that hold their own name are the clinical type identifiers of that
@@ -15,6 +15,17 @@
 // with "address ... is in no mapping". The declaration of each constant is the SDK's own, in
 // HKClinicalType.h, HKFHIRResource.h, HKMetadataEnums.h and HKDefines.h of iOS 16.4 and of iOS 26.2,
 // each with API_AVAILABLE(ios(12.0), ...).
+//
+// Six more are here than the twenty-one that release's header names, and the reason is a measurement.
+// dyld.first_releases() over the held ladder answers 12.0 for six constants the headers mark 11.2 -
+// HKMetadataKeyAlpineSlopeGrade, HKMetadataKeyAverageSpeed, HKMetadataKeyElevationAscended,
+// HKMetadataKeyElevationDescended, HKMetadataKeyMaximumSpeed and
+// HKQuantityTypeIdentifierDistanceDownhillSnowSports - because the 11.0 image is the rung before 12.0 and
+// exports none of them and the 12.0 image exports all six, and an object carries the API of one release.
+// Their rows are filed in ios112.json with the 11.2 their headers say. Five of the six hold a value that is
+// not their own name - HKMetadataKeyAverageSpeed is `HKAverageSpeed` and HKMetadataKeyAlpineSlopeGrade is
+// `HKAlpineSlopeGrade` - and each value was read out of the host's HealthKit, per constant in
+// coordination/corpus/ledger/constant-values-HealthKit.tsv, rather than spelled from the name.
 
 #import <HealthKit/HealthKit.h>
 
@@ -39,3 +50,9 @@ NSString *const HKMetadataKeyIndoorBikeDistance = @"HKIndoorBikeDistance";
 NSString *const HKPredicateKeyPathClinicalRecordFHIRResourceIdentifier = @"FHIRResource.identifier";
 NSString *const HKPredicateKeyPathClinicalRecordFHIRResourceType = @"FHIRResource.resourceType";
 NSString *const HKPredicateKeyPathSum = @"quantity";
+NSString *const HKMetadataKeyAlpineSlopeGrade = @"HKAlpineSlopeGrade";
+NSString *const HKMetadataKeyAverageSpeed = @"HKAverageSpeed";
+NSString *const HKMetadataKeyElevationAscended = @"HKElevationAscended";
+NSString *const HKMetadataKeyElevationDescended = @"HKElevationDescended";
+NSString *const HKMetadataKeyMaximumSpeed = @"HKMaximumSpeed";
+HKQuantityTypeIdentifier const HKQuantityTypeIdentifierDistanceDownhillSnowSports = @"HKQuantityTypeIdentifierDistanceDownhillSnowSports";
