@@ -326,12 +326,16 @@ static inline void CharonMPSGraphWriteInto(MPSGraphTensor *target, MPSGraphTenso
                              @"was", [target operation].name);
         return;
     }
+    // A row is `rank` cells, and the rows start `stride` bytes apart: where the destination's last extent is
+    // shorter than the rank, the last row would run past the end of the caller's buffer, so every row is cut
+    // at what the destination holds from where it starts.
     for (NSUInteger row = 0; row < rows; row++) {
         char *into = (char *)to + row * stride;
+        NSUInteger length = MIN(rank * width, room - row * stride);
         if (row < written)
-            memcpy(into, (char *)from + (count == 1 ? 0 : row * rank) * width, rank * width);
+            memcpy(into, (char *)from + (count == 1 ? 0 : row * rank) * width, length);
         else
-            memset(into, 0, rank * width);
+            memset(into, 0, length);
     }
 }
 
