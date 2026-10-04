@@ -170,6 +170,31 @@ function libraries()
     return LIBRARIES
 end
 
+-- Whether this run keeps a library. A caller that names the libraries it links - a package install,
+-- where the configs decide what the process needs - keeps those and nothing else; a caller that
+-- names none (coordination/build-gate.lua, which links every library) keeps all of them.
+--
+-- Every step of a run reads this and not its own idea of the answer, because a step that keeps a
+-- library another one dropped pays for an object nothing reads, and needs the include directory of
+-- an archive the run does not link. Measured on the install of an unmodified package with every
+-- config at its default: 1620 objects for 69 libraries (UIKit 532, Foundation 249, one HomeKit
+-- object), none of them linked, because the run died on HomeKit's second source with
+-- "'monocypher/monocypher.h' file not found" - HomeKit's config was off, so nothing was to link
+-- that object, and the recipe's own archive table named no monocypher.
+local function keeps(opt, name)
+    return not opt.libraries or table.contains(opt.libraries, name)
+end
+
+local function staged_libraries(opt)
+    local staged = {}
+    for _, library in ipairs(LIBRARIES) do
+        if keeps(opt, library.name) then
+            table.insert(staged, library)
+        end
+    end
+    return staged
+end
+
 function package_name()
     return PACKAGE
 end
@@ -918,6 +943,11 @@ local function compiled(opt)
     local pending = {}
     for _, library in ipairs(LIBRARIES) do
         objects[library.name] = {}
+    end
+    -- The libraries this run keeps, and no other: the object table above is empty for the rest, so
+    -- a link, a band plan or a check that asks for one of those finds no objects to read rather
+    -- than a library's worth compiled for a run that drops it at the link.
+    for _, library in ipairs(staged_libraries(opt)) do
         -- the protocol metadata the framework carries and the port does not: one generated source per band
         local generated = path.join(opt.builddir, "protocols", library.folder)
         os.mkdir(generated)
@@ -2344,17 +2374,15 @@ function build(opt)
     opt = table.join(opt, {origins = origins, minimums = minimums})
     local compiled_at = os.mclock()
     local compiled, placed = COMPILED, 0
-    for _, library in ipairs(LIBRARIES) do
+    for _, library in ipairs(staged_libraries(opt)) do
         placed = placed + (objects[library.name] and #objects[library.name] or 0)
     end
     check_releases(opt, objects, origins)
     local checked_at = os.mclock()
     local built = {}
-    for _, library in ipairs(LIBRARIES) do
-        if not opt.libraries or table.contains(opt.libraries, library.name) then
-            table.insert(built, link(opt, library, attach, objects[library.name], {release}, opt.outputdir,
-                                     {cache = opt.cache, release = opt.deployment}))
-        end
+    for _, library in ipairs(staged_libraries(opt)) do
+        table.insert(built, link(opt, library, attach, objects[library.name], {release}, opt.outputdir,
+                                 {cache = opt.cache, release = opt.deployment}))
     end
     local linked_at = os.mclock()
     dyld.check(opt.cache, built)
@@ -2412,6 +2440,8 @@ end
 -- compiled for the minimum itself. Which entries an object answers to is known only once it is
 -- compiled, so below the highest minimum the registry names, every source is compiled once for that
 -- release first; a deployment at or above it has every source in range and compiles nothing extra.
+-- The libraries this run keeps, for the reason keeps() gives: a source of a library the run drops
+-- is not this run's to place.
 function floors(opt)
     local top
     for _, entry in pairs(listed(opt.root)) do
@@ -2426,7 +2456,7 @@ function floors(opt)
         return table.join(opt, {deployment = release, triple = opt.architecture .. "-apple-ios" .. release})
     end
     local objects, origins, pending = {}, {}, {}
-    for _, library in ipairs(LIBRARIES) do
+    for _, library in ipairs(staged_libraries(opt)) do
         for _, source in ipairs(sources(opt.root, library)) do
             local object = path.join(opt.builddir, "objects-" .. top, library.folder, path.basename(source) .. ".o")
             os.mkdir(path.directory(object))
@@ -2667,14 +2697,12 @@ end
 -- mixed objects names all of them in one run rather than one per build.
 function check_releases(opt, objects, origins)
     local problems = {}
-    for _, library in ipairs(LIBRARIES) do
-        if not opt.libraries or table.contains(opt.libraries, library.name) then
-            for _, object in ipairs(objects[library.name]) do
-                if #exported_symbols(object) > 0 then
-                    local problem = measured(opt, origins[object], object).problem
-                    if problem then
-                        table.insert(problems, string.format("  %s: %s", library.name, problem))
-                    end
+    for _, library in ipairs(staged_libraries(opt)) do
+        for _, object in ipairs(objects[library.name]) do
+            if #exported_symbols(object) > 0 then
+                local problem = measured(opt, origins[object], object).problem
+                if problem then
+                    table.insert(problems, string.format("  %s: %s", library.name, problem))
                 end
             end
         end
@@ -2745,16 +2773,6 @@ local function release_cache(opt, architectures, release)
         raise("the band of iOS %s is checked against that release, and the %s firmware nearest to it is %s", release, architectures[release], tostring(found))
     end
     return cache
-end
-
-local function staged_libraries(opt)
-    local staged = {}
-    for _, library in ipairs(LIBRARIES) do
-        if not opt.libraries or table.contains(opt.libraries, library.name) then
-            table.insert(staged, library)
-        end
-    end
-    return staged
 end
 
 -- The bands the package stages, {point, first, last} each, and the architecture of every firmware

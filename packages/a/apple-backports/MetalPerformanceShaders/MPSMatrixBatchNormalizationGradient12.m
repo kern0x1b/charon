@@ -54,8 +54,6 @@
 
 #include <stdio.h>
 #include <stdio.h>
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 @implementation MPSMatrixBatchNormalizationGradient {
     CHARON_MPS_NEURON_IVARS

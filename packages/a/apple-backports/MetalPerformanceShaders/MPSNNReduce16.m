@@ -81,7 +81,6 @@
 #import "CharonMPSCnn.h"
 #import "CharonMPSReduce.h"
 
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 // One scoped suppression, recorded in coordination/crutches.md with the reason, and the reason is the
 // release's own shape rather than this file's convenience. The SDK marks the base's -initWithDevice:
 // NS_UNAVAILABLE (:44-47) and each concrete class's -initWithDevice: NS_DESIGNATED_INITIALIZER, so
@@ -91,7 +90,6 @@
 // records the same suppression for the same reason and the same native fix, and CharonMPSReduce.h
 // already declares the seam both files use: a `charon_` initializer that is not in the `init` family,
 // which cannot therefore be marked designated.
-#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
 // The seam this file implements is declared in CharonMPSReduce.h, beside the MPSImageReduceUnary one
 // beside it, because both the twelve concrete classes that CALL it and this file that IMPLEMENTS it

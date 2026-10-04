@@ -42,8 +42,6 @@
 #import "CharonMPS.h"
 #import "CharonMPSImage.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 // The source position a destination position samples, in HALF source pixels, so the bilinear weights
 // stay exact and the fraction is either 0 or a half. `alignCorners` picks the convention; the result
