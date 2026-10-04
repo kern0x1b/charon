@@ -210,6 +210,8 @@ int main(int argc, const char *argv[])
             "slice-gradient-stride2", "slice-gradient-shape-mismatch",
             "slice-update-end-mask", "slice-update-squeeze-mask", "slice-update-shape-wide",
             "slice-update-shape-narrow", "slice-update-fed-answer",
+            "pad-rank3-clamp", "pad-rank3-symmetric",
+            "pad-periodic", "pad-antiperiodic", "pad-reflect-past-extent",
         };
         unsigned i;
         for (i = 0; i < sizeof(kQuestions) / sizeof(kQuestions[0]); i++)
@@ -528,6 +530,51 @@ int main(int argc, const char *argv[])
                   @[[NSData dataWithBytes:data length:sizeof data], [NSData dataWithBytes:four length:sizeof four]],
                   @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32)], twoByFour, q);
             (void)starts; (void)ends; (void)each;
+            return 0;
+        }
+        // THE PAD AND THE TILE'S OWN REFUSALS, each measured on this host's own MPSGraph: two modes the
+        // release refuses by name, a mirror that reaches past the axis it mirrors, and a rank of THREE over
+        // which it takes the process down for both of them - where every rank-2 case of the family answers.
+        if (strncmp(q, "pad-", 4) == 0 || strcmp(q, "tile-rank3") == 0) {
+            int rank3 = strstr(q, "rank3") != NULL;
+            int tile = strstr(q, "tile") != NULL;
+            MPSGraphPaddingMode mode = MPSGraphPaddingModeConstant;
+            if (strstr(q, "periodic")) mode = MPSGraphPaddingModePeriodic;
+            else if (strstr(q, "antiperiodic")) mode = MPSGraphPaddingModeAntiPeriodic;
+            else if (strstr(q, "symmetric")) mode = MPSGraphPaddingModeSymmetric;
+            else if (strstr(q, "clamp")) mode = MPSGraphPaddingModeClampToEdge;
+            else if (strstr(q, "reflect")) mode = MPSGraphPaddingModeReflect;
+            NSArray<NSNumber *> *shape = rank3 ? @[@2, @3, @4] : twoByFour;
+            NSArray<NSNumber *> *left = rank3 ? @[@1, @1, @1] : @[@1, @2];
+            NSArray<NSNumber *> *right = rank3 ? @[@1, @1, @1] : @[@1, @0];
+            if (strstr(q, "past-extent")) { left = @[@3, @2]; right = @[@2, @0]; }
+            const void *values = rank3 ? (const void *)twoByThreeByFour : (const void *)rowFeed;
+            NSUInteger count = rank3 ? 24 : 8;
+            float *bytes = malloc(count * sizeof(float));
+            memcpy(bytes, values, count * sizeof(float));
+            MPSGraph *one = [MPSGraph new];
+            MPSGraphTensor *a = [one placeholderWithShape:shape dataType:MPSDataTypeFloat32 name:@"a"];
+            MPSGraphTensor *t = tile ? [one tileTensor:a withMultiplier:@[@2, @2, @2] name:@"t"]
+                : [one padTensor:a withPaddingMode:mode leftPadding:left rightPadding:right
+                     constantValue:99.0 name:@"p"];
+            NSMutableDictionary *shaped = [NSMutableDictionary dictionary];
+            shaped[a] = [[MPSGraphShapedType alloc] initWithShape:shape dataType:MPSDataTypeFloat32];
+            MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice feeds:shaped targetTensors:@[t]
+                                                   targetOperations:@[] compilationDescriptor:nil];
+            // The result's own shape is printed whatever it is, and the destination is the OPERAND's shape,
+            // because a process that is gone writes nothing this file can match and the shape line is what
+            // the release did answer before it went.
+            printf("%s result-shape %s\n", q, t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil");
+            id<MTLBuffer> buffer = [gDevice newBufferWithLength:count * sizeof(float)
+                                                      options:MTLResourceStorageModeShared];
+            memset([buffer contents], gPattern, count * sizeof(float));
+            MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:shape
+                                                                                 dataType:MPSDataTypeFloat32];
+            [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                                  inputsArray:@[feed(bytes, shape, MPSDataTypeFloat32)]
+                                   resultsArray:@[destination] executionDescriptor:nil];
+            put(q, buffer, count * sizeof(float));
+            free(bytes);
             return 0;
         }
         fprintf(stderr, "unknown question '%s'\n", q);

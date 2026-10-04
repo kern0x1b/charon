@@ -1543,6 +1543,109 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
         // result holds as many of them as its own shape asks for.
         return @{@"shape": shape, @"mappedShape": mapped, @"sourceAxes": sourceAxes,
                  @"sourceCounts": sourceCounts, @"reversed": reversed, @"offsets": offsets, @"strides": steps};
+    } else if (strcmp(gather, "scatter") == 0) {
+        // A SCATTER THE CALLER DESCRIBES DIRECTLY: the result's shape is the tensor the region selects
+        // elements OF, and the region is given as an offset and a stride per axis - or as a DIVISOR per axis,
+        // which is the tile's gradient, where several copies of one element land on the same element of the
+        // result and are summed because the gradient of a sum is a sum. The pad's gradient is the same thing
+        // with the left padding as its offset and a stride of one, and the slice's own update is the same walk
+        // with a region derived from starts, ends and strides - which is why this branch carries no starts,
+        // ends or strides of its own and why nothing here reads one.
+        NSArray<NSNumber *> *resultShape = parameters[@"shape"];
+        NSUInteger rank = resultShape.count;
+        NSArray<NSNumber *> *offsets = parameters[@"offsets"] ?: @[];
+        NSArray<NSNumber *> *strides = parameters[@"strides"] ?: @[];
+        NSArray<NSNumber *> *divisors = parameters[@"divisors"];
+        NSUInteger asked = divisors != nil ? rank : offsets.count;
+        if (asked != rank || (divisors == nil && strides.count != rank)) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was asked to scatter into a rank-%lu tensor with %lu offsets, "
+                               @"%lu strides and %lu divisors, and it wants one of each per axis", name,
+                        (unsigned long)rank, (unsigned long)offsets.count, (unsigned long)strides.count,
+                        (unsigned long)divisors.count];
+        }
+        // A dictionary literal takes no nil, and the divisors are absent unless the caller sums.
+        return @{@"shape": resultShape, @"offsets": offsets, @"strides": strides,
+                 @"divisors": divisors ?: @[], @"scatter": @YES,
+                 @"update": parameters[@"scatterUpdate"] ?: @NO};
+    } else if (strcmp(gather, "tile") == 0) {
+        // A TILE is the gather walk with every axis REPEATED: the result's axis k is the operand's axis k at
+        // `multiplier[k]` times its extent, and the coordinate of the result counts the operand's own extent
+        // over again. Measured over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40): a multiplier of (2, 3) answers a
+        // 4x12 holding the operand three times over, twice down, and a multiplier of (1, 3) a 2x12 holding it
+        // three times across. The multiplier is one entry per axis and a multiplier of one is that axis alone.
+        NSArray<NSNumber *> *multiplier = parameters[@"tileMultiplier"];
+        if (multiplier.count != sourceRank) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was asked to tile a rank-%lu tensor with %lu multipliers, and "
+                               @"the release wants one per axis", name, (unsigned long)sourceRank,
+                        (unsigned long)multiplier.count];
+        }
+        for (NSUInteger k = 0; k < sourceRank; k++) {
+            NSInteger copies = multiplier[k].integerValue;
+            if (copies < 1) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked for %ld copies of axis %lu, and a tile makes one "
+                                   @"or more of every axis", name, (long)copies, (unsigned long)k];
+            }
+            [shape addObject:@(sourceShape[k].integerValue * copies)];
+            [sourceAxes addObject:@(k)];
+            [sourceCounts addObject:@1];
+            [reversed addObject:@0];
+        }
+        return @{@"shape": shape, @"sourceAxes": sourceAxes, @"sourceCounts": sourceCounts,
+                 @"reversed": reversed, @"repeat": @YES};
+    } else if (strcmp(gather, "pad") == 0) {
+        // A PAD is the gather walk with an OFFSET per axis and the elements outside the operand's own extent
+        // filled by the padding mode. The inside is exactly the gather: the result's axis k reads the
+        // operand's axis k from the left padding, so the offset is the left padding and the stride is one,
+        // and every coordinate outside the operand's extent is left for the fill below - which is where the
+        // five modes the release answers differ, and the two it refuses never reach.
+        NSArray<NSNumber *> *left = parameters[@"padLeft"];
+        NSArray<NSNumber *> *right = parameters[@"padRight"];
+        if (left.count != sourceRank || right.count != sourceRank) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was asked to pad a rank-%lu tensor with %lu left and %lu right "
+                               @"paddings, and the header wants one of each per axis", name,
+                        (unsigned long)sourceRank, (unsigned long)left.count, (unsigned long)right.count];
+        }
+        for (NSUInteger k = 0; k < sourceRank; k++) {
+            NSInteger extent = sourceShape[k].integerValue;
+            NSInteger before = left[k].integerValue;
+            NSInteger after = right[k].integerValue;
+            if (before < 0 || after < 0) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked for %ld elements of padding before axis %lu, and "
+                                   @"padding is a count of elements that exists or does not", name,
+                            (long)(before < 0 ? before : after), (unsigned long)k];
+            }
+            // The two mirror modes cannot reach past the axis they mirror: measured, a left padding of three
+            // on an axis of extent two is refused by the release's own compiler ("Optimize Original Module
+            // MLIR pass manager failed") while a padding of one on the same axis answers.
+            NSInteger mode = [parameters[@"padMode"] integerValue];
+            if ((mode == 1 || mode == 2) && (before >= extent || after >= extent)) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked for %ld elements of %@ padding on axis %lu, which "
+                                   @"is %lu long, and the release's mirror reaches no further than the axis "
+                                   @"itself: measured, three on an axis of two is refused by its compiler",
+                             name, (long)(before >= extent ? before : after),
+                             mode == 1 ? @"reflected" : @"symmetric", (unsigned long)k, (unsigned long)extent];
+            }
+            [shape addObject:@(extent + before + after)];
+            [sourceAxes addObject:@(k)];
+            [sourceCounts addObject:@1];
+            [reversed addObject:@0];
+        }
+        NSMutableArray<NSNumber *> *oneEach = [NSMutableArray arrayWithCapacity:sourceRank];
+        for (NSUInteger k = 0; k < sourceRank; k++)
+            [oneEach addObject:@1];
+        // The mode and the caller's constant go into the plan with it, because the fill below is what reads
+        // them: which mode it is decides what an element outside the operand's box holds, and for the constant
+        // mode that is a number the caller wrote down and not the operand's.
+        return @{@"shape": shape, @"sourceAxes": sourceAxes, @"sourceCounts": sourceCounts, @"reversed": reversed,
+                 @"offsets": left, @"strides": oneEach,
+                 @"padMode": parameters[@"padMode"] ?: @0,
+                 @"padConstant": parameters[@"padConstant"] ?: @0};
     } else if (strcmp(gather, "reshape") == 0) {
         // A reshape is the same walk with the axes left alone and the result's shape the caller's: the operand
         // and the result hold the same elements in the same row-major order, so the result's axes consume the
@@ -1664,6 +1767,10 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
     // offset of zero and a stride of one, which is what its own axes already say.
     NSArray<NSNumber *> *offsets = plan[@"offsets"];
     NSArray<NSNumber *> *strides = plan[@"strides"];
+    // A TILE is this walk with every axis REPEATED: the coordinate of the result counts the operand's extent
+    // over again rather than running past its end. Measured: a 2x4 tiled by (2, 3) answers (1, 2, 3, 4 |
+    // 10, 20, 30, 40) three times over, twice down, and by (1, 3) once down and three across.
+    BOOL repeated = [plan[@"repeat"] boolValue];
     NSUInteger sourceRank = sourceShape.count;
     NSUInteger resultRank = resultShape.count;
     NSUInteger count = CharonMPSGraphElementCount(resultShape);
@@ -1711,14 +1818,19 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
                 unsigned long long available = 1;
                 for (NSUInteger c = 0; c < covered && first + c < sourceRank; c++)
                     available *= (unsigned long long)sourceShape[first + c].unsignedIntegerValue;
+                if (repeated) {
+                    // The whole of a repeated axis: every coordinate of the result is inside the operand's,
+                    // because it counts its extent over again. So the check below is skipped for it and the
+                    // component below takes the coordinate modulo the operand's own extent.
+                }
                 NSInteger step = offsets != nil ? [strides[k] integerValue] : 1;
                 NSInteger from = offsets != nil ? [offsets[k] integerValue] : 0;
                 unsigned long long last = (unsigned long long)(from + step * (NSInteger)(coordinate ? coordinate - 1 : 0));
-                if (available > 1 && coordinate >= available) {
+                if (!repeated && available > 1 && coordinate >= available) {
                     unsourced = YES;
                     break;
                 }
-                if (step > 0 ? (NSInteger)last >= (NSInteger)available : (NSInteger)last < 0) {
+                if (!repeated && (step > 0 ? (NSInteger)last >= (NSInteger)available : (NSInteger)last < 0)) {
                     unsourced = YES;
                     break;
                 }
@@ -1736,6 +1848,8 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
                     continue;
                 unsigned long long component = place % extentOfSource;
                 place /= extentOfSource;
+                if (repeated)
+                    component = coordinate % extentOfSource;
                 if ([reversed[k] boolValue])
                     component = extentOfSource - 1 - component;
                 // A slice's OFFSET and STRIDE, which no other gather of the family has: the coordinate of the
@@ -1750,6 +1864,89 @@ static void CharonMPSGraphGather(MPSGraphOperation *operation, MPSGraphTensorDat
             CharonMPSStoreRounded(out, result.dataType, element,
                                   CharonMPSLoad(in, type, (NSUInteger)sourceIndex), 1);
     }
+    free(sourceStride);
+}
+
+// WHAT A PAD PUTS WHERE THE OPERAND HAS NO ELEMENT, which is the whole of the padding mode and the reason the
+// pad is a gather plus this and not one walk: the gather above fills the inside of the padding and leaves
+// every other element of the result alone, and the five modes the release answers each answer that space
+// differently. Measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40):
+//
+//   - CONSTANT and ZERO: the caller's constantValue, which is read in the result's own type, and zero.
+//   - CLAMP TO EDGE: the nearest element of the axis, so a left padding of one repeats the first element and
+//     a right padding of one the last - measured (1, 1, 1, 2, 3, 4) for one at each end of axis 1.
+//   - REFLECT: the mirror ACROSS THE EDGE of the axis, so the element at index -1 is the one at index +1 and
+//     the element at index -2 the one at index +2 - measured (2, 1, 2, 3, 4, 3) for one at each end, which is
+//     not the mirror about the last element (that one answers (3, 1, 2, 3, 4, 3)) and not the one that repeats
+//     the edge either.
+//   - SYMMETRIC: the mirror that DOES repeat the edge, so index -1 is index 0 and index +1 is the last -
+//     measured (1, 1, 2, 3, 4, 4) for one at each end.
+//   - PERIODIC and ANTI-PERIODIC: the release refuses both, with its own words, "Unsupported paddingMode",
+//     after it has built the result tensor - which is why the two are refused where the graph is built.
+//
+// Each axis is chosen on its own, because a pad is applied to every axis at once: an element outside the
+// operand's box on any axis is filled from the mirrored or clamped coordinate of EVERY axis.
+static void CharonMPSGraphPad(MPSGraphTensorData *source, MPSGraphTensorData *result, NSDictionary *plan)
+{
+    NSArray<NSNumber *> *sourceShape = source.shape;
+    NSArray<NSNumber *> *resultShape = result.shape;
+    NSArray<NSNumber *> *left = plan[@"offsets"];
+    NSInteger mode = [plan[@"padMode"] integerValue];
+    double constant = [plan[@"padConstant"] doubleValue];
+    NSUInteger rank = resultShape.count;
+    NSUInteger count = CharonMPSGraphElementCount(resultShape);
+    if (count == 0)
+        return;
+    MPSDataType type = source.dataType;
+    void *in = [source charon_mps_bytes];
+    void *out = [result charon_mps_bytes];
+    unsigned long long *resultStride = calloc(rank ? rank : 1, sizeof(unsigned long long));
+    unsigned long long *sourceStride = calloc(rank ? rank : 1, sizeof(unsigned long long));
+    for (NSUInteger i = rank; i-- > 0;) {
+        resultStride[i] = (i + 1 < rank ? resultStride[i + 1] * (unsigned long long)resultShape[i + 1].unsignedIntegerValue : 1);
+        sourceStride[i] = (i + 1 < rank ? sourceStride[i + 1] * (unsigned long long)sourceShape[i + 1].unsignedIntegerValue : 1);
+    }
+    // EVERY element of the result is written, because a fresh MTLBuffer holds no answer at all: an element
+    // this walk leaves alone is whatever the allocator gave it, which is not the release's zero and not
+    // anything else. Each axis is brought back inside the operand's own extent by the mode - a constant and a
+    // zero do not bring it back at all, because they do not read the operand - and an element whose coordinate
+    // no mode brings inside is the mode's own value.
+    for (NSUInteger element = 0; element < count; element++) {
+        unsigned long long rest = element, index = 0;
+        BOOL mapped = YES;
+        for (NSUInteger k = rank; k-- > 0;) {
+            NSUInteger extent = resultShape[k].unsignedIntegerValue;
+            long long coordinate = extent ? (long long)(rest % extent) : 0;
+            if (extent)
+                rest /= extent;
+            long long ofSource = coordinate - [left[k] integerValue];
+            long long extentOfSource = sourceShape[k].integerValue;
+            if (ofSource < 0 || ofSource >= extentOfSource) {
+                if (mode == 3)
+                    ofSource = ofSource < 0 ? 0 : extentOfSource - 1;                            // clamp
+                else if (mode == 1)
+                    ofSource = ofSource < 0 ? -ofSource : 2 * extentOfSource - 2 - ofSource;      // reflect
+                else if (mode == 2)
+                    ofSource = ofSource < 0 ? -ofSource - 1 : 2 * extentOfSource - 1 - ofSource;  // symmetric
+                else {
+                    mapped = NO;
+                    break;
+                }
+            }
+            if (ofSource < 0 || ofSource >= extentOfSource) {
+                mapped = NO;
+                break;
+            }
+            index += (unsigned long long)ofSource * sourceStride[k];
+        }
+        double value = 0.0;
+        if (mapped)
+            value = CharonMPSLoad(in, type, (NSUInteger)index);
+        else if (mode == 0)
+            value = constant;
+        CharonMPSStoreRounded(out, result.dataType, element, value, 1);
+    }
+    free(resultStride);
     free(sourceStride);
 }
 
@@ -1769,7 +1966,15 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
     NSArray<NSNumber *> *resultShape = result.shape;
     NSArray<NSNumber *> *offsets = plan[@"offsets"];
     NSArray<NSNumber *> *strides = plan[@"strides"];
+    // A tile's GRADIENT is the one scatter whose several source elements land on the same element of the
+    // result: the copies of one element are summed, because the gradient of a sum is a sum. That is the
+    // divisor the plan carries, and with it the walk divides the source's coordinate instead of stepping it,
+    // and ADDS into the result rather than writing over it.
+    NSArray<NSNumber *> *divisors = plan[@"divisors"];
     NSUInteger rank = resultShape.count;
+    // The divisors are there when there is one per axis, and the plan carries an empty array when there are
+    // none at all - a dictionary takes no nil, so their absence is an empty list and not a missing key.
+    BOOL summed = divisors.count == rank;
     NSUInteger count = CharonMPSGraphElementCount(sourceShape);
     if (count == 0)
         return;
@@ -1798,9 +2003,10 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
             unsigned long long coordinate = extent ? rest % extent : 0;
             if (extent)
                 rest /= extent;
-            NSInteger from = [offsets[k] integerValue];
+            NSInteger from = summed ? 0 : [offsets[k] integerValue];
             NSInteger step = [strides[k] integerValue];
-            long long place = (long long)coordinate * (long long)step + (long long)from;
+            long long place = summed ? (long long)coordinate / (long long)[divisors[k] integerValue]
+                                     : (long long)coordinate * (long long)step + (long long)from;
             // A coordinate the region does not reach is left as the zero above, which is what a region the
             // release itself would refuse leaves here: the plan has already refused a region that does not
             // fit, so this can only be an extent of zero, and there is nothing to write.
@@ -1812,7 +2018,10 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
         }
         if (outside || index >= CharonMPSGraphElementCount(resultShape))
             continue;
-        CharonMPSStoreRounded(out, result.dataType, (NSUInteger)index, CharonMPSLoad(in, type, element), 1);
+        double value = CharonMPSLoad(in, type, element);
+        if (summed)
+            value += CharonMPSLoad(out, result.dataType, (NSUInteger)index);
+        CharonMPSStoreRounded(out, result.dataType, (NSUInteger)index, value, 1);
     }
     free(resultStride);
 }
@@ -1939,6 +2148,11 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
                 CharonMPSGraphGather(operation, source, full, plan);
                 memcpy([gathered charon_mps_bytes], [full charon_mps_bytes],
                        MIN(walked, gathered_) * MPSSizeofMPSDataType(dataType));
+            } else if ([gather isEqualToString:@"pad"]) {
+                // A pad is its own walk: the gather's bounds check is about a coordinate that has no element
+                // of the operand behind it, and in a pad that space is what the mode fills rather than an
+                // error, so the one function below answers every element of the result.
+                CharonMPSGraphPad(source, gathered, plan);
             } else {
                 CharonMPSGraphGather(operation, source, gathered, plan);
             }

@@ -46,6 +46,10 @@
 - (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor startTensor:(MPSGraphTensor *)startTensor sizeTensor:(MPSGraphTensor *)sizeTensor squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
 - (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor startTensor:(MPSGraphTensor *)startTensor endTensor:(MPSGraphTensor *)endTensor strideTensor:(MPSGraphTensor *)strideTensor startMask:(uint32_t)startMask endMask:(uint32_t)endMask squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
 - (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor startTensor:(MPSGraphTensor *)startTensor sizeTensor:(MPSGraphTensor *)sizeTensor squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
+// The pad and the tile, and their two gradients (MPSGraphTensorShapeOps.h, ios(14.0)). The two periodic
+// padding modes are asked of the release in refusals.m because the release refuses them.
+- (MPSGraphTensor *)padTensor:(MPSGraphTensor *)tensor withPaddingMode:(MPSGraphPaddingMode)paddingMode leftPadding:(NSArray<NSNumber *> *)leftPadding rightPadding:(NSArray<NSNumber *> *)rightPadding constantValue:(double)constantValue name:(NSString *)name;
+- (MPSGraphTensor *)tileTensor:(MPSGraphTensor *)tensor withMultiplier:(NSArray<NSNumber *> *)multiplier name:(NSString *)name;
 // The cumulative family of 16.0 (MPSGraphCumulativeOps.h, ios(16.0)), sixteen methods over four
 // operations: an axis written down, and an axis fed at run time, each with and without the two flags.
 - (MPSGraphTensor *)cumulativeSumWithTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
@@ -163,7 +167,7 @@ static float rightValues[32] = {
     0x1p-16f, -0x1p-16f, 0x1.8p-16f, -0x1.8p-16f, 0x1p-15f, -0x1p-15f, 0x1.8p-15f, -0x1.8p-15f,
     2.0f + 0x1p-16f, -(2.0f + 0x1p-15f), 1.0f / 3.0f, 7.0f,
 };
-static unsigned char resultBytes[256];
+static unsigned char resultBytes[4096];
 // The feeds of the reduction family, one per data type and each of eight elements in a 2x4. They are
 // ordinary values rather than the sixteen classes above because a reduction is a question about a set and
 // a set of infinities and denormals answers a sum and a product that are both infinite or both zero, which
@@ -1202,6 +1206,137 @@ static void family_gather_slice_rest(void)
     chain_case();
 }
 
+// PAD AND TILE, which are the gather walk with two more rules: a TILE repeats every axis, and a PAD is the
+// walk with an offset per axis and the space outside the operand filled by the padding mode. The pad's
+// gradient is the walk's other direction - a scatter, with the left padding as its offset - and the
+// measurements behind every rule are in the pad block of MPSGraph14.m and in
+// facts/MetalPerformanceShadersGraph/Core.md.
+static void family_gather_padtile(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+
+    // THE FIVE MODES THE RELEASE ANSWERS, over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) with one element of
+    // padding at the front and the back of axis 0 and two at the front of axis 1.
+    gather_case("pad-constant float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeConstant leftPadding:@[@1, @2]
+                          rightPadding:@[@1, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("pad-zero float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeZero leftPadding:@[@1, @2]
+                          rightPadding:@[@1, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("pad-clamp float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeClampToEdge leftPadding:@[@1, @2]
+                          rightPadding:@[@1, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("pad-reflect float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeReflect leftPadding:@[@1, @2]
+                          rightPadding:@[@1, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("pad-symmetric float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric leftPadding:@[@1, @2]
+                          rightPadding:@[@1, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // One element at each end of both axes, which is where the two mirrors differ from one another by one
+    // element and from a repeat of the edge: measured (2, 1, 2, 3, 4, 3) for the reflect and (1, 1, 2, 3, 4, 4)
+    // for the symmetric.
+    gather_case("pad-reflect-one float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeReflect leftPadding:@[@1, @1]
+                          rightPadding:@[@1, @1] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("pad-symmetric-one float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric leftPadding:@[@1, @1]
+                          rightPadding:@[@1, @1] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // Three elements at the front of axis 1 and two at the back, which is a mirror of more than half an axis.
+    // A rank of three is NOT asked here: the release takes the process down on every mode of it, which is
+    // refusals.m's pad-rank3-clamp and pad-rank3-symmetric.
+    gather_case("pad-reflect-three float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeReflect leftPadding:@[@1, @3]
+                          rightPadding:@[@1, @2] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // A padding of nothing at all is the identity, and the sixteen classes through it say so byte for byte.
+    gather_case("pad-nopad float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeConstant leftPadding:@[@0, @0]
+                          rightPadding:@[@0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, gatherClasses);
+    gather_case("pad-clamp-classes float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeClampToEdge leftPadding:@[@1, @1]
+                          rightPadding:@[@1, @0] constantValue:-1.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, gatherClasses);
+
+    // THE TILE, and the multiplier that touches one axis and not the other.
+    gather_case("tile-2x3 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g tileTensor:a withMultiplier:@[@2, @3] name:@"t"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("tile-axis1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g tileTensor:a withMultiplier:@[@1, @3] name:@"t"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("tile-axis0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g tileTensor:a withMultiplier:@[@2, @1] name:@"t"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // A rank of three, which the release answers: a 2x3x4 tiled by two on every axis is a 4x6x8 of 192
+    // elements, which is also what this file's own result buffer had to grow for.
+    // THE TILE'S GRADIENT IS NOT A CASE, and the port does not carry it: measured on this host, the release's
+    // answer is not the sum of the copies of an element, which is what a gradient of a sum is - over an
+    // incoming gradient of ones it answers the PRODUCT of the multiplier for every element (6 for (2, 3), 3
+    // for (1, 3), 9 for (3, 3)), and over an incoming gradient of (1 ... 24) with a multiplier of (1, 3) it
+    // answers (15, 18, 21, 24 | 51, 54, 57, 60) where the sum of the copies is (6, 15, 24, 33 | 42, 51, 60,
+    // 69). Which elements it reads is what is left to measure, and a row whose behaviour is not measured is
+    // not carried: facts/MetalPerformanceShadersGraph/Core.md holds both measurements.
+    gather_case("tile-rank3 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g tileTensor:a withMultiplier:@[@2, @2, @2] name:@"t"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("tile-one float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g tileTensor:a withMultiplier:@[@1, @1] name:@"t"]; },
+                MPSDataTypeFloat32, twoByFour, gatherClasses);
+
+    // THE TWO GRADIENTS, each over a destination filled with the byte 0xbd, because a gradient's answer is
+    // the sum over the copies that land on each element and the zeros it writes where none lands are written
+    // and not left.
+    {
+        float padded[24];
+        for (int i = 0; i < 24; i++) padded[i] = (float)(i + 1);
+        float tiled[48];
+        for (int i = 0; i < 48; i++) tiled[i] = (float)(i + 1);
+        multi_case_filled("pad-gradient float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g padGradientWithIncomingGradientTensor:in[0] sourceTensor:in[1]
+                                       paddingMode:MPSGraphPaddingModeConstant leftPadding:@[@1, @2]
+                                       rightPadding:@[@1, @0] name:@"pg"]; },
+                          @[@[@4, @6], @[@2, @4]],
+                          @[[NSData dataWithBytes:padded length:sizeof padded],
+                            [NSData dataWithBytes:rowFeed length:32]],
+                          @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32)], 0xbd);
+        multi_case_filled("pad-gradient-zero-mode float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g padGradientWithIncomingGradientTensor:in[0] sourceTensor:in[1]
+                                       paddingMode:MPSGraphPaddingModeZero leftPadding:@[@1, @2]
+                                       rightPadding:@[@1, @0] name:@"pg"]; },
+                          @[@[@4, @6], @[@2, @4]],
+                          @[[NSData dataWithBytes:padded length:sizeof padded],
+                            [NSData dataWithBytes:rowFeed length:32]],
+                          @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32)], 0xbd);
+    }
+    chain_case();
+}
+
 // The reshape, which is the same walk with the axes left alone and the result's shape the caller's: the
 // operand's elements in the same row-major order at another extent. A dynamic extent is the header's -1 and
 // is the element count over the product of the extents written down.
@@ -1832,6 +1967,7 @@ static const Family kFamilies[] = {
     { "gather_transpose", family_gather_transpose },
     { "gather_slice", family_gather_slice },
     { "gather_slice_rest", family_gather_slice_rest },
+    { "gather_padtile", family_gather_padtile },
     { "gather_reshape", family_gather_reshape },
     { "gather_flatten", family_gather_flatten },
     { "gather_broadcast", family_gather_broadcast },

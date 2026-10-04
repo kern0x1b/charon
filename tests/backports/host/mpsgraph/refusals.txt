@@ -115,3 +115,18 @@ slice-update-shape-narrow 134 Optimize Original Module MLIR pass manager failed
 # update from the seven fed parameters it cannot build a graph over: the starts, the ends and the strides
 # arrive as int32 of shape [2] and the answer is the written-down form's answer byte for byte.
 slice-update-fed-answer 0 0000c842000080bf000000c00000c8430000fa430000164400002f4400004844
+
+# THE PAD AND THE TILE'S OWN REFUSALS, each measured on this host's own MPSGraph and each a process of its
+# own. Every rank-2 pad and tile of the family answers; what is here is what the release does not.
+# The two periodic modes, refused by name and after the result tensor has been built.
+pad-periodic 134 Unsupported paddingMode
+pad-antiperiodic 134 Unsupported paddingMode
+# A MIRROR that reaches past the axis it mirrors: a left padding of three on an axis of extent two. The clamp,
+# the zero and the constant answer the same padding, so it is the mirror the release's own compiler refuses
+# ("Optimize Original Module MLIR pass manager failed"), and the port refuses it where the graph is built.
+pad-reflect-past-extent 134 Optimize Original Module MLIR pass manager failed
+# A rank of THREE. The tile of one answers - a 2x3x4 tiled by two on every axis is a 4x6x8 and both sides
+# agree on it - and the pad of one does not, in any mode: the result tensor is built (the shape line prints
+# 4x5x6) and then the release's own kernel says the destination's shape is not the one it wanted.
+pad-rank3-clamp 134 Invalid KernelDAG, equalShape for destination failed
+pad-rank3-symmetric 134 Invalid KernelDAG, equalShape for destination failed

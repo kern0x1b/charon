@@ -1078,12 +1078,85 @@ the second step.
 Neither is in the differential, and that is deliberate in both cases: the release's own answer is a process
 that is gone, so there is nothing to compare a line against. Both are measurements in the rows instead.
 
+## Pad and tile: the gather walk with two more rules
+
+Three of the four rows of the ledger's pad and tile pair, in `MPSGraph14.m` where 14.0 put them, compared in a
+process of their own (`gather_padtile`): **17 cases, every cell and every shape byte-identical to the release,
+`gather_padtile checks=17 failures=0 recorded=0` over 536 cells in 37 case lines**, the red control differing from
+the release in 18 of them, and five refusal questions of their own.
+
+* **A TILE is the gather walk with every axis REPEATED**: the result's axis k is the operand's axis k at
+  `multiplier[k]` times its extent, and the coordinate of the result counts the operand's own extent over again.
+  Measured over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40): a multiplier of `(2, 3)` answers a `4x12` holding the
+  operand three times over twice down, `(1, 3)` a `2x12` three times across, `(2, 1)` twice down, a multiplier of
+  one the operand itself byte for byte, and `(2, 2, 2)` over a `2x3x4` the `4x6x8` of 192 elements - **so a rank
+  of three is answered by a tile** where it is not by a pad.
+* **A PAD is the walk with an offset per axis and the space outside the operand filled by the mode**, and every
+  element of the result is written: the inside from the operand at the coordinate less that axis's left padding,
+  and the outside by the mode. Every element matters because **a fresh `MTLBuffer` holds no answer at all** - an
+  element the walk leaves alone is whatever the allocator gave it, which is how the first version of this fill
+  answered the two constant modes with zeros that were not the release's zeros.
+* **The pad's GRADIENT** is the same scatter the slice's is, with the left padding as its offset: the incoming
+  gradient is of the **padded** shape and the region sits that axis's left padding into it, so the destination's
+  coordinate is the incoming gradient's *less* that. Measured over an incoming gradient of (1 ... 24) and a
+  padding of (1, 2) at the left and (1, 0) at the right of a 2x4: the release answers
+  **9, 10, 11, 12 | 15, 16, 17, 18**, which is the incoming gradient's own rows 1 and 2, columns 2 to 5. The
+  padding mode is not read - a gradient of a pad does not depend on what the padding was filled with - and the
+  differential asks the zero mode beside the constant one to say so.
+
+### The five modes the release answers, and the two it does not
+
+| mode | what an element outside the operand is | measured (one at each end of axis 1) |
+| --- | --- | --- |
+| `MPSGraphPaddingModeConstant` | the caller's `constantValue`, written in the **result's** own type | 99 over a float32 2x4 |
+| `MPSGraphPaddingModeZero` | zero | - |
+| `MPSGraphPaddingModeClampToEdge` | the nearest element of the axis | `1, 1, 1, 2, 3, 4` |
+| `MPSGraphPaddingModeReflect` | the mirror **across the edge** - index -1 is index +1 | `2, 1, 2, 3, 4, 3` |
+| `MPSGraphPaddingModeSymmetric` | the mirror that **does repeat** the edge - index -1 is index 0 | `1, 1, 2, 3, 4, 4` |
+
+Each axis is chosen on its own, because a pad is applied to every axis at once: an element outside the operand's
+box on any axis is filled from the mirrored or clamped coordinate of *every* axis. The two mirrors are the pair
+that is easy to get wrong - the reflect is neither the mirror about the last element (which answers
+`3, 1, 2, 3, 4, 3`) nor one that repeats the edge (which answers `1, 1, 2, 3, 4, 4` and is the symmetric's).
+
+**Two of the seven modes the release refuses**, with its own words, *after* it has built the result tensor:
+`MPSGraphPaddingModePeriodic` and `MPSGraphPaddingModeAntiPeriodic` - "Unsupported paddingMode", exit 134. Both
+are raised where the graph is built. Both mirrors are refused as well when the padding **reaches the axis's own
+extent**: a left padding of three on an axis of extent two is refused by the release's compiler ("Optimize
+Original Module MLIR pass manager failed") where the clamp, the zero and the constant answer the same padding.
+
+**A pad of a rank of THREE is refused by the release in every mode** - the result tensor is built, the shape line
+prints `4x5x6`, and then the release's own kernel says "Invalid KernelDAG, equalShape for destination failed".
+Every rank-2 pad answers. The port answers a rank of three and the row says so; `refusals.m`'s
+`pad-rank3-clamp` and `pad-rank3-symmetric` hold the measurement.
+
+### The tile's gradient is NOT carried, and this is why
+
+`-[MPSGraph tileGradientWithIncomingGradientTensor:sourceTensor:withMultiplier:name:]` stays `missing`, because
+**the release's answer is not the sum of the copies of an element**, which is what the gradient of a sum is, and
+pinning what it is instead needs measurements this pass did not finish. What is measured:
+
+* over an incoming gradient of **ones**, the release answers **the product of the multiplier** for every element
+  of the result - 6 for `(2, 3)`, 3 for `(1, 3)`, 9 for `(3, 3)` - which is the count the sum of the copies would
+  give;
+* over an incoming gradient of **(1 ... 24)** with a multiplier of `(1, 3)`, the release answers
+  **(15, 18, 21, 24 | 51, 54, 57, 60)** where the sum of the copies is **(6, 15, 24, 33 | 42, 51, 60, 69)** - so it
+  is reading a different set of elements, and not a set that is one row or one column away;
+* over an incoming gradient of (1 ... 48) with a multiplier of `(2, 3)`, the release answers
+  **(102, 108, 114, 120 | 174, 180, 186, 192)** where the sum of the copies is
+  (48, 66, 84, 102 | 192, 210, 228, 246).
+
+A row whose behaviour is not measured is not registered as implemented, and the port does not define the method
+at all - a built method with no registry row is what `check_registry` fails on, and a registered row with a
+method whose behaviour is guessed is what this project calls a fake. Both probes are in the report and the next
+pass starts from them.
+
 ### What is not measured here
 
-The rest of the shape family (`pad`, `tile`, `concat`, `stack`, `split`, `spaceToDepth`,
-`depthToSpace`, `spaceToBatch`, `batchToSpace`, `coordinateAlongAxis`, `nonZeroIndices`, the `gather*` and
-`scatter*` forms and the `topK`/`bottomK` pair) is not in this page and not in the tree: it is the rest of the
-rows the ledger carries as `missing` for this family.
+The rest of the shape family (`concat`, `stack`, `split`, `spaceToDepth`, `depthToSpace`, `spaceToBatch`,
+`batchToSpace`, `coordinateAlongAxis`, `nonZeroIndices`, the `gather*` and `scatter*` forms and the `topK`/
+`bottomK` pair), and the tile's gradient whose measurement is in the section above, is not in this page and not
+in the tree: it is the rest of the rows the ledger carries as `missing` for this family.
 
 ## The R4 names this band adds, in full
 
@@ -1129,7 +1202,7 @@ so it is named here in the facts and not only in the registry.
   the gather walk's own plan asked when the graph is built, so that the output tensor
   carries its result's shape before anything runs
 * `-[MPSGraph charon_mps_slice:inputs:parameters:name:]` - MPSGraph14.m, the one seam the slice family's eleven
-  methods go through in its three directions, the slice itself and its gradient and its update
+  methods and the pad's and the tile's four go through: a gather in one direction, a scatter in the others
 
 **Which half of this list is current, and which is not.** The graph's names are read out of the graph's own
 compiled objects with `nm` and are current for this tree: `relcheck` compiled twenty of them - the slice family's
