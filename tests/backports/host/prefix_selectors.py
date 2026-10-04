@@ -287,8 +287,12 @@ def text_after(source, offset):
 
 
 class Rewriter:
-    def __init__(self, source, carried, superclasses, protocol_owners=None, ported_classes=None):
+    def __init__(self, source, carried, superclasses, protocol_owners=None, ported_classes=None, prefix="charonHost"):
         self.source = source
+        # The prefix this rewrite is for. It is a parameter because the send rewritten as an explicit
+        # message below has to spell the renamed selector itself, and spelling it needs the prefix;
+        # before this, result() was the only place that had it.
+        self.prefix = prefix
         self.carried = carried
         self.superclasses = superclasses
         self.ported_classes = ported_classes or set()
@@ -445,7 +449,48 @@ class Rewriter:
                     stop = node["range"]["end"]["offset"] + node["range"]["end"].get("tokLen", 1)
                     match = re.compile(r"\b" + re.escape(first) + r"\b").search(self.source, begin, stop)
                     if match:
-                        self.inserts.add(match.start())
+                        rewritten_as_send = False
+                        if receiver in self.protocol_owners and node.get("inner"):
+                            # A protocol-typed receiver, placed by owns() from its conformers. The prefixed
+                            # name it now sends is declared on the CLASS the port's category defines it on -
+                            # `-charonHostTraitCollection` in @interface UIScreen () - and a receiver typed
+                            # id<UITraitEnvironment> sees nothing of that, so the rewritten file did not
+                            # compile:
+                            #   UITraitCollection.m:137:41: error: property 'charonHostTraitCollection' not
+                            #   found on object of type 'const __strong id<UITraitEnvironment>'
+                            # A protocol cannot be given the member either: @protocol P () carrying a method
+                            # is not valid Objective-C, and send_declaration() above is dead code because that
+                            # was the shape it wrote. So the receiver is cast to id, which accepts a selector
+                            # declared anywhere - the same move, and for the same reason, as the candidate
+                            # case further down. owns() has already established that every conformer carries
+                            # the selector, so what is lost is the compiler's check of a call that holds.
+                            # The cast is in the rewritten copy only; the port's own source is untouched.
+                            #
+                            # The receiver is inner[0]'s own range and NOT the bracket the send's begin offset
+                            # leads to. clang reports a message expression's range at the enclosing send when
+                            # the receiver is dot syntax, so `[previous addObject:environment.traitCollection]`
+                            # put the inner send's begin one character into the OUTER `[`, and anchoring there
+                            # produced `[(id)(previous addObject:environment.)charonHostTraitCollection]`. The
+                            # receiver expression is a real sub-expression with a range of its own.
+                            span = node["inner"][0]["range"]
+                            start = span["begin"]["offset"]
+                            receiver_end = start + span["end"].get("tokLen", 1)
+                            if receiver_end < len(self.source) and self.source[receiver_end] == ".":
+                                # Dot syntax needs the whole send rewritten, not only the receiver cast:
+                                # clang resolves `x.p` on an `id` by looking up a DECLARED property, and there
+                                # is none to find, so it still answered
+                                #   error: property 'charonHostTraitCollection' not found on object of type 'id'
+                                # with the receiver correctly typed as id. Dot syntax IS this send, so the
+                                # copy spells it the way it means it.
+                                whole_end = node["range"]["end"]["offset"] + node["range"]["end"].get("tokLen", 1)
+                                self.replacements[start] = (
+                                    whole_end, "[(id)(%s) %s]" % (self.source[start:receiver_end],
+                                                                 prefixed(selector, self.prefix)))
+                                rewritten_as_send = True
+                            else:
+                                self.replacements[start] = (receiver_end, "((id)%s)" % self.source[start:receiver_end])
+                        if not rewritten_as_send:
+                            self.inserts.add(match.start())
                     else:
                         self.unresolved.append(
                             (offset, "%s, whose first keyword the rewrite cannot find" % selector))
@@ -569,14 +614,35 @@ def collect(node, owner, owners):
 FIXTURE = """#import <Foundation/Foundation.h>
 @protocol CharonWidgetDelegate <NSObject>
 - (void)widgetSaysHello;
+- (NSString *)widgetGreeting;
 @end
 @interface CharonWidget : NSObject <CharonWidgetDelegate>
 - (void)widgetSaysHello;
+- (NSString *)widgetGreeting;
 @end
 @implementation CharonWidget
+- (void)widgetSaysHello
+{
+}
+- (NSString *)widgetGreeting
+{
+    return @"hello";
+}
 - (void)greet:(id<CharonWidgetDelegate>)delegate
 {
     [delegate widgetSaysHello];
+}
+@end
+@interface CharonGreeting : NSObject
+@end
+@implementation CharonGreeting
+- (void)collect:(id<CharonWidgetDelegate>)delegate into:(NSMutableArray *)out
+{
+    // The spelling that made this rewrite fail to compile, read off UITraitCollection.m: a property read
+    // through a protocol-typed receiver. clang records it as a message expression whose range begins at the
+    // ENCLOSING send, so neither the begin offset nor a search backwards for `[` finds this send's own
+    // bracket - the receiver expression's own range is the only thing that does.
+    [out addObject:delegate.widgetGreeting ?: @"none"];
 }
 @end
 """
@@ -596,13 +662,13 @@ def selftest():
         dump = subprocess.run(["xcrun", "clang", "-fsyntax-only", "-w", "-Xclang", "-ast-dump=json",
                                "-Xclang", "-ast-dump-filter=haron", path],
                               capture_output=True, text=True, check=True).stdout
-        carried = {("-", "CharonWidget", "widgetSaysHello")}
+        carried = {("-", "CharonWidget", "widgetSaysHello"), ("-", "CharonWidget", "widgetGreeting")}
         # the expected spelling comes from prefixed(), the function the rewrite itself uses, so the assertion
         # is about whether the send was placed and not about how this tool spells a prefixed selector
         renamed = prefixed("widgetSaysHello", "charonHost")
 
         def rewrite(owners):
-            rewriter = Rewriter(FIXTURE, carried, {}, owners, set())
+            rewriter = Rewriter(FIXTURE, carried, {}, owners, set(), "charonHost")
             for document in documents(dump):
                 rewriter.walk(document, None)
             return rewriter.result("charonHost")
@@ -619,6 +685,23 @@ def selftest():
         print("     the first line is about the mechanism and not about the fixture")
         if renamed not in placed or not quiet:
             print("FAIL the protocol-typed send is not placed from its conformers, or the control placed it too",
+                  file=sys.stderr)
+            sys.exit(1)
+        # A property read through a protocol-typed receiver, which is what UITraitCollection.m does and what
+        # the first case above does not cover. Two things have to hold and neither holds because of the
+        # other: the dot becomes the send it stands for, because clang resolves a property on an `id` by
+        # looking up a DECLARED property and there is none to find; and the receiver is cast to id, because
+        # the prefixed name is declared on the class the port's category defines it on, which id<P> cannot
+        # see. A rewrite that did the first and not the second compiled to
+        # "error: property 'charonHostTraitCollection' not found on object of type 'id'".
+        as_send = "[(id)(delegate) charonHostWidgetGreeting]"
+        spelled = as_send in placed and "[out addObject:delegate.widgetGreeting" not in placed
+        print("%s   a protocol-typed property read is rewritten as the send it stands for: %s"
+              % ("ok  " if spelled else "FAIL",
+                 as_send if spelled else next((line.strip() for line in placed.splitlines()
+                                               if "addObject" in line), "<no addObject line>")))
+        if not spelled:
+            print("FAIL the protocol-typed property read was not rewritten as a send on an id receiver",
                   file=sys.stderr)
             sys.exit(1)
     finally:
@@ -646,7 +729,7 @@ def main():
     # alone rather than placed against a guess.
     classes = ported_classes([*objects, *superclasses.values()])
     owners = conformers(group_sources or [source_path], flags, classes) if group_sources else {}
-    rewriter = Rewriter(source, carried, superclasses, owners, classes)
+    rewriter = Rewriter(source, carried, superclasses, owners, classes, prefix)
     for document in documents(dump):
         rewriter.walk(document, None)
     if rewriter.candidates:
