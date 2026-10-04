@@ -111,6 +111,30 @@ EFFECT_DATA_EVENT = ("every property the SDK's own header declares for the class
                      " and has no superclass that does, so it has no -copyWithZone:, which is what the header"
                      " says about it")
 
+# The 60 classes the framework declares as a deprecated SPELLING of another one. Read back out of the emitted
+# objects, not from the SDK and not from a list: an object that writes `@dynamic` IS an alias-shaped object,
+# and that is the only claim these three rows make. The framework's own @implementation for one of these is
+# `@dynamic` and nothing else - no ivar, no accessor, no -init, no -copyWithZone: - so every member lives in
+# the superclass's storage and ONE storage serves both names, where a port that gave the alias an ivar per
+# member has two and reading a member written through one name through the other reads a different value.
+EFFECT_ALIAS_CLASS = ("this class is the DEPRECATED SPELLING of another one - its own header carries"
+                      " MTR_DEPRECATED(\"Please use <the other>\") and it is declared as a subclass of it -"
+                      " and the object carries the framework's own shape rather than one of its own: no"
+                      " storage, no accessor, no -init, no -copyWithZone: and no -description. Every member is"
+                      " answered by the class it is a spelling of, so the two names share ONE set of storage,"
+                      " which is what writing a member through this class and reading it through that one"
+                      " shows. tests/backports/host/matter/params-diff.sh is what measures it")
+EFFECT_ALIAS_PROPERTY = ("the property is answered by the class this one is a deprecated spelling of, and the"
+                         " storage it reads and writes is that class's: the object declares it @dynamic and"
+                         " holds no ivar of its own, so a value written through this name is the value read"
+                         " through the other one. Nothing here reaches a fabric")
+EFFECT_ALIAS_FORWARDED = ("the superclass does not declare a member of this name, so the object's getter and"
+                          " setter are written out and forward to the differently named member of that class"
+                          " the framework's own source names - the header's deprecation text says 'Please use"
+                          " the storage property' for one of them and prose is not a place to read a member"
+                          " name from. The value therefore lives in the superclass's storage and not here,"
+                          " which is the framework's own shape. Nothing here reaches a fabric")
+
 # What a row says when the SDK names no release for the API it describes. Not a measurement and not
 # pretending to be one: the header annotates those declarations with MTR_PROVISIONALLY_AVAILABLE, which
 # expands to an export or to NS_UNAVAILABLE and names no iOS release at all (MTRDefines.h), so there is
@@ -126,15 +150,18 @@ FALLBACK = "16.0"
 
 PROPERTY_LINE = re.compile(r"^@property\s*\(([^)]*)\)\s*(.+);\s*$")
 SYNTHESIZED = re.compile(r"^@synthesize\s+(\w+)\s*=\s*_\w+\s*;\s*$")
+DYNAMIC = re.compile(r"^@dynamic\s+(\w+)\s*;\s*$")
 
 
 def properties_of(path):
     """(name, declaration) for every property the emitted object declares, read back out of the emitted text.
 
-    Two spellings, and both are in the objects: `@synthesize status = _status;` for a property the object
-    holds an ivar for, and a getter the object writes out by hand for a property the SDK declares in a
-    CATEGORY of its class - a category cannot hold an ivar, so the accessors are the only way to carry it.
-    A getter is read back out of the emitted declaration, so a row exists for exactly what is built.
+    Three spellings, and all of them are in the objects: `@synthesize status = _status;` for a property the
+    object holds an ivar for, `@dynamic a;` for a property whose accessor and storage belong to the
+    superclass - a deprecated alias class carries the member and declares that it answers with the
+    superclass's, so the member IS built and the row exists - and a getter the object writes out by hand
+    for a property the SDK declares in a CATEGORY of its class, which a category cannot hold an ivar for. A
+    getter is read back out of the emitted declaration, so a row exists for exactly what is built.
     """
     found, lines = {}, None
 
@@ -143,6 +170,10 @@ def properties_of(path):
         synth = SYNTHESIZED.match(stripped)
         if synth:
             found[synth.group(1)] = ""
+            continue
+        dynamic = DYNAMIC.match(stripped)
+        if dynamic:
+            found.setdefault(dynamic.group(1), "")
             continue
         if stripped.startswith("- (") or stripped.startswith("+ ("):
             lines = stripped
@@ -156,6 +187,22 @@ def properties_of(path):
             if selector and ":" not in selector and not selector.startswith(
                     ("init", "copyWithZone", "set", "get", "is", "has", "will", "did")):
                 found.setdefault(selector, "")
+    return found
+
+
+def dynamic_of(path):
+    """The members an emitted object declares `@dynamic`, read back out of the emitted text.
+
+    One predicate rather than a shape list: an object that writes `@dynamic` for a member is saying that the
+    member is answered by its superclass and that the superclass's storage holds it, and 60 of the 1,068
+    objects do. Which of them is a deprecated alias of another class is not decided here - the class's own
+    header says that, and the row that says it is the class's row.
+    """
+    found = set()
+    for line in open(path):
+        dynamic = DYNAMIC.match(line.lstrip())
+        if dynamic:
+            found.add(dynamic.group(1))
     return found
 
 
@@ -421,6 +468,14 @@ def main():
     # not a cluster and so was never on the list at all.
     families, data = plain_data_classes(arguments.sdk)
     copying = {name for name in data if "NSCopying" in families[name]["protocols"]}
+    # The classes the SDK declares as a deprecated SPELLING of another one, each read out of its own
+    # MTR_DEPRECATED("Please use X") annotation against its own superclass - the same rule the generator
+    # emits them under, read from the same place. It is a set of class names and not a shape test because
+    # three of the 60 declare no member at all and a fourth writes its accessors out instead of @dynamic:
+    # `dynamic_of()` sees nothing in any of the four, and the object alone cannot tell an alias with no
+    # members from a plain data class with no members.
+    aliases = {name for name in data
+               if families[name].get("deprecated_for") == families[name]["super"]}
     emitted = sorted(name for name in os.listdir(arguments.objects) if name.endswith(".m"))
     classes, unnamed = [], []
     for name in emitted:
@@ -443,11 +498,16 @@ def main():
         path = os.path.join(arguments.objects, name)
         releases, introduced, header = releases_of(arguments.sdk, cluster)
         source = SOURCE % (os.path.basename(header) if header else "MTRBaseClusters.h")
+        dynamic = dynamic_of(path)
+        alias = cluster in aliases
         if cluster in BASE_ROWS:
             reason, effect = BASE_ROWS[cluster]
         elif cluster in data:
             reason = REASON_DATA
-            effect = EFFECT_DATA if cluster in copying else EFFECT_DATA_EVENT
+            if alias:
+                effect = EFFECT_ALIAS_CLASS
+            else:
+                effect = EFFECT_DATA if cluster in copying else EFFECT_DATA_EVENT
         else:
             reason, effect = REASON_CLASS, EFFECT_CLASS
         if introduced is None:
@@ -491,15 +551,21 @@ def main():
                 undated.append("%s.%s" % (cluster, declared))
                 if introduced is None:
                     fell_back.append(("property", "%s.%s" % (cluster, declared)))
+            if declared in dynamic:
+                what = EFFECT_ALIAS_PROPERTY
+            elif alias:
+                what = EFFECT_ALIAS_FORWARDED
+            else:
+                what = ("the property is a readwrite ivar of the object's own, and the header's own"
+                        " attribute decides the setter: copy for a copy property, a plain store"
+                        " otherwise. Nothing here reaches a fabric")
             entries.append(collections.OrderedDict([
                 ("api", "%s.%s" % (cluster, declared)),
                 ("kind", "property"),
                 ("introduced", dated or introduced or FALLBACK), ("minimum", "6.0"),
                 ("status", "implemented"), ("source", source), ("facts", FACTS),
                 ("reason", "a property of a class the release does not have, carried whole"),
-                ("effect", "the property is a readwrite ivar of the object's own, and the header's own"
-                           " attribute decides the setter: copy for a copy property, a plain store"
-                           " otherwise. Nothing here reaches a fabric")]))
+                ("effect", what)]))
             counts["property"] += 1
     entries = rows_over_base(entries, arguments.base) if arguments.base else entries
     document = collections.OrderedDict([("framework", "Matter"), ("entries", entries)])
@@ -508,6 +574,19 @@ def main():
     print("wrote %s: %d entries (%d class, %d method, %d property) over %d objects, every object one class"
           % (arguments.out, len(entries), counts["class"], counts["method"], counts["property"],
              len(classes)))
+    dynamic_total, forwarded_total, empty = 0, 0, 0
+    for stem, cluster in classes:
+        if cluster not in aliases:
+            continue
+        built = set(properties_of(os.path.join(arguments.objects, stem)))
+        held = dynamic_of(os.path.join(arguments.objects, stem))
+        dynamic_total += len(held)
+        forwarded_total += len(built - held)
+        empty += 1 if not built else 0
+    print("  deprecated ALIAS classes the SDK declares - each carries MTR_DEPRECATED naming its own"
+          " superclass: %d; %d member(s) their objects declare @dynamic, %d whose accessors they write"
+          " out over the superclass's storage, and %d class(es) with no member at all"
+          % (len(aliases), dynamic_total, forwarded_total, empty))
     for tier, count in sorted(CLASS_TIERS.items()):
         print("  class row from %s: %d" % (tier, count))
     # Said out loud rather than left as a silent fallback, and the two sets counted apart, because they are

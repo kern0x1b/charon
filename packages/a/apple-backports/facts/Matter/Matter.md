@@ -521,13 +521,108 @@ IS the file's diff, which is checked here: **2,923 insertions and 2,923 deletion
 reformat**, and 443 deletions in the sidecar, none added. A second run over the file the first one wrote
 changes nothing at all.
 
-**What is still a shape difference from the framework, and is NOT measured by the comparison.** The
-framework declares a deprecated alias class `@dynamic` with no storage of its own - `MTRStructsObjc.mm:14650
-@implementation MTRTestClusterClusterNestedStruct : MTRUnitTestingClusterNestedStruct` with `@dynamic a; @dynamic
-b; @dynamic c;` and nothing else - so its members live in the superclass's ivars. The port gives the alias
-class its own ivars, which the host's own method list agrees is invisible for everything the comparison asks
-(`ownDescription` is `no` for 61 of the 62 alias classes and the port writes none), and it is visible in one
-place: writing a member through an ALIAS reference and reading it through a CURRENT reference sees the same
-storage in the framework and two in the port. 226 members over 60 classes are shaped so. Nothing here claims
-that difference is measured; it is the next thing to close in this family, and closing it means the alias
-objects stop holding storage at all.
+**THE ALIAS CLASSES HOLD NO STORAGE, and that is MEASURED now.** The framework declares a deprecated alias
+class `@dynamic` and nothing else - `MTRStructsObjc.mm:14469
+
+    @implementation MTRTestClusterClusterSimpleStruct : MTRUnitTestingClusterSimpleStruct
+    @dynamic a;
+    ...
+    @dynamic h;
+    @end
+
+- no ivar, no accessor, no `-init`, no `-copyWithZone:`, no `-description`, all four inherited - so every
+member lives in the superclass's ivars and ONE storage serves both names. **226 members over 60 classes** are
+shaped so, measured over the 60 classes whose own `MTR_DEPRECATED("Please use X")` names their own superclass,
+and the port emitted an ivar and an accessor per member for every one of them: two storages over one set of
+members. The 60 objects now carry the framework's shape.
+
+**`params-probe.m` asks, and the answer is on both sides.** A new question, one line per member, writes a value
+of the member's own type through an ALIAS reference, reads it back through a CURRENT one, writes a second value
+through the current reference and reads that back through the alias - and then reads the shape the runtime
+reports, because **the value half cannot see two storages on its own** and saying otherwise would be a check
+that never fails. Objective-C dispatch walks up from the RECEIVER's class and never from the static type of
+the variable, so a write through one spelling and a read through the other reach the same accessor in both
+shapes and answer the same value; what differs is WHICH accessor that is, and how many ivars the class has.
+On this host, over all 230 member lines: `ownIvars=0` on every one, `sizeDelta=0` on every one, the
+superclass present on every one, `ownAccessors=no` on 226 and `yes` on the 4 of `MTRControllerFactoryParams`,
+and `currentRead` equal to the value written first with `aliasReadBack` equal to the value written second on
+every one of the 230. **One storage, measured.**
+
+**The run, whole, and its exit status 0.** heavy.sh's own record of it:
+
+    2026-10-04T14:11:19 slow 1783s waited 1783s ran exit=0 sh tests/backports/host/matter/params-diff.sh
+
+    predict.py: host SDK .../MacOSX.sdk declares 1484 Matter classes
+    predict.py: port SDK .../iPhoneOS26.2.sdk declares 1330 Matter classes
+    params-diff: description  3238 identical, 42 predicted by the SDK difference, 0 unexplained
+    params-diff: fresh        3239 identical, 41 predicted by the SDK difference, 0 unexplained
+    params-diff: classes the host has 919, absent 5, raised 0
+    params-diff: ownDescription 919 of the hosts 919 readings the port answers identically
+    params-diff: alias          37 of the hosts 37 readings the port answers identically
+    params-diff: storage       230 of the hosts 230 readings the port answers identically
+    params-diff: red control 13 readings move, so this comparison can fail
+    params-diff: red control 2 readings become UNEXPLAINED, so the prediction looks at the port
+    params-diff: nested red control 30 reading(s) name plantedByTheRedControl, so a planted nested
+    params-diff:   member is reported and not excused
+    params-diff: class-name red control 4 reading(s) name an unpaired class as UNEXPLAINED, and 4
+    params-diff:   reading(s) name a PAIRED one as predicted, so the clause excuses the spelling and
+    params-diff:   nothing else, and the reading of the unmutated port is 0 unexplained either way
+    params-diff: alias-storage red control 8 reading(s) move and 8 of them name ownIvars=, so one
+    params-diff:   storage for a deprecated alias class is something this comparison can see failing
+
+**A RED CONTROL THAT COULD NOT FAIL, found by running the script and fixed at the cause.** `predict.py` read
+the PORT's SDK from `ROOT/.agent-work/sdk262` - a path that is in no checkout on this machine, neither this
+worktree nor the main one. `matter_headers()` returns `[]` for a directory that is not there,
+`payload_classes([])` is `{}`, and from an empty port table **every member the port declares reads as "not in
+the port's"**, which is the clause that excuses a value difference by a declaration difference. So the control
+that mutates a port value and requires the prediction to call it UNEXPLAINED could not fail: this run's first
+attempt printed `FAIL the red control - mutating a port value did not move the prediction`, and the mutation
+HAD moved 13 readings - they were excused, by an empty table.
+
+The path now comes from the environment as `MATTER_SDK_262`, the same variable `params-diff.sh` already finds
+the SDK with, and `declarations()` **stops** when it cannot read the SDK it is named rather than returning an
+empty class table. Both counts are printed above, because `0 unexplained` over an empty port table is not a
+result. With the real SDK the unmutated numbers are unchanged - `3238 identical, 42 predicted, 0 unexplained` -
+so nothing the empty table was excusing was load-bearing, and the mutant now comes out UNEXPLAINED for the
+right reason:
+
+    MTRGroupsClusterAddGroupParams.groupID: UNEXPLAINED, both SDKs declare NSNumber * nonnull, the host holds
+    '0' and the port '7': a value difference, and no declaration difference accounts for it
+
+That fix is `tests/backports/host/matter/predict.py` and the four `MATTER_SDK_262=` prefixes in
+`params-diff.sh`. It is not part of this band's family and it was committed with it because the evidence for
+item 1 comes out of that script and a script whose control cannot fail cannot hold anything down.
+
+`sizeDelta` is `class_getInstanceSize(alias) - class_getInstanceSize(its runtime superclass)`, which is 0 for a
+class that adds no ivar and 32 or 64 for one that adds a member or two - and it was 32 on all 60 objects
+before this change. The superclass in that line is the RUNTIME's own answer rather than the name the driver
+carries, because the host's framework is built from an SDK that spells 63 of these members' types the other
+way round and a line printing the driver's name would be reporting two SDKs rather than two storages.
+
+**THE 60TH CLASS IS THE ONE THAT IS NOT `@dynamic`, and its four members come out of the framework's source.**
+`MTRControllerFactoryParams` declares four members its superclass does not, and writes the accessors by hand,
+each forwarding to a differently named member of the superclass - `MTRDeviceControllerFactory.mm:1385`
+
+    - (id<MTRPersistentStorageDelegate>)storageDelegate
+    {
+        return static_cast<id<MTRPersistentStorageDelegate>>(self.storage);
+    }
+
+The header's deprecation text names the member for three of the four (`Please use shouldStartServer`,
+`Please use productAttestationAuthorityCertificates`, `Please use certificationDeclarationCertificates`) and
+says **"Please use the storage property"** for `storageDelegate`, which is prose and names no member. So
+`tools/matter-init-source.py` reads that table out of the same pinned tree as the `-init` defaults and writes
+`tools/matter-alias-accessors.tsv`: 11 hand-written accessors over 3 classes, of which 8 are this one's. The
+port writes the four accessors and gives the class no storage, so its `ownAccessors` reads `yes` on the host
+and in the port - which is right, and is the framework's shape rather than a second difference.
+
+**The registry rows for all 226 say what the object does, and 119 rows are gone.** `properties_of()` reads a
+`@dynamic` line back as a property, so the 226 rows stay and their `effect` changes from "the property is a
+readwrite ivar of the object's own" to what is now true: the member is answered by the class this one is a
+spelling of, and a value written through this name is the value read through the other one. 119 METHOD rows
+are dropped - `-init` on all 60 and `-copyWithZone:` on 59 - because the objects define no method at all any
+more: both are inherited from the class each one is a spelling of, which is what `initOwner` measures on the
+host (`initOwner MTRTestClusterClusterSimpleStruct - MTRUnitTestingClusterSimpleStruct`). 7 rows are added,
+the three setters `MTRControllerFactoryParams` now writes by hand. No corpus row names `-init` or
+`-copyWithZone:` on any of the 60 classes, and `check_registry` examines class, function and constant rows
+only, so nothing the gate asks about is in the dropped set.

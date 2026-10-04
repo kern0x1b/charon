@@ -1,0 +1,14 @@
+# upstream	project-chip/connectedhomeip	v1.7-te2	99a81bd32986c5292b0b1c9245c8e247c2ad717d	Apache-2.0
+# what	one line per accessor a deprecated alias class writes BY HAND, and the member of the superclass it forwards to
+# columns	class	member	kind	forwards_to	file	line
+MTRAsyncCallbackWorkQueue	_callNextReadyWorkItem	getter	runningWorkItemCount	MTRAsyncCallbackWorkQueue.mm:153
+MTRAsyncCallbackQueueWorkItem	endWork	getter	workQueue	MTRAsyncCallbackWorkQueue.mm:226
+MTRAsyncCallbackQueueWorkItem	retryWork	getter	workQueue	MTRAsyncCallbackWorkQueue.mm:232
+MTRAsyncCallbackQueueWorkItem	cancel	getter	queue	MTRAsyncCallbackWorkQueue.mm:259
+MTRControllerFactoryParams	storageDelegate	getter	storage	MTRDeviceControllerFactory.mm:1385
+MTRControllerFactoryParams	startServer	getter	shouldStartServer	MTRDeviceControllerFactory.mm:1393
+MTRControllerFactoryParams	startServer	setter	shouldStartServer	MTRDeviceControllerFactory.mm:1398
+MTRControllerFactoryParams	paaCerts	getter	productAttestationAuthorityCertificates	MTRDeviceControllerFactory.mm:1403
+MTRControllerFactoryParams	paaCerts	setter	productAttestationAuthorityCertificates	MTRDeviceControllerFactory.mm:1408
+MTRControllerFactoryParams	cdCerts	getter	certificationDeclarationCertificates	MTRDeviceControllerFactory.mm:1413
+MTRControllerFactoryParams	cdCerts	setter	certificationDeclarationCertificates	MTRDeviceControllerFactory.mm:1418

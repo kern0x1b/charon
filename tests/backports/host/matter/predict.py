@@ -18,7 +18,15 @@ this script separates:
 Both SDKs are read with the generator's own reader - tools/matter-generate.py, payload_classes() - so the
 order and the set come from the headers and not from a list here.
 
-    predict.py <host sdk> <host.tsv> <port.tsv> [--members FILE]
+    MATTER_SDK_262=<the port's SDK> predict.py <host sdk> <host.tsv> <port.tsv> [--members FILE]
+
+The PORT's SDK is named in the environment, as MATTER_SDK_262, and it is the SDK 26.2 the port's declarations
+are read from - not the host's, because the whole rule here is that a difference the two SDKs' DECLARATIONS
+account for is a difference between two releases. A run that cannot read it STOPS: this file used to read it
+from `ROOT/.agent-work/sdk262`, a path that is in no checkout on this machine, so the port's class table came
+back EMPTY, every member the port declares read as "not in the port's", and the clause that excuses a value
+difference by a declaration difference excused every difference there was. Both numbers below are printed with
+the class count each SDK yielded, because "0 unexplained" over an empty port table is not a result.
 """
 import importlib.util, os, re, sys
 
@@ -33,10 +41,34 @@ def reader():
     return module
 
 
-def declarations(sdk):
+def declarations(sdk, what):
+    """(the generator module, its classes) out of one SDK's Matter headers - and an ERROR if it read none.
+
+    The error is the whole point. `matter_headers()` walks a directory and returns [] for a path that is not
+    there, `payload_classes([])` is {}, and every member the port declares is then "not in the port's" - so
+    the clause that excuses a value difference by a declaration difference fired on an EMPTY set and excused
+    everything. The red control that mutates a port value and requires this file to call the difference
+    UNEXPLAINED could not fail, and it did not: it ran, the run reported the mutation as "predicted by the
+    SDK difference", and `params-diff.sh` stopped with `FAIL the red control - mutating a port value did not
+    move the prediction` only because it counts the WORD, not because the reading was unexplained. The path
+    it used was `ROOT/.agent-work/sdk262`, which is not in this repository and is not in the main checkout
+    either; the SDK is at `charon/.agent-work/sdk-26.2/iPhoneOS26.2.sdk`, which `params-diff.sh` already
+    knows how to find and already puts in the environment.
+
+    So the path comes from the environment and a run that cannot read it stops, rather than reporting a
+    green comparison over nothing.
+    """
     module = reader()
-    lines = [line for _, block in module.matter_headers(os.path.abspath(sdk)) for line in block]
-    return module, module.payload_classes(lines)
+    path = os.path.abspath(sdk)
+    if not os.path.isdir(path):
+        raise SystemExit("predict.py: no %s at %s, and every member the port declares would read as absent"
+                         " from it, which excuses every difference there is to excuse" % (what, path))
+    lines = [line for _, block in module.matter_headers(path) for line in block]
+    families = module.payload_classes(lines)
+    if not families:
+        raise SystemExit("predict.py: %s at %s declares no Matter class, so nothing could be compared"
+                         % (what, path))
+    return module, families
 
 
 def described_readings(path):
@@ -234,8 +266,15 @@ def classify(want, mine, pairs):
 
 def main():
     host_sdk, host_tsv, port_tsv = sys.argv[1], sys.argv[2], sys.argv[3]
-    module, host = declarations(host_sdk)
-    _, port = declarations(os.path.join(ROOT, ".agent-work/sdk262"))
+    # The PORT's SDK is the one the port's declarations are read from, which is SDK 26.2 and not the host's:
+    # the whole rule this file applies is that a difference the two SDKs' DECLARATIONS account for is a
+    # difference between two releases. It comes from the environment, as MATTER_SDK_262, because a path
+    # written into this file is a path that goes missing in every worktree but one.
+    port_sdk = os.environ.get("MATTER_SDK_262") or sys.argv[4]
+    module, host = declarations(host_sdk, "host SDK")
+    _, port = declarations(port_sdk, "port SDK")
+    print("predict.py: host SDK %s declares %d Matter classes" % (os.path.abspath(host_sdk), len(host)))
+    print("predict.py: port SDK %s declares %d Matter classes" % (os.path.abspath(port_sdk), len(port)))
     pairs = deprecated_pairs(host, port)
     host_described = described_readings(host_tsv)
     port_described = described_readings(port_tsv)

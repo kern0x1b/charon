@@ -71,7 +71,8 @@ echo "params-diff: host SDK    $host_sdk  (Matter.framework $(defaults read "$ho
 
 rm -rf "$build"
 mkdir -p "$build/host" "$build/port" "$build/port-mutant" "$build/port-nested" "$build/port-name" \
-    "$build/objects" "$build/objects-mutant" "$build/objects-nested" "$build/objects-name"
+    "$build/port-storage" "$build/objects" "$build/objects-mutant" "$build/objects-nested" \
+    "$build/objects-name" "$build/objects-storage"
 
 # The driver: written by the generator, from the same buckets it emits from.
 cp "$root/packages/a/apple-backports/Matter/clusters-emitted.txt" "$build/port/clusters-emitted.txt"
@@ -151,7 +152,7 @@ xcrun clang -o "$build/port/probe" "$build/objects"/*.o "$here/params-probe.m" -
 # the host SDK's declaration order and set, read from that SDK's headers with the generator's own reader,
 # and reports what is identical, what is predicted by a declaration difference, and what is UNEXPLAINED. The
 # last must be zero, and that is the gate this comparison exists for.
-python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port.tsv" | tee "$build/predicted.txt"
+MATTER_SDK_262="$sdk26" python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port.tsv" | tee "$build/predicted.txt"
 grep -q ' 0 unexplained' "$build/predicted.txt" || status=1
 
 present=$(awk -F'\t' '$1=="present" && $4=="present"' "$build/host.tsv" | wc -l | tr -d ' ')
@@ -160,7 +161,7 @@ raised=$(awk -F'\t' '$1=="raised"' "$build/host.tsv" | wc -l | tr -d ' ')
 printf 'params-diff: classes the host has %s, absent %s, raised %s\n' "$present" "$absent" "$raised"
 
 status=0
-for question in ownDescription alias; do
+for question in ownDescription alias storage; do
     awk -F'\t' -v q="$question" '$1==q' "$build/host.tsv" | sort > "$build/host.$question"
     awk -F'\t' -v q="$question" '$1==q' "$build/port.tsv" | sort > "$build/port.$question"
     host_n=$(wc -l < "$build/host.$question" | tr -d ' ')
@@ -190,7 +191,7 @@ printf 'params-diff: red control %s readings move, so this comparison can fail\n
 # `|| true` and the reason: predict.py EXITS NON-ZERO when a reading is unexplained, which is what a
 # mutant is supposed to produce, and under `set -e` that ended the run right here - which is why the first
 # run of this script stopped after its first red control and reported nothing about it.
-python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port-mutant.tsv" \
+MATTER_SDK_262="$sdk26" python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port-mutant.tsv" \
     > "$build/predicted-mutant.txt" || true
 moved_predicted=$(grep -c 'UNEXPLAINED' "$build/predicted-mutant.txt" || true)
 if [ "$moved_predicted" -lt 1 ]; then
@@ -238,7 +239,7 @@ planted "$build/port/CharonMatterMTRUnitTestingClusterSimpleStruct.m" "$nested"
 compile "$build/port-nested" "$build/objects-nested"
 xcrun clang -o "$build/port/probe-nested" "$build/objects-nested"/*.o "$here/params-probe.m" -framework Foundation
 "$build/port/probe-nested" "$build/cases.tsv" > "$build/port-nested.tsv"
-python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port-nested.tsv" \
+MATTER_SDK_262="$sdk26" python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port-nested.tsv" \
     > "$build/predicted-nested.txt" || true
 planted_readings=$(grep -c 'plantedByTheRedControl' "$build/predicted-nested.txt" || true)
 if [ "$planted_readings" -lt 1 ]; then
@@ -293,7 +294,7 @@ planted "$build/port/CharonMatterMTRUnitTestingClusterNestedStructList.m" \
 compile "$build/port-name" "$build/objects-name"
 xcrun clang -o "$build/port/probe-name" "$build/objects-name"/*.o "$here/params-probe.m" -framework Foundation
 "$build/port/probe-name" "$build/cases.tsv" > "$build/port-name.tsv"
-python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port-name.tsv" \
+MATTER_SDK_262="$sdk26" python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port-name.tsv" \
     > "$build/predicted-name.txt" || true
 # The grep is on the PLANTED NAME inside an unexplained line, not on classify()'s wording: the reading of a
 # member whose value is a struct holding an NSArray ends mid-string on both sides (a field cannot hold the
@@ -325,5 +326,102 @@ printf 'params-diff: class-name red control %s reading(s) name an unpaired class
     "$name_unexplained" "$name_predicted"
 printf 'params-diff:   reading(s) name a PAIRED one as predicted, so the clause excuses the spelling and\n'
 printf 'params-diff:   nothing else, and the reading of the unmutated port is 0 unexplained either way\n'
+# The FOURTH red control, and it is the one that holds the ALIAS STORAGE shape down. 60 of the port's classes
+# are a deprecated spelling of another one, and the framework's own @implementation for a class shaped that
+# way is `@dynamic` and nothing else - no ivar, no accessor, no -init - so the two names share ONE storage. A
+# port that synthesises an ivar per member has TWO, which no value read can see on its own because Objective-C
+# dispatch walks up from the RECEIVER's class and never from the static type of the variable: writing a member
+# through an alias reference and reading it through a current one answers the same either way. So the plant
+# gives one alias object its storage back - the class extension with an ivar per member and `@synthesize` in
+# place of `@dynamic`, which is exactly what the port emitted before - and the run requires the `storage`
+# comparison above to FAIL on it.
+#
+#   MTRTestClusterClusterSimpleStruct  8 members, none of them declared by MTRUnitTestingClusterSimpleStruct's
+#                                      own list in the alias's object, so the plant is 8 ivars and 8
+#                                      `@synthesize` lines and nothing else changes.
+copy_port "$build/port-storage"
+python3 - "$build/port-storage" "$host_sdk" <<'PYTHON'
+import os, re, sys
+where, sdk = sys.argv[1], sys.argv[2]
+name = "MTRTestClusterClusterSimpleStruct"
+path = os.path.join(where, "CharonMatter%s.m" % name)
+text = open(path).read()
+members = re.findall(r"^@dynamic (\w+);$", text, re.M)
+assert members, "the plant found no @dynamic line in %s, so there is no storage to give back" % path
+# The ivar types come from the header the objects compile AGAINST - the host SDK's own Matter headers, which
+# is where the declarations in scope for this binary live. Not from the port's CharonMatterTypes.h: that file
+# carries a class extension only for the properties the target SDK does not declare, and the host SDK
+# declares all eight of this class's, so the extension this plant would have read does not exist.
+headers = os.path.join(sdk, "System/Library/Frameworks/Matter.framework/Headers")
+types, blocks = {}, 0
+for header in sorted(os.listdir(headers)):
+    if not header.endswith(".h"):
+        continue
+    body = open(os.path.join(headers, header), errors="replace").read()
+    for found in re.finditer(r"@interface %s\b(.*?)@end" % re.escape(name), body, re.S):
+        blocks += 1
+        for line in found.group(1).splitlines():
+            declared = re.match(r"\s*@property\s*\(([^)]*)\)\s*(.+);", line.strip())
+            if declared:
+                # The declaration's OWN annotation comes off before the name is read off the end of it:
+                # `@property (nonatomic, copy) NSNumber * _Nonnull a MTR_DEPRECATED("Please use X", ios(...));`
+                # ends in the annotation, not in the name, and a reader that split the whole line read the
+                # last token of `ios(16.1, 16.4), ...` as the member's name and placed none of the eight.
+                words = re.split(r"\s+(?:MTR_|API_)(?:DEPRECATED|AVAILABLE|PROVISIONALLY_AVAILABLE)\b",
+                                 declared.group(2))[0].split()
+                # Every header that declares the class, not the first one found: MTRBackwardsCompatShims.h
+                # declares deprecated subclasses of clusters and sorts before MTRStructsObjc.h, so a reader
+                # that stopped at the first match found a block with no properties in it and reported that
+                # the type of all eight members is missing.
+                types.setdefault(words[-1], " ".join(words[:-1]))
+assert blocks, "no Matter header of %s declares %s" % (sdk, name)
+missing = [each for each in members if each not in types]
+assert not missing, "the header declares no type for %s" % ", ".join(missing)
+extension = ("\n// The plant: the storage this object must NOT hold, one ivar per member, so that the\n"
+             "// run's `storage` comparison has something to fail on. Every ivar is `@synthesize`d in place\n"
+             "// of the `@dynamic` line that was there, which is what the port emitted before this shape.\n"
+             "@interface %s () {\n" % name)
+for each in members:
+    extension += "    %s _%s;\n" % (types[each], each)
+extension += "}\n@end\n\n@implementation %s\n\n" % name
+needle = "@implementation %s\n" % name
+assert text.count(needle) == 1, "the @implementation line occurs %d times in %s" % (text.count(needle), path)
+text = text.replace(needle, extension, 1)
+for each in members:
+    line = "@dynamic %s;" % each
+    assert text.count(line) == 1, "the @dynamic line for %s occurs %d times in %s" % (each, text.count(line), path)
+    text = text.replace(line, "@synthesize %s = _%s;" % (each, each), 1)
+open(path, "w").write(text)
+print("planted %d member(s) of storage back into CharonMatter%s.m, ivar types read out of the host SDK"
+      % (len(members), name))
+PYTHON
+planted "$build/port/CharonMatterMTRTestClusterClusterSimpleStruct.m" \
+    "$build/port-storage/CharonMatterMTRTestClusterClusterSimpleStruct.m"
+compile "$build/port-storage" "$build/objects-storage"
+xcrun clang -o "$build/port/probe-storage" "$build/objects-storage"/*.o "$here/params-probe.m" -framework Foundation
+"$build/port/probe-storage" "$build/cases.tsv" > "$build/port-storage.tsv"
+awk -F'\t' '$1=="storage"' "$build/port.tsv" | sort > "$build/port.storage"
+awk -F'\t' '$1=="storage"' "$build/port-storage.tsv" | sort > "$build/port-storage.storage"
+moved_storage=$(comm -13 "$build/port.storage" "$build/port-storage.storage" | wc -l | tr -d ' ')
+if [ "$moved_storage" -lt 1 ]; then
+    echo "params-diff: FAIL the alias-storage red control - a port object given an ivar per member reads the" >&2
+    echo "  same as the one that holds none, so this comparison cannot see two storages where the" >&2
+    echo "  framework has one and the rule that would keep them is not being held down." >&2
+    echo "  What it said instead:" >&2
+    head -2 "$build/port.storage" >&2
+    exit 1
+fi
+# And the plant must move the SHAPE, not only the values: a comparison that only noticed the values would
+# also pass on a port that held one ivar per member and read it back correctly.
+moved_shape=$(comm -13 "$build/port.storage" "$build/port-storage.storage" | grep -c 'ownIvars=' || true)
+if [ "$moved_shape" -lt 1 ]; then
+    echo "params-diff: FAIL the alias-storage red control - giving the object its storage back did not move" >&2
+    echo "  any ownIvars=, so nothing here reads the shape the runtime reports." >&2
+    exit 1
+fi
+printf 'params-diff: alias-storage red control %s reading(s) move and %s of them name ownIvars=, so one\n' \
+    "$moved_storage" "$moved_shape"
+printf 'params-diff:   storage for a deprecated alias class is something this comparison can see failing\n'
+
 echo "params-diff: outputs under $build"
 exit $status
