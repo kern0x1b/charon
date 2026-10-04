@@ -234,6 +234,10 @@ package("swift-runtime")
         -- toolchain names the one the port links with, and clang would otherwise assume the one it shipped against.
         local linker_version = toolchain:config("linker_version") and
                                {"-Xclang-linker", "-mlinker-version=" .. toolchain:config("linker_version")} or {}
+        -- The same for the Objective-C and Objective-C++ this recipe compiles itself: clang reads the linker's version to
+        -- know which selector stubs it may emit, and for arm64 that is the difference between the ones the port's linker
+        -- makes and the ones it does not.
+        local objc_linker = toolchain:config("linker_version") and {"-mlinker-version=" .. toolchain:config("linker_version")} or {}
 
         -- The linker the port links with, in the Swift driver's spelling. Where nothing names it the driver's clang finds
         -- the host's own, which reads a 32-bit image's absolute symbols as offsets and refuses the standard library's
@@ -553,12 +557,12 @@ package("swift-runtime")
             -- Dispatch: its queues are Objective-C objects from iOS 6, which is what the overlay takes them for. Its constructor
             -- is Objective-C++, compiled the way the port's own C is; Schedulers+DispatchQueue.swift is left out, being Combine's.
             local dispatch_object = path.join(generated, "Dispatch.mm.o")
-            os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
+            os.vrunv(toolchain:tool("cc"), table.join({"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
                      -- It adds the protocols of libdispatch's sources to their class, and reads them from the headers the way
                      -- Swift does: the headers declare them only where OS_OBJECT_SWIFT3 is set, which importing them into Swift sets.
                      toolchain:config("sdkdir"), "-Os", "-DOS_OBJECT_SWIFT3=1", "-c",
                      path.join(overlays, "stdlib", "public", "Darwin", "Dispatch", "Dispatch.mm"),
-                     "-o", dispatch_object})
+                     "-o", dispatch_object}, objc_linker))
             build_overlay("Dispatch", overlay_sources_of("Dispatch", {"Dispatch.swift", "Block.swift", "Data.swift", "IO.swift",
                                                                       "Private.swift", "Queue.swift", "Source.swift", "Time.swift"}),
                           {"-lswiftDarwin", "-lswiftObjectiveC"}, {dispatch_object})
@@ -585,9 +589,9 @@ package("swift-runtime")
             local foundation_objects = {}
             for _, file in ipairs({"DataThunks.m", "BundleLookup.mm"}) do
                 local object = path.join(generated, file .. ".o")
-                os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
+                os.vrunv(toolchain:tool("cc"), table.join({"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
                          toolchain:config("sdkdir"), "-Os", "-I" .. path.join(source, "stdlib", "public", "SwiftShims"),
-                         "-c", path.join(foundation, file), "-o", object})
+                         "-c", path.join(foundation, file), "-o", object}, objc_linker))
                 table.insert(foundation_objects, object)
             end
             build_overlay("Foundation", table.join({values}, overlay_sources_of("Foundation", {
@@ -625,9 +629,9 @@ package("swift-runtime")
             build_overlay("QuartzCore", {generated_from("QuartzCore", "NSValue.swift")},
                           table.join(foundation_links, {"-framework", "QuartzCore"}))
             local initializers = path.join(generated, "DesignatedInitializers.mm.o")
-            os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
+            os.vrunv(toolchain:tool("cc"), table.join({"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
                      toolchain:config("sdkdir"), "-Os", "-c", path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "DesignatedInitializers.mm"),
-                     "-o", initializers})
+                     "-o", initializers}, objc_linker))
             build_overlay("UIKit", {path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "UIKit.swift"),
                                     generated_from("UIKit", "UIKit_FoundationExtensions.swift")},
                           table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "UIKit"}), {initializers},
@@ -637,8 +641,8 @@ package("swift-runtime")
             -- Objective-C, which makes the classes a fetch answers conform to NSFetchRequestResult where the release does not.
             local coredata = path.join(uikit, "stdlib", "public", "Darwin", "CoreData")
             local conformances = path.join(generated, "CoreData.mm.o")
-            os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
-                     toolchain:config("sdkdir"), "-Os", "-c", path.join(coredata, "CoreData.mm"), "-o", conformances})
+            os.vrunv(toolchain:tool("cc"), table.join({"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
+                     toolchain:config("sdkdir"), "-Os", "-c", path.join(coredata, "CoreData.mm"), "-o", conformances}, objc_linker))
             build_overlay("CoreData", {path.join(coredata, "CocoaError.swift"), path.join(coredata, "NSManagedObjectContext.swift")},
                           table.join(foundation_links, {"-framework", "CoreData"}), {conformances},
                           {backports = {"FoundationBackports", "CoreDataBackports"}})
