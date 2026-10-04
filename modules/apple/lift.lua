@@ -565,6 +565,11 @@ local function dumper(opt, frameworks, headers)
         local split = text:find("\0", 1, true)
         return split and {text:sub(1, split - 1), text:sub(split + 1)} or nil
     end
+    local held_answers, kept_failed = {}, nil
+    -- Keeping an answer is an optimisation and nothing else: a lift that cannot write one asks again next time and is
+    -- no less correct. So a write that fails - out of memory is the one measured, on a machine with 30.6 GB of 31.7 GB
+    -- of swap in use, where lz4.compress()'s buffer is what failed - is named once and dropped, where before it
+    -- stopped the lift with "attempt to index a number value (local 'data')" out of the compressor.
     local function remember(filter, answer)
         if not answer[1] or not answer[2] then
             return
@@ -572,8 +577,21 @@ local function dumper(opt, frameworks, headers)
         local file = held_file(filter)
         try { function () os.mkdir(held) end }
         local temporary = file .. "." .. hash.strhash32(file .. os.mclock()) .. ".tmp"
-        io.writefile(temporary, lz4.compress(unplaced(answer[1] .. "\0" .. answer[2], opt.outputdir)):str(), {encoding = "binary"})
-        os.mv(temporary, file)
+        local failure
+        try { function ()
+            io.writefile(temporary, lz4.compress(unplaced(answer[1] .. "\0" .. answer[2], opt.outputdir)):str(),
+                         {encoding = "binary"})
+        end, catch { function (why) failure = tostring(why) end }}
+        if not failure then
+            try { function ()
+                os.mv(temporary, file)
+            end, catch { function (why) failure = tostring(why) end }}
+        end
+        if failure then
+            os.tryrm(temporary)
+            kept_failed = kept_failed or {}
+            kept_failed[filter] = true
+        end
     end
     together = function (filters, vfs)
         if vfs or not held then
@@ -596,7 +614,9 @@ local function dumper(opt, frameworks, headers)
             end
             for position, answer in ipairs(asked) do
                 answers[at[position]] = answer
-                remember(missing[position], answer)
+                -- and written by prefetch_inner below, on the coroutine that is here now: a kept answer is a file in
+                -- one folder, and xmake's io is one thread
+                held_answers[missing[position]] = answer
             end
         end
         return answers
@@ -668,7 +688,18 @@ local function dumper(opt, frameworks, headers)
             local key = filter .. "|" .. (vfs or "")
             if not dumps[key] and not seen[key] then
                 seen[key] = true
-                table.insert(filter:find("^[%a_][%w_]*$") and names or plain, filter)
+                -- What a kept answer holds is read HERE, on this coroutine, and not inside the jobs below, and what a
+                -- job just asked is written here too. The kept answers are one folder and xmake's io is one thread, so
+                -- a read and a write of it inside the job pool is a race: it is what stopped a lift on
+                -- iPhoneOS16.4.sdk, where a filter read back out of io.readfile raised "attempt to index a number value
+                -- (local 'data')" with the held cache on and the same lift was green with LIFT_KEEP=0 (measured).
+                local answer = not vfs and recalled(filter) or nil
+                if answer then
+                    dumps[key] = answered(filter, answer[1], answer[2])
+                    counted.recalled = counted.recalled + 1
+                else
+                    table.insert(filter:find("^[%a_][%w_]*$") and names or plain, filter)
+                end
             end
         end
         local jobs = {}
@@ -729,6 +760,11 @@ local function dumper(opt, frameworks, headers)
             end, {total = #wanted, comax = width})  -- 96 queries: 71 s one at a time, 12.7 s at 8, 11.6 s at 10 (12 cores)
         end
         ask(jobs)
+        -- and now the answers it asked are written, on this coroutine (see the read above)
+        for filter, answer in pairs(held_answers) do
+            remember(filter, answer)
+        end
+        held_answers = {}
         local again = {}
         for index, job in ipairs(jobs) do
             local answer = answers[index]
@@ -3387,6 +3423,13 @@ local function computed(opt)
     local classes, rest, kinds = split_unmatched(unmatched, listed)
     -- `alone`: the queries asked one at a time, which no loop asked for ahead of itself; `skipped`: the kept entries not asked over the overlay
     mark("rewrite:tail")
+    if kept_failed then
+        -- and what the run could not keep, once, with the count: a reader of the log can tell a lift that answered
+        -- everything from one that answered everything and cached none of it
+        local names = table.orderkeys(kept_failed)
+        printf("lift: %d answer(s) could not be kept and will be asked again (first %s: %s)\n", #names, names[1],
+               kept_failed[names[1]])
+    end
     if marked then
         for _, row in ipairs(marked) do
             printf("lift: %-18s %8.1fs\n", row[1], row[2])

@@ -1229,6 +1229,10 @@ function failures(opt)
             lift.lift({clang = clang, swiftc = swiftc, sdk = path.join(written_root, "sdk"), triple = "armv7-apple-ios6.1.3",
                        minimum = "6.1.3", registry = written_root, outputdir = path.join(written_root, "out"), expected = false})
         end, catch {function (why) kept_mark = tostring(why) end}}
+        -- The kept answers are a cache and a cache may not be written: the lift must go on when one cannot be, and
+        -- say how many it could not keep. This is the case that was measured, not a shape of the SDK's: on a machine
+        -- with 30.6 GB of 31.7 GB of swap in use, lz4.compress()'s allocation failed and the lift died inside the
+        -- compressor with "attempt to index a number value (local 'data')" - a cache write stopping a measurement.
         expect_equal(found, "an implemented class marked unavailable by an attribute written out is refused by name",
                      tostring(kept_mark and kept_mark:match("FixWritten is marked unavailable by an attribute the SDK writes out") ~= nil), "true")
         os.tryrm(written_root)
