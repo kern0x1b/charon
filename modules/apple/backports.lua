@@ -1550,14 +1550,72 @@ end
 -- member the port adds to a class the release already carries is API the port carries, and check_registry asks
 -- whether a row says so. The port's own classes are its machinery and it names them. This is the set 2fde39f4
 -- widened, kept for that reader alone.
-function carried_api(inventory)
-    return members_of(inventory, function (name)
+--
+-- **AND THE PROTOCOLS THE PORT ITSELF DEFINES, which is the same blindness the branch above records for
+-- classes, and for the same reason: a protocol is not a class.** collect() keeps the two in separate tables
+-- (`modules/apple/objc.lua:251` returns `classes` and `protocols` apart), so a method of `@protocol P` was in
+-- neither `found.classes` nor `found.members` and every row spelled `-[P method]` was unbuildable however
+-- much of P there was. Measured 2026-10-04 on the Metal 4 queue: the protocol transcribed, the class
+-- conforming, `__OBJC_PROTOCOL_$_MTL4CommandQueue` emitted with its method list, and check_registry still
+-- answered "listed as implemented, but nothing of that name is built" for all eight members and both
+-- properties - the same finding the branch above records for a protocol with no image, and the same answer:
+-- the row was right and the CHECK was blind.
+--
+-- **AND ONLY THE PROTOCOLS THE PORT DEFINES, which is the half that took a second measurement.** A protocol
+-- record is per image, not exported: a linked library carries a `protocol_t` for every protocol it adopts OR
+-- MERELY REFERENCES, so reading `inventory.protocols` whole counted the system's protocols as the port's. The
+-- 6.1.3 gate on land-w19 answered "built, but no entry in registry/" for `-[NSObject retain]`,
+-- `-[UITableViewDelegate tableView:didSelectRowAtIndexPath:]`, `-[MPSNNPadding label]`, `-[CAMetalDrawable
+-- layer]` and four hundred more, every one of them Apple's.
+--
+-- The test is the one this file already has for "the port declares it": `declared_protocols()` reads every
+-- header the package installs and keeps a protocol declared WITH A BODY, dropping a forward declaration
+-- because the SDK's umbrella supplies that body and a port that redeclares it declares nothing. Over the
+-- package that is 47 protocols - its own `Charon*` ones and the transcriptions in the Charon*Protocols.h
+-- headers - and `MTL4CommandQueue` is one of them while `NSObject`, `UITableViewDelegate`, `CAMetalDrawable`,
+-- `MPSNNPadding` and `GKRandom` are none of them.
+--
+-- **AND, OF THOSE, ONLY THE MEMBERS THE REGISTRY NAMES** - the rule the loop below states where it applies.
+-- Declaring a protocol is not carrying it: a port header transcribes `UIMutableTraits` so that a method
+-- taking `id<UIMutableTraits>` compiles, the port class adopts it, the protocol is emitted, and the port
+-- implements none of its thirty-nine members and the corpus names none of them. What the loop keeps is what
+-- the port claims, and what it keeps is still held to the build.
+--
+-- `added_members()` above is deliberately NOT changed: it places an OBJECT by the members a category adds to
+-- a class, and a protocol is not an object and carries no band.
+function carried_api(inventory, declared, documented)
+    local found = members_of(inventory, function (name)
         return not name:startswith("Charon")
     end)
+    declared = declared or {}
+    documented = documented or {}
+    for name, protocol in pairs(inventory and inventory.protocols or {}) do
+        if declared[name] and not name:startswith("Charon") then
+            for kind, sign in pairs({instance = "-", class = "+"}) do
+                for selector in pairs(protocol[kind] or {}) do
+                    local plain = selector:sub(2)
+                    local spelling = string.format("%s[%s %s]", sign, name, plain)
+                    -- AND ONLY WHERE THE REGISTRY NAMES IT: a protocol the package declares in order to
+                    -- satisfy Apple's own signatures is adopted by a port class and so is emitted, and the
+                    -- port implements not one of its members. A row that names one is still HELD to the
+                    -- build - it reads unbuilt when the protocol is not emitted, which is what the Metal 4
+                    -- queue's ten rows measured on 2026-10-04.
+                    if documented[spelling] and not plain:startswith(".cxx_") and plain ~= "load"
+                       and not internal_symbol(plain) then
+                        table.insert(found, spelling)
+                    end
+                end
+            end
+        end
+    end
+    return found
 end
 
 
-function surface(binaries, architecture)
+-- `declared` is the set declared_protocols() returns - the protocols the package's own headers declare
+-- with a body - and `documented` is the set of names registry/ carries. Both are what carried_api() below
+-- needs to tell a protocol the port carries from one it declares to satisfy Apple's own signatures.
+function surface(binaries, architecture, declared, documented)
     local found = {classes = {}, members = {}, symbols = {}, defined = {}, registered = {}, answered = {}, protocols = {}}
     for _, binary in ipairs(binaries) do
         local ours = {}
@@ -1604,7 +1662,7 @@ function surface(binaries, architecture)
                 end
             end
         end
-        for _, member in ipairs(carried_api(inventory)) do
+        for _, member in ipairs(carried_api(inventory, declared, documented)) do
             found.members[member] = true
         end
     end
@@ -2067,6 +2125,21 @@ function declared_protocols(root)
     return declared
 end
 
+-- EVERY SPELLING check_registry ASKS A ROW BY, keyed true: a property row is written `Class.name` and asked as
+-- `-[Class name]`, a method row is written `-[Class selector:]` and asked as itself, and spellings() is the
+-- one place that knows both directions. carried_api() below needs this, because the spelling a protocol's
+-- method list produces is always a `-[Class selector:]` one even when the row that claims it is a property.
+function documented_names(root)
+    local listed = registry(root)
+    local names = {}
+    for api in pairs(listed) do
+        for spelling in pairs(spellings(api)) do
+            names[spelling] = true
+        end
+    end
+    return names
+end
+
 function registry_step(opt, built, complete, exports)
     return check_registry(opt.root, built, complete, opt.deployment, exports,
                           release_inventory(opt.cache), opt.sdkdir, declared_protocols(opt.root))
@@ -2365,7 +2438,9 @@ function build(opt)
         check_band_caches(opt, objects)
         -- registry_step, not check_registry: it hands the check the SDK the objects were compiled against and the
         -- protocols the headers declare, without which every member of a protocol the SDK declares reads unbuilt
-        local undocumented = registry_step(opt, surface(built, opt.architecture), opt.registry, release.exports)
+        local undocumented = registry_step(opt, surface(built, opt.architecture, declared_protocols(opt.root),
+                                                         documented_names(opt.root)),
+                                          opt.registry, release.exports)
         if undocumented > 0 then
             cprint("${color.warning}note:${clear} %d of the registry's entries name no file of facts yet", undocumented)
         end
