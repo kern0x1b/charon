@@ -116,6 +116,23 @@ static BOOL refuses2(id object, const char *selector, id argument, NSUInteger co
     }
 }
 
+/* THE SAME CALL WITH A 64-BIT ARGUMENT, and it needs its own signature: on armv7 a uint64_t is a
+ * REGISTER PAIR, so a helper typed `(id, SEL, id, NSUInteger)` leaves the high word of the value
+ * whatever happened to be in the next register. That is not a detail - it is measured: with the narrow
+ * signature the probe asked the queue to signal 7 and read back 44392781971463, low word 7 and a high
+ * word of rubbish. The header's own type is the one to send. */
+static BOOL refuses2wide(id object, const char *selector, id argument, uint64_t value)
+{
+    @try {
+        void (*send)(id, SEL, id, uint64_t) = (void (*)(id, SEL, id, uint64_t))objc_msgSend;
+        send(object, NSSelectorFromString([NSString stringWithUTF8String:selector]), argument, value);
+        return YES;
+    } @catch (NSException *why) {
+        printf("     (-%s raised %s: %s)\n", selector, class_getName([why class]), [[why reason] UTF8String]);
+        return NO;
+    }
+}
+
 static BOOL refuses3(id object, const char *selector, id first, id second, id third)
 {
     @try {
@@ -389,43 +406,78 @@ int main(void)
             }
         }
 
-        /* THE TWELVE MEMBERS THAT REFUSE BY NAME, and the capture scope over a Metal 4 queue. None of
-         * these needs a device: the queue exists with no GL context ([[CharonMetalQueue alloc] init]
-         * inherits NSObject's), which is why they are asked here and why their rows can say a case asks
-         * them rather than only that the placement is verified. What a caller sees of a refusal is that
-         * the call returns - the refusal itself is an NSLog line the guest's logs do not carry, measured -
-         * so that is what is checked, one line per member, named by its own selector. */
+        /* THE TWELVE MEMBERS, SORTED THE SAME WAY THE PORT SORTS THEM, because the sort is the claim:
+         * four residency-set members and two drawable members whose no-op IS the right answer on this
+         * backend, two event members that do real work over the port's own event, and four sparse-mapping
+         * members that cannot be done and say so once. Each group is asked on the guest, and the count of
+         * lines the guest prints is checked by run-guest.sh against the number printed at the end of this
+         * block, so "says nothing" and "says once" are both measured rather than asserted here. */
         if (queue) {
-            /* selector, and how many arguments the header gives it after the selector. */
-            static const char *const refusals[][2] = {
-                {"addResidencySet:", "1"},
-                {"removeResidencySet:", "1"},
-                {"addResidencySets:count:", "2"},
-                {"removeResidencySets:count:", "2"},
+            /* (a) THE RESIDENCY SETS. The call must return AND nothing may be printed: a caller that
+             * added a set and heard a refusal would be told its resources are not resident, which on
+             * this port is false - every resource of it is CPU-resident whatever the application asked
+             * for (facts/Metal/Blits.md, "The access hints"). The queue stands in for the set: the set
+             * has nothing to do with, so its identity cannot matter. */
+            static const char *const residency[][2] = {
+                {"addResidencySet:", "1"}, {"removeResidencySet:", "1"},
+                {"addResidencySets:count:", "2"}, {"removeResidencySets:count:", "2"}
+            };
+            for (unsigned index = 0; index < sizeof(residency) / sizeof(residency[0]); index++) {
+                const char *selector = residency[index][0];
+                BOOL returned = strcmp(residency[index][1], "1") == 0 ? refuses1(queue, selector, queue)
+                                                                    : refuses2(queue, selector, queue, 1);
+                char line[160];
+                snprintf(line, sizeof(line),
+                         "the port's -[MTL4CommandQueue %s] returns, and the no-op is its answer", selector);
+                verdict(returned, "MTL4CommandQueue_residency_no_op", line);
+            }
+
+            /* (c) THE SPARSE MAPPINGS, and each is asked TWICE on purpose: `inert` means "declared, does
+             * nothing, and says so once in the log the first time it is used" (registry/README.md), so a
+             * second call that printed a second line would be a row contradicting its own status. The two
+             * calls return; the ONE line each is counted by run-guest.sh. */
+            static const char *const sparse[][2] = {
                 {"updateBufferMappings:heap:count:", "3"},
                 {"updateTextureMappings:heap:count:", "3"},
                 {"copyBufferMappingsFromBuffer:toBuffer:operations:count:", "3"},
-                {"copyTextureMappingsFromTexture:toTexture:operations:count:", "3"},
-                {"waitForDrawable:", "1"},
-                {"waitForEvent:value:", "2"},
-                {"signalEvent:value:", "2"},
-                {"signalDrawable:", "1"}
+                {"copyTextureMappingsFromTexture:toTexture:operations:count:", "3"}
             };
-            for (unsigned index = 0; index < sizeof(refusals) / sizeof(refusals[0]); index++) {
-                const char *selector = refusals[index][0];
-                unsigned arity = (unsigned)atoi(refusals[index][1]);
-                /* The queue itself stands in for a residency set, a heap, a drawable and the operations
-                 * array: every one of these members refuses before its argument is read, and what is
-                 * under test is the refusal, not the argument. The `value:` forms get 1, which is a
-                 * plausible value for the header's uint64_t. */
-                BOOL returned = arity == 1 ? refuses1(queue, selector, queue)
-                               : arity == 2 ? refuses2(queue, selector, queue, 1)
-                                            : refuses3(queue, selector, queue, queue, queue);
+            for (unsigned index = 0; index < sizeof(sparse) / sizeof(sparse[0]); index++) {
+                const char *selector = sparse[index][0];
+                BOOL first = refuses3(queue, selector, queue, queue, queue);
+                BOOL second = refuses3(queue, selector, queue, queue, queue);
                 char line[160];
                 snprintf(line, sizeof(line),
-                         "the port's -[MTL4CommandQueue %s] returns and does not raise", selector);
-                verdict(returned, "MTL4CommandQueue_refusal", line);
+                         "the port's -[MTL4CommandQueue %s] returns on both calls and says so once", selector);
+                verdict(first && second, "MTL4CommandQueue_inert_once", line);
             }
+
+            /* (b) THE EVENTS, over the port's own. CharonMetalSharedEvent needs no device - it is an
+             * NSObject over a state of its own - so both members are reachable here, and they are asked
+             * the way a caller would: signal a value through the queue, read it back off the event, and
+             * wait for that same value through the queue, which returns at once because it has been
+             * reached. */
+            Class eventClass = NSClassFromString(@"CharonMetalSharedEvent");
+            id event = eventClass ? [[eventClass alloc] init] : nil;
+            if (!event) {
+                not_answered("MTL4CommandQueue_signalEvent", "this image has no CharonMetalSharedEvent class");
+                not_answered("MTL4CommandQueue_waitForEvent", "this image has no CharonMetalSharedEvent class");
+            } else {
+                BOOL returned = refuses2wide(queue, "signalEvent:value:", event, 7);
+                uint64_t readBack = [event signaledValue];
+                char line[160];
+                snprintf(line, sizeof(line),
+                         "-signalEvent:value: returns (%s), and the value reads back as %llu, asked for 7",
+                         returned ? "yes" : "no", (unsigned long long)readBack);
+                verdict(returned && readBack == 7, "MTL4CommandQueue_signalEvent", line);
+                /* The wait is asked for the value that has just been reached, so it cannot block: a wait
+                 * for a value nothing will signal is what the port's own -waitUntilSignaledValue:timeout:
+                 * is for, and it is not what this case is. */
+                BOOL waited = refuses2wide(queue, "waitForEvent:value:", event, 7);
+                verdict(waited, "MTL4CommandQueue_waitForEvent",
+                        "-waitForEvent:value: returns at once for a value the port's event has reached");
+            }
+
             /* THE CAPTURE SCOPE OVER A METAL 4 QUEUE, which needs no device either: the manager is the
              * release's own and the scope is a device and a queue, recorded. */
             Class managerClass = NSClassFromString(@"MTLCaptureManager");
@@ -439,6 +491,11 @@ int main(void)
                              manager ? "the scope factory gave nothing for the port's own queue"
                                      : "this image has no MTLCaptureManager class");
             }
+
+            /* WHAT THE GUEST'S OUTPUT SHOULD CARRY, for run-guest.sh to hold the log to: one line from
+             * each of the four `inert` members and none from the six that say nothing and none from the
+             * two events, which are asked with an event the port made. */
+            printf("expected refusal lines: 4\n");
         }
 
         printf("metalchain: %d check(s), %d failure(s), %d not answered\n", checks, failures, unanswered);

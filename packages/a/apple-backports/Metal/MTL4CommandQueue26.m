@@ -13,10 +13,43 @@
 // protocol to conform to: the 26.2 headers declare the protocol and the surface's rows for its members
 // are the class's.
 //
-// WHAT THE PORT DOES NOT CARRY, and why, is the rest of the protocol: the residency set, the sparse
-// mapping, the event and drawable waits. Each is refused by name in the methods below, because this
-// port has no facility behind it - facts/Metal/RenderPath.md is where the rendering path says what it
-// does, and facts/Metal/CommandChain26.md is where the expectations live.
+// THE TWELVE MEMBERS BELOW ARE SORTED BY WHAT THIS BACKEND ACTUALLY IS, because a member that logs
+// "refused" and returns is a stub and a row that calls that `implemented` is a row contradicting itself.
+// Four groups, each with the facts line that puts its member where it is:
+//
+//  (a) **THE NO-OP IS THE RIGHT ANSWER, and it says nothing.** The four residency-set members and the two
+//      drawable members. Every resource of this port is CPU-resident whatever the application asked for -
+//      a buffer is its own bytes and a texture is read and written on the CPU
+//      (facts/Metal/Blits.md, "The access hints", and facts/Metal/Heaps.md, "Hazard tracking and storage
+//      modes") - so there is no residency a set could add and none it could take away, and a draw is a
+//      call into OpenGL ES 2.0 that has already been made by the time it is encoded, so a drawable is
+//      never waiting for anything and never waiting to be told. `-waitForDrawable:` says in its own
+//      header that it "returns immediately and doesn't perform any synchronization on the current thread",
+//      which is what this body is; `-signalDrawable:` schedules the signal that says rendering is
+//      complete, and on this backend it already is. This is the same shape as
+//      `-[MTLCommandBuffer optimizeContentsForCPUAccess:]` in facts/Metal/Blits.md: doing nothing,
+//      because the performance it asks for is already the case. These rows are `implemented` and NO
+//      member here prints a line.
+//
+//  (b) **DONE NATIVELY OVER THE PORT'S OWN OBJECTS.** `-signalEvent:value:` and `-waitForEvent:value:`,
+//      over `CharonMetalSharedEvent`, whose state is a signalled value and a wait that blocks until it is
+//      reached (Metal/MTLSharedEvent12.m). @protocol MTLSharedEvent is declared as a refinement of
+//      MTLEvent in the 26.2 SDK (MTLEvent.h:52), so the port's own event IS an MTLEvent by shape. A GPU
+//      event is signalled when the work before it is complete, and here the work before it is complete
+//      by the time the call is encoded, for the same reason the hazard tracking above is not acted on.
+//      These rows are `implemented` and the probe asks both of them on the guest.
+//
+//  (c) **NOT POSSIBLE ON THIS BACKEND, so `inert`.** The four sparse mapping members. A sparse mapping
+//      needs an MTLHeap with a sparse residency mode and no heap this port makes is one:
+//      `MTLHeapTypeSparse` is refused at creation with an error and a line in the log
+//      (facts/Metal/Heaps.md, and registry/Metal/ios11heap.json), and facts/Metal/Heaps.md says why - "a
+//      heap is already all of memory and is never paged". So there is no mapping to update and none to
+//      copy. `inert` means "declared, does nothing, and says so once in the log the first time it is
+//      used" (registry/README.md), which is what these four do through the helper below - the same shape
+//      as `-[AUAudioUnit charon_noteInert:why:]` in Metal's sibling AVFAudio/AUAudioUnit9.m.
+//
+// facts/Metal/RenderPath.md is where the rendering path says what it does, and
+// facts/Metal/CommandChain26.md is where the expectations and the runs live.
 //
 // **TWELVE OF THE PROTOCOL'S OWN MEMBERS ARE ON THIS CLASS, and they were on the DEVICE until the device
 // probe found it.** Every method from -commit:count: down used to be written in the CharonMetalDevice
@@ -61,6 +94,26 @@
 - (void)signalDrawable:(id<MTLDrawable>)drawable;
 @end
 
+// THE ONE LINE AN `inert` MEMBER GETS, once per member and never again: `inert` in registry/README.md
+// means "declared, does nothing, and says so once in the log the first time it is used", and a program
+// that maps a sparse buffer and is told nothing has no way to learn that nothing was mapped. The set and
+// the once are the shape of `-[AUAudioUnit charon_noteInert:why:]` (AVFAudio/AUAudioUnit9.m).
+static void CharonMetal4NoteInert(NSString *member, NSString *why)
+{
+    static NSMutableSet<NSString *> *told;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        told = [NSMutableSet set];
+    });
+    @synchronized(told) {
+        if ([told containsObject:member]) {
+            return;
+        }
+        [told addObject:member];
+    }
+    NSLog(@"Metal: %@ is declared by @protocol MTL4CommandQueue and does nothing here: %@", member, why);
+}
+
 @implementation CharonMetal4CommandQueue {
     CharonMetalQueue *_queue;
     NSString *_label;
@@ -94,71 +147,129 @@
     _label = [label copy];
 }
 
-// THE RESIDENCY SETS, THE SPARSE MAPPINGS, AND THE EVENT AND DRAWABLE WAITS, refused by name, each with
-// the facility it would need and that this port does not have. The refusal is a line in the log, which is
-// how this port refuses a void method everywhere else (Metal/MTLComputeCommandEncoder8.m:145 and its
-// neighbours): a method that silently swallowed its argument would be a row claiming a refusal the code
-// does not make, which is the defect the eleven `(void)` bodies these replace were.
+// (a) THE RESIDENCY SETS, and the no-op is the answer rather than a stub: a residency set asks the driver
+// to keep a set of resources resident for the buffers of this queue, and every resource of this port is
+// CPU-resident for the life of its EAGL context whatever the application asked for - a buffer is its own
+// bytes and a texture is read and written on the CPU (facts/Metal/Blits.md, "The access hints"). There
+// is nothing to make resident and nothing to unmake it from, so the correct answer on this backend is
+// that the state the call would change is already the case. These are `implemented` rows and they say
+// nothing at all: a caller that added a set and heard a refusal would be told its resources are not
+// resident, which on this port is false.
 - (void)addResidencySet:(id)residencySet
 {
-    NSLog(@"Metal: a residency set is refused: this port keeps every resource resident for the life of its EAGL context and has no residency set to add one to");
+    (void)residencySet;
 }
 
 - (void)removeResidencySet:(id)residencySet
 {
-    NSLog(@"Metal: removing a residency set is refused: this port keeps every resource resident for the life of its EAGL context and has no residency set to remove one from");
+    (void)residencySet;
 }
 
 - (void)addResidencySets:(const id *)sets count:(NSUInteger)count
 {
-    NSLog(@"Metal: %lu residency set(s) are refused: this port keeps every resource resident for the life of its EAGL context and has no residency set to add them to", (unsigned long)count);
+    (void)sets;
+    (void)count;
 }
 
 - (void)removeResidencySets:(const id *)sets count:(NSUInteger)count
 {
-    NSLog(@"Metal: removing %lu residency set(s) is refused: this port keeps every resource resident for the life of its EAGL context and has no residency set to remove them from", (unsigned long)count);
+    (void)sets;
+    (void)count;
 }
 
+// (c) THE SPARSE MAPPINGS, and this one cannot be done: they need an MTLHeap whose residency mode is
+// sparse, and no heap this port makes is one - MTLHeapTypeSparse is refused at creation with an error and
+// a line in the log, because "a heap is already all of memory and is never paged"
+// (facts/Metal/Heaps.md). So there is no mapping to update, and the copy forms have nothing to copy
+// because nothing can be made to map. `inert`, with one line each the first time it is used.
 - (void)updateBufferMappings:(const void *)operations heap:(id<MTLHeap>)heap count:(NSUInteger)count
 {
-    NSLog(@"Metal: a sparse buffer mapping is refused: it needs an MTLHeap with a residency mode, and this port's heaps are the arena of one EAGL context with nothing sparse in it");
+    (void)operations;
+    (void)heap;
+    (void)count;
+    CharonMetal4NoteInert(@"-updateBufferMappings:heap:count:",
+                          @"a sparse buffer mapping needs an MTLHeap with a sparse residency mode, and no heap this port makes is sparse (facts/Metal/Heaps.md)");
 }
 
 - (void)updateTextureMappings:(const void *)operations heap:(id<MTLHeap>)heap count:(NSUInteger)count
 {
-    NSLog(@"Metal: a sparse texture mapping is refused: it needs an MTLHeap with a residency mode, and this port's heaps are the arena of one EAGL context with nothing sparse in it");
+    (void)operations;
+    (void)heap;
+    (void)count;
+    CharonMetal4NoteInert(@"-updateTextureMappings:heap:count:",
+                          @"a sparse texture mapping needs an MTLHeap with a sparse residency mode, and no heap this port makes is sparse (facts/Metal/Heaps.md)");
 }
 
 - (void)copyBufferMappingsFromBuffer:(id<MTLBuffer>)source toBuffer:(id<MTLBuffer>)destination
                            operations:(const void *)operations count:(NSUInteger)count
 {
-    NSLog(@"Metal: copying %lu sparse buffer mapping(s) is refused: there are no sparse mappings to copy, since none can be made", (unsigned long)count);
+    (void)source;
+    (void)destination;
+    (void)operations;
+    (void)count;
+    CharonMetal4NoteInert(@"-copyBufferMappingsFromBuffer:toBuffer:operations:count:",
+                          @"there are no sparse buffer mappings to copy, because none can be made (facts/Metal/Heaps.md)");
 }
 
 - (void)copyTextureMappingsFromTexture:(id<MTLTexture>)source toTexture:(id<MTLTexture>)destination
                               operations:(const void *)operations count:(NSUInteger)count
 {
-    NSLog(@"Metal: copying %lu sparse texture mapping(s) is refused: there are no sparse mappings to copy, since none can be made", (unsigned long)count);
+    (void)source;
+    (void)destination;
+    (void)operations;
+    (void)count;
+    CharonMetal4NoteInert(@"-copyTextureMappingsFromTexture:toTexture:operations:count:",
+                          @"there are no sparse texture mappings to copy, because none can be made (facts/Metal/Heaps.md)");
 }
 
+// (a) THE DRAWABLE PAIR, and here too the no-op is the answer rather than a stub. A drawable of this port
+// is a texture already drawn into the EAGL framebuffer (Metal/CharonMetalDrawable.h's class, and
+// facts/Metal/RenderPath.md for the path), and a draw is a call into OpenGL ES 2.0 that has already been
+// made by the time it is encoded - the same fact facts/Metal/Heaps.md gives for hazard tracking. So the
+// display is never using a drawable this port still needs back, and rendering to it is complete when the
+// encoding returns. `-waitForDrawable:`'s own header says it returns immediately and performs no
+// synchronization, and `-signalDrawable:` schedules a signal for a completion that has happened. Neither
+// triggers the presentation, which is `-[MTLCommandQueue presentDrawable:]`'s own work and the
+// application's to ask for.
 - (void)waitForDrawable:(id<MTLDrawable>)drawable
 {
-    NSLog(@"Metal: waiting for a drawable is refused: this queue has no drawable of its own, and a CAMetalLayer's is presented by the application that made it");
-}
-
-- (void)waitForEvent:(id)event value:(uint64_t)value
-{
-    NSLog(@"Metal: waiting for an MTLEvent is refused: this port has no event that outlives the EAGL context it would be waited on");
-}
-
-- (void)signalEvent:(id)event value:(uint64_t)value
-{
-    NSLog(@"Metal: signalling an MTLEvent is refused: this port has no event that outlives the EAGL context it would be signalled on");
+    (void)drawable;
 }
 
 - (void)signalDrawable:(id<MTLDrawable>)drawable
 {
-    NSLog(@"Metal: signalling a drawable is refused: this queue has no drawable of its own, and a CAMetalLayer's is presented by the application that made it");
+    (void)drawable;
+}
+
+// (b) THE EVENTS, and these do real work over the port's own event. `CharonMetalSharedEvent` carries a
+// state of its own: a signalled value, a setter for it, and a wait that blocks until the value is
+// reached (Metal/MTLSharedEvent12.m), and @protocol MTLSharedEvent refines MTLEvent in the 26.2 SDK
+// (MTLEvent.h:52), so the port's own event is an MTLEvent by shape.
+//
+// -signalEvent:value: is "after all GPU work prior to this point is complete", and on this backend that
+// work is complete by the time the call is encoded, so the value is set now rather than scheduled.
+// -waitForEvent:value: blocks until the state reaches the value, which is what the same wait does for
+// `-[MTLSharedEvent waitUntilSignaledValue:timeout:]`; a value that has already been reached returns at
+// once. An event that is not one of the port's has no state to read or set, and that is refused by name:
+// inventing a value on an object whose owner would never see it is worse than saying so.
+- (void)signalEvent:(id)event value:(uint64_t)value
+{
+    if ([event isKindOfClass:[CharonMetalSharedEvent class]]) {
+        [(CharonMetalSharedEvent *)event setSignaledValue:value];
+        return;
+    }
+    NSLog(@"Metal: -signalEvent:value: was given a %@ and not one of this port's events, and a signalled value set on it would be a value nothing else could ever read",
+          NSStringFromClass([event class]));
+}
+
+- (void)waitForEvent:(id)event value:(uint64_t)value
+{
+    if ([event isKindOfClass:[CharonMetalSharedEvent class]]) {
+        [(CharonMetalSharedEvent *)event charonWaitForValue:value];
+        return;
+    }
+    NSLog(@"Metal: -waitForEvent:value: was given a %@ and not one of this port's events, and there is no signalled value on it to wait for",
+          NSStringFromClass([event class]));
 }
 
 @end
