@@ -66,58 +66,40 @@ xcrun clang -fobjc-arc -w $renames -I"$S/Network" -I"$S/Foundation" "$here/probe
 cat "$W/port.txt"
 
 echo "=== compared, name by name"
-compared=0
-failed=0
+# Every line both sides print, compared name by name. $1 the answers file, $2 what to call that side in
+# the lines, $3 the prefix ("FAIL  " for a mutant, "ok    "/"FAIL  " for the port itself). Sets
+# `compared` and `failed`, and the run's own instance is required of both sides wherever the name is
+# compared: two sides agreeing about some other service of the same type that happens to be on the link is
+# not this differential, so a machine with another publisher of the type says so rather than passing on it.
 NAMES="found endpoint.type endpoint.name endpoint.serviceType endpoint.domain endpoint.port record.keys record.isDictionary changes.added interfaces.count"
-for line in $NAMES; do
-    h=$(grep "^$line	" "$W/host.txt" | cut -f2 || true)
-    p=$(grep "^$line	" "$W/port.txt" | cut -f2 || true)
-    compared=$((compared + 1))
-    # Both sides must answer about the service THIS run registered. Two sides agreeing about some other
-    # service of the same type that happens to be on the link is not this differential: the point is that
-    # each browser found the one the run put there, and a machine with another publisher of the type (or a
-    # record left behind by a killed run) must say so rather than pass on it.
-    if [ "$line" = endpoint.name ] && { [ "$h" != "$instance" ] || [ "$p" != "$instance" ]; }; then
-        echo "FAIL  $line  this run registered '$instance', the host answered '$h' and the port '$p'"
-        failed=$((failed + 1))
-        continue
-    fi
-    if [ -z "$h" ]; then
-        echo "FAIL  $line  the host did not answer it: this comparison has no oracle"
-        failed=$((failed + 1))
-    elif [ -z "$p" ]; then
-        echo "FAIL  $line  the port did not answer it"
-        failed=$((failed + 1))
-    elif [ "$h" = "$p" ]; then
-        echo "ok    $line  $h"
-    else
-        echo "FAIL  $line  host='$h' port='$p'"
-        failed=$((failed + 1))
-    fi
-done
 compare_against() {
-    # $1 the answers file, $2 the prefix for the lines it prints. Every line the file does not answer is a
-    # failure naming itself, exactly as the plain run above reports it.
+    compared=0
     failed=0
     for line in $NAMES; do
         h=$(grep "^$line	" "$W/host.txt" | cut -f2 || true)
         m=$(grep "^$line	" "$1" | cut -f2 || true)
+        compared=$((compared + 1))
+        if [ "$line" = endpoint.name ] && { [ "$h" != "$instance" ] || [ "$m" != "$instance" ]; }; then
+            echo "FAIL  $line  this run registered '$instance', the host answered '$h' and $2 '$m'"
+            failed=$((failed + 1))
+            continue
+        fi
         if [ -z "$h" ]; then
-            echo "$2$line  the host did not answer it: this comparison has no oracle"
+            echo "FAIL  $line  the host did not answer it: this comparison has no oracle"
             failed=$((failed + 1))
         elif [ -z "$m" ]; then
-            echo "$2$line  the mutant did not answer it"
+            echo "FAIL  $line  $2 did not answer it"
             failed=$((failed + 1))
         elif [ "$h" = "$m" ]; then
-            echo "$2$line  $m"
+            echo "ok    $line  $m"
         else
-            echo "$2$line  host='$h' mutant='$m'"
+            echo "FAIL  $line  host='$h' $2='$m'"
             failed=$((failed + 1))
         fi
     done
-    return $failed
 }
 
+compare_against "$W/port.txt" the-port
 echo "compared=$compared failed=$failed"
 [ "$failed" -eq 0 ] || exit 1
 
@@ -179,8 +161,10 @@ PYEOF
             continue
         fi
         "$W/mutant-$line" "$instance" > "$W/mutant-$line.txt" 2>&1 || true
-        if compare_against "$W/mutant-$line.txt" "FAIL  " | grep -q "^FAIL  $line  "; then
-            echo "noticed $line: $(compare_against "$W/mutant-$line.txt" "FAIL  " | grep "^FAIL  $line  " | head -1 | cut -c1-90)"
+        # the same comparison the plain run above makes, and it must name this mutation's own line
+        verdict=$(compare_against "$W/mutant-$line.txt" the-mutant | grep "^FAIL  $line  " | head -1)
+        if [ -n "$verdict" ]; then
+            echo "noticed $line: $(printf '%s' "$verdict" | cut -c1-90)"
         else
             echo "NOT NOTICED $line: the mutant still answers what Apple answers for $line" >&2
             mut_failed=$((mut_failed + 1))
