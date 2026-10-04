@@ -4,10 +4,43 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-// DEFINED in MTLReflection8.m, beside MTLVertexAttribute, which this body builds one of: a
-// definition here could not see that class. The declaration is external and hidden, like the definition: a
-// static here would be a second function with no body of its own, and the library would not link.
-__attribute__((visibility("hidden"))) NSArray *CharonAttributesFromFunction(CharonMetalFunction *function);
+// The port's own initializer for the class MTLReflection8.m implements, declared here because the two
+// attribute getters below are the only thing outside that file that builds one, and that file's own
+// header declares the type initializers rather than this one (MTLTypeReflectionInternal.h).
+@interface MTLVertexAttribute (CharonMetalInternal)
+- (instancetype)initWithNode:(NSDictionary *)node;
+@end
+
+// The plist node a function's attributes are built from, which the function below reads and which is
+// implemented in this file's own @implementation further down. A C function of this file sits above
+// that, so the method is declared here the way the tree declares a port method it reaches from another
+// file's helper (HMAccessoryHome10_0.m names the same shape).
+@interface CharonMetalFunction (CharonMetalInternal)
+- (NSDictionary *)charonArgumentNode;
+@end
+
+// The one place that turns a function's argument list into attributes, so a vertex attribute and a
+// stage input are built by the same code from the same plist and cannot drift apart. It is a static of
+// this file, which is where its only two callers are, and it used to be an external function DEFINED in
+// MTLReflection8.m beside the class whose object it builds. That was the rule "a C function has to be
+// defined in the translation unit that can see what it builds", and the cost of following it was that
+// MTLReflection8.m is one band's API - MTLVertexAttribute and the two pipeline reflection classes are
+// all of iOS 8.0 - so a band from 8.0 does not link it and this file, which defines no class and is in
+// every band, reached a definition no band above 7.x had:
+//
+//   Undefined symbols for architecture armv7:
+//     "_CharonAttributesFromFunction", referenced from CharonMetalLibrary.o
+//
+// Nothing is lost by the body living here: it builds an MTLVertexAttribute through the class symbol,
+// which the release exports from 8.0 and this library defines below it, and through -initWithNode:,
+// which only the bands below 8.0 ever send - the two callers are members of the port's own
+// CharonMetalFunction, and the members of this class that the release's MTLFunction already answers
+// are never installed on it (see facts/Metal/Reflection.md on how a category method is attached).
+static NSArray *CharonAttributesFromFunction(CharonMetalFunction *function)
+{
+    NSDictionary *node = [function charonArgumentNode];
+    return node ? @[[[MTLVertexAttribute alloc] initWithNode:node]] : @[];
+}
 
 // The plist node this function was built from, which is the argument list its attributes come from.
 // It is the ivar the initializer already stores, named for what it is: -charonArgumentNode was lost

@@ -138,8 +138,8 @@ twenty objects that define these sixteen classes - it reports:
     release-split: clean, every object file's symbols first-appear in one release
                    (20 files, 6 symbols, 50 releases checked)
 
-    MTLHeap10.o       _OBJC_CLASS_$_MTLHeapDescriptor         10.0.1
-    MTLHeap10.o       _OBJC_METACLASS_$_MTLHeapDescriptor     10.0.1
+    MTLHeapDescriptor10.o _OBJC_CLASS_$_MTLHeapDescriptor     10.0.1
+    MTLHeapDescriptor10.o _OBJC_METACLASS_$_MTLHeapDescriptor 10.0.1
     MTLSharedEvent12.o _OBJC_CLASS_$_MTLSharedEventHandle       12.0
     MTLSharedEvent12.o _OBJC_CLASS_$_MTLSharedEventListener    12.0
     MTLSharedEvent12.o _OBJC_METACLASS_$_MTLSharedEventHandle  12.0
@@ -147,6 +147,14 @@ twenty objects that define these sixteen classes - it reports:
 
 Twenty objects carrying between them every method listed below, and **6** symbols between them, all six
 real API this port carries at its own release. Not one `CharonMetal` class symbol survives the exclusion.
+
+The two MTLHeapDescriptor lines name `MTLHeapDescriptor10.o`, and they read 10.0.1 as they always did:
+that class is the only API the object carries, so it is dropped from the release that exports it, exactly
+as it was when the descriptor shared an object with the port's `CharonMetalHeap` (the v-bandtrap
+series, "Give Metal's vertex attributes and its heap class an object that is in every band"). What
+changed is what that object holds beside it: `CharonMetalHeap` is a class of Charon's own, so an object
+carrying only it and a `Charon` constant exports nothing and is in every band, which is where the two
+files that are categories over that class need it to be.
 
 `implemented` is still the wrong status, and now for the true reason: the band does not export the name,
 because a `Charon`-prefixed name is internal by rule rather than by compiler flag.
@@ -219,14 +227,19 @@ backports.lua:2014 `minimums()` reads `entry_of(listed, name)` and takes `entry.
 an object carries - and it never reads `entry.status`. So a row whose api is a port-internal name is
 perfectly legal, and its minimum is the only thing it is read for.
 
-Five objects every band carries depend on exactly that:
+Four objects every band carries depend on exactly that:
 
-  CharonMetalLibrary.o        names _CharonAttributesFromFunction  -> CharonMetalLibrary      minimum 6.0
   MTLBlitCommandEncoder10.o   names _OBJC_CLASS_$_CharonMetalSharedEvent -> CharonMetalSharedEvent minimum 6.0
   MTLHeap11.o, MTLHeap13.o    name  _OBJC_CLASS_$_CharonMetalHeap   -> CharonMetalHeap          minimum 6.0
   MTLSharedEvent15.o          names _OBJC_CLASS_$_CharonMetalSharedEvent
 
-Without the rows the 4.3 band has no minimum for those five, cannot place them, and cannot link - while
+`CharonMetalLibrary.o` was a fifth and is not one any more: it is where the definition of
+`_CharonAttributesFromFunction` and its two callers now are, one static in one object, so nothing
+crosses an object boundary and the row has no placement left to do (v-bandtrap, "Give Metal's
+vertex attributes and its heap class an object that is in every band" - it was
+defined in `MTLReflection8.m`, an object of iOS 8.0's API, which a band from 8.0 does not link).
+
+Without the rows the 4.3 band has no minimum for those four, cannot place them, and cannot link - while
 6.1.3 stays GREEN, because everything they name is also carried at 6.0. A band-placement defect is
 invisible at the higher rung. That is why both bands run.
 
