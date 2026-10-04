@@ -186,6 +186,9 @@ static MPSGraphTensor *forwardShape(MPSGraph *g, int32_t a, int32_t b)
 }
 
 static float rowFeed[8] = { 1.0f, 2.0f, 3.0f, 4.0f, 10.0f, 20.0f, 30.0f, 40.0f };
+// The row of four the thin-axis pad questions are asked over: an axis of extent one is an axis a mirror
+// reaches nothing into, which is what makes it the sharpest of the two mirror limits.
+static float thinRow[4] = { 1.0f, 2.0f, 3.0f, 4.0f };
 static float twoByThreeByFour[24] = {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 };
@@ -210,8 +213,10 @@ int main(int argc, const char *argv[])
             "slice-gradient-stride2", "slice-gradient-shape-mismatch",
             "slice-update-end-mask", "slice-update-squeeze-mask", "slice-update-shape-wide",
             "slice-update-shape-narrow", "slice-update-fed-answer",
-            "pad-rank3-clamp", "pad-rank3-symmetric",
+            "pad-destination-narrower-rank3-clamp", "pad-destination-narrower-rank3-constant",
+            "pad-destination-narrower-rank2",
             "pad-periodic", "pad-antiperiodic", "pad-reflect-past-extent",
+            "pad-thin-reflect", "pad-thin-symmetric",
         };
         unsigned i;
         for (i = 0; i < sizeof(kQuestions) / sizeof(kQuestions[0]); i++)
@@ -533,10 +538,20 @@ int main(int argc, const char *argv[])
             return 0;
         }
         // THE PAD AND THE TILE'S OWN REFUSALS, each measured on this host's own MPSGraph: two modes the
-        // release refuses by name, a mirror that reaches past the axis it mirrors, and a rank of THREE over
-        // which it takes the process down for both of them - where every rank-2 case of the family answers.
+        // release refuses by name, a mirror that reaches past the axis it mirrors - and the same mirror over
+        // an axis ONE element long, which reaches nothing at all - and a destination whose shape is the
+        // OPERAND's where the result's is a different one.
+        //
+        // What this branch no longer holds is a refusal of a rank of THREE. It used to hold one, and the two
+        // entries it recorded - "Invalid KernelDAG, equalShape for destination failed" - were this file's own
+        // question asked into the wrong shape: the destination below is the OPERAND's, and a 2x3x4 padded by
+        // one at each end of every axis is a 4x5x6. Asked into a destination of the RESULT's shape the same
+        // pad answers in every mode, which is what graph-cases.m's pad-rank3-clamp and pad-rank3-symmetric
+        // compare. So the entry is renamed to what it measures, and the rank-3 pad is a case and not a
+        // refusal.
         if (strncmp(q, "pad-", 4) == 0 || strcmp(q, "tile-rank3") == 0) {
             int rank3 = strstr(q, "rank3") != NULL;
+            int thin = strstr(q, "thin") != NULL;
             int tile = strstr(q, "tile") != NULL;
             MPSGraphPaddingMode mode = MPSGraphPaddingModeConstant;
             if (strstr(q, "periodic")) mode = MPSGraphPaddingModePeriodic;
@@ -544,12 +559,17 @@ int main(int argc, const char *argv[])
             else if (strstr(q, "symmetric")) mode = MPSGraphPaddingModeSymmetric;
             else if (strstr(q, "clamp")) mode = MPSGraphPaddingModeClampToEdge;
             else if (strstr(q, "reflect")) mode = MPSGraphPaddingModeReflect;
-            NSArray<NSNumber *> *shape = rank3 ? @[@2, @3, @4] : twoByFour;
-            NSArray<NSNumber *> *left = rank3 ? @[@1, @1, @1] : @[@1, @2];
-            NSArray<NSNumber *> *right = rank3 ? @[@1, @1, @1] : @[@1, @0];
+            NSArray<NSNumber *> *shape = rank3 ? @[@2, @3, @4] : thin ? @[@1, @4] : twoByFour;
+            NSArray<NSNumber *> *left = rank3 ? @[@1, @1, @1] : thin ? @[@1, @0] : @[@1, @2];
+            NSArray<NSNumber *> *right = rank3 ? @[@1, @1, @1] : thin ? @[@1, @0] : @[@1, @0];
             if (strstr(q, "past-extent")) { left = @[@3, @2]; right = @[@2, @0]; }
-            const void *values = rank3 ? (const void *)twoByThreeByFour : (const void *)rowFeed;
-            NSUInteger count = rank3 ? 24 : 8;
+            // A mirror over an axis of ONE element long reaches nothing into it, so the padding that is one
+            // past its own limit is one for the reflect and two for the symmetric - the symmetric reaches
+            // the axis itself, which is the whole of the difference between the two limits.
+            if (thin && mode == 2) { left = @[@2, @0]; right = @[@2, @0]; }
+            const void *values = rank3 ? (const void *)twoByThreeByFour : thin ? (const void *)thinRow
+                                                                : (const void *)rowFeed;
+            NSUInteger count = rank3 ? 24 : thin ? 4 : 8;
             float *bytes = malloc(count * sizeof(float));
             memcpy(bytes, values, count * sizeof(float));
             MPSGraph *one = [MPSGraph new];

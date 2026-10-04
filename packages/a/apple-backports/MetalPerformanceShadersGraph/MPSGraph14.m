@@ -936,11 +936,13 @@ typedef enum {
 //                                last element (3, 1, 2, 3, 4, 3) nor one that repeats the edge;
 //   MPSGraphPaddingModeSymmetric the mirror that DOES repeat the edge - measured (1, 1, 2, 3, 4, 4).
 //
-// Both mirrors are refused by the release when the padding reaches the axis's own extent - measured, a left
-// padding of three on an axis of two is refused by its compiler ("Optimize Original Module MLIR pass manager
-// failed") while one on the same axis answers - and PERIODIC and ANTI-PERIODIC are refused outright, with the
-// release's own words "Unsupported paddingMode", after it has built the result tensor. So the two modes the
-// release does not answer are refused where the graph is built, and the other five are the walk's own.
+// The two mirror modes cannot reach past the axis they mirror, and each reaches a different way: measured
+// over extents one, two and three and both sides of the axis, a REFLECT answers up to the axis LESS ONE and
+// a SYMMETRIC up to the axis ITSELF, and one element more of either is refused by the release's own
+// compiler ("Optimize Original Module MLIR pass manager failed"). PERIODIC and ANTI-PERIODIC are refused
+// outright, with the release's own words "Unsupported paddingMode", after it has built the result tensor. So
+// the two modes the release does not answer are refused where the graph is built, and the other five are the
+// walk's own.
 - (MPSGraphTensor *)padTensor:(MPSGraphTensor *)tensor
              withPaddingMode:(MPSGraphPaddingMode)paddingMode
                  leftPadding:(NSArray<NSNumber *> *)leftPadding
@@ -964,10 +966,12 @@ typedef enum {
 
 // The pad's GRADIENT, which is the forward pass's output copied back into a tensor of the input's own shape:
 // the incoming gradient is of the PADDED shape, and every element of it outside the region the padding
-// covered is dropped, which is the same scatter the slice's gradient is with the left padding as the offset.
-// Measured: over a padded 4x6 of (1 ... 24) and a padding of (1, 2) at the left and (1, 0) at the right, the
-// gradient of a 2x4 answers (102, 108, 114, 120 | 174, 180, 186, 192) - the sum of the incoming gradient over
-// the copies that land on each element, which for a pad is the one copy and so is that element's value.
+// covered is dropped, which is the same scatter the slice's gradient is with the left padding as its offset.
+// Measured: over an incoming gradient of (1 ... 24) as a 4x6 and a padding of (1, 2) at the left and (1, 0) at
+// the right of a 2x4, the release answers 9, 10, 11, 12 | 15, 16, 17, 18 - which is the incoming gradient's own
+// rows 1 and 2, columns 2 to 5, and is the sum over the copies that land on each element, which for a pad is
+// the one copy and so is that element's value. (The numbers this comment carried before, 102 and 174 down the
+// two rows, were not the release's and are taken back; the row of the registry had the right ones already.)
 - (MPSGraphTensor *)padGradientWithIncomingGradientTensor:(MPSGraphTensor *)incomingGradientTensor
                                             sourceTensor:(MPSGraphTensor *)sourceTensor
                                              paddingMode:(MPSGraphPaddingMode)paddingMode
@@ -982,9 +986,9 @@ typedef enum {
         [oneEach addObject:@1];
     // The offset is the NEGATED left padding, and that is the whole of what a gradient of a pad is: the
     // region sits `leftPadding` elements into the incoming gradient, which is of the PADDED shape, so the
-    // destination's coordinate is the incoming gradient's less that - measured, a gradient of (1 ... 24) over
-    // a padding of (1, 2) at the left and (1, 0) at the right answers 9, 10, 11, 12 | 21, 22, 23, 24, which is
-    // the incoming gradient's own rows 1 and 2, columns 2 to 5.
+    // destination's coordinate is the incoming gradient's less that - measured, a gradient of (1 ... 24) as a
+    // 4x6 over a padding of (1, 2) at the left and (1, 0) at the right answers 9, 10, 11, 12 | 15, 16, 17, 18,
+    // which is the incoming gradient's own rows 1 and 2, columns 2 to 5.
     NSMutableArray<NSNumber *> *behind = [NSMutableArray arrayWithCapacity:leftPadding.count];
     for (NSNumber *before in leftPadding)
         [behind addObject:@(-before.integerValue)];

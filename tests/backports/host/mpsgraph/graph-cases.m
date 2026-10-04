@@ -789,6 +789,12 @@ static float cubeFeed[24] = {
 // a NaN of each sign. A gather copies, so these are what says it copies - a NaN's sign and a negative zero's
 // sign are the two things a walk that recomputes a value would lose.
 static float gatherClasses[8] = { 1.0f, -1.0f, -0.0f, 0.0f, INFINITY, -INFINITY, NAN, -NAN };
+// The feeds of a pad over an axis SHORTER than the result: one row of four and one 1x3x4 of the 1 to 12.
+// They are the ordinary 1 to 4 and 1 to 12 rather than the sixteen classes because the question this shape
+// asks is not what an element holds but WHERE the operand's row lands in a result three rows longer - and a
+// feed whose elements are distinguishable by value is what tells one row from another.
+static float thinFeed[4] = { 1.0f, 2.0f, 3.0f, 4.0f };
+static float thinCubeFeed[12] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
 // A gather's case: the compile is given a feed of the OPERAND's shape and a destination of the RESULT's,
 // which the elementwise run() above cannot do - a reduction_case's arrangement, with the operand and the
@@ -1401,6 +1407,8 @@ static void family_gather_padtile(void)
 {
     NSArray<NSNumber *> *twoByFour = @[@2, @4];
     NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+    NSArray<NSNumber *> *oneByFour = @[@1, @4];
+    NSArray<NSNumber *> *oneByThreeByFour = @[@1, @3, @4];
 
     // THE FIVE MODES THE RELEASE ANSWERS, over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) with one element of
     // padding at the front and the back of axis 0 and two at the front of axis 1.
@@ -1443,13 +1451,120 @@ static void family_gather_padtile(void)
                           rightPadding:@[@1, @1] constantValue:99.0 name:@"p"]; },
                 MPSDataTypeFloat32, twoByFour, rowFeed);
     // Three elements at the front of axis 1 and two at the back, which is a mirror of more than half an axis.
-    // A rank of three is NOT asked here: the release takes the process down on every mode of it, which is
-    // refusals.m's pad-rank3-clamp and pad-rank3-symmetric.
+    // A rank of three IS asked below, over an axis of extent one: measured on this host's own MPSGraph, a
+    // pad of a 2x3x4 into a destination of the RESULT's own shape answers in every mode, and the entries in
+    // refusals.txt that say otherwise are this file's own question asked into the wrong shape.
     gather_case("pad-reflect-three float32",
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g padTensor:a withPaddingMode:MPSGraphPaddingModeReflect leftPadding:@[@1, @3]
                           rightPadding:@[@1, @2] constantValue:99.0 name:@"p"]; },
                 MPSDataTypeFloat32, twoByFour, rowFeed);
+    // A PADDED AXIS SHORTER THAN THE RESULT, which nothing above reached: the operand is ONE row and the
+    // result is four, with the three at the front for the mode to fill. This is the shape the tile
+    // gradient's own shifts ask for - a window of five over a leading block of four pads a row of one back
+    // out to four - and the differential carried no case that reached it, so what a pad's fill does over a
+    // thin axis was unmeasured. Measured on this host's own MPSGraph, in every mode it answers:
+    //   - the zero and the constant write the operand's row at the row the offset puts it in and the three
+    //     at the front hold the mode's own value, which is what "a row of one padded out to four" means;
+    //   - the clamp answers the operand's own row at EVERY row of the result, because clamping a length-one
+    //     axis has no other element to clamp to (measured 1, 2, 3, 4 four times over);
+    //   - padded on the RIGHT instead, the operand's row lands at the first row and the three at the back
+    //     hold - the same walk read from the other end;
+    //   - a rank of three of the same shape answers too, over the leading axis and over the axis just below
+    //     it, so the fill is chosen on every axis at once and not only on the first.
+    // The two mirrors do NOT answer this shape and are refusals.m's pad-thin-reflect and pad-thin-symmetric:
+    // they reach the axis and this axis is one element long.
+    gather_case("pad-thin-zero float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeZero leftPadding:@[@3, @0]
+                          rightPadding:@[@0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByFour, thinFeed);
+    gather_case("pad-thin-constant float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeConstant leftPadding:@[@3, @0]
+                          rightPadding:@[@0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByFour, thinFeed);
+    gather_case("pad-thin-clamp float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeClampToEdge leftPadding:@[@3, @0]
+                          rightPadding:@[@0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByFour, thinFeed);
+    gather_case("pad-thin-right-zero float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeZero leftPadding:@[@0, @0]
+                          rightPadding:@[@3, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByFour, thinFeed);
+    gather_case("pad-thin-rank3-zero float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeZero leftPadding:@[@3, @0, @0]
+                          rightPadding:@[@0, @0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByThreeByFour, thinCubeFeed);
+    gather_case("pad-thin-rank3-clamp float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeClampToEdge
+                           leftPadding:@[@3, @0, @0] rightPadding:@[@0, @0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByThreeByFour, thinCubeFeed);
+    gather_case("pad-thin-rank3-axis1-zero float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeZero leftPadding:@[@0, @3, @0]
+                          rightPadding:@[@0, @0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByThreeByFour, thinCubeFeed);
+    // HOW FAR EACH MIRROR REACHES, which is the two modes' own limit and not one number for both. Measured
+    // on this host's own MPSGraph at extents one, two and three, left and right, over every padding from one
+    // to five: a REFLECT answers up to the axis LESS ONE and a SYMMETRIC up to the axis ITSELF, and one
+    // element more of either is refused by the release's compiler with its own words - "'mps.pad' op padding
+    // values too large at axis 0, max padding is 1, got 3" (MPSGraphUtilities.mm:956) - where the maximum it
+    // prints is 1 for a reflect on an axis of two and 2 for a symmetric on the same axis. So the symmetric
+    // boundary below ANSWERS, with the mirror at both ends of the axis, and the port refused it.
+    gather_case("pad-symmetric-boundary float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric leftPadding:@[@2, @0]
+                          rightPadding:@[@0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("pad-symmetric-boundary-both float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric leftPadding:@[@2, @0]
+                          rightPadding:@[@2, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // The symmetric over an axis of extent one at its own limit, which is the one element of padding a
+    // length-one axis admits and the mirror's own edge (measured: the operand's row repeated), and the same
+    // over the axis just below the last of a rank of three, where the extent is three and the padding is its
+    // own limit.
+    gather_case("pad-symmetric-thin float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric leftPadding:@[@1, @0]
+                          rightPadding:@[@1, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByFour, thinFeed);
+    gather_case("pad-symmetric-thin-rank3 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric
+                           leftPadding:@[@1, @0, @0] rightPadding:@[@0, @0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByThreeByFour, thinCubeFeed);
+    gather_case("pad-symmetric-thin-axis1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric
+                           leftPadding:@[@0, @3, @0] rightPadding:@[@0, @0, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, oneByThreeByFour, thinCubeFeed);
+    gather_case("pad-reflect-axis0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeReflect leftPadding:@[@1, @0]
+                          rightPadding:@[@1, @0] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // A rank of THREE, over the whole of it at once, which the entries in refusals.txt used to call a refusal.
+    // Measured on this host's own MPSGraph with a destination of the RESULT's own shape, a 2x3x4 of (1 ... 24)
+    // padded by one at each end of every axis answers a 4x5x6 in every mode - and the clamp and the
+    // symmetric answer the same bytes here, because one element of padding on an axis of two or more is where
+    // the two mirrors and the clamp agree.
+    gather_case("pad-rank3-clamp float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeClampToEdge leftPadding:@[@1, @1, @1]
+                          rightPadding:@[@1, @1, @1] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    gather_case("pad-rank3-symmetric float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g padTensor:a withPaddingMode:MPSGraphPaddingModeSymmetric leftPadding:@[@1, @1, @1]
+                          rightPadding:@[@1, @1, @1] constantValue:99.0 name:@"p"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
     // A padding of nothing at all is the identity, and the sixteen classes through it say so byte for byte.
     gather_case("pad-nopad float32",
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {

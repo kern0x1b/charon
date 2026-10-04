@@ -1081,16 +1081,16 @@ that is gone, so there is nothing to compare a line against. Both are measuremen
 ## Pad and tile: the gather walk with two more rules
 
 Three of the four rows of the ledger's pad and tile pair, in `MPSGraph14.m` where 14.0 put them, compared in a
-process of their own (`gather_padtile`): **17 cases, every cell and every shape byte-identical to the release,
-`gather_padtile checks=17 failures=0 recorded=0` over 536 cells in 37 case lines**, the red control differing from
-the release in 18 of them, and five refusal questions of their own.
+process of their own (`gather_padtile`): **67 cases, every cell and every shape byte-identical to the release,
+`gather_padtile checks=32 failures=0 recorded=0` over 1076 cells in 67 case lines**, the red control differing
+from the release in 33 of them, and eight refusal questions of their own.
 
 * **A TILE is the gather walk with every axis REPEATED**: the result's axis k is the operand's axis k at
   `multiplier[k]` times its extent, and the coordinate of the result counts the operand's own extent over again.
   Measured over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40): a multiplier of `(2, 3)` answers a `4x12` holding the
   operand three times over twice down, `(1, 3)` a `2x12` three times across, `(2, 1)` twice down, a multiplier of
-  one the operand itself byte for byte, and `(2, 2, 2)` over a `2x3x4` the `4x6x8` of 192 elements - **so a rank
-  of three is answered by a tile** where it is not by a pad.
+  one the operand itself byte for byte, and `(2, 2, 2)` over a `2x3x4` the `4x6x8` of 192 elements - and **a pad
+  of a rank of three answers as well**, which the two entries above used to deny.
 * **A PAD is the walk with an offset per axis and the space outside the operand filled by the mode**, and every
   element of the result is written: the inside from the operand at the coordinate less that axis's left padding,
   and the outside by the mode. Every element matters because **a fresh `MTLBuffer` holds no answer at all** - an
@@ -1121,14 +1121,61 @@ that is easy to get wrong - the reflect is neither the mirror about the last ele
 
 **Two of the seven modes the release refuses**, with its own words, *after* it has built the result tensor:
 `MPSGraphPaddingModePeriodic` and `MPSGraphPaddingModeAntiPeriodic` - "Unsupported paddingMode", exit 134. Both
-are raised where the graph is built. Both mirrors are refused as well when the padding **reaches the axis's own
-extent**: a left padding of three on an axis of extent two is refused by the release's compiler ("Optimize
-Original Module MLIR pass manager failed") where the clamp, the zero and the constant answer the same padding.
+are raised where the graph is built.
 
-**A pad of a rank of THREE is refused by the release in every mode** - the result tensor is built, the shape line
-prints `4x5x6`, and then the release's own kernel says "Invalid KernelDAG, equalShape for destination failed".
-Every rank-2 pad answers. The port answers a rank of three and the row says so; `refusals.m`'s
-`pad-rank3-clamp` and `pad-rank3-symmetric` hold the measurement.
+### The two mirrors' own reach, which is not one number for both
+
+Measured on this host's own MPSGraph at extents 1, 2 and 3, on the left and on the right, over every padding
+from 1 to 5. A `REFLECT` answers up to the axis **less one** and a `SYMMETRIC` up to the axis **itself**, and
+one element more of either is refused by the release's compiler with its own words:
+
+```
+'mps.pad' op padding values too large at axis 0, max padding is 1, got 3      (MPSGraphUtilities.mm:956)
+```
+
+where the maximum it prints is 0 for a reflect on an axis of one, 1 for a reflect on an axis of two **and 2 for
+a symmetric on that same axis** - which is the whole of the difference between the two limits. The port refused
+`before >= extent` for both, so it refused a symmetric pad the release answers; that is what
+`MPSGraphInterpreter14.m`'s pad branch carries now, as `reach = mode == 1 ? extent - 1 : extent`. The cases
+that show it are `pad-symmetric-boundary`, `pad-symmetric-boundary-both`, `pad-symmetric-thin`,
+`pad-symmetric-thin-rank3` and `pad-symmetric-thin-axis1`, and the two limits are `refusals.txt`'s
+`pad-thin-reflect` (max 0, got 1) and `pad-thin-symmetric` (max 1, got 2). `pad-reflect-past-extent` stays as
+the reach of the reflect one element short of the old rule, which is still what the release does.
+
+### An axis shorter than the result by more than its own extent
+
+Nothing above reached it, and it is the shape the tile gradient's own shifts ask for - a window of five over a
+leading block of four pads a row of **one** back out to four. Measured on this host's own MPSGraph, a `1x4` of
+`(1, 2, 3, 4)` padded by three at the left answers, for the modes that answer:
+
+| mode | result | answer |
+| --- | --- | --- |
+| `Zero` | `4x4` | `0, 0, 0, 0 \| 0, 0, 0, 0 \| 0, 0, 0, 0 \| 1, 2, 3, 4` |
+| `Constant` (99) | `4x4` | `99 x 12 \| 1, 2, 3, 4` |
+| `ClampToEdge` | `4x4` | `1, 2, 3, 4` four times over |
+
+So the operand's row lands at the row the offset puts it in and the space at the front holds the mode's own
+value - **and the zero mode does not write it anywhere else**. That is the question a pass before this one
+localised the tile gradient's failure to, and it does not hold: over the seven thin-axis cases of the family
+(`pad-thin-zero`, `pad-thin-constant`, `pad-thin-clamp`, `pad-thin-right-zero`, `pad-thin-rank3-zero`,
+`pad-thin-rank3-clamp`, `pad-thin-rank3-axis1-zero`) the port and the release were already byte-identical before
+any change here, and still are. Padded on the **right** the operand's row lands at the first row and the three
+at the back hold, which is the same walk read from the other end; a rank of three of the same shape answers too,
+over the leading axis and over the axis just below it, so the fill is chosen on every axis at once.
+
+### A pad of a rank of THREE answers, and the entry that said otherwise was this repository's own question
+
+`refusals.m` held `pad-rank3-clamp` and `pad-rank3-symmetric` as refusals of a rank of three, both exiting 134
+with "Invalid KernelDAG, equalShape for destination failed". **That measurement was of the wrong shape and the
+refusal was of the destination, not of the pad**: the branch builds its destination with the OPERAND's shape and
+the OPERAND's bytes, and a `2x3x4` padded by one at each end of every axis is a `4x5x6` - 480 bytes into 96.
+Asked into a destination of the RESULT's shape the same pad answers in every mode, and `pad-rank3-clamp` and
+`pad-rank3-symmetric` are now cases in `graph-cases.m` (the clamp and the symmetric answer the same bytes
+there, because one element of padding on an axis of two or more is where the two mirrors and the clamp agree).
+What the narrower destination really does is per mode and per rank, and is what the three entries now say:
+`pad-destination-narrower-rank3-clamp` is refused by the release's multiary kernel
+(`MPSNDArrayMultiaryKernel.mm:2475`), `pad-destination-narrower-rank3-constant` writes what fits and exits 0,
+and `pad-destination-narrower-rank2` - a `4x6` into a `2x4`'s 32 bytes - writes what fits and exits 0 too.
 
 ### The tile's gradient: the rule is measured now, and the port does not reproduce it yet
 

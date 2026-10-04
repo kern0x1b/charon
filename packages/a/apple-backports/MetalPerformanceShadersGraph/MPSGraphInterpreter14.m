@@ -1619,17 +1619,27 @@ static NSDictionary *CharonMPSGraphGatherPlan(NSString *name, NSArray<NSNumber *
                                    @"padding is a count of elements that exists or does not", name,
                             (long)(before < 0 ? before : after), (unsigned long)k];
             }
-            // The two mirror modes cannot reach past the axis they mirror: measured, a left padding of three
-            // on an axis of extent two is refused by the release's own compiler ("Optimize Original Module
-            // MLIR pass manager failed") while a padding of one on the same axis answers.
+            // HOW FAR EACH MIRROR REACHES, which is the two modes' own limit and not one number for both.
+            // Measured on this host's own MPSGraph at extents one, two and three, on the left and on the
+            // right, over every padding from one to five: a REFLECT answers up to the axis LESS ONE and a
+            // SYMMETRIC up to the axis ITSELF, and one element more of either is refused by the release's
+            // own compiler with its own words - "'mps.pad' op padding values too large at axis 0, max
+            // padding is 1, got 3" (MPSGraphUtilities.mm:956), where the maximum it prints is 1 for a
+            // reflect on an axis of two and 2 for a symmetric on the same axis. So a symmetric padding
+            // equal to the extent answers - measured, a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) with a left
+            // padding of (2, 0) answers (5, 6, 7, 8 | 1, 2, 3, 4 | 1, 2, 3, 4 | 5, 6, 7, 8) - and refusing
+            // it was this seam refusing an answer the release gives.
             NSInteger mode = [parameters[@"padMode"] integerValue];
-            if ((mode == 1 || mode == 2) && (before >= extent || after >= extent)) {
+            NSInteger reach = mode == 1 ? extent - 1 : extent;
+            if ((mode == 1 || mode == 2) && (before > reach || after > reach)) {
                 [NSException raise:NSInvalidArgumentException
                             format:@"MPSGraph: %@ was asked for %ld elements of %@ padding on axis %lu, which "
-                                   @"is %lu long, and the release's mirror reaches no further than the axis "
-                                   @"itself: measured, three on an axis of two is refused by its compiler",
-                             name, (long)(before >= extent ? before : after),
-                             mode == 1 ? @"reflected" : @"symmetric", (unsigned long)k, (unsigned long)extent];
+                                   @"is %lu long, and the release's mirror reaches %ld there: measured, the "
+                                   @"two have their own limits and one element more of either is refused by "
+                                   @"the release's compiler",
+                              name, (long)(before > reach ? before : after),
+                              mode == 1 ? @"reflected" : @"symmetric", (unsigned long)k, (unsigned long)extent,
+                              (long)reach];
             }
             [shape addObject:@(extent + before + after)];
             [sourceAxes addObject:@(k)];

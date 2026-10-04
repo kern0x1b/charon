@@ -125,8 +125,25 @@ pad-antiperiodic 134 Unsupported paddingMode
 # the zero and the constant answer the same padding, so it is the mirror the release's own compiler refuses
 # ("Optimize Original Module MLIR pass manager failed"), and the port refuses it where the graph is built.
 pad-reflect-past-extent 134 Optimize Original Module MLIR pass manager failed
-# A rank of THREE. The tile of one answers - a 2x3x4 tiled by two on every axis is a 4x6x8 and both sides
-# agree on it - and the pad of one does not, in any mode: the result tensor is built (the shape line prints
-# 4x5x6) and then the release's own kernel says the destination's shape is not the one it wanted.
-pad-rank3-clamp 134 Invalid KernelDAG, equalShape for destination failed
-pad-rank3-symmetric 134 Invalid KernelDAG, equalShape for destination failed
+# THE TWO MIRRORS' OWN LIMITS, which are different and neither is "the axis's own extent". Measured over
+# extents one, two and three, on the left and on the right, over every padding from one to five: a REFLECT
+# answers up to the axis LESS ONE and a SYMMETRIC up to the axis ITSELF, and the release's compiler says so
+# with its own words - "'mps.pad' op padding values too large at axis 0, max padding is N, got M"
+# (MPSGraphUtilities.mm:956), where the maximum it prints is 0 for a reflect on an axis of ONE and 1 for a
+# symmetric on the same axis. So over an axis of one element the reflect reaches nothing at all and the
+# symmetric reaches its own edge, and one element of padding past either is refused.
+pad-thin-reflect 134 max padding is 0, got 1
+pad-thin-symmetric 134 max padding is 1, got 2
+# A DESTINATION NARROWER THAN THE RESULT, which is what the two rank-3 pad entries used to be recorded as.
+# The destination this branch builds is the OPERAND's shape and the buffer is the OPERAND's bytes, while the
+# result is bigger: a 4x5x6 into a 2x3x4's 96 bytes at rank of three, and a 4x6 into a 2x4's 32 bytes at rank
+# of two. Which mode answers and which refuses is the measurement, and it is per mode and per rank - the two
+# mirrors at rank of three are refused by the release's own multiary kernel ("Invalid KernelDAG, equalShape
+# for destination failed") while the constant and the zero write what fits and exit 0, and at rank of two
+# every mode writes what fits. Neither is a refusal of the PAD: asked into a destination of the RESULT's own
+# shape the same pad of a rank of three answers in every mode, which is what graph-cases.m's pad-rank3-clamp
+# and pad-rank3-symmetric compare - so the pad of a rank of three is a case and not a refusal, and these
+# entries are named for the shape of the destination rather than for the rank.
+pad-destination-narrower-rank3-clamp 134 Invalid KernelDAG, equalShape for destination failed
+pad-destination-narrower-rank3-constant 0 0000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000c6420000004000004040000080400000c6420000c0400000e040
+pad-destination-narrower-rank2 0 0000c6420000c6420000c6420000c6420000c6420000c6420000803f00000040
