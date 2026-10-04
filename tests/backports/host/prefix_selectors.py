@@ -111,26 +111,26 @@ def declared(text):
     rewritten file compile - the send passes what the source passes it, and the receiver is untyped - which
     is what send_declaration() below has always said, so where a real type will not parse, `id` will:
 
-      - a struct, union or enum BY VALUE. clang writes `struct CGPoint` for the type of
-        -updateInteractiveMovementTargetPosition:(struct CGPoint)targetPosition, and neither that nor the
-        parenthesised spelling compiles here: measured on listactions, whose CharonLists.m carries that send
-        and whose UILayoutGuide category carries -charon_pinFrame:(struct CGRect)frame,
-        "error: expected a type" at each.
-      - a leading nullability keyword. clang writes `nullable NSData *` for a deprecated NSURLConnection
-        method's result, and `+ (nullable NSData *)...` is not a type.
-      - a type that is one of the PORT's own classes. The declarations header force-includes
-        <UIKit/UIKit.h> and nothing else, and it is read by every file of the group, so a name the port
-        declares in one of them is unknown to the rest: measured on listactions, whose CharonLists.m reads
+      - a POINTER to one of the PORT's own classes. The declarations header force-includes
+        <UIKit/UIKit.h> and nothing else, and it is read by every file of the group, so a name one file
+        declares is unknown to the rest: measured on listactions, whose CharonLists.m reads
         -charon_movement, whose type UICollectionView+InteractiveMovement.m declares and this header does
-        not, and the group stopped on "error: expected a type". Charon is the port's own prefix by
-        construction - no SDK type has it - so a base name that starts with it is one of ours.
+        not. Charon is the port's own prefix by construction, so a base name that starts with it is ours.
+
+    Nothing else is touched, and the rule is deliberately narrow. An earlier version also matched `enum`,
+    any base name and a struct by value, and it turned five groups' parameters into `id` that hold values:
+    viewmisc, orderedcollections, snapshots, controlactions and controlmenus all died on
+    "implicit conversion of 'UISemanticContentAttribute' to 'id' is disallowed with ARC", "sending 'CGRect'
+    to parameter of incompatible type 'id'" and three siblings. A struct by value is NOT one of the
+    shapes that need a fallback: `%s:(%s)name` parenthesises it, `(struct CGRect)frame` is valid
+    Objective-C, and the call site passes a struct. An enum is an integer and parses as written; a scalar
+    such as NSUInteger is not a pointer and is left alone.
     """
-    if re.match(r"(?:struct|union|enum)\s+[A-Za-z_]", text):
-        return "id"
     text = re.sub(r"^(?:_Nullable|_Nonnull|__nullable|__nonnull|nullable|nonnull|null_unspecified)\s+", "", text)
-    base = re.sub(r"[^A-Za-z0-9_].*$", "", text.replace("*", " ").strip())
-    if base.startswith("Charon"):
-        return "id"
+    if "*" in text:
+        base = re.sub(r"[^A-Za-z0-9_].*$", "", text.replace("*", " ").strip())
+        if base.startswith("Charon"):
+            return "id"
     return text
 
 
