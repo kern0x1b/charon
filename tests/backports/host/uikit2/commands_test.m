@@ -246,6 +246,47 @@ int main(void)
         agree(@"command values", command_lines(ourCommand, ourAlternate), command_lines([UICommand class], [UICommandAlternate class]));
         UIImage *image = one_pixel_image();
         agree(@"key command values", key_lines(ourKey, ourCommand, ourAlternate, image), key_lines([UIKeyCommand class], [UICommand class], [UICommandAlternate class], image));
+        // The two factories of 7.0 cannot be compared here, and the reason is worth a check of its own:
+        // UIKeyCommand's initializer is unavailable on the platform this differential builds for, so the host
+        // raises NSInternalInconsistencyException "Initializer is unavailable" and has no answer to compare
+        // with. Measured on this host, both spellings:
+        //   +[UIKeyCommand commandWithTitle:image:action:propertyList:]        -> raised, Initializer is unavailable
+        //   +[UIKeyCommand commandWithTitle:image:action:propertyList:alternates:] -> the same
+        // The port answers both, from its UICommand: nm over this group's objects shows
+        // +[CharonHostUICommand commandWithTitle:image:action:propertyList:] and the alternates: form, and the
+        // key command's superclass is that command. So this asserts the port's answers and records the host's
+        // refusal, rather than pretending the two sides could be compared.
+        UIImage *keyImage = one_pixel_image();
+        UICommandAlternate *ourAlt = [ourAlternate alternateWithTitle:@"alt" action:@selector(foo:) modifierFlags:UIKeyModifierShift];
+        UICommandAlternate *theirAlt = [[UICommandAlternate class] alternateWithTitle:@"alt" action:@selector(foo:) modifierFlags:UIKeyModifierShift];
+        {
+            UIKeyCommand *ours = [ourKey commandWithTitle:@"t7" image:keyImage action:@selector(foo:) propertyList:@"pl"];
+            // Through the runtime, and inside raised(), because the SDK marks the factory unavailable on this
+            // platform - which is what the host raises NSInternalInconsistencyException for - so a direct send
+            // does not compile here and the send has to be where the exception can be caught.
+            NSString *refusal = raised(^id {
+                return ((id (*)(Class, SEL, id, id, SEL, id))objc_msgSend)([UIKeyCommand class],
+                           NSSelectorFromString(@"commandWithTitle:image:action:propertyList:"), @"t7", keyImage, @selector(foo:), @"pl");
+            });
+            NSString *answer = [NSString stringWithFormat:@"%@ title %@ action %@ propertyList %@ image %@ input %@ flags %lu",
+                                NSStringFromClass([ours class]), [ours title], NSStringFromSelector([ours action]), [ours propertyList] ?: @"nil",
+                                [ours image] == keyImage ? @"kept" : @"lost", [ours input] ?: @"nil", (unsigned long)[ours modifierFlags]];
+            charon_check(ours != nil && [answer hasPrefix:@"CharonHostUIKeyCommand"] && [refusal hasPrefix:@"raised"],
+                         "the factory of 7.0 answers on the port, and the host has no answer to compare with",
+                         [NSString stringWithFormat:@"port %@ | host %@", answer, refusal]);
+        }
+        {
+            UIKeyCommand *ours = [ourKey commandWithTitle:@"t8" image:nil action:@selector(foo:) propertyList:nil alternates:@[ourAlt]];
+            NSString *refusal = raised(^id {
+                return ((id (*)(Class, SEL, id, id, SEL, id, id))objc_msgSend)([UIKeyCommand class],
+                           NSSelectorFromString(@"commandWithTitle:image:action:propertyList:alternates:"), @"t8", nil, @selector(foo:), nil, @[theirAlt]);
+            });
+            NSString *answer = [NSString stringWithFormat:@"%@ title %@ alternates %lu action %@",
+                                NSStringFromClass([ours class]), [ours title], (unsigned long)[ours alternates].count, NSStringFromSelector([ours action])];
+            charon_check(ours != nil && [answer hasPrefix:@"CharonHostUIKeyCommand"] && [ours alternates].count == 1 && [refusal hasPrefix:@"raised"],
+                         "the factory of 7.0 with alternates answers on the port, and the host has none",
+                         [NSString stringWithFormat:@"port %@ | host %@", answer, refusal]);
+        }
         charon_check([[NSString stringWithUTF8String:class_getName(class_getSuperclass(ourKey))] isEqualToString:@"CharonHostUICommand"], "a key command is a command", @"it is not");
         charon_check(![ourCommand instancesRespondToSelector:@selector(subtitle)] && ![ourCommand instancesRespondToSelector:@selector(selectedImage)] && ![ourCommand instancesRespondToSelector:@selector(repeatBehavior)] &&
                          ![ourCommand instancesRespondToSelector:@selector(sender)] && ![ourCommand instancesRespondToSelector:@selector(performWithSender:target:)],

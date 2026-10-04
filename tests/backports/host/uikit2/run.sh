@@ -28,10 +28,16 @@ only=${UIKIT2_ONLY:-}
 prefixer="$here/../prefix_selectors.py"
 
 defines_what_it_calls() {
-    # $1: the test's binary, rest: the port's objects. A prefixed selector the test names and no object
-    # defines is a link-time no-op and an unrecognized selector when the test reaches it, which nothing in
-    # the gate sees; check-private-selectors.py is the check, and it runs over what this group just built.
-    if ! python3 "$here/../check-private-selectors.py" "$@"; then
+    # $1: the test's binary, $2: the test's source, rest: the port's objects. A prefixed selector the test names
+    # and no object defines is a link-time no-op and an unrecognized selector when the test reaches it, which
+    # nothing in the gate sees; check-private-selectors.py is the check, and it runs over what this group just
+    # built. The source goes with it so the check can tell a whole selector from a piece of one: a test that
+    # spells the name it sends at run time holds that name's pieces as literals, and
+    # [@"charonHostSet" stringByAppendingString:...] is not a selector anything has to define.
+    binary=$1
+    source=$2
+    shift 2
+    if ! python3 "$here/../check-private-selectors.py" --source "$source" "$binary" "$@"; then
         status=1
     fi
 }
@@ -81,10 +87,15 @@ prefixed_build() {
             *) objective_c= ;;
         esac
         if [ -n "$objective_c" ] && [ -s "$build/$name.carried" ]; then
+            # The group's own -D renames go to the rewriter as well as to the compile below, because they are
+            # what its AST filter needs to see the port's classes: they are named in the source exactly as the
+            # SDK names them, so `-ast-dump-filter=haron` drops their bodies whole, and a send of a carried
+            # selector from inside one was left unrenamed. prefix_selectors.py's group_renames() reads them back
+            # and maps every name it meets to the spelling the source uses, so nothing else changes.
             if ! python3 "$prefixer" "$sources/$file" "$source" charonHost \
                 --declarations="$build/$name.declarations.h" \
                 --sources="$(for f in $files; do printf '%s,' "$sources/$f"; done | sed 's/,$//')" \
-                $flags -I"$sources" \
+                $(cat "$build/$name.flags") $flags -I"$sources" \
                 -I"$(dirname "$sources/$file")" \
                 -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" \
                 -- $objects; then
@@ -138,7 +149,7 @@ prefixed_group() {
     prefixed_build "$name" "$2" || return 0
     test=$3
     xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/$test" "$harness/check.m" $built $frameworks -o "$build/$name-test"
-    defines_what_it_calls "$build/$name-test" $built
+    defines_what_it_calls "$build/$name-test" "$here/$test" $built
     if "$build/$name-test" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
     grep -v '^ok ' "$build/$name.log" || true
     echo "$name: exit=$result log=$build/$name.log"
@@ -164,7 +175,7 @@ prefixed_windowed() {
     xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/windowed.m" "$here/$test" "$harness/check.m" $built $frameworks -o "$bundle/Contents/MacOS/app"
     cp "$here/windowed.plist" "$bundle/Contents/Info.plist"
     codesign -s - --force "$bundle" > /dev/null 2>&1
-    defines_what_it_calls "$bundle/Contents/MacOS/app" $built
+    defines_what_it_calls "$bundle/Contents/MacOS/app" "$here/$test" $built
     if "$bundle/Contents/MacOS/app" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
     grep -v '^ok ' "$build/$name.log" | grep -a 'FAIL\|checks=\|info' || true
     echo "$name: exit=$result log=$build/$name.log"
@@ -479,9 +490,9 @@ prefixed_windowed_expected controlactions "UIMenuElement.m UIAction.m UIAction+i
 
 prefixed_windowed_expected controlmenus "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m UICommand.m UIControl+Actions14.m UIControl+Menus14.m UIButton+Actions14.m UIButton+iOS13.m UIBarButtonItem+Actions14.m UISegmentedControl+Actions14.m" controlmenus_test.m controlmenus_system.m
 
-windowed_expected views13 "UIView+iOS13.m UIViewController+iOS13.m UIDatePicker+Style134.m UIPanGestureRecognizer+ScrollTypes134.m UISwitch+Style14.m UIPageControl+Indicators14.m UILabel+LineBreakStrategy14.m UIView+FocusGroup14.m UIScrollView+IndicatorInsets13.m UISegmentedControl+SelectedTint13.m UISplitViewController+Background13.m UITextView+TextScaling13.m UISearchBar+ScopeBar13.m UIScreen+Latency13.m UIAccessibility13.m UIAccessibility14.m UIAccessibilityCustomAction+Handler13.m UIAccessibilityCustomAction+Image14.m NSLayoutManager+Text13.m UIResponder+ItemsConfiguration.m UIVibrancyEffect+Style13.m UIFontSystemDesign.m UIViewController+Appearing13.m UIViewController+Unwind13.m NSAttributedString+Constants13.m NSAttributedString+Tracking14.m UIPasteboard+Detection14.m UINavigationItem+BackDisplayMode14.m UITextInput+AttributedReplace13.m UICommand.m UIMenuElement.m" views13_test.m views13_system.m
+prefixed_windowed_expected views13 "UIView+iOS13.m UIViewController+iOS13.m UIDatePicker+Style134.m UIPanGestureRecognizer+ScrollTypes134.m UISwitch+Style14.m UIPageControl+Indicators14.m UILabel+LineBreakStrategy14.m UIView+FocusGroup14.m UIScrollView+IndicatorInsets13.m UISegmentedControl+SelectedTint13.m UISplitViewController+Background13.m UITextView+TextScaling13.m UISearchBar+ScopeBar13.m UIScreen+Latency13.m UIAccessibility13.m UIAccessibility14.m UIAccessibilityCustomAction+Handler13.m UIAccessibilityCustomAction+Image14.m NSLayoutManager+Text13.m UIResponder+ItemsConfiguration.m UIVibrancyEffect+Style13.m UIFontSystemDesign.m UIViewController+Appearing13.m UIViewController+Unwind13.m NSAttributedString+Constants13.m NSAttributedString+Tracking14.m UIPasteboard+Detection14.m UINavigationItem+BackDisplayMode14.m UITextInput+AttributedReplace13.m UICommand.m UIMenuElement.m" views13_test.m views13_system.m
 
-windowed_expected images13 "UIImage+iOS13.m UIImage+Baseline13.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImageSymbolGlyphs.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" images13_test.m images13_system.m
+prefixed_windowed_expected images13 "UIImage+iOS13.m UIImage+Baseline13.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImageSymbolGlyphs.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" images13_test.m images13_system.m
 
 prefixed_windowed_expected colors13 "UIColorDynamic.m" colors13_test.m colors13_system.m
 
@@ -500,7 +511,7 @@ prefixed_windowed compositionallayout "NSCollectionLayoutValues.m NSCollectionLa
 
 prefixed_windowed orthogonal "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m CharonOrthogonalScroll.m CharonSelfSizing.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m CharonLists.m UICollectionViewCompositionalLayout+ListConfiguration.m" orthogonal_test.m
 
-windowed sizedlayout "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m CharonOrthogonalScroll.m CharonSelfSizing.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m CharonLists.m UICollectionViewCompositionalLayout+ListConfiguration.m" sizedlayout_test.m
+prefixed_windowed sizedlayout "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m CharonOrthogonalScroll.m CharonSelfSizing.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m CharonLists.m UICollectionViewCompositionalLayout+ListConfiguration.m" sizedlayout_test.m
 
 prefixed_group listvalues "CharonLists.m UICellAccessory.m UIViewConfigurationState.m UIListContentProperties.m UIListContentConfiguration.m UIBackgroundConfiguration.m UIListContentView.m" listvalues_test.m
 

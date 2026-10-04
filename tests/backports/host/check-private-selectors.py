@@ -14,7 +14,9 @@ So this asks the two binaries themselves. The test holds every selector it names
 objects hold every selector they define in their method symbols. A string with one of the renaming prefixes
 that no port object defines is the failure above, and it is reported with the selector and the objects it
 was looked for in. Prefixes default to the four this tree renames with; a differential that renames with
-another one passes it.
+another one passes it. `--source` names a source of the test, and a prefixed literal that source concatenates
+(`[@"charonHostSet" stringByAppendingString:...]`) is a piece of a name rather than a name of its own, so it
+is not judged: see fragments() for the measurement that made that distinction necessary.
 """
 import argparse
 import os
@@ -75,9 +77,35 @@ def whole(name, prefixes):
     return False
 
 
+def fragments(sources):
+    """The prefixed strings the sources build a longer name out of, which are not selectors of their own.
+
+    A differential that renames with a prefix often spells the name it sends at run time, and the pieces of it
+    are literals in the source: `[@"charonHostSet" stringByAppendingString:...]` builds
+    charonHostSetAllowsExpensiveNetworkAccess: and never sends the bare charonHostSet. The strings pass cannot
+    tell a whole selector from a piece of one - both are a token that starts with a prefix - so it reported
+    "names the selector charonHostSet, which none of ... defines", which is a name nothing sends and which the
+    check's own failure describes ("it would be an unrecognized selector at run time") as absent when it is
+    never sent. Only a literal the source concatenates is dropped: every other prefixed string is judged as
+    before, so a test that names a selector no port object defines is still reported."""
+    found = set()
+    if not sources:
+        return found
+    for path in sources:
+        try:
+            with open(path, encoding="utf-8", errors="replace") as handle:
+                text = handle.read()
+        except OSError:
+            continue
+        for name in re.findall(r'@"([A-Za-z_][A-Za-z0-9_]*)"\s*(?:\n\s*)?stringByAppending', text):
+            found.add(name)
+    return found
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--prefix", action="append", default=[], help="a prefix the differential renames with; repeatable")
+    parser.add_argument("--source", action="append", default=[], help="a source of the test, to tell a whole selector from a piece of one; repeatable")
     parser.add_argument("objects", nargs="+", help="the test's object or binary first, then the port's objects")
     options = parser.parse_args()
     if len(options.objects) < 2:
@@ -86,8 +114,9 @@ def main():
     # the test is asked what it names, every object is asked what it defines: a selector the test's own code
     # defines is answered as legitimately as one the port's is
     defined, named, sent_by = selectors(options.objects)
+    pieces = fragments(options.source)
     renamed = {name for name in sent_by | {n for n in named if whole(n, prefixes)} if whole(name, prefixes)}
-    wanted = renamed - defined
+    wanted = renamed - defined - pieces
     if not wanted:
         print("note %d renamed selectors are named, all of them defined by %s" % (len(renamed), ", ".join(options.objects)))
         return 0
