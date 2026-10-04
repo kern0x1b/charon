@@ -2673,6 +2673,78 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
     free(resultStride);
 }
 
+// THE NON-ZERO INDICES of 17.0: the answer is a LIST rather than a tensor of the operand's shape, so it is a
+// walk of its own and its length is only known here. Two passes over the operand, because the count decides
+// how much of the result there is: the first counts the elements that are not a zero, which is the count the
+// result's own shape carries, and the second writes their coordinates.
+//
+// WHAT COUNTS AS NON-ZERO is the operand read through the SAME load every other walk of this interpreter
+// reads it with, and it is measured rather than argued, one candidate at a time at element 30 of a [3, 4, 6]
+// so that an answer of one row - which the release writes into every row of the destination - cannot be
+// mistaken for the zeros an answer of no rows is given:
+//
+//   element                     float32          float16
+//   0x7fc00000, a NaN           non-zero         non-zero
+//   0x7f800000, an infinity     non-zero         -
+//   0x00000001, a denormal      ZERO             non-zero
+//   0x80000000, a NEGATIVE zero ZERO             ZERO
+//   0x00000000, a positive zero ZERO             ZERO
+//
+// So a float32 denormal is a zero because this library reads a denormal as a zero of the same sign (see
+// CharonMPSGraphAsZero and facts/MetalPerformanceShadersGraph/Core.md), a half denormal is not because the
+// half path keeps one, and a NEGATIVE zero is a zero in both because -0.0 == 0.0 is true and that is the
+// test. Every other class is what `!= 0` says it is, and the answer is a double either way.
+static NSUInteger CharonMPSGraphNonZeroCount(NSString *name, MPSGraphTensorData *source)
+{
+    void *in = [source charon_mps_bytes];
+    if (in == NULL) {
+        CharonMPSGraphRefuse(@"MPSGraph: the non-zero operation named %@ has nowhere to read its operand "
+                             @"from, so its indices were not written", name);
+        return 0;
+    }
+    NSUInteger total = CharonMPSGraphElementCount(source.shape);
+    MPSDataType type = source.dataType;
+    NSUInteger count = 0;
+    for (NSUInteger element = 0; element < total; element++)
+        if (CharonMPSGraphAsZero(CharonMPSLoad(in, type, element), type) != 0.0)
+            count++;
+    return count;
+}
+
+static void CharonMPSGraphNonZero(NSString *name, MPSGraphTensorData *source, MPSGraphTensorData *result,
+                                 NSUInteger count)
+{
+    NSArray<NSNumber *> *shape = source.shape;
+    NSUInteger rank = shape.count;
+    NSUInteger total = CharonMPSGraphElementCount(shape);
+    void *in = [source charon_mps_bytes];
+    void *out = [result charon_mps_bytes];
+    if (in == NULL || (out == NULL && count != 0)) {
+        CharonMPSGraphRefuse(@"MPSGraph: the non-zero operation named %@ has nowhere to read its operand from "
+                             @"or to write its indices to, so its indices were not written", name);
+        return;
+    }
+    MPSDataType type = source.dataType;
+    NSUInteger written = 0;
+    for (NSUInteger element = 0; element < total; element++) {
+        if (CharonMPSGraphAsZero(CharonMPSLoad(in, type, element), type) == 0.0)
+            continue;
+        // The row-major order every walk of this library uses: the FIRST axis is the slowest moving, so the
+        // coordinate on an axis is what is left after the axes below it have been divided out. The
+        // coordinates go out through the same store every other kernel of this library writes through, so
+        // the harness's planted build reaches them and the differential is shown a wrong walk.
+        unsigned long long at = element;
+        for (NSUInteger axis = rank; axis-- > 0;) {
+            NSUInteger extent = (NSUInteger)shape[axis].unsignedIntegerValue;
+            CharonMPSStore(out, MPSDataTypeInt32, written * rank + axis,
+                           (double)(extent ? at % extent : 0));
+            if (extent)
+                at /= extent;
+        }
+        written++;
+    }
+}
+
 @implementation MPSGraph (CharonMPSGraphInterpreter)
 
 // The shape of a gather's result, asked when the graph is BUILT so that the output tensor carries it before
@@ -3133,6 +3205,32 @@ static void CharonMPSGraphScatter(MPSGraphTensorData *source, MPSGraphTensorData
             }
         }
         values[output] = gathered;
+        return;
+    }
+    if (kind == CharonMPSGraphOperationKindNonZero) {
+        // THE LIST OF COORDINATES, the one walk of this library whose result is neither the operand's shape nor
+        // a shape the caller wrote down: its own LENGTH is the count of the elements of the operand that are
+        // not a zero, which is data, so the result tensor carries -1 for it until now (measured: -1x3 over a
+        // [3, 4, 6], and the same before the run and after it). The count is asked first because it is what
+        // the result's own shape and its storage are, and the shape goes on the output tensor here - the one
+        // moment a caller can read it.
+        MPSGraphTensorData *source = values[inputs.firstObject];
+        if (![source isKindOfClass:[MPSGraphTensorData class]]) {
+            CharonMPSGraphRefuse(@"MPSGraph: the non-zero operation named %@ has no value for its operand, so "
+                                 @"its indices were not written", [operation name]);
+            return;
+        }
+        NSUInteger rank = source.shape.count;
+        NSUInteger count = CharonMPSGraphNonZeroCount([operation name], source);
+        NSArray<NSNumber *> *answer = @[@(count), @(rank)];
+        [output charon_mps_setShape:answer];
+        MPSGraphTensorData *indices = [[MPSGraphTensorData alloc] initWithDevice:source.device
+                                                                    elementCount:count * rank
+                                                                           shape:answer
+                                                                        dataType:MPSDataTypeInt32];
+        [indices charon_mps_bytes];
+        CharonMPSGraphNonZero([operation name], source, indices, count);
+        values[output] = indices;
         return;
     }
     if (operation.charon_mps_parameters[@"scanCombination"]) {

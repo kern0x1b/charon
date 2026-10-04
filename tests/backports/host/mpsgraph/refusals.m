@@ -329,6 +329,7 @@ int main(int argc, const char *argv[])
             "block-d2s-fed-axis-placeholder", "block-s2d-fed-axis-outside-at-run",
             "block-s2d-fed-axis-int64-at-run", "block-s2d-fed-axis-degenerate-at-run",
             "block-s2d-fed-axis-block3-at-run",
+            "nonzero-result-shape", "nonzero-destination-no-rows", "nonzero-destination-five-rows",
         };
         unsigned i;
         for (i = 0; i < sizeof(kQuestions) / sizeof(kQuestions[0]); i++)
@@ -1249,6 +1250,54 @@ int main(int argc, const char *argv[])
         // question of theirs a case cannot ask because the release takes the process down. A split whose
         // result is SEVERAL tensors is asked here with every result of its own buffer, and a coordinate has
         // no operand at all - which is why the two are one branch with a target count each.
+        if (strncmp(q, "nonzero-", 8) == 0) {
+            // THE ONE OPERATION OF THIS LIBRARY WHOSE RESULT IS A LIST, so the two things a case cannot ask
+            // about it are the shape its result tensor carries and the one destination the release cannot be
+            // given. Measured: the result is `-1` by the operand's rank whatever the operand is, and a
+            // destination of NO ROWS takes the process down inside the release's own NDArray with "Error:
+            // device may not be nil" (MPSNDArray.mm:759) - a zero-length buffer has no device, which is the
+            // whole of that refusal. Every other destination is answered, and those answers are the
+            // differential's (tests/backports/host/mpsgraph/graph-cases.m, the gather_nonzero family, which
+            // asks each of its cases in a process of its own for the reason quoted there).
+            NSString *question = [NSString stringWithUTF8String:q];
+            MPSGraph *graph = [MPSGraph new];
+            MPSGraphTensor *operand = [graph placeholderWithShape:@[@3, @4, @6] dataType:MPSDataTypeFloat32
+                                                            name:@"a"];
+            MPSGraphTensor *t = [graph nonZeroIndicesOfTensor:operand name:@"nz"];
+            printf("%s result-shape %s datatype 0x%x\n", question.UTF8String,
+                   t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil", (unsigned)t.dataType);
+            fflush(stdout);
+            NSArray<NSNumber *> *destination = strstr(q, "no-rows") ? @[@0, @3] : @[@5, @3];
+            size_t rows = (size_t)destination.firstObject.unsignedIntegerValue;
+            // A zero-length MTLBuffer is no buffer at all, so the case's own allocation keeps four bytes and
+            // the DESTINATION's shape is what says the answer has no rows.
+            size_t bytes = (rows ? rows * 3 * sizeof(int32_t) : 4);
+            id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+            memset([buffer contents], gPattern, bytes);
+            MPSGraphExecutable *executable = [graph compileWithDevice:gGraphDevice
+                                                       feeds:@{operand: [[MPSGraphShapedType alloc]
+                                                                          initWithShape:@[@3, @4, @6]
+                                                                                   dataType:MPSDataTypeFloat32]}
+                                                       targetTensors:@[t] targetOperations:@[]
+                                              compilationDescriptor:nil];
+            printf("%s executable %s\n", question.UTF8String, executable == nil ? "nil" : "built");
+            fflush(stdout);
+            [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                                  inputsArray:@[[[MPSGraphTensorData alloc]
+                                                    initWithMTLBuffer:
+                                                        [gDevice newBufferWithBytes:wideFeed
+                                                                            length:sizeof wideFeed
+                                                                           options:MTLResourceStorageModeShared]
+                                                             shape:@[@3, @4, @6] dataType:MPSDataTypeFloat32]]
+                                   resultsArray:@[[[MPSGraphTensorData alloc] initWithMTLBuffer:buffer
+                                                                                       shape:destination
+                                                                                    dataType:MPSDataTypeInt32]]
+                           executionDescriptor:nil];
+            char label[128];
+            snprintf(label, sizeof label, "%s-result", q);
+            put(label, buffer, bytes);
+            return 0;
+        }
         if (strncmp(q, "split-", 6) == 0 || strncmp(q, "coord-", 6) == 0) {
             NSArray<NSNumber *> *twoByFour = @[@2, @4];
             NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];

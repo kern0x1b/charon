@@ -4,6 +4,13 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 #import <MetalPerformanceShadersGraph/MetalPerformanceShadersGraph.h>
+#include <spawn.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+extern char **environ;
+#include <stdlib.h>
+#include <string.h>
 // The two encode forms below encode into MPSGraph's OWN command buffer, whose class is declared inside the
 // MetalPerformanceShaders umbrella and nowhere in MetalPerformanceShadersGraph. It is reachable from the
 // graph umbrella too - MetalPerformanceShadersGraph.h imports MPSGraph.h, which imports MPSGraphCore.h,
@@ -3248,6 +3255,405 @@ static void family_gather_spacebatch(void)
     chain_case();
 }
 
+// THE NON-ZERO INDICES of 17.0, the one operation of this library whose result is a LIST: one row of the
+// operand's own rank for each element of it that is not a zero, in row-major order, and the LENGTH of that
+// list is the count of those elements, which nothing in the graph knows. So the destination is the CASE's and
+// not the result tensor's, which is the arrangement multi_targets_shaped_case already exists for: the
+// result's own shape and data type are printed on a line of their own (they are `-1` and the operand's rank,
+// and MPSDataTypeInt32, measured on this host) and the run is given a destination the case names.
+//
+// The destination is filled with the byte 0xbd before every run, because this family WRITES the whole of it:
+// every row the answer does not reach is a written zero, and an answer of exactly one row is written into
+// every row - which is why several of the cases below put their one non-zero element away from the first
+// coordinate: (0,0,0) is the same bytes as the zero an unreached row is given.
+//
+// AND WHY EACH CASE IS A PROCESS OF ITS OWN. Measured on this host's own MPSGraph, over the twenty-four
+// cases of this family run in one process - which is what every other family here does - the answers of SEVEN
+// of them carry rows that are not this operation's answer at all: `two-ends` answers its two own rows and
+// then a (3, 0, 0) at row sixty-five, `rank1` of a [6] answers 0 and 5 and then 3, 2 and 5 in its last three
+// rows, and `rank2` of a [4, 6] answers its two own rows and then fifteen more that are coordinates of no
+// element of its operand. Three runs of the whole family print byte-identical answers, so it is not a race -
+// and the same case asked as the ONLY non-zero graph in a process of its own answers exactly what it should
+// (measured for every case below, and the harness re-runs it that way on every run). So the family asks each
+// case through a fresh process, which is the arrangement run.sh already uses for the whole differential and
+// the one this measurement makes necessary here.
+static char *gProgram;
+
+// The one case of this family, asked by name so that a process of its own can be told which one to run.
+static void nonzero_case(const char *name, MPSDataType type, NSArray<NSNumber *> *shape, const void *values,
+                         NSArray<NSNumber *> *destinationShape)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:shape dataType:type name:@"a"];
+    MPSGraphTensor *t = [one nonZeroIndicesOfTensor:a name:@"nz"];
+    printf("#case %s-shape %s/0x%x\n", name,
+           t.shape ? [[t.shape componentsJoinedByString:@"x"] UTF8String] : "nil", (unsigned)t.dataType);
+    NSUInteger rows = 1;
+    for (NSNumber *dimension in destinationShape) rows *= (NSUInteger)dimension.integerValue;
+    size_t result = rows * MPSSizeofMPSDataType(MPSDataTypeInt32);
+    id<MTLBuffer> buffer = [gDevice newBufferWithLength:result options:MTLResourceStorageModeShared];
+    memset([buffer contents], 0xbd, result);
+    remember(buffer, resultBytes, result);
+    MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice
+                                              feeds:@{a: [[MPSGraphShapedType alloc] initWithShape:shape
+                                                                                  dataType:type]}
+                                       targetTensors:@[t] targetOperations:@[] compilationDescriptor:nil];
+    [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                          inputsArray:@[feed(values, shape, type)]
+                           resultsArray:@[[[MPSGraphTensorData alloc] initWithMTLBuffer:buffer
+                                                                                   shape:destinationShape
+                                                                                dataType:MPSDataTypeInt32]]
+                   executionDescriptor:nil];
+    put(name, resultBytes, result);
+}
+
+// The [3, 4, 6] of 1 to 72 that most of the cases are asked over, and a zeroed copy of it: the count of the
+// answer is then exactly the number of elements a case makes non-zero, and no case can be answered by an
+// operand left as it was.
+static float nonzeroCube[72] = {
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+    25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48,
+    49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72,
+};
+// The classes, one candidate at a time and each placed away from the first coordinate, because a coordinate
+// of (0,0,0) cannot be told from a zero row. Measured on this host: a NaN and an infinity are non-zero
+// elements; a NEGATIVE zero is not, and neither is a float32 DENORMAL - this library reads a float32
+// denormal as a zero of the same sign, and a HALF denormal is kept and is a non-zero element.
+static float nonzeroCubeClasses[72] = { 0 };
+static uint16_t nonzeroHalfNan[72] = { 0 };
+static uint16_t nonzeroHalfDenormal[72] = { 0 };
+static int32_t nonzeroIntCube[72] = { 0 };
+
+static void nonzero_empty(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = 0.0f;
+    nonzero_case("nonzero-empty int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@72, @3]);
+}
+
+static void nonzero_one_first(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = 0.0f;
+    nonzeroCube[0] = 1.0f;
+    nonzero_case("nonzero-one-first int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@72, @3]);
+}
+
+static void nonzero_one_middle(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = 0.0f;
+    nonzeroCube[36] = 1.0f;
+    nonzero_case("nonzero-one-middle int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@72, @3]);
+}
+
+static void nonzero_one_last(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = 0.0f;
+    nonzeroCube[71] = 1.0f;
+    nonzero_case("nonzero-one-last int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@72, @3]);
+}
+
+// The same single row into twelve rows and into two, which says the broadcast is over the destination's own
+// rows rather than a fixed number of them.
+static void nonzero_one_last_twelve(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = 0.0f;
+    nonzeroCube[71] = 1.0f;
+    nonzero_case("nonzero-one-last-12rows int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@12, @3]);
+}
+
+static void nonzero_one_last_two(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = 0.0f;
+    nonzeroCube[71] = 1.0f;
+    nonzero_case("nonzero-one-last-2rows int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@2, @3]);
+}
+
+// TWO non-zero elements at the two ends: a count of two is NOT broadcast, which is what makes the one-row
+// case above a rule of its own and not the general one.
+static void nonzero_two_ends(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = 0.0f;
+    nonzeroCube[0] = 1.0f;
+    nonzeroCube[71] = 1.0f;
+    nonzero_case("nonzero-two-ends int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@72, @3]);
+}
+
+// THREE of them named out of order and FIVE more: the answer is the operand's own row-major order and not the
+// order the case happens to write them down in.
+static void nonzero_three(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = 0.0f;
+    nonzeroCube[26] = 1.0f;
+    nonzeroCube[0] = 1.0f;
+    nonzeroCube[13] = 1.0f;
+    nonzero_case("nonzero-three int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@72, @3]);
+}
+
+static void five_non_zero(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = 0.0f;
+    nonzeroCube[41] = 1.0f;
+    nonzeroCube[1] = 1.0f;
+    nonzeroCube[23] = 1.0f;
+    nonzeroCube[5] = 1.0f;
+    nonzeroCube[2] = 1.0f;
+}
+
+static void nonzero_five(void)
+{
+    five_non_zero();
+    nonzero_case("nonzero-five int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@72, @3]);
+}
+
+static void nonzero_all(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = (float)(i + 1);
+    nonzero_case("nonzero-all int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@72, @3]);
+}
+
+// THE DESTINATION'S OWN ROWS, three ways over the same five non-zero elements: fewer rows than the answer
+// has, which cuts the answer short; exactly as many; and many more, which is where the written zeros are.
+static void nonzero_five_two_rows(void)
+{
+    five_non_zero();
+    nonzero_case("nonzero-five-2rows int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@2, @3]);
+}
+
+static void nonzero_five_five_rows(void)
+{
+    five_non_zero();
+    nonzero_case("nonzero-five-5rows int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@5, @3]);
+}
+
+static void nonzero_five_ten_rows(void)
+{
+    five_non_zero();
+    nonzero_case("nonzero-five-10rows int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@10, @3]);
+}
+
+// A destination whose LAST EXTENT is not the operand's rank, and one of rank one: the rows are written
+// `rank` cells apart in the destination's own last extent, so the cells beside them keep 0xbd.
+static void nonzero_three_rank4(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = 0.0f;
+    nonzeroCube[26] = 1.0f;
+    nonzeroCube[0] = 1.0f;
+    nonzeroCube[13] = 1.0f;
+    nonzero_case("nonzero-three-rank4 int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@3, @4]);
+}
+
+static void nonzero_three_rank1(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCube[i] = 0.0f;
+    nonzeroCube[26] = 1.0f;
+    nonzeroCube[0] = 1.0f;
+    nonzeroCube[13] = 1.0f;
+    nonzero_case("nonzero-three-rank1 int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCube,
+                 @[@9]);
+}
+
+// THE CLASSES over one destination of ten rows, so that a count of two is visible as two rows and a count of
+// one as one row written into all ten. The first case names all four candidates and the second names only the
+// two that are non-zero elements, which is what says WHICH of the four they are.
+static void nonzero_classes(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCubeClasses[i] = 0.0f;
+    nonzeroCubeClasses[30] = NAN;
+    nonzeroCubeClasses[31] = -0.0f;
+    nonzeroCubeClasses[32] = INFINITY;
+    nonzeroCubeClasses[33] = 0x1p-149f;
+    nonzero_case("nonzero-classes int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6], nonzeroCubeClasses,
+                 @[@10, @3]);
+}
+
+static void nonzero_classes_two(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCubeClasses[i] = 0.0f;
+    nonzeroCubeClasses[31] = NAN;
+    nonzeroCubeClasses[32] = INFINITY;
+    nonzero_case("nonzero-classes-nan-inf int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6],
+                 nonzeroCubeClasses, @[@10, @3]);
+}
+
+// A float32 DENORMAL and nothing else, and then a float32 NEGATIVE zero and nothing else: each is the only
+// candidate of its operand and neither is counted, which the ten rows of the destination say by being all
+// zeros - an answer of one row would have put a coordinate in every one of them.
+static void nonzero_float_denormal(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCubeClasses[i] = 0.0f;
+    nonzeroCubeClasses[31] = 0x1p-149f;
+    nonzero_case("nonzero-denormal-float32 int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6],
+                 nonzeroCubeClasses, @[@10, @3]);
+}
+
+static void nonzero_float_negative_zero(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroCubeClasses[i] = 0.0f;
+    nonzeroCubeClasses[32] = -0.0f;
+    nonzero_case("nonzero-negative-zero-float32 int32-from-float32", MPSDataTypeFloat32, @[@3, @4, @6],
+                 nonzeroCubeClasses, @[@10, @3]);
+}
+
+// The half classes, each the only candidate of its own operand: a NaN and a DENORMAL are both non-zero
+// elements, which is the opposite of the float32 denormal above and the whole of what the two types differ
+// in here.
+static void nonzero_half_nan(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroHalfNan[i] = 0;
+    nonzeroHalfNan[30] = 0x7e00;
+    nonzero_case("nonzero-half-nan int32-from-float16", MPSDataTypeFloat16, @[@3, @4, @6], nonzeroHalfNan,
+                 @[@10, @3]);
+}
+
+static void nonzero_half_denormal(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroHalfDenormal[i] = 0;
+    nonzeroHalfDenormal[31] = 0x0001;
+    nonzero_case("nonzero-half-denormal int32-from-float16", MPSDataTypeFloat16, @[@3, @4, @6],
+                 nonzeroHalfDenormal, @[@10, @3]);
+}
+
+// An int32 operand: the test is against a zero and not against the operand's own type, and the answer is
+// int32 either way - which is on the shape line of this case.
+static void nonzero_int32(void)
+{
+    for (NSUInteger i = 0; i < 72; i++)
+        nonzeroIntCube[i] = 0;
+    nonzeroIntCube[13] = 1;
+    nonzeroIntCube[0] = 1;
+    nonzeroIntCube[26] = 1;
+    nonzero_case("nonzero-three int32-from-int32", MPSDataTypeInt32, @[@3, @4, @6], nonzeroIntCube,
+                 @[@10, @3]);
+}
+
+// A RANK OF ONE and a rank of two: the result's own width is the operand's rank, so the answer of a [6] is a
+// list of single numbers and of a [4, 6] a list of pairs.
+static float nonzeroSix[6] = { 0 };
+static float nonzeroTwentyFour[24] = { 0 };
+
+static void nonzero_rank1(void)
+{
+    for (NSUInteger i = 0; i < 6; i++)
+        nonzeroSix[i] = 0.0f;
+    nonzeroSix[0] = 1.0f;
+    nonzeroSix[5] = 1.0f;
+    nonzero_case("nonzero-rank1 int32-from-float32", MPSDataTypeFloat32, @[@6], nonzeroSix, @[@6, @1]);
+}
+
+static void nonzero_rank2(void)
+{
+    for (NSUInteger i = 0; i < 24; i++)
+        nonzeroTwentyFour[i] = 0.0f;
+    nonzeroTwentyFour[0] = 1.0f;
+    nonzeroTwentyFour[23] = 1.0f;
+    nonzero_case("nonzero-rank2 int32-from-float32", MPSDataTypeFloat32, @[@4, @6], nonzeroTwentyFour,
+                 @[@24, @2]);
+}
+
+typedef struct { const char *name; void (*ask)(void); } NonzeroCase;
+
+static const NonzeroCase kNonzeroCases[] = {
+    { "empty", nonzero_empty },
+    { "one-first", nonzero_one_first },
+    { "one-middle", nonzero_one_middle },
+    { "one-last", nonzero_one_last },
+    { "one-last-12rows", nonzero_one_last_twelve },
+    { "one-last-2rows", nonzero_one_last_two },
+    { "two-ends", nonzero_two_ends },
+    { "three", nonzero_three },
+    { "five", nonzero_five },
+    { "all", nonzero_all },
+    { "five-2rows", nonzero_five_two_rows },
+    { "five-5rows", nonzero_five_five_rows },
+    { "five-10rows", nonzero_five_ten_rows },
+    { "three-rank4", nonzero_three_rank4 },
+    { "three-rank1", nonzero_three_rank1 },
+    { "classes", nonzero_classes },
+    { "classes-two", nonzero_classes_two },
+    { "float-denormal", nonzero_float_denormal },
+    { "float-negative-zero", nonzero_float_negative_zero },
+    { "half-nan", nonzero_half_nan },
+    { "half-denormal", nonzero_half_denormal },
+    { "int32", nonzero_int32 },
+    { "rank1", nonzero_rank1 },
+    { "rank2", nonzero_rank2 },
+};
+
+// THE FAMILY, which asks each of those through a process of its own and ends with the chain every family
+// ends with. posix_spawn rather than fork, because a fork would hand the child a copy of this process's Metal
+// device and of everything this process has already built, and the measurement above is about exactly that
+// state; a spawned process starts from nothing. The child's own case lines go to the same standard output, in
+// the order the table names them, and the parent waits for each before starting the next so that the order
+// run.sh reads is the order the table is in.
+static void family_gather_nonzero_one(const char *which);
+
+static void family_gather_nonzero(void)
+{
+    unsigned i;
+    for (i = 0; i < sizeof(kNonzeroCases) / sizeof(kNonzeroCases[0]); i++) {
+        pid_t child = 0;
+        char *arguments[4] = { gProgram, (char *)"gather_nonzero_one", (char *)kNonzeroCases[i].name, NULL };
+        int made = posix_spawn(&child, gProgram, NULL, NULL, arguments, environ);
+        if (made != 0 || child == 0) {
+            fprintf(stderr, "graph-cases.m: could not start a process for the non-zero case %s: %s\n",
+                    kNonzeroCases[i].name, strerror(made));
+            continue;
+        }
+        int status = 0;
+        waitpid(child, &status, 0);
+        if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+            fprintf(stderr, "graph-cases.m: the non-zero case %s ended with status %d\n",
+                    kNonzeroCases[i].name, status);
+    }
+    chain_case();
+}
+
+// THE ONE CASE, named on the command line: what a spawned process above runs. Nothing else is built in that
+// process - not even the builder side - so the release's answer is the answer of this one graph.
+static void family_gather_nonzero_one(const char *which)
+{
+    unsigned i;
+    for (i = 0; i < sizeof(kNonzeroCases) / sizeof(kNonzeroCases[0]); i++) {
+        if (strcmp(which, kNonzeroCases[i].name) != 0)
+            continue;
+        kNonzeroCases[i].ask();
+        return;
+    }
+    fprintf(stderr, "graph-cases.m: unknown non-zero case '%s'\n", which);
+    exit(3);
+}
+
 static const Family kFamilies[] = {
     { "misc", family_misc },
     { "arithmetic", family_arithmetic },
@@ -3268,6 +3674,7 @@ static const Family kFamilies[] = {
     { "gather_concat", family_gather_concat },
     { "gather_split", family_gather_split },
     { "gather_spacebatch", family_gather_spacebatch },
+    { "gather_nonzero", family_gather_nonzero },
 };
 
 static void family_names(void)
@@ -3288,8 +3695,15 @@ int main(int argc, const char *argv[])
     setvbuf(stdout, NULL, _IOLBF, 0);
     @autoreleasepool {
         unsigned i;
+        gProgram = argv[0];
         gDevice = MTLCreateSystemDefaultDevice();
         gGraphDevice = [MPSGraphDevice deviceWithMTLDevice:gDevice];
+        // THE ONE NON-ZERO CASE, in a process of its own: nothing else is built in that process, which is the
+        // whole of what the family needs - see the measurement above family_gather_nonzero.
+        if (argc == 3 && strcmp(argv[1], "gather_nonzero_one") == 0) {
+            family_gather_nonzero_one(argv[2]);
+            return 0;
+        }
         builder_side();
         if (argc < 2) {
             fprintf(stderr, "graph-cases.m: name the family to run; these are: ");

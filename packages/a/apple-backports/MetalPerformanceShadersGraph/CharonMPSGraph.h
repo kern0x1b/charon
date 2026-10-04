@@ -189,7 +189,13 @@ CharonMPSGraphOperationKindCumulativeSum,
     // not known when the graph is built: the axes arrive as data, so the split shape, the permutation and
     // the result's own shape are all asked of the same plan when the graph runs - see
     // -charon_mps_blockShufflePlan:ofShape:spatial:batch:block:toBatch:shuffle:.
-    CharonMPSGraphOperationKindBlockShuffle
+    CharonMPSGraphOperationKindBlockShuffle,
+    // The NON-ZERO INDICES of 17.0, whose result is a LIST: the coordinates of the elements of the operand
+    // that are not a zero, one row of the operand's rank per element, in the operand's own row-major order.
+    // It is a walk of its own because its result is not the operand's shape and its own LENGTH is not known
+    // until the graph runs, which is why the release's own result tensor carries -1 for it (measured over a
+    // [3, 4, 6] of 1 to 72: the result is -1x3, of MPSDataTypeInt32, whatever the operand's own type was).
+    CharonMPSGraphOperationKindNonZero
 };
 
 @class MPSGraph;
@@ -257,6 +263,81 @@ CharonMPSGraphOperationKindCumulativeSum,
 - (NSDictionary *)charon_mps_parameters;
 - (void)charon_mps_setParameters:(NSDictionary *)parameters;
 @end
+
+// HOW AN ANSWER LANDS IN THE TENSOR DATA THE CALLER ALLOCATED, which is the one place in this library that
+// knows the DESTINATION's own shape: the interpreter fills a result of its own, and this is where the answer
+// is copied into the buffer a caller holds, so both run paths - the executable's and the graph's - end here.
+//
+// Every family of this library writes every element of its result, so for them this is a copy of the answer
+// over the destination, bounded by what the destination holds. ONE family says so in its operation's own
+// parameters, @"answerFillsDestination", and is written differently, because what the release's own kernel
+// writes there is the whole destination and not the answer's own rows:
+//
+//   - the answer is `count` rows of the operand's RANK coordinates, and every row of the destination the
+//     answer does not reach is a WRITTEN ZERO (measured over a destination filled with the byte 0xbd: a
+//     [3, 4, 6] with three non-zero elements leaves none of the seventy-two rows' cells at 0xbd);
+//   - an answer of exactly ONE row is written into EVERY row of the destination (measured: a [3, 4, 6] whose
+//     only non-zero element is the seventy-second answers (2, 3, 5) in each of a twelve-row and a
+//     seventy-two-row destination, and identically on three runs of one executable);
+//   - the rows are written `rank` cells apart in the destination's OWN last extent, so a destination whose
+//     second axis is four keeps its fifth cell and a destination of rank one has its three cells written
+//     into the front of it (measured, both with 0xbd left in every cell the answer did not reach).
+static inline void CharonMPSGraphWriteInto(MPSGraphTensor *target, MPSGraphTensorData *value,
+                                           MPSGraphTensorData *destination)
+{
+    void *to = [destination charon_mps_bytes];
+    if (to == NULL) {
+        CharonMPSGraphRefuse(@"MPSGraph: the destination the caller gave the answer of the operation named %@ "
+                             @"has no buffer, so that destination is left as it was",
+                             [target operation].name);
+        return;
+    }
+    NSUInteger width = MPSSizeofMPSDataType(value.dataType);
+    NSUInteger stride = destination.shape.lastObject.unsignedIntegerValue
+                      * MPSSizeofMPSDataType(destination.dataType);
+    NSUInteger room = [destination charon_mps_elementCount] * MPSSizeofMPSDataType(destination.dataType);
+    if (![[[target operation] charon_mps_parameters][@"answerFillsDestination"] boolValue]) {
+        void *from = [value charon_mps_bytes];
+        if (from == NULL) {
+            CharonMPSGraphRefuse(@"MPSGraph: the answer of the operation named %@ could not be copied into "
+                                 @"the destination the caller gave, so that destination is left as it was",
+                                 [target operation].name);
+            return;
+        }
+        // Bounded by what the destination holds: every family here writes a result of the shape its own
+        // tensor carries, so this is a copy of the whole of it unless the caller gave a smaller buffer than
+        // the answer, and then the answer is cut short rather than the caller's memory overrun.
+        memcpy(to, from, MIN([value charon_mps_elementCount] * width, room));
+        return;
+    }
+    // The answer's rows are its own shape's FIRST extent - the count the walk resolved - and not the
+    // element count divided by the rank: an answer of NO rows has a shape of [0, rank], and this library
+    // takes an extent below one as an extent of one, so the division would read that as one row.
+    NSUInteger rank = value.shape.lastObject.unsignedIntegerValue;
+    NSUInteger count = value.shape.firstObject.unsignedIntegerValue;
+    NSUInteger rows = stride ? room / stride : 0;
+    NSUInteger written = count == 1 ? rows : MIN(count, rows);
+    // An answer of NO rows has no buffer to read from at all - a tensor data of no elements holds a buffer
+    // whose contents is null - and needs none: every row of the destination is a zero.
+    void *from = count ? [value charon_mps_bytes] : NULL;
+    if (count && from == NULL) {
+        CharonMPSGraphRefuse(@"MPSGraph: the answer of the operation named %@ could not be read back to be "
+                             @"written into the destination the caller gave, so that destination is left as it "
+                             @"was", [target operation].name);
+        return;
+    }
+    // A row is `rank` cells, and the rows start `stride` bytes apart: where the destination's last extent is
+    // shorter than the rank, the last row would run past the end of the caller's buffer, so every row is cut
+    // at what the destination holds from where it starts.
+    for (NSUInteger row = 0; row < rows; row++) {
+        char *into = (char *)to + row * stride;
+        NSUInteger length = MIN(rank * width, room - row * stride);
+        if (row < written)
+            memcpy(into, (char *)from + (count == 1 ? 0 : row * rank) * width, length);
+        else
+            memset(into, 0, length);
+    }
+}
 
 @interface MPSGraphExecutionDescriptor (CharonMPSGraph)
 // What a run does with the shared events this descriptor named: at the stage the caller named, every signal

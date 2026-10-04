@@ -2040,6 +2040,94 @@ differs from the same operation asked into a buffer of the right shape - and an 
 buffer of **eight** bytes, or the release refuses the caller's own feed in its NDArray (`buffer is not large
 enough. Must be 8 bytes`, exit 134), which is a probe's artefact and not the pair's answer.
 
+## The non-zero indices of 17.0: the one result of this library that is a LIST
+
+`-[MPSGraph nonZeroIndicesOfTensor:name:]` is not a tensor of the operand's shape. Its answer is one row of the
+operand's RANK coordinates for every element of the operand that is not a zero, in the operand's own row-major
+order, in `MPSDataTypeInt32`; and its LENGTH is the count of those elements, which is data, so nothing in the
+graph knows it when the graph is built. That is what makes it a walk of its own
+(`CharonMPSGraphNonZeroCount` and `CharonMPSGraphNonZero` in `MPSGraphInterpreter14.m`), a shape the walk puts
+on the output tensor when the operation runs, and a copy-out that has to know the destination's own shape
+(`CharonMPSGraphWriteInto` in `CharonMPSGraph.h`, which both run paths end at).
+
+Measured on this host's own MPSGraph (macOS 27.0 build 26A428, M4 Pro, Metal 4) with the probe
+`.agent-work/probe/nonzero.m`, one case per process, and every case of the differential
+(`gather_nonzero` in `tests/backports/host/mpsgraph/`) asked **in a process of its own** - see the last
+paragraph of this section for why that is not optional.
+
+**The shape the result tensor carries is `-1` by the operand's rank**, whatever the operand's data type was and
+before the run and after it: `-1x3` over a `[3, 4, 6]`, `-1x1` over a `[6]`, `-1x2` over a `[4, 6]`, and the
+data type `0x20000020` (`MPSDataTypeInt32`) over a float32, an int32 and a float16 operand alike. So the
+`-1` is the release's own marker for the extent it cannot resolve - the same one the two dynamic extents of a
+written-down reshape print - and the rank it CAN resolve. `refusals.txt`'s `nonzero-result-shape` asks it.
+
+**What counts as non-zero is the operand read the way this library reads one everywhere else**, and the
+measurement is one candidate at a time at element 30 or 31 of a `[3, 4, 6]`, because an answer of exactly one
+row is written into *every* row of the destination (below) and a coordinate of `(0,0,0)` is the same bytes as
+the zero an unreached row is given:
+
+| the one non-zero candidate | float32 | float16 |
+| --- | --- | --- |
+| `0x7fc00000`, a NaN | non-zero | non-zero |
+| `0x7f800000`, an infinity | non-zero | - |
+| `0x00000001`, a denormal | **a zero** | non-zero |
+| `0x80000000`, a NEGATIVE zero | **a zero** | **a zero** |
+| `0x00000000`, a positive zero | a zero | a zero |
+
+So a float32 denormal is a zero because `CharonMPSGraphAsZero` reads one as a zero of the same sign (the rule
+this library already measured for the arithmetic family), a half denormal is not because the half path keeps
+one, and a negative zero is a zero in both because `-0.0 == 0.0` is true and that is the test. The walk is
+therefore `CharonMPSGraphAsZero(CharonMPSLoad(...), type) != 0.0` - the load every other walk here reads with,
+and no rule of its own.
+
+**The caller's destination does NOT decide the count, and this family writes the WHOLE destination.** Four
+measurements, all over a `[3, 4, 6]` and a destination filled with the byte `0xbd` before the run:
+
+* the rows the answer does not reach are a **written zero**: five non-zero elements into seventy-two rows
+  writes five rows of coordinates and sixty-seven rows of zeros, and no cell of the destination is left at
+  `0xbd`;
+* **an answer of exactly ONE row is written into every row of the destination**: a `[3, 4, 6]` whose only
+  non-zero element is the seventy-second answers `(2,3,5)` in each of a twelve-row, a seventy-two-row and a
+  two-hundred-row destination, identically on three runs of one executable. A count of two is not broadcast -
+  the two ends of the same operand answer two rows and sixty-seven zeros - so this is a rule of its own and not
+  the general one;
+* a destination with FEWER rows than the answer has **cuts the answer short** (three indices into a two-row
+  destination are the first two), and more rows never add to the count;
+* the rows are written `rank` cells apart in the destination's OWN last extent, so a destination of shape `3x4`
+  keeps its fourth cell at `0xbd` and a destination of rank one has the three cells of the answer written into
+  the front of a nine-cell buffer.
+
+A destination of **no rows** is the one shape the release cannot be given: the process goes down inside its own
+NDArray with `buffer is not large enough. Must be 12 bytes` (`MPSNDArray.mm:893`), and with a buffer of no
+bytes at all one line earlier and with another of its own sentences (`Error: device may not be nil`,
+`MPSNDArray.mm:759`). `refusals.txt`'s `nonzero-destination-no-rows`, `nonzero-result-shape` and
+`nonzero-destination-five-rows`.
+
+**Four cells of a seventy-two-row destination are not this operation's answer at all**, and they are recorded
+in `recorded-cells.txt` with both runs' bytes rather than reproduced. The release writes `3` at cell 197 of a
+count of two, `2` there of a count of three, and `3` at cell 203 and `2` at cell 206 of a count of five - over a
+destination of seventy-two rows and only there, and only at a count of two, three or five: a count of one is
+written into every row, a count of seventy-two fills every row with a coordinate, and no destination of ten
+rows or fewer, nor of twelve, twenty-four or seventy-two with a smaller count, carries any of them. Each is
+determinate (five processes of one case each print the same bytes) and **none of the four is a coordinate of
+any element of the operand**. What was tried against them: that they are the answer's rows at an offset (they
+are not - a count of five has two of them and a count of two has one, and a count of three's value is not the
+count's own), and that they are the last axis's coordinates of the elements at those positions (element 65 of
+a `[3, 4, 6]` is `(2,3,5)`, and the cell holds `2`). They are the release's own scratch reaching the caller's
+buffer, the port writes the operation's answer there, which is a zero, and that is the whole difference
+between the two runs: `gather_nonzero checks=24 failures=0 recorded=4` over 2106 cells in 51 cases.
+
+**Why the family asks every case in a process of its own.** Run in one process - which is what every other
+family in this differential does - **seven of the twenty-four cases answer rows that are not this operation's
+answer at all**: `two-ends` answers its two own rows and then a `(3,0,0)` at row sixty-five, `rank1` of a `[6]`
+answers `0` and `5` and then `3, 2, 5` in its last three rows, and `rank2` of a `[4, 6]` answers its two own
+rows and then fifteen more that are coordinates of no element of its operand. Three runs of the whole family
+print byte-identical answers, so it is not a race; the same case asked as the only non-zero graph in a process
+of its own answers exactly what the operation computes. So `family_gather_nonzero` spawns one process per case
+with `posix_spawn` - not `fork`, which would hand the child a copy of this process's Metal device and of
+everything it has already built, which is the state the measurement is about - and the differential is
+byte-for-byte on every case.
+
 ## The R4 names this band adds, in full
 
 The SDK this package compiles against, the iPhoneOS 16.4 one, declares none of these: they are the private
