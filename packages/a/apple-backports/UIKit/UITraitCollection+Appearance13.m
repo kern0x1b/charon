@@ -216,7 +216,19 @@ static void charon_add_trait(UITraitCollection *collection, NSMutableArray *trai
         [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, stored]];
         return;
     }
-    NSString *text = charon_trait_value_text(definition, stored);
+    // A trait of a release that has no trait class of its own - the three of 13.0 - keeps its value in the
+    // extras dictionary and its enumeration's names on its own KIND, and there is no definition to read
+    // those names from: charon_trait_value_text() finds them through definition->name and prints the bare
+    // number when the definition is NULL, which is what it is here. So the host's
+    // "AccessibilityContrast = Normal" came back as "AccessibilityContrast = 0" and
+    // "UserInterfaceLevel = Base" as "UserInterfaceLevel = 0", for all 195 description comparisons of the
+    // traits13 group - the group whose sources are this file and NOT the 17.0 objects, which register a
+    // trait value reader for these three names and take the branch above, which is why traits17 printed them
+    // symbolically all along. The name list is read from the kind, and the number is what is left when the
+    // enumeration has no name for the value.
+    NSString *text = charon_trait_value_text_for_name(kind.name, [stored integerValue]);
+    if (!text.length)
+        text = [NSString stringWithFormat:@"%ld", (long)[stored integerValue]];
     if (text)
         [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, text]];
 }
