@@ -254,7 +254,7 @@ nothing ran is the same defect as one that fails for the wrong reason.
 
 `Metal/MTL4CommandQueue26.m` carries the Metal 4 queue: the class itself, the device's two factories
 and the capture scope over one. It is a **separate file from the two descriptors** because it imports
-`CharonMetal.h`, which reaches `OpenGLES/EAGL.h` — so the descriptors are host-measurable and this is
+`CharonMetal.h`, which reaches `OpenGLES/EAGL.h` -  so the descriptors are host-measurable and this is
 not, and the split is the honest shape of the thing:
 
 ```
@@ -262,68 +262,112 @@ $ clang -target arm64-apple-macos26.0 ... -fsyntax-only MTL4CommandChain26.m   -
 $ clang -target arm64-apple-macos26.0 ... -fsyntax-only MTL4CommandQueue26.m   -> does NOT build on a host, as it must not
 ```
 
-Both files compile for the device with **0 diagnostics**.
+Both files compile for the device with **0 errors and 5 `-Wunguarded-availability-new` warnings**, which
+were 7 before the queue's members moved off the device: `MTLHeapType` and `MTLHazardTrackingMode` from
+`CharonMetal.h:181-182`, `MTLGPUAddress` from `CharonMetal26Types.h:320` and `MTL4CommandQueueDescriptor`
+twice from the two factories. `MTLEvent` is spelled `id` in this file's two event methods rather than
+`id<MTLEvent>`, because iOS 6 has no `MTLEvent` to name and the SDK annotates the type 12.0 and later; the
+selector is the header's either way, which is what a caller and the registry both see.
 
 **The queue is the port's own `CharonMetalQueue` under a Metal 4 name.** There is one queue in this port
 and it is the one that holds the EAGL context every draw goes through, so a Metal 4 caller asking for a
-Metal 4 queue gets the queue that works. `device` answers the port's shared device — the same answer a
-Metal 3 caller gets — and `label` is nil on a fresh queue and copied when set.
+Metal 4 queue gets the queue that works. `device` answers the port's shared device -  the same answer a
+Metal 3 caller gets -  and `label` is nil on a fresh queue and copied when set.
 
 **`commit:count:` COMMITS rather than refusing**, through to the queue underneath, and the C array is
 spelled as MTL4CommandQueue.h:231 declares it. That is the row whose three earlier answers were all
-wrong, and the measured answer is that the call returns.
+wrong, and the measured answer is that the call returns. **It answers on the QUEUE**, which it did not
+until the device probe asked: it was written in the `CharonMetalDevice` category with every other member
+of the protocol, so the device answered all fourteen of them and the queue none - see the run below.
 
-**Every other member of the protocol is refused by name**: the residency sets, the sparse buffer and
-texture mappings, and the event and drawable waits and signals. Each names the facility it would need —
-a residency set, an `MTLHeap`, an `MTLEvent`, a drawable of the queue's own — and this port has none of
+**Every other member of the protocol is refused by name**, and each refusal is a line in the log rather
+than a swallowed argument: the residency sets, the sparse buffer and texture mappings, and the event and
+drawable waits and signals. Each names the facility it would need - 
+a residency set, an `MTLHeap`, an `MTLEvent`, a drawable of the queue's own -  and this port has none of
 them. **There is no `-waitForCommandBuffers:`**, because Metal 4's queue has none either.
 
-### What is NOT verified, and it is not a small thing
+### What the device probe measured, and what is still not verified
 
-**The device probe is written; it has NOT been run.** `tests/backports/device/metalchain-expectations.h`
-holds Apple's fourteen measured answers as constants, each naming the header line it came from — the same
-shape `tests/backports/host/metalblit/` records into `tests/backports/device/metalblit-expectations.h` — and
-the case that READS it and holds the port to it is **`tests/backports/device/metalchain-probe`**, a small
-xmake project of its own in the shape of `vdsp-probe`: `xmake.lua` with a `@addon/charon/daemon` target
-that compiles `metalchain.m` together with the port's own `MTL4CommandQueue26.m`,
-`MTL4CommandChain26.m` and `CharonMetalQueue.m` — the port's source, not the library, so a reader can see
-which file is under test — plus a `control` file and a `run.sh`.
+**THE PROBE HAS NOW RUN**, on the emulated iPhone3,1 6.1.3 10B329, on 2026-10-04, and this section is what
+it said. `tests/backports/device/metalchain-probe` is a small xmake project of its own in the shape of
+`vdsp-probe` and `textkit2`: a `@addon/charon/daemon` target, a `control` file, `run.sh` and `run-guest.sh`.
+It builds the port's own Metal folder (59 files, 60 objects with the probe) rather than linking
+`libMetalBackports.dylib`, because the shape that links the package does not resolve on this machine today -
+`add_requires("charon@apple-backports", ...)` fails at configure with `error: attempt to call a nil value
+(global 'add_configs')`, in a four-line project as well as in this one, and passes an hour later with
+nothing in the tree changed. `tests/backports/device/metalchain-probe/xmake.lua` says what that costs: the
+probe tests every object the library carries and not the `.deb`.
 
-`metalchain.m` compiles for armv7 iOS 6.1.3 with **0 diagnostics**, and it asks the queue's label and
-device through `-valueForKey:` because the 16.4 SDK this builds against has no Metal 4 declaration at all.
-
-**AND IT WAS NOT RUN, because heavy.sh queued it behind the gate:**
+`metalchain.m` asks **all fourteen** constants of `tests/backports/device/metalchain-expectations.h`, each
+by name, and prints `ok`, `FAIL` or `NOT ANSWERED` with the constant's name, so a verdict joins to an
+expectation without reading the file. A case it cannot reach says which of the two reasons it is - the port
+has no such object, or the guest has none to ask - and counts as a failure; nothing is skipped quietly.
 
 ```
-$ FLEET_HEAVY_LANE=slow sh tests/backports/device/metalchain-probe/run.sh
-heavy.sh: load average 13 is at or over 12, waiting
-Terminated: 15
+$ sh tests/backports/device/metalchain-probe/run.sh          # configure, install, the LC_UUID gate
+built     LC_UUID F1938D6F-DD61-37FE-BB06-00E0C6AE800C
+installed LC_UUID F1938D6F-DD61-37FE-BB06-00E0C6AE800C
+installed mtime   0
+the two carry the same LC_UUID, so this image holds this build
+HASHES MATCH
+$ $HOME/Git/projects/ios/coordination/heavy.sh sh tests/backports/device/metalchain-probe/run-guest.sh
 ```
 
-Exit 124 from my own budget, not from the run: **no slot opened, no guest booted, and there is no
-verdict line.** The five rows say so in their `effect` rather than naming a verdict they do not have.
+and the run itself:
 
-`run.sh` refuses to run a stale binary before it runs anything at all — `xmake emulate install` has been
-observed reporting "install ok!" and leaving the image's copy unchanged, so a guest run has executed a
-binary two edits old and reported its output as a result. It compares LC_UUID (not a byte hash: `strip`
-rewrites the bytes before the signature and an unsigned build has none there, while neither `strip` nor
-`ldid -S` changes LC_UUID) and stops on a mismatch.
+```
+metalchain: the port's Metal 4 chain against Apple's own answers
+     an EAGLContext over OpenGL ES 2.0 on this guest: NIL
+     an EAGLContext over OpenGL ES 1.1 on this guest: NIL
+     MTLCreateSystemDefaultDevice: nil
+NOT ANSWERED the_port_device_answers: MTLCreateSystemDefaultDevice gave nil, and the EAGL context line above says why
+NOT ANSWERED metalchain_queue_is_vended: there is no device to ask for a queue
+NOT ANSWERED metalchain_queue_from_descriptor_has_no_error: there is no device to ask, and the descriptor factory is a method on it
+     the Metal 4 queue is CharonMetal4CommandQueue
+ok   metalchain_queue_label_is_nil: a fresh queue's label is nil
+ok   metalchain_queue_keeps_its_label: the label the queue is given is the label it answers
+NOT ANSWERED metalchain_queue_has_device: the port's queue answers the port's shared device, and there is none on this guest
+ok   metalchain_queue_has_no_wait_for_command_buffers: the queue has no such wait
+ok   the_ports_own_queue_answers_as_apples_does: the queue under test is an instance of the port's own CharonMetal4CommandQueue
+NOT ANSWERED metalchain_buffer_has_no_status: there is no device to ask for a buffer
+... (eight more, the same reason)
+NOT ANSWERED metalchain_commit_returns: the queue answers -commit:count: but there is no buffer to commit
+NOT ANSWERED metalchain_commit_returns_when_not_ended: the queue answers -commit:count: but there is no buffer to commit
+metalchain: 18 check(s), 0 failure(s), 14 not answered
+error: fail(exit 1) on iPhone3,1 6.1.3 (10B329) in 0.0 guest s / 3.7 host s at time scale 10
+```
 
-An earlier commit said it had. It had not: the word "WRITTEN" was in the five rows' `effect` and in this
-page, and no such file existed. A row that names a test which is not there is worse than a row that says
-nothing, because a reader checks the file, finds nothing, and then has to decide how much else to
-believe. The rows now say the check has not been run and do not claim it.
+**WHAT IT FOUND, and it is a defect this page did not have: the queue had no members of its own.** The
+first run of the day read `metalchain: 18 check(s), 2 failure(s), 12 not answered`, and the two failures
+were `metalchain_commit_returns` and `metalchain_commit_returns_when_not_ended` with the line
+`FAIL metalchain_commit_returns: the queue answers -commit:count: (Apple's own queue does)`. Every member
+of `@protocol MTL4CommandQueue` below `-commit:count:` was written in the `CharonMetalDevice` category, so
+all fourteen answered on the **device** and none on the queue. `nm` on the probe agrees:
+`-[CharonMetalDevice(CharonMetal4CommandQueue26) commit:count:]` and nothing of that name on
+`CharonMetal4CommandQueue`. They are on the queue now (commit `c102d8edf`), the twelve refusals refuse by
+name instead of swallowing their argument, and the count is `0 failure(s)`.
 
-The runner is `xmake emulate` (`.agents/skills/emulate-port/SKILL.md`), and the port's rows are checked
-on the emulator's iPhone3,1 6.1.3 through `coordination/heavy.sh`, which queues behind the gate by
-itself. No device is attached (`idevice_id -l` prints nothing), so the emulator is the only route. The
-five queue rows carry the honest wording:
+**WHAT IS STILL NOT VERIFIED, in two named parts.**
 
-> the CHECK against those expectations is the device probe `tests/backports/device/metalchain-probe`,
-> which compiles clean for armv7 iOS 6.1.3 and has NOT been RUN: heavy.sh queued it behind the gate and it
-> did not get a slot, so there is NO verdict line yet and this row does not claim one
+1. **The guest cannot make an EAGL context, so every case that needs the port's device is unreachable
+   there.** The probe asks for one itself, over ES 2.0 and over ES 1.1, and both answer `NIL`; the run's
+   emulator log names the renderer as `Shade GLES 1.1 Vulkan (SwiftShader Device (LLVM 10.0.0))`. Since
+   `CharonMetalDevice -init` is an `EAGLContext` and returns nil without one
+   (`Metal/CharonMetalDevice.m:30-38`), `MTLCreateSystemDefaultDevice()` answers nil there and the four
+   cases `the_port_device_answers`, `metalchain_queue_is_vended`,
+   `metalchain_queue_from_descriptor_has_no_error` and `metalchain_queue_has_device` have no object to ask.
+   **This is the emulator, not the port**: on hardware the same context is what `facts/Metal/RenderPath.md`
+   records an iPhone 4S making at 6.1.3. Answering those four needs a real device, and none is attached
+   (`idevice_id -l` prints nothing), so it waits for one rather than being claimed.
+2. **The port carries no `MTL4CommandBuffer`, so the ten cases about one cannot be asked at all.** That is
+   the next family - the buffer, the allocator and the two encoders - and the eight buffer cases and the two
+   commit cases are `missing` in `coordination/corpus/ledger-2026-10-03/Metal.tsv` with reason "no class or
+   protocol MTL4CommandBuffer in the built libraries". The queue's half of the commit is measured (it
+   answers `-commit:count:` now); the buffer's half is not there to measure.
 
-`Metal/MTL4CommandChain26.m` and `Metal/MTL4CommandQueue26.m` compile clean, the host differential over
-the two descriptors is green with its two mutants red, and release-split puts each object in one
-release. **What is unverified is the port's queue against the fourteen expectations**, and that is a
-device run away.
+**THE TWO RUNNER DEFECTS THIS RUN MEASURED**, both of which had stopped a good run rather than a bad one:
+the image was found with a `metalchainprobe-*` glob, and `xmake emulate` names an image after the project
+**directory** (`plugins/emulate/main.lua`: `(project.name() .. "-" .. hash.strhash32(os.projectdir()))`),
+so with two copies of this project the gate compared this build against v-metal's installed copy. And the
+gate compared mtimes, where the installed copy reads `mtime 0` on this image - so it stopped a run whose two
+LC_UUIDs were the same value. `run.sh` now asks xmake for the image's name and gates on the UUID alone.
