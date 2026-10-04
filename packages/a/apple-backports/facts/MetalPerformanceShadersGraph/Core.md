@@ -1442,7 +1442,9 @@ thing the gather's has not: an offset and a length per operand along the axis na
 Measured on this host's own MPSGraph (macOS 27.0 build 26A428, M4 Pro, Metal 4), over the case file's 2x4 of
 (1, 2, 3, 4 | 10, 20, 30, 40) beside one of (5, 6, 7, 8 | 50, 60, 70, 80) and one of
 (9, 10, 11, 12 | 90, 100, 110, 120). Compared in a process of its own (`gather_concat`): **38 cases, every
-cell byte-identical to the release, and the red control differing in 38 of the 81 case lines.** The red
+cell byte-identical to the release, and the red control differing in 38 of the 81 case lines** - and `refusals.txt`
+asks 63 questions, the eight of this family among them covering every shape the walk's arithmetic does not
+bound. The red
 control's count is unchanged by the two cases of an empty array, and that is right rather than a gap: those
 two carry a shape and a data type and no stored element at all, so there is nothing in them for a plant that
 shifts every stored element to move.
@@ -1509,6 +1511,29 @@ lengths, which is the very thing the header invites - reading past the end of th
 because the division would have answered its elements 2, 3 and 4 where it holds two. The check is in the
 plan rather than in the walk's per-element path, which is where the release has it too and where it costs
 nothing: three orders of magnitude fewer comparisons for the same answer.
+
+### And the last shape the walk's arithmetic does not bound: an operand of extent zero
+
+Two operands laid along one axis, one of them **empty**. The offsets of the regions collapse - both start at
+the same place - so a walk that lays them out by offset has nothing in the offsets to say which operand an
+element belongs to. Measured on this host's own MPSGraph, with the zero first (the harder case):
+
+    build:   shape 2x4, the other operand's length
+    run:     failed assertion `[MPSNDArray initWithDevice:descriptor:isTextureBacked:] Error: device may not be nil'
+
+So the release has **no answer at all** here rather than a refusal of its own: it builds the tensor and then
+takes the process down inside its own array. The port refuses where the graph is built and the rows say so,
+which is this library's standing arrangement for the shapes where the release's answer is an assertion and a
+dead process - an axis outside the rank, a squeeze of an axis that is not of extent one, the eight other
+questions in `refusals.txt`.
+
+The ORDER of the two refusals on this axis is the release's, and it was measured rather than chosen: a `2x0`
+beside a `2x4` **interleaved** is refused with the interleave sentence and not with this one, so the plan asks
+that question first. That is why `concat-zero-extent` is a question of its own and not a variant of
+`concat-interleave-unequal`.
+
+A stack cannot reach either: its axis is a new one of extent as many operands, and an operand of extent zero
+on some axis of its own is ordinary there.
 
 ### An axis outside the rank, and the two messages
 

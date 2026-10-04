@@ -1990,6 +1990,7 @@ static NSDictionary *CharonMPSGraphConcatPlan(NSString *name, NSArray<NSArray<NS
     // 3 and 4 for three coordinates of the result - so this is refused here rather than checked per element
     // in the walk, which is where a check would be three orders of magnitude more expensive for the same
     // answer. It is refusals.txt's concat-interleave-unequal.
+
     if (interleave) {
         NSArray<NSNumber *> *first = shapes.firstObject;
         for (NSArray<NSNumber *> *shapeOfOperand in shapes) {
@@ -2003,6 +2004,32 @@ static NSDictionary *CharonMPSGraphConcatPlan(NSString *name, NSArray<NSArray<NS
                                    "\"'mps.concat' op all input shapes must match along axis dimension when "
                                    "interleaving\"", name, theirs, own, (long)where];
             }
+        }
+    }
+    // AN OPERAND OF EXTENT ZERO ON THE AXIS LAID ALONG, which is the other shape this walk's arithmetic does
+    // not bound and the last one: the offsets of the regions collapse, so two operands start at the same
+    // place and the search that picks one has no way to say which of them an element belongs to. The release
+    // has no answer for it either - measured, it BUILDS the result tensor of the other operands' length and
+    // then fails inside its own NDArray with "failed assertion `[MPSNDArray initWithDevice:descriptor:
+    // isTextureBacked:] Error: device may not be nil'", taking the process down with it. So this is refused
+    // where the graph is built, in the order the release names it: the interleave rule first, because an
+    // interleaved pair of extents that differ is refused with THAT sentence whether or not one of them is
+    // zero - measured over a 2x0 beside a 2x4 - and only then this one. A stack cannot reach it: its axis is
+    // a new one, of extent as many operands, and an operand of extent zero on some axis of its own is
+    // ordinary. refusals.txt's concat-zero-extent.
+    if (!stacked) {
+        NSUInteger i = 0;
+        for (NSArray<NSNumber *> *shapeOfOperand in shapes) {
+            if (shapeOfOperand[(NSUInteger)where].longLongValue == 0) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was asked to concatenate operand %lu, which is of extent "
+                                   @"ZERO on axis %ld, and the regions of the axis cannot be laid out when "
+                                   @"one of them is: measured, the release builds the result tensor and then "
+                                   @"fails inside its own array with \"failed assertion `[MPSNDArray "
+                                   "initWithDevice:descriptor:isTextureBacked:] Error: device may not be "
+                                   @"nil'\", taking the process down", name, (unsigned long)i, (long)where];
+            }
+            i++;
         }
     }
     return @{@"shape": shape, @"concatAxis": @(where), @"concatStarts": starts,
