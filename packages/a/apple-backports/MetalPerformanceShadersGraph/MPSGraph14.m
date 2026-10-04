@@ -1102,6 +1102,376 @@ typedef enum {
     return result;
 }
 
+#pragma mark - the space-to-depth family: four operations of 15.0 and 16.1 that are ONE chain of walks
+// What every operation of this family does, measured: it moves a BLOCK of the operand's spatial axes into
+// the batch axis, or out of it, and the result's batch axis holds the operand's batch coordinate woven with
+// the block's own coordinates. Two shapes of answer, and which one is which is what the header's
+// usePixelShuffleOrder says - with YES the block's own coordinates are CONTIGUOUS in the result's batch axis
+// and without it they are INTERLEAVED with the batch coordinate - and neither needs a walk of its own:
+//
+//   1. a RESHAPE that splits each spatial axis into its block rows and its block columns (for the two
+//      operations that move the blocks TO the batch axis), or that merges them back (for the two that move
+//      them FROM it), and splits or merges the batch axis the other way round;
+//   2. a TRANSPOSE that puts the batch axis and the block's coordinates into the order the flag names;
+//   3. the other half of the reshape.
+//
+// Every one of those three is a walk this library already has and the harness already compares - the reshape
+// of 15.0 and the permutation transpose of 16.0 - so what is here is the chain, the order the axis is held
+// in, and the rules the release refuses the family by.
+//
+// MEASURED on this host's own MPSGraph (macOS 27.0 build 26A428, M4 Pro, Metal 4) over a [3, 4, 6] of 1 to 72
+// with a 2x2 block, the spatial axes @[@1, @2] and the batch axis @0, whose result is a [12, 2, 3]:
+//
+//   - THE BLOCK'S OWN COORDINATES ARE ORDERED WITH THE LAST SPATIAL AXIS FASTEST, which is what makes the 2D
+//     form's two axis arguments read (widthAxis, heightAxis) with the width the fastest: measured, the 2D
+//     form over the same operand answers byte for byte what the general form answers with
+//     spatialAxes=@[@1, @2] and blockDimensions=@[@2, @2], and with THREE spatial axes the last of them
+//     varies fastest of all.
+//   - THE RESULT'S SPATIAL AXES KEEP THE OPERAND'S ORDER, not the order the list is written in, while the
+//     BLOCK LIST IS READ IN THE ORDER IT IS WRITTEN: measured, spatialAxes @[@2, @1] with
+//     blockDimensions @[@2, @2] over a [2, 2, 4] answers a [8, 1, 2] - the operand's own axis 1 keeps its
+//     position in the result - and with a RECTANGULAR block the two orders answer different bytes
+//     (spatialAxes @[@1, @2] with block @[@2, @4] against spatialAxes @[@2, @1] with block @[@4, @2] over
+//     a [2, 4, 8], both a [16, 2, 2] and not the same bytes).
+//   - WITH usePixelShuffleOrder=NO the batch coordinate is the FASTEST of the two in the result's batch axis:
+//     the result's batch coordinate d' is d + D*k, where D is the operand's own batch extent and k is the
+//     block's own coordinate in its row-major order - measured over the [3, 4, 6]: the elements at
+//     (0, 0, w even) are at the result's d' = 0, those at (1, 0, w even) at d' = 1 and those at (0, 1, w even)
+//     at d' = 6, and the odd half of each of those at d' = 3, 4 and 9.
+//   - WITH usePixelShuffleOrder=YES the block's own coordinate is the fastest: d' is d*(the product of the
+//     block) + k - measured, the same operand's (0, 0, w even) at d' = 0, (0, 0, w odd) at d' = 1,
+//     (0, 1, w even) at d' = 2 and (1, 0, w even) at d' = 4.
+//   - THE RESULT'S SHAPE is the operand's own with the batch axis made D*times the product of the block and
+//     every spatial axis made extent/block - measured [3, 4, 6] -> [12, 2, 3] - and for the other direction the
+//     same statement the other way round, the batch axis made D over the product of the block and every
+//     spatial axis extent times its own.
+//   - EACH OPERATION IS THE INVERSE OF ITS PARTNER WITH THE SAME FLAG, and the round trip is the IDENTITY:
+//     measured, a space-to-depth over the [3, 4, 6] and then the depth-to-space of what it built answers
+//     1 to 72 in the operand's own order, and a space-to-batch and then a batch-to-space does the same, for
+//     BOTH flags. That is the header's own "This operation is the inverse of" sentence measured rather than
+//     assumed, and it is why the two directions are one chain run forwards and one run backwards here.
+
+- (MPSGraphTensor *)charon_mps_blockShuffle:(MPSGraphTensor *)tensor
+                                     spatial:(NSArray<NSNumber *> *)spatial
+                                       batch:(NSInteger)batch
+                                       block:(NSArray<NSNumber *> *)block
+                                     toBatch:(BOOL)toBatch
+                                     shuffle:(BOOL)shuffle
+                                         name:(NSString *)name
+{
+    NSArray<NSNumber *> *operandShape = tensor.shape;
+    NSUInteger rank = operandShape.count;
+    NSUInteger count = spatial.count;
+    long long product = 1;
+    for (NSUInteger i = 0; i < count; i++)
+        product *= block[i].longLongValue;
+    long long batchExtent = operandShape.count > 0 ? operandShape[(NSUInteger)(batch < 0 ? batch + (NSInteger)rank : batch)].longLongValue : 0;
+
+    // The axes as the release takes them: a negative one counted from the end, and every refusal of this
+    // family asked here where the graph is built rather than left to be discovered as a wrong number.
+    // Measured, and each sentence is the release's own (MPSGraphUtilities.mm:748 and :1171):
+    //   - an axis outside the rank: "'mps.space_to_batch' op invalid axis: 3, axis must be in range - rank <=
+    //     axis < rank, rank = 3", and for the 2D form its own with the axis's NAME: "invalid width_axis (3) for
+    //     shape of rank 3" - a negative one lands there too, the release printing the value it was handed
+    //     ("invalid width_axis (2147483647) for shape of rank 3");
+    //   - the same axis twice in the list: "'mps.space_to_batch' op axis must be unique";
+    //   - the batch axis among the spatial ones: "'mps.batch_to_space' op `batch_axis` = 0 must be unique
+    //     from `spatial_axes`", and the same sentence from 'mps.space_to_batch';
+    //   - as many block dimensions as spatial axes: "`spatial_axes` ... must have sam[e number of elements
+    //     as]", said for both operations;
+    //   - and a block that does not divide the extent it is a block of: "Invalid `block_dimensions[1] = 3
+    //     for input size[2] = 4" for the general form, and "block_size (4) must be multiple of height 2" for
+    //     the 2D form, which is the same rule in the words of an operation that has ONE block size for two
+    //     axes.
+    NSMutableArray<NSNumber *> *spatialAxes = [NSMutableArray arrayWithCapacity:count];
+    for (NSUInteger i = 0; i < count; i++) {
+        NSInteger axis = spatial[i].integerValue;
+        if (axis < 0)
+            axis += (NSInteger)rank;
+        if (axis < 0 || (NSUInteger)axis >= rank) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was given spatial axis %ld of a rank-%lu tensor, and axis 0 to %lu "
+                               @"is all it has: measured, the release's own compiler refuses it with \"invalid "
+                               @"axis: %ld, axis must be in range - rank <= axis < rank, rank = %lu\"", name,
+                  (long)spatial[i].integerValue, (unsigned long)rank, (unsigned long)rank - 1, (long)axis,
+                  (unsigned long)rank];
+        }
+        for (NSNumber *seen in spatialAxes) {
+            if (seen.integerValue == axis) {
+                [NSException raise:NSInvalidArgumentException
+                            format:@"MPSGraph: %@ was given axis %ld of its spatial axes twice, and each of them "
+                                   @"has to be an axis of its own: measured, the release's own compiler refuses "
+                                   @"it with \"'mps.space_to_batch' op axis must be unique\"", name, (long)axis];
+            }
+        }
+        [spatialAxes addObject:@(axis)];
+    }
+    NSInteger where = batch;
+    if (where < 0)
+        where += (NSInteger)rank;
+    if (where < 0 || (NSUInteger)where >= rank) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was given batch axis %ld of a rank-%lu tensor, and axis 0 to %lu is all "
+                           @"it has: measured, the release's own compiler refuses it with \"invalid axis: %ld, "
+                           @"axis must be in range - rank <= axis < rank, rank = %lu\"", name, (long)batch,
+                  (unsigned long)rank, (unsigned long)rank - 1, (long)where, (unsigned long)rank];
+    }
+    for (NSNumber *axisOfBlock in spatialAxes) {
+        if (axisOfBlock.integerValue == where) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was given batch axis %ld, which is one of its spatial axes (@%@), "
+                               @"and the batch axis has to be an axis of its own: measured, the release's own "
+                               @"compiler refuses it with \"`batch_axis` = %ld must be unique from "
+                               @"`spatial_axes`\"", name, (long)where,
+                      [spatialAxes componentsJoinedByString:@", @"], (long)where];
+        }
+    }
+    if (block.count != count) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was given %lu block dimensions for %lu spatial axes, one each: "
+                           @"measured, the release's own compiler refuses it with \"`spatial_axes` ... must have "
+                           @"sam\" - and it says the same for the batch axis", name, (unsigned long)block.count,
+                  (unsigned long)count];
+    }
+    // A BLOCK HAS TO BE AN EXTENT OF ONE AND TO FIT THE AXIS IT IS A BLOCK OF - and which of the two rules
+    // that is depends on the direction, measured, because the two directions move the blocks opposite ways:
+    // moving them TO the batch axis makes every spatial axis extent/block, so each block must DIVIDE its own
+    // extent ("Invalid `block_dimensions[1] = 3 for input size[2] = 4", and the 2D form's "block_size (4) must
+    // be multiple of height 2"), while moving them FROM the batch axis makes every spatial axis extent times
+    // its own and so asks for nothing of that kind - measured, a block of @[@2, @3] over spatial axes of
+    // extents 2 and 2 answers - and what it does ask for is that the PRODUCT of the blocks divide the batch
+    // axis, which is the axis that shrinks here ("Invalid prod(`block_dimensions`) = 4 for input[2] = 2").
+    if (!toBatch && product > 0 && batchExtent % product != 0) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was given block dimensions @%@, whose product is %lld, for a batch "
+                           @"axis of %lld elements, and this direction divides the batch axis by the product: "
+                           @"measured, the release's own compiler refuses it with \"Invalid prod(`block_"
+                           @"dimensions`) = %lld for input[%ld] = %lld\"", name,
+                  [block componentsJoinedByString:@", @"], product, batchExtent, product, (long)where, batchExtent];
+    }
+    for (NSUInteger i = 0; i < count; i++) {
+        long long size = block[i].longLongValue;
+        long long extent = operandShape[spatialAxes[i].unsignedIntegerValue].longLongValue;
+        if (size <= 0 || (toBatch && extent % size != 0)) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was given a block of %lld elements for axis %lu, whose extent is "
+                               @"%lld, and a block has to divide the axis it is a block of: measured, the "
+                               @"release's own compiler refuses it with \"Invalid `block_dimensions[%lu] = %lld "
+                               @"for input size[%lu] = %lld\", and the 2D form says the same rule in the words "
+                               @"of an operation with one block size for two axes - \"block_size (%lld) must be "
+                               @"multiple of height %lld\"", name, size,
+                      (unsigned long)spatialAxes[i].integerValue, extent, (unsigned long)i, size,
+                      (unsigned long)spatialAxes[i].integerValue, extent, size, extent];
+        }
+    }
+
+    // THE ORDER THE BATCH AXIS IS HELD IN, over the pieces of the split tensor: the block's own coordinates in
+    // the spatial list's order and the batch coordinate, and the flag says which of the two comes first.
+    // The block's coordinates run with the LAST spatial axis fastest, so with the flag on the batch
+    // coordinate is the slowest of the two - which is the header's "the values of the spatial blocks
+    // contiguously within the depthAxis dimension" - and with the flag off it is the fastest, which is the
+    // "interleaved with existing values" of the same sentence. Measured over the [3, 4, 6]: with the flag on,
+    // the operand's (0, 0, w even) is at the result's d' = 0, its (0, 0, w odd) at 1 and its (1, 0, w even) at
+    // 4, while with the flag off the same three are at 0, 3 and 1 - the batch coordinate leading in one case
+    // and following in the other, and the block's own coordinates in the same order in both.
+    NSMutableArray<NSString *> *keys = [NSMutableArray array];
+    NSMutableDictionary *indexOf = [NSMutableDictionary dictionary];
+    NSUInteger next = 0;
+    for (NSUInteger axis = 0; axis < rank; axis++) {
+        NSUInteger which = [spatialAxes indexOfObject:@(axis)];
+        if (which == NSNotFound) {
+            [keys addObject:[NSString stringWithFormat:@"ax%lu", (unsigned long)axis]];
+            indexOf[[NSString stringWithFormat:@"ax%lu", (unsigned long)axis]] = @(next++);
+            continue;
+        }
+        [keys addObject:[NSString stringWithFormat:@"hi%lu", (unsigned long)which]];
+        indexOf[[NSString stringWithFormat:@"hi%lu", (unsigned long)which]] = @(next++);
+        [keys addObject:[NSString stringWithFormat:@"ki%lu", (unsigned long)which]];
+        indexOf[[NSString stringWithFormat:@"ki%lu", (unsigned long)which]] = @(next++);
+    }
+    NSString *batchKey = [NSString stringWithFormat:@"ax%ld", (long)where];
+    NSMutableArray<NSNumber *> *woven = [NSMutableArray arrayWithCapacity:count + 1];
+    if (shuffle) {
+        [woven addObject:indexOf[batchKey]];
+        for (NSUInteger i = 0; i < count; i++)
+            [woven addObject:indexOf[[NSString stringWithFormat:@"ki%lu", (unsigned long)i]]];
+    } else {
+        for (NSUInteger i = 0; i < count; i++)
+            [woven addObject:indexOf[[NSString stringWithFormat:@"ki%lu", (unsigned long)i]]];
+        [woven addObject:indexOf[batchKey]];
+    }
+    for (NSUInteger i = 0; i < count; i++)
+        [woven addObject:indexOf[[NSString stringWithFormat:@"hi%lu", (unsigned long)i]]];
+
+    // THE EXTENT OF EVERY PIECE, which is what tells the two directions apart: moving the blocks TO the batch
+    // axis splits each spatial axis into its rows and its columns and leaves the batch axis whole, and moving
+    // them FROM it is the same statement the other way round.
+    long long *piece = calloc(keys.count, sizeof(long long));
+    for (NSUInteger i = 0; i < count; i++) {
+        long long extent = operandShape[spatialAxes[i].unsignedIntegerValue].longLongValue;
+        piece[[indexOf[[NSString stringWithFormat:@"hi%lu", (unsigned long)i]] unsignedIntegerValue]] =
+            toBatch ? extent / block[i].longLongValue : extent;
+        piece[[indexOf[[NSString stringWithFormat:@"ki%lu", (unsigned long)i]] unsignedIntegerValue]] =
+            block[i].longLongValue;
+    }
+    piece[[indexOf[batchKey] unsignedIntegerValue]] = toBatch ? batchExtent : batchExtent / product;
+    // And every axis that is neither a spatial one nor the batch axis keeps its own extent throughout, which
+    // is what the orderings above carry past the woven group: the first version of this gave an extent only to
+    // the spatial pieces and to the batch axis, so a graph with an axis of its own - one spatial axis out of a
+    // rank of three - carried a zero into the reshape and was refused with "a shape holding 0".
+    for (NSUInteger axis = 0; axis < rank; axis++)
+        if ([spatialAxes indexOfObject:@(axis)] == NSNotFound && axis != (NSUInteger)where)
+            piece[[indexOf[[NSString stringWithFormat:@"ax%lu", (unsigned long)axis]] unsignedIntegerValue]] =
+                operandShape[axis].longLongValue;
+
+    MPSGraphTensor *result = nil;
+    if (toBatch) {
+        NSMutableArray<NSNumber *> *splitShape = [NSMutableArray arrayWithCapacity:keys.count];
+        for (NSUInteger j = 0; j < keys.count; j++)
+            [splitShape addObject:@(piece[j])];
+        // THE ORDERING THE TRANSPOSE READS, and the result's axes are the OPERAND'S OWN in the operand's own
+        // order - measured, which is what says a spatial list written the other way round answers the same
+        // shape over the same bytes, and what the two cases that put the block rows before an axis of the
+        // operand's own got wrong at first. The batch axis is the one that is replaced: by the woven group,
+        // whose pieces the merge below collapses into the single axis the result has.
+        NSMutableArray<NSNumber *> *permutation = [NSMutableArray arrayWithCapacity:keys.count];
+        NSMutableArray<NSNumber *> *resultShape = [NSMutableArray arrayWithCapacity:rank];
+        long long merged = 1;
+        for (NSUInteger j = 0; j < count + 1; j++)
+            merged *= piece[woven[j].unsignedIntegerValue];
+        for (NSUInteger axis = 0; axis < rank; axis++) {
+            if (axis == (NSUInteger)where) {
+                [permutation addObjectsFromArray:woven];
+                [resultShape addObject:@(merged)];
+                continue;
+            }
+            NSUInteger which = [spatialAxes indexOfObject:@(axis)];
+            if (which == NSNotFound) {
+                    [permutation addObject:indexOf[[NSString stringWithFormat:@"ax%lu", (unsigned long)axis]]];
+                [resultShape addObject:operandShape[axis]];
+                continue;
+            }
+            NSUInteger rows = [indexOf[[NSString stringWithFormat:@"hi%lu", (unsigned long)which]] unsignedIntegerValue];
+            [permutation addObject:@(rows)];
+            [resultShape addObject:@(piece[rows])];
+        }
+        MPSGraphTensor *split = [self reshapeTensor:tensor withShape:splitShape name:name];
+        MPSGraphTensor *moved = [self transposeTensor:split permutation:permutation name:name];
+        result = [self reshapeTensor:moved withShape:resultShape name:name];
+    } else {
+        // THE SAME CHAIN BACKWARDS, which is not the chain un-done step by step but its own three steps read
+        // the other way round: the batch axis - which holds the blocks here - is split into the pieces the
+        // other direction weaves together, the transpose carries each block coordinate next to the spatial
+        // axis it belongs to, and the merge is of each spatial axis' own two pieces. Measured, this direction
+        // is the inverse of the other with the same flag and the round trip is the identity, which is what
+        // says the two are one chain and not two.
+        //
+        // Where each piece sits inside the batch axis is the flag's own question again: with it on the block
+        // coordinates are contiguous in the result's batch axis - so the destination coordinate is the SLOWEST
+        // of the pieces here - and with it off they are interleaved with it, so it is the fastest.
+        NSMutableArray<NSNumber *> *sizes = [NSMutableArray arrayWithCapacity:count + 1];
+        for (NSUInteger j = 0; j < count + 1; j++)
+            [sizes addObject:@(piece[woven[j].unsignedIntegerValue])];
+        // The index of each piece inside the axis the batch axis was split into: the destination coordinate's,
+        // and the block coordinate of the i-th spatial axis'.
+        NSUInteger destination = shuffle ? 0 : count;
+        NSMutableArray<NSNumber *> *blockAt = [NSMutableArray arrayWithCapacity:count];
+        for (NSUInteger i = 0; i < count; i++)
+            [blockAt addObject:@(shuffle ? i + 1 : i)];
+        // The unmerged shape is the operand's own with the batch axis replaced by those pieces, and the
+        // ordering the transpose reads is the operand's axes in its own order with each spatial axis's block
+        // coordinate beside it - so the merge below has the two of each adjacent.
+        NSMutableArray<NSNumber *> *unmergedShape = [NSMutableArray arrayWithCapacity:rank + count];
+        NSMutableArray<NSNumber *> *permutation = [NSMutableArray arrayWithCapacity:rank + count];
+        // The unmerged tensor's axes are the operand's own with the batch axis replaced by the pieces, so the
+        // pieces sit at the batch axis's own position and every axis after it moves along by their number.
+        NSUInteger base = (NSUInteger)where;
+        for (NSUInteger axis = 0; axis < rank; axis++) {
+            if (axis == base) {
+                [unmergedShape addObjectsFromArray:sizes];
+                [permutation addObject:@(base + destination)];
+                continue;
+            }
+            NSUInteger own = axis + (axis > base ? count : 0);
+            [unmergedShape addObject:operandShape[axis]];
+            [permutation addObject:@(own)];
+            NSUInteger which = [spatialAxes indexOfObject:@(axis)];
+            if (which != NSNotFound) {
+                // The spatial axis keeps its own extent here - this direction makes it extent times its block
+                // - and the block coordinate of it, which lives in the batch group, follows it into the merge.
+                [permutation addObject:@(base + [blockAt[which] unsignedIntegerValue])];
+            }
+        }
+        // The result's shape: the batch axis over the product of the block and every spatial axis times its
+        // own - the same statement the other direction is, the other way round.
+        NSMutableArray<NSNumber *> *finalShape = [NSMutableArray arrayWithCapacity:rank];
+        for (NSUInteger axis = 0; axis < rank; axis++) {
+            NSUInteger which = [spatialAxes indexOfObject:@(axis)];
+            if (axis == (NSUInteger)where) {
+                [finalShape addObject:@(operandShape[axis].longLongValue / product)];
+            } else if (which != NSNotFound) {
+                [finalShape addObject:@(operandShape[axis].longLongValue * block[which].longLongValue)];
+            } else {
+                [finalShape addObject:operandShape[axis]];
+            }
+        }
+        MPSGraphTensor *unmerged = [self reshapeTensor:tensor withShape:unmergedShape name:name];
+        MPSGraphTensor *moved = [self transposeTensor:unmerged permutation:permutation name:name];
+        result = [self reshapeTensor:moved withShape:finalShape name:name];
+    }
+    free(piece);
+    return result;
+}
+
+// The FED forms of the block-moving family, where the spatial axes, the batch axis and the block dimensions
+// each arrive as a tensor. A parameter the graph HOLDS - a CONSTANT - is read here, when the graph is built,
+// and one the caller FEEDS is refused here: measured, the release answers a constant of the same values with
+// exactly what the written-down form answers, and takes the process down over a placeholder, which is the rule
+// this library follows for every fed parameter of this framework's shape family (the split's sizes, the
+// coordinate's axis and shape, and here the three of this one).
+- (MPSGraphTensor *)charon_mps_fedBlockShuffle:(MPSGraphTensor *)tensor
+                                       spatial:(MPSGraphTensor *)spatial
+                                         batch:(MPSGraphTensor *)batch
+                                         block:(MPSGraphTensor *)block
+                                       toBatch:(BOOL)toBatch
+                                       shuffle:(BOOL)shuffle
+                                           name:(NSString *)name
+{
+    NSArray<NSNumber *> *axes = [self charon_mps_constantShapeOfTensor:spatial];
+    NSArray<NSNumber *> *where = [self charon_mps_constantShapeOfTensor:batch];
+    NSArray<NSNumber *> *sizes = [self charon_mps_constantShapeOfTensor:block];
+    if (axes == nil || where == nil || sizes == nil) {
+        MPSGraphTensor *fed = axes == nil ? spatial : (where == nil ? batch : block);
+        MPSDataType type = fed.dataType;
+        if (type == MPSDataTypeFloat32 || type == MPSDataTypeFloat16 || type == MPSDataTypeBool) {
+            [NSException raise:NSInvalidArgumentException
+                        format:@"MPSGraph: %@ was given a parameter of this family as a tensor of data type "
+                               @"0x%x, and an axis, a block and a list of extents are all indices: measured, the "
+                               @"release's own compiler refuses a floating point operand with \"'mps."
+                               @"space_to_batch' op operand #%lu must be 0D tensor of mps index type values\"",
+                              name, (unsigned)type, (unsigned long)(fed == spatial ? 1 : (fed == batch ? 2 : 3))];
+        }
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was given a parameter of this family as a tensor the caller feeds, "
+                           @"and a parameter that arrives as data is not one the release can build a graph over: "
+                           @"measured, it answers a CONSTANT of the same values with exactly what the written-"
+                           @"down form answers and takes the process down over a placeholder", name];
+    }
+    if (where.count != 1) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was given %lu numbers as its batch axis, and the batch axis is one of "
+                           @"them: measured, the release takes it as a 0D tensor or one of shape [1]", name,
+                  (unsigned long)where.count];
+    }
+    return [self charon_mps_blockShuffle:tensor
+                                  spatial:axes
+                                    batch:where.firstObject.integerValue
+                                    block:sizes
+                                  toBatch:toBatch
+                                  shuffle:shuffle
+                                      name:name];
+}
+
 #pragma mark - the gather family: the one seam every release's shape factory goes through
 // What a gather is: the result's shape, and the parameters that say which transformation produces it. The
 // walk in MPSGraphInterpreter14.m is one function for the whole family - the squeeze and the expanded

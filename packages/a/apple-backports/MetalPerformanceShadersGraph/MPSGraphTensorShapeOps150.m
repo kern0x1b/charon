@@ -114,4 +114,60 @@
                                name:name];
 }
 
+#pragma mark - the space-to-depth family of 15.0: two axes of a block and the axis the blocks go to
+
+// The SPACE-TO-DEPTH of 15.0, which is the general form of 16.1 with two spatial axes and one block size
+// for both of them, and every measurement of this family is in
+// -charon_mps_blockShuffle:spatial:batch:block:toBatch:shuffle:name: and in
+// facts/MetalPerformanceShadersGraph/Core.md. What is here is the 2D form's own rule about ITS two axes:
+// widthAxis is the fastest-running dimension WITHIN the block and heightAxis the second, so the general form's
+// spatialAxes list is (heightAxis, widthAxis) - measured, the two forms over the same operand and the same
+// block answer byte for byte the same values - and the depth axis is where the blocks go.
+//
+// Measured over a [2, 2, 4] of (1, 2, 3, 4 | 5, 6, 7, 8 | 9, 10, 11, 12 | 13, 14, 15, 16) with widthAxis 2,
+// heightAxis 1, depthAxis 0 and a block of 2: the result is an 8x1x2, and with usePixelShuffleOrder=NO it is
+// (1, 3 | 9, 11 | 2, 4 | 10, 12 | 5, 7 | 13, 15 | 6, 8 | 14, 16) - the operand's batch coordinate varying
+// fastest inside the result's depth axis - and with YES (1, 3 | 2, 4 | 5, 7 | 6, 8 | 9, 11 | 10, 12 | 13, 15 |
+// 14, 16), the block's own two values contiguous in it. A block of ONE is the identity (a 2x2x4 of the same
+// sixteen values), and the 2D form's refusals are the release's own: an axis outside the rank with the axis's
+// name in the sentence ("invalid width_axis (3) for shape of rank 3"), the depth axis among the two spatial
+// ones, and a block that does not divide the extent it is a block of ("block_size (4) must be multiple of
+// height 2").
+- (MPSGraphTensor *)spaceToDepth2DTensor:(MPSGraphTensor *)tensor
+                              widthAxis:(NSUInteger)widthAxis
+                             heightAxis:(NSUInteger)heightAxis
+                              depthAxis:(NSUInteger)depthAxis
+                              blockSize:(NSUInteger)blockSize
+                   usePixelShuffleOrder:(BOOL)usePixelShuffleOrder
+                                   name:(NSString *)name
+{
+    return [self charon_mps_blockShuffle:tensor
+                                  spatial:@[@(heightAxis), @(widthAxis)]
+                                    batch:(NSInteger)depthAxis
+                                    block:@[@(blockSize), @(blockSize)]
+                                  toBatch:YES
+                                  shuffle:usePixelShuffleOrder
+                                      name:name];
+}
+
+// The DEPTH-TO-SPACE of 15.0, which is the inverse of the space-to-depth above with the same flag: measured,
+// a space-to-depth over a [3, 4, 6] and then the depth-to-space of what it built answers 1 to 72 in the
+// operand's own order, for both flags.
+- (MPSGraphTensor *)depthToSpace2DTensor:(MPSGraphTensor *)tensor
+                              widthAxis:(NSUInteger)widthAxis
+                             heightAxis:(NSUInteger)heightAxis
+                              depthAxis:(NSUInteger)depthAxis
+                              blockSize:(NSUInteger)blockSize
+                   usePixelShuffleOrder:(BOOL)usePixelShuffleOrder
+                                   name:(NSString *)name
+{
+    return [self charon_mps_blockShuffle:tensor
+                                  spatial:@[@(heightAxis), @(widthAxis)]
+                                    batch:(NSInteger)depthAxis
+                                    block:@[@(blockSize), @(blockSize)]
+                                  toBatch:NO
+                                  shuffle:usePixelShuffleOrder
+                                      name:name];
+}
+
 @end
