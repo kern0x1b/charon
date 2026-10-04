@@ -74,7 +74,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"rootCACertificate:%@; ", charonDescribeObject(self->_rootCACertificate)];
+    [text appendFormat:@"rootCACertificate:%@; ", charonDescribeObject([self->_rootCACertificate base64EncodedStringWithOptions:0])];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];

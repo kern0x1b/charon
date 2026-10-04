@@ -70,7 +70,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"hostname:%@; ", charonDescribeObject(self->_hostname)];
+    [text appendFormat:@"hostname:%@; ", charonDescribeObject([self->_hostname base64EncodedStringWithOptions:0])];
     [text appendFormat:@"port:%@; ", charonDescribeObject(self->_port)];
     [text appendFormat:@"caid:%@; ", charonDescribeObject(self->_caid)];
     [text appendFormat:@"ccdid:%@; ", charonDescribeObject(self->_ccdid)];

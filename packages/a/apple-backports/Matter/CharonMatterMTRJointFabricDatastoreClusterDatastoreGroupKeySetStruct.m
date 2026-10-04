@@ -76,11 +76,11 @@ static NSString *charonDescribeScalar(long long value)
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"groupKeySetID:%@; ", charonDescribeObject(self->_groupKeySetID)];
     [text appendFormat:@"groupKeySecurityPolicy:%@; ", charonDescribeObject(self->_groupKeySecurityPolicy)];
-    [text appendFormat:@"epochKey0:%@; ", charonDescribeObject(self->_epochKey0)];
+    [text appendFormat:@"epochKey0:%@; ", charonDescribeObject([self->_epochKey0 base64EncodedStringWithOptions:0])];
     [text appendFormat:@"epochStartTime0:%@; ", charonDescribeObject(self->_epochStartTime0)];
-    [text appendFormat:@"epochKey1:%@; ", charonDescribeObject(self->_epochKey1)];
+    [text appendFormat:@"epochKey1:%@; ", charonDescribeObject([self->_epochKey1 base64EncodedStringWithOptions:0])];
     [text appendFormat:@"epochStartTime1:%@; ", charonDescribeObject(self->_epochStartTime1)];
-    [text appendFormat:@"epochKey2:%@; ", charonDescribeObject(self->_epochKey2)];
+    [text appendFormat:@"epochKey2:%@; ", charonDescribeObject([self->_epochKey2 base64EncodedStringWithOptions:0])];
     [text appendFormat:@"epochStartTime2:%@; ", charonDescribeObject(self->_epochStartTime2)];
     [text appendFormat:@"groupKeyMulticastPolicy:%@; ", charonDescribeObject(self->_groupKeyMulticastPolicy)];
     [text appendString:@">"];

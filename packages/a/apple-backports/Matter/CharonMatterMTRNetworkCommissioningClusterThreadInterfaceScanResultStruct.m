@@ -82,7 +82,7 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"networkName:%@; ", charonDescribeObject(self->_networkName)];
     [text appendFormat:@"channel:%@; ", charonDescribeObject(self->_channel)];
     [text appendFormat:@"version:%@; ", charonDescribeObject(self->_version)];
-    [text appendFormat:@"extendedAddress:%@; ", charonDescribeObject(self->_extendedAddress)];
+    [text appendFormat:@"extendedAddress:%@; ", charonDescribeObject([self->_extendedAddress base64EncodedStringWithOptions:0])];
     [text appendFormat:@"rssi:%@; ", charonDescribeObject(self->_rssi)];
     [text appendFormat:@"lqi:%@; ", charonDescribeObject(self->_lqi)];
     [text appendString:@">"];

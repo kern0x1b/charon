@@ -90,7 +90,7 @@ static NSString *charonDescribeScalar(long long value)
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"status:%@; ", charonDescribeObject(self->_status)];
-    [text appendFormat:@"logContent:%@; ", charonDescribeObject(self->_logContent)];
+    [text appendFormat:@"logContent:%@; ", charonDescribeObject([self->_logContent base64EncodedStringWithOptions:0])];
     [text appendFormat:@"utcTimeStamp:%@; ", charonDescribeObject(self->_utcTimeStamp)];
     [text appendFormat:@"timeSinceBoot:%@; ", charonDescribeObject(self->_timeSinceBoot)];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];

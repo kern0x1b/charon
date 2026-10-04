@@ -62,7 +62,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"activeDataset:%@; ", charonDescribeObject(self->_activeDataset)];
+    [text appendFormat:@"activeDataset:%@; ", charonDescribeObject([self->_activeDataset base64EncodedStringWithOptions:0])];
     [text appendFormat:@"breadcrumb:%@; ", charonDescribeObject(self->_breadcrumb)];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];

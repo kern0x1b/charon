@@ -63,10 +63,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"networkID:%@; ", charonDescribeObject(self->_networkID)];
+    [text appendFormat:@"networkID:%@; ", charonDescribeObject([self->_networkID base64EncodedStringWithOptions:0])];
     [text appendFormat:@"connected:%@; ", charonDescribeObject(self->_connected)];
-    [text appendFormat:@"networkIdentifier:%@; ", charonDescribeObject(self->_networkIdentifier)];
-    [text appendFormat:@"clientIdentifier:%@; ", charonDescribeObject(self->_clientIdentifier)];
+    [text appendFormat:@"networkIdentifier:%@; ", charonDescribeObject([self->_networkIdentifier base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"clientIdentifier:%@; ", charonDescribeObject([self->_clientIdentifier base64EncodedStringWithOptions:0])];
     [text appendString:@">"];
     return text;
 }

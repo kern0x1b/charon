@@ -107,12 +107,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"rootPublicKey:%@; ", charonDescribeObject(self->_rootPublicKey)];
+    [text appendFormat:@"rootPublicKey:%@; ", charonDescribeObject([self->_rootPublicKey base64EncodedStringWithOptions:0])];
     [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self->_vendorID)];
     [text appendFormat:@"fabricID:%@; ", charonDescribeObject(self->_fabricID)];
     [text appendFormat:@"nodeID:%@; ", charonDescribeObject(self->_nodeID)];
     [text appendFormat:@"label:%@; ", charonDescribeObject(self->_label)];
-    [text appendFormat:@"vidVerificationStatement:%@; ", charonDescribeObject(self->_vidVerificationStatement)];
+    [text appendFormat:@"vidVerificationStatement:%@; ", charonDescribeObject([self->_vidVerificationStatement base64EncodedStringWithOptions:0])];
     [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
     [text appendString:@">"];
     return text;

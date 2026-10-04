@@ -98,7 +98,7 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"providerNodeID:%@; ", charonDescribeObject(self->_providerNodeID)];
     [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self->_vendorID)];
     [text appendFormat:@"announcementReason:%@; ", charonDescribeObject(self->_announcementReason)];
-    [text appendFormat:@"metadataForNode:%@; ", charonDescribeObject(self->_metadataForNode)];
+    [text appendFormat:@"metadataForNode:%@; ", charonDescribeObject([self->_metadataForNode base64EncodedStringWithOptions:0])];
     [text appendFormat:@"endpoint:%@; ", charonDescribeObject(self->_endpoint)];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];

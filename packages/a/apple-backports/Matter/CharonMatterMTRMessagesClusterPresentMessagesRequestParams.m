@@ -75,7 +75,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"messageID:%@; ", charonDescribeObject(self->_messageID)];
+    [text appendFormat:@"messageID:%@; ", charonDescribeObject([self->_messageID base64EncodedStringWithOptions:0])];
     [text appendFormat:@"priority:%@; ", charonDescribeObject(self->_priority)];
     [text appendFormat:@"messageControl:%@; ", charonDescribeObject(self->_messageControl)];
     [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];

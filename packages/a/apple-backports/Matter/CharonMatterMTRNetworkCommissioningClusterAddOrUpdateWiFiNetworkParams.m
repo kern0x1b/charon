@@ -71,12 +71,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"ssid:%@; ", charonDescribeObject(self->_ssid)];
-    [text appendFormat:@"credentials:%@; ", charonDescribeObject(self->_credentials)];
+    [text appendFormat:@"ssid:%@; ", charonDescribeObject([self->_ssid base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"credentials:%@; ", charonDescribeObject([self->_credentials base64EncodedStringWithOptions:0])];
     [text appendFormat:@"breadcrumb:%@; ", charonDescribeObject(self->_breadcrumb)];
-    [text appendFormat:@"networkIdentity:%@; ", charonDescribeObject(self->_networkIdentity)];
-    [text appendFormat:@"clientIdentifier:%@; ", charonDescribeObject(self->_clientIdentifier)];
-    [text appendFormat:@"possessionNonce:%@; ", charonDescribeObject(self->_possessionNonce)];
+    [text appendFormat:@"networkIdentity:%@; ", charonDescribeObject([self->_networkIdentity base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"clientIdentifier:%@; ", charonDescribeObject([self->_clientIdentifier base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"possessionNonce:%@; ", charonDescribeObject([self->_possessionNonce base64EncodedStringWithOptions:0])];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];

@@ -67,10 +67,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"scheduleHandle:%@; ", charonDescribeObject(self->_scheduleHandle)];
+    [text appendFormat:@"scheduleHandle:%@; ", charonDescribeObject([self->_scheduleHandle base64EncodedStringWithOptions:0])];
     [text appendFormat:@"systemMode:%@; ", charonDescribeObject(self->_systemMode)];
     [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
-    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject(self->_presetHandle)];
+    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject([self->_presetHandle base64EncodedStringWithOptions:0])];
     [text appendFormat:@"transitions:%@; ", charonDescribeObject(self->_transitions)];
     [text appendFormat:@"builtIn:%@; ", charonDescribeObject(self->_builtIn)];
     [text appendString:@">"];

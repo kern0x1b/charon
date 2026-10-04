@@ -82,7 +82,7 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"a:%@; ", charonDescribeObject(self->_a)];
     [text appendFormat:@"b:%@; ", charonDescribeObject(self->_b)];
     [text appendFormat:@"c:%@; ", charonDescribeObject(self->_c)];
-    [text appendFormat:@"d:%@; ", charonDescribeObject(self->_d)];
+    [text appendFormat:@"d:%@; ", charonDescribeObject([self->_d base64EncodedStringWithOptions:0])];
     [text appendFormat:@"e:%@; ", charonDescribeObject(self->_e)];
     [text appendFormat:@"f:%@; ", charonDescribeObject(self->_f)];
     [text appendFormat:@"g:%@; ", charonDescribeObject(self->_g)];

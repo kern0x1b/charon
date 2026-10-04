@@ -86,7 +86,7 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"playbackSpeed:%@; ", charonDescribeObject(self->_playbackSpeed)];
     [text appendFormat:@"seekRangeEnd:%@; ", charonDescribeObject(self->_seekRangeEnd)];
     [text appendFormat:@"seekRangeStart:%@; ", charonDescribeObject(self->_seekRangeStart)];
-    [text appendFormat:@"data:%@; ", charonDescribeObject(self->_data)];
+    [text appendFormat:@"data:%@; ", charonDescribeObject([self->_data base64EncodedStringWithOptions:0])];
     [text appendFormat:@"audioAdvanceUnmuted:%@; ", charonDescribeObject(self->_audioAdvanceUnmuted)];
     [text appendString:@">"];
     return text;

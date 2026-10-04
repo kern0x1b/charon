@@ -68,10 +68,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"signingKey:%@; ", charonDescribeObject(self->_signingKey)];
-    [text appendFormat:@"verificationKey:%@; ", charonDescribeObject(self->_verificationKey)];
-    [text appendFormat:@"groupIdentifier:%@; ", charonDescribeObject(self->_groupIdentifier)];
-    [text appendFormat:@"groupResolvingKey:%@; ", charonDescribeObject(self->_groupResolvingKey)];
+    [text appendFormat:@"signingKey:%@; ", charonDescribeObject([self->_signingKey base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"verificationKey:%@; ", charonDescribeObject([self->_verificationKey base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"groupIdentifier:%@; ", charonDescribeObject([self->_groupIdentifier base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"groupResolvingKey:%@; ", charonDescribeObject([self->_groupResolvingKey base64EncodedStringWithOptions:0])];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];

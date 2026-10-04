@@ -71,9 +71,9 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"nocValue:%@; ", charonDescribeObject(self->_nocValue)];
-    [text appendFormat:@"icacValue:%@; ", charonDescribeObject(self->_icacValue)];
-    [text appendFormat:@"ipkValue:%@; ", charonDescribeObject(self->_ipkValue)];
+    [text appendFormat:@"nocValue:%@; ", charonDescribeObject([self->_nocValue base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"icacValue:%@; ", charonDescribeObject([self->_icacValue base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"ipkValue:%@; ", charonDescribeObject([self->_ipkValue base64EncodedStringWithOptions:0])];
     [text appendFormat:@"caseAdminSubject:%@; ", charonDescribeObject(self->_caseAdminSubject)];
     [text appendFormat:@"adminVendorId:%@; ", charonDescribeObject(self->_adminVendorId)];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];

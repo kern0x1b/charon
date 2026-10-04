@@ -77,9 +77,9 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"imageURI:%@; ", charonDescribeObject(self->_imageURI)];
     [text appendFormat:@"softwareVersion:%@; ", charonDescribeObject(self->_softwareVersion)];
     [text appendFormat:@"softwareVersionString:%@; ", charonDescribeObject(self->_softwareVersionString)];
-    [text appendFormat:@"updateToken:%@; ", charonDescribeObject(self->_updateToken)];
+    [text appendFormat:@"updateToken:%@; ", charonDescribeObject([self->_updateToken base64EncodedStringWithOptions:0])];
     [text appendFormat:@"userConsentNeeded:%@; ", charonDescribeObject(self->_userConsentNeeded)];
-    [text appendFormat:@"metadataForRequestor:%@; ", charonDescribeObject(self->_metadataForRequestor)];
+    [text appendFormat:@"metadataForRequestor:%@; ", charonDescribeObject([self->_metadataForRequestor base64EncodedStringWithOptions:0])];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;

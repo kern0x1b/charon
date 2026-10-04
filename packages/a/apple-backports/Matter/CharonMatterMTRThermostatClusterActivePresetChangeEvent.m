@@ -57,8 +57,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"previousPresetHandle:%@; ", charonDescribeObject(self->_previousPresetHandle)];
-    [text appendFormat:@"currentPresetHandle:%@; ", charonDescribeObject(self->_currentPresetHandle)];
+    [text appendFormat:@"previousPresetHandle:%@; ", charonDescribeObject([self->_previousPresetHandle base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"currentPresetHandle:%@; ", charonDescribeObject([self->_currentPresetHandle base64EncodedStringWithOptions:0])];
     [text appendString:@">"];
     return text;
 }

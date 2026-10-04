@@ -79,8 +79,8 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"chunkDuration:%@; ", charonDescribeObject(self->_chunkDuration)];
     [text appendFormat:@"sessionGroup:%@; ", charonDescribeObject(self->_sessionGroup)];
     [text appendFormat:@"trackName:%@; ", charonDescribeObject(self->_trackName)];
-    [text appendFormat:@"cencKey:%@; ", charonDescribeObject(self->_cencKey)];
-    [text appendFormat:@"cencKeyID:%@; ", charonDescribeObject(self->_cencKeyID)];
+    [text appendFormat:@"cencKey:%@; ", charonDescribeObject([self->_cencKey base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"cencKeyID:%@; ", charonDescribeObject([self->_cencKeyID base64EncodedStringWithOptions:0])];
     [text appendFormat:@"metadataEnabled:%@; ", charonDescribeObject(self->_metadataEnabled)];
     [text appendString:@">"];
     return text;

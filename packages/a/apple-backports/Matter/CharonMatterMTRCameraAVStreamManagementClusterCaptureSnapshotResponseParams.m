@@ -62,7 +62,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"data:%@; ", charonDescribeObject(self->_data)];
+    [text appendFormat:@"data:%@; ", charonDescribeObject([self->_data base64EncodedStringWithOptions:0])];
     [text appendFormat:@"imageCodec:%@; ", charonDescribeObject(self->_imageCodec)];
     [text appendFormat:@"resolution:%@; ", charonDescribeObject(self->_resolution)];
     [text appendString:@">"];

@@ -69,7 +69,7 @@ static NSString *charonDescribeScalar(long long value)
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"dayOfWeek:%@; ", charonDescribeObject(self->_dayOfWeek)];
     [text appendFormat:@"transitionTime:%@; ", charonDescribeObject(self->_transitionTime)];
-    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject(self->_presetHandle)];
+    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject([self->_presetHandle base64EncodedStringWithOptions:0])];
     [text appendFormat:@"systemMode:%@; ", charonDescribeObject(self->_systemMode)];
     [text appendFormat:@"coolingSetpoint:%@; ", charonDescribeObject(self->_coolingSetpoint)];
     [text appendFormat:@"heatingSetpoint:%@; ", charonDescribeObject(self->_heatingSetpoint)];

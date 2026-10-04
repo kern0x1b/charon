@@ -56,7 +56,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"payload:%@; ", charonDescribeObject(self->_payload)];
+    [text appendFormat:@"payload:%@; ", charonDescribeObject([self->_payload base64EncodedStringWithOptions:0])];
     [text appendString:@">"];
     return text;
 }

@@ -72,8 +72,8 @@ static NSString *charonDescribeScalar(long long value)
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"security:%@; ", charonDescribeObject(self->_security)];
-    [text appendFormat:@"ssid:%@; ", charonDescribeObject(self->_ssid)];
-    [text appendFormat:@"bssid:%@; ", charonDescribeObject(self->_bssid)];
+    [text appendFormat:@"ssid:%@; ", charonDescribeObject([self->_ssid base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"bssid:%@; ", charonDescribeObject([self->_bssid base64EncodedStringWithOptions:0])];
     [text appendFormat:@"channel:%@; ", charonDescribeObject(self->_channel)];
     [text appendFormat:@"wiFiBand:%@; ", charonDescribeObject(self->_wiFiBand)];
     [text appendFormat:@"rssi:%@; ", charonDescribeObject(self->_rssi)];

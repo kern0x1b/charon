@@ -1654,7 +1654,33 @@ def describe_body(name, properties, slots):
     for prop in properties:
         slot = slots.get(prop["name"], "_" + prop["name"])
         spelling = bare_type(prop)
-        if spelling.endswith("*"):
+        if spelling.replace("*", " ").split()[-1:] == ["NSData"] or \
+                spelling.replace("*", " ").split()[-1:] == ["NSMutableData"]:
+            # An OCTET STRING prints as BASE64, not as %@ of the NSData, and that is the framework's own
+            # rule rather than a Foundation one - the zap-generated source writes it member by member:
+            #
+            #   charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/zap-generated/MTRStructsObjc.mm:788
+            #       [NSString stringWithFormat:@"<%@: data:%@; fabricIndex:%@; >", NSStringFromClass([self
+            #       class]), [_data base64EncodedStringWithOptions:0], _fabricIndex]
+            #
+            # and it does so in EVERY generated family - 334 members across MTRStructsObjc.mm's 33
+            # descriptions and MTRCommandPayloadsObjc.mm's 40, and every NSData member among them is
+            # base64'd and nothing else is. An EMPTY NSData base64-encodes to the empty string, which is
+            # exactly the `d:;` and `hostname:;` the host prints where the port printed
+            # `{length = 0, bytes = 0x}` - 10 readings and their twins, and a port defect after all, not a
+            # difference between two Foundation runtimes.
+            #
+            # A NULLABLE one needs no special case: `base64EncodedStringWithOptions:` on nil returns nil and
+            # %@ prints a nil argument as `(null)`, which is what the host prints for a nil member.
+            #
+            # `-base64EncodedStringWithOptions:` is iOS 7 and this library is carried from 6.0, so the call
+            # is FoundationBackports' and not a hand-rolled encoder:
+            #   packages/a/apple-backports/registry/Foundation/base.json carries
+            #   `-[NSData base64EncodedStringWithOptions:]` as implemented, and MatterClusterBackports
+            #   already lists `libraries = {"FoundationBackports"}` (modules/apple/backports.lua:119), so
+            #   the object links it the way every other object of the library does.
+            value = "charonDescribeObject([self->%s base64EncodedStringWithOptions:0])" % slot
+        elif spelling.endswith("*"):
             value = "charonDescribeObject(self->%s)" % slot
         elif spelling.split()[-1:] == ["BOOL"]:
             value = "charonDescribeScalar((long long)(self->%s))" % slot

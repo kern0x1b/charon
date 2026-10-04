@@ -63,8 +63,8 @@ static NSString *charonDescribeScalar(long long value)
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"cipherSuite:%@; ", charonDescribeObject(self->_cipherSuite)];
-    [text appendFormat:@"baseKey:%@; ", charonDescribeObject(self->_baseKey)];
-    [text appendFormat:@"kid:%@; ", charonDescribeObject(self->_kid)];
+    [text appendFormat:@"baseKey:%@; ", charonDescribeObject([self->_baseKey base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"kid:%@; ", charonDescribeObject([self->_kid base64EncodedStringWithOptions:0])];
     [text appendString:@">"];
     return text;
 }

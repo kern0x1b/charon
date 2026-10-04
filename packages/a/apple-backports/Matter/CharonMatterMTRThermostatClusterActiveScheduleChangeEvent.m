@@ -57,8 +57,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"previousScheduleHandle:%@; ", charonDescribeObject(self->_previousScheduleHandle)];
-    [text appendFormat:@"currentScheduleHandle:%@; ", charonDescribeObject(self->_currentScheduleHandle)];
+    [text appendFormat:@"previousScheduleHandle:%@; ", charonDescribeObject([self->_previousScheduleHandle base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"currentScheduleHandle:%@; ", charonDescribeObject([self->_currentScheduleHandle base64EncodedStringWithOptions:0])];
     [text appendString:@">"];
     return text;
 }

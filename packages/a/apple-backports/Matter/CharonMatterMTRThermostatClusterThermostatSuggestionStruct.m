@@ -66,7 +66,7 @@ static NSString *charonDescribeScalar(long long value)
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"uniqueID:%@; ", charonDescribeObject(self->_uniqueID)];
-    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject(self->_presetHandle)];
+    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject([self->_presetHandle base64EncodedStringWithOptions:0])];
     [text appendFormat:@"effectiveTime:%@; ", charonDescribeObject(self->_effectiveTime)];
     [text appendFormat:@"expirationTime:%@; ", charonDescribeObject(self->_expirationTime)];
     [text appendString:@">"];

@@ -64,7 +64,7 @@ static NSString *charonDescribeScalar(long long value)
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
     [text appendFormat:@"fabricBindingVersion:%@; ", charonDescribeObject(self->_fabricBindingVersion)];
-    [text appendFormat:@"signature:%@; ", charonDescribeObject(self->_signature)];
+    [text appendFormat:@"signature:%@; ", charonDescribeObject([self->_signature base64EncodedStringWithOptions:0])];
     [text appendString:@">"];
     return text;
 }

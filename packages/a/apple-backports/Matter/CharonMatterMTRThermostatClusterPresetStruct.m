@@ -66,7 +66,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject(self->_presetHandle)];
+    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject([self->_presetHandle base64EncodedStringWithOptions:0])];
     [text appendFormat:@"presetScenario:%@; ", charonDescribeObject(self->_presetScenario)];
     [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
     [text appendFormat:@"coolingSetpoint:%@; ", charonDescribeObject(self->_coolingSetpoint)];

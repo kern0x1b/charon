@@ -108,7 +108,7 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"hardwareVersion:%@; ", charonDescribeObject(self->_hardwareVersion)];
     [text appendFormat:@"location:%@; ", charonDescribeObject(self->_location)];
     [text appendFormat:@"requestorCanConsent:%@; ", charonDescribeObject(self->_requestorCanConsent)];
-    [text appendFormat:@"metadataForProvider:%@; ", charonDescribeObject(self->_metadataForProvider)];
+    [text appendFormat:@"metadataForProvider:%@; ", charonDescribeObject([self->_metadataForProvider base64EncodedStringWithOptions:0])];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];

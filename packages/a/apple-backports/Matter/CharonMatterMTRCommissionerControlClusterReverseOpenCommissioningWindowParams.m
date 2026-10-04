@@ -69,10 +69,10 @@ static NSString *charonDescribeScalar(long long value)
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"commissioningTimeout:%@; ", charonDescribeObject(self->_commissioningTimeout)];
-    [text appendFormat:@"pakePasscodeVerifier:%@; ", charonDescribeObject(self->_pakePasscodeVerifier)];
+    [text appendFormat:@"pakePasscodeVerifier:%@; ", charonDescribeObject([self->_pakePasscodeVerifier base64EncodedStringWithOptions:0])];
     [text appendFormat:@"discriminator:%@; ", charonDescribeObject(self->_discriminator)];
     [text appendFormat:@"iterations:%@; ", charonDescribeObject(self->_iterations)];
-    [text appendFormat:@"salt:%@; ", charonDescribeObject(self->_salt)];
+    [text appendFormat:@"salt:%@; ", charonDescribeObject([self->_salt base64EncodedStringWithOptions:0])];
     [text appendString:@">"];
     return text;
 }

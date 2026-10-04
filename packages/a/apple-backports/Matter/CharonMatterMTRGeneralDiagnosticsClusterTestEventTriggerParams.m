@@ -63,7 +63,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"enableKey:%@; ", charonDescribeObject(self->_enableKey)];
+    [text appendFormat:@"enableKey:%@; ", charonDescribeObject([self->_enableKey base64EncodedStringWithOptions:0])];
     [text appendFormat:@"eventTrigger:%@; ", charonDescribeObject(self->_eventTrigger)];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];

@@ -58,8 +58,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"identity:%@; ", charonDescribeObject(self->_identity)];
-    [text appendFormat:@"possessionSignature:%@; ", charonDescribeObject(self->_possessionSignature)];
+    [text appendFormat:@"identity:%@; ", charonDescribeObject([self->_identity base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"possessionSignature:%@; ", charonDescribeObject([self->_possessionSignature base64EncodedStringWithOptions:0])];
     [text appendString:@">"];
     return text;
 }

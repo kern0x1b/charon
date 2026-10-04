@@ -61,8 +61,8 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"nocsrElements:%@; ", charonDescribeObject(self->_nocsrElements)];
-    [text appendFormat:@"attestationSignature:%@; ", charonDescribeObject(self->_attestationSignature)];
+    [text appendFormat:@"nocsrElements:%@; ", charonDescribeObject([self->_nocsrElements base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"attestationSignature:%@; ", charonDescribeObject([self->_attestationSignature base64EncodedStringWithOptions:0])];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;

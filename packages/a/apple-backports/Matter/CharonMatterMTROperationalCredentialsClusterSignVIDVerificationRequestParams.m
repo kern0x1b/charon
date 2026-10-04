@@ -64,7 +64,7 @@ static NSString *charonDescribeScalar(long long value)
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
-    [text appendFormat:@"clientChallenge:%@; ", charonDescribeObject(self->_clientChallenge)];
+    [text appendFormat:@"clientChallenge:%@; ", charonDescribeObject([self->_clientChallenge base64EncodedStringWithOptions:0])];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];

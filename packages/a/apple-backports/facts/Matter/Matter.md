@@ -298,7 +298,81 @@ one silently, and the run exits 1 if it does.
 
 **THE 21 THAT REMAIN, per reading, in three families.**
 
-* **9 readings, one member: an empty value printed differently.** `MTRTestClusterClusterNestedStruct.c`,
+**THE "Foundation-runtime" FAMILY WAS A PORT DEFECT, and the ruling was right.** The zap-generated
+`-description` prints every octet string through BASE64, not through `%@` of the `NSData`:
+
+    charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/zap-generated/MTRStructsObjc.mm:788
+        [NSString stringWithFormat:@"<%@: data:%@; fabricIndex:%@; >", NSStringFromClass([self class]),
+        [_data base64EncodedStringWithOptions:0], _fabricIndex]
+
+and it does so in EVERY generated family, not only in structs - **334 members across
+`MTRStructsObjc.mm`'s 33 descriptions and `MTRCommandPayloadsObjc.mm`'s 40, and every `NSData` member among
+them is base64'd and nothing else is** (read out of both files, not assumed). An empty `NSData`
+base64-encodes to the empty string, which is exactly the `d:;` and `hostname:;` the host prints where the port
+printed `{length = 0, bytes = 0x}`. 108 of the 1068 objects now carry the call. A **nullable** one needs no
+special case: `base64EncodedStringWithOptions:` on nil returns nil and `%@` prints a nil argument as
+`(null)`, which is what the host prints for a nil member.
+
+`-base64EncodedStringWithOptions:` is iOS 7 and this library is carried from 6.0, so the call is
+FoundationBackports' and not a hand-rolled encoder: `packages/a/apple-backports/registry/Foundation/base.json`
+carries `-[NSData base64EncodedStringWithOptions:]` as `introduced 7.0, status implemented`, and
+`MatterClusterBackports` already lists `libraries = {"FoundationBackports"}`
+(`modules/apple/backports.lua:119`), so the object links it the way every other object of the library does.
+Nothing was added to the link line and no encoder was written.
+
+**That took the unexplained readings from 21 to 7:**
+
+    params-diff: description  3231 identical, 42 predicted by the SDK difference, 7 unexplained
+    params-diff: fresh        3232 identical, 41 predicted by the SDK difference, 7 unexplained
+    params-diff: ownDescription 919 of the hosts 919 readings the port answers identically
+    params-diff: alias          37 of the hosts 37 readings the port answers identically
+    params-diff: red control 11 readings move, so this comparison can fail
+
+**THE 7, PER READING, three families.**
+
+* **2 readings, the hand-written `MTRReadParams` `-init`.** `MTRReadParams.filterByFabric` and
+  `MTRReadParams.assumeUnknownAttributesReportable` - the host holds `1`, the port `0`, and both SDKs declare
+  the member `BOOL nonnull`. The framework's own source writes it:
+
+      charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/MTRCluster.mm
+          @implementation MTRReadParams
+          - (instancetype)init
+          {
+              if (self = [super init]) {
+                  _filterByFabric = YES;
+                  _assumeUnknownAttributesReportable = YES;
+              }
+              return self;
+          }
+
+  `MTRReadParams` lives in `MTRCluster.h` and not in the zap-generated payload headers, so the "the `-init`
+  defaults every member to its zero" rule does not apply to it: this one stores YES, not NO. 847 of the 924
+  family classes have an `-init` in that tree and every one of their stores IS the derived zero, so these two
+  are the whole of the exception among the classes that declare one.
+
+* **3 readings, `MTRSubscribeParams`, and I have NOT established them.** `minInterval`,
+  `replaceExistingSubscriptions` and `resubscribeAutomatically` - the host holds `1`, the port `0`. Its
+  source has no plain `-init`; the YES values are in `initWithMinInterval:maxInterval:`, which is a different
+  method, and `minInterval` reading `1` after `[[X alloc] init]` is not explained by any line I have read.
+  **I do not know why and I am not going to guess it**: it needs the host's own method list for the class and
+  the inheritance chain, which is a measurement, not a reading.
+
+* **2 readings, a CLASS NAME inside a nested value.** `MTRTestClusterClusterNestedStruct.c` and
+  `MTRUnitTestingClusterNestedStruct.c`: the two strings agree member for member and value for value, and
+  differ only in the class named inside - `<MTRUnitTestingClusterSimpleStruct: ... >` on the host,
+  `<MTRTestClusterClusterSimpleStruct: ... >` from the port. The member's declared type is the deprecated
+  spelling in the port's SDK and the current one in the host's, so it is a version difference of the same kind
+  as a member set, one level down. `classify()` does not classify a differing class NAME, only a differing
+  member set, and that is a two-line change.
+
+* **The 9+1 the base64 fix closed, kept here so the record is whole:** `MTRTestClusterClusterNestedStruct.c`,
+  `MTRTestClusterClusterSimpleStructEchoRequestParams.arg1`,
+  `MTRTestClusterClusterSimpleStructResponseParams.arg1`, `MTRTestClusterClusterTestEventEvent.arg4`,
+  `MTRTestClusterClusterTestNestedStructArgumentRequestParams.arg1`,
+  `MTRTestClusterClusterTestNestedStructListArgumentRequestParams.arg1`,
+  `MTRTestClusterClusterTestStructArgumentRequestParams.arg1`, `MTRUnitTestingClusterNestedStruct.c`,
+  `MTRUnitTestingClusterNestedStructList.c` and their twins, all of them the member `d`; and
+  `MTRTLSClientManagementClusterFindEndpointResponseParams.endpoint`, whose member is `hostname`. `MTRTestClusterClusterNestedStruct.c`,
   `MTRTestClusterClusterSimpleStructEchoRequestParams.arg1`, `MTRTestClusterClusterSimpleStructResponseParams
   .arg1`, `MTRTestClusterClusterTestEventEvent.arg4`,
   `MTRTestClusterClusterTestNestedStructArgumentRequestParams.arg1`,

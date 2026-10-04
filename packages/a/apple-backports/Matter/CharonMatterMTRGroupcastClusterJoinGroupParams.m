@@ -75,7 +75,7 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"groupID:%@; ", charonDescribeObject(self->_groupID)];
     [text appendFormat:@"endpoints:%@; ", charonDescribeObject(self->_endpoints)];
     [text appendFormat:@"keyID:%@; ", charonDescribeObject(self->_keyID)];
-    [text appendFormat:@"key:%@; ", charonDescribeObject(self->_key)];
+    [text appendFormat:@"key:%@; ", charonDescribeObject([self->_key base64EncodedStringWithOptions:0])];
     [text appendFormat:@"gracePeriod:%@; ", charonDescribeObject(self->_gracePeriod)];
     [text appendFormat:@"useAuxiliaryACL:%@; ", charonDescribeObject(self->_useAuxiliaryACL)];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];

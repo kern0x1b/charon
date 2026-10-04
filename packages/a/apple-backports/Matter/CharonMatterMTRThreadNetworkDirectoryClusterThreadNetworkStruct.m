@@ -65,7 +65,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"extendedPanID:%@; ", charonDescribeObject(self->_extendedPanID)];
+    [text appendFormat:@"extendedPanID:%@; ", charonDescribeObject([self->_extendedPanID base64EncodedStringWithOptions:0])];
     [text appendFormat:@"networkName:%@; ", charonDescribeObject(self->_networkName)];
     [text appendFormat:@"channel:%@; ", charonDescribeObject(self->_channel)];
     [text appendFormat:@"activeTimestamp:%@; ", charonDescribeObject(self->_activeTimestamp)];

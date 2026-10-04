@@ -63,8 +63,8 @@ static NSString *charonDescribeScalar(long long value)
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"ccdid:%@; ", charonDescribeObject(self->_ccdid)];
-    [text appendFormat:@"csr:%@; ", charonDescribeObject(self->_csr)];
-    [text appendFormat:@"nonceSignature:%@; ", charonDescribeObject(self->_nonceSignature)];
+    [text appendFormat:@"csr:%@; ", charonDescribeObject([self->_csr base64EncodedStringWithOptions:0])];
+    [text appendFormat:@"nonceSignature:%@; ", charonDescribeObject([self->_nonceSignature base64EncodedStringWithOptions:0])];
     [text appendString:@">"];
     return text;
 }

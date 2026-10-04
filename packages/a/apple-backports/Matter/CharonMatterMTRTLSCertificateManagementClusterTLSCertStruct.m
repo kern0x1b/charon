@@ -62,7 +62,7 @@ static NSString *charonDescribeScalar(long long value)
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"caid:%@; ", charonDescribeObject(self->_caid)];
-    [text appendFormat:@"certificate:%@; ", charonDescribeObject(self->_certificate)];
+    [text appendFormat:@"certificate:%@; ", charonDescribeObject([self->_certificate base64EncodedStringWithOptions:0])];
     [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
     [text appendString:@">"];
     return text;

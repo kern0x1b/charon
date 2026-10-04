@@ -56,7 +56,7 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"uid:%@; ", charonDescribeObject(self->_uid)];
+    [text appendFormat:@"uid:%@; ", charonDescribeObject([self->_uid base64EncodedStringWithOptions:0])];
     [text appendString:@">"];
     return text;
 }

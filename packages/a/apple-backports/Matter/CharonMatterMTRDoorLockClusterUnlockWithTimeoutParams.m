@@ -63,7 +63,7 @@ static NSString *charonDescribeScalar(long long value)
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"timeout:%@; ", charonDescribeObject(self->_timeout)];
-    [text appendFormat:@"pinCode:%@; ", charonDescribeObject(self->_pinCode)];
+    [text appendFormat:@"pinCode:%@; ", charonDescribeObject([self->_pinCode base64EncodedStringWithOptions:0])];
     [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];

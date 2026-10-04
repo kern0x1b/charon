@@ -62,7 +62,7 @@ static NSString *charonDescribeScalar(long long value)
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"id:%@; ", charonDescribeObject(self->_id)];
     [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
-    [text appendFormat:@"faultRecording:%@; ", charonDescribeObject(self->_faultRecording)];
+    [text appendFormat:@"faultRecording:%@; ", charonDescribeObject([self->_faultRecording base64EncodedStringWithOptions:0])];
     [text appendString:@">"];
     return text;
 }
