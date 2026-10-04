@@ -133,6 +133,45 @@ application links is `CharonName`. What the port does with it:
   loader has nothing to attach it to: the gate refuses it and names `charon_alias.h` (`unattached_categories` in
   `modules/apple/backports.lua`).
 
+## An alias whose class the release has in some of the bands and in none of the others
+
+`NSTextList`, `NSTextTab` and `CPListItem` are all carried on every release their object is kept for (measured on
+6.1.3, 7.1.2, 8.0, 8.4.1 and 9.0 above), so every band that keeps one of those objects takes the released answer and the
+proxy is never the class. `NSURLSessionStreamTask` is the first name the release carries in **some** of the releases a
+band is built for and in none of the others -- nothing below 8.0 has a class of that name, 8.0 through 8.4.1 carry one in
+CFNetwork with no instance variable and no method of its own and export no symbol for it, and 9.0 exports it (the table and
+the `objc.code_map` measurement are in `facts/Foundation/NSURLSessionStreamTask.md`). On the bands below 8.0 the release has
+no class of the name at all, so the loader has nothing to re-parent the proxy onto and nothing to adopt its members into,
+and the proxy **is** the class the name stands for. `charon_alias.h` answers for that case:
+
+- The released answers are the released's class only where the runtime has a class of the name; where it has none, every
+  class method answers as the proxy itself: `+class` is the proxy, `+alloc`/`+allocWithZone:` make an instance of `self`
+  through `class_createInstance`, `+superclass` is the superclass the proxy was declared with, `+isSubclassOfClass:` and
+  `+instancesRespondToSelector:`/`+instanceMethodForSelector:`/`+instanceMethodSignatureForSelector:`/`+methodForSelector:`
+  walk the proxy's own chain (which is why they are not `[super ...]`: that answers about the class above the one asked
+  about), and the root-class methods (`+respondsToSelector:`, `+conformsToProtocol:`, `+description`, `+hash`, `+isEqual:`,
+  `+forwardingTargetForSelector:`) answer as they do for any class.
+- `CHARON_ALIAS_OF(Name, Super)` declares the proxy with the superclass the name has, which a name whose release class is
+  an `NSObject` descendant gets from `CHARON_ALIAS(Name)` and `NSURLSessionStreamTask` names as `NSURLSessionTask`: the
+  seven methods call through `[super ...]` to the SDK's own hierarchy, and on a release that has the class the loader
+  re-parents the proxy onto a class that is itself below `NSURLSessionTask`, so the chain is the same one either way.
+- `attach.c`'s `charon_release_class` gives a category written on an aliased name to the release's class where there is one
+  and to the proxy where there is none, instead of answering nil and dropping the category.
+- `unattached_categories` in `modules/apple/backports.lua` accepts an alias whose class the release of the band does not
+  carry where the band's own binaries define the proxy: the proxy is a class of the band, the alias resolves to it, and the
+  members the categories add are on it already. An alias record with no proxy in any binary of the band is still refused,
+  though a library that links cannot produce one -- the `.set` in `charon_alias.h` has nothing to resolve to.
+
+**What was not measured.** None of this was run: the alias shape needs the package's own linker, and the macOS linker
+refuses it -- measured 2026-10-04 on `CHARON_ALIAS` exactly as it stands on main, `ld: null objc class data for
+'_OBJC_METACLASS_$_CharonNSCharonProbeAbsent'` -- so a host probe of these answers is not available, and the host tests
+rename the symbols away (`tests/backports/host/uikit2/renames.sh`). What is measured is the link and the band machinery: the
+object exports the release's name and the proxy at one address each (`nm -gU` in the stream task's facts page), the library
+links, and `unattached_categories` and `duplicated` name nothing for that library on 6.1.3, 7.1.2, 8.0, 8.4.1 and 9.0. The
+runtime half -- what the loader hands the release's class on 8.x, and what the proxy answers on 6.x -- is the same code path
+`tests/backports/device/textalias.m` measures for the three aliases that are kept on every band, and it is that test, on a
+device or an emulator, that would measure it for this one.
+
 ## Measured
 
 `tests/backports/device/textalias.m`, 61 checks, built by `@addon/charon/daemon` (addon `v0.8.10`) against the package of commit
