@@ -199,6 +199,57 @@ else
     failed "RED CONTROL: the rule list mutation did not land, so no mutant was built and nothing was proven"
 fi
 
+# ---------------------------------------------------------------- the three value holders, port against system
+# The same shape once more, for the classes the web-extension family HANDS an application: a tab's
+# configuration, a window's configuration and a message port. Nothing in the SDK returns any of them, so
+# both sides are asked about the only object a program can make -- one WebKit made and a program
+# initialised -- and the answers are the release's answers for that object.
+config_expected="$build/configuration.expected"
+xcrun clang $target -fobjc-arc -w -I"$harness" -I"$here" "$here/webextension-configuration_system.m" "$harness/check.m" $frameworks -o "$build/configuration-system"
+if CHARON_EXPECTED="$config_expected" "$build/configuration-system" > "$build/configuration-system.log" 2>&1; then
+    note "configuration-system: exit=0 answers=$(grep -c '^case ' "$config_expected" | tr -d ' ') log=$build/configuration-system.log"
+else
+    failed "configuration-system: exit=$? log=$build/configuration-system.log"
+fi
+xcrun clang $target -fobjc-arc -w -I"$harness" -I"$here" -I"$sources" -DCHARON_HOST_DIFFERENTIAL=1 $(cat "$build/renames.flags") \
+    "$here/webextension-configuration_test.m" "$harness/check.m" $built $frameworks -o "$build/configuration-port"
+if CHARON_EXPECTED="$config_expected" "$build/configuration-port" > "$build/configuration-port.log" 2>&1; then
+    result=0
+else
+    result=$?
+fi
+grep -v '^ok ' "$build/configuration-port.log" || true
+note "configuration-port: exit=$result log=$build/configuration-port.log"
+[ "$result" = 0 ] || failed "the port's three value holders do not answer what this host answers"
+
+# Its red control: one default in a COPY of the port's own controller object, which is where the three
+# classes are defined. -index stops answering the index it was built with and answers 1.
+config_mutant="$build/configuration-mutant"
+mkdir -p "$config_mutant"
+sed 's|^    return _index;$|    return 1; /* PLANTED */|' "$sources/WKWebExtensionController.m" > "$config_mutant/WKWebExtensionController.m"
+if grep -q PLANTED "$config_mutant/WKWebExtensionController.m"; then
+    xcrun clang $target $port_flags -I"$sources" $(cat "$build/renames.flags") -c "$config_mutant/WKWebExtensionController.m" \
+        -o "$config_mutant/WKWebExtensionController.o" 2> "$config_mutant/compile.log"
+    config_objects=""
+    for o in $built; do
+        if [ "$o" = "$build/port/WKWebExtensionController.m.o" ]; then
+            config_objects="$config_objects $config_mutant/WKWebExtensionController.o"
+        else
+            config_objects="$config_objects $o"
+        fi
+    done
+    xcrun clang $target -fobjc-arc -w -I"$harness" -I"$here" -I"$sources" -DCHARON_HOST_DIFFERENTIAL=1 $(cat "$build/renames.flags") \
+        "$here/webextension-configuration_test.m" "$harness/check.m" $config_objects $frameworks -o "$build/configuration-port-mutant"
+    if CHARON_EXPECTED="$config_expected" "$build/configuration-port-mutant" > "$build/configuration-port-mutant.log" 2>&1; then
+        failed "RED CONTROL: the configuration comparison is green with a planted index, so it is reading nothing"
+    else
+        note "configuration red control: exit=$? with a planted index, and the case that moved is:"
+        grep -E '^ +(port|system) +case' "$build/configuration-port-mutant.log" | sed 's/^ */    /' | head -2
+    fi
+else
+    failed "RED CONTROL: the configuration mutation did not land, so no mutant was built and nothing was proven"
+fi
+
 # The red control, IN the harness: one answer of the port is changed, and this comparison has to go red on
 # it. A comparison that has only ever been green is not evidence -- it would be equally green with the cases
 # reading nothing -- and the twenty-two rows this section holds are exactly the class of evidence that has

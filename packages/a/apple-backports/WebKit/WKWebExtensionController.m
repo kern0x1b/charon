@@ -322,3 +322,183 @@ NSString *const WKWebExtensionDataTypeSynchronized = @"synchronized";
 }
 
 @end
+
+/* WKWebExtensionTabConfiguration, WKWebExtensionWindowConfiguration and WKWebExtensionMessagePort: what
+ * an extension's request for a tab or a window arrives as, and the connection an extension opens to an
+ * application. Three value holders, and they are in this file because this is where they arrive: the tab
+ * and the window configurations are ARGUMENTS of the two delegate methods that ask for a tab and for a
+ * window (WKWebExtensionControllerDelegate.h:84 and :97) and the message port arrives inside the third
+ * (:203). All three are of 18.4, which is what this object already is.
+ *
+ * WHO BUILDS ONE, and why that decides what a member answers. Nothing in the 26.2 SDK returns any of
+ * the three -- they are handed to the application, never back -- so +new and -init are NS_UNAVAILABLE in
+ * the port's header as they are in the SDK's, and nothing here defines them. What the members answer is
+ * therefore the release's answer for the only object a program can have: one WebKit made and a program
+ * initialised, which on the host is NSObject's own -init, because the release's designated initialiser
+ * is private (_init) and -init is not among the fifteen methods the host's message port declares. Every
+ * answer below was measured on the host by asking it, and the differential in
+ * tests/backports/host/webkit/webextension-configuration_scenario.h asks this port the same questions.
+ *
+ *   the two configurations: nothing was asked for, so nothing is there. No window, no parent tab and no
+ *   url, the index 0, and every "should" a tab or a window is not asked to be is NO. A window's frame is
+ *   {0, 0, 0, 0} and NOT the NaN the header promises of a component that was not specified (measured:
+ *   the header says each component "will be NaN if not specified" and a program-made one answers
+ *   zeros), and tabURLs and tabs are nil rather than empty arrays.
+ *
+ *   the message port: a port that was never connected is DISCONNECTED. That is what the host answers
+ *   (isDisconnected is 1 for a port a program made) and it is the only answer this port can give
+ *   honestly, because the extension's own JavaScript -- what opens one with
+ *   browser.runtime.connectNative -- is not run here, so there is nothing for a port to be connected to.
+ *
+ * WHAT IS NOT HERE, and why: -sendMessage:completionHandler:, -disconnect and -disconnectWithError:
+ * are absent because the release's own three raise SIGTRAP on the only port a program can make, which is
+ * a port with no extension behind it. facts/WebKit/WebExtensionConfiguration.md has the measurements.
+ */
+
+@implementation WKWebExtensionTabConfiguration {
+    __weak id<WKWebExtensionWindow> _window;
+    __weak id<WKWebExtensionTab> _parentTab;
+    NSUInteger _index;
+    NSURL *_url;
+    BOOL _shouldBeActive;
+    BOOL _shouldAddToSelection;
+    BOOL _shouldBePinned;
+    BOOL _shouldBeMuted;
+    BOOL _shouldReaderModeBeActive;
+}
+
+- (id<WKWebExtensionWindow>)window
+{
+    return _window;
+}
+
+- (NSUInteger)index
+{
+    return _index;
+}
+
+- (id<WKWebExtensionTab>)parentTab
+{
+    return _parentTab;
+}
+
+- (NSURL *)url
+{
+    return _url;
+}
+
+- (BOOL)shouldBeActive
+{
+    return _shouldBeActive;
+}
+
+- (BOOL)shouldAddToSelection
+{
+    return _shouldAddToSelection;
+}
+
+- (BOOL)shouldBePinned
+{
+    return _shouldBePinned;
+}
+
+- (BOOL)shouldBeMuted
+{
+    return _shouldBeMuted;
+}
+
+- (BOOL)shouldReaderModeBeActive
+{
+    return _shouldReaderModeBeActive;
+}
+
+@end
+
+@implementation WKWebExtensionWindowConfiguration {
+    WKWebExtensionWindowType _windowType;
+    WKWebExtensionWindowState _windowState;
+    CGRect _frame;
+    NSArray<NSURL *> *_tabURLs;
+    NSArray<id<WKWebExtensionTab>> *_tabs;
+    BOOL _shouldBeFocused;
+    BOOL _shouldBePrivate;
+}
+
+- (WKWebExtensionWindowType)windowType
+{
+    return _windowType;
+}
+
+- (WKWebExtensionWindowState)windowState
+{
+    return _windowState;
+}
+
+- (CGRect)frame
+{
+    return _frame;
+}
+
+- (NSArray<NSURL *> *)tabURLs
+{
+    return _tabURLs;
+}
+
+- (NSArray<id<WKWebExtensionTab>> *)tabs
+{
+    return _tabs;
+}
+
+- (BOOL)shouldBeFocused
+{
+    return _shouldBeFocused;
+}
+
+- (BOOL)shouldBePrivate
+{
+    return _shouldBePrivate;
+}
+
+@end
+
+NSString *const WKWebExtensionMessagePortErrorDomain = @"WKWebExtensionMessagePortErrorDomain";
+
+@implementation WKWebExtensionMessagePort {
+    NSString *_applicationIdentifier;
+    void (^_messageHandler)(id, NSError *);
+    void (^_disconnectHandler)(NSError *);
+}
+
+- (NSString *)applicationIdentifier
+{
+    return _applicationIdentifier;
+}
+
+- (void (^)(id, NSError *))messageHandler
+{
+    return _messageHandler;
+}
+
+- (void)setMessageHandler:(void (^)(id, NSError *))messageHandler
+{
+    _messageHandler = [messageHandler copy];
+}
+
+- (void (^)(NSError *))disconnectHandler
+{
+    return _disconnectHandler;
+}
+
+- (void)setDisconnectHandler:(void (^)(NSError *))disconnectHandler
+{
+    _disconnectHandler = [disconnectHandler copy];
+}
+
+/* Readwrite in the release's header, so the port carries the setters rather than narrowing the two
+ * properties: a caller that sets a handler expects the getter to answer it. */
+- (BOOL)isDisconnected
+{
+    return YES;
+}
+
+@end

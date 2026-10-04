@@ -181,6 +181,75 @@ typedef NS_ENUM(NSInteger, WKWebExtensionMatchPatternError) {
 @property (nonatomic, readonly, copy, nullable) UIKeyCommand *keyCommand;
 @end
 
+// The two configurations an extension's request for a tab or a window arrives as, and the connection
+// an extension opens to an application. All three are built by WebKit and handed to the application:
+// the tab and the window configurations are ARGUMENTS of the two delegate methods that ask for a tab
+// and for a window (WKWebExtensionControllerDelegate.h:84 and :97), and the message port arrives in
+// the third (WKWebExtensionControllerDelegate.h:203). Nothing in the 26.2 SDK returns one, so no
+// program on any platform can build one -- which is why +new and -init are NS_UNAVAILABLE here as they
+// are there, and why what the port's members answer is the release's answer for the only object a
+// program can have: one WebKit made (facts/WebKit/WebExtensionConfiguration.md).
+//
+// The two enums of a window's configuration, from the 26.2 SDK's WKWebExtensionWindow.h, which is where
+// that release declares them: the port's own header is the only place they can come from, since the
+// 16.4 SDK this package compiles against has no web-extension API at all.
+typedef NS_ENUM(NSInteger, WKWebExtensionWindowType) {
+    WKWebExtensionWindowTypeNormal,
+    WKWebExtensionWindowTypePopup,
+} API_AVAILABLE(ios(18.4));
+
+typedef NS_ENUM(NSInteger, WKWebExtensionWindowState) {
+    WKWebExtensionWindowStateNormal,
+    WKWebExtensionWindowStateMinimized,
+    WKWebExtensionWindowStateMaximized,
+    WKWebExtensionWindowStateFullscreen,
+} API_AVAILABLE(ios(18.4));
+
+@interface WKWebExtensionTabConfiguration : NSObject
++ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
+@property (nonatomic, nullable, readonly, strong) id <WKWebExtensionWindow> window;
+@property (nonatomic, readonly) NSUInteger index;
+@property (nonatomic, nullable, readonly, strong) id <WKWebExtensionTab> parentTab;
+@property (nonatomic, nullable, readonly, copy) NSURL *url;
+@property (nonatomic, readonly) BOOL shouldBeActive;
+@property (nonatomic, readonly) BOOL shouldAddToSelection;
+@property (nonatomic, readonly) BOOL shouldBePinned;
+@property (nonatomic, readonly) BOOL shouldBeMuted;
+@property (nonatomic, readonly) BOOL shouldReaderModeBeActive;
+@end
+
+@interface WKWebExtensionWindowConfiguration : NSObject
++ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
+@property (nonatomic, readonly) WKWebExtensionWindowType windowType;
+@property (nonatomic, readonly) WKWebExtensionWindowState windowState;
+@property (nonatomic, readonly) CGRect frame;
+@property (nonatomic, readonly, copy) NSArray<NSURL *> *tabURLs;
+@property (nonatomic, readonly, copy) NSArray<id <WKWebExtensionTab>> *tabs;
+@property (nonatomic, readonly) BOOL shouldBeFocused;
+@property (nonatomic, readonly) BOOL shouldBePrivate;
+@end
+
+// The message port's error domain, and the three codes the 26.2 SDK's NS_ERROR_ENUM numbers from 1 in
+// that order. The three codes have no symbol on the host and therefore no row: an enumerator is a
+// compile-time integer, and `implemented` is a promise that something of that name is built.
+extern NSString *const WKWebExtensionMessagePortErrorDomain;
+typedef NS_ENUM(NSInteger, WKWebExtensionMessagePortError) {
+    WKWebExtensionMessagePortErrorUnknown = 1,
+    WKWebExtensionMessagePortErrorNotConnected,
+    WKWebExtensionMessagePortErrorMessageInvalid,
+} API_AVAILABLE(ios(18.4));
+
+@interface WKWebExtensionMessagePort : NSObject
++ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
+@property (nonatomic, readonly, nullable) NSString *applicationIdentifier;
+@property (nonatomic, copy, nullable) void (^messageHandler)(id _Nullable message, NSError * _Nullable error);
+@property (nonatomic, copy, nullable) void (^disconnectHandler)(NSError * _Nullable error);
+@property (nonatomic, readonly, getter=isDisconnected) BOOL disconnected;
+@end
+
 // The port's own initialisers and setters, charon_-prefixed so they can never collide with a selector
 // a later SDK grows, and in the init family because they assign to self.
 #endif  // CHARON_HOST_DIFFERENTIAL
