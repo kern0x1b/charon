@@ -146,6 +146,24 @@ macro's own `+conformsToProtocol:` answers the release's YES.
 the port's zone below 9.0 are different objects by construction, and what a program that mixes the two
 does with `-capacity` is a question about that program, not about this port.
 
+What `attach.c` does with the proxy on each of those bands is why the middle one is safe, and it is
+three different answers from one constructor:
+
+- **Below 9.0** `objc_getClass("MDLMeshBufferZoneDefault")` answers nil, so the constructor skips
+  this alias entirely: the proxy is not re-parented, nothing is adopted into anything, and its own
+  `-capacity`, `-allocator` and `charon_setCapacity:allocator:` are what answer.
+- **On 9.0 to 10.3.4** the release's class is found, so the proxy is re-parented under it, and the
+  proxy's own copies of `-capacity` and `-allocator` are replaced by the release's implementations -
+  `charon_adopt_methods` does that wherever the release's class already has the selector, so that a
+  subclass of the proxy gets the release's answer. The proxy's own **class** methods are not: that
+  call passes NSObject's own class as the "already has it" reference, so every one of the alias's
+  class methods keeps the alias's answer, and `+alloc` keeps handing out
+  `[objc_getClass("MDLMeshBufferZoneDefault") alloc]`, which is Apple's own class. That is what closes
+  the hole the instance-method replacement would otherwise open: on such a band nothing can hold a
+  proxy instance, so nothing can send Apple's `-capacity` to a proxy whose Apple ivars were never
+  written.
+- **From 11.0** neither object is in the band.
+
 ## What is measured, and what is reasoned
 
 - **Measured**: that iOS 6 carries no ModelIO (the release's own selector table and dyld cache, read
