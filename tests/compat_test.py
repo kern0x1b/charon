@@ -1442,6 +1442,190 @@ int main(void)
 }
 """
 
+
+DISPATCH_SOURCE_HANDLERS = r"""
+#include <dispatch/dispatch.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+/* What Darwin's own calls do to a dispatch source's cancellation and registration handlers, measured so
+   that the answer is a property of the release and not of a probe: one scenario per process, so no case
+   can be recorded in another's answer, and every reading taken after the scenario has been let go.
+
+       sourcehandlers <case> <concurrent|serial>
+
+   Cases:
+     cancel         a barrier cancellation handler, the source resumed, then cancelled.
+     registration   a barrier registration handler, then resumed: the resume is what runs it.
+     neverresumed   a barrier cancellation handler on a source that was never resumed, then cancelled.
+     retargetbefore the source is made on one queue and handed another before the handler is set.
+     retargetafter  the handler is set on one queue and the source handed another before the cancel.
+     onqueue        the call is made from a block already running on the source's own target queue.
+
+   Every case but onqueue puts a block on the target queue that records that it started and does not
+   return until told, so three things can be read:
+     held   the call under test returned while that block was still running - that is, it did not wait
+     ran    the handler ran at all, read after the holder has been let go and the call has been joined
+     alone  the handler entered while that block was no longer running - that is, it ran alone, which a
+            barrier queue gives and an ordinary one does not
+   and second is which of the two queues the handler ran on, read from a specific this program puts on
+   each queue with the call that names it (dispatch_queue_set_specific, iOS 5 and later). The second
+   queue is made the same width as the first, so "alone" means the same thing in every row.
+
+   The onqueue case has no separate holder: the block that holds the target queue is the block the call
+   is made from, which is the whole point of it, so there "held" would be meaningless and what is read
+   is whether the call returns at all. The holder signals a semaphore of its own when the call has
+   returned and never the handler's, so the handler's answer cannot be the holder's.
+
+   The call under test is made on a thread of its own and joined, so nothing here can hang the run, and
+   nothing is released under a call that is still in it. Not a fork: a child made after the queues and
+   sources exist has no thread pool to run on, and traps. The source is never released either, because
+   libdispatch traps on releasing a source that was never resumed and this program asks about one. */
+
+static volatile int holderInside;
+static volatile int handlerAlone;
+static volatile int handlerRan;
+static volatile int handlerOnSecond;
+static volatile int returned;
+
+static int registration;
+static int never;
+static int onQueue;
+static dispatch_source_t source;
+static const char *width;
+
+static void tag(dispatch_queue_t queue, const void *value)
+{
+    /* dispatch_queue_set_specific is what names the queue a block runs on. */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    dispatch_queue_set_specific(queue, (const void *)0x636861726f6e51u, (void *)value, NULL);
+#pragma clang diagnostic pop
+}
+
+static void *where(void)
+{
+    return dispatch_get_specific((const void *)0x636861726f6e51u);
+}
+
+static void call_under_test(void)
+{
+    if (registration)
+        dispatch_resume(source);
+    else
+        dispatch_source_cancel(source);
+    returned = 1;
+}
+
+static void *runner(void *ignored)
+{
+    (void)ignored;
+    call_under_test();
+    return NULL;
+}
+
+static void say(const char *which, const char *held, const char *ran)
+{
+    printf("%s %s: held=%s ran=%s alone=%s second=%s returned=%s\n", which, width, held, ran,
+           handlerAlone < 0 ? "n/a" : (handlerAlone ? "yes" : "no"),
+           handlerOnSecond < 0 ? "n/a" : (handlerOnSecond ? "yes" : "no"),
+           returned ? "yes" : "no");
+}
+
+int main(int argc, char **argv)
+{
+    setvbuf(stdout, NULL, _IONBF, 0);
+    const char *which = argc > 1 ? argv[1] : "cancel";
+    width = argc > 2 && strcmp(argv[2], "serial") == 0 ? "serial" : "concurrent";
+    registration = strcmp(which, "registration") == 0;
+    never = strcmp(which, "neverresumed") == 0;
+    int retargetBefore = strcmp(which, "retargetbefore") == 0;
+    int retargetAfter = strcmp(which, "retargetafter") == 0;
+    onQueue = strcmp(which, "onqueue") == 0;
+
+    holderInside = 0;
+    handlerAlone = -1;
+    handlerRan = 0;
+    handlerOnSecond = -1;
+    returned = 0;
+
+    dispatch_queue_attr_t attr = strcmp(width, "serial") == 0 ? DISPATCH_QUEUE_SERIAL : DISPATCH_QUEUE_CONCURRENT;
+    dispatch_queue_t queue = dispatch_queue_create("target", attr);
+    dispatch_queue_t second = dispatch_queue_create("second", attr);
+    tag(queue, (const void *)1);
+    tag(second, (const void *)2);
+    source = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    int firstIsTarget = 1;
+
+    dispatch_semaphore_t entered = dispatch_semaphore_create(0);
+    dispatch_semaphore_t release = dispatch_semaphore_create(0);
+    dispatch_semaphore_t handlerDone = dispatch_semaphore_create(0);
+    dispatch_block_t handler = dispatch_block_create(DISPATCH_BLOCK_BARRIER, ^{
+        handlerAlone = holderInside ? 0 : 1;
+        handlerRan = 1;
+        handlerOnSecond = where() == (void *)2 ? 1 : 0;
+        dispatch_semaphore_signal(handlerDone);
+    });
+
+    if (retargetBefore) {
+        dispatch_set_target_queue(source, second);
+        firstIsTarget = 0;
+    }
+    if (registration) {
+        dispatch_source_set_registration_handler(source, handler);
+    } else {
+        dispatch_source_set_cancel_handler(source, handler);
+        if (!never)
+            dispatch_resume(source);
+    }
+    if (retargetAfter) {
+        dispatch_set_target_queue(source, second);
+        firstIsTarget = 0;
+    }
+
+    dispatch_queue_t held = firstIsTarget ? queue : second;
+    if (onQueue) {
+        dispatch_semaphore_t callReturned = dispatch_semaphore_create(0);
+        dispatch_async(held, ^{
+            holderInside = 1;
+            dispatch_semaphore_signal(entered);
+            dispatch_semaphore_wait(release, DISPATCH_TIME_FOREVER);
+            holderInside = 0;
+            call_under_test();
+            dispatch_semaphore_signal(callReturned);
+        });
+        dispatch_semaphore_wait(entered, DISPATCH_TIME_FOREVER);
+        dispatch_semaphore_signal(release);
+        long called = dispatch_semaphore_wait(callReturned, dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC));
+        dispatch_semaphore_wait(handlerDone, dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC));
+        say(which, "n/a", handlerRan ? "yes" : "no");
+        return called ? 1 : 0;
+    }
+
+    dispatch_async(held, ^{
+        holderInside = 1;
+        dispatch_semaphore_signal(entered);
+        dispatch_semaphore_wait(release, DISPATCH_TIME_FOREVER);
+        holderInside = 0;
+    });
+    dispatch_semaphore_wait(entered, DISPATCH_TIME_FOREVER);
+
+    pthread_t thread;
+    pthread_create(&thread, NULL, runner, NULL);
+    for (int waited = 0; waited < 2000 && !returned; waited++)
+        usleep(1000);
+    int returnedWhileHeld = returned;
+    dispatch_semaphore_signal(release);
+    pthread_join(thread, NULL);
+    long ranLater = dispatch_semaphore_wait(handlerDone, dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC));
+    say(which, returnedWhileHeld ? "yes" : "no", (ranLater == 0 || handlerRan) ? "yes" : "no");
+    return 0;
+}
+"""
+
 LATER_CALLS = r"""
 #define __STDC_WANT_LIB_EXT1__ 1
 #include <dispatch/dispatch.h>
@@ -2146,6 +2330,61 @@ def failures():
             elif len(control_fails) != 1 or not control_fails[0].startswith("late: the shim runs the handler alone"):
                 found.append("the barrier source shims without their records must fail on the late handler alone: {}"
                              .format(control_fails or control_run.stdout))
+
+        # What Darwin's own calls do to a dispatch source's cancellation and registration handlers, one
+        # scenario per process and both widths of target queue. This is the measurement any shim of those
+        # two handlers has to agree with, kept here so it is a property of the release and not of a probe
+        # somebody ran once: the shims themselves are not in the tree yet, so there is nothing to compare
+        # against here and the answers below are the ones to compare with. Measured on macOS 27.0
+        # (26A428), arm64, clang 21.0.0, three runs each and identical every time.
+        #
+        # Three of them decide a route and are the reason the expectations are spelled out rather than
+        # left to the reader:
+        #   - the call under test returns while the target queue is held, for all four off-queue cases on
+        #     both widths. Darwin submits the handler and returns; it does not wait for it.
+        #   - on a CONCURRENT target queue the handler runs BESIDE the block that was holding the queue,
+        #     alone=no. libdispatch reads a source's barrier bit off its EVENT handler when the source is
+        #     activated, and a source with no event handler has none, so its cancellation and registration
+        #     handlers are ordinary blocks. On a SERIAL queue there is only ever one block at a time and
+        #     alone=yes whatever a barrier does.
+        #   - a source that was never resumed runs no handler at all, on either width, and that is the one
+        #     case where running a stored handler would be wrong.
+        # The retarget cases say which queue a handler runs on after dispatch_set_target_queue, in both
+        # directions, and the onqueue case says the call made from the target queue's own block returns.
+        (folder / "sourcehandlers.c").write_text(DISPATCH_SOURCE_HANDLERS)
+        built = run("xcrun", "clang", "-O2", "-w", "-fblocks", "sourcehandlers.c", "-o", "sourcehandlers", cwd=folder)
+        if built.returncode:
+            found.append("the dispatch source handler probe must compile: {}".format(built.stderr[-400:]))
+        else:
+            answered = {
+                ("cancel", "concurrent"): "held=yes ran=yes alone=no second=no returned=yes",
+                ("cancel", "serial"): "held=yes ran=yes alone=yes second=no returned=yes",
+                ("registration", "concurrent"): "held=yes ran=yes alone=no second=no returned=yes",
+                ("registration", "serial"): "held=yes ran=yes alone=yes second=no returned=yes",
+                ("neverresumed", "concurrent"): "held=yes ran=no alone=n/a second=n/a returned=yes",
+                ("neverresumed", "serial"): "held=yes ran=no alone=n/a second=n/a returned=yes",
+                ("retargetbefore", "concurrent"): "held=yes ran=yes alone=no second=yes returned=yes",
+                ("retargetbefore", "serial"): "held=yes ran=yes alone=yes second=yes returned=yes",
+                ("retargetafter", "concurrent"): "held=yes ran=yes alone=no second=yes returned=yes",
+                ("retargetafter", "serial"): "held=yes ran=yes alone=yes second=yes returned=yes",
+                ("onqueue", "concurrent"): "held=n/a ran=yes alone=yes second=no returned=yes",
+                ("onqueue", "serial"): "held=n/a ran=yes alone=yes second=no returned=yes",
+            }
+            for (case, width), wanted in answered.items():
+                answered_run = run("./sourcehandlers", case, width, cwd=folder)
+                got = " ".join(answered_run.stdout.split())
+                prefix = "{} {}:".format(case, width)
+                if answered_run.returncode and not got.startswith(prefix):
+                    found.append("the {} case of a source's {} handler on a {} target queue must finish and "
+                                 "say what it found, and it did not: {} {}".format(
+                                     case, "registration" if case == "registration" else "cancellation",
+                                     width, answered_run.returncode, answered_run.stderr[-300:]))
+                elif got != "{} {}".format(prefix, wanted):
+                    found.append("Darwin's own calls answer \"{}\" for a source's {} handler on a {} target "
+                                 "queue, where this measurement recorded \"{}\"".format(
+                                     got[len(prefix):].strip(),
+                                     "registration" if case == "registration" else "cancellation",
+                                     width, wanted))
 
         (folder / "system-random.c").write_text(SYSTEM_RANDOM)
         built = run("xcrun", "clang", "-O2", "-w", SHIMS / "arc4random_buf.c", "system-random.c", "-o", "system-random", cwd=folder)
