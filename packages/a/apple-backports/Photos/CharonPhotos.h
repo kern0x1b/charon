@@ -34,17 +34,16 @@
 @end
 
 // PHPhotoLibrary's own instance variables, in a class extension rather than in the @implementation:
-// the members of one release live in one file each (PHPhotoLibrary.m carries 8.0, the availability
-// members of 13.0 are in PHPhotoLibraryAvailability13.m), and a category cannot add an ivar, so the
-// names have to be visible to both. The layout is still the class's own, emitted by its @implementation.
+// a category cannot add an ivar, so the names the class's own methods read have to be visible here.
+// The layout is still the class's own, emitted by its @implementation, and only PHPhotoLibrary.m reads
+// them - which is the whole of why the extension names three and not seven: the availability members
+// of 13.0 live in PHPhotoLibraryAvailability13.m, which is a category and is in every band, and a band
+// from iOS 8.0 does not link the object that lays the class out (the release has carried PHPhotoLibrary
+// since 8.0), so that file keeps its state beside the library in an object of its own instead.
 @interface PHPhotoLibrary () {
     NSHashTable *_observers;
     dispatch_queue_t _delivery;
     id _listening;
-    NSHashTable *_availabilityObservers;
-    dispatch_queue_t _availabilityDelivery;
-    id _availabilityListening;
-    NSInteger _lastAvailability;
 }
 @end
 
