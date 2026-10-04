@@ -18,10 +18,12 @@
 // port has no facility behind it - facts/Metal/RenderPath.md is where the rendering path says what it
 // does, and facts/Metal/CommandChain26.md is where the expectations live.
 //
-// **THE PROTOCOL'S OWN MEMBERS ARE ON THIS CLASS, and they were on the DEVICE until the device probe
-// found it.** Every method from -commit:count: down used to be written in the CharonMetalDevice category
-// below, so all fourteen of them answered on the DEVICE and none on the queue - and a Metal 4 caller
-// holds a queue. It was found by running and not by reading: the device probe's case
+// **TWELVE OF THE PROTOCOL'S OWN MEMBERS ARE ON THIS CLASS, and they were on the DEVICE until the device
+// probe found it.** Every method from -commit:count: down used to be written in the CharonMetalDevice
+// category below, so all fourteen of them answered on the DEVICE and none on the queue - and a Metal 4
+// caller holds a queue. Twelve are here now; the two commits are not, because they need a buffer this port
+// does not carry, and the reason is at their place in the declaration below. It was found by running and
+// not by reading: the device probe's case
 // metalchain_commit_returns asks the queue for -commit:count: and the run of 2026-10-04 answered
 // "FAIL metalchain_commit_returns: the queue answers -commit:count: (Apple's own queue does)", while the
 // binary's own symbol table carries -[CharonMetalDevice(CharonMetal4CommandQueue26) commit:count:] and
@@ -31,11 +33,14 @@
 @interface CharonMetal4CommandQueue : NSObject
 - (id<MTLDevice>)device;
 @property (nonatomic, copy) NSString *label;
-// MTL4CommandQueue.h:231 spells the array `const id<MTL4CommandBuffer> _Nonnull[_Nonnull]`; the
-// parameter is `const void *` here because iOS 6 has no Metal 4 protocol to declare that type against and
-// a spelling naming it would not compile.
-- (void)commit:(const void *)commandBuffers count:(NSUInteger)count;
-- (void)commit:(const void *)commandBuffers count:(NSUInteger)count options:(id)options;
+// **-commit:count: AND -commit:count:options: ARE NOT HERE, and that is a dependency and not an
+// oversight.** Both take an array of MTL4CommandBuffer, and this port carries no MTL4CommandBuffer: the
+// buffer is the next family (Metal/MTL4CommandBuffer26.m does not exist yet) and every buffer a Metal 4
+// caller could hand the commit would be "not one of this port's". A method that answers wrongly is worse
+// than one that is absent, so the two rows -[MTL4CommandQueue commit:count:] and
+// -[MTL4CommandQueue commit:count:options:] are status `owed` with the reason "waits on the
+// MTL4CommandBuffer family", and check_registry holds a row that is not `implemented` to an answer the
+// build does not give ("listed as absent, but what is built answers it"). They come back with the buffer.
 - (void)addResidencySet:(id)residencySet;
 - (void)removeResidencySet:(id)residencySet;
 - (void)addResidencySets:(const id *)sets count:(NSUInteger)count;
@@ -87,41 +92,6 @@
 - (void)setLabel:(NSString *)label
 {
     _label = [label copy];
-}
-
-// THE COMMIT, the queue's only submit call, and it COMMITS rather than refusing: measured in a process
-// execed on its own, Apple's own -commit:count: RETURNS on the header's own path and on the un-ended one
-// alike (chain-commit.sh, metalchain_commit_returns). The C ARRAY is spelled as MTL4CommandQueue.h:231
-// declares it, because the first version of that probe passed ONE buffer where an array was expected and
-// the framework read the object's own memory - a fault that was mine and is retracted in the facts.
-//
-// Only a buffer this port made is committed, and one from anywhere else is refused by name rather than
-// sent to a queue that cannot read it: the queue underneath draws over an EAGL context, and a foreign
-// command buffer has no encoding for it.
-- (void)commit:(const void *)commandBuffers count:(NSUInteger)count
-{
-    const id<MTLCommandBuffer> *buffers = (const id<MTLCommandBuffer> *)commandBuffers;
-    for (NSUInteger index = 0; index < count; index++) {
-        id<MTLCommandBuffer> buffer = buffers[index];
-        if ([buffer isKindOfClass:[CharonMetalCommandBuffer class]]) {
-            [buffer commit];
-        } else {
-            NSLog(@"Metal: the buffer at index %lu of a Metal 4 commit is a %@ and not one of this port's, so it is refused rather than sent to a queue that cannot read it",
-                  (unsigned long)index, NSStringFromClass([buffer class]));
-        }
-    }
-}
-
-// THE OPTIONS FORM IS THE SAME CALL, and MTL4CommitOptions carries a feedback handler and nothing else
-// this queue has a place for: the port's feedback is the commit itself, and there is no MTL4CommitFeedback
-// on a queue over an EAGL context to report to. So the commit is the one above and the caller is told
-// there is no feedback to have.
-- (void)commit:(const void *)commandBuffers count:(NSUInteger)count options:(id)options
-{
-    if (options) {
-        NSLog(@"Metal: a Metal 4 commit with MTL4CommitOptions is committed, but this queue has no MTL4CommitFeedback to hand the handler to, and the port's feedback is the commit itself");
-    }
-    [self commit:commandBuffers count:count];
 }
 
 // THE RESIDENCY SETS, THE SPARSE MAPPINGS, AND THE EVENT AND DRAWABLE WAITS, refused by name, each with
