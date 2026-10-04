@@ -51,6 +51,8 @@
    emulator, where [super resume] is the release's own class. */
 
 void host_attach_prefixed(const char *prefix);
+size_t host_attach_members(Class from, Class to);
+BOOL host_alloc_from(Class from, Class to);
 
 /* The delegate a stream task's metrics arrive through, which is the only way an application sees
    them: the session builds the transaction and calls this. */
@@ -124,6 +126,7 @@ static void accept_once(int listener)
            bytes that never came: that is what hung it, and this line is the whole fix. */
         const char greeting = 'k';
         write(connection, &greeting, 1);
+
     });
 }
 
@@ -179,7 +182,6 @@ int main(void)
 {
     @autoreleasepool {
         charon_bound_the_run();
-        host_attach_prefixed("");
 
         int listener = charon_listener();
         charon_check(listener >= 0, "the test opens its own listener", @"no socket");
@@ -207,21 +209,45 @@ int main(void)
         accept_once(listener);
         [systemTask resume];
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-        id systemTransaction = first_transaction(systemDelegate.metrics);
+        /* The half-closes come BEFORE the transaction is read, on both sides and for the same reason:
+           a stream task reports its metrics when it finishes, and neither side's finishes while the
+           listener still holds the connection open. Read first, the system's own side answers nothing
+           at all - measured 2026-10-04, six rows comparing "no such property" against the port's. */
         for (NSString *name in @[@"closeRead", @"closeWrite"]) {
             SEL selector = NSSelectorFromString(name);
             if ([systemTask respondsToSelector:selector])
                 ((void (*)(id, SEL))objc_msgSend)(systemTask, selector);
         }
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:2]];
+        id systemTransaction = first_transaction(systemDelegate.metrics);
+        /* ---- the port's members, on the class the host's own session instantiates ---- */
+        /* The order here is the measurement and not a style: the port's members go onto the class a
+           task the host made is an instance of, so the host's own answers above were collected while
+           the release's own implementations were still the ones in place. Reading them afterwards
+           would compare the port against itself. */
+        NSURLSession *probeSession = [NSURLSession sessionWithConfiguration:
+            [NSURLSessionConfiguration ephemeralSessionConfiguration]];
+        NSURLSessionTask *probeTask = [probeSession streamTaskWithHostName:@"127.0.0.1" port:9];
+        Class released = probeTask ? (Class)[probeTask class] : Nil;
+        charon_check(released != Nil && ![released isSubclassOfClass:ourTaskClass] && released != ourTaskClass,
+                     "the class of the host's own stream task is not the port's",
+                     [NSString stringWithFormat:@"both are %s", class_getName(released)]);
+        size_t moved = host_attach_members(ourTaskClass, released);
+        charon_check(moved > 0, "the port's members go on the host's own stream task class",
+                     [NSString stringWithFormat:@"%lu of them", (unsigned long)moved]);
+        charon_check(host_alloc_from(ourTaskClass, released),
+                     "the port's factory hands out one of the host's own",
+                     @"+alloc is the port's own");
+        host_attach_prefixed("");
+        charon_check([NSURLSession instancesRespondToSelector:NSSelectorFromString(@"charonHost_streamTaskWithHostName:port:")],
+                     "the port's factory is attached to the session", @"the category is not attached");
+
         /* ---- the port's, the same way, and the transaction its delegate is handed ---- */
         /* The class under test here is the *task*: +streamTaskWithHostName:port: is a category on
            NSURLSession, and the port's own session is two thousand lines that this build does not
            need. The task is made through that category, renamed, on the host's own session, which is
            the shape a differential has when the port adds to a class the release already has. */
         SEL ourFactory = NSSelectorFromString(@"charonHost_streamTaskWithHostName:port:");
-        charon_check([NSURLSession instancesRespondToSelector:ourFactory],
-                     "the port's factory is attached to the session", @"the category is not attached");
         if (!ourTaskClass)
             return 1;
 

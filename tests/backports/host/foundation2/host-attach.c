@@ -63,3 +63,67 @@ void host_attach_prefixed(const char *prefix)
         host_add(object_getClass((id)category->cls), category->class_methods, prefix);
     }
 }
+
+/* What a host differential needs where the RELEASE carries the class and exports nothing - the 8.0 -
+ * 8.4.1 shape - and a device gets from attach.c's charon_reparent and charon_collect: the port's
+ * members on the class the release's own session instantiates. Measured on the host 2026-10-04, the
+ * class of the release's NAME is not that class: NSURLSessionStreamTask answers 0 own methods and has
+ * no class below it, while the task the host's own factory makes is a __NSCFTCPIOStreamTask, a sibling
+ * of it, and it is that class which carries _onqueue_resume and the 26 other instance variables the
+ * release's -[NSURLSessionTask resume] drives. charon_reparent's own mechanism cannot be used here at
+ * all: it writes the superclass word and reads the layout back, and every compiled class of a host
+ * image is already realized before the first constructor runs.
+ *
+ * So the members are INSTALLED on the release's class rather than inherited by a proxy of it, which is
+ * what charon_collect does on a device, and the class is the one the harness measured rather than a
+ * private name written here. class_replaceMethod, not class_addMethod: the port's member shadows the
+ * release's on the same class, which is the whole point of the comparison. Returns how many it put on,
+ * so a run that collected nothing says so instead of quietly measuring the release against itself. */
+size_t host_attach_members(Class from, Class to)
+{
+    unsigned long size;
+    const struct host_category *const *categories = (const struct host_category *const *)getsectiondata(&__dso_handle, "__DATA", "__charon_catlist", &size);
+    size_t moved = 0;
+    if (!categories)
+        categories = (const struct host_category *const *)getsectiondata(&__dso_handle, "__DATA_CONST", "__charon_catlist", &size);
+    for (size_t index = 0; categories && index < size / sizeof(void *); index++) {
+        const struct host_category *category = categories[index];
+        if (category->cls != from)
+            continue;
+        for (uint32_t item = 0; category->instance_methods && item < category->instance_methods->count; item++) {
+            const char *name, *types;
+            IMP implementation;
+            host_method(category->instance_methods, item, &name, &types, &implementation);
+            class_replaceMethod(to, sel_registerName(name), implementation, types);
+            moved++;
+        }
+        for (uint32_t item = 0; category->class_methods && item < category->class_methods->count; item++) {
+            const char *name, *types;
+            IMP implementation;
+            host_method(category->class_methods, item, &name, &types, &implementation);
+            class_replaceMethod(object_getClass((id)to), sel_registerName(name), implementation, types);
+            moved++;
+        }
+    }
+    return moved;
+}
+
+/* +alloc on `from` that hands out an instance of `to`, which is what attach.c's alias answers on a
+ * device ([release alloc]) and what the port's own factory needs here: it allocates
+ * +[NSURLSessionStreamTask alloc], so without this the port's task is an instance of the class of the
+ * release's name, which is the empty shell and cannot be resumed by the release. Returns whether it
+ * put the method on. */
+static Class host_allocated_from;
+
+static id host_alloc_from_released_class(id ignored)
+{
+    return class_createInstance(host_allocated_from, 0);
+}
+
+BOOL host_alloc_from(Class from, Class to)
+{
+    host_allocated_from = to;
+    /* class_replaceMethod, not class_addMethod: the port's own class answers +alloc already - the
+       alias defines it - so adding a second one is refused and the task would still be the port's. */
+    return class_replaceMethod(object_getClass((id)from), sel_registerName("alloc"), (IMP)host_alloc_from_released_class, "@8:0");
+}

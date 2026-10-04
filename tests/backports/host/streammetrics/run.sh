@@ -63,7 +63,21 @@ for file in $files; do
             release_owns=yes
         fi
     done
-    if [ -n "$release_owns" ]; then
+    # Both of these files carry a category on a class the RELEASE owns, and they are built three
+    # different ways, so what decides it is which of the two kinds this one is:
+    #   * NSURLSession+StreamTask9.m's selectors COLLIDE with the release's own methods of the same
+    #     name, so they are renamed by prefix_selectors.py and attached under those names.
+    #   * NSURLSessionStreamTask9.m's do not - they are the members the port exists to provide, and
+    #     the test and the port's own code call them by their own names - so they are not renamed; the
+    #     section is renamed anyway, so the loader does not apply them to the class of the release's
+    #     name (which is the empty shell) and host_attach_members() puts them on the class the host's
+    #     own session instantiates instead.
+    #   * the other three files' categories are on classes the port defines, and are left alone.
+    if [ "$file" = "NSURLSessionStreamTask9.m" ]; then
+        # shellcheck disable=SC2046
+        xcrun clang $target $flags -I"$sources" $(cat "$build/flags") -c "$sources/$file" -o "$build/ported/$file.o"
+        perl -0777 -pi -e 's/__objc_catlist\0\0/__charon_catlist/g' "$build/ported/$file.o"
+    elif [ -n "$release_owns" ]; then
         # shellcheck disable=SC2046
         python3 "$here/../prefix_selectors.py" "$sources/$file" "$build/ported/$file" charonHost_ \
             $target -DCHARON_HOST_BUILD -I"$sources" -- $build/plain/*.o
