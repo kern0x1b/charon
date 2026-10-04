@@ -104,6 +104,30 @@ and it was wrong: `apple.objc.inventory`'s `instance` map is keyed **with the le
 index on the bare selector reads nil while `pairs` yields `-_onqueue_resume`. The measurement above
 iterates the map.
 
+**What was NOT fetched, and why the probe never got as far as an image.** Nothing was downloaded and no
+image was booted. The probe this section needs was written first and it does not link: with
+`apple-backports` at `apple_minimum=8.4.1`, resolved through the same addon and the same
+`@addon/charon/apple-ios` toolchain `coordination/build-gate.lua` uses (`xmake show -t` prints
+`-fuse-ld=/Users/<user>/.xmake/packages/l/ld64/956.6/<hash>/bin/ld`), the placement of the band library
+into a guest target stops with
+
+    error: build/.../placed/.../libFoundationBackports.dylib is not what the platform runs: a linker
+    stamped LC_ENCRYPTION_INFO on a 32-bit ARM library, which iOS 6 refuses to load; link it with ld64
+
+and the band library in the store's own staged tree carries that load command, as does the
+`libFoundationBackports.dylib` the sanctioned 8.4.1 gate build wrote, while **charon's own ld64 does not
+stamp it** - the same trivial armv7 dylib linked both ways on 2026-10-04:
+
+    probe/t-charon.dylib   LC_ENCRYPTION=0     (clang -fuse-ld=<charon ld64>)
+    probe/t-host.dylib     LC_ENCRYPTION=1     (the host's linker)
+
+`macho.verify`'s `encrypted()` reads that load command on a dylib or a bundle only, which is why the
+gate reaches its registry check while a guest target that *carries* the library cannot be placed. So the
+measurement this section asks for is blocked one step before the firmware: there is no reason to fetch
+1.55 GB of iOS 8.4.1 for an image that could not load a target carrying this band's library. That is a
+tree-level question and it is not this page's to answer; what belongs here is that **the 8.x `-resume`
+question is still open**, and this is where its answer belongs when the probe can run.
+
 The seven methods are not a CATEGORY on the release's name here, and that is a measured choice too:
 a category on `NSURLSessionStreamTask` implements the methods the SDK's own interface declares there,
 and clang's `-Wobjc-protocol-method-implementation` says so once per method, which the wave's rules
