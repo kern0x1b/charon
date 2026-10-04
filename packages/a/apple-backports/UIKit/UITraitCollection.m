@@ -112,10 +112,11 @@ static void charon_collect_controllers(UIViewController *controller, NSMutableOr
 // 17 is carried from 6.0 and this object from 5.0, so a 5.0 object may not name a 6.0 symbol. The listeners
 // therefore register themselves, in the order they registered, and a release that carries none of them has an
 // empty list and delivers to nobody - which is what 5.x does, and what the header's own answer is there, since
-// the API these deliver is 17's. The list itself, and the call into it, are in CharonTraitObservers.m, because
-// this object is in no band the listener's file is not in: a release exports UITraitCollection from 8.0 on
-// (measured over the held armv7 caches, the two symbols this file exports and their first release), so from
-// that band the release's own class is re-exported and this object is not linked at all.
+// the API these deliver is 17's. The list itself, and the call into it, are in CharonTraitObservers.m,
+// because this object is in no band the listener's file is not in: a release exports UITraitCollection
+// from 8.0 on (measured over the held armv7 caches, the two symbols this file exports and their first
+// release), so from that band the release's own class is re-exported and this object is not linked at
+// all, while UITraitOverrides17.m exports no API symbol and is in every band.
 
 static void charon_deliver_trait_changes(NSArray *environments, void (^change)(void))
 {

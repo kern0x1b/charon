@@ -1,17 +1,17 @@
 // CharonTraitObservers.m - the listeners a trait change is told to, and the two calls into and out of
 // the list they are held in.
 //
-// The list is here, apart from UITraitCollection.m, because the two files that need it are carried
-// from two different releases and no band can hold a pair whose releases differ: UITraitCollection.m
-// implements a class a release exports from 8.0, so the band from 8.0 re-exports that release's own
-// object instead of linking this one, while UITraitOverrides17.m is carried from the release that
-// exports the twenty-two traits of iOS 17 and is in every band below it. A C function defined in one
-// of them and called from the other is therefore an undefined symbol in every band from 8.0 on - the
-// fourth band of a build with the uikit config stopped on exactly that, with
+// The list is here, apart from UITraitCollection.m, because the two files that need it are in no band
+// together: UITraitCollection.m exports _OBJC_CLASS_$_UITraitCollection and its metaclass, and a held
+// armv7 release exports both from 8.0 on (release-split over the objects of the build that failed), so
+// from that band the release's own class is re-exported and this file's object is not linked at all,
+// while UITraitOverrides17.m exports no API symbol at all and is therefore in every band. A C function
+// defined in one of them and called from the other is an undefined symbol in every band from 8.0 on -
+// the fourth band of a build with the uikit config stopped on exactly that, with
 // "_charon_add_trait_change_observer, referenced from +[CharonOverrides load] in
-// UITraitOverrides17.o". An object that exports no API symbol of its own is carried from the
-// deployment on, which is what this one is: both names it defines are internal, so no release is
-// measured to export them and no band point is derived from it.
+// UITraitOverrides17.o". An object that exports no API symbol of its own is in every band, which is
+// what this one is: both names it defines are internal, so no release is measured to export them and no
+// band point is derived from it.
 //
 // Nothing here changed behaviour: the same array, grown the same way, called in the same order with
 // the same arguments, in the same place of the delivery - the call the listener list makes is now a
