@@ -180,6 +180,13 @@ concat-shapes-differ 134 invalid input tensor shapes, all input shapes must matc
 # invariant the walk's division by the number of operands rests on, so it is recorded here and enforced in
 # the plan - see CharonMPSGraphConcatPlan.
 concat-interleave-unequal 134 all input shapes must match along axis dimension when interleaving
+# An operand of extent ZERO on the axis they are laid along: the regions' offsets collapse, so a walk that
+# lays them out by offset has two operands starting in the same place. The release builds the result tensor
+# of the OTHER operands' length and then fails inside its own array with its own assertion - no answer at
+# all - so the port refuses where the graph is built and says so in the row. The zero is the first operand,
+# which is the harder case; interleaved, the sentence above is the one the release names, and the plan asks
+# that question first for exactly that reason.
+concat-zero-extent 134 initWithDevice:descriptor:isTextureBacked:] Error: device may not be nil
 stack-axis-outside 134 invalid axis: 3, axis must be in range -|rank| <= axis < |rank|
 stack-shapes-differ 134 invalid input tensor shapes, all input shapes must match except at axis
 # MIXED DATA TYPES, the header's other sentence, measured rather than assumed: the result tensor carries the
