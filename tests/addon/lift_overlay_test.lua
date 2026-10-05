@@ -13,7 +13,14 @@ function failures(opt)
     end
     -- The run's own folder, like every other fixture folder in these suites: two runs writing and then removing
     -- one folder is a race, and the loser answers with the fixture missing (measured in lift_test, 2026-10-04).
-    local root = path.join(os.tmpdir(), "lift_overlay_test-" .. os.getpid())
+    -- And one folder per fixture: this machine's ccache hands back the dump of a fixture SDK whose headers changed
+    -- where the last lift left them (lift_test, the nested-framework case, has the measurement), and the cases below
+    -- lift several fixtures one after another - `- (void)draw;` and then `- (void)draw:(int)value API_AVAILABLE(...)`
+    -- - so the second was lifted as the first and "-[FixView draw:] is declared by FixView itself, and was not matched
+    -- there". The same fixture with CCACHE_DISABLE=1 is lifted as written.
+    local base = path.join(os.tmpdir(), "lift_overlay_test-" .. os.getpid())
+    local root = base
+    local roots = {}
     local folder = path.join("System", "Library", "Frameworks", "Fix.framework", "Headers")
     -- Foundation's umbrella, which the umbrella lift() generates imports first, and where this fixture's NSObject is declared: one
     -- translation unit cannot declare a protocol twice, so the framework headers below reach it there and do not declare it themselves
@@ -22,6 +29,12 @@ function failures(opt)
                      "@protocol NSObject @end\n@protocol NSCopying @end\n__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\n")
     end
     local function lifted(lines, registry, expected)
+        local text = table.concat(lines, "\n")
+        for _, api in ipairs(table.orderkeys(registry)) do
+            text = text .. "\n" .. api .. "=" .. registry[api]
+        end
+        root = base .. "-" .. hash.strhash128(text)
+        table.insert(roots, root)
         os.tryrm(root)
         local sdk = path.join(root, "sdk")
         -- the macros in a header of their own, as the SDK has them: the location of a use that names a file only where it differs from the last
@@ -91,6 +104,8 @@ function failures(opt)
 
     -- a framework with no umbrella header that keeps generations of its API in folders (OpenGLES's ES1, ES2, ES3): the newest is read, and a
     -- name only it declares is lowered there; the older one is not read, so a name in it is left alone, and its copy is not written
+    root = base .. "-generations"
+    table.insert(roots, root)
     os.tryrm(root)
     local other = path.join(root, "sdk", "System", "Library", "Frameworks", "Other.framework", "Headers")
     io.writefile(path.join(other, "Avail.h"), "#define ios(version) ios, introduced=version\n#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n")
@@ -116,6 +131,8 @@ function failures(opt)
         end
     end
     expect("what only the older declares is left alone", table.concat(left, ","), "FixGenTwo")
-    os.tryrm(root)
+    for _, folder in ipairs(roots) do
+        os.tryrm(folder)
+    end
     return found
 end
