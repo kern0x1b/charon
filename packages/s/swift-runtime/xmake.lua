@@ -207,26 +207,61 @@ package("swift-runtime")
         end
         local install = path.join(package:installdir("lib"), "swift")
 
+        -- What decides the standard library's build tree, and nothing else does: the compiler this runtime is built
+        -- from (its own hash, which is its swift-source and its build), this recipe's hash (its Lua, its patches, the
+        -- sources it holds, the apple-compat shims it links, and the configurations it was resolved with - the backports
+        -- one among them, which is what makes every availability macro always available and renames the openat the shims
+        -- call), and the release and architecture the toolchain resolved for. Two of the three are already one hash
+        -- each, so the key is three lines and can be read.
+        local stdlib_key = string.format("compiler=%s\nrecipe=%s\nminimum=%s\narch=%s\n",
+                                         compiler:buildhash(), package:buildhash(), minimum, package:arch())
+        -- The stamp lives beside the trees it describes and not inside them, because the sweep at the end of a
+        -- successful install removes both; an install that failed leaves the tree and the stamp, which is the case this
+        -- is for.
+        local stdlib_stamp = path.absolute(".stdlib.key")
+        -- A tree is only taken up when all three of these hold: the stamp names the inputs above, the core project is
+        -- there, and the sources it was built from are. A tree an install that failed halfway left is not trusted for
+        -- the first of those two alone, because the stamp is written only after a configure that returned.
+        -- io.readfile raises on a file that is not there, and a first install has no stamp, so the read is guarded.
+        local stdlib_kept = os.isfile(stdlib_stamp) and io.readfile(stdlib_stamp) == stdlib_key
+                           and os.isdir(path.join(path.absolute("build"), "core"))
+                           and os.isdir(path.absolute("swift-source"))
+        if stdlib_kept then
+            -- Everything else under build/ is this attempt's own scratch and is rebuilt whatever: the generated
+            -- sources, the objects and modules of the overlays, the resource directory and the apinote overlay.
+            for _, scratch in ipairs({"overlay", "resources", "simd", "scenekit", "realityfoundation", "realitykit",
+                                      "spatial", "synchronization", "observation", "stringprocessing"}) do
+                os.tryrm(path.join(path.absolute("build"), scratch))
+            end
+            print("swift-runtime: the standard library's build tree answers for these inputs and is kept")
+        else
+            os.tryrm(stdlib_stamp)
+            os.tryrm(path.absolute("build"))
+        end
+
         -- A writable copy of the sources: the changes below are made in it, and the standalone runtime build takes its
         -- copies of the standard library from it afterwards.
         -- A copy into a directory that is already there would land inside it, so what an install that failed halfway left
-        -- behind goes first: the sources are copied, not kept.
+        -- behind goes first: the sources are copied, not kept. Both are skipped when the build tree above is kept,
+        -- because the sources it was built from are the ones it kept and re-copying them would only change their mtimes.
         -- CMake takes the flags of a toolchain file only while their cache entries are unset, so a build tree an install
-        -- that failed left behind would keep the flags of that run; this build makes its own.
-        os.tryrm(path.absolute("build"))
-
+        -- that failed left behind would keep the flags of that run; the stamp above is what decides that now.
         local source = path.absolute("swift-source")
-        os.tryrm(source)
-        os.vcp(path.join(compiler:installdir("share"), "swift-source"), source)
-        local patches = os.files(path.join(package:scriptdir(), "patches", "*.patch"))
-        table.sort(patches)
-        for _, patch in ipairs(patches) do
-            os.vrunv("patch", {"-p1", "-i", patch}, {curdir = source})
+        if not stdlib_kept then
+            os.tryrm(source)
+            os.vcp(path.join(compiler:installdir("share"), "swift-source"), source)
+            local patches = os.files(path.join(package:scriptdir(), "patches", "*.patch"))
+            table.sort(patches)
+            for _, patch in ipairs(patches) do
+                os.vrunv("patch", {"-p1", "-i", patch}, {curdir = source})
+            end
         end
 
         -- Every availability macro of the standard library becomes always available: the macros name the OS releases whose
         -- Swift runtime a library may rely on, and this runtime is the program's own, whatever the release.
-        io.writefile(path.join(source, "utils", "availability-macros.def"), swift.bundled_availability(source))
+        if not stdlib_kept then
+            io.writefile(path.join(source, "utils", "availability-macros.def"), swift.bundled_availability(source))
+        end
 
         -- The standalone runtime build keeps its own copies of the standard library's sources; this brings them up to date
         -- with the changes above, and copies in the regular expression sources, which live in their own repository.
@@ -236,19 +271,21 @@ package("swift-runtime")
         -- own output shows. So the shims built here call apple-compat's function by name, which is that call itself
         -- where the release has it, and everything that reads them - the standard library, the overlay and a port's own
         -- Swift - reaches the shim.
-        local overlay_shims = path.join(source, "stdlib", "public", "SwiftShims", "swift", "shims", "LibcOverlayShims.h")
-        local renamed_shims, calls = io.readfile(overlay_shims):gsub("return openat%(", "return charon_openat(")
-        assert(calls == 1, "the shims of Swift " .. package:version_str() ..
-               " no longer call openat exactly once, and this runtime would ship a header that does not say what it does")
-        local declared, declarations = renamed_shims:gsub("(int static inline _swift_stdlib_openat)",
-                                                          "extern int charon_openat(int directory, const char *path, int flags, ...);\n%1", 1)
-        assert(declarations == 1, "the shims of Swift " .. package:version_str() .. " no longer declare _swift_stdlib_openat as they did")
-        io.writefile(overlay_shims, declared)
+        if not stdlib_kept then
+            local overlay_shims = path.join(source, "stdlib", "public", "SwiftShims", "swift", "shims", "LibcOverlayShims.h")
+            local renamed_shims, calls = io.readfile(overlay_shims):gsub("return openat%(", "return charon_openat(")
+            assert(calls == 1, "the shims of Swift " .. package:version_str() ..
+                   " no longer call openat exactly once, and this runtime would ship a header that does not say what it does")
+            local declared, declarations = renamed_shims:gsub("(int static inline _swift_stdlib_openat)",
+                                                              "extern int charon_openat(int directory, const char *path, int flags, ...);\n%1", 1)
+            assert(declarations == 1, "the shims of Swift " .. package:version_str() .. " no longer declare _swift_stdlib_openat as they did")
+            io.writefile(overlay_shims, declared)
 
-        os.vrunv("cmake", {"-DStringProcessing_ROOT_DIR=" .. compiler:installdir("share"), "-P",
-                           path.join(source, "Runtimes", "Resync.cmake")})
-        assert(os.isdir(path.join(source, "Runtimes", "Supplemental", "StringProcessing", "_RegexParser")),
-               "the resync left the regular expression libraries without sources; the swift package installs them beside the release's")
+            os.vrunv("cmake", {"-DStringProcessing_ROOT_DIR=" .. compiler:installdir("share"), "-P",
+                               path.join(source, "Runtimes", "Resync.cmake")})
+            assert(os.isdir(path.join(source, "Runtimes", "Supplemental", "StringProcessing", "_RegexParser")),
+                   "the resync left the regular expression libraries without sources; the swift package installs them beside the release's")
+        end
 
         -- The mark every image of a port binds to, so that a program built against one build of this runtime cannot be
         -- linked against another: the libraries carry no ABI stability, and everything is compiled together.
@@ -323,42 +360,52 @@ package("swift-runtime")
         -- The standard library, the runtime and concurrency. Library evolution is off unless the config asks for it: the
         -- runtime ships with the program, so nothing needs ABI stability, and a resilient layout would make a client's class
         -- need the metadata update of iOS 12's Objective-C runtime, which the releases this is for do not have.
-        configure("core", path.join(source, "Runtimes", "Core"), {
-            -- The compiler emits the pre-stable Swift bit for a deployment target below 12.2, and the runtime hardcodes the
-            -- stable one on Apple platforms; built this way, a Swift class is recognised as one. The layouts of the
-            -- resilient types of older releases are not there to read, and with library evolution off every type this
-            -- runtime has is laid out here.
-            cxxflags = {"-DSWIFT_CLASS_IS_SWIFT_MASK=1ULL"},
-            swiftflags = {"-Xfrontend", "-disable-legacy-type-info"},
-            shflags = {path.absolute("mark.o")}
-        }, {
-            "-DSwiftCore_SWIFTC_SOURCE_DIR=" .. source,
-            "-DSwiftCore_ARCH_SUBDIR=" .. package:arch(), "-DSwiftCore_PLATFORM_SUBDIR=iphoneos",
-            "-DSwiftCore_MODULE_TRIPLE=" .. package:arch() .. "-apple-ios",
-            "-Ddispatch_IMPLIB=" .. path.join(toolchain:config("sdkdir"), "usr", "lib", "libSystem.tbd"),
-            "-Ddispatch_INCLUDE_DIR=" .. path.join(toolchain:config("sdkdir"), "usr", "include"),
-            "-DSwiftCore_ENABLE_CRASH_REPORTER_CLIENT=OFF", "-DSwiftCore_ENABLE_BACKTRACING=OFF",
-            "-DSwiftCore_ENABLE_STDLIB_TRACING=OFF", "-DSwiftCore_ENABLE_CONCURRENCY=ON",
-            "-DSwiftCore_ENABLE_STRICT_AVAILABILITY=OFF", "-DSwiftCore_ENABLE_LIBRARY_EVOLUTION=" .. (package:config("library_evolution") and "ON" or "OFF"),
-            no_interface,
-            "-DSwiftCore_ENABLE_OBJC_INTEROP=ON", "-DSwiftCore_ENABLE_TYPE_PRINTING=ON", "-DSwiftCore_ENABLE_REFLECTION=ON",
-            -- SIMD2/3/4/8/16 and the concrete vector operations. Swift's DefaultSettings.cmake only defaults
-            -- SwiftCore_ENABLE_VECTOR_TYPES on for Windows and for the Apple vendor cache, which this build does
-            -- not use, so it is off by default here and the flag below turns it on (6cdf1ca6, 2026-09-27).
-            -- Without it the standard library this runtime installs has no vector types at all:
-            -- `SIMD4<Float>` is "cannot find type in scope", and with it the whole `simd` module is empty, because
-            -- the Clang importer maps a `__ext_vector_type__` typedef of the simd headers onto the standard
-            -- library's SIMD type rather than declaring one of its own.
-            --
-            -- What an install older than that commit gives: this exact failure. Measured 2026-09-28 against
-            -- swift-runtime 0731ba0a, installed 2026-09-27 02:51, eleven hours before 6cdf1ca6: the SDK's own
-            -- simd interface fails to compile with 5610 errors of the shape "value of type 'simd_quatd' has no
-            -- member 'vector'" and "field 'vector' unavailable (cannot import)" against
-            -- usr/include/simd/types.h:125. An overlay that imports simd - swiftsimd, and so RealityFoundation
-            -- and RealityKit - cannot be built against such an install; against one built from this recipe it
-            -- can. So the question to ask of a runtime is its build date, not its option list.
-            "-DSwiftCore_ENABLE_VECTOR_TYPES=ON",
-            "-DSwiftCore_INSTALL_NESTED_SUBDIR=OFF"})
+        if stdlib_kept then
+            -- The tree answers for these inputs and its build is what took the time; what an attempt that failed
+            -- rolled back is the install directory, so what is missing is its output and not its build. Installing it
+            -- again is the whole of what a kept tree costs.
+            os.vrunv("cmake", {"--install", path.absolute(path.join("build", "core"))})
+        else
+            configure("core", path.join(source, "Runtimes", "Core"), {
+                -- The compiler emits the pre-stable Swift bit for a deployment target below 12.2, and the runtime hardcodes the
+                -- stable one on Apple platforms; built this way, a Swift class is recognised as one. The layouts of the
+                -- resilient types of older releases are not there to read, and with library evolution off every type this
+                -- runtime has is laid out here.
+                cxxflags = {"-DSWIFT_CLASS_IS_SWIFT_MASK=1ULL"},
+                swiftflags = {"-Xfrontend", "-disable-legacy-type-info"},
+                shflags = {path.absolute("mark.o")}
+            }, {
+                "-DSwiftCore_SWIFTC_SOURCE_DIR=" .. source,
+                "-DSwiftCore_ARCH_SUBDIR=" .. package:arch(), "-DSwiftCore_PLATFORM_SUBDIR=iphoneos",
+                "-DSwiftCore_MODULE_TRIPLE=" .. package:arch() .. "-apple-ios",
+                "-Ddispatch_IMPLIB=" .. path.join(toolchain:config("sdkdir"), "usr", "lib", "libSystem.tbd"),
+                "-Ddispatch_INCLUDE_DIR=" .. path.join(toolchain:config("sdkdir"), "usr", "include"),
+                "-DSwiftCore_ENABLE_CRASH_REPORTER_CLIENT=OFF", "-DSwiftCore_ENABLE_BACKTRACING=OFF",
+                "-DSwiftCore_ENABLE_STDLIB_TRACING=OFF", "-DSwiftCore_ENABLE_CONCURRENCY=ON",
+                "-DSwiftCore_ENABLE_STRICT_AVAILABILITY=OFF", "-DSwiftCore_ENABLE_LIBRARY_EVOLUTION=" .. (package:config("library_evolution") and "ON" or "OFF"),
+                no_interface,
+                "-DSwiftCore_ENABLE_OBJC_INTEROP=ON", "-DSwiftCore_ENABLE_TYPE_PRINTING=ON", "-DSwiftCore_ENABLE_REFLECTION=ON",
+                -- SIMD2/3/4/8/16 and the concrete vector operations. Swift's DefaultSettings.cmake only defaults
+                -- SwiftCore_ENABLE_VECTOR_TYPES on for Windows and for the Apple vendor cache, which this build does
+                -- not use, so it is off by default here and the flag below turns it on (6cdf1ca6, 2026-09-27).
+                -- Without it the standard library this runtime installs has no vector types at all:
+                -- `SIMD4<Float>` is "cannot find type in scope", and with it the whole `simd` module is empty, because
+                -- the Clang importer maps a `__ext_vector_type__` typedef of the simd headers onto the standard
+                -- library's SIMD type rather than declaring one of its own.
+                --
+                -- What an install older than that commit gives: this exact failure. Measured 2026-09-28 against
+                -- swift-runtime 0731ba0a, installed 2026-09-27 02:51, eleven hours before 6cdf1ca6: the SDK's own
+                -- simd interface fails to compile with 5610 errors of the shape "value of type 'simd_quatd' has no
+                -- member 'vector'" and "field 'vector' unavailable (cannot import)" against
+                -- usr/include/simd/types.h:125. An overlay that imports simd - swiftsimd, and so RealityFoundation
+                -- and RealityKit - cannot be built against such an install; against one built from this recipe it
+                -- can. So the question to ask of a runtime is its build date, not its option list.
+                "-DSwiftCore_ENABLE_VECTOR_TYPES=ON",
+                "-DSwiftCore_INSTALL_NESTED_SUBDIR=OFF"})
+        end
+        -- Written here, where a configure that returned is: a tree an install that failed before this point leaves no
+        -- stamp, so it is never taken up.
+        io.writefile(stdlib_stamp, stdlib_key)
         timed("stdlib")
 
         -- A resource directory the compiler accepts: its own shims and clang headers beside the runtime built here, under
@@ -952,7 +999,6 @@ package("swift-runtime")
             package:setenv("CHARON_SHARED_PACKAGE", name .. "=" .. cxx .. ";" .. ui .. "=" .. name)
             timed("package")
         end
-        timed("sweep")
         if marked then
             print("swift-runtime: where the install went, every phase in the order it ran:")
             local total = 0
@@ -962,8 +1008,6 @@ package("swift-runtime")
             end
             printf("swift-runtime:   %-26s %8.1fs\n", "total", total)
         end
-        os.tryrm(path.absolute("build"))
-        os.tryrm(source)
     end)
 
     on_test(function (package)
@@ -1063,4 +1107,14 @@ package("swift-runtime")
         assert(not links("charon_swift_runtime_not_this_build"),
                "a port must not link against a runtime whose mark it does not name; the mark is what keeps builds apart")
         os.tryrm(folder)
+        -- What the install built and what it copied are swept here and not at the end of on_install, so that a tree
+        -- survives everything that is not a package that installed and passed: an install that failed before this point
+        -- never reached the sweep there either, and this install's own test is what fails when the install itself is
+        -- whole, with xmake rolling the install directory back and leaving the tree as the only copy of that build. The
+        -- standard library's build is the largest thing an install makes (SWIFTRT_PROFILE=1 over this tree, armv7 at
+        -- iOS 6.1.3 with the backports and shared: 121.3s of a 188.5s install), and throwing it away is what made every
+        -- attempt pay for it again.
+        os.tryrm(path.absolute("build"))
+        os.tryrm(path.absolute("swift-source"))
+        os.tryrm(path.absolute(".stdlib.key"))
     end)
