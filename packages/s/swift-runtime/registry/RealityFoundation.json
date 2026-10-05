@@ -32,36 +32,6 @@
             "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
         },
         {
-            "api": "AudioFileResource",
-            "kind": "class",
-            "introduced": "13.0",
-            "minimum": "6.1.3",
-            "status": "implemented",
-            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
-            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
-        },
-        {
-            "api": "AudioPlaybackController",
-            "kind": "class",
-            "introduced": "13.0",
-            "minimum": "6.1.3",
-            "status": "implemented",
-            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
-            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
-        },
-        {
-            "api": "AudioResource",
-            "kind": "class",
-            "introduced": "13.0",
-            "minimum": "6.1.3",
-            "status": "implemented",
-            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
-            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
-        },
-        {
             "api": "Entity",
             "kind": "class",
             "introduced": "13.0",
@@ -149,7 +119,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1238: and the top-level AnimationRepeatMode is a different type "
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1108: and the top-level AnimationRepeatMode is a different type "
         },
         {
             "api": "CollisionCastQueryType",
@@ -339,7 +309,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:831: a file resource is named"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:749: a new view's light has no resource"
         },
         {
             "api": "AnchoringComponent",
@@ -889,7 +859,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1238: and the top-level AnimationRepeatMode is a different type "
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1108: and the top-level AnimationRepeatMode is a different type "
         },
         {
             "api": "ParticleEmitterComponent.ParticleEmitter.ImageSequence.rowCount",
@@ -999,7 +969,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1453: a constraint's too"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1323: a constraint's too"
         },
         {
             "api": "IKComponent.Joint",
@@ -1009,7 +979,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1373: a joint weighted on the axis the demand is about reaches t"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1243: a joint weighted on the axis the demand is about reaches t"
         },
         {
             "api": "IKComponent.Solver",
@@ -1019,7 +989,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1501: a solver path reaches a constraint's target"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1371: a solver path reaches a constraint's target"
         },
         {
             "api": "IKResource",
@@ -1059,7 +1029,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1050: and a turn of nothing is the orientation it began at"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:920: and a turn of nothing is the orientation it began at"
         },
         {
             "api": "IKRig.Constraint.IKPositionDemand.Mode.poleVector",
@@ -1139,7 +1109,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1048: a turn is about the screen's own axis"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:918: a turn is about the screen's own axis"
         },
         {
             "api": "IKComponent.Constraint.DemandOptions.init(rawValue:)",
@@ -1149,7 +1119,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "IKComponent.ConstraintCollection.Iterator.next()",
@@ -1159,7 +1129,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1171: and is the same one on the next read"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1041: and is the same one on the next read"
         },
         {
             "api": "IKComponent.ConstraintCollection.contains(_:)",
@@ -1239,7 +1209,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1171: and is the same one on the next read"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1041: and is the same one on the next read"
         },
         {
             "api": "IKComponent.JointCollection.contains(_:)",
@@ -1329,7 +1299,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1141: and it hashes to the same value as itself"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1011: and it hashes to the same value as itself"
         },
         {
             "api": "IKComponent.Solver.reset()",
@@ -1339,7 +1309,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:883: the reverb presets are named"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:753: the reverb presets are named"
         },
         {
             "api": "IKComponent.SolverCollection.Iterator.next()",
@@ -1349,7 +1319,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1171: and is the same one on the next read"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1041: and is the same one on the next read"
         },
         {
             "api": "IKComponent.SolverCollection.contains(_:)",
@@ -1439,7 +1409,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "IKResource.init(rig:)",
@@ -1449,7 +1419,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "IKRig.Constraint.ID.==(a:b:)",
@@ -1469,7 +1439,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1141: and it hashes to the same value as itself"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1011: and it hashes to the same value as itself"
         },
         {
             "api": "IKRig.Constraint.IKOrientationDemand.init()",
@@ -1479,7 +1449,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "IKRig.Constraint.IKPositionDemand.Mode.==(a:b:)",
@@ -1499,7 +1469,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1141: and it hashes to the same value as itself"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1011: and it hashes to the same value as itself"
         },
         {
             "api": "IKRig.Constraint.IKPositionDemand.init()",
@@ -1509,7 +1479,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "IKRig.Constraint.lookAtAbsolute(named:on:lookingAlong:orientationWeight:)",
@@ -1539,7 +1509,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1050: and a turn of nothing is the orientation it began at"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:920: and a turn of nothing is the orientation it began at"
         },
         {
             "api": "IKRig.Constraint.parent(named:on:positionWeight:orientationWeight:)",
@@ -1559,7 +1529,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:938: with the control points the documentation gives"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:808: with the control points the documentation gives"
         },
         {
             "api": "IKRig.ConstraintsCollection.Iterator.next()",
@@ -1569,7 +1539,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1171: and is the same one on the next read"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1041: and is the same one on the next read"
         },
         {
             "api": "IKRig.ConstraintsCollection.contains(_:)",
@@ -1599,7 +1569,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "IKRig.ConstraintsCollection.init(arrayLiteral:)",
@@ -1609,7 +1579,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "IKRig.ConstraintsCollection.makeIterator()",
@@ -1679,7 +1649,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1141: and it hashes to the same value as itself"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1011: and it hashes to the same value as itself"
         },
         {
             "api": "IKRig.Joint.LimitsDefinition.Axis.==(a:b:)",
@@ -1699,7 +1669,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1141: and it hashes to the same value as itself"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1011: and it hashes to the same value as itself"
         },
         {
             "api": "IKRig.Joint.LimitsDefinition.init(weight:boneAxis:minimumAngles:maximumAngles:)",
@@ -1709,7 +1679,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "IKRig.Joint.init(name:parentID:restTransform:)",
@@ -1719,7 +1689,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "IKRig.JointCollection.Iterator.next()",
@@ -1729,7 +1699,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1171: and is the same one on the next read"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1041: and is the same one on the next read"
         },
         {
             "api": "IKRig.JointCollection.contains(_:)",
@@ -1819,7 +1789,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "IKSolverDefinition.init(id:rig:)",
@@ -1829,7 +1799,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "IKComponent.Constraint.DemandOptions.rawValue",
@@ -2089,7 +2059,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1405: a chain whose joints are limited stops at their limits"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1275: a chain whose joints are limited stops at their limits"
         },
         {
             "api": "IKComponent.Solver.maxIterations",
@@ -2159,7 +2129,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:831: a file resource is named"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:749: a new view's light has no resource"
         },
         {
             "api": "IKComponent.solvers",
@@ -2229,7 +2199,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1326: a forward-kinematics weight of one keeps the whole chain s"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1196: a forward-kinematics weight of one keeps the whole chain s"
         },
         {
             "api": "IKRig.Constraint.IKPositionDemand.Mode.hashValue",
@@ -2269,7 +2239,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1326: a forward-kinematics weight of one keeps the whole chain s"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1196: a forward-kinematics weight of one keeps the whole chain s"
         },
         {
             "api": "IKRig.Constraint.id",
@@ -2429,7 +2399,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1326: a forward-kinematics weight of one keeps the whole chain s"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1196: a forward-kinematics weight of one keeps the whole chain s"
         },
         {
             "api": "IKRig.Joint.active",
@@ -2469,7 +2439,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1405: a chain whose joints are limited stops at their limits"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1275: a chain whose joints are limited stops at their limits"
         },
         {
             "api": "IKRig.Joint.name",
@@ -2589,7 +2559,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1405: a chain whose joints are limited stops at their limits"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1275: a chain whose joints are limited stops at their limits"
         },
         {
             "api": "IKRig.maxIterations",
@@ -2729,7 +2699,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1453: a constraint's too"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1323: a constraint's too"
         },
         {
             "api": "IKRig.Constraint.ID",
@@ -2789,7 +2759,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1373: a joint weighted on the axis the demand is about reaches t"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1243: a joint weighted on the axis the demand is about reaches t"
         },
         {
             "api": "IKRig.Joint.ID",
@@ -3419,7 +3389,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "carried whole: the declaration as the interface gives it, the composition the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1486: a scene path reaches the scene itself"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1356: a scene path reaches the scene itself"
         },
         {
             "api": "BindTarget.skeletalPose",
@@ -3649,7 +3619,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "carried whole: the declaration as the interface gives it, the composition the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1012: a model's bounds are its parts'"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:882: a model's bounds are its parts'"
         },
         {
             "api": "BindTarget.EntityPath.billboardBlendFactor",
@@ -4099,7 +4069,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1161: replaceAll sets the whole collection"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1031: replaceAll sets the whole collection"
         },
         {
             "api": "Scene.AnchorCollection.subscript(index:)",
@@ -4199,7 +4169,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "carried whole: the declaration as the interface gives it, the behaviour the host differential measures, and the release it is available from",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1141: and it hashes to the same value as itself"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1011: and it hashes to the same value as itself"
         },
         {
             "api": "Scene.performQuery(_:)",
@@ -4479,7 +4449,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "carried whole: CoreMedia's own CMTimebase, made on the scene's first use and kept, so a scene that steps does not lose the time it has accumulated; the port reaches the type through the SDK's clang module and needs no CoreMedia overlay of its own",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1170: a scene's timebase is made on the first use"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1040: a scene's timebase is made on the first use"
         },
         {
             "api": "Scene.AnchorCollection",
@@ -4609,7 +4579,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "carried whole: one named configuration. What the interface's throwing initializers refuse is a reading, written down in the source, because the interface does not say",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1526: a configuration is its name"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1396: a configuration is its name"
         },
         {
             "api": "Entity.ConfigurationCatalog.Configuration.id",
@@ -4629,7 +4599,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "carried whole: made from a name. What the interface's throwing initializers refuse is a reading, written down in the source, because the interface does not say",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "Entity.ConfigurationCatalog.Configuration.ID",
@@ -4669,7 +4639,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "carried whole: the configurations it holds, by name. What the interface's throwing initializers refuse is a reading, written down in the source, because the interface does not say",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1536: a set with no configurations is refused"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:1406: a set with no configurations is refused"
         },
         {
             "api": "Entity.ConfigurationCatalog.ConfigurationSet.defaultConfiguration",
@@ -4689,7 +4659,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "carried whole: made from a dictionary, naming the default; it refuses a set with nothing in it and a default it does not hold. What the interface's throwing initializers refuse is a reading, written down in the source, because the interface does not say",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "Entity.ConfigurationCatalog.ConfigurationSet.ID",
@@ -4739,7 +4709,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "carried whole: made from an entity and its specifications. What the interface's throwing initializers refuse is a reading, written down in the source, because the interface does not say",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         },
         {
             "api": "Entity.ConfigurationCatalog.configurationSets",
@@ -4759,7 +4729,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "carried whole: made from a dictionary of sets and the combinations; it refuses a combination naming a set or a configuration the catalog does not hold. What the interface's throwing initializers refuse is a reading, written down in the source, because the interface does not say",
-            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:853: generate makes a resource of a definition"
         }
     ]
 }
