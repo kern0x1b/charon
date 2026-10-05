@@ -894,10 +894,13 @@ package("swift-runtime")
         -- The two scalars are one set of sources, because gyb writes both from one template and
         -- every type has a Float twin that differs only in the scalar.
         --
-        -- The libraries are the two the module reaches: the simd overlay built above it, whose own
-        -- interface is `import Darwin` and `@_exported import simd`, and the C library's overlay
-        -- for the math functions. No framework, so libswiftSpatial.dylib pulls in no UIKit and a
-        -- daemon that imports Spatial loads none.
+        -- The module imports Darwin and simd, and names no library on the link line: the object
+        -- carries an autolink entry for each library of the modules it imports, ld64 keeps one of
+        -- those only where a symbol resolves to it, and none does here - the 118 symbols the
+        -- installed library left undefined are 77 of libswiftCore and 41 of libSystem (the math
+        -- functions come from the C library itself, not from the overlay of it). Named on the line
+        -- they were kept for nothing, and libswiftsimd opens Foundation and CoreFoundation, so a
+        -- daemon that imports Spatial loaded both. on_test says the library binds all it names.
         local spatial = path.absolute("spatial")
         os.mkdir(spatial)
         local spatial_sources = {}
@@ -916,8 +919,7 @@ package("swift-runtime")
             end
         end
         assert(#spatial_sources > 0, "the Spatial sources are missing from the package")
-        build_overlay("Spatial", spatial_sources,
-                      {"-lswiftDarwin", "-lswiftsimd"}, nil, {backports = {}})
+        build_overlay("Spatial", spatial_sources, {}, nil, {backports = {}})
 
         -- What is installed is a resource directory, the layout the compiler reads: the shims, the clang headers and the
         -- API notes of the compiler at the root, and under the platform's folder the libraries and their modules,
@@ -1060,6 +1062,17 @@ package("swift-runtime")
             minimum = toolchain:config("deployment"), backports = package:config("backports") and true or false})
         assert(#differs == 0, "the runtime's imports and its guard table differ at " .. toolchain:config("deployment") ..
                (package:config("backports") and " with the backports" or "") .. ":\n  " .. table.concat(differs, "\n  "))
+
+        -- Spatial links Swift's own library and the C library and no overlay (its link line above): a Swift library it names
+        -- that nothing is bound to is one the loader opens for nothing, with everything that one opens in turn.
+        local idle = {}
+        for _, name in ipairs(import("apple.shared_runtime", {rootdir = modules, anonymous = true}).unbound_dependencies(
+                                  path.join(libraries, "libswiftSpatial.dylib"), package:arch())) do
+            if name:startswith("libswift") then
+                table.insert(idle, name)
+            end
+        end
+        assert(#idle == 0, "libswiftSpatial.dylib names " .. table.concat(idle, ", ") .. ", which none of its symbols is bound to")
 
         -- What a port passes as its resource directory is this one, so the compiler's own parts are here too.
         for _, entry in ipairs({"shims", "clang", "apinotes", "module.modulemap"}) do

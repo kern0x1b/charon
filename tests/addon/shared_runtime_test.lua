@@ -71,6 +71,25 @@ function failures(opt)
             table.insert(found, recipe .. " must not depend on ldid: a host tool's dependencies (openssl) reach every package that depends on this one")
         end
     end
+
+    -- A library the link line names and nothing is bound to is a library the loader opens for nothing, and the ones that
+    -- one names open in turn. libtop above binds base and nothing else; libwide is the same code linked with a second
+    -- library on its line that its code never calls, and ld64 keeps a dylib named on the command line whether or not a
+    -- symbol resolves to it (measured on libswiftSpatial.dylib, which named libswiftDarwin and libswiftsimd and bound
+    -- nothing from either). Read from the tools' own output over a linked image, so no fixture text stands for it.
+    io.writefile(path.join(folder, "idle.c"), "int idle(void) { return 3; }\n")
+    fixtures.link(folder, opt.ld64, "libidle.1.dylib", "armv7-apple-ios6.0", "idle.c",
+                  {"-dynamiclib", "-install_name", "@rpath/libidle.1.dylib"})
+    fixtures.link(folder, opt.ld64, "libwide.1.dylib", "armv7-apple-ios6.0", "top.c",
+                  {"-dynamiclib", "-install_name", "@rpath/libwide.1.dylib", "-L.", "-lbase.1", "-lidle.1"})
+    local tight = table.concat(shared.unbound_dependencies(path.join(folder, "libtop.1.dylib"), "armv7"), " ")
+    if tight ~= "" then
+        table.insert(found, "a library whose code binds every library it names has none that are not, and this one was told " .. tight)
+    end
+    local wide = table.concat(shared.unbound_dependencies(path.join(folder, "libwide.1.dylib"), "armv7"), " ")
+    if wide ~= "libidle.1.dylib" then
+        table.insert(found, "a library that names a second library its code never calls is told which: libidle.1.dylib, and it was told '" .. wide .. "'")
+    end
     os.tryrm(folder)
     return found
 end

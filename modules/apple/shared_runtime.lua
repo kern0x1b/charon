@@ -31,6 +31,36 @@ function folder_of(name)
     return "/usr/lib/charon/" .. name
 end
 
+-- The libraries an image names to the loader that nothing of it is bound to, by the file name the image lists them under:
+-- ld64 keeps a dylib that is named on its command line (or by an overlay's own autolink entry that something used) whether
+-- or not any symbol resolves to it, and the loader then opens it, and the ones it names in turn, for nothing. What the
+-- image names is read from `otool -L` (the first line it lists is the image's own install name) and what each undefined
+-- symbol is bound to from `nm -m`, which says "(from <library>)" for a two-level namespace; both give a library by its
+-- file name up to the first dot, so that is how the two are matched.
+function unbound_dependencies(image, architecture)
+    local function stem(name)
+        return path.filename(name):match("^[^.]+")
+    end
+    local bound = {}
+    for line in os.iorunv("xcrun", {"nm", "-arch", architecture, "-m", image}):gmatch("[^\n]+") do
+        local from = line:match("%(undefined%).*%(from ([^)]+)%)")
+        if from then
+            bound[from] = true
+        end
+    end
+    local unbound, own = {}, true
+    for line in os.iorunv("xcrun", {"otool", "-arch", architecture, "-L", image}):gmatch("[^\n]+") do
+        local name = line:match("^%s+(%S+) %(compatibility version")
+        if name and own then
+            own = false
+        elseif name and not bound[stem(name)] then
+            table.insert(unbound, path.filename(name))
+        end
+    end
+    table.sort(unbound)
+    return unbound
+end
+
 -- Gives the libraries of one or more packages their absolute names, and leaves each package's tree and what a Debian package
 -- of it needs to be written from. The libraries are not signed here: signing needs ldid, a tool of the host whose own
 -- dependencies (openssl, libplist) reach every package that depends on a package that has it, and the wrong openssl - the
