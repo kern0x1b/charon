@@ -96,7 +96,7 @@ package("swift-runtime")
     -- The sources of an overlay this tree holds rather than the release's, the same way: a
     -- changed one is a different runtime. The simd module's own source is the SDK's interface,
     -- read at install time, and what the patches beside it make of it is hashed with them.
-    for _, held in ipairs({"files/RealityFoundation", "files/RealityKit", "files/SceneKit"}) do
+    for _, held in ipairs({"files/RealityFoundation", "files/RealityKit", "files/SceneKit", "files/Spatial"}) do
         for _, file in ipairs(os.files(path.join(os.scriptdir(), held, "**"))) do
             table.insert(digests, path.relative(file, path.join(os.scriptdir(), held)) .. "=" .. hash.sha256(file))
         end
@@ -759,6 +759,36 @@ package("swift-runtime")
                       table.join(foundation_links, {"-lswiftQuartzCore", "-lswiftRealityFoundation",
                                                     "-framework", "QuartzCore", "-framework", "SceneKit", "-framework", "UIKit"}),
                       nil, {backports = {}, extra_flags = scn_overlay})
+
+        -- Spatial: the value types the scene graph's math is made of, a module no release before
+        -- iOS 16 carries and this tree holds the sources of, beside the simd module above them.
+        -- The two scalars are one set of sources, because gyb writes both from one template and
+        -- every type has a Float twin that differs only in the scalar.
+        --
+        -- The libraries are the two the module reaches: the simd overlay built above it, whose own
+        -- interface is `import Darwin` and `@_exported import simd`, and the C library's overlay
+        -- for the math functions. No framework, so libswiftSpatial.dylib pulls in no UIKit and a
+        -- daemon that imports Spatial loads none.
+        local spatial = path.absolute("spatial")
+        os.mkdir(spatial)
+        local spatial_sources = {}
+        for _, file in ipairs(os.files(path.join(package:scriptdir(), "files", "Spatial", "*"))) do
+            local name = path.filename(file)
+            if name:endswith(".gyb") then
+                local output = path.join(spatial, (name:gsub("%.gyb$", "")))
+                os.vrunv("python3", {path.join(source, "utils", "gyb.py"),
+                                     "-DCMAKE_SIZEOF_VOID_P=" .. (package:arch() == "arm64" and "8" or "4"),
+                                     "--line-directive", "", "-o", output, file})
+                table.insert(spatial_sources, output)
+            else
+                local output = path.join(spatial, name)
+                os.cp(file, output)
+                table.insert(spatial_sources, output)
+            end
+        end
+        assert(#spatial_sources > 0, "the Spatial sources are missing from the package")
+        build_overlay("Spatial", spatial_sources,
+                      {"-lswiftDarwin", "-lswiftsimd"}, nil, {backports = {}})
 
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do
