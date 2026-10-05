@@ -397,31 +397,13 @@ package("swift-runtime")
         offer(path.join(install, "Darwin.swiftmodule"))
         offer(path.join(install, "libswiftDarwin.dylib"))
 
-        -- The other overlays are the ones the SDK lacks for this architecture. Its Darwin is only an interface for arm64, and
-        -- Synchronization and Observation import it, so that one is built above; the rest the SDK has for arm64 as interfaces
-        -- the compiler builds when a module imports one, and building this runtime's own beside them does not work: the
-        -- interface of the SDK's Foundation names CGFloat in CoreFoundation, where the overlay built here keeps it in
-        -- CoreGraphics, and QuartzCore stops on it. An arm64 install is the standard library, its runtime, Darwin and the
-        -- supplemental libraries, for a guest of the recompiler that binds to the SDK's overlays by name.
-        if not package:is_arch("arm64") then
-            -- The overlay of Objective-C: what a port needs to write a selector, to read a BOOL as a Bool and to hold an
-            -- autorelease pool. It is the release's own source, built against the C library's overlay as its own build did.
-            -- Its shim goes in beside the shims the standard library installed, because those are the ones every build here
-            -- reads and the ones a port is given; the standard library installs a list of its own and would not carry it.
-            -- The overlays above it are the release's own sources too, built by today's compiler in the language mode they were
-            -- written for. What of them the SDK of today no longer lets them write is changed by the patches beside them.
-            local overlays = path.absolute("overlays")
-            local overlay_patches = os.files(path.join(package:scriptdir(), "patches", "overlays", "*.patch"))
-            table.sort(overlay_patches)
-            for _, patch in ipairs(overlay_patches) do
-                os.vrunv("patch", {"-p1", "-i", patch}, {curdir = overlays})
-            end
-            -- The backports variant: the headers with what the backports implement lowered to the port's release, for the
-            -- overlays here and for every port that compiles against this runtime, which finds them through the environment.
-            local lifted, carried = {}, {}
-            local backported = package:dep("apple-backports")
-        -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
-        -- run path it carries.
+        -- What one overlay is, for every architecture: the overlays inside the guard below are the ones the SDK lacks for
+        -- this one, and the four that follow it - simd, RealityFoundation, RealityKit and Spatial - are built whatever the
+        -- architecture is. So this and the two tables it reads are declared here rather than in there: in there they were out
+        -- of scope by the time simd was built, and the call was a nil global, so an install of any architecture but arm64
+        -- stopped there with "attempt to call a nil value (global 'build_overlay')".
+        local lifted, carried = {}, {}
+
         local function build_overlay(name, overlay_sources, links, objects, opt)
             local module = path.join(install, name .. ".swiftmodule")
             os.mkdir(module)
@@ -458,6 +440,31 @@ package("swift-runtime")
             offer(module)
             offer(path.join(install, "libswift" .. name .. ".dylib"))
         end
+
+        -- The other overlays are the ones the SDK lacks for this architecture. Its Darwin is only an interface for arm64, and
+        -- Synchronization and Observation import it, so that one is built above; the rest the SDK has for arm64 as interfaces
+        -- the compiler builds when a module imports one, and building this runtime's own beside them does not work: the
+        -- interface of the SDK's Foundation names CGFloat in CoreFoundation, where the overlay built here keeps it in
+        -- CoreGraphics, and QuartzCore stops on it. An arm64 install is the standard library, its runtime, Darwin and the
+        -- supplemental libraries, for a guest of the recompiler that binds to the SDK's overlays by name.
+        if not package:is_arch("arm64") then
+            -- The overlay of Objective-C: what a port needs to write a selector, to read a BOOL as a Bool and to hold an
+            -- autorelease pool. It is the release's own source, built against the C library's overlay as its own build did.
+            -- Its shim goes in beside the shims the standard library installed, because those are the ones every build here
+            -- reads and the ones a port is given; the standard library installs a list of its own and would not carry it.
+            -- The overlays above it are the release's own sources too, built by today's compiler in the language mode they were
+            -- written for. What of them the SDK of today no longer lets them write is changed by the patches beside them.
+            local overlays = path.absolute("overlays")
+            local overlay_patches = os.files(path.join(package:scriptdir(), "patches", "overlays", "*.patch"))
+            table.sort(overlay_patches)
+            for _, patch in ipairs(overlay_patches) do
+                os.vrunv("patch", {"-p1", "-i", patch}, {curdir = overlays})
+            end
+            -- The backports variant: the headers with what the backports implement lowered to the port's release, for the
+            -- overlays here and for every port that compiles against this runtime, which finds them through the environment.
+            local backported = package:dep("apple-backports")
+        -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
+        -- run path it carries.
 
             if package:config("backports") then
                 local lift = import("apple.lift", {rootdir = modules, anonymous = true})

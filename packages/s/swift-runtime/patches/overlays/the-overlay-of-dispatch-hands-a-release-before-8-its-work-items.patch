@@ -5,13 +5,14 @@ Source.swift marked iOS 8, and asked #available(iOS 8.0) for at run time, is the
 a barrier, a class of service or any other flag given to async(group:qos:flags:), sync(flags:), asyncAfter or
 DispatchGroup.notify was dropped below 8, and the closure was dispatched plainly.
 
-The release's libdispatch reads no block's flags, so the shims' calls to it go through apple-compat's
-charon_dispatch_async, _sync, _group_async, _group_notify and _after, which submit a block made with
-DISPATCH_BLOCK_BARRIER as a barrier, as libdispatch-703 (iOS 10) and later do, and are the system's calls where the
-release has dispatch_block_create. What a class of service or a voucher asks has no counterpart before iOS 8, as
-packages/a/apple-compat/src/dispatch_block.h says, and a barrier given to a source's handler is not one below iOS 10:
-iOS 8 and 9 (libdispatch-442 and -500) did not make it one either, and the release runs a source's handler as it does
-any other.
+The release's libdispatch reads no block's flags, so the shims' calls to it go through apple-compat's charon_dispatch_async,
+_sync, _group_async, _group_notify, _after and _source_set_event_handler, which submit a block made with
+DISPATCH_BLOCK_BARRIER, and run a source's event handler made so, as a barrier, as libdispatch-703 (iOS 10) and later do,
+and are the system's calls where the release has dispatch_block_create - which is what iOS 8 and 9 answer by, their
+libdispatch having the block calls and no barrier bit for a source (libdispatch-442 and -500). What a class of service or a
+voucher asks has no counterpart before iOS 8, as packages/a/apple-compat/src/dispatch_block.h says. A source's cancellation
+and registration handlers are left as they are: on iOS 10 and later they run alone as well, the calls that reach them are
+the release's own, and that is what coordination/crutches.md's entry for the barrier source handler records.
 
 diff --git a/stdlib/public/Darwin/Dispatch/Dispatch.swift b/stdlib/public/Darwin/Dispatch/Dispatch.swift
 index 7a76ef0..eca03b6 100644
@@ -199,21 +200,22 @@ index b0a1912..f84d840 100644
  		_swift_dispatch_source_set_registration_handler(self as! DispatchSource, handler._block)
  	}
 diff --git a/stdlib/public/SwiftShims/DispatchOverlayShims.h b/stdlib/public/SwiftShims/DispatchOverlayShims.h
-index 947d83d..d208dfb 100644
+index 947d83d..a0c2693 100644
 --- a/stdlib/public/SwiftShims/DispatchOverlayShims.h
 +++ b/stdlib/public/SwiftShims/DispatchOverlayShims.h
-@@ -161,16 +161,25 @@ static inline int _swift_dispatch_block_testcancel(
+@@ -161,16 +161,26 @@ static inline int _swift_dispatch_block_testcancel(
    return dispatch_block_testcancel(block);
  }
  
 +/* A work item's block carries its flags, and a release before iOS 8 reads none of them: apple-compat's calls submit a
-+   block made with DISPATCH_BLOCK_BARRIER as a barrier there, and are the calls themselves where the release has
-+   dispatch_block_create. */
++   block made with DISPATCH_BLOCK_BARRIER, or run a source's handler made so, as a barrier there, and are the calls
++   themselves where the release has dispatch_block_create. */
 +void charon_dispatch_async(dispatch_queue_t queue, __swift_shims_dispatch_block_t block);
 +void charon_dispatch_sync(dispatch_queue_t queue, __swift_shims_dispatch_block_t block);
 +void charon_dispatch_group_async(dispatch_group_t group, dispatch_queue_t queue, __swift_shims_dispatch_block_t block);
 +void charon_dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue, __swift_shims_dispatch_block_t block);
 +void charon_dispatch_after(dispatch_time_t when, dispatch_queue_t queue, __swift_shims_dispatch_block_t block);
++void charon_dispatch_source_set_event_handler(dispatch_source_t source, __swift_shims_dispatch_block_t _Nullable block);
 +
  static inline void _swift_dispatch_async(
      dispatch_queue_t queue,
@@ -230,7 +232,7 @@ index 947d83d..d208dfb 100644
  }
  
  static inline void _swift_dispatch_barrier_async(
-@@ -183,21 +192,21 @@ static inline void _swift_dispatch_group_async(
+@@ -183,21 +193,21 @@ static inline void _swift_dispatch_group_async(
      dispatch_group_t group,
      dispatch_queue_t queue,
      __swift_shims_dispatch_block_t block) {
@@ -255,3 +257,12 @@ index 947d83d..d208dfb 100644
  }
  
  
+@@ -235,7 +245,7 @@ static inline void _swift_dispatch_source_set_event_ha
+ static inline void _swift_dispatch_source_set_event_handler(
+     dispatch_source_t source,
+     __swift_shims_dispatch_block_t _Nullable block) {
+-  dispatch_source_set_event_handler(source, block);
++  charon_dispatch_source_set_event_handler(source, block);
+ }
+ 
+ static inline void _swift_dispatch_source_set_cancel_handler(
