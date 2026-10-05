@@ -769,14 +769,23 @@ package("swift-runtime")
         -- No Combine on the compile line, and none is needed: the dependency it came from is gone
         -- (see the note by the deps above) and no source of either overlay imports Combine. What
         -- these two do need is the SceneKit apinote fix, and they keep it.
+        --
+        -- And the concurrency library, which the sources of both overlays use: @MainActor comes from _Concurrency, and
+        -- build_overlay keeps the implicit import of it out unless an overlay asks for it. It is the same library
+        -- Foundation's overlay above already asks for, and the one SwiftCore_ENABLE_CONCURRENCY=ON builds and this
+        -- package installs (libswift_Concurrency.dylib, _Concurrency.swiftmodule, both offered into the resource
+        -- directory the overlays compile against). Without the ask, measured at armv7 at iOS 6.1.3 with the
+        -- backports: RealityFoundation stops on 216 "unknown attribute 'MainActor'" and RealityKit on 22 more plus
+        -- four "main actor-isolated property ... can not be mutated from a nonisolated context".
         build_overlay("RealityFoundation", reality_sources,
                       table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "SceneKit"}),
-                      nil, {backports = {}, extra_flags = scn_overlay})
+                      nil, {backports = {}, concurrency = true, extra_flags = scn_overlay})
 
         -- RealityKit: the view a program is shown in, hosting an SCNView over the bridge above
         -- and stepping the simulation once a frame. It sits on the RealityFoundation module
         -- built just above, and on the same SceneKit apinote fix, which it needs for the same
-        -- reason: SceneKit's own headers, and ARKit's through them.
+        -- reason: SceneKit's own headers, and ARKit's through them. And on the concurrency library,
+        -- for the reason the overlay above gives.
         local realitykit = path.absolute("realitykit")
         os.mkdir(realitykit)
         local realitykit_sources = {}
@@ -789,7 +798,7 @@ package("swift-runtime")
         build_overlay("RealityKit", realitykit_sources,
                       table.join(foundation_links, {"-lswiftQuartzCore", "-lswiftRealityFoundation",
                                                     "-framework", "QuartzCore", "-framework", "SceneKit", "-framework", "UIKit"}),
-                      nil, {backports = {}, extra_flags = scn_overlay})
+                      nil, {backports = {}, concurrency = true, extra_flags = scn_overlay})
 
         -- Spatial: the value types the scene graph's math is made of, a module no release before
         -- iOS 16 carries and this tree holds the sources of, beside the simd module above them.
