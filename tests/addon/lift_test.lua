@@ -1017,18 +1017,20 @@ function failures(opt)
     -- header path prefix are normalised and different in neither. The header is the SDK's, spelled the way the run's own
     -- working directory spelled it on one side and the way opt.sdk spells it on the other.
     local sdk = path.join(os.tmpdir(), "iPhoneOS26.2.sdk")
+    -- the two spellings, named for what they are and NOT `clang`, which this file already holds the path of: a local
+    -- `clang` here is what made every case after this one hand a JSON dump to runv() as the compiler
     local header = "/System/Library/Frameworks/HomeKit.framework/Headers/HMAccessoryProfile.h"
     local body = '"line":22,"col":36,"range":{"begin":{"offset":109,"line":22,"col":36,"tokLen":11}}}\n'
-    local plugin = '{"kind":"ObjCMethodDecl","name":"init","file":"' .. sdk .. header .. '",' .. body
-    local clang = '{"kind":"ObjCMethodDecl","name":"init","file":"../../iPhoneOS26.2.sdk' .. header .. '",' .. body
+    local spelled = '{"kind":"ObjCMethodDecl","name":"init","file":"' .. sdk .. header .. '",' .. body
+    local relative = '{"kind":"ObjCMethodDecl","name":"init","file":"../../iPhoneOS26.2.sdk' .. header .. '",' .. body
     expect_equal(found, "the same answer spelled with the SDK two ways is the same answer",
-                 tostring(lift.same_answer(plugin, clang, sdk)), "true")
+                 tostring(lift.same_answer(spelled, relative, sdk)), "true")
     expect_equal(found, "and with a pointer's value gone from both, which is a run's and not the declaration's",
-                 tostring(lift.same_answer(plugin:gsub("109", "0x7d4"), clang:gsub("109", "0x1a8"), sdk)), "true")
+                 tostring(lift.same_answer(spelled:gsub("109", "0x7d4"), relative:gsub("109", "0x1a8"), sdk)), "true")
     expect_equal(found, "and a real difference is still a difference",
-                 tostring(lift.same_answer(plugin, clang:gsub('"init"', '"deinit"'), sdk)), "false")
+                 tostring(lift.same_answer(spelled, relative:gsub('"init"', '"deinit"'), sdk)), "false")
     expect_equal(found, "and an answer the other side has none of is not the same",
-                 tostring(lift.same_answer(plugin, nil, sdk)), "false")
+                 tostring(lift.same_answer(spelled, nil, sdk)), "false")
 
     -- The kept answers are a cache, and a lift that writes one must be able to write it and read it back. This is the
     -- case for a top-level function shadowing one of the module's locals: a `function unplaced(node)` beside the local

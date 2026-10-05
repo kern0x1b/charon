@@ -296,23 +296,20 @@ function same_answer(one, other, sdk)
     if not one or not other then
         return false
     end
+    local root
+    if sdk and sdk ~= "" then
+        -- The SDK's own root, matched however the run spelled it. The plugin prints a header the way opt.sdk spells
+        -- it and clang prints it the way its own working directory spelled it - absolute here, a run of `../` and the
+        -- SDK's own name there - so the two name one file and differ in the spelling. Cutting everything up to and
+        -- including the SDK's own name maps both to one token, and needs no working directory to know: a run's is
+        -- whatever directory it happened to be started in. The run of characters before it is bounded by whitespace and
+        -- by the quote a JSON string is in, so it cannot reach past one path.
+        root = path.filename(sdk):gsub("(%W)", "%%%1")
+    end
     local function plain(text)
         text = text:gsub("0x%x+", "")
-        -- the SDK's own path, spelled out of the answer, in pieces and joined once: a dump names the header of every
-        -- declaration, and rebuilding the string at each was quadratic in its length (as respelled() above does)
-        if sdk and sdk ~= "" then
-            local pieces, at = {}, 1
-            while true do
-                local found = text:find(sdk, at, true)
-                if not found then
-                    break
-                end
-                table.insert(pieces, text:sub(at, found - 1))
-                table.insert(pieces, "SDK")
-                at = found + #sdk
-            end
-            table.insert(pieces, text:sub(at))
-            text = table.concat(pieces)
+        if root then
+            text = text:gsub("[^%s\"]*" .. root .. "/", "SDK/")
         end
         return text
     end
