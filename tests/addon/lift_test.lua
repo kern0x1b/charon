@@ -1012,6 +1012,83 @@ function failures(opt)
                  tostring(lift.unavailables(implicit)[1].declaration), "nil")
     expect_equal(found, "a declaration with no such attribute at all", unavailables_at({kind = "ObjCInterfaceDecl", name = "FixGone"}), "")
 
+    -- The kept answers are a cache, and a lift that writes one must be able to write it and read it back. This is the
+    -- case for a top-level function shadowing one of the module's locals: a `function unplaced(node)` beside the local
+    -- unplaced() that spells the folder back left remember() compressing that count instead of the answer, and the
+    -- first FRESH kept answer of every lift died inside lz4.compress() with "attempt to index a number value (local
+    -- 'data')" - reads untouched, because placed() was not shadowed, so only writing one can see it.
+    --
+    -- The filter is named for this case, so the machine's kept folder cannot hold an answer to it and the write is
+    -- really a write. The folder is found through the same CHARON_HOME the lift uses, and the plugin is resolved
+    -- first: multidump.lua's home() is CHARON_HOME too, and with a folder of its own there is no plugin in it and the
+    -- lift keeps nothing at all, which would make this case green for the wrong reason.
+    if not clang or not swiftc then
+        print("skipped: the kept-answer round trip needs both clang under " .. path.join(store, "l/llvm") ..
+              " and swiftc under " .. path.join(store, "s/swift"))
+    else
+        local class = "FixKeptRoundTrip"
+        local multidump = import("apple.multidump", {rootdir = opt.modules, anonymous = true})
+        expect_equal(found, "the plugin the lift keeps its answers behind is there", multidump.plugin(clang) ~= nil, true)
+        local kept_root = path.join(os.tmpdir(), "charon-lift-kept-" .. os.getpid())
+        local fixture = {"#define ios(version) ios, introduced=version\n"
+                         .. "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n"
+                         .. "#define instancetype id\n",
+                         "@class NSString;\n@protocol NSObject\n@end\n@protocol NSCopying\n@end\n"
+                         .. "__attribute__((objc_root_class)) @interface NSObject <NSObject>\n- (id)init;\n@end\n",
+                         "#import <Foundation/Foundation.h>\n"
+                         .. "API_AVAILABLE(ios(9.0))\n@interface " .. class .. " : NSObject\n"
+                         .. "@property (nonatomic, copy) NSString *name API_AVAILABLE(ios(9.0));\n@end\n",
+                         '[{"api":"' .. class .. '","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                         .. '"reason":"a fixture entry","effect":"a fixture entry"}]'}
+        -- where the lift would keep the answer for the filter this case asks, so the case can look for it
+        local answers = path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift")
+        -- the filters this fixture asks: the class by its own name (the class entry) and by its scope (its members)
+        local kept_for = {}
+        for _, filter in ipairs({class, class .. "::"}) do
+            table.insert(kept_for, path.join(answers, "dumps-*", hash.strhash128(filter) .. ".lz4"))
+        end
+        local function kept_files()
+            local found = {}
+            for _, pattern in ipairs(kept_for) do
+                for _, file in ipairs(os.files(pattern)) do
+                    table.insert(found, file)
+                end
+            end
+            return found
+        end
+        local function lifted()
+            os.tryrm(path.join(kept_root, "sdk"))
+            os.tryrm(path.join(kept_root, "registry"))
+            local sdk = path.join(kept_root, "sdk")
+            io.writefile(path.join(sdk, "System", "Library", "Frameworks", "Foundation.framework", "Headers",
+                                   "Foundation.h"), fixture[1] .. fixture[2])
+            io.writefile(path.join(sdk, "System", "Library", "Frameworks", "Fix.framework", "Headers", "Fix.h"), fixture[3])
+            io.writefile(path.join(kept_root, "registry", "Fix.json"), fixture[4])
+            local failure
+            try {function ()
+                lift.lift({clang = clang, swiftc = swiftc, sdk = sdk, triple = "armv7-apple-ios6.1.3", minimum = "6.1.3",
+                           registry = kept_root, outputdir = path.join(kept_root, "out"), expected = false, keep = true})
+            end, catch {function (why) failure = tostring(why) end}}
+            return failure
+        end
+        expect_equal(found, "a lift that writes a kept answer does not fail", lifted(), nil)
+        local written = kept_files()
+        expect_equal(found, "and the answers for the filters this case asked are kept", #written > 0, true)
+        -- and the second lift reads them back rather than asking clang again: a recalled answer is not written a second
+        -- time, so the kept files' own mtimes are what say so
+        local stamp = {}
+        for _, file in ipairs(written) do
+            stamp[file] = os.mtime(file)
+        end
+        expect_equal(found, "and the second lift over the same inputs does not fail either", lifted(), nil)
+        local recalled = #written > 0
+        for _, file in ipairs(written) do
+            recalled = recalled and os.mtime(file) == stamp[file]
+        end
+        expect_equal(found, "and it recalled those answers rather than asking again", tostring(recalled), "true")
+        os.tryrm(kept_root)
+    end
+
     -- The four shapes the lift refused against main's current registry, over one fixture SDK and with the lift's own
     -- entry point. Every member a row reaches only through a superclass or a protocol carries a release above the
     -- port's, because that is what makes a redeclaration worth writing at all.
