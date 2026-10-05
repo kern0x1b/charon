@@ -759,11 +759,33 @@ package("swift-runtime")
         -- framework the release lacks, and the transform maths is the release's own simd.
         local reality = path.absolute("realityfoundation")
         os.mkdir(reality)
+        -- Audio.swift, the sound half of the scene graph, waits for an API the port does not carry yet: the volume of
+        -- a player node. Apple declares that property on AVAudioMixing (AVFAudio.framework/Headers/AVAudioMixing.h:80),
+        -- which its own header marks iOS 8.0 (the same file, line 45), and the lift leaves that protocol alone because
+        -- no registry row names it - the kept header differs from the SDK's in five places and the protocol's own mark is
+        -- not one of them. The port's own player node has no volume either: its header
+        -- (packages/a/apple-backports/AVFoundation/CharonAVAudioEngine.h:73) declares scheduleBuffer:,
+        -- scheduleBuffer:atTime:options:completionHandler:, play, pause, stop and isPlaying, and the registry row for the
+        -- class (packages/a/apple-backports/registry/AVFoundation/ios8avaudioengine.json) carries those and no volume. So
+        -- Audio.swift's two writes of it cannot compile at 6.1.3, and neither marking them nor a flag makes them honest:
+        -- at this release the sound would be heard at its own level whatever the caller set, which is the silent fake
+        -- this port does not ship. Measured, armv7 at iOS 6.1.3 with the backports: 4 errors, "'volume' is only available
+        -- in iOS 8.0 or newer"; and with those two writes taken out in a copy of the file, the other 17 files of this
+        -- overlay compile with 0 errors. What puts it back is a registry row and an implementation for
+        -- -[AVAudioPlayerNode volume] in apple-backports - the player node is a buffer queue read from a render callback
+        -- (AVAudioPlayerNode.m:4), so the level belongs there - which is apple-backports' work and not this package's.
+        local without = {["Audio.swift"] = true}
         local reality_sources = {}
         for _, file in ipairs(os.files(path.join(package:scriptdir(), "files", "RealityFoundation", "*.swift"))) do
-            local output = path.join(reality, path.filename(file))
-            os.cp(file, output)
-            table.insert(reality_sources, output)
+            local name = path.filename(file)
+            assert(not without[name] or os.isfile(file),
+                   name .. " is not in the package, and the note above says why it is left out of the overlay; " ..
+                   "the note is then wrong and must go with it")
+            if not without[name] then
+                local output = path.join(reality, name)
+                os.cp(file, output)
+                table.insert(reality_sources, output)
+            end
         end
         assert(#reality_sources > 0, "the RealityFoundation sources are missing from the package")
         -- No Combine on the compile line, and none is needed: the dependency it came from is gone
