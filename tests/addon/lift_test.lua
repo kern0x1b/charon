@@ -1060,21 +1060,31 @@ function failures(opt)
                          .. "@property (nonatomic, copy) NSString *name API_AVAILABLE(ios(9.0));\n@end\n",
                          '[{"api":"' .. class .. '","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
                          .. '"reason":"a fixture entry","effect":"a fixture entry"}]'}
-        -- where the lift would keep the answer for the filter this case asks, so the case can look for it
-        local answers = path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift")
+        -- where the lift keeps the answers of this fixture: a folder of the case's own, handed to the lift, and not the
+        -- machine's. The machine's holds an SDK's 22 000 answers at the cost of one 14-minute lift, it keeps four
+        -- folders of answers by last use, and a fixture's folder is one of the four: three lifts of this case
+        -- (the umbrella it is keyed by names this process) evicted the answers of the SDK 26.2 and the install after
+        -- them asked clang for all of them again (909.5 s of a 1112.6 s install).
+        local machine = path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift")
+        local answers = path.join(kept_root, "cache")
         -- the filters this fixture asks: the class by its own name (the class entry) and by its scope (its members)
-        local kept_for = {}
-        for _, filter in ipairs({class, class .. "::"}) do
-            table.insert(kept_for, path.join(answers, "dumps-*", hash.strhash128(filter) .. ".lz4"))
-        end
-        local function kept_files()
+        local function kept_in(root)
             local found = {}
-            for _, pattern in ipairs(kept_for) do
-                for _, file in ipairs(os.files(pattern)) do
+            for _, filter in ipairs({class, class .. "::"}) do
+                for _, file in ipairs(os.files(path.join(root, "dumps-*", hash.strhash128(filter) .. ".lz4"))) do
                     table.insert(found, file)
                 end
             end
             return found
+        end
+        local function kept_files()
+            return kept_in(answers)
+        end
+        -- what the machine's folder held of this fixture before: an earlier run of a build without the folder above
+        -- left some there, and only what appears now is this run's
+        local before = {}
+        for _, file in ipairs(kept_in(machine)) do
+            before[file] = true
         end
         local function lifted()
             os.tryrm(path.join(kept_root, "sdk"))
@@ -1087,7 +1097,8 @@ function failures(opt)
             local failure
             try {function ()
                 lift.lift({clang = clang, swiftc = swiftc, sdk = sdk, triple = "armv7-apple-ios6.1.3", minimum = "6.1.3",
-                           registry = kept_root, outputdir = path.join(kept_root, "out"), expected = false, keep = true})
+                           registry = kept_root, outputdir = path.join(kept_root, "out"), expected = false, keep = true,
+                           cache = answers})
             end, catch {function (why) failure = tostring(why) end}}
             return failure
         end
@@ -1106,6 +1117,14 @@ function failures(opt)
             recalled = recalled and os.mtime(file) == stamp[file]
         end
         expect_equal(found, "and it recalled those answers rather than asking again", tostring(recalled), "true")
+        local strayed = {}
+        for _, file in ipairs(kept_in(machine)) do
+            if not before[file] then
+                table.insert(strayed, file)
+            end
+        end
+        expect_equal(found, "and the machine's own kept answers are not written to by a lift of a fixture",
+                     table.concat(strayed, " "), "")
         os.tryrm(kept_root)
     end
 

@@ -225,6 +225,13 @@ local ENVIRONMENT = {"CPATH", "C_INCLUDE_PATH", "OBJC_INCLUDE_PATH", "CPLUS_INCL
                      "SDKROOT", "DEVELOPER_DIR", "IPHONEOS_DEPLOYMENT_TARGET", "CCC_OVERRIDE_OPTIONS", "CHARON_LIFT_MULTIDUMP",
                      "CHARON_LLVM_CONFIG"}
 
+-- Where the lift keeps what it keeps between runs: opt.cache when a caller gives a folder (a test of the lift keeps its
+-- fixtures there, since the machine's folder holds an SDK's answers at the cost of a lift and keeps only the most recently
+-- used few of each kind), otherwise the machine's own, under CHARON_HOME.
+local function cache_of(opt)
+    return opt.cache or path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift")
+end
+
 function kept_system_headers(opt, symbols)
     local root = path.join(opt.sdk, "usr", "include")
     local parts = {"charon-system-headers-1", opt.triple, opt.clang, tostring(os.filesize(opt.clang)), tostring(os.mtime(opt.clang)),
@@ -239,7 +246,7 @@ function kept_system_headers(opt, symbols)
         table.insert(parts, path.relative(file, root) .. " " .. hash.xxhash128(file))
     end
     local key = hash.strhash128(table.concat(parts, "\n"))
-    local file = path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift", "system-" .. key .. ".lua")
+    local file = path.join(cache_of(opt), "system-" .. key .. ".lua")
     local saved = os.isfile(file) and io.load(file)
     if saved then
         return saved.headers
@@ -528,8 +535,7 @@ local function dumper(opt, frameworks, headers)
             for _, name in ipairs(ENVIRONMENT) do
                 table.insert(parts, name .. "=" .. (os.getenv(name) or ""))
             end
-            held = path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift",
-                             "dumps-" .. hash.strhash128(table.concat(parts, "\n")))
+            held = path.join(cache_of(opt), "dumps-" .. hash.strhash128(table.concat(parts, "\n")))
         end
     end
     if held then
@@ -3583,16 +3589,16 @@ local function lift_key(opt)
     return hash.strhash128(table.concat(parts, "\n"))
 end
 
-local function kept_folder(key)
-    return path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift", "result-" .. key)
+local function kept_folder(opt, key)
+    return path.join(cache_of(opt), "result-" .. key)
 end
 
 -- The kept folders of one kind beyond the most recently used few, removed: a result is kept for every registry a lift
 -- was run on, and each is the whole of the lifted headers (14 MB for SDK 26.2), so without this the folder grows with
 -- every change to the registry. The file stamp in each is touched whenever the folder is used (a folder's own time is not
 -- moved by a touch), so what is removed is what was used least lately.
-local function swept(pattern, stamp, count)
-    local folders = os.dirs(path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift", pattern))
+local function swept(opt, pattern, stamp, count)
+    local folders = os.dirs(path.join(cache_of(opt), pattern))
     local used = {}
     for _, folder in ipairs(folders) do
         used[folder] = os.mtime(path.join(folder, stamp)) or 0
@@ -3604,8 +3610,8 @@ local function swept(pattern, stamp, count)
 end
 
 -- The output of a lift kept under key: every file of the output folder with its own path spelled as a mark, and the result.
-local function keep(key, outputdir, result, left)
-    local folder = kept_folder(key)
+local function keep(opt, key, outputdir, result, left)
+    local folder = kept_folder(opt, key)
     if os.isdir(folder) then
         return
     end
@@ -3621,13 +3627,13 @@ local function keep(key, outputdir, result, left)
     if not try { function () os.mv(temporary, folder); return true end } then
         os.tryrm(temporary)
     end
-    swept("result-*", "result.lua", 8)
-    swept("dumps-*", "used", 4)
+    swept(opt, "result-*", "result.lua", 8)
+    swept(opt, "dumps-*", "used", 4)
 end
 
 -- The kept output under key laid into outputdir, and its result, or nil.
-local function restore(key, outputdir)
-    local folder = kept_folder(key)
+local function restore(opt, key, outputdir)
+    local folder = kept_folder(opt, key)
     local saved = os.isfile(path.join(folder, "result.lua")) and io.load(path.join(folder, "result.lua"))
     if not saved then
         return nil
@@ -3646,14 +3652,14 @@ function lift(opt)
     stamps = {}
     local key = opt.keep and lift_key(opt) or nil
     local result, left
-    local restored = key and (os.tryrm(opt.outputdir) or true) and (os.mkdir(opt.outputdir) or true) and restore(key, opt.outputdir)
+    local restored = key and (os.tryrm(opt.outputdir) or true) and (os.mkdir(opt.outputdir) or true) and restore(opt, key, opt.outputdir)
     if restored then
         result, left = restored.result, restored.left
         result.kept = true
     else
         result, left = computed(opt)
         if key then
-            keep(key, opt.outputdir, result, left)
+            keep(opt, key, opt.outputdir, result, left)
         end
     end
     assert(opt.expected ~= nil, "lift: opt.expected is the text of the measured set of what is left alone, or false to only measure")
