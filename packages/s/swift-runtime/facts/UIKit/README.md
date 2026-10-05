@@ -31,7 +31,32 @@ CornerStyle` is the nested Swift name the SDK's overlay gives it. So:
 
 **Regenerating.** `gen-overlay.py` reads the checklist and the SDK's own
 `UIKit.framework/Modules/UIKit.swiftmodule/arm64e-apple-ios.swiftinterface`, and prints the file
-above. The case names and their payloads are the SDK's own, not typed by hand.
+above. The case names and their payloads are the SDK's own, not typed by hand. The patch itself is
+regenerated with `git diff` against the file the recipe fetches at `swift-5.2.5`
+(`71d85a7c28eed8f46241649a723ddf23989139c6`), because it applies first of the three `patches/uikit`
+patches and a diff taken against a base the recipe has already patched would only apply at an offset.
+
+**The one declaration that carries a mark of its own: `UIPointerEffect`.** Every other type the patch
+declares is a namespace of its own or a typealias onto a class the lift carries, so its availability is
+the declaration's own and needs no mark. This one's four cases all take a `UITargetedPreview`, which the
+SDK's own UIKit marks `API_AVAILABLE(ios(13.0))` (`UIKit.framework/Headers/UIAccessibilityConstants.h`
+is the wrong place; it is `UITargetedPreview.h:17`, and the kept copy the lift writes reads
+`API_AVAILABLE(ios(6.1.3))` because `registry/UIKit/ios13menus.json` carries that class `implemented`
+at `6.0`), so the enum carries the release the SDK 26.2 interface gives it, `@available(iOS 13.4, *)`,
+and `packages/s/swift-runtime/xmake.lua` lowers that mark where the UIKit backports are linked.
+
+Measured at `armv7-apple-ios6.1.3` over this tree, the two configurations the recipe builds:
+
+| configuration | mark in `UIKit.swift` | the overlay's compile | a program naming the type |
+| --- | --- | --- | --- |
+| `backports`, no `backports_uikit` | `iOS 13.4` | 0 errors | `'UIPointerEffect' is only available in iOS 13.4 or newer` |
+| `backports` and `backports_uikit` | `iOS 6.1.3` | 0 errors | exit 0 |
+
+Without the mark at all, and with the UIKit backports out, the overlay does not compile: 4 errors,
+`'UITargetedPreview' is only available in iOS 13.0 or newer`, one per case. The mark is therefore not a
+narrowing of this checklist - it is what lets the checklist's 86 rows compile in the configuration where
+the process has no `UITargetedPreview`, and the recipe's lowering is what keeps them reachable in the
+configuration where it has one.
 
 
 ## The rows that wait for their class

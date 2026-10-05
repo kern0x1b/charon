@@ -548,6 +548,15 @@ package("swift-runtime")
                     return (block:gsub("@available%(iOS 11%.0", "@available(iOS 7.0"))
                 end)
                 assert(count == 1, "UIKit.swift has no extension of UIContentSizeCategory")
+                -- UIPointerEffect, whose four cases all take a UITargetedPreview: the backports carry that class from the
+                -- port's release (registry/UIKit/ios13menus.json), so the enum the surface patch declares over it comes down
+                -- with it. Its mark is the release the SDK 26.2 interface gives the enum, iOS 13.4, because with these
+                -- backports out nothing else does - measured, armv7 at iOS 6.1.3 with backports and without them: the
+                -- overlay stops on 4 errors, "'UITargetedPreview' is only available in iOS 13.0 or newer", one per case.
+                text, count = text:gsub("(@available%(iOS 13%.4, %*%)\npublic enum UIPointerEffect {)", function (block)
+                    return block:gsub("@available%(iOS 13%.4, %*%)", "@available(iOS " .. minimum .. ", *)", 1)
+                end)
+                assert(count == 1, "UIKit.swift declares no UIPointerEffect marked iOS 13.4")
                 io.writefile(file, text)
             end
             os.vcp(path.join(uikit, "stdlib", "public", "SwiftShims", "UIKitOverlayShims.h"), installed_shims .. "/")
