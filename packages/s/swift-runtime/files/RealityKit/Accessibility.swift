@@ -31,9 +31,17 @@ import UIKit
         }
 
         #if canImport(UIKit)
-        /// How the entity is announced.
+        /// How the entity is announced, and nil for one that says nothing: the traits are UIKit's own option set.
         public var traits: UIAccessibilityTraits
         #endif
+        /// Whether the entity is announced as one element, or as the container of several.
+        ///
+        /// The SDK's own field, read from `RealityFoundation.swiftmodule`'s `AccessibilityComponent`, where it is
+        /// the first stored property and a plain `Bool`. It is not spelled through `UIAccessibilityTraits`: no SDK
+        /// header declares such a member of that option set - neither the 26.2 one the ledger's rows come from nor the
+        /// 16.4 one this overlay is compiled against - so `UIAccessibilityTraits.accessibilityElement` is not a name
+        /// this port can offer, and the flag is stored as what it is.
+        public var isAccessibilityElement: Bool
         /// The rotors the entity adds, by the key a caller registers them under.
         public var customRotors: [String: AccessibilityEvents.RotorNavigation]
         /// The key the entity is announced under.
@@ -97,8 +105,10 @@ import UIKit
         }
 
         #if canImport(UIKit)
-        public init(traits: UIAccessibilityTraits = [], label: String? = nil, value: String? = nil) {
+        public init(traits: UIAccessibilityTraits = [], isAccessibilityElement: Bool = false,
+                    label: String? = nil, value: String? = nil) {
             self.traits = traits
+            self.isAccessibilityElement = isAccessibilityElement
             self.label = label
             self.value = value
             customRotors = [:]
@@ -109,7 +119,8 @@ import UIKit
         /// A host has no UIKit, so the component is made without the traits: the storage, the
         /// events and everything else about an entity's accessibility is the same, and the traits
         /// are the one part the device probe reads.
-        public init(label: String? = nil, value: String? = nil) {
+        public init(isAccessibilityElement: Bool = false, label: String? = nil, value: String? = nil) {
+            self.isAccessibilityElement = isAccessibilityElement
             self.label = label
             self.value = value
             customRotors = [:]
@@ -155,10 +166,17 @@ extension RealityFoundation.Entity {
     #if canImport(UIKit)
     /// How the entity is announced, and nil for one that says nothing.
     public var accessibilityTraits: UIAccessibilityTraits? { accessibility?.traits }
-    /// Whether the entity is announced as one element or as the container of several.
-    public var isAccessibilityElement: Bool? {
-        guard let traits = accessibilityTraits else { return nil }
-        return traits.contains(.accessibilityElement)
-    }
     #endif
+    /// Whether the entity is announced as one element, or as the container of several, as the SDK
+    /// spells it: a plain `Bool`, and an entity with no accessibility component is not one. It is not
+    /// behind the UIKit guard, because the SDK does not put it there either - the flag is the
+    /// component's own `Bool`, not a trait of UIKit's option set.
+    public var isAccessibilityElement: Bool {
+        get { accessibility?.isAccessibilityElement ?? false }
+        set {
+            var component = accessibility ?? AccessibilityComponent()
+            component.isAccessibilityElement = newValue
+            accessibility = component
+        }
+    }
 }

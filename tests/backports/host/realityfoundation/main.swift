@@ -1566,6 +1566,27 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
     let bounds = unit.visualBounds(recursive: false, relativeTo: nil, excludeInactive: false)
     check("the box's extents", bounds.extents, SIMD3<Float>(2, 2, 2))
 
+    // MARK: The entity's own accessibility flag
+
+    // At the end of the file on purpose. Every implemented row in
+    // packages/s/swift-runtime/registry/RealityFoundation.json and RealityKit.json names the line of the check
+    // that measures it, and coverage.py --check holds those rows to it, so a check put above them moves 29
+    // recorded line numbers and this series changes no registry row. The flag belongs in the accessibility
+    // section above, which is where it goes once a band that does touch the registry moves it: what makes the
+    // move is `coverage.py --write`.
+    let announced = Entity()
+    check("an entity is not an accessibility element at first", announced.isAccessibilityElement, false)
+    announced.isAccessibilityElement = true
+    check("and is one after it is asked to be", announced.isAccessibilityElement, true)
+    check("and the component it made says so", announced.accessibility?.isAccessibilityElement ?? false, true)
+    var withEverything = Entity.AccessibilityComponent(label: "crate")
+    withEverything.isAccessibilityElement = true
+    let given = Entity()
+    given.accessibility = withEverything
+    check("and what the component is given is what the entity says", given.isAccessibilityElement, true)
+    given.accessibility = nil
+    check("taking the component away leaves an entity that is not one", given.isAccessibilityElement, false)
+
     print(failures == 0 ? "ALL CHECKS PASSED" : "\(failures) CHECKS FAILED")
     return failures + charonFailuresForMissingBundle
 }
