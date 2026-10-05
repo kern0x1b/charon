@@ -25,7 +25,7 @@ end
 -- its guard table records them (apple.runtime_guards).
 function import_options(target, provided, runtime)
     return {release = os.getenv("CHARON_RELEASE") ~= nil, waived = waivers(target)["weak-imports"], exempt = provided,
-            runtime = runtime, guards = runtime_guards.GUARDS}
+            runtime = runtime, guards = runtime_guards.guards()}
 end
 
 function deployment(target)

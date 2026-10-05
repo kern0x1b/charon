@@ -1034,9 +1034,32 @@ package("swift-runtime")
                 table.join2(linked, os.files(path.join(dep:installdir("lib"), "*.dylib")))
             end
         end
-        local found = import("apple.dyld", {rootdir = modules, anonymous = true}).unexported_weak_imports(installed, linked, package:arch())
-        local differs = import("apple.runtime_guards", {rootdir = modules, anonymous = true}).compare(found)
-        assert(#differs == 0, "the runtime's weak imports and its guard table differ:\n  " .. table.concat(differs, "\n  "))
+        -- What the built libraries import, every import marked weak or strong, and what every image the process
+        -- carries exports: the two halves the guard table is compared against. The strong ones matter because the
+        -- lift's lowering turns a declaration the SDK marked for a later release into an ordinary import, and such
+        -- an import has to be resolvable by the process or the image will not load.
+        local dyld = import("apple.dyld", {rootdir = modules, anonymous = true})
+        local read = dyld.image_imports(installed, linked, package:arch())
+        local found = {}
+        for _, library in ipairs(table.orderkeys(read.imports)) do
+            local names = {}
+            for symbol, weak in pairs(read.imports[library]) do
+                if weak and not read.exported[symbol] then
+                    names[symbol] = true
+                end
+            end
+            found[library] = table.orderkeys(names)
+        end
+        local toolchain = assert(package:toolchains(), "the runtime is built with the apple-ios toolchain")[1]
+        toolchain:load()
+
+        -- The configuration this build is: the table states the runtime's weak imports as it is built, so it is
+        -- compared against the build that produced them and not against one fixed list.
+        local differs = import("apple.runtime_guards", {rootdir = modules, anonymous = true}).compare(found, {
+            imports = read.imports, exported = read.exported,
+            minimum = toolchain:config("deployment"), backports = package:config("backports") and true or false})
+        assert(#differs == 0, "the runtime's imports and its guard table differ at " .. toolchain:config("deployment") ..
+               (package:config("backports") and " with the backports" or "") .. ":\n  " .. table.concat(differs, "\n  "))
 
         -- What a port passes as its resource directory is this one, so the compiler's own parts are here too.
         for _, entry in ipairs({"shims", "clang", "apinotes", "module.modulemap"}) do
@@ -1050,8 +1073,6 @@ package("swift-runtime")
         -- The modules of this runtime are the ones a port compiles against. Where the SDK carries Swift for an
         -- architecture - it does for arm64 - its own module of the same name is a candidate too, and a port that read it
         -- would compile against the API of the SDK's release and link against the libraries here.
-        local toolchain = assert(package:toolchains(), "the runtime is built with the apple-ios toolchain")[1]
-        toolchain:load()
         local compiler = assert(package:dep("swift"), "the runtime is built with charon@swift")
         local source = os.tmpfile() .. ".swift"
         io.writefile(source, "import Darwin\nimport Synchronization\npublic func held() -> Int32 { return Darwin.getpid() }\n")

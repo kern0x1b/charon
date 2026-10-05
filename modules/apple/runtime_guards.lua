@@ -97,15 +97,36 @@ GUARDS = {
         ["_UIContentSizeCategoryIsAccessibilityCategory"] = "stdlib/public/Darwin/UIKit/UIKit.swift:366 @ swiftlang/swift 71d85a7c28eed8f46241649a723ddf23989139c6 (swift-5.2.5-RELEASE)",
     },
     ["libswift_Concurrency.dylib"] = {
+        ["_memset_s"] = "patch packages/s/swift-runtime/patches/guard-the-runtime-s-one-memset-s-call.patch (if (memset_s) in front of the call in Runtimes/Core/runtime/StackAllocator.h, with the header's own fallback behind it). The SDK declares memset_s from iOS 7.0 (usr/include/string.h, behind __STDC_WANT_LIB_EXT1__), so the import is weak at any older deployment target, and neither iOS 6.1.3 nor 4.3 exports it - read out of this machine's caches of both through apple.dyld, which is why the call needs the test",
         ["_os_release"] = "include/swift/Runtime/VoucherShims.h:70 @ swiftlang/swift b8189d766d86ad7fc8106787d6ce9e402f38dd72",
     },
 }
 
--- found: what dyld.unexported_weak_imports answers for the installed libraries. Returns what differs, one line each. A weak
--- import the toolchain's own code guards (apple.compat's GUARDED) is answered there, for every image, and not here.
-function compare(found)
+-- found: what dyld.unexported_weak_imports answers for the installed libraries. opt: what this build is, so that a row
+-- is compared against the configuration that produced the libraries rather than against one fixed list - opt.imports is
+-- what dyld.image_imports answers for the same libraries (every import, marked weak or strong) and opt.exported what
+-- every image the process carries exports, opt.minimum and opt.backports name the configuration in what is reported.
+-- Returns what differs, one line each. A weak import the toolchain's own code guards (apple.compat's GUARDED) is
+-- answered there, for every image, and not here.
+--
+-- What each way a row can disagree means, because the table states the runtime's weak imports as it is built and a
+-- build answers to the release it is made for:
+--
+--   * the library imports the symbol weakly and nothing the runtime exports does: the row has to be there, and a row
+--     the toolchain's own code already answers for is a row that should not be (unchanged);
+--   * the library imports the symbol *strongly*: that is what the lift's lowering makes of a declaration the SDK
+--     marked for a later release, so the row is a claim to satisfy rather than a difference - the process must be able
+--     to resolve it, and nothing the process carries exporting it is a load failure on the release this build is for;
+--   * the library imports it not at all: the code behind the row's guard is compiled out at this minimum, so there is
+--     nothing to guard here and nothing to fail. A configuration that does import it is held to the first rule.
+function compare(found, opt)
+    opt = opt or {}
     local problems = {}
     local tested = compat.guarded()
+    local imports = opt.imports or {}
+    local exported = opt.exported or {}
+    local where = string.format("at %s%s", tostring(opt.minimum or "an unstated release"),
+                                opt.backports and " with the backports" or "")
     for _, library in ipairs(table.orderkeys(found)) do
         local recorded = GUARDS[library] or {}
         for _, symbol in ipairs(found[library]) do
@@ -119,15 +140,36 @@ function compare(found)
         end
     end
     for _, library in ipairs(table.orderkeys(GUARDS)) do
-        local imported = {}
-        for _, symbol in ipairs(found[library] or {}) do
-            imported[symbol] = true
-        end
-        for _, symbol in ipairs(table.orderkeys(GUARDS[library])) do
-            if found[library] and not imported[symbol] then
-                table.insert(problems, string.format("apple.runtime_guards records %s for %s, which does not weakly import it", symbol, library))
+        if found[library] then
+            local strong = imports[library] or {}
+            for _, symbol in ipairs(table.orderkeys(GUARDS[library])) do
+                if strong[symbol] == false then
+                    -- the build imports it strongly: the row is satisfied by something the process carries, and a
+                    -- process that carries nothing for it cannot load the library
+                    if not exported[symbol] then
+                        table.insert(problems, string.format("apple.runtime_guards records %s for %s, which imports it strongly " ..
+                                                            "%s, and no library the process carries exports it: the image cannot be loaded", symbol, library, where))
+                    end
+                elseif strong[symbol] == nil and not imports[library] then
+                    table.insert(problems, string.format("apple.runtime_guards records %s for %s and the build's own imports were " ..
+                                                        "not given, so nothing says whether it holds", symbol, library))
+                end
             end
         end
     end
     return problems
+end
+
+-- The table, out the way that reaches. It is a plain global in xmake's module sandbox and an importer cannot read it
+-- from there: measured on this xmake, `import("apple.runtime_guards", {anonymous = true})` answers with the module's
+-- functions and with GUARDS nil, and `pairs(nil)` iterates nothing instead of raising - so a check written over
+-- `guards.GUARDS` silently ran zero times, which is how tests/addon/dyld_test.lua's two guard-table cases came to say
+-- nothing while the suite's own verdict was OK. Functions reach, data does not, so the data goes out as two.
+function guards()
+    return GUARDS
+end
+
+-- The rows of one library, or an empty table for a library the table says nothing about.
+function rows(library)
+    return GUARDS[library] or {}
 end

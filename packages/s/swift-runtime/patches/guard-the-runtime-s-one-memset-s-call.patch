@@ -1,0 +1,23 @@
+diff --git a/stdlib/public/runtime/StackAllocator.h b/stdlib/public/runtime/StackAllocator.h
+index 20f87d3..0174022 100644
+--- a/stdlib/public/runtime/StackAllocator.h
++++ b/stdlib/public/runtime/StackAllocator.h
+@@ -149,7 +149,17 @@ private:
+       // correctness, just as an aid to analysis tools, so it's OK if
+       // the fallback gets optimized out.
+ #if defined(__APPLE__)
+-      memset_s(&metadata, sizeof(metadata), 0, sizeof(metadata));
++      // Guarded on the release having it: the SDK declares memset_s from iOS 7.0 (usr/include/string.h, behind
++      // __STDC_WANT_LIB_EXT1__), and the compiler therefore imports it weakly wherever the deployment target is
++      // older - which for this runtime is iOS 6.1.3 and 4.3, neither of which exports it (read out of the dyld
++      // caches of both, through apple.dyld: neither carries _memset_s). A weak import with no test in front of
++      // the call reaches NULL the first time a slab is freed. The fallback below is the header's own for the
++      // platforms that have no memset_s at all, and the comment above it already says the write is not needed for
++      // correctness: "just as an aid to analysis tools".
++      if (memset_s)
++        memset_s(&metadata, sizeof(metadata), 0, sizeof(metadata));
++      else
++        metadata = 0;
+ #else
+       metadata = 0;
+ #endif

@@ -1000,10 +1000,16 @@ local function undefined_imports(data, image)
     return imported
 end
 
--- The weak imports of the given images that none of them and none of the others exports, by file name: what an image has to
--- guard in every release it runs on, since no release is asked. A runtime's libraries (and the C++ runtime they link) are
--- given together, so what one of them exports to another is no import to guard.
-function unexported_weak_imports(binaries, others, architecture)
+-- The imports of the given images, by file name and with each symbol marked weak or strong, and what every image
+-- given here exports: what an image has to guard in every release it runs on, since no release is asked. A runtime's
+-- libraries and the ones the program carries with them (the C++ runtime, the backports) are given together, so what
+-- one of them exports to another is no import to guard and no load to fail.
+--
+-- Two readers: unexported_weak_imports below, which is the first half narrowed to the imports that are both weak and
+-- unexported, and apple.runtime_guards' compare, which needs the strong ones too - an import the build made
+-- strongly is a symbol the process must have, so it is a load failure when nothing the process carries exports it,
+-- and a row that records it is a claim to satisfy rather than a difference.
+function image_imports(binaries, others, architecture)
     local loaded, exported = {}, {}
     for _, binary in ipairs(table.join(binaries, others or {})) do
         local data = macho.read(binary)
@@ -1014,15 +1020,31 @@ function unexported_weak_imports(binaries, others, architecture)
         table.join2(exported, defined_exports(data, image, image.base))
         loaded[binary] = {data = data, image = image}
     end
-    local found = {}
+    local imports = {}
     for _, binary in ipairs(binaries) do
         local names = {}
         for _, symbol in ipairs(undefined_imports(loaded[binary].data, loaded[binary].image)) do
-            if symbol.weak and not exported[symbol.name] then
-                names[symbol.name] = true
+            names[symbol.name] = symbol.weak
+        end
+        imports[path.filename(binary)] = names
+    end
+    return {imports = imports, exported = exported}
+end
+
+-- The weak imports of the given images that none of them and none of the others exports, by file name: what an image has to
+-- guard in every release it runs on, since no release is asked. A runtime's libraries (and the C++ runtime they link) are
+-- given together, so what one of them exports to another is no import to guard.
+function unexported_weak_imports(binaries, others, architecture)
+    local read = image_imports(binaries, others, architecture)
+    local found = {}
+    for _, library in ipairs(table.orderkeys(read.imports)) do
+        local names = {}
+        for symbol, weak in pairs(read.imports[library]) do
+            if weak and not read.exported[symbol] then
+                names[symbol] = true
             end
         end
-        found[path.filename(binary)] = table.orderkeys(names)
+        found[library] = table.orderkeys(names)
     end
     return found
 end

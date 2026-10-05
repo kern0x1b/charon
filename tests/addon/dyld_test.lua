@@ -197,26 +197,64 @@ function failures(opt)
     if unreleased then
         table.insert(found, "an image that is not released is told of an unrecorded weak import, not refused it: " .. unreleased)
     end
-    -- the table and what the installed runtime weakly imports are compared both ways, and the toolchain's guard is not the table's
+    -- The table and what the installed runtime imports are compared against the build that produced them, in both
+    -- directions: a weak import nothing exports has to be recorded, a row whose symbol the build imports strongly has
+    -- to be satisfied by something the process carries, and a row the build does not import at all is not a
+    -- difference for a configuration that compiles its guard's code out.
     local guards = import("apple.runtime_guards", {rootdir = opt.modules, anonymous = true})
-    local problems = table.concat(guards.compare({["libswiftCore.dylib"] = {"__availability_version_check", "_charon_never_recorded"}}), "\n")
+    local problems = table.concat(guards.compare({["libswiftCore.dylib"] = {"__availability_version_check", "_charon_never_recorded"}},
+        {imports = {["libswiftCore.dylib"] = {__availability_version_check = true, _charon_never_recorded = true}}, exported = {},
+         minimum = "6.1.3", backports = true}), "\n")
     if not problems:find("_charon_never_recorded", 1, true) or problems:find("__availability_version_check", 1, true) then
         table.insert(found, "the guard table must refuse an unrecorded weak import and leave the toolchain's own guard to apple.compat: " .. problems)
     end
-    for library, symbols in pairs(guards.GUARDS) do
-        for symbol, source in pairs(symbols) do
+
+    -- one library, one row, and the two ways a build can reach a symbol it records, plus the way it reaches none.
+    -- The keys are sorted here rather than through table.orderkeys, which is not a global in this sandbox.
+    local function first(list)
+        local keys = {}
+        for key in pairs(list) do
+            table.insert(keys, key)
+        end
+        table.sort(keys)
+        return keys[1]
+    end
+    local table_of = guards.guards()
+    local library = first(table_of)
+    local recorded = first(table_of[library])
+    local at = {minimum = "6.1.3", backports = true}
+    local strong_unexported = table.concat(guards.compare({[library] = {}},
+        {imports = {[library] = {[recorded] = false}}, exported = {}, minimum = at.minimum, backports = at.backports}), "\n")
+    if not strong_unexported:find(recorded, 1, true) or not strong_unexported:find("cannot be loaded", 1, true) then
+        table.insert(found, "a row whose symbol the build imports strongly and nothing the process carries exports must be reported as a load failure: " .. strong_unexported)
+    end
+    local strong_exported = table.concat(guards.compare({[library] = {}},
+        {imports = {[library] = {[recorded] = false}}, exported = {[recorded] = true}, minimum = at.minimum, backports = at.backports}), "\n")
+    if #strong_exported ~= 0 then
+        table.insert(found, "a row whose symbol the build imports strongly must be satisfied by a library the process carries, not reported: " .. strong_exported)
+    end
+    local not_imported = table.concat(guards.compare({[library] = {}},
+        {imports = {[library] = {}}, exported = {}, minimum = at.minimum, backports = at.backports}), "\n")
+    if not_imported:find(recorded, 1, true) then
+        table.insert(found, "a row the build does not import at all is not a difference for the configuration that compiled its code out: " .. not_imported)
+    end
+    local unasked = table.concat(guards.compare({[library] = {}}, {}), "\n")
+    if not unasked:find("imports were not given", 1, true) then
+        table.insert(found, "a caller that gives no imports of its own must be told the comparison cannot be made: " .. unasked)
+    end
+    local cited = 0
+    for _, each in pairs(table_of) do
+        for symbol, source in pairs(each) do
+            cited = cited + 1
             if type(source) ~= "string" or not source:find("%S") then
                 table.insert(found, "apple.runtime_guards must cite a source for " .. symbol .. " in " .. library)
             end
         end
-        local present = {}
-        for symbol in pairs(symbols) do
-            table.insert(present, symbol)
-        end
-        local stale = table.concat(guards.compare({[library] = {}}), "\n")
-        if #present > 0 and not stale:find(present[1], 1, true) then
-            table.insert(found, "the guard table must name a row the installed library no longer imports: " .. stale)
-        end
+    end
+    -- the count, because pairs(nil) iterates nothing instead of raising: a loop over a table the module could not
+    -- hand over reported nothing at all and the suite was green
+    if cited < 50 then
+        table.insert(found, "apple.runtime_guards' rows were read over: " .. cited .. " of the table's libraries, which is fewer than the table holds")
     end
     io.writefile(path.join(folder, "band.c"), "int band(void) { return 0; }\n")
     for _, case in ipairs({{"_exported", nil}, {"_arrived", "_arrived (re-exported from /usr/lib/libSystem.B.dylib, which does not export _arrived)"}}) do
