@@ -2655,7 +2655,38 @@ local function computed(opt)
                     end
                 end
             end
+            -- The reach in the order Objective-C lookup walks it: the owner itself, then the superclass chain in the
+            -- order the @interface gives, and the protocols after the classes, because a class answers a message with
+            -- the nearest declaration up its chain and only with a protocol's when no class declares it. The names
+            -- arrive in `scoped_of()`'s own order (alphabetical, one dump each), which is not that: a class whose
+            -- name sorts before its superclass's would contribute the wrong declaration, and every declaration in the
+            -- reach was written out as one the row has to agree with.
+            --
+            -- Measured on iPhoneOS26.2.sdk: the reach of +[LAEnvironmentMechanismBiometry new] holds
+            -- LAEnvironmentMechanism's `+ (instancetype _Nonnull)new` (its header sits under NS_ASSUME_NONNULL_BEGIN)
+            -- and NSObject's `+ (instancetype)new`, and the subclass inherits the first - so the row was refused as
+            -- "declared differently by LAEnvironmentMechanism, NSObject".
+            local distance = {[owner] = 1}
+            for hop, above in ipairs(superclasses(owner)) do
+                distance[above] = hop + 1
+            end
+            local ranked, protocols = {}, {}
             for _, by in ipairs(table.orderkeys(by_owner)) do
+                -- a class of the chain is ranked by how far up it is; a protocol (and, for a row the scope reaches
+                -- nowhere, an owner the bare name found) is ranked by nothing and comes after every class
+                if distance[by] then
+                    table.insert(ranked, {by = by, distance = distance[by]})
+                else
+                    table.insert(protocols, by)
+                end
+            end
+            table.sort(ranked, function (one, other) return one.distance < other.distance end)
+            local order = {}
+            for _, nearest in ipairs(ranked) do
+                table.insert(order, nearest.by)
+            end
+            order = table.join(order, protocols)
+            for _, by in ipairs(order) do
                 -- a property is the declaration its implicit accessors come from; one only an accessor names is found
                 -- by the property's own name
                 local nodes, properties = {}, {}
@@ -2714,6 +2745,13 @@ local function computed(opt)
                     found.elsewhere[by] = true
                 else
                     found.elsewhere[by] = true
+                end
+                -- and the nearest declaration is the only one that counts: what a further class up the chain or a
+                -- protocol says is not what this class answers, so a redeclaration copied from it would claim a
+                -- signature the class does not have. The walk stops there, and the protocols are still asked for a row
+                -- the chain reaches nowhere - that is where the "declared only by" of the set comes from.
+                if distance[by] and (#nodes > 0 or #properties > 0) then
+                    break
                 end
             end
             table.insert(pending, found)

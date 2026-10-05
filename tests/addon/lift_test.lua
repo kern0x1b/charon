@@ -1358,15 +1358,35 @@ function failures(opt)
                            -- unavailable, and FixOff is LAEnvironmentMechanismBiometry, which declares no +new at all
                            -- and answers the message with the one it inherits. Both spellings are the same, so what
                            -- this case is about is only the unavailable mark.
+                           --
+                           -- The second shape is the same family with the nullability of the nearer declaration left in:
+                           -- LAEnvironmentMechanism.h sits under NS_ASSUME_NONNULL_BEGIN, so the one it declares is
+                           -- `+ (instancetype _Nonnull)new` while objc/NSObject.h's is `+ (instancetype)new`, and
+                           -- fixing was: FixDeep declares it with the qualifier, FixNear the plain one, FixLeaf
+                           -- declares nothing and answers with FixNear's. FixDeep's name sorts before FixNear's, so a
+                           -- walk in name order copies the wrong one and says the class answers what it does not.
                            "#import <Foundation/Foundation.h>\n"
                            .. "API_AVAILABLE(ios(9.0))\n@interface FixMarked : NSObject\n"
                            .. "+ (instancetype)new NS_UNAVAILABLE;\n@end\n"
-                           .. "API_AVAILABLE(ios(9.0))\n@interface FixOff : FixMarked\n@end\n",
+                           .. "API_AVAILABLE(ios(9.0))\n@interface FixOff : FixMarked\n@end\n"
+                           .. "API_AVAILABLE(ios(9.0))\n@interface FixDeep : NSObject\n"
+                           .. "+ (instancetype _Nonnull)new API_AVAILABLE(ios(9.0));\n@end\n"
+                           .. "API_AVAILABLE(ios(9.0))\n@interface FixNear : FixDeep\n"
+                           .. "+ (instancetype)new API_AVAILABLE(ios(9.0));\n@end\n"
+                           .. "API_AVAILABLE(ios(9.0))\n@interface FixLeaf : FixNear\n@end\n",
                            '[{"api":"FixMarked","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
                            .. '"reason":"a fixture entry","effect":"a fixture entry"},'
                            .. '{"api":"FixOff","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
                            .. '"reason":"a fixture entry","effect":"a fixture entry"},'
                            .. '{"api":"+[FixOff new]","kind":"method","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                           .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                           .. '{"api":"FixDeep","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                           .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                           .. '{"api":"FixNear","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                           .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                           .. '{"api":"FixLeaf","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                           .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                           .. '{"api":"+[FixLeaf new]","kind":"method","introduced":"9.0","minimum":"6.0","status":"implemented",'
                            .. '"reason":"a fixture entry","effect":"a fixture entry"}]'}
         local marked_root = path.join(os.tmpdir(), "charon-lift-marked-" .. hash.strhash128(table.concat(mechanism, "")) .. "-" .. os.getpid())
         os.tryrm(marked_root)
@@ -1394,9 +1414,18 @@ function failures(opt)
             -- what a redeclaration without it says: NS_UNAVAILABLE is err_unavailable, which no -W turns off
             expect_equal(found, "and the superclass's own staged declaration carries no unavailable mark left",
                          tostring(marked_staged:find("NS_UNAVAILABLE", 1, true) ~= nil), "false")
+            -- and the redeclaration is the nearest one: FixNear's plain spelling, not FixDeep's qualified one, which
+            -- is what lookup answers the leaf with and what its own declaration says the port compiles against
+            expect_equal(found, "and an inherited +new declared twice over is redeclared from the nearest one",
+                         marked_staged:match("@interface FixLeaf : FixNear\n([^\n]*)\n@end") or "(nothing)",
+                         "+ (id)new API_AVAILABLE(ios(6.1.3));")
+            expect_equal(found, "and the nearer declaration is the one that came down to the port's release",
+                         tostring(marked_staged:find("@interface FixNear : FixDeep\n+ (instancetype)new API_AVAILABLE(ios(6.1.3));", 1, true) ~= nil),
+                         "true")
             local marked_alone = io.readfile(path.join(marked_root, "out", "left-alone.txt")) or ""
-            expect_equal(found, "and the row is answered and not left alone",
-                         tostring(marked_alone:find("+[FixOff new]", 1, true) ~= nil), "false")
+            expect_equal(found, "and both rows are answered and not left alone",
+                         tostring(marked_alone:find("+[FixOff new]", 1, true) ~= nil
+                                  or marked_alone:find("+[FixLeaf new]", 1, true) ~= nil), "false")
         end
         os.tryrm(marked_root)
     end
