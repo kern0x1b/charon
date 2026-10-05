@@ -182,6 +182,29 @@ package("swift-runtime")
         package:setenv("SWIFT_PLUGIN_PATH", path.join(compiler:installdir("lib"), "swift", "host", "plugins"))
         package:setenv("CHARON_SWIFT_RUNTIME_MARK", package:data("mark"))
         local jobs = math.min(import("core.base.option").get("jobs") or os.cpuinfo("ncpu"), 8)
+
+        -- Where this install's time went: one line per phase, the way modules/apple/lift.lua times its own phases
+        -- under LIFT_PROFILE, because an install is an hour long and a phase nobody has measured is a phase nobody
+        -- can fix. SWIFTRT_PROFILE=1 turns it on and nothing else changes; with it unset nothing is timed and no
+        -- clock is read.
+        --
+        -- A mark is placed where its phase ENDS and prints the time since the mark before it, so the name on a line is
+        -- the name of the work that line measures. The two commits before this one placed the marks where the phases
+        -- began, which reads as the phase before each: "stdlib:configure 0.0s" there was the handful of lines of flag
+        -- setup in front of the standard library, and the standard library's own minutes were on the line named "lift".
+        local marked = os.getenv("SWIFTRT_PROFILE") and {} or nil
+        local phase = marked and os.mclock() or 0
+        -- named timed() and not mark(): this recipe already has a local `mark`, the build's identifier string (package:data("mark"))
+        local function timed(name)
+            if not marked then
+                return
+            end
+            local now = os.mclock()
+            marked[#marked + 1] = {name, (now - phase) / 1000}
+            phase = now
+            -- as it happens too, so an install that stops on an error still says where its time went
+            printf("swift-runtime: %-28s %8.1fs (so far)\n", name, marked[#marked][2])
+        end
         local install = path.join(package:installdir("lib"), "swift")
 
         -- A writable copy of the sources: the changes below are made in it, and the standalone runtime build takes its
@@ -233,6 +256,7 @@ package("swift-runtime")
         io.writefile("mark.c", string.format("/* The build of the Swift runtime a program was compiled against. */\n__attribute__((visibility(\"default\")))\nconst char %s = 0;\n", mark))
         os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
                  toolchain:config("sdkdir"), "-Os", "-c", "mark.c", "-o", path.absolute("mark.o")})
+        timed("sources")
 
         -- The Swift driver hands the link to clang, which reads the linker's version to know what it understands; the
         -- toolchain names the one the port links with, and clang would otherwise assume the one it shipped against.
@@ -335,6 +359,7 @@ package("swift-runtime")
             -- can. So the question to ask of a runtime is its build date, not its option list.
             "-DSwiftCore_ENABLE_VECTOR_TYPES=ON",
             "-DSwiftCore_INSTALL_NESTED_SUBDIR=OFF"})
+        timed("stdlib")
 
         -- A resource directory the compiler accepts: its own shims and clang headers beside the runtime built here, under
         -- the platform folder the target names.
@@ -396,6 +421,7 @@ package("swift-runtime")
                  "-L" .. install, "-lswiftCore"}))
         offer(path.join(install, "Darwin.swiftmodule"))
         offer(path.join(install, "libswiftDarwin.dylib"))
+        timed("darwin")
 
         -- What one overlay is, for every architecture: the overlays inside the guard below are the ones the SDK lacks for
         -- this one, and the four that follow it - simd, RealityFoundation, RealityKit and Spatial - are built whatever the
@@ -403,6 +429,15 @@ package("swift-runtime")
         -- of scope by the time simd was built, and the call was a nil global, so an install of any architecture but arm64
         -- stopped there with "attempt to call a nil value (global 'build_overlay')".
         local lifted, carried = {}, {}
+
+        -- The backports this build carries, named once and out of the architecture guard below, for the same reason
+        -- build_overlay and the two tables above are: the overlays ask it for the headers it lifts and for the libraries
+        -- they link, and the packaging step at the end of this function asks it for the package those libraries come
+        -- from - and that step is outside the guard, where a name declared inside it is a nil global. Measured, armv7 at
+        -- iOS 6.1.3 with the backports and shared: every overlay built and the install stopped at packaging with
+        -- "attempt to index a nil value (global 'backported')". The dependency exists only under the config that asks
+        -- for it, so this is resolved under that config and nowhere else.
+        local backported = package:config("backports") and package:dep("apple-backports") or nil
 
         local function build_overlay(name, overlay_sources, links, objects, opt)
             local module = path.join(install, name .. ".swiftmodule")
@@ -439,6 +474,7 @@ package("swift-runtime")
                      "-L" .. install, "-lswiftCore"}, linked))
             offer(module)
             offer(path.join(install, "libswift" .. name .. ".dylib"))
+            timed("overlay:" .. name)
         end
 
         -- The other overlays are the ones the SDK lacks for this architecture. Its Darwin is only an interface for arm64, and
@@ -460,10 +496,7 @@ package("swift-runtime")
             for _, patch in ipairs(overlay_patches) do
                 os.vrunv("patch", {"-p1", "-i", patch}, {curdir = overlays})
             end
-            -- The backports variant: the headers with what the backports implement lowered to the port's release, for the
-            -- overlays here and for every port that compiles against this runtime, which finds them through the environment.
-            local backported = package:dep("apple-backports")
-        -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
+            -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
         -- run path it carries.
 
             if package:config("backports") then
@@ -506,6 +539,9 @@ package("swift-runtime")
                         end) .. ")"
                     end)))
                 end
+            end
+            if package:config("backports") then
+                timed("lift")
             end
             local installed_shims = path.join(install, "shims")
             local shim_modules = path.join(installed_shims, "module.modulemap")
@@ -681,6 +717,7 @@ package("swift-runtime")
             offer(path.join(install, "*.swiftmodule"))
             offer(path.join(install, "iphoneos", "*.swiftmodule"))
             offer(path.join(install, "iphoneos", package:arch(), "*.dylib"))
+            timed("supplemental:" .. library)
         end
 
         -- simd: the Swift half of the module, which the SDK carries for arm64 only. A port
@@ -870,6 +907,7 @@ package("swift-runtime")
             os.vcp(path.join(compiler:installdir("lib"), "swift", entry), path.join(install, entry))
         end
         os.vcp(path.join(path.absolute("platform"), "LICENSE.txt"), package:installdir("licenses") .. "/")
+        timed("install:layout")
         if package:config("shared") then
             local runtime = import("apple.shared_runtime", {rootdir = modules, anonymous = true})
             local name, ui = runtime.package_name("swift-runtime", package:buildhash()), runtime.package_name("swift-runtime-ui", package:buildhash())
@@ -886,6 +924,8 @@ package("swift-runtime")
             -- Overlays linked against the backports load them from their package, at the version they were built from or a
             -- later one: the package that holds an overlay depends on it.
             if package:config("backports") then
+                assert(backported, "the backports are named once above and only under the backports config, which this " ..
+                                   "step is inside of; the name is then nil and this is the step that read it")
                 local backports = import("apple.backports", {rootdir = modules, anonymous = true})
                 local debs = os.files(path.join(backported:installdir("share"), backports.package_name() .. "_*.deb"))
                 assert(#debs == 1, "the apple-backports install holds " .. #debs .. " packages instead of one")
@@ -910,6 +950,17 @@ package("swift-runtime")
                 os.rm(library)
             end
             package:setenv("CHARON_SHARED_PACKAGE", name .. "=" .. cxx .. ";" .. ui .. "=" .. name)
+            timed("package")
+        end
+        timed("sweep")
+        if marked then
+            print("swift-runtime: where the install went, every phase in the order it ran:")
+            local total = 0
+            for _, row in ipairs(marked) do
+                printf("swift-runtime:   %-26s %8.1fs\n", row[1], row[2])
+                total = total + row[2]
+            end
+            printf("swift-runtime:   %-26s %8.1fs\n", "total", total)
         end
         os.tryrm(path.absolute("build"))
         os.tryrm(source)
