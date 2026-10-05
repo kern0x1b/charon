@@ -3562,11 +3562,39 @@ local function computed(opt)
             classes = classes, undeclared = undeclared, types = lowered_types, kept_types = kept_types, phases = marked, dumper = counted}, left
 end
 
+-- The Lua a lift reads: this file and every module an import in it names, and the ones those name in turn, found where
+-- xmake looks - beside the importing file, or from the modules folder by the dotted name. An import the folder has no
+-- file for is xmake's own (core.base.json, async.runjobs) and is not this repository's code. A line inside a function
+-- counts as much as one at the top: a module that is only loaded when a function runs is still read by the lift that
+-- calls it, and a key that missed it would hand back an answer made by other code. The modules of the folder that
+-- nothing here reaches (the install's weak-import table, the packaging, the signing) are not read, so an edit to one is
+-- not a different lift.
+local function code_read()
+    local modules = path.join(os.scriptdir(), "..")
+    local found, queue = {}, {path.normalize(path.join(os.scriptdir(), "lift.lua"))}
+    while #queue > 0 do
+        local file = table.remove(queue)
+        if not found[file] then
+            found[file] = true
+            for name in io.readfile(file):gmatch('import%("([%w_%.]+)"') do
+                for _, candidate in ipairs({path.join(path.directory(file), name .. ".lua"),
+                                            path.join(modules, (name:gsub("%.", "/")) .. ".lua")}) do
+                    if os.isfile(candidate) then
+                        table.insert(queue, path.normalize(candidate))
+                        break
+                    end
+                end
+            end
+        end
+    end
+    return table.keys(found)
+end
+
 -- What a lift is a function of, as one key: the registry and the SDK's headers and module maps by content or by name, size
 -- and time, the two compilers by path, size and time, the environment they read, the target, the frameworks asked for, and
--- the code that lifts (this folder's modules and the plugin's source). The same key is the same lift, so its output is kept
+-- the code that lifts (the modules lift.lua reads and the plugin's source). The same key is the same lift, so its output is kept
 -- and handed back instead of lifted again: a lift is minutes of compiles, and the key is a second of reading.
-local function lift_key(opt)
+function lift_key(opt)
     local parts = {"charon-lift-1", opt.triple, tostring(opt.minimum), tostring(opt.grouped),
                    table.concat(table.unique(table.join(opt.frameworks or {})), " ")}
     for _, program in ipairs({opt.clang, opt.swiftc}) do
@@ -3575,10 +3603,10 @@ local function lift_key(opt)
     for _, name in ipairs(ENVIRONMENT) do
         table.insert(parts, name .. "=" .. (os.getenv(name) or ""))
     end
-    local code = table.join(os.files(path.join(os.scriptdir(), "*.lua")), os.files(path.join(os.scriptdir(), "multidump", "*")))
+    local code = table.join(code_read(), os.files(path.join(os.scriptdir(), "multidump", "*")))
     table.sort(code)
     for _, file in ipairs(code) do
-        table.insert(parts, path.filename(file) .. " " .. hash.strhash128(io.readfile(file)))
+        table.insert(parts, path.relative(file, path.join(os.scriptdir(), "..")) .. " " .. hash.strhash128(io.readfile(file)))
     end
     local registry = os.files(path.join(opt.registry, "registry", "**"))
     table.sort(registry)

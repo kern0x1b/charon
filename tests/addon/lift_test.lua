@@ -1032,6 +1032,47 @@ function failures(opt)
     expect_equal(found, "and an answer the other side has none of is not the same",
                  tostring(lift.same_answer(spelled, nil, sdk)), "false")
 
+    -- What a kept lift is a function of includes the Lua that lifts, and not the Lua that merely sits beside it: an edit to
+    -- apple.runtime_guards (the table of an install's weak imports), to the packaging, the signing or the shared
+    -- runtime's staging is not an edit to a lift, and the lift it moved the key of was 15 minutes of clang on the install
+    -- that followed. The modules lift.lua imports, and the ones those import in turn, are what it reads. Over a copy of the
+    -- modules, so that the case edits files without touching the checkout's.
+    do
+        local copy = path.join(os.tmpdir(), "charon-lift-key-" .. os.getpid())
+        os.tryrm(copy)
+        os.cp(opt.modules, path.join(copy, "modules"))
+        local keyed = import("apple.lift", {rootdir = path.join(copy, "modules"), anonymous = true})
+        io.writefile(path.join(copy, "sdk", "usr", "include", "stub.h"), "int stub(void);\n")
+        io.writefile(path.join(copy, "registry", "registry", "Fix.json"), "[]")
+        local function key()
+            return keyed.lift_key({triple = "armv7-apple-ios6.1.3", minimum = "6.1.3", frameworks = {"Foundation"},
+                                   clang = path.join(copy, "modules", "apple", "lift.lua"),
+                                   swiftc = path.join(copy, "modules", "apple", "lift.lua"),
+                                   sdk = path.join(copy, "sdk"), registry = path.join(copy, "registry")})
+        end
+        local function edited(module)
+            io.writefile(path.join(copy, "modules", module), io.readfile(path.join(copy, "modules", module)) .. "\n-- edited\nlocal EDITED = true\n")
+        end
+        local first = key()
+        expect_equal(found, "the key of a lift is the same twice over the same modules", key(), first)
+        for _, module in ipairs({"apple/runtime_guards.lua", "apple/platform.lua", "apple/shared_runtime.lua", "apple/spotlight_lift.lua"}) do
+            if os.isfile(path.join(copy, "modules", module)) then
+                edited(module)
+                expect_equal(found, "the key of a lift is not moved by an edit to " .. module .. ", which it does not read",
+                             key() == first, true)
+            end
+        end
+        -- and each module it does read moves it, the ones it imports in turn among them (backports imports firmware,
+        -- which no line of lift.lua names)
+        for _, module in ipairs({"apple/lift.lua", "apple/backports.lua", "apple/compat.lua", "apple/cache.lua", "apple/dyld.lua",
+                                 "apple/multidump.lua", "apple/multidump/multidump.cpp", "apple/firmware.lua", "debian.lua"}) do
+            local before = key()
+            edited(module)
+            expect_equal(found, "the key of a lift is moved by an edit to " .. module .. ", which it reads", key() ~= before, true)
+        end
+        os.tryrm(copy)
+    end
+
     -- The kept answers are a cache, and a lift that writes one must be able to write it and read it back. This is the
     -- case for a top-level function shadowing one of the module's locals: a `function unplaced(node)` beside the local
     -- unplaced() that spells the folder back left remember() compressing that count instead of the answer, and the
