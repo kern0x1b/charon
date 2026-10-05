@@ -659,6 +659,21 @@ package("swift-runtime")
                           {backports = {"FoundationBackports", "CoreDataBackports"}})
         end
 
+        -- The supplemental libraries, each its own project, against the standard library built above and before the
+        -- overlays below, which import them: the SDK's own simd interface opens with `import _StringProcessing`, so a simd
+        -- compiled before this loop exists cannot be compiled at all (measured, armv7 at iOS 6.1.3 with the backports:
+        -- "source/simd/simd.swift:4:8: error: no such module '_StringProcessing'").
+        -- The supplemental libraries, each its own project, against the standard library built above.
+        for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do
+            configure(library:lower(), path.join(source, "Runtimes", "Supplemental", library),
+                      {swiftflags = {"-resource-dir", resources}}, {
+                "-DSwiftCore_DIR=" .. path.join(package:installdir("lib"), "cmake", "SwiftCore"),
+                "-DCMAKE_FIND_PACKAGE_PREFER_CONFIG=YES", no_interface})
+            offer(path.join(install, "*.swiftmodule"))
+            offer(path.join(install, "iphoneos", "*.swiftmodule"))
+            offer(path.join(install, "iphoneos", package:arch(), "*.dylib"))
+        end
+
         -- simd: the Swift half of the module, which the SDK carries for arm64 only. A port
         -- compiled for armv7 finds the C half of simd in the SDK's own headers and no Swift
         -- half at all, so `float4x4` and `simd_quatf` are missing names and everything written
@@ -796,17 +811,6 @@ package("swift-runtime")
         assert(#spatial_sources > 0, "the Spatial sources are missing from the package")
         build_overlay("Spatial", spatial_sources,
                       {"-lswiftDarwin", "-lswiftsimd"}, nil, {backports = {}})
-
-        -- The supplemental libraries, each its own project, against the standard library built above.
-        for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do
-            configure(library:lower(), path.join(source, "Runtimes", "Supplemental", library),
-                      {swiftflags = {"-resource-dir", resources}}, {
-                "-DSwiftCore_DIR=" .. path.join(package:installdir("lib"), "cmake", "SwiftCore"),
-                "-DCMAKE_FIND_PACKAGE_PREFER_CONFIG=YES", no_interface})
-            offer(path.join(install, "*.swiftmodule"))
-            offer(path.join(install, "iphoneos", "*.swiftmodule"))
-            offer(path.join(install, "iphoneos", package:arch(), "*.dylib"))
-        end
 
         -- What is installed is a resource directory, the layout the compiler reads: the shims, the clang headers and the
         -- API notes of the compiler at the root, and under the platform's folder the libraries and their modules,
