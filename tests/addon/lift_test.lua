@@ -1334,5 +1334,71 @@ function failures(opt)
                      tostring(kept_mark and kept_mark:match("FixWritten is marked unavailable by an attribute the SDK writes out") ~= nil), "true")
         os.tryrm(written_root)
     end
+
+    -- The two shapes the lift still refused against the SDK 26.2's registry, each over a fixture SDK of its own -
+    -- the four shapes above cannot carry them: that fixture's staged Fix.h is read where the lift wrote one, and these
+    -- two make it raise, which is a fixture that does not lift rather than a case that does. Both are the
+    -- LAEnvironmentMechanism family of the SDK 26.2: +[LAEnvironmentMechanismBiometry new] and its two companions are
+    -- implemented rows, the nearest declaration of +new is LAEnvironmentMechanism's own, and the SDK marks that
+    -- NS_UNAVAILABLE - so the row needs a redeclaration, and a redeclaration cannot say what the header will.
+    if not clang or not swiftc then
+        print("skipped: the two LAEnvironmentMechanism shapes need both clang under " .. path.join(store, "l/llvm") ..
+              " and swiftc under " .. path.join(store, "s/swift"))
+    else
+        local mechanism = {"#define ios(version) ios, introduced=version\n"
+                           .. "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n"
+                           .. "#define NS_UNAVAILABLE __attribute__((unavailable))\n"
+                           .. "#define instancetype id\n",
+                           -- the root class every chain ends at, with the +new of objc/NSObject.h: the declaration the
+                           -- reach holds further away, and the one the subclass would answer without the nearer one
+                           "@class NSString;\n@protocol NSObject\n@end\n@protocol NSCopying\n@end\n"
+                           .. "__attribute__((objc_root_class)) @interface NSObject <NSObject>\n"
+                           .. "- (instancetype)init;\n+ (instancetype)new;\n@end\n",
+                           -- FixMarked is LAEnvironmentMechanism: a class of its own with a +new the SDK marks
+                           -- unavailable, and FixOff is LAEnvironmentMechanismBiometry, which declares no +new at all
+                           -- and answers the message with the one it inherits. Both spellings are the same, so what
+                           -- this case is about is only the unavailable mark.
+                           "#import <Foundation/Foundation.h>\n"
+                           .. "API_AVAILABLE(ios(9.0))\n@interface FixMarked : NSObject\n"
+                           .. "+ (instancetype)new NS_UNAVAILABLE;\n@end\n"
+                           .. "API_AVAILABLE(ios(9.0))\n@interface FixOff : FixMarked\n@end\n",
+                           '[{"api":"FixMarked","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                           .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                           .. '{"api":"FixOff","kind":"class","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                           .. '"reason":"a fixture entry","effect":"a fixture entry"},'
+                           .. '{"api":"+[FixOff new]","kind":"method","introduced":"9.0","minimum":"6.0","status":"implemented",'
+                           .. '"reason":"a fixture entry","effect":"a fixture entry"}]'}
+        local marked_root = path.join(os.tmpdir(), "charon-lift-marked-" .. hash.strhash128(table.concat(mechanism, "")) .. "-" .. os.getpid())
+        os.tryrm(marked_root)
+        local marked_frameworks = path.join(marked_root, "sdk", "System", "Library", "Frameworks")
+        io.writefile(path.join(marked_frameworks, "Foundation.framework", "Headers", "Foundation.h"), mechanism[1] .. mechanism[2])
+        io.writefile(path.join(marked_frameworks, "Fix.framework", "Headers", "Fix.h"), mechanism[3])
+        io.writefile(path.join(marked_root, "registry", "Fix.json"), mechanism[4])
+        local marked_failure
+        try {function ()
+            lift.lift({clang = clang, swiftc = swiftc, sdk = path.join(marked_root, "sdk"), triple = "armv7-apple-ios6.1.3",
+                       minimum = "6.1.3", registry = marked_root, outputdir = path.join(marked_root, "out"), expected = false})
+        end, catch {function (why) marked_failure = tostring(why) end}}
+        expect_equal(found, "a lift of a fixture SDK whose inherited +new is marked unavailable by its superclass",
+                     marked_failure, nil)
+        -- what the lift wrote is read only where it wrote one: a lift that raised wrote no staged header and no set,
+        -- and the raise is the failure the line above has already reported
+        if not marked_failure then
+            local marked_staged = io.readfile(path.join(marked_root, "out", "headers", "System", "Library", "Frameworks",
+                                                        "Fix.framework", "Headers", "Fix.h")) or ""
+            -- the row is answered by a copy of the superclass's own declaration, at the port's release
+            expect_equal(found, "and the unavailable +new is redeclared on the class that answers it",
+                         marked_staged:match("@interface FixOff : FixMarked\n([^\n]*)\n@end") or "(nothing)",
+                         "+ (id)new API_AVAILABLE(ios(6.1.3));")
+            -- and the mark that made the copy impossible is gone from the header the port compiles against, which is
+            -- what a redeclaration without it says: NS_UNAVAILABLE is err_unavailable, which no -W turns off
+            expect_equal(found, "and the superclass's own staged declaration carries no unavailable mark left",
+                         tostring(marked_staged:find("NS_UNAVAILABLE", 1, true) ~= nil), "false")
+            local marked_alone = io.readfile(path.join(marked_root, "out", "left-alone.txt")) or ""
+            expect_equal(found, "and the row is answered and not left alone",
+                         tostring(marked_alone:find("+[FixOff new]", 1, true) ~= nil), "false")
+        end
+        os.tryrm(marked_root)
+    end
     return found
 end

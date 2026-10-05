@@ -1609,12 +1609,16 @@ local CARRIED_ATTRIBUTES = {AvailabilityAttr = true, SwiftPrivateAttr = true}
 
 -- The attributes a redeclaration of one kind of declaration carries, by clang's own attribute kind: a property's
 -- also carries ObjCNSObjectAttr, which member_declaration() writes (see there); anything else carries what every
--- declaration carries.
-local function carried_attributes(kind)
-    if kind == "ObjCPropertyDecl" then
-        return {AvailabilityAttr = true, SwiftPrivateAttr = true, ObjCNSObjectAttr = true}
+-- declaration carries. `taken_off` says that this declaration's unavailable mark is one the lift deletes from the
+-- staged header (see unavailable_taken_off), so what is left is not something a redeclaration has to carry either.
+local function carried_attributes(kind, taken_off)
+    local carried = kind == "ObjCPropertyDecl"
+        and {AvailabilityAttr = true, SwiftPrivateAttr = true, ObjCNSObjectAttr = true} or CARRIED_ATTRIBUTES
+    if taken_off then
+        carried = table.clone(carried)
+        carried.UnavailableAttr = true
     end
-    return CARRIED_ATTRIBUTES
+    return carried
 end
 
 -- The accessors of a carried property that no row carries, and so which the class would not answer.
@@ -1657,9 +1661,9 @@ function property_accessors_uncarried(owner, node, carried, kept, spellings)
     return left
 end
 
-function uncarried_attributes(node)
+function uncarried_attributes(node, taken_off)
     local left = {}
-    local carried = carried_attributes(node.kind)
+    local carried = carried_attributes(node.kind, taken_off)
     for _, kind in ipairs(attributes_of(node)) do
         if not carried[kind] then
             table.insert(left, kind)
@@ -2129,6 +2133,43 @@ local function computed(opt)
     local unavailable_written = {}
     -- regional[file][id]: a declaration a region's attribute reaches, to be given its own (see declared_at)
     local regional = {}
+    -- Whether a class's own rows keep a member of it: the member under the two names a row may name it by, and the
+    -- spelling of an accessor. One member's marks are that member's own business - a row that keeps a name means the
+    -- port does not answer it - and this is the whole of that rule, asked from two places: the entries loop, which
+    -- leaves the superclass's kept row from taking a mark off a subclass's own member (measured on iPhoneOS16.4.sdk,
+    -- where -[HKClinicalRecord init] and -[HMTimerTrigger init] are implemented while -[HKObject init] and
+    -- -[HMTrigger init] are absent), and the redeclaration below, which asks the same question of the class it copies
+    -- from.
+    local function own_kept(owner, node)
+        for _, name in ipairs({node.name, setter_property(node.name or "")}) do
+            if kept[owner .. "." .. name]
+               or kept[string.format("%s[%s %s]", node.instance == false and "+" or "-", owner, node.name)] then
+                return true
+            end
+        end
+        return false
+    end
+    -- Whether the lift takes this declaration's unavailable mark off the staged header, which is what makes the mark
+    -- an attribute a redeclaration of the member need not carry: remove() acts through the entry of the class the
+    -- declaration belongs to, and only while the member's own rows do not keep it and the mark has a site, which is
+    -- what remove() itself acts on. All three are asked here rather than assumed.
+    --
+    -- Measured on iPhoneOS26.2.sdk: +[LAEnvironmentMechanismBiometry new] and its two companions are implemented rows,
+    -- the nearest declaration of +new is LAEnvironmentMechanism's, the SDK marks that NS_UNAVAILABLE, and the
+    -- redeclaration was refused for an attribute the same lift deletes three lines of code away - the redeclaration
+    -- then says what the header will, and nothing the header will not.
+    local function unavailable_taken_off(by, node)
+        local owner = listed[by]
+        if owner == nil or owner.status ~= "implemented" or own_kept(by, node) then
+            return false
+        end
+        for _, mark in ipairs(unavailables(node)) do
+            if not mark.written then
+                return true
+            end
+        end
+        return false
+    end
     local function place(mark, target)
         if mark.region then
             if later(mark.introduced, target) and mark.node and mark.file:startswith(opt.sdk) then
@@ -2349,13 +2390,7 @@ local function computed(opt)
                         -- from the subclass's own -init and left a name the registry says is implemented forbidden
                         -- (measured on iPhoneOS16.4.sdk: -[HKClinicalRecord init] and -[HMTimerTrigger init], whose
                         -- chains hold -[HKObject init] and -[HMTrigger init], both absent).
-                        local own = false
-                        for _, name in ipairs(names) do
-                            if kept[entry.api .. "." .. name]
-                               or kept[string.format("%s[%s %s]", child.instance == false and "+" or "-", entry.api, child.name)] then
-                                own = true
-                            end
-                        end
+                        local own = own_kept(entry.api, child)
                         for _, mark in ipairs(unavailables(child)) do
                             if mark.written then
                                 if not own then
@@ -2726,7 +2761,7 @@ local function computed(opt)
                 for _, node in ipairs(found.reached) do
                     local by = owner_of(node)
                     table.insert(sources, by)
-                    for _, kind in ipairs(uncarried_attributes(node)) do
+                    for _, kind in ipairs(uncarried_attributes(node, unavailable_taken_off(by, node))) do
                         table.insert(unreachable, string.format("%s is declared by %s with %s, which a redeclaration would not carry", api, by, kind))
                     end
                     local text = member_declaration(node, node.name, target)
