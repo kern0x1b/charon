@@ -285,6 +285,40 @@ end
 
 -- The declarations of a text dump (-ast-dump with -ast-dump-decl-types), in order: the qualified name each is headed with,
 -- and every typedef its type goes through.
+-- Whether two answers to one filter are the same answer. A pointer's value is not part of an answer - it belongs to
+-- the run, not to the declaration - so `0x...` is compared with its digits gone. Neither is how the run spelled the
+-- SDK: clang prints a header's path the way its own working directory spells it, and the plugin prints the same file
+-- the way opt.sdk spells it, so the two name one file and differ in the spelling. Measured on iPhoneOS26.2.sdk with
+-- the filter HMAccessoryProfile:: asked in a batch of four: the two JSON dumps were byte-identical once 0x... and
+-- the header path prefix were normalised - 0 differing lines - and the plugin's spelling is the one the rest of the
+-- lift wants, because place() and remove() match a mark's file against opt.sdk.
+function same_answer(one, other, sdk)
+    if not one or not other then
+        return false
+    end
+    local function plain(text)
+        text = text:gsub("0x%x+", "")
+        -- the SDK's own path, spelled out of the answer, in pieces and joined once: a dump names the header of every
+        -- declaration, and rebuilding the string at each was quadratic in its length (as respelled() above does)
+        if sdk and sdk ~= "" then
+            local pieces, at = {}, 1
+            while true do
+                local found = text:find(sdk, at, true)
+                if not found then
+                    break
+                end
+                table.insert(pieces, text:sub(at, found - 1))
+                table.insert(pieces, "SDK")
+                at = found + #sdk
+            end
+            table.insert(pieces, text:sub(at))
+            text = table.concat(pieces)
+        end
+        return text
+    end
+    return plain(one) == plain(other)
+end
+
 function listing_sections(listing)
     local starts, sections = {}, {}
     for start, heading in listing:gmatch("()Dumping ([^\n]*):\n") do
@@ -516,6 +550,8 @@ local function dumper(opt, frameworks, headers)
     local together
     local function asked_checked(filters, vfs)
         local answers = asked_together(filters, vfs)
+        -- the filters of this batch the plugin did not answer, which then carry clang's own answer instead
+        local alone = {}
         if answers and not checked then
             checked = true
             local compared, seen = {}, {}
@@ -532,23 +568,48 @@ local function dumper(opt, frameworks, headers)
             for index, filter in ipairs(filters) do
                 if index ~= 1 and filter:find("^[%a_][%w_]*$") then pick(index); break end
             end
-            local function same(a, b)
-                return a and b and a:gsub("0x%x+", "") == b:gsub("0x%x+", "")
-            end
             for _, index in ipairs(compared) do
                 local text, listing = asked_alone(filters[index], vfs)
-                if not same(text, answers[index][1]) or not same(listing, answers[index][2]) then
-                    cprint("${color.warning}lift:${clear} the multidump plugin does not answer %s as clang does; every query is asked alone", filters[index])
-                    multidump.refuse()
-                    return nil
+                if not same_answer(text, answers[index][1], opt.sdk) or not same_answer(listing, answers[index][2], opt.sdk) then
+                    if os.getenv("LIFT_DEBUG_MULTIDUMP") then
+                        -- The batch's filter list, and for the filter that disagrees the two answers side by side, so
+                        -- the difference can be read instead of guessed at. Only this filter: one pair of clang runs is
+                        -- what the check itself costs, and asking the whole batch again here is what made the first
+                        -- version of this diagnostic answer nil for every filter but the one it was about.
+                        local folder = path.join(opt.outputdir, "multidump-compare")
+                        os.mkdir(folder)
+                        io.writefile(path.join(folder, "filters.txt"), table.concat(filters, "\n") .. "\n")
+                        local sizes = {"filter\tplugin.json\tplugin.txt"}
+                        for at = 1, #filters do
+                            table.insert(sizes, string.format("%s\t%s\t%s", filters[at],
+                                                              tostring(answers[at] and #answers[at][1] or -1),
+                                                              tostring(answers[at] and #answers[at][2] or -1)))
+                        end
+                        io.writefile(path.join(folder, "sizes.tsv"), table.concat(sizes, "\n") .. "\n")
+                        io.writefile(path.join(folder, "plugin.json"), answers[index][1] or "(nothing)")
+                        io.writefile(path.join(folder, "plugin.txt"), answers[index][2] or "(nothing)")
+                        io.writefile(path.join(folder, "clang.json"), text or "(nothing)")
+                        io.writefile(path.join(folder, "clang.txt"), listing or "(nothing)")
+                    end
+                    -- One filter the plugin does not answer is that filter asked alone, and the run keeps the plugin
+                    -- for every other query: refusing it here turned one disagreeing filter into one full parse per
+                    -- query for the whole lift (measured on iPhoneOS26.2.sdk: accessor pairs alone went to 633.7 s for
+                    -- 188 filters with 2.0 s of clang).
+                    cprint("${color.warning}lift:${clear} the multidump plugin does not answer %s as clang does; it is asked alone", filters[index])
+                    alone[index] = {text, listing}
                 end
             end
             if agrees then
                 local names = {}
                 for _, index in ipairs(compared) do
-                    table.insert(names, filters[index])
+                    if not alone[index] then
+                        table.insert(names, filters[index])
+                    end
                 end
                 io.writefile(agrees, table.concat(names, "\n") .. "\n")
+            end
+            for index, answer in pairs(alone) do
+                answers[index] = answer
             end
         end
         return answers

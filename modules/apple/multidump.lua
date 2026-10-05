@@ -92,9 +92,6 @@ function plugin(clang)
 end
 
 -- Stops the plugin being used for the rest of this process.
-function refuse()
-    PLUGIN = false
-end
 
 -- The arguments that make a clang run with base (the parse, as a query would run it) answer every
 -- filter of list into folder: <folder>/<n>.json and <folder>/<n>.txt for the n-th line of list.

@@ -1012,6 +1012,24 @@ function failures(opt)
                  tostring(lift.unavailables(implicit)[1].declaration), "nil")
     expect_equal(found, "a declaration with no such attribute at all", unavailables_at({kind = "ObjCInterfaceDecl", name = "FixGone"}), "")
 
+    -- What makes two answers to one filter the same answer, read off the pair that stopped a 26.2 lift: the plugin's
+    -- dump and clang's own, for the filter HMAccessoryProfile:: in a batch of four, byte-identical once 0x... and the
+    -- header path prefix are normalised and different in neither. The header is the SDK's, spelled the way the run's own
+    -- working directory spelled it on one side and the way opt.sdk spells it on the other.
+    local sdk = path.join(os.tmpdir(), "iPhoneOS26.2.sdk")
+    local header = "/System/Library/Frameworks/HomeKit.framework/Headers/HMAccessoryProfile.h"
+    local body = '"line":22,"col":36,"range":{"begin":{"offset":109,"line":22,"col":36,"tokLen":11}}}\n'
+    local plugin = '{"kind":"ObjCMethodDecl","name":"init","file":"' .. sdk .. header .. '",' .. body
+    local clang = '{"kind":"ObjCMethodDecl","name":"init","file":"../../iPhoneOS26.2.sdk' .. header .. '",' .. body
+    expect_equal(found, "the same answer spelled with the SDK two ways is the same answer",
+                 tostring(lift.same_answer(plugin, clang, sdk)), "true")
+    expect_equal(found, "and with a pointer's value gone from both, which is a run's and not the declaration's",
+                 tostring(lift.same_answer(plugin:gsub("109", "0x7d4"), clang:gsub("109", "0x1a8"), sdk)), "true")
+    expect_equal(found, "and a real difference is still a difference",
+                 tostring(lift.same_answer(plugin, clang:gsub('"init"', '"deinit"'), sdk)), "false")
+    expect_equal(found, "and an answer the other side has none of is not the same",
+                 tostring(lift.same_answer(plugin, nil, sdk)), "false")
+
     -- The kept answers are a cache, and a lift that writes one must be able to write it and read it back. This is the
     -- case for a top-level function shadowing one of the module's locals: a `function unplaced(node)` beside the local
     -- unplaced() that spells the folder back left remember() compressing that count instead of the answer, and the
