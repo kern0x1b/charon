@@ -6,7 +6,8 @@
 of one, which is never counted as unbuilt.
 
 Every name in *this* directory is a Swift type or a member of one, of a module this package builds
-(`libswiftRealityFoundation.dylib`, `libswiftRealityKit.dylib`, `libswiftSpatial.dylib`). A Swift
+(`libswiftRealityFoundation.dylib`, `libswiftRealityKit.dylib` - these two for a minimum release of 8.0 or later,
+see `facts/RealityFoundation/SceneKit.md` - and `libswiftSpatial.dylib`). A Swift
 module exports no symbol a dylib inventory sees, so an entry for one of them in
 `apple-backports/registry/` is not a record, it is a false claim: it says the backports library
 carries a type it does not. CreateML's registry moved out for exactly this reason (its commit

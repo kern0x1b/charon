@@ -37,9 +37,17 @@ package("swift-runtime")
                        "swiftCoreFoundation", "swiftCoreGraphics", "swiftFoundation", "swiftQuartzCore", "swiftUIKit", "swiftCoreData",
                        "swiftSynchronization",
                        "swift_RegexParser", "swift_StringProcessing", "swiftRegexBuilder", "swiftObservation",
-                       -- The Swift half of simd, and the scene graph on top of it: a port that
-                       -- imports either links the library the module records.
-                       "swiftsimd", "swiftRealityFoundation", "swiftRealityKit"}
+                       -- The Swift half of simd: a port that imports it links the library the module records.
+                       "swiftsimd"}
+
+    -- The scene graph on top of it, and the view that hosts it, are built only for a release that has SceneKit, which is
+    -- iOS 8.0: their libraries load SceneKit.framework, and a byte search of the armv7 caches this tree holds finds no
+    -- SceneKit in the ones of 6.1.3, 7.0 and 7.1.2 and finds it in 8.0 and 8.1. See facts/RealityFoundation/SceneKit.md for
+    -- why the backports' SceneKit does not make the load satisfiable below that.
+    local reality_libraries = {"swiftRealityFoundation", "swiftRealityKit"}
+    local function has_scenekit(minimum)
+        return tonumber(minimum:match("^(%d+)")) >= 8
+    end
 
     -- What every image of the runtime and of the port renames, because the release the port is built for either does not
     -- have the call or gives it a narrower meaning.
@@ -150,6 +158,11 @@ package("swift-runtime")
         -- one it finds, so the standard library, which every program has, is the one named.
         for _, library in ipairs(package:config("shared") and {"swiftCore"} or libraries) do
             package:add("links", library)
+        end
+        if not package:config("shared") and has_scenekit(import("apple.envs", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true}).deployment(package)) then
+            for _, library in ipairs(reality_libraries) do
+                package:add("links", library)
+            end
         end
         if package:config("shared") then
             local runtime = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
@@ -487,7 +500,7 @@ package("swift-runtime")
         local backported = package:config("backports") and package:dep("apple-backports") or nil
 
         -- What the overlays above Foundation name on their link lines, for the same reason: RealityFoundation and RealityKit
-        -- are built whatever the architecture is and take it too. Declared inside the guard it was a nil global where they
+        -- are built whatever the architecture is, for a release that has SceneKit, and take it too. Declared inside the guard it was a nil global where they
         -- read it, and table.join stops at a nil argument, so their lists came out empty and the only library the linker
         -- was given for Foundation's Swift symbols was the autolink entry the object carries, which comes after the
         -- framework the object also names - and the SDK's Foundation.tbd lists those symbols, so they bound to the
@@ -816,87 +829,94 @@ package("swift-runtime")
         -- The overlays above are built before this and read the SDK's simd headers, which is
         -- what they have always read; only a port that imports simd needs the module.
 
-        -- SceneKit's apinote in the SDK carries two top-level `Protocols:` keys, and a YAML
-        -- mapping cannot, so Swift's importer refuses the whole module for every target
-        -- (measured 2026-09-27 against this SDK: "duplicated mapping key 'Protocols'" then
-        -- "could not build Objective-C module 'SceneKit'"). Clang accepts the file, which is
-        -- why the backports' own Objective-C sources build. The merge is local: the two lists
-        -- become one, and a clang VFS overlay points the SDK's copy at the merged one for the
-        -- one compile below. No other package's build hash moves, and no other compile of this
-        -- one sees it.
-        local scn_overlay = {}
-        local scn_headers = path.join(toolchain:config("sdkdir"), "System", "Library", "Frameworks", "SceneKit.framework", "Headers")
-        local scn_apinote = path.join(scn_headers, "SceneKit.apinotes")
-        if os.isfile(scn_apinote) then
-            local scn = path.absolute("scenekit")
-            os.mkdir(scn)
-            local merged = path.join(scn, "SceneKit.apinotes")
-            os.vrunv("python3", {path.join(package:scriptdir(), "files", "SceneKit", "merge-apinotes.py"),
-                                 scn_apinote, merged})
-            local overlay = path.join(scn, "overlay.yaml")
-            -- The two paths are written into a JSON document by hand: a package recipe cannot
-            -- import a module at its top level, and these are the only two values in it.
-            local function quoted(text)
-                return '"' .. text:gsub('\\', '\\\\'):gsub('"', '\\"'):gsub("\n", "\\n") .. '"'
+        -- Below iOS 8.0 there is no SceneKit to load, and these two are not built: the release's firmware does not have
+        -- SceneKit.framework, so a library that loads it is refused at install (measured on the install of 2026-10-06:
+        -- both Reality libraries "load SceneKit.framework, which neither the device nor this build provides"). Nor can the
+        -- SceneKit backport stand in for it - facts/RealityFoundation/SceneKit.md has the measurement - so the part is
+        -- dropped, and the on_test below holds the install to the same condition.
+        if has_scenekit(minimum) then
+            -- SceneKit's apinote in the SDK carries two top-level `Protocols:` keys, and a YAML
+            -- mapping cannot, so Swift's importer refuses the whole module for every target
+            -- (measured 2026-09-27 against this SDK: "duplicated mapping key 'Protocols'" then
+            -- "could not build Objective-C module 'SceneKit'"). Clang accepts the file, which is
+            -- why the backports' own Objective-C sources build. The merge is local: the two lists
+            -- become one, and a clang VFS overlay points the SDK's copy at the merged one for the
+            -- one compile below. No other package's build hash moves, and no other compile of this
+            -- one sees it.
+            local scn_overlay = {}
+            local scn_headers = path.join(toolchain:config("sdkdir"), "System", "Library", "Frameworks", "SceneKit.framework", "Headers")
+            local scn_apinote = path.join(scn_headers, "SceneKit.apinotes")
+            if os.isfile(scn_apinote) then
+                local scn = path.absolute("scenekit")
+                os.mkdir(scn)
+                local merged = path.join(scn, "SceneKit.apinotes")
+                os.vrunv("python3", {path.join(package:scriptdir(), "files", "SceneKit", "merge-apinotes.py"),
+                                     scn_apinote, merged})
+                local overlay = path.join(scn, "overlay.yaml")
+                -- The two paths are written into a JSON document by hand: a package recipe cannot
+                -- import a module at its top level, and these are the only two values in it.
+                local function quoted(text)
+                    return '"' .. text:gsub('\\', '\\\\'):gsub('"', '\\"'):gsub("\n", "\\n") .. '"'
+                end
+                io.writefile(overlay, table.concat({
+                    '{"version":0,"case-sensitive":"false","roots":[{"type":"directory","name":', quoted(scn_headers),
+                    ',"contents":[{"type":"file","name":"SceneKit.apinotes","external-contents":', quoted(merged), '}]}]}'
+                }))
+                scn_overlay = {"-Xcc", "-ivfsoverlay", "-Xcc", overlay}
             end
-            io.writefile(overlay, table.concat({
-                '{"version":0,"case-sensitive":"false","roots":[{"type":"directory","name":', quoted(scn_headers),
-                ',"contents":[{"type":"file","name":"SceneKit.apinotes","external-contents":', quoted(merged), '}]}]}'
-            }))
-            scn_overlay = {"-Xcc", "-ivfsoverlay", "-Xcc", overlay}
-        end
 
-        -- RealityFoundation: the scene graph an AR application is built out of, a module no
-        -- release before iOS 13 carries and this tree holds the sources of. It sits on the simd
-        -- module above, and on the QuartzCore overlay for CATransform3D; nothing here reaches a
-        -- framework the release lacks, and the transform maths is the release's own simd.
-        local reality = path.absolute("realityfoundation")
-        os.mkdir(reality)
-        -- The sound half of the scene graph is not here: Audio.swift needed a player node with a volume, and the
-        -- port's AVAudioPlayerNode has none (packages/a/apple-backports/AVFoundation/CharonAVAudioEngine.h:73 declares
-        -- six members on it and volume is not one of them), so the file is not shipped rather than shipped and never
-        -- built. packages/s/swift-runtime/facts/RealityFoundation/Audio.md has the measurement and says what brings it
-        -- back: a registry row and an implementation for -[AVAudioPlayerNode volume] in apple-backports.
-        local reality_sources = {}
-        for _, file in ipairs(os.files(path.join(package:scriptdir(), "files", "RealityFoundation", "*.swift"))) do
-            local output = path.join(reality, path.filename(file))
-            os.cp(file, output)
-            table.insert(reality_sources, output)
-        end
-        assert(#reality_sources > 0, "the RealityFoundation sources are missing from the package")
-        -- No Combine on the compile line, and none is needed: the dependency it came from is gone
-        -- (see the note by the deps above) and no source of either overlay imports Combine. What
-        -- these two do need is the SceneKit apinote fix, and they keep it.
-        --
-        -- And the concurrency library, which the sources of both overlays use: @MainActor comes from _Concurrency, and
-        -- build_overlay keeps the implicit import of it out unless an overlay asks for it. It is the same library
-        -- Foundation's overlay above already asks for, and the one SwiftCore_ENABLE_CONCURRENCY=ON builds and this
-        -- package installs (libswift_Concurrency.dylib, _Concurrency.swiftmodule, both offered into the resource
-        -- directory the overlays compile against). Without the ask, measured at armv7 at iOS 6.1.3 with the
-        -- backports: RealityFoundation stops on 216 "unknown attribute 'MainActor'" and RealityKit on 22 more plus
-        -- four "main actor-isolated property ... can not be mutated from a nonisolated context".
-        build_overlay("RealityFoundation", reality_sources,
-                      table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "SceneKit"}),
-                      nil, {backports = {}, concurrency = true, extra_flags = scn_overlay})
+            -- RealityFoundation: the scene graph an AR application is built out of, a module no
+            -- release before iOS 13 carries and this tree holds the sources of. It sits on the simd
+            -- module above, and on the QuartzCore overlay for CATransform3D; nothing here reaches a
+            -- framework the release lacks, and the transform maths is the release's own simd.
+            local reality = path.absolute("realityfoundation")
+            os.mkdir(reality)
+            -- The sound half of the scene graph is not here: Audio.swift needed a player node with a volume, and the
+            -- port's AVAudioPlayerNode has none (packages/a/apple-backports/AVFoundation/CharonAVAudioEngine.h:73 declares
+            -- six members on it and volume is not one of them), so the file is not shipped rather than shipped and never
+            -- built. packages/s/swift-runtime/facts/RealityFoundation/Audio.md has the measurement and says what brings it
+            -- back: a registry row and an implementation for -[AVAudioPlayerNode volume] in apple-backports.
+            local reality_sources = {}
+            for _, file in ipairs(os.files(path.join(package:scriptdir(), "files", "RealityFoundation", "*.swift"))) do
+                local output = path.join(reality, path.filename(file))
+                os.cp(file, output)
+                table.insert(reality_sources, output)
+            end
+            assert(#reality_sources > 0, "the RealityFoundation sources are missing from the package")
+            -- No Combine on the compile line, and none is needed: the dependency it came from is gone
+            -- (see the note by the deps above) and no source of either overlay imports Combine. What
+            -- these two do need is the SceneKit apinote fix, and they keep it.
+            --
+            -- And the concurrency library, which the sources of both overlays use: @MainActor comes from _Concurrency, and
+            -- build_overlay keeps the implicit import of it out unless an overlay asks for it. It is the same library
+            -- Foundation's overlay above already asks for, and the one SwiftCore_ENABLE_CONCURRENCY=ON builds and this
+            -- package installs (libswift_Concurrency.dylib, _Concurrency.swiftmodule, both offered into the resource
+            -- directory the overlays compile against). Without the ask, measured at armv7 at iOS 6.1.3 with the
+            -- backports: RealityFoundation stops on 216 "unknown attribute 'MainActor'" and RealityKit on 22 more plus
+            -- four "main actor-isolated property ... can not be mutated from a nonisolated context".
+            build_overlay("RealityFoundation", reality_sources,
+                          table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "SceneKit"}),
+                          nil, {backports = {}, concurrency = true, extra_flags = scn_overlay})
 
-        -- RealityKit: the view a program is shown in, hosting an SCNView over the bridge above
-        -- and stepping the simulation once a frame. It sits on the RealityFoundation module
-        -- built just above, and on the same SceneKit apinote fix, which it needs for the same
-        -- reason: SceneKit's own headers, and ARKit's through them. And on the concurrency library,
-        -- for the reason the overlay above gives.
-        local realitykit = path.absolute("realitykit")
-        os.mkdir(realitykit)
-        local realitykit_sources = {}
-        for _, file in ipairs(os.files(path.join(package:scriptdir(), "files", "RealityKit", "*.swift"))) do
-            local output = path.join(realitykit, path.filename(file))
-            os.cp(file, output)
-            table.insert(realitykit_sources, output)
+            -- RealityKit: the view a program is shown in, hosting an SCNView over the bridge above
+            -- and stepping the simulation once a frame. It sits on the RealityFoundation module
+            -- built just above, and on the same SceneKit apinote fix, which it needs for the same
+            -- reason: SceneKit's own headers, and ARKit's through them. And on the concurrency library,
+            -- for the reason the overlay above gives.
+            local realitykit = path.absolute("realitykit")
+            os.mkdir(realitykit)
+            local realitykit_sources = {}
+            for _, file in ipairs(os.files(path.join(package:scriptdir(), "files", "RealityKit", "*.swift"))) do
+                local output = path.join(realitykit, path.filename(file))
+                os.cp(file, output)
+                table.insert(realitykit_sources, output)
+            end
+            assert(#realitykit_sources > 0, "the RealityKit sources are missing from the package")
+            build_overlay("RealityKit", realitykit_sources,
+                          table.join(foundation_links, {"-lswiftQuartzCore", "-lswiftRealityFoundation",
+                                                        "-framework", "QuartzCore", "-framework", "SceneKit", "-framework", "UIKit"}),
+                          nil, {backports = {}, concurrency = true, extra_flags = scn_overlay})
         end
-        assert(#realitykit_sources > 0, "the RealityKit sources are missing from the package")
-        build_overlay("RealityKit", realitykit_sources,
-                      table.join(foundation_links, {"-lswiftQuartzCore", "-lswiftRealityFoundation",
-                                                    "-framework", "QuartzCore", "-framework", "SceneKit", "-framework", "UIKit"}),
-                      nil, {backports = {}, concurrency = true, extra_flags = scn_overlay})
 
         -- Spatial: the value types the scene graph's math is made of, a module no release before
         -- iOS 16 carries and this tree holds the sources of, beside the simd module above them.
@@ -1063,6 +1083,15 @@ package("swift-runtime")
         end
         local toolchain = assert(package:toolchains(), "the runtime is built with the apple-ios toolchain")[1]
         toolchain:load()
+
+        -- The scene graph is here for a release that has SceneKit and for no other: a library that loads SceneKit on a release
+        -- without it is one the install of a program that carries it is refused for.
+        for _, library in ipairs(reality_libraries) do
+            local expected = has_scenekit(toolchain:config("deployment"))
+            assert(os.isfile(path.join(libraries, "lib" .. library .. ".dylib")) == expected,
+                   "lib" .. library .. ".dylib is " .. (expected and "missing" or "installed") .. " at iOS " .. toolchain:config("deployment") ..
+                   ", where SceneKit " .. (expected and "is" or "is not") .. " in the release")
+        end
 
         -- The configuration this build is: the table states the runtime's weak imports as it is built, so it is
         -- compared against the build that produced them and not against one fixed list.
