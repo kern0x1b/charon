@@ -94,14 +94,15 @@ rule("swift")
         end
     end)
 
-    -- A shared runtime is linked by what the program imports. The compiler records the libraries of the modules an object
-    -- imports in the object; they are named here, as libraries, so that they come before the frameworks on the link line:
+    -- The runtime is linked by what the program imports, whether it carries the libraries or shares them. The compiler
+    -- records the libraries of the modules an object imports in the object; they are named here, as libraries, so that they
+    -- come before the frameworks on the link line:
     -- left to the object they would come after them, and a symbol of an overlay would bind to the framework of the same
     -- name, which the SDK's stub also exports and the device does not. A program that imports no UIKit names no overlay of
     -- UIKit, loads no UIKit, and depends on no package that holds it.
     before_link(function (target)
         local runtime = target:pkg("swift-runtime")
-        if not (runtime and runtime:requireconf("configs", "shared")) then
+        if not runtime then
             return
         end
         -- The Swift a program is made of is its own and that of the libraries of Swift it links: the imports of each object
@@ -127,8 +128,12 @@ rule("swift")
         end
         local macho = import("@self.apple.macho")
         local folders = {}
-        for _, name in ipairs((table.wrap((runtime:envs() or {}).CHARON_SHARED_PACKAGE)[1] or ""):split(";")) do
-            table.insert(folders, path.join(runtime:installdir(), "share", "root", "usr", "lib", "charon", (name:match("^([^=]+)"))))
+        if runtime:requireconf("configs", "shared") then
+            for _, name in ipairs((table.wrap((runtime:envs() or {}).CHARON_SHARED_PACKAGE)[1] or ""):split(";")) do
+                table.insert(folders, path.join(runtime:installdir(), "share", "root", "usr", "lib", "charon", (name:match("^([^=]+)"))))
+            end
+        else
+            table.insert(folders, path.join(runtime:installdir(), "lib", "swift", "iphoneos"))
         end
         for _, objectfile in ipairs(objectfiles) do
             for _, options in ipairs(macho.images(macho.read(objectfile))[1].linker_options) do

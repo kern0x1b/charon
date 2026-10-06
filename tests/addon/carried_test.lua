@@ -164,6 +164,34 @@ function failures(opt)
         table.insert(found, "the copy of a library carried from the runtime package must be exempted as the runtime's image, got " .. table.concat(exempted, " "))
     end
 
+    -- What a program carries of a package is what it loads, through its own libraries as well (an application carries what
+    -- reached() answers): the library its image names, the one that library names in turn, and not the rest the package holds.
+    if not platform.reached then
+        table.insert(found, "platform.reached answers which of a package's libraries a program's images load, and an application carries those")
+    else
+        local offered = {{name = "libabi.1.dylib", source = path.join(runtime, "lib", "libabi.1.dylib")},
+                         {name = "libcxx.1.dylib", source = path.join(runtime, "lib", "libcxx.1.dylib")}}
+        local function names(libraries)
+            local listed = {}
+            for _, library in ipairs(libraries) do
+                table.insert(listed, library.name)
+            end
+            return table.concat(listed, " ")
+        end
+        local direct = names(platform.reached(offered, {built}))
+        if direct ~= "libabi.1.dylib" then
+            table.insert(found, "a program that loads one library of a package must carry that one and not the other, got: " .. direct)
+        end
+        local through = names(platform.reached(offered, {path.join(runtime, "lib", "libcxx.1.dylib")}))
+        if through ~= "libabi.1.dylib" then
+            table.insert(found, "a library the program's library loads must be carried with it, got: " .. through)
+        end
+        local none = names(platform.reached(offered, {path.join(runtime, "lib", "libabi.1.dylib")}))
+        if none ~= "" then
+            table.insert(found, "a program that loads no library of a package carries none of it, got: " .. none)
+        end
+    end
+
     local unnamed = fake_target(folder, {["charon.libraries"] = "runtime"}, runtime)
     local errors = fixtures.refusal(function () platform.place_carried(unnamed, path.join(folder, "unnamed"), built) end) or ""
     if not errors:find("charon.control", 1, true) then

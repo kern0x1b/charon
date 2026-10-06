@@ -30,17 +30,7 @@ package("swift-runtime")
     -- and installed neither. Nothing in this package is built on a machine again until that is
     -- true of main; measured on this one, 2026-10-03.
 
-    -- The libraries, in the order they are built: each one's modules are what the next ones compile against. The C library's
-    -- Swift overlay comes from swift-6.2-RELEASE, the last release whose sources carry it, because Synchronization and
-    -- Observation import Darwin and the SDK has only an interface for arm64.
-    local libraries = {"swiftCore", "swiftSwiftOnoneSupport", "swift_Concurrency", "swiftDarwin", "swiftObjectiveC", "swiftDispatch",
-                       "swiftCoreFoundation", "swiftCoreGraphics", "swiftFoundation", "swiftQuartzCore", "swiftUIKit", "swiftCoreData",
-                       "swiftSynchronization",
-                       "swift_RegexParser", "swift_StringProcessing", "swiftRegexBuilder", "swiftObservation",
-                       -- The Swift half of simd: a port that imports it links the library the module records.
-                       "swiftsimd"}
-
-    -- The scene graph on top of it, and the view that hosts it, are built only for a release that has SceneKit, which is
+    -- The scene graph, and the view that hosts it, are built only for a release that has SceneKit, which is
     -- iOS 8.0: their libraries load SceneKit.framework, and a byte search of the armv7 caches this tree holds finds no
     -- SceneKit in the ones of 6.1.3, 7.0 and 7.1.2 and finds it in 8.0 and 8.1. See facts/RealityFoundation/SceneKit.md for
     -- why the backports' SceneKit does not make the load satisfiable below that.
@@ -152,18 +142,14 @@ package("swift-runtime")
             -- nothing the UIKit backports carry, and a daemon built against this runtime keeps UIKit out of its process.
             package:add("deps", "charon@apple-backports", {alias = "apple-backports", configs = {coredata = true, uikit = package:config("backports_uikit") or nil}})
         end
-        -- A shared runtime is linked by what a program imports: the compiler records the libraries of the modules it imports in
-        -- the object, and those are linked. A program that never imports UIKit has no reference to the overlay of UIKit, so it
-        -- loads no UIKit and depends on no package that holds it. Naming no library at all would have the build link every
-        -- one it finds, so the standard library, which every program has, is the one named.
-        for _, library in ipairs(package:config("shared") and {"swiftCore"} or libraries) do
-            package:add("links", library)
-        end
-        if not package:config("shared") and has_scenekit(import("apple.envs", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true}).deployment(package)) then
-            for _, library in ipairs(reality_libraries) do
-                package:add("links", library)
-            end
-        end
+        -- The runtime is linked by what a program imports, shared or carried: the compiler records the libraries of the modules
+        -- it imports in the object, and the rule names those on the link line. A program that never imports UIKit has no
+        -- reference to the overlay of UIKit, so it loads no UIKit, carries none, and (shared) depends on no package that
+        -- holds it. Naming every library the package installs had a program link, load and carry the ones it never
+        -- imports - measured on eidolon's port, 7 of 20: RealityFoundation, RealityKit, simd, Synchronization, the regular
+        -- expression libraries and SwiftOnoneSupport. Naming no library at all would have the build link every one it
+        -- finds, so the standard library, which every program has, is the one named.
+        package:add("links", "swiftCore")
         if package:config("shared") then
             local runtime = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
             for _, kind in ipairs({"swift-runtime", "swift-runtime-ui"}) do

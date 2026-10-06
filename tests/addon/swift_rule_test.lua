@@ -12,6 +12,9 @@ function failures(opt)
     if not hook:find("target:orderdeps()", 1, true) or not hook:find("swift.objectfile", 1, true) then
         table.insert(found, "a program whose Swift is all in a library must name the runtime libraries that library imports, or they come after the frameworks on the link line and bind to the system's Foundation")
     end
+    if not hook:find("if not runtime then", 1, true) or hook:find('requireconf("configs", "shared")) then\n            return', 1, true) then
+        table.insert(found, "a program that carries the runtime links what it imports as one that shares it does: before_link must not return for a runtime that is not shared, or the package names every library for it and it carries the ones it never imports")
+    end
     if not hook:find(":objectfiles()", 1, true) then
         table.insert(found, "before_link must read the imports of the objects added with add_files, which Swift compiled outside the build is")
     end

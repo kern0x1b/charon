@@ -352,22 +352,29 @@ local function carries_runtime(library)
     return library.package ~= nil and table.contains(SHARED, library.package)
 end
 
-function place_carried(target, root, binary)
-    local offered = {}
-    for _, library in ipairs(bundle.carried_libraries(target, "charon.libraries")) do
-        offered[library.name] = library
+-- The libraries of `offered` (a list of {name, source}) the images in `roots` load, directly or through one another: what a
+-- program carries of a package is what it links, and not every library the package holds.
+function reached(offered, roots)
+    local byname = {}
+    for _, library in ipairs(offered) do
+        byname[library.name] = library
     end
-    local libraries, pending = {}, {binary}
+    local libraries, taken, pending = {}, {}, table.copy(roots)
     while #pending > 0 do
         for _, reference in ipairs(macho.images(macho.read(table.remove(pending)))[1].libraries) do
-            local library = offered[path.filename(reference)]
-            if library and not library.taken then
-                library.taken = true
+            local library = byname[path.filename(reference)]
+            if library and not taken[library] then
+                taken[library] = true
                 table.insert(libraries, library)
                 table.insert(pending, library.source)
             end
         end
     end
+    return libraries
+end
+
+function place_carried(target, root, binary)
+    local libraries = reached(bundle.carried_libraries(target, "charon.libraries"), {binary})
     local shared = shared_runtime(target)
     if #libraries == 0 then
         if shared then
@@ -533,7 +540,17 @@ function application(target)
     os.vcp(target:targetfile(), executable)
     local identities = {}
     local binaries, runtime = {executable}, {}
+    -- The runtime's libraries are the ones the program loads, through its own libraries as well; the rest of what it carries
+    -- is carried whether it names it or not (a framework it opens at run time is no link of the executable's).
+    local carried, held, roots = {}, {}, {executable}
     for _, library in ipairs(bundle.carried_libraries(target)) do
+        table.insert(carries_runtime(library) and held or carried, library)
+        if not carries_runtime(library) then
+            table.insert(roots, library.source)
+        end
+    end
+    table.join2(carried, reached(held, roots))
+    for _, library in ipairs(carried) do
         local destination = path.join(frameworks, library.name)
         os.mkdir(frameworks)
         os.vcp(library.source, destination)
