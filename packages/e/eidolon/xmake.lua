@@ -6,6 +6,7 @@ package("eidolon")
 
     add_urls("https://github.com/kern0x1b/eidolon.git")
     add_versions("2026.09.23", "10f87e02eaf4545dfaff7fe30ed0d69643bbad5e")
+    add_versions("2026.10.14", "9f6a4aeb716d6b928bcc995d859c0f41f0c4663c")
 
     -- Eidolon is compiled against the runtime a port takes, and against Styx built against that same runtime: what the
     -- port asks of the runtime it asks here too, and Eidolon passes it on to both. (charon@swift rule refuses a link with
