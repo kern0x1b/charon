@@ -995,6 +995,20 @@ local function launch_step(emulator, folder, found)
     if driver.held ~= "exited" or sent[3] ~= "settle" then
         table.insert(found, "until-exit settles once the application has ended, held " .. tostring(driver.held) .. ", sent " .. table.concat(sent, ";"))
     end
+    -- The run goes on after the application's end: the exit stays in the log, so every later tick sees it, and it
+    -- is the hold's own end, not the application's death, however far the settle and the last snapshot have got
+    -- (measured: the first fixed run held the probe for its 20 guest seconds and then failed it as "ended with
+    -- status 0" at the tick after the settle).
+    state.transition = 2
+    tick(state)
+    state.stable[2] = true
+    local after = tick(state)
+    state.snapshots["/run/app-1.png"] = true
+    after = tick(state)
+    if not after or driver.failure or #driver.shots ~= 2 or sent[4] ~= "snapshot /run/app-1.png" then
+        table.insert(found, string.format("after the hold the frame is taken and the run is done, not failed, done %s, failure %s, shots %d, sent %s",
+                                          tostring(after), tostring(driver.failure), #driver.shots, table.concat(sent, ";")))
+    end
     driver, sent, tick, state = held({"until-exit"})
     now = BUDGET * SCALE * 1000
     tick(state)

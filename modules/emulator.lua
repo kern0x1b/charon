@@ -1038,8 +1038,9 @@ function launch_driver(opt)
         end
         local exited = driver.application and (state.exits or {})[driver.application.pid]
         -- An application that ends is the run's failure, unless the run asked for it with until-exit:
-        -- then its ending is what the run was waiting for, and the holding step says so.
-        if exited and driver.phase ~= "holding" then
+        -- then its ending is what the run was waiting for, and the holding step says so. Once it has said
+        -- so (held), the exit is in the log for every tick that follows, through the settle and the snapshot.
+        if exited and driver.phase ~= "holding" and not driver.held then
             driver.failure, driver.exit = "exited", exited
             return true
         end
