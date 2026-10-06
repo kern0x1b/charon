@@ -486,6 +486,15 @@ package("swift-runtime")
         -- for it, so this is resolved under that config and nowhere else.
         local backported = package:config("backports") and package:dep("apple-backports") or nil
 
+        -- What the overlays above Foundation name on their link lines, for the same reason: RealityFoundation and RealityKit
+        -- are built whatever the architecture is and take it too. Declared inside the guard it was a nil global where they
+        -- read it, and table.join stops at a nil argument, so their lists came out empty and the only library the linker
+        -- was given for Foundation's Swift symbols was the autolink entry the object carries, which comes after the
+        -- framework the object also names - and the SDK's Foundation.tbd lists those symbols, so they bound to the
+        -- framework (measured on the install: 15 of RealityFoundation's, 7 of RealityKit's) and not to libswiftFoundation.
+        -- Empty on arm64, where the SDK has the overlay and nothing here builds one to name.
+        local foundation_links = {}
+
         local function build_overlay(name, overlay_sources, links, objects, opt)
             local module = path.join(install, name .. ".swiftmodule")
             os.mkdir(module)
@@ -727,8 +736,8 @@ package("swift-runtime")
                                      "--line-directive", "", "-o", output, path.join(uikit, "stdlib", "public", "Darwin", folder, name .. ".gyb")})
                 return output
             end
-            local foundation_links = {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswiftCoreFoundation",
-                                      "-lswiftCoreGraphics", "-lswiftFoundation", "-framework", "Foundation", "-framework", "CoreFoundation"}
+            foundation_links = {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswiftCoreFoundation",
+                                "-lswiftCoreGraphics", "-lswiftFoundation", "-framework", "Foundation", "-framework", "CoreFoundation"}
             build_overlay("QuartzCore", {generated_from("QuartzCore", "NSValue.swift")},
                           table.join(foundation_links, {"-framework", "QuartzCore"}))
             local initializers = path.join(generated, "DesignatedInitializers.mm.o")
