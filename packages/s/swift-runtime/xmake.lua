@@ -1063,6 +1063,16 @@ package("swift-runtime")
         assert(#differs == 0, "the runtime's imports and its guard table differ at " .. toolchain:config("deployment") ..
                (package:config("backports") and " with the backports" or "") .. ":\n  " .. table.concat(differs, "\n  "))
 
+        -- Whether every library installed here can be placed on the release this build is for: each import bound to an
+        -- image the release, or one the program carries beside these, exports; no library loaded that neither has; no
+        -- symbol bound to a framework that holds it only for a later release while a library carried exports it. It is the
+        -- question platform.verify_placed asks of a program that carries these libraries, asked here of the libraries
+        -- themselves, so that an install a program would be refused on is refused when it is made and not when a port
+        -- first carries it. The release is the one the imports of a program of this build are checked against.
+        local placeable = import("apple.firmware", {rootdir = modules, anonymous = true}).source(package:arch(), toolchain:config("deployment"))
+        dyld.check(placeable, table.join(installed, linked), package:installdir(),
+                   {exempt = linked, runtime = installed, guards = import("apple.runtime_guards", {rootdir = modules, anonymous = true}).guards()})
+
         -- Spatial links Swift's own library and the C library and no overlay (its link line above): a Swift library it names
         -- that nothing is bound to is one the loader opens for nothing, with everything that one opens in turn.
         local idle = {}
