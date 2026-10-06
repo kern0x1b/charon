@@ -2295,6 +2295,100 @@ int main(void)
 """
 
 
+INVERT = r"""
+#include <simd/simd.h>
+#include <math.h>
+#include <stdint.h>
+#include <stdio.h>
+
+/* the shims, compiled with their names changed so that the system's own __invert_* stay callable beside them */
+simd_float2x2 charon_invert_f2(simd_float2x2);
+simd_float3x3 charon_invert_f3(simd_float3x3);
+simd_float4x4 charon_invert_f4(simd_float4x4);
+simd_double2x2 charon_invert_d2(simd_double2x2);
+simd_double3x3 charon_invert_d3(simd_double3x3);
+simd_double4x4 charon_invert_d4(simd_double4x4);
+
+static int fails;
+static uint64_t seed = 12345;
+
+static double next(void)
+{
+    seed = seed * 6364136223846793005ULL + 1442695040888963407ULL;
+    return ((seed >> 33) / (double)(1ULL << 31)) * 4 - 2;
+}
+
+/* The same value or the same non-value: a finite pair agrees to the relative tolerance of the largest element, two
+   infinities of one sign are the same, two NaNs are the same. */
+static int same(double ours, double system, double scale, double tolerance)
+{
+    if (isnan(system) || isnan(ours)) {
+        return isnan(system) && isnan(ours);
+    }
+    if (isinf(system) || isinf(ours)) {
+        return ours == system;
+    }
+    return fabs(ours - system) <= tolerance * scale;
+}
+
+#define CASES(N, T, MATRIX, TAG, TOLERANCE)                                                                          \
+static void check_##TAG(void)                                                                                        \
+{                                                                                                                    \
+    for (int trial = 0; trial < 2000; trial++) {                                                                     \
+        MATRIX x;                                                                                                    \
+        for (int c = 0; c < N; c++) for (int r = 0; r < N; r++) x.columns[c][r] = (T)(next() + (c == r ? 5 * N : 0));\
+        MATRIX system = __invert_##TAG(x), ours = charon_invert_##TAG(x);                                            \
+        double scale = 0;                                                                                            \
+        for (int c = 0; c < N; c++) for (int r = 0; r < N; r++) scale = fmax(scale, fabs((double)system.columns[c][r]));\
+        for (int c = 0; c < N; c++) for (int r = 0; r < N; r++) {                                                    \
+            if (!same(ours.columns[c][r], system.columns[c][r], scale, TOLERANCE)) {                                 \
+                printf("FAIL  __invert_" #TAG " answers %g where the system's answers %g at column %d row %d of a "   \
+                       "matrix with an inverse\n", (double)ours.columns[c][r], (double)system.columns[c][r], c, r);   \
+                fails++;                                                                                             \
+                return;                                                                                              \
+            }                                                                                                        \
+        }                                                                                                            \
+    }                                                                                                                \
+    /* a matrix with no inverse: every column a multiple of the first, and the null matrix */                       \
+    MATRIX singular, none;                                                                                           \
+    for (int c = 0; c < N; c++) for (int r = 0; r < N; r++) {                                                        \
+        singular.columns[c][r] = (T)((r + 1) * (c + 1));                                                              \
+        none.columns[c][r] = 0;                                                                                      \
+    }                                                                                                                \
+    MATRIX one[2] = {singular, none};                                                                                \
+    for (int which = 0; which < 2; which++) {                                                                        \
+        MATRIX system = __invert_##TAG(one[which]), ours = charon_invert_##TAG(one[which]);                          \
+        for (int c = 0; c < N; c++) for (int r = 0; r < N; r++) {                                                    \
+            if (!same(ours.columns[c][r], system.columns[c][r], 1, TOLERANCE)) {                                     \
+                printf("FAIL  __invert_" #TAG " answers %g where the system's answers %g at column %d row %d of "    \
+                       "%s\n", (double)ours.columns[c][r], (double)system.columns[c][r], c, r,                       \
+                       which ? "the null matrix" : "a matrix with no inverse");                                      \
+                fails++;                                                                                             \
+                return;                                                                                              \
+            }                                                                                                        \
+        }                                                                                                            \
+    }                                                                                                                \
+}
+CASES(2, float, simd_float2x2, f2, 2e-6)
+CASES(3, float, simd_float3x3, f3, 2e-6)
+CASES(4, float, simd_float4x4, f4, 2e-6)
+CASES(2, double, simd_double2x2, d2, 1e-13)
+CASES(3, double, simd_double3x3, d3, 1e-13)
+CASES(4, double, simd_double4x4, d4, 1e-13)
+
+int main(void)
+{
+    check_f2();
+    check_f3();
+    check_f4();
+    check_d2();
+    check_d3();
+    check_d4();
+    return fails != 0;
+}
+"""
+
+
 def run(*command, cwd):
     try:
         return subprocess.run([str(part) for part in command], cwd=cwd, capture_output=True, text=True, timeout=120)
@@ -2680,9 +2774,23 @@ def failures():
         else:
             found += outcome("objc_allocWithZone", run("./alloc", cwd=folder))
 
+        # The inverse of a matrix, which libsystem_m answers from iOS 8 and which simd_inverse calls: the system's own function is
+        # the oracle, so the shims are built under other names and compared with it, for matrices that have an inverse and for
+        # the ones that have none, where the system's answer is a pattern of infinities and NaNs a pivoting elimination would not give.
+        inverses = ["__invert_" + kind for kind in ("f2", "f3", "f4", "d2", "d3", "d4")]
+        (folder / "invert.c").write_text(INVERT)
+        renamed = [run("xcrun", "clang", "-O2", "-w", "-fvisibility=hidden", "-D{}=charon_invert_{}".format(symbol, symbol[-2:]),
+                       "-c", SHIMS / "{}.c".format(symbol), "-o", "ours-{}.o".format(symbol), cwd=folder) for symbol in inverses]
+        built = run("xcrun", "clang", "-O2", "-w", "invert.c", *["ours-{}.o".format(symbol) for symbol in inverses], "-o", "invert", cwd=folder)
+        if any(step.returncode for step in renamed) or built.returncode:
+            found.append("the __invert shims must compile beside the system's: {}".format(
+                " ".join(step.stderr[-300:] for step in renamed + [built] if step.returncode)))
+        else:
+            found += outcome("__invert", run("./invert", cwd=folder))
+
         for symbol in ([path.stem for path in locks] + later + [path.stem for path in blocks + submit_shims + asserts + queue_shims] +
                        [path.stem for path in barrier_shims[:3]] +
-                       ["objc_allocWithZone", "objc_opt_self", "os_system_version_get_current_version"]):
+                       ["objc_allocWithZone", "objc_opt_self", "os_system_version_get_current_version"] + inverses):
             process_wide = symbol in ("os_unfair_lock_lock", "os_unfair_lock_trylock", "os_unfair_lock_unlock",
                                       "os_unfair_recursive_lock_lock_with_options", "os_unfair_recursive_lock_unlock")
             if (SHIMS.parent / "include" / "charon" / "{}.h".format(symbol)).exists():
