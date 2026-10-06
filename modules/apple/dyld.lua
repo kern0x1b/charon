@@ -1103,7 +1103,7 @@ function missing_imports(cachefile, binaries, root)
                 for _, install in ipairs(table.orderkeys(provided)) do
                     if install ~= bound and provided[install].exports[symbol.name] then
                         table.insert(ordering, {named(entry.binary), string.format("%s (weakly bound to %s, which does not export it, while %s does; link %s before %s)",
-                                                                                  symbol.name, bound, install, path.filename(install), path.filename(bound))})
+                                                                                  symbol.name, bound, install, path.filename(install), path.filename(bound)), symbol.name})
                         break
                     end
                 end
@@ -1164,16 +1164,25 @@ function check(cachefile, binaries, folder, opt)
     for _, binary in ipairs(opt.runtime or {}) do
         runtime[folder and path.relative(binary, folder) or binary] = (opt.guards or {})[path.filename(binary)] or {}
     end
+    local unguarded = 0
     -- A link order that puts a system library in front of the one carrying the symbol is answered where that image is built.
     -- In another package's image it is that package's to answer for, so it is reported and not a reason to refuse this program.
+    -- A weak import of a runtime's image that the runtime's guard table records is called only behind its guard in that
+    -- runtime's source: where the release lacks the symbol the guard is false and nothing reaches the NULL, whether the
+    -- image binds it to the system library that lacks it or to the library of the build that carries it. So for such an
+    -- import the order is reported and is not a reason to refuse; any other import of the image is held to it.
     for _, entry in ipairs(ordering) do
+        local guard = (runtime[entry[1]] or {})[entry[3]]
         if exempt[entry[1]] then
             table.insert(warnings, entry[1] .. " " .. entry[2])
+        elseif guard then
+            unguarded = unguarded + 1
+            table.insert(warnings, string.format("%s %s; the runtime's guard table records the guard it is called behind (%s), so the release that lacks it never reaches the NULL",
+                                                 entry[1], entry[2], guard))
         else
             table.insert(missing, entry)
         end
     end
-    local unguarded = 0
     for _, entry in ipairs(dangling) do
         local by = emitted[entry[2]:sub(2)]
         local guard = tested[entry[2]:sub(2)]

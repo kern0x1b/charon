@@ -115,6 +115,26 @@ function failures(opt)
     if not weak:find("_arrived (weakly bound to /usr/lib/libSystem.B.dylib, which does not export it, while /usr/lib/charon/libprovider.dylib does", 1, true) then
         table.insert(found, "a weak import bound to a system library that lacks it, while a library of the build provides it, must be refused: " .. weak)
     end
+    -- An import the runtime's guard table records is called only behind its guard, so the order that binds it to the system
+    -- library is reported for a copy of the runtime's image and refused for any other, including a recorded name in another image.
+    local recorded = {[path.filename(system_first)] = {_arrived = "weak.c's own test of the pointer"}}
+    local guarded_order = fixtures.refusal(function () dyld.check(armv7, {system_first, provider}, nil, {runtime = {system_first}, guards = recorded}) end)
+    if guarded_order then
+        table.insert(found, "a weak import bound to the system library while a library of the build provides it, in a copy of the runtime's image whose guard table records it, must be reported, not refused: " .. guarded_order)
+    end
+    local warned_order = guarded_order and "" or table.concat(dyld.check(armv7, {system_first, provider}, nil, {runtime = {system_first}, guards = recorded}) or {}, "\n")
+    if not guarded_order and (not warned_order:find("_arrived (weakly bound to /usr/lib/libSystem.B.dylib", 1, true) or not warned_order:find("weak.c's own test of the pointer", 1, true)) then
+        table.insert(found, "the order a recorded guard excuses must still be reported, with the guard: " .. warned_order)
+    end
+    local unrecorded_order = fixtures.refusal(function () dyld.check(armv7, {system_first, provider}, nil, {runtime = {system_first}, guards = {}}) end) or ""
+    if not unrecorded_order:find("_arrived (weakly bound to /usr/lib/libSystem.B.dylib", 1, true) then
+        table.insert(found, "a copy of the runtime's image whose guard table records no guard for the import must still be refused for the order: " .. unrecorded_order)
+    end
+    local other_guard = {[path.filename(system_first)] = {_elsewhere = "a guard for another symbol"}}
+    local other_order = fixtures.refusal(function () dyld.check(armv7, {system_first, provider}, nil, {runtime = {system_first}, guards = other_guard}) end) or ""
+    if not other_order:find("_arrived (weakly bound to /usr/lib/libSystem.B.dylib", 1, true) then
+        table.insert(found, "a guard recorded for another symbol of the image must not excuse this one's order: " .. other_order)
+    end
     local exempted_order = fixtures.refusal(function () dyld.check(armv7, {system_first, provider}, nil, {exempt = {system_first}}) end)
     if exempted_order then
         table.insert(found, "a link order inside another package's image is that package's to answer for, and must be reported, not refused: " .. exempted_order)
