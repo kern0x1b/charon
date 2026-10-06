@@ -211,7 +211,9 @@ local function launch(ctx, identifier, steps)
     -- The runner outlasts charon-sblaunch's own wait by one of its half-second
     -- retries, so charon-sblaunch says why it gave up instead of being ended.
     emulator.install_runner(rootfs, ctx.guest, emulator.launch_command(identifier, seconds), seconds + 1, ctx.version)
-    local driver = emulator.launch_driver({results = results, run = folder, application = application, steps = steps})
+    local scale = tonumber(option.get("scale")) or emulator.TIME_SCALE
+    local driver = emulator.launch_driver({results = results, run = folder, application = application, steps = steps,
+                                           seconds = seconds, scale = scale})
     local booted = booter(ctx)(table.join(ctx, {rootfs = rootfs, run = folder, stop = driver.stop}))
     os.cp(results, path.join(folder, "results"))
     local reports = emulator.reports(rootfs)
@@ -220,7 +222,7 @@ local function launch(ctx, identifier, steps)
     end
     local result = {identifier = identifier, application = application, shots = driver.shots, failure = driver.failure,
                     exit = driver.exit, pid = driver.application and driver.application.pid, unlocks = driver.unlocks,
-                    held = driver.held,
+                    held = driver.held, held_seconds = driver.held_seconds,
                     reason = booted.reason, seconds = booted.seconds, scale = booted.scale,
                     stdout = path.join(folder, "results", "app.stdout"), stderr = path.join(folder, "results", "app.stderr")}
     json.savefile(path.join(folder, "verdict.json"), result)
@@ -265,8 +267,11 @@ local function launch(ctx, identifier, steps)
               booted.reason, where, #steps, booted.log)
     end
     cprint("${bright green}launched${clear} %s as pid %s %s, %d snapshot(s)", identifier, driver.application.pid, where, #driver.shots)
-    if driver.held == "deadline" then
-        cprint("${bright yellow}held${clear} until the run's own budget was spent, not until %s ended: it was still running, and the last frame is the one it was on", identifier)
+    if driver.held == "exited" then
+        cprint("${bright green}held${clear} until %s ended, %.0f guest seconds after it was frontmost", identifier, driver.held_seconds)
+    elseif driver.held == "deadline" then
+        cprint("${bright yellow}held${clear} until the run's own budget (-s %g guest seconds from the application being frontmost) was spent, not until %s ended: it was still running, and the last frame is the one it was on; raise -s (and -t) for a run that needs longer",
+               seconds, identifier)
     end
 end
 

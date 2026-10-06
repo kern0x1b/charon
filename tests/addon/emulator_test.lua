@@ -942,16 +942,32 @@ local function launch_step(emulator, folder, found)
     end
 
     -- until-exit holds the guest instead of asking the emulator for anything, and lets go on the
-    -- application's own end or on the run's budget, whichever comes first, saying which.
+    -- application's own end or on the run's budget, whichever comes first, saying which. The verdict
+    -- is the one the real runner writes when charon-sblaunch returns, which is at launch, as soon as
+    -- the application is frontmost. Measured on an iPhone4,1 6.1.3 run of a probe application that lives
+    -- for 20 guest seconds (`launch ... until-exit -s 60`): the runner's verdict file read
+    -- {"machine":"iPhone4,1","system":"6.1.3 (10B329)","uikit":1,"UIApplication":1,"runner_seconds":17.924,
+    --  "test":{"path":"/usr/libexec/charon-sblaunch","spawned":1,"spawn_error":0,"timed_out":0,"output":1,
+    --  "seconds":17.843,"exit":0}}
+    -- while the application was at its second second of twenty, and the driver, which took the file for the
+    -- end of the budget, quit the guest 222 host seconds into the run with the application still running.
+    -- The file's existence says the application was launched, and nothing about the application's end.
+    local SCALE, BUDGET = 10, 240
+    local now = 0
     local function held(steps)
         os.tryrm(results)
         os.mkdir(results)
+        now = 0
         local sent, driver = {}, emulator.launch_driver({results = results, run = "/run",
-                                                           application = "/Applications/Probe.app", steps = steps})
+                                                           application = "/Applications/Probe.app", steps = steps,
+                                                           seconds = BUDGET, scale = SCALE, clock = function () return now end})
         local function tick(state)
             return driver.stop(state, function (command) table.insert(sent, command) end)
         end
-        json.savefile(path.join(results, "verdict.json"), {test = {spawned = 1, exit = 0}})
+        json.savefile(path.join(results, "verdict.json"),
+                      {machine = "iPhone4,1", system = "6.1.3 (10B329)", uikit = 1, UIApplication = 1, runner_seconds = 17.924,
+                       test = {path = "/usr/libexec/charon-sblaunch", spawned = 1, spawn_error = 0, timed_out = 0, output = 1,
+                               seconds = 17.843, exit = 0}})
         local state = {ready = true, programs = {["90"] = "/Applications/Probe.app/Probe"}}
         tick(state)
         state.transition = 1
@@ -967,6 +983,11 @@ local function launch_step(emulator, folder, found)
     if #sent ~= 2 or sent[2] ~= "snapshot /run/app-0.png" then
         table.insert(found, "the snapshot before until-exit is taken as any other, sent " .. table.concat(sent, ";"))
     end
+    now = (BUDGET * SCALE - 1) * 1000
+    if tick(state) or driver.held or #sent ~= 2 then
+        table.insert(found, "a verdict written at launch does not end the hold while the application runs and the budget is not spent, held "
+                            .. tostring(driver.held) .. ", sent " .. table.concat(sent, ";"))
+    end
     state.exits = {["90"] = {status = 0, signal = 0}}
     if tick(state) or driver.failure then
         table.insert(found, "an application that ends while until-exit holds is not a failure, " .. tostring(driver.failure))
@@ -975,10 +996,24 @@ local function launch_step(emulator, folder, found)
         table.insert(found, "until-exit settles once the application has ended, held " .. tostring(driver.held) .. ", sent " .. table.concat(sent, ";"))
     end
     driver, sent, tick, state = held({"until-exit"})
-    io.writefile(path.join(results, "verdict.json"), '{"test":{"spawned":1,"exit":1}}')
+    now = BUDGET * SCALE * 1000
     tick(state)
     if driver.held ~= "deadline" or sent[3] ~= "settle" then
-        table.insert(found, "until-exit settles on the run's budget too, and says the budget was what ran out, held " .. tostring(driver.held))
+        table.insert(found, "until-exit settles when the budget, -s guest seconds at the time scale from the application being frontmost, is spent and says so, held "
+                            .. tostring(driver.held) .. ", sent " .. table.concat(sent, ";"))
+    end
+    driver, sent, tick, state = held({"until-exit"})
+    now = BUDGET * SCALE * 1000
+    state.exits = {["90"] = {status = 0, signal = 0}}
+    tick(state)
+    if driver.held ~= "exited" then
+        table.insert(found, "an application that ended is what the hold reports even when the budget is spent too, held " .. tostring(driver.held))
+    end
+    local refused = fixtures.refusal(function ()
+        emulator.launch_driver({results = results, run = "/run", application = "/Applications/Probe.app", steps = {"until-exit"}})
+    end)
+    if not refused or not refused:find("the run gave no seconds", 1, true) then
+        table.insert(found, "until-exit has no budget to hold for unless the run gives its seconds: " .. tostring(refused))
     end
     driver, sent, tick, state = held({})
     if tick(state) ~= true then

@@ -59,13 +59,20 @@ xmake emulate -d iPhone4,1 -r 6.1.3 launch org.example.app tap 160 260
   ended, then settles and takes one more frame. Use it for an application that produces its result
   over time (Eidolon's snapshot bundle renders 37 scenarios and then quits). The frame it takes is the
   screen as it was after the application ended — SpringBoard takes the screen back — so the frame of the
-  application itself is the one before it. If the application's own budget (`-s`, the runner's deadline)
-  runs out first, the verdict says `held: deadline` and says in words that it was still running: a run
-  that needs longer raises `-s` rather than reading that as success. The whole run folder is kept
+  application itself is the one before it. The hold ends at the first of two things, and the verdict
+  and the last lines of the log say which: `held: exited` (the application ended, after N guest seconds
+  from being frontmost) or `held: deadline` (the application's budget, `-s` guest seconds from the
+  moment it was frontmost, was spent while it still ran). A run that needs longer raises `-s` (and `-t`,
+  the host limit of the whole boot, which has to cover `-s` times the time scale: 2400 for `-s 240` at
+  the default scale) rather than reading
+  `deadline` as success. The runner's `verdict.json` is not what ends the hold: it is written when
+  `charon-sblaunch` returns, at launch. The whole run folder is kept
   beside the log, and `/var/charon` is in it, so whatever the application wrote there comes out of the
   guest — that is how a port's own result files are read.
 - `-s` is how many guest seconds `charon-sblaunch` waits for SpringBoard to take the launch and make
-  the app frontmost (at the default scale that is ten times as many host seconds). While the screen
+  the app frontmost (at the default scale that is ten times as many host seconds) and, with `until-exit`,
+  how many the application may then run (counted by the host's clock at the time scale, from the moment
+  it is frontmost). While the screen
   is locked, `launch` unlocks it over the control channel on its own. Its states carry guest seconds:
   on an idle machine SpringBoard took the launch of 6.1.3 at 15 s; on one loaded far past its cores
   it was not ready in 60, since a starved guest does less in each guest second. Raise `-s` (and `-t`)

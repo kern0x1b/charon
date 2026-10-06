@@ -7,7 +7,7 @@ task("emulate")
         options = {
             {"d", "device", "kv", nil, "The device to emulate, e.g. iPhone3,1 (default: the first device of the configured architecture Shade emulates that runs the release)."},
             {"r", "release", "kv", nil, "The iOS release, the earliest firmware not older than it (default: apple_minimum)."},
-            {"s", "seconds", "kv", "60", "How long the command run starts may take, or how long launch waits for SpringBoard to accept the launch (guest seconds)."},
+            {"s", "seconds", "kv", "60", "How long the command run starts may take, or how long launch waits for SpringBoard to accept the launch and, with until-exit, how long the application may then run from the moment it is frontmost (guest seconds)."},
             {"t", "timeout", "kv", "900", "The wall-clock limit of a whole boot, after which the emulator is told to quit and then killed."},
             {"k", "keep", "k", nil, "Keep the root filesystem a run booted, beside its log, instead of removing it after the verdict."},
             {"a", "all", "k", nil, "With clean: every port's images and every golden image, not only this port's images."},

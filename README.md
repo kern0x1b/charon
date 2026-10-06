@@ -338,8 +338,11 @@ step given after the bundle identifier - `tap X Y`, `drag X1 Y1 X2 Y2` in points
 driver's own and is not sent to Shade: `until-exit` holds the guest until the
 application has ended, so a port whose application produces its result over time
 is given the time to produce it, then settles and takes one more frame; the
-verdict says in `held` whether the application's own end or the run's budget came
-first. It prints the application's output, the snapshots and the run folder, which
+verdict says in `held` whether the application's own end (`exited`) or the run's
+budget (`deadline`) came first. The budget is `-s` again: the guest seconds the
+application may run from the moment it is frontmost, counted by the host's clock at
+the time scale. The runner's verdict file does not end the hold; it is written when
+`charon-sblaunch` returns, at launch. It prints the application's output, the snapshots and the run folder, which
 is where a program that wrote into `/var/charon` left them, and fails naming
 SpringBoard's refusal, the signal or status the application ended with, or that
 its process never started; `log` prints the output again and `shot` the last

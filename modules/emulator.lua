@@ -1005,11 +1005,24 @@ end
 -- then takes each step, settles and takes a snapshot after it. A step of
 -- until-exit holds instead of sending anything: it waits for the application to
 -- end, and for the run's own budget to be spent if it never does, and says in
--- held which of the two happened. Settling is the emulator's own measure, in
+-- held which of the two happened. The budget is -s, the guest seconds the application
+-- may run from the moment it is frontmost, which the host's clock counts at the time
+-- scale (one guest second takes that many host seconds). The runner's verdict is not
+-- the budget's end: it is written when charon-sblaunch returns, which is at launch.
+-- Settling is the emulator's own measure, in
 -- guest time: [transition] settle id=N, then internal-stable id=N. The driver
--- keeps where it ended in shots, failure, exit, held and application.
+-- keeps where it ended in shots, failure, exit, held, held_seconds and application.
 function launch_driver(opt)
     local driver = {phase = "launching", shots = {}, step = 0, unlocks = 0}
+    local clock = opt.clock or os.mclock
+    local scale = opt.scale or TIME_SCALE
+    if table.contains(opt.steps, "until-exit") and not opt.seconds then
+        raise("until-exit holds for the run's budget, and the run gave no seconds")
+    end
+    -- Guest seconds the application has run since SpringBoard made it frontmost.
+    local function running()
+        return (clock() - driver.launched) / 1000 / scale
+    end
     local function settle(state, send)
         send("settle")
         driver.phase, driver.after, driver.settling = "settling", state.transition or 0, nil
@@ -1038,6 +1051,7 @@ function launch_driver(opt)
                     driver.failure = "refused"
                     return true
                 end
+                driver.launched = clock()
                 settle(state, send)
                 return false
             end
@@ -1078,13 +1092,13 @@ function launch_driver(opt)
                 driver.phase, driver.after = "stepping", state.transition or 0
             end
         elseif driver.phase == "holding" then
-            -- The application's own end, or the run's budget spent: the runner writes its verdict when
-            -- it ends charon-sblaunch at the deadline, and that is the last the guest is given.
+            -- The application's own end, or the run's budget spent, the first of the two; the exit is looked
+            -- at first, so an application that ended is never reported as one that ran out of time.
             if driver.application and (state.exits or {})[driver.application.pid] then
-                driver.held = "exited"
+                driver.held, driver.held_seconds = "exited", running()
                 settle(state, send)
-            elseif os.isfile(path.join(opt.results, "verdict.json")) then
-                driver.held = "deadline"
+            elseif running() >= opt.seconds then
+                driver.held, driver.held_seconds = "deadline", running()
                 settle(state, send)
             end
         elseif driver.phase == "stepping" then
