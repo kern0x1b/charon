@@ -8,6 +8,7 @@ package("eidolon")
     add_versions("2026.09.23", "10f87e02eaf4545dfaff7fe30ed0d69643bbad5e")
     add_versions("2026.10.14", "9f6a4aeb716d6b928bcc995d859c0f41f0c4663c")
     add_versions("2026.10.15", "f324b949eb3bac3fc4ef73e08712ff0a528b11b7")
+    add_versions("2026.10.16", "12a737b35ae64e1f4c4f1964197367841fe588d3")
 
     -- Eidolon is compiled against the runtime a port takes, and against Styx built against that same runtime: what the
     -- port asks of the runtime it asks here too, and Eidolon passes it on to both. (charon@swift rule refuses a link with
