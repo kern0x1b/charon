@@ -111,6 +111,19 @@ So the port measures what is really covered:
 The controller of a view is found through the responder chain: the view of a
 controller answers it as its `-nextResponder`.
 
+**A toolbar nobody asked for is not made to be measured.** `-[UINavigationController toolbar]` makes the bar the first time it
+is asked, on iOS 6.1.3 and on the host's UIKit alike, and neither release asks for it while laying out. The first version of
+the port read it on every call, so a navigation controller that never used a toolbar grew a hidden one,
+`UIToolbar(0,480,320,44)` below the screen, at its first layout: an application's view tree showed a bar the phone's own UIKit
+never makes. A toolbar the controller keeps hidden covers nothing, so the port asks for the bar only when `-isToolbarHidden`
+is `NO`. Measured on the iPhone 4S emulator (6.1.3): `-isToolbarHidden` answers `YES` for a controller that was never asked
+for a toolbar, and answering it makes none; a controller that shows a translucent toolbar under a full screen layout still
+gets 44 as its bottom inset, the height the toolbar covers. Not measured: a toolbar hidden with an animation, where
+`-isToolbarHidden` may already answer `YES` while the bar is still sliding down, and the inset would then drop at once
+instead of following the bar. The host cannot see a shown toolbar (its windows keep a toolbar out of the view tree);
+`tests/backports/host/toolbar/run.sh` holds the port to the host's own UIKit on the making of the bar, and
+`tests/backports/device/toolbar.m` holds the shown toolbar's cover on a device.
+
 ## Where the insets stop
 
 Two rules the first version of the port did not have, both found by putting it
