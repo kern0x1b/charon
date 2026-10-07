@@ -561,6 +561,23 @@ local function runner_source(opt, found)
     if source:find("CFPropertyListCreateWithStream", 1, true) then
         table.insert(found, "the runner reads SystemVersion.plist with a function iOS 3 does not have: CFPropertyListCreateWithStream arrived in 4.0, CFPropertyListCreateFromStream is there from 2.0")
     end
+    -- The runner is started from launchd.conf, which launchctl reads before it loads the LaunchDaemons: a
+    -- test begun at once finds none of them (com.apple.cvmsServ among them). tests/emulate/launchd is the
+    -- measurement on a real guest; this is the shape of the cause. The test is spawned only after launchd
+    -- has registered the Mach services the firmware's plists declare, and a service a plist hides until its
+    -- daemon checks in is not one of them.
+    local wait_call = source:find("wait_for_daemons(deadline", 1, true)
+    local spawn_call = source:find("posix_spawn(&child", 1, true)
+    if not wait_call or not spawn_call or wait_call > spawn_call then
+        table.insert(found, "the runner starts the test only after launchd has registered the daemons' services")
+    end
+    local lookup = source:find("bootstrap_look_up(bootstrap_port", 1, true)
+    if not source:find('"/System/Library/LaunchDaemons"', 1, true) or not source:find('CFSTR("MachServices")', 1, true) or not lookup then
+        table.insert(found, "the runner asks launchd for the Mach services the LaunchDaemons plists declare")
+    end
+    if not source:find('"HideUntilCheckIn"', 1, true) then
+        table.insert(found, "the runner does not wait for a service its daemon registers only when it checks in")
+    end
 end
 
 -- The check every copy an install makes ends with: a program that was not copied is a program the

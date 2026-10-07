@@ -1,7 +1,9 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <dlfcn.h>
 #include <errno.h>
+#include <dirent.h>
 #include <fcntl.h>
+#include <mach/mach.h>
 #include <objc/runtime.h>
 #include <signal.h>
 #include <spawn.h>
@@ -15,9 +17,13 @@
 #include <sys/wait.h>
 #include <syslog.h>
 #include <time.h>
+#include <strings.h>
 #include <unistd.h>
 
 extern char** environ;
+
+// bootstrap_look_up is not in the SDK's public headers.
+extern kern_return_t bootstrap_look_up(mach_port_t bootstrap, const char* name, mach_port_t* service);
 
 static const char* verdict_directory = "/private/var/charon";
 
@@ -126,6 +132,117 @@ static void detach_from_launchctl(void)
     signal(SIGTERM, SIG_IGN);
 }
 
+// The runner is started from launchd.conf, which launchctl reads before it loads the LaunchDaemons, so
+// it runs before them (and on iOS 7 and later as a LaunchDaemon of its own, while the rest are still
+// being loaded). A process a device starts after boot finds every one of them loaded: each Mach service
+// their plists declare is registered with launchd, whether or not the daemon behind it runs yet. A test
+// begun earlier would find none of that - com.apple.cvmsServ, which Core Image builds its OpenCL kernels
+// through, among them - and fail on what the firmware does at boot, not on what it tests. So the test
+// starts when launchd has those services. A service a plist marks HideUntilCheckIn is registered only
+// when its daemon checks in, which is the daemon's own time and not the loading, so it is not waited for.
+static const char* daemons_directory = "/System/Library/LaunchDaemons";
+
+typedef struct {
+    char** names;
+    int count;
+    int capacity;
+} services_t;
+
+// Apple's plists do not agree on the key's case: com.apple.mediastream.mstreamd.plist spells it
+// HideUntilCheckin for one service.
+static void is_hidden_until_check_in(const void* key, const void* value, void* context)
+{
+    char name[32];
+    if (CFGetTypeID(key) == CFStringGetTypeID() && CFStringGetCString(key, name, sizeof name, kCFStringEncodingUTF8) &&
+        strcasecmp(name, "HideUntilCheckIn") == 0 && CFGetTypeID(value) == CFBooleanGetTypeID() && CFBooleanGetValue(value))
+        *(int*)context = 1;
+}
+
+static void add_service(const void* key, const void* value, void* context)
+{
+    services_t* services = context;
+    char name[128];
+    int hidden = 0;
+    if (CFGetTypeID(key) != CFStringGetTypeID() || !CFStringGetCString(key, name, sizeof name, kCFStringEncodingUTF8))
+        return;
+    if (CFGetTypeID(value) == CFDictionaryGetTypeID())
+        CFDictionaryApplyFunction(value, is_hidden_until_check_in, &hidden);
+    if (hidden)
+        return;
+    if (services->count == services->capacity) {
+        int capacity = services->capacity ? services->capacity * 2 : 256;
+        char** grown = realloc(services->names, capacity * sizeof(char*));
+        if (!grown)
+            return;
+        services->names = grown;
+        services->capacity = capacity;
+    }
+    services->names[services->count++] = strdup(name);
+}
+
+static void declared_services(services_t* services)
+{
+    DIR* directory = opendir(daemons_directory);
+    struct dirent* entry;
+    while (directory && (entry = readdir(directory))) {
+        size_t length = strlen(entry->d_name);
+        if (length < 7 || strcmp(entry->d_name + length - 6, ".plist") != 0)
+            continue;
+        char file[1024];
+        snprintf(file, sizeof file, "%s/%s", daemons_directory, entry->d_name);
+        CFURLRef url = CFURLCreateFromFileSystemRepresentation(NULL, (const UInt8*)file, strlen(file), false);
+        CFReadStreamRef stream = CFReadStreamCreateWithFile(NULL, url);
+        if (stream && CFReadStreamOpen(stream)) {
+            CFPropertyListRef list = CFPropertyListCreateFromStream(NULL, stream, 0, kCFPropertyListImmutable, NULL, NULL);
+            if (list && CFGetTypeID(list) == CFDictionaryGetTypeID()) {
+                CFDictionaryRef declared = CFDictionaryGetValue(list, CFSTR("MachServices"));
+                if (declared && CFGetTypeID(declared) == CFDictionaryGetTypeID())
+                    CFDictionaryApplyFunction(declared, add_service, services);
+            }
+            if (list)
+                CFRelease(list);
+            CFReadStreamClose(stream);
+        }
+        if (stream)
+            CFRelease(stream);
+        CFRelease(url);
+    }
+    if (directory)
+        closedir(directory);
+}
+
+// How many of the services launchd has not registered yet; their names go to the runner's own output
+// when the wait is given up, so a run that did not get them says which.
+static int unregistered(services_t* services, char* first, size_t size)
+{
+    int missing = 0;
+    for (int i = 0; i < services->count; i++) {
+        mach_port_t port = MACH_PORT_NULL;
+        if (bootstrap_look_up(bootstrap_port, services->names[i], &port) != KERN_SUCCESS) {
+            if (!missing)
+                snprintf(first, size, "%s", services->names[i]);
+            missing++;
+        }
+    }
+    return missing;
+}
+
+// Waits for launchd to have loaded the daemons, for as long as the test itself may run. A device that
+// does not register one of them (its plist is for other hardware, say) must not hold the run for ever,
+// and the test then starts with that said in the runner's output and in its verdict.
+static int wait_for_daemons(int seconds, int* declared, double* waited, char* first, size_t size)
+{
+    services_t services = {0};
+    double began = now();
+    declared_services(&services);
+    *declared = services.count;
+    int missing;
+    while ((missing = unregistered(&services, first, size)) > 0 && now() - began < seconds)
+        usleep(50000);
+    *waited = now() - began;
+    return missing;
+}
+
 int main(int argc, char** argv)
 {
     keep_own_output();
@@ -140,11 +257,23 @@ int main(int argc, char** argv)
         argc = count;
         argv = job;
     }
+    int deadline = argc > 1 ? atoi(argv[1]) : 30;
+    int declared = 0;
+    char absent[128] = "";
+    double waited = 0;
+    int missing = wait_for_daemons(deadline, &declared, &waited, absent, sizeof absent);
     double started = now();
     printf("charon-runner: started pid=%d uid=%d\n", getpid(), getuid());
     fflush(stdout);
     openlog("charon-runner", LOG_PID, LOG_USER);
     syslog(LOG_NOTICE, "charon-runner started pid=%d", getpid());
+    if (missing) {
+        printf("charon-runner: launchd had not registered %d of %d services after %.1f s, the first being %s; starting the test anyway\n", missing, declared, waited, absent);
+        syslog(LOG_WARNING, "charon-runner: launchd had not registered %d of %d services after %.1f s, the first being %s", missing, declared, waited, absent);
+    } else {
+        printf("charon-runner: launchd had registered all %d services after %.1f s\n", declared, waited);
+    }
+    fflush(stdout);
 
     struct utsname name;
     uname(&name);
@@ -156,7 +285,6 @@ int main(int argc, char** argv)
 
     int uikit = dlopen("/System/Library/Frameworks/UIKit.framework/UIKit", RTLD_LAZY) != NULL;
     int ui_application = objc_getClass("UIApplication") != NULL;
-    int deadline = argc > 1 ? atoi(argv[1]) : 30;
     int status = -1, spawned = 0, spawn_error = 0, timed_out = 0, captured = 0;
     double duration = 0;
     if (argc > 2) {
@@ -235,6 +363,7 @@ int main(int argc, char** argv)
     fprintf(file, ",\"system\":");
     json_string(file, version);
     fprintf(file, ",\"uikit\":%d,\"UIApplication\":%d,\"runner_seconds\":%.3f", uikit, ui_application, now() - started);
+    fprintf(file, ",\"daemons\":{\"services\":%d,\"unregistered\":%d,\"waited\":%.3f}", declared, missing, waited);
     if (argc > 2) {
         fprintf(file, ",\"test\":{\"path\":");
         json_string(file, argv[2]);

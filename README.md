@@ -301,8 +301,9 @@ root, with `DPKG_ROOT` naming it: that is how a package whose libraries depend
 on the release - `charon@apple-backports` - links the ones built for the image's
 own iOS, and a script that refuses the image stops the install and says why. `run` clones
 that image again, puts a LaunchDaemon into `/System/Library/LaunchDaemons` of the image (the only folder
-iOS 6's launchd reads) that starts `charon-runner`, which starts COMMAND with a
-deadline of `-s` seconds and writes its exit status, signal and output into
+iOS 6's launchd reads) that starts `charon-runner`, which starts COMMAND, once launchd has
+registered the Mach services the firmware's LaunchDaemons declare (the verdict's `daemons` says
+how many and how long that took), with a deadline of `-s` seconds and writes its exit status, signal and output into
 `/private/var/charon`; the boot is quit once that verdict is there, and killed
 when `-t` seconds pass. The verdict, the guest's results, the emulator log and
 the last frame stay in the image's `run` folder, and the clone the run booted
