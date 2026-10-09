@@ -27,7 +27,7 @@ for path in "$CORE"/*.m; do
 done
 xcrun clang -c -w -I"$CORE" "$CORE/CharonCoreMIDI.c" -o "$build/CharonCoreMIDI.o"
 xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -I"$here" \
-    "$here/differential.m" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -o "$build/differential"
+    "$here/differential.m" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -framework CoreBluetooth -o "$build/differential"
 "$build/differential" > "$build/log" 2>&1 && result=0 || result=$?
 grep -v '^ok ' "$build/log" || true
 echo "log=$build/log"
