@@ -1,0 +1,32 @@
+set_project("charoncoremidiapp")
+set_version("0.0.1")
+-- The CoreMIDI round trip as an installed application, launched through SpringBoard (xmake emulate launch): the
+-- same probe as the daemon, in an application that declares the audio background mode (Info.plist) and activates an
+-- audio session before it asks for the endpoints.
+local root = os.getenv("CHARCOREMIDI_ROOT") or path.join(os.scriptdir(), "../../../../..")
+add_repositories("charon " .. root)
+add_addons("charon v0.8.16")
+set_config("apple_minimum", os.getenv("CHARCOREMIDI_MINIMUM") or "6.1.3")
+add_requires("charon@apple-backports", {alias = "apple-backports", configs = {coremidi = true}})
+includes("@addon/charon/apple-ios")
+includes("@addon/charon/emulate")
+set_defaultplat("iphoneos")
+set_defaultarchs("iphoneos|armv7")
+
+target("charoncoremidiapp")
+    add_rules("@addon/charon/app")
+    add_files(path.join(root, "tests/backports/emulate/coremidi/app/main.m"))
+    add_files(path.join(root, "tests/backports/emulate/coremidi/roundtrip.m"))
+    add_defines("CHARON_APP=1", os.getenv("CHARCOREMIDI_NO_AUDIO") and "CHARON_NO_AUDIO_SESSION=1" or nil)
+    add_mflags("-fobjc-arc")
+    add_ldflags("-fobjc-arc", {force = true})
+    add_frameworks("Foundation", "UIKit", "CoreMIDI", "AudioToolbox")
+    add_packages("apple-backports")
+    set_values("charon.libraries", "apple-backports")
+    set_values("app.plist-file", "Info.plist")
+    set_values("charon.control", "control")
+    -- The SDK weak-links the iOS 14 and 9 functions and constants (it weak-links what is newer than the deployment target), and
+    -- the release has none of them. This application is a measurement program: each of them is the library's own symbol on
+    -- this release (libCoreMIDIBackports exports it), so the weak reference binds to the library and is not NULL. The waiver
+    -- names the reason and is not a guard for a released image.
+    set_values("charon.waive.weak-imports", "measurement program, not a released image: the nine weak imports are the library's own CoreMIDI symbols, which libCoreMIDIBackports exports on this release, so none is NULL")

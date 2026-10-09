@@ -39,7 +39,7 @@ static void expect(int ok, const char *line)
     printf("%s %s\n", ok ? "ok  " : "FAIL", line);
 }
 
-int main(void)
+int charon_roundtrip_run(void)
 {
     @autoreleasepool {
         MIDIClientRef client = 0;
@@ -132,3 +132,10 @@ int main(void)
         return gFailures ? 1 : 0;
     }
 }
+
+#ifndef CHARON_APP
+int main(void)
+{
+    return charon_roundtrip_run();
+}
+#endif
