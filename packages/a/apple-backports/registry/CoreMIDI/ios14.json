@@ -1,0 +1,21 @@
+{
+  "framework": "CoreMIDI",
+  "entries": [
+    {
+      "api": "MIDIEventListInit()",
+      "kind": "function",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/EventList.md",
+      "source": "the header of iOS 16.4 for the contract (MIDIServices.h); the host macOS CoreMIDI for the packet rules (tests/backports/host/coremidi)"
+    },
+    {
+      "api": "MIDIEventListAdd()",
+      "kind": "function",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/EventList.md",
+      "source": "the header of iOS 16.4 for the contract (MIDIServices.h); the host macOS CoreMIDI for the packet rules (tests/backports/host/coremidi)"
+    }
+  ]
+}
