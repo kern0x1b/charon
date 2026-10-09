@@ -213,9 +213,10 @@ def constant_decls(sdk, fw, names, typedefs):
             for token in set(re.findall(r"\b[A-Za-z_]\w*\b", line)) & wanted:
                 if token in found:
                     continue
-                typed = re.match(r"^\s*(\w+)\s+" + re.escape(token) + r"\b", line)
+                typed = re.match(r"^\s*(?:const\s+)?(\w+)\s+" + re.escape(token) + r"\b", line)
                 if typed and typed.group(1) not in typedefs | STRING_TYPES:
                     typed = None
+                # a CF header declares a constant with no marker of its own: `const CFStringRef kName API_AVAILABLE(...)`
                 if not marked and not typed:
                     continue
                 before = re.sub(r"\b" + re.escape(token) + r"\b.*", "", line)
@@ -407,10 +408,17 @@ def cmd_input(args):
         ledger = [r for r in csv.DictReader(handle, delimiter="\t") if r["status"] == "missing"
                   and r["kind"] == "constant" and r["lang"] == "objc" and r["needs"] == "code+lift"]
     decls = constant_decls(args.sdk, fw, [r["api"] for r in ledger], typedefs)
+    undeclared = [r["api"] for r in ledger if r["api"] not in decls]
+    if undeclared and fw != "Foundation":
+        # Foundation declares NSCalendarIdentifier and friends; a CoreFoundation row the ledger lists may be one of them
+        decls.update(constant_decls(args.sdk, "Foundation", undeclared, typedefs))
     strings = [r["api"] for r in ledger if r["api"] not in owned and r["api"] in decls
                and object_shape(decls[r["api"]][0], typedefs) == "string"]
     values = probe(args.tree, fw, strings) if strings else {}
     symbols, classes = tbd_exports(args.sdk, fw)
+    if fw != "Foundation":
+        foundation_symbols, _ = tbd_exports(args.sdk, "Foundation")
+        symbols = symbols | foundation_symbols
     cf = cf_typedefs(args.sdk, fw)
     measured = measured_releases(args.measured) if args.measured else {}
     ios_path = args.ios_constants or IOS_CONSTANTS
@@ -438,7 +446,7 @@ def cmd_input(args):
             value, source = objc_escape(ios[r["api"]]), "ios-26.2-cache"
             if value != host_value:
                 differences.append((r["api"], host_value, value))
-        elif status != "found" and r["api"] in ios and not decl.startswith("-") and object_shape(decl, typedefs) == "string":
+        elif status != "found" and r["api"] not in owned and r["api"] in ios and decl and object_shape(decl, typedefs) == "string":
             # The host does not carry the framework (AddressBookUI is iOS-only), so no host value exists: the iOS cache is the
             # only oracle, and it is the expectation.
             status, value, host_value, source = "found", objc_escape(ios[r["api"]]), "-", "ios-26.2-cache (no host value)"
