@@ -244,22 +244,34 @@ SOURCES = [
      "not built", "planned", "formatter, collation, calendar and zone tables"),
     ("ipsw-resources", "iOS IPSW resources listed by v-cache26", "Apple, read as input; ipsw never run without asking",
      "not built", "planned: listed by v-cache26 only", "images, strings and resource data of the release"),
-    ("oss-swift-corelibs-foundation", "swift-corelibs-foundation", "Apache-2.0 (may be copied with licence header and THIRD-PARTY entry)",
-     "pinned package candidate", "candidate, not pinned", "implementation lead for Foundation rows"),
-    ("oss-swift-foundation", "swift-foundation", "Apache-2.0", "pinned package candidate", "candidate, not pinned",
-     "implementation lead for Foundation value types"),
-    ("oss-winobjc", "WinObjC", "MIT", "pinned package candidate", "candidate, not pinned", "implementation lead for UIKit rows"),
-    ("oss-chameleon", "Chameleon", "BSD", "pinned package candidate", "candidate, not pinned", "implementation lead for UIKit rows"),
-    ("oss-apple-opensource", "apple-oss-distributions (CoreFoundation, objc4, libdispatch)", "APSL-2.0: ask the coordinator before use",
-     "not used", "held for coordinator ruling", "none until ruled"),
-    ("oss-gnustep", "GNUstep (LGPL/GPL)", "LGPL/GPL: read only, never copied", "not used", "excluded", "none"),
+]
+
+
+# Open-source leads: public libraries read or built from. Our sources are not published, so a lead is a REFERENCE for
+# behaviour, structure and edge cases, and any library may be one. Use: `link` is a pinned, unmodified xmake package that
+# is linked or built as a library (permissive licences only); `reference-only` is read, never copied into our files and
+# never linked (copyleft: APSL-2.0, GPL, LGPL). Owner rule, MEMORY.md 2026-10-09 (last entry).
+# A facts note written with a reference names the library and the files consulted (readme(), "References").
+OSS_LEADS = [
+    # lead, library, licence, use, status
+    ("swift-corelibs-foundation", "swift-corelibs-foundation", "Apache-2.0", "link", "candidate, not pinned"),
+    ("swift-foundation", "swift-foundation", "Apache-2.0", "link", "candidate, not pinned"),
+    ("winobjc", "WinObjC (UIKit)", "MIT", "link", "candidate, not pinned"),
+    ("chameleon", "Chameleon (UIKit)", "BSD", "link", "candidate, not pinned"),
+    ("apple-oss-distributions", "CoreFoundation, objc4, libdispatch", "APSL-2.0", "reference-only", "reference only, by the owner's rule"),
+    ("gnustep", "GNUstep base and gui", "LGPL / GPL", "reference-only", "reference only"),
 ]
 
 
 def cmd_sources(args):
-    width = [max(len(row[i]) for row in SOURCES + [("source", "kind", "licence", "loader", "status", "adds")]) for i in range(6)]
-    header = ("source", "kind", "licence", "loader", "status", "adds")
-    for row in [header] + SOURCES:
+    rows = [("source", "kind", "licence", "loader", "status", "adds")] + SOURCES
+    width = [max(len(row[i]) for row in rows) for i in range(6)]
+    for row in rows:
+        print(" | ".join(cell.ljust(width[i]) for i, cell in enumerate(row)))
+    print("")
+    leads = [("lead", "library", "licence", "use", "status")] + OSS_LEADS
+    width = [max(len(row[i]) for row in leads) for i in range(5)]
+    for row in leads:
         print(" | ".join(cell.ljust(width[i]) for i, cell in enumerate(row)))
     return 0
 
@@ -492,6 +504,15 @@ def render(tree, fw):
     files["stale.tsv"] = "\n".join(["api\tkey\tpinned\tspec\tregistry"] + ["\t".join(x) for x in stale]) + "\n"
     files["removed.tsv"] = "\n".join(["api\treason\tregistry"] + ["\t".join(x) for x in removed]) + "\n"
     files["README.md"] = readme(fw, spec, pins, stale, removed, new, by_release)
+    # The per-row index the registry check reads (registry() in modules/apple/backports.lua): the fields of a registry row.
+    # Paths are relative to the package root, where registry/ and gen/ both live.
+    index = ["framework\tkind\tapi\tintroduced\tminimum\tmaximum\tstatus\teffect\tfacts\tsource\towner\tdeclhash"]
+    for release in sorted(by_release, key=release_key):
+        source = "gen/%s/%sConstants%s.m" % (fw, fw, release.replace(".", ""))
+        for r in by_release[release]:
+            index.append("\t".join([fw, "constant", r["api"], release, "6.0", release, "implemented", "",
+                                     "gen/%s/README.md" % fw, source, "generated", r["hash"]]))
+    files["rows.tsv"] = "\n".join(index) + "\n"
     return files
 
 
@@ -528,7 +549,12 @@ def readme(fw, spec, pins, stale, removed, new, by_release):
         "| --- | --- | --- | --- | --- | --- |",
     ]
     out += ["| " + " | ".join(row) + " |" for row in SOURCES]
-    out.append("")
+    out += ["", "## Open-source leads (licence and use, owner rule 2026-10-09)", "",
+            "| lead | library | licence | use | status |", "| --- | --- | --- | --- | --- |"]
+    out += ["| " + " | ".join(row) + " |" for row in OSS_LEADS]
+    out += ["", "## References", "",
+            "Libraries read as a reference for behaviour while writing a row, and the files consulted. None for this framework: the"
+            " constants' values come from the macOS framework of this host and their declarations from the 26.2 headers.", ""]
     return "\n".join(out)
 
 

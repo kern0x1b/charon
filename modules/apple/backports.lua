@@ -768,8 +768,11 @@ local function sections_of(file)
 end
 
 function sources(root, library)
+    -- gen/<Framework>/ holds the generated contract layer (tools/gen.py): its sources are built with the library, and its
+    -- rows are read from gen/<Framework>/rows.tsv by registry() as implementations, so both folders are one library's.
     local found = table.join(os.files(path.join(root, library.folder, "*.m")), os.files(path.join(root, library.folder, "*.mm")),
-                             os.files(path.join(root, library.folder, "*.c")))
+                             os.files(path.join(root, library.folder, "*.c")), os.files(path.join(root, "gen", library.folder, "*.m")),
+                             os.files(path.join(root, "gen", library.folder, "*.c")))
     byteorder.sort(found)
     return found
 end
@@ -1770,6 +1773,50 @@ function registry(root)
                 elseif entry.status == "ignored" and not entry.facts then
                     table.insert(incomplete, entry.api .. " is ignored without a file of facts")
                 end
+            end
+        end
+    end
+    -- gen/<Framework>/rows.tsv: the rows the generator emits for the contract layer, in the fields of a registry row. A generated
+    -- row is an implementation and is listed as one, but it has to name the source that defines it, and a name the registry
+    -- also holds is refused: an override is a registry row only, and the index must not contain it.
+    for _, file in ipairs(os.files(path.join(root, "gen", "*", "rows.tsv"))) do
+        local folder = path.filename(path.directory(file))
+        local named = "gen/" .. folder .. "/rows.tsv"
+        frameworks[folder] = true
+        local header
+        for line in io.readfile(file):gmatch("[^\n]+") do
+            local cells = {}
+            for cell in (line .. "\t"):gmatch("([^\t]*)\t") do
+                table.insert(cells, cell)
+            end
+            if not header then
+                header = cells
+            else
+                local row = {}
+                for column, name in ipairs(header) do
+                    row[name] = cells[column]
+                end
+                local source = row.source ~= "" and row.source or nil
+                local text = source and os.isfile(path.join(root, source)) and io.readfile(path.join(root, source)) or nil
+                local pattern = "%f[%w_]" .. row.api:gsub("[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0") .. "%f[^%w_]"
+                if row.owner ~= "generated" then
+                    table.insert(incomplete, row.api .. " is in " .. named .. " with owner " .. tostring(row.owner) .. ", not generated")
+                elseif row.status ~= "implemented" then
+                    table.insert(incomplete, row.api .. " is in " .. named .. " as " .. tostring(row.status) .. "; a generated row is implemented")
+                elseif not source then
+                    table.insert(incomplete, row.api .. " is a generated row with no source")
+                elseif not text then
+                    table.insert(incomplete, row.api .. " is a generated row whose source " .. source .. " does not exist")
+                elseif not text:find(pattern) then
+                    table.insert(incomplete, row.api .. " is a generated row, but its source " .. source .. " does not define it")
+                end
+                if told[row.api] then
+                    table.insert(incomplete, row.api .. " is named by both " .. told[row.api] .. " and " .. named)
+                end
+                told[row.api] = named
+                listed[row.api] = {api = row.api, kind = row.kind, introduced = row.introduced, minimum = row.minimum,
+                                   maximum = row.maximum, status = row.status, facts = row.facts, source = row.source,
+                                   owner = row.owner, declhash = row.declhash}
             end
         end
     end

@@ -18,9 +18,18 @@ Rules: gen/ is never edited by hand; `tools/gen.py check` fails on any drift fro
 | cldr-release-48 | CLDR release-48, pinned in tools/cldr/PIN | Unicode licence V3 (permissive; THIRD-PARTY entry) | tools/cldr/cldr_map.py (existing, unit symbols) | started: NSMeasurementFormatter unit names and region preferences next | unit names and region preferences; replaces the host-probe data of v-loadfail2 |
 | icu-tzdb | ICU and tzdb data | Unicode licence / public domain; pinned package, compact tables generated in tools/ | not built | planned | formatter, collation, calendar and zone tables |
 | ipsw-resources | iOS IPSW resources listed by v-cache26 | Apple, read as input; ipsw never run without asking | not built | planned: listed by v-cache26 only | images, strings and resource data of the release |
-| oss-swift-corelibs-foundation | swift-corelibs-foundation | Apache-2.0 (may be copied with licence header and THIRD-PARTY entry) | pinned package candidate | candidate, not pinned | implementation lead for Foundation rows |
-| oss-swift-foundation | swift-foundation | Apache-2.0 | pinned package candidate | candidate, not pinned | implementation lead for Foundation value types |
-| oss-winobjc | WinObjC | MIT | pinned package candidate | candidate, not pinned | implementation lead for UIKit rows |
-| oss-chameleon | Chameleon | BSD | pinned package candidate | candidate, not pinned | implementation lead for UIKit rows |
-| oss-apple-opensource | apple-oss-distributions (CoreFoundation, objc4, libdispatch) | APSL-2.0: ask the coordinator before use | not used | held for coordinator ruling | none until ruled |
-| oss-gnustep | GNUstep (LGPL/GPL) | LGPL/GPL: read only, never copied | not used | excluded | none |
+
+## Open-source leads (licence and use, owner rule 2026-10-09)
+
+| lead | library | licence | use | status |
+| --- | --- | --- | --- | --- |
+| swift-corelibs-foundation | swift-corelibs-foundation | Apache-2.0 | link | candidate, not pinned |
+| swift-foundation | swift-foundation | Apache-2.0 | link | candidate, not pinned |
+| winobjc | WinObjC (UIKit) | MIT | link | candidate, not pinned |
+| chameleon | Chameleon (UIKit) | BSD | link | candidate, not pinned |
+| apple-oss-distributions | CoreFoundation, objc4, libdispatch | APSL-2.0 | reference-only | reference only, by the owner's rule |
+| gnustep | GNUstep base and gui | LGPL / GPL | reference-only | reference only |
+
+## References
+
+Libraries read as a reference for behaviour while writing a row, and the files consulted. None for this framework: the constants' values come from the macOS framework of this host and their declarations from the 26.2 headers.
