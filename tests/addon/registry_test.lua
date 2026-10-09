@@ -854,7 +854,7 @@ local function inline_rows_step(backports, opt, found)
     end
 end
 
--- A generated row (gen/<Framework>/rows.tsv, written by tools/gen.py) is an implementation and is listed as one, so the
+-- A generated row (.gen/<Framework>/rows.tsv, written by tools/gen.py before the registry is read) is an implementation and is listed as one, so the
 -- registry check reads it. It has to name the source that defines it: a row with no source, or with a source that is
 -- missing or does not define the name, is refused. A name the registry also holds is refused as a name told by two
 -- files, because an override is a registry row only and the index must not contain it.
@@ -862,17 +862,17 @@ function generated_index(backports, found)
     local root = path.join(os.tmpdir(), "registry_test_generated-" .. os.getpid())
     os.tryrm(root)
     os.mkdir(path.join(root, "registry"))
-    os.mkdir(path.join(root, "gen", "Fix"))
+    os.mkdir(path.join(root, ".gen", "Fix"))
     local header = "framework\tkind\tapi\tintroduced\tminimum\tmaximum\tstatus\teffect\tfacts\tsource\towner\tdeclhash"
     local function index(api, source)
-        return table.concat({"Fix", "constant", api, "7.0", "6.0", "7.0", "implemented", "", "gen/Fix/README.md", source,
+        return table.concat({"Fix", "constant", api, "7.0", "6.0", "7.0", "implemented", "", ".gen/Fix/README.md", source,
                              "generated", "0123456789abcdef"}, "\t")
     end
     local function write_index(rows)
-        io.writefile(path.join(root, "gen", "Fix", "rows.tsv"), header .. "\n" .. table.concat(rows, "\n") .. "\n")
+        io.writefile(path.join(root, ".gen", "Fix", "rows.tsv"), header .. "\n" .. table.concat(rows, "\n") .. "\n")
     end
     local function write_source(text)
-        io.writefile(path.join(root, "gen", "Fix", "FixConstants70.m"), text)
+        io.writefile(path.join(root, ".gen", "Fix", "FixConstants70.m"), text)
     end
     local function complaints()
         local _, incomplete = backports.registry(root)
@@ -880,13 +880,13 @@ function generated_index(backports, found)
     end
     -- green: the row names its source and the source defines it
     write_source('NSString *const FixConstantAlpha = @"alpha";\n')
-    write_index({index("FixConstantAlpha", "gen/Fix/FixConstants70.m")})
+    write_index({index("FixConstantAlpha", ".gen/Fix/FixConstants70.m")})
     if complaints() ~= "" then
         table.insert(found, "a generated row whose source defines it is refused: " .. complaints())
     end
     -- red: the source does not define the name the row names
     write_source('NSString *const FixConstantOther = @"other";\n')
-    if not complaints():find("FixConstantAlpha is a generated row, but its source gen/Fix/FixConstants70.m does not define it", 1, true) then
+    if not complaints():find("FixConstantAlpha is a generated row, but its source .gen/Fix/FixConstants70.m does not define it", 1, true) then
         table.insert(found, "a generated row whose source does not define it must be refused by name, not '" .. complaints() .. "'")
     end
     -- red: the row names no source
@@ -895,16 +895,16 @@ function generated_index(backports, found)
         table.insert(found, "a generated row with no source must be refused, not '" .. complaints() .. "'")
     end
     -- red: the source file is not there at all
-    write_index({index("FixConstantAlpha", "gen/Fix/Missing.m")})
+    write_index({index("FixConstantAlpha", ".gen/Fix/Missing.m")})
     if not complaints():find("does not exist", 1, true) then
         table.insert(found, "a generated row whose source file is missing must be refused, not '" .. complaints() .. "'")
     end
     -- red: the registry names the same API too
     write_source('NSString *const FixConstantAlpha = @"alpha";\n')
-    write_index({index("FixConstantAlpha", "gen/Fix/FixConstants70.m")})
+    write_index({index("FixConstantAlpha", ".gen/Fix/FixConstants70.m")})
     io.writefile(path.join(root, "registry", "Fix.json"),
                  '{"framework": "Fix", "entries": [{"api": "FixConstantAlpha", "kind": "constant", "introduced": "7.0", "status": "implemented", "facts": "x"}]}')
-    if not complaints():find("FixConstantAlpha is named by both registry/Fix.json and gen/Fix/rows.tsv", 1, true) then
+    if not complaints():find("FixConstantAlpha is named by both registry/Fix.json and .gen/Fix/rows.tsv", 1, true) then
         table.insert(found, "a name in the registry and in a generated index must be refused naming both, not '" .. complaints() .. "'")
     end
     os.tryrm(root)

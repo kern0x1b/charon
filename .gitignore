@@ -25,3 +25,6 @@ tests/backports/emulate/calls/xmake-addons.lock
 *.abi.json
 tools/.media-player-include.m
 tools/.media-player-include.m.ast
+
+# The generated layer of the apple-backports package: written by tools/gen.py from the committed spec/ snapshot at build time.
+packages/a/apple-backports/.gen/

@@ -1,3 +1,0 @@
-api	reason	registry
-+[PKPassLibrary passesOfType:]	registry override the 26.2 spec does not hold	packages/a/apple-backports/registry/PassKit/ios8.json
-+[PKPassLibrary remotePaymentPasses]	registry override the 26.2 spec does not hold	packages/a/apple-backports/registry/PassKit/ios8.json

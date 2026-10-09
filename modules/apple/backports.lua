@@ -774,12 +774,30 @@ local function sections_of(file)
     return names
 end
 
+-- The generated layer (tools/gen.py) is built, not committed. The snapshot it reads is committed under spec/; the generator
+-- writes its output into .gen/ (gitignored) before anything reads that folder, so a clean checkout needs no manual step.
+-- The generator is run once per process and per package root.
+local generated = {}
+function generate(root)
+    if generated[root] then
+        return
+    end
+    generated[root] = true
+    -- A package root with no spec/ snapshot is a fixture a test builds: it has no generated layer to write.
+    if not os.isdir(path.join(root, "spec")) then
+        return
+    end
+    local tree = path.absolute(path.join(root, "..", "..", ".."))
+    os.runv("python3", {path.join(tree, "tools", "gen.py"), "gen", "--tree", tree, "--all"})
+end
+
 function sources(root, library)
-    -- gen/<Framework>/ holds the generated contract layer (tools/gen.py): its sources are built with the library, and its
-    -- rows are read from gen/<Framework>/rows.tsv by registry() as implementations, so both folders are one library's.
+    -- .gen/<Framework>/ holds the generated contract layer: its sources are built with the library, and its rows are read from
+    -- .gen/<Framework>/rows.tsv by registry() as implementations, so both folders are one library's.
+    generate(root)
     local found = table.join(os.files(path.join(root, library.folder, "*.m")), os.files(path.join(root, library.folder, "*.mm")),
-                             os.files(path.join(root, library.folder, "*.c")), os.files(path.join(root, "gen", library.folder, "*.m")),
-                             os.files(path.join(root, "gen", library.folder, "*.c")))
+                             os.files(path.join(root, library.folder, "*.c")), os.files(path.join(root, ".gen", library.folder, "*.m")),
+                             os.files(path.join(root, ".gen", library.folder, "*.c")))
     byteorder.sort(found)
     return found
 end
@@ -1742,6 +1760,7 @@ local function accessor_of(api)
 end
 
 function registry(root)
+    generate(root)
     local listed, told, incomplete, frameworks = {}, {}, {}, {}
     local files = table.join(os.files(path.join(root, "registry", "*.json")), os.files(path.join(root, "registry", "*", "*.json")))
     byteorder.sort(files)
@@ -1783,12 +1802,12 @@ function registry(root)
             end
         end
     end
-    -- gen/<Framework>/rows.tsv: the rows the generator emits for the contract layer, in the fields of a registry row. A generated
+    -- .gen/<Framework>/rows.tsv: the rows the generator emits for the contract layer, in the fields of a registry row. A generated
     -- row is an implementation and is listed as one, but it has to name the source that defines it, and a name the registry
     -- also holds is refused: an override is a registry row only, and the index must not contain it.
-    for _, file in ipairs(os.files(path.join(root, "gen", "*", "rows.tsv"))) do
+    for _, file in ipairs(os.files(path.join(root, ".gen", "*", "rows.tsv"))) do
         local folder = path.filename(path.directory(file))
-        local named = "gen/" .. folder .. "/rows.tsv"
+        local named = ".gen/" .. folder .. "/rows.tsv"
         frameworks[folder] = true
         local header
         for line in io.readfile(file):gmatch("[^\n]+") do
