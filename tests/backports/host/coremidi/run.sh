@@ -13,6 +13,7 @@ renames=""
 for name in MIDIEventListInit MIDIEventListAdd MIDIClientCreateWithBlock MIDIInputPortCreateWithBlock \
     MIDIDestinationCreateWithBlock MIDIInputPortCreateWithProtocol MIDIDestinationCreateWithProtocol \
     MIDISourceCreateWithProtocol MIDISendEventList MIDIReceivedEventList \
+    MIDIEventListForEachEvent \
     kMIDIPropertyUMPActiveGroupBitmap kMIDIPropertyUMPCanTransmitGroupless kMIDIPropertyAssociatedEndpoint \
     MIDICIDeviceObjectKey MIDICIProfileObjectKey MIDIUMPEndpointObjectKey MIDIUMPFunctionBlockObjectKey \
     MIDICIDeviceWasAddedNotification MIDICIDeviceWasRemovedNotification MIDICIProfileWasRemovedNotification \

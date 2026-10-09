@@ -392,6 +392,62 @@ static void check_constants(void)
     check(matched == 12, "constants: the 12 keys and notifications are their names, as on macOS", detail);
 }
 
+// The visitor, held to the bytes macOS handed its own visitor for each input (visit-expectations.h, from
+// oracle/visit.m). Only the bytes a message type defines are compared: the rest of the 28 bytes is stack garbage on
+// macOS, and the visitor's union is not zeroed there.
+#include "visit-expectations.h"
+
+extern void charon_host_MIDIEventListForEachEvent(const MIDIEventList *evtlist, MIDIEventVisitor visitor, void *visitorContext);
+
+static MIDIUniversalMessage gVisited[4];
+static int gVisitedCount;
+
+static void charon_visit_record(void *context, MIDITimeStamp timeStamp, MIDIUniversalMessage message)
+{
+    if (gVisitedCount < 4)
+        gVisited[gVisitedCount++] = message;
+}
+
+static void check_visitor(void)
+{
+    int failed = 0;
+    size_t total = sizeof(charon_visit_cases) / sizeof(charon_visit_cases[0]);
+    for (size_t c = 0; c < total; c++) {
+        const charon_visit_case *row = &charon_visit_cases[c];
+        Byte buffer[256];
+        MIDIEventList *list = (MIDIEventList *)buffer;
+        UInt32 words[4];
+        for (int w = 0; w < row->wordCount; w++)
+            words[w] = row->words[w];
+        MIDIEventPacket *end = MIDIEventListInit(list, row->wordCount > 1 ? kMIDIProtocol_2_0 : kMIDIProtocol_1_0);
+        CharonMIDIEventListAdd(list, sizeof(buffer), end, 42, (size_t)row->wordCount, words);
+        gVisitedCount = 0;
+        charon_host_MIDIEventListForEachEvent(list, charon_visit_record, NULL);
+        const unsigned char *got = gVisitedCount == 1 ? (const unsigned char *)&gVisited[0] : NULL;
+        // Which bytes of the message are defined: the type's own fields, from the expected type and status.
+        size_t from = 8, to = 23;
+        unsigned int type = row->bytes[0];
+        if (type == 0x00 || type == 0x01) to = 13;
+        else if (type == 0x02) to = 17;
+        else if (type == 0x03) to = 18;
+        else if (type == 0x05) to = 26;
+        int same = got != NULL;
+        for (size_t i = 0; same && i < 5; i++)
+            same = got[i] == row->bytes[i];
+        for (size_t i = from; same && i <= to; i++)
+            same = got[i] == row->bytes[i];
+        if (!same) {
+            if (failed < 5)
+                printf("    visitor %s: got %s\n", row->label, got ? "a different message" : "no message");
+            failed++;
+        }
+    }
+    char name[96], detail[64];
+    snprintf(name, sizeof(name), "visitor: %zu macOS messages, the defined bytes equal", total);
+    snprintf(detail, sizeof(detail), "%d differ", failed);
+    check(failed == 0, name, detail);
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -405,6 +461,7 @@ int main(void)
         check_sysex_split();
         check_event_list_rules();
         check_constants();
+        check_visitor();
         printf("checks=%d failures=%d\n", gChecks, gFailures);
     }
     return gFailures == 0 ? 0 : 1;
