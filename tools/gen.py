@@ -63,7 +63,9 @@ SPEC_COLUMNS = ["kind", "api", "cls", "key", "introduced", "decl", "availability
 IOS_CONSTANTS = os.path.join(os.environ.get("HOME", ""), "Git", "projects", "ios", "coordination", "corpus", "cache-26.2",
                              "constants-26.2.tsv")
 IOS_CONSTANTS_GZ = IOS_CONSTANTS + ".gz"   # v-cache26 writes the table compressed
-AVAIL = re.compile(r"\b\w*(?:AVAILABLE|DEPRECATED|OBSOLETED)\s*\((?:[^()]|\([^()]*\))*\)")
+# The 26.2 SDK, the spec's input and the type resolver's source (a workspace path, not a literal one).
+SDK26 = os.path.join(os.environ.get("HOME", ""), "Git", "projects", "ios", "charon", ".agent-work", "sdk-26.2", "iPhoneOS26.2.sdk")
+AVAIL = re.compile(r"\b\w*(?:AVAILABLE|DEPRECATED|OBSOLETED)\w*\s*\((?:[^()]|\([^()]*\))*\)")
 STRING_TYPES = {"NSString", "CFStringRef"}
 
 
@@ -117,6 +119,10 @@ def pins_path(tree, fw):
 def strip_macros(text):
     avail = " ".join(AVAIL.findall(text))
     text = AVAIL.sub(" ", text)
+    # the SDK's own macros after a declaration (__TVOS_PROHIBITED, API_DEPRECATED_WITH_REPLACEMENT("..."), NS_REFINED_FOR_SWIFT):
+    # none is a name, so none may be the last identifier
+    text = re.sub(r"\b(?:API|NS|OS|CF|__)_?[A-Z][A-Z0-9_]*\s*\((?:[^()]|\([^()]*\))*\)", " ", text)
+    text = re.sub(r"\b(?:API|NS|OS|CF)_[A-Z][A-Z0-9_]*\b|\b__[A-Z][A-Z0-9_]*\b", " ", text)
     text = re.sub(r"\b__attribute__\s*\(\((?:[^()]|\([^()]*\))*\)\)", " ", text)
     text = re.sub(r"\bNS_[A-Z_]+\b(?:\s*\((?:[^()]|\([^()]*\))*\))?", " ", text)
     return " ".join(text.split()), " ".join(avail.split())
@@ -723,6 +729,43 @@ def manifest_path(tree, fw):
     return os.path.join(snap_dir(tree, fw), "manifest.tsv")
 
 
+def members_path(tree, fw):
+    return os.path.join(snap_dir(tree, fw), "members.tsv")
+
+
+def spec_hash(r):
+    """The declaration hash of a spec row. A method or property is hashed from its declaration and availability as they are
+    now, so a hand edit of the declaration moves the hash; a constant keeps the hash input recorded (its value is a separate row)."""
+    if r["kind"] in ("method", "property"):
+        return digest(r["kind"], r["api"], r["decl"], r["availability"] if r["availability"] != "-" else "-")
+    return r["hash"]
+
+
+def read_members(tree, fw):
+    path = members_path(tree, fw)
+    if not os.path.exists(path):
+        return None
+    out = {}
+    for line in read(path).splitlines()[1:]:
+        if line:
+            api, digest_text = line.split("\t")
+            out[api] = digest_text
+    return out
+
+
+def member_changes(tree, fw):
+    """(changed, new, removed): members whose declaration hash differs from the recorded one, members with no record, and
+    recorded members the spec no longer holds. None when no record is committed yet."""
+    recorded = read_members(tree, fw)
+    if recorded is None:
+        return None
+    current = {r["api"]: spec_hash(r) for r in load_spec(tree, fw)}
+    changed = [(api, recorded[api], current[api]) for api in sorted(set(current) & set(recorded)) if current[api] != recorded[api]]
+    new = sorted(set(current) - set(recorded))
+    removed = sorted(set(recorded) - set(current))
+    return changed, new, removed
+
+
 def read_manifest(tree, fw):
     """file -> sha256 of the text the generator emits, as recorded in the snapshot; None when no manifest is committed yet."""
     path = manifest_path(tree, fw)
@@ -751,9 +794,18 @@ def cmd_gen(args):
             os.remove(os.path.join(base, name))
         for name, text in sorted(files.items()):
             write(os.path.join(base, name), text)
+        changes = member_changes(args.tree, fw)
+        if changes and changes[0] and not args.record:
+            for api, old, new in changes[0]:
+                print("CHANGED %s: declaration hash %s -> %s (review the override or the stub, then gen --record)" % (api, old, new))
+            print("gen %s: refused, %d member declaration(s) changed since the record" % (fw, len(changes[0])))
+            return 1
         if args.record:
             lines = ["file\tsha256"] + ["%s\t%s" % (name, digest_of(text)) for name, text in sorted(files.items())]
             write(manifest_path(args.tree, fw), "\n".join(lines) + "\n")
+            spec = load_spec(args.tree, fw)
+            write(members_path(args.tree, fw), "\n".join(["api\thash"] + ["%s\t%s" % (r["api"], spec_hash(r)) for r in spec
+                                                                       if r["kind"] in ("method", "property", "constant")]) + "\n")
         print("gen %s: %d files in %s%s" % (fw, len(files), os.path.relpath(base, args.tree), " (manifest recorded)" if args.record else ""))
     return 0
 
@@ -798,6 +850,16 @@ def cmd_check(args):
                 problems.append("build directory differs from the generator: %s" % name)
         for name in stale_constants(base, fw, files):
             problems.append("build directory holds a constants object the generator no longer emits: %s" % name)
+        changes = member_changes(args.tree, fw)
+        if changes is None:
+            problems.append("no member record committed: run gen --record")
+        else:
+            for api, old, new in changes[0]:
+                problems.append("member %s changed: declaration hash %s (recorded) -> %s (now)" % (api, old, new))
+            for api in changes[1]:
+                warnings.append("member with no record yet: %s" % api)
+            for api in changes[2]:
+                warnings.append("recorded member the spec no longer holds: %s" % api)
         spec = load_spec(args.tree, fw)
         defined = set(re.findall(r"CHARON_SPEC_HASH_(\w+)", files["spec.h"]))
         for r in spec:
@@ -820,185 +882,277 @@ def cmd_check(args):
     return 1 if failed else 0
 
 
-def cmd_trace(args):
-    fw, cls = args.framework, args.cls
-    spec = load_spec(args.tree, fw)
-    overridden = set(load_overrides(args.tree, fw))
-    members = [r for r in spec if r["cls"] == cls and r["kind"] in ("method", "property") and r["api"] not in overridden]
-    stubs, skipped = [], []
-    for r in members:
-        stub = stub_for(r)
-        if stub is None:
-            skipped.append(r["api"])
-        else:
-            stubs.append(stub)
-    lines = [MARK, "// Trace-only defaults: built only when CHARON_TRACE_DEFAULTS is set; never shipped.",
-             "#ifdef CHARON_TRACE_DEFAULTS", "#import <%s/%s.h>" % (fw, fw), "#include <stdio.h>", "",
-             "@interface %s (CharonTrace)" % cls]
-    lines += [s.split(" {")[0] + ";" for s in stubs]
-    lines += ["@end", "@implementation %s (CharonTrace)" % cls]
-    lines += stubs
-    lines += ["@end", "#endif"]
-    path = os.path.join(gen_dir(args.tree, fw), "trace", "%sDefaults.m" % fw)
-    write(path, "\n".join(lines) + "\n")
-    write(os.path.join(gen_dir(args.tree, fw), "trace", "skipped.tsv"), "api\n" + "\n".join(skipped) + "\n")
-    print("trace %s %s: %d stubs, %d not classified (skipped.tsv)" % (fw, cls, len(stubs), len(skipped)))
-    return 0
+# ---------------------------------------------------------------- trace layer: generated-but-unimplemented members
+
+# The trace layer is the DEFAULTS of the design: a stub for every declared member of a framework that has no override and no
+# hand implementation, compiled only with CHARON_TRACE_DEFAULTS. A stub logs `unimplemented: <framework> <selector>` once per
+# member, then returns the zero of its return type (nil for an object, 0 for a scalar or enum, a zeroed struct), and sets the
+# NSError an `NSError **` parameter names to an error in the framework's own domain. Block parameters are not invoked.
+SCALAR_TYPES = {"BOOL", "bool", "char", "unsigned char", "short", "unsigned short", "int", "unsigned", "unsigned int", "long",
+                "unsigned long", "long long", "unsigned long long", "float", "double", "NSInteger", "NSUInteger", "CGFloat",
+                "NSTimeInterval", "size_t", "int8_t", "int16_t", "int32_t", "int64_t", "uint8_t", "uint16_t", "uint32_t", "uint64_t"}
+TYPE_INDEX_FRAMEWORKS = ("Foundation", "CoreFoundation", "CoreAudio", "CoreAudioTypes", "AudioToolbox", "AudioUnit", "CoreMedia",
+                         "CoreGraphics", "CoreMIDI", "CoreVideo")
 
 
-# ---------------------------------------------------------------- data holders (member families)
+def strip_platform_blocks(text):
+    """The text the iOS build sees: #if TARGET_OS_VISION (and its #else-less forms) blocks are removed, nested ones included."""
+    out, depth = [], 0
+    for line in text.split("\n"):
+        stripped = line.strip()
+        if depth == 0 and re.match(r"#\s*if\s+TARGET_OS_VISION\b", stripped):
+            depth = 1
+            continue
+        if depth > 0:
+            if re.match(r"#\s*if", stripped):
+                depth += 1
+            elif re.match(r"#\s*endif", stripped):
+                depth -= 1
+            continue
+        out.append(line)
+    return "\n".join(out)
 
-# A class is a DATA HOLDER when (owner rule, 2026-10-10): every public property reads back what was set (a host round trip),
-# the class has only initialisers, accessors, copy/NSCoding/description methods and no layout, animation or IO side effect
-# (checked on its declared methods), and no property is derived from another (setting one never moves another). Anything
-# else is left for hand-written work and listed.
-ALLOWED_SELECTORS = re.compile(r"^(init|copy$|mutableCopy$|copyWithZone:|mutableCopyWithZone:|encodeWithCoder:|initWithCoder:|"
-                               r"new$|description$|debugDescription$|hash$|isEqual:$|supportsSecureCoding$|superclass$|class$)")
-PROBE_SOURCE = "tools/gen-roundtrip-oracle.m"
-SDK26 = os.path.join(os.environ.get("HOME", ""), "Git", "projects", "ios", "charon", ".agent-work", "sdk-26.2",
-                     "iPhoneOS26.2.sdk")
+
+def declared_names(sdk, fw):
+    """Every typedef, class and protocol name the iOS build sees in the framework and the frameworks its types come from."""
+    names = set()
+    for f in (fw,) + TYPE_INDEX_FRAMEWORKS + ("AVFAudio",):
+        for path in glob.glob(os.path.join(sdk, "System", "Library", "Frameworks", f + ".framework", "Headers", "*.h")):
+            text = strip_platform_blocks(re.sub(r"//[^\n]*", " ", re.sub(r"/\*.*?\*/", " ", read_any(path), flags=re.S)))
+            names.update(re.findall(r"typedef\s[^;]*?\b(\w+)\s*(?:NS_\w+|API_\w+|OS_\w+|CF_\w+)?[^;]*;", text))
+            names.update(re.findall(r"@(?:interface|protocol)\s+(\w+)", text))
+            names.update(re.findall(r"typedef\s+(?:NS_ENUM|NS_OPTIONS|NS_TYPED_ENUM|NS_TYPED_EXTENSIBLE_ENUM|CF_ENUM|enum)[^;]*?\b(\w+)\s*;", text, re.S))
+    return names
 
 
-def property_type(decl):
-    """The property's type from its declaration: bool, integer, double, float, string, or other (not tested)."""
+def type_index(sdk, fw):
+    """typedef name -> the text it is defined as, from the framework and the frameworks its types come from."""
+    index = {}
+    for f in (fw,) + TYPE_INDEX_FRAMEWORKS:
+        for path in glob.glob(os.path.join(sdk, "System", "Library", "Frameworks", f + ".framework", "Headers", "*.h")):
+            # comments first: a doc comment that mentions `typedef` would otherwise start a match that runs into the real one
+            text = re.sub(r"/\*.*?\*/", " ", read_any(path), flags=re.S)
+            text = strip_platform_blocks(re.sub(r"//[^\n]*", " ", text))
+            for match in re.finditer(r"typedef\s+([^;{}]*?)\s*\b(\w+)\s*(?:API_\w+\([^;]*?\)\s*)*;", text):
+                index.setdefault(match.group(2), " ".join(match.group(1).split()))
+            for match in re.finditer(r"typedef\s+(?:struct|enum)\b[^{;]*\{[^}]*\}\s*(\w+)\s*;", text, re.S):
+                index.setdefault(match.group(1), "struct")
+    return index
+
+
+NULLABILITY_WORDS = re.compile(r"\b(_Nullable|_Nonnull|__nullable|__nonnull|_Null_unspecified|nullable|nonnull|null_resettable|null_unspecified)\b")
+
+
+PLATFORM_MACROS = re.compile(r"\b__[A-Z][A-Z0-9_]*(?:\([^()]*\))?")
+
+
+def strip_nullability(decl):
+    """A declaration without its nullability words and the platform macros the SDK puts after it (__TVOS_PROHIBITED and the
+    like): the stub compiles whether or not the header's audit and availability macros are in scope."""
+    return " ".join(PLATFORM_MACROS.sub(" ", NULLABILITY_WORDS.sub(" ", decl)).split())
+
+
+def resolve_kind(type_text, index, depth=0):
+    """'void', 'object', 'scalar' or 'struct' for a declared type, through its typedefs."""
+    text = " ".join(type_text.replace("*", " * ").split())
+    if text in ("void",):
+        return "void"
+    if "*" in text or text in ("id", "instancetype") or re.search(r"<.*>", text):
+        return "object"
+    name = text.split()[-1] if text.split() else text
+    if text in SCALAR_TYPES or name in SCALAR_TYPES:
+        return "scalar"
+    if name in index and depth < 6:
+        target = index[name]
+        if target == "struct" or target.startswith("struct"):
+            return "struct"
+        kind = resolve_kind(target, index, depth + 1)
+        return kind
+    if re.match(r"^(NS_ENUM|NS_OPTIONS|enum)\b", text) or name.startswith("NS") and name.endswith("Options"):
+        return "scalar"
+    return "struct"
+
+
+def hand_implementations(tree):
+    """(class, selector) for every method a hand-written source of the package defines, and (class, name) for every
+    @synthesize or @dynamic, so no stub replaces a hand implementation. A signature spans lines until its brace."""
+    found = set()
+    root = os.path.join(tree, SOURCES_ROOT)
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in (".gen", "spec", "registry", "facts", "overrides", "gen")]
+        for name in filenames:
+            if not name.endswith((".m", ".mm")):
+                continue
+            current, signature = None, None
+            for line in read_any(os.path.join(dirpath, name)).splitlines():
+                if signature is not None:
+                    signature += " " + line.strip()
+                    if "{" in line or ";" in line:
+                        sel = selector_of(signature.split("{")[0].split(";")[0])
+                        if sel:
+                            found.add((current, sel))
+                        signature = None
+                    continue
+                impl = re.match(r"^\s*@implementation\s+(\w+)", line)
+                if impl:
+                    current = impl.group(1)
+                    continue
+                if re.match(r"^\s*@end\b", line):
+                    current = None
+                    continue
+                if current is None:
+                    continue
+                synth = re.match(r"^\s*@(?:synthesize|dynamic)\s+(\w+)", line)
+                if synth:
+                    found.add((current, synth.group(1)))
+                if re.match(r"^\s*[-+]\s*\(", line):
+                    if "{" in line or ";" in line:
+                        sel = selector_of(line.split("{")[0].split(";")[0])
+                        if sel:
+                            found.add((current, sel))
+                    else:
+                        signature = line.strip()
+    return found
+
+
+UNDECLARED_CHECK = re.compile(r"\b([A-Z][A-Za-z0-9_]*)\b")
+BUILTIN_TYPES = {"BOOL", "NSInteger", "NSUInteger", "CGFloat", "NSTimeInterval", "NSError", "NSString", "NSNumber", "NSArray",
+                 "NSDictionary", "NSSet", "NSData", "NSURL", "NSDate", "NSUUID", "NSLocale", "NSMapTable", "NSPointerArray",
+                 "NSMeasurement", "NSIndexPath", "NSProgress", "NSOperationQueue", "NSNotificationName", "NSNotificationCenter",
+                 "NSOrderedSet", "NSCountedSet", "NSFileHandle", "NSBundle", "NSLayoutConstraint", "NSRange", "UInt32", "SInt32",
+                 "OSStatus", "Float32", "Float64", "Boolean", "AudioObjectID", "AudioStreamBasicDescription", "AudioBufferList",
+                 "AudioChannelLayout", "AudioComponentDescription", "AudioUnit", "AudioBuffer", "AudioUnitParameterID",
+                 "AudioUnitParameterValue", "AudioTimeStamp", "CFStringRef", "CFTypeRef", "CFURLRef", "CMTime", "CGPoint", "CGSize",
+                 "CGRect", "CFTimeInterval", "MIDIEndpointRef", "MIDIClientRef"}
+
+
+def stub_members(spec, fw, sdk, overridden, hand):
+    """The stubs for one framework, one per member it does not implement, grouped by class; and the members left out with the reason."""
+    index = type_index(sdk, fw)
+    declared = declared_names(sdk, fw)
+    seen = set()
+    by_class, skipped = {}, []
+    for r in spec:
+        if r["kind"] not in ("method", "property"):
+            continue
+        cls = r["cls"]
+        decl = r["decl"].rstrip(";").strip()
+        undeclared = sorted(set(t for t in UNDECLARED_CHECK.findall(strip_nullability(decl))
+                                if t not in declared and t not in BUILTIN_TYPES and not t.startswith(("NS_", "API_", "CF_"))))
+        if undeclared:
+            skipped.append((r["api"], "type not declared for iOS: " + ",".join(undeclared)))
+            continue
+        if r["kind"] == "property":
+            name = r["api"].rstrip("]").split()[-1]
+            selector = getter_of(decl, name)
+            if r["api"] in overridden or (cls, name) in hand or (cls, selector) in hand:
+                skipped.append((r["api"], "override or hand implementation"))
+                continue
+            decl = strip_nullability(decl)
+            type_text = property_type_text(decl, name)
+            kind = resolve_kind(type_text, index)
+            readwrite = "readonly" not in decl
+            if (cls, selector) in seen:
+                skipped.append((r["api"], "same selector declared twice in the class"))
+                continue
+            seen.add((cls, selector))
+            by_class.setdefault(cls, []).append(("-[%s %s]" % (cls, selector), "property-get", name, type_text, kind, decl))
+            if readwrite and (cls, "set" + name[:1].upper() + name[1:] + ":") not in hand:
+                setter = "set%s%s:" % (name[:1].upper(), name[1:])
+                by_class[cls].append(("-[%s %s]" % (cls, setter), "property-set", name, type_text, "void", decl))
+            continue
+        selector = r["api"].rstrip("]").split(" ", 1)[1]
+        if r["api"] in overridden or (cls, selector) in hand:
+            skipped.append((r["api"], "override or hand implementation"))
+            continue
+        decl = strip_nullability(decl)
+        ret = re.match(r"^[-+]\s*\(\s*([^)]*?)\s*\)", decl)
+        if not ret:
+            skipped.append((r["api"], "no return type parsed"))
+            continue
+        if (cls, selector) in seen:
+            skipped.append((r["api"], "same selector declared twice in the class"))
+            continue
+        seen.add((cls, selector))
+        kind = resolve_kind(ret.group(1), index)
+        by_class.setdefault(cls, []).append((r["api"], "method", selector, ret.group(1), kind, decl))
+    return by_class, skipped
+
+
+def property_type_text(decl, name):
     text = re.sub(r"\([^()]*\)", " ", decl.replace("@property", " "))
     text = re.sub(r"\b(_Nullable|_Nonnull|__nullable|__nonnull|_Null_unspecified|nullable|nonnull|null_resettable)\b", " ", text)
-    text = text.strip().rstrip(";").strip()
-    name = re.findall(r"([A-Za-z_]\w*)\s*$", text)
-    type_text = text[:text.rfind(name[-1])].strip() if name else text
-    type_text = " ".join(type_text.replace("*", " * ").split())
-    if type_text in ("BOOL", "bool"):
-        return "bool"
-    if type_text in ("NSInteger", "NSUInteger", "long", "unsigned long"):
-        return "integer"
-    if type_text in ("double", "CGFloat", "NSTimeInterval"):
-        return "double"
-    if type_text == "float":
-        return "float"
-    if type_text in ("NSString *", "NSString * const"):
-        return "string"
-    return "other"
+    text = " ".join(text.rstrip(";").split())
+    return " ".join(text[:text.rfind(name)].split()) if name in text else text
 
 
-def unavailable_init(header):
-    """Classes whose declared -init is NS_UNAVAILABLE in the header (from each @interface up to its @end)."""
-    names = set()
-    for match in re.finditer(r"@interface\s+(\w+)\b(.*?)@end", header, re.S):
-        if re.search(r"-\s*\([^)]*\)\s*init\s+NS_UNAVAILABLE", match.group(2)):
-            names.add(match.group(1))
-    return names
+def stub_text(fw, cls, api, kind, selector, type_text, zero_kind, decl):
+    log = ('static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; '
+           'fprintf(stderr, "unimplemented: %s %%s\\n", "%s"); }' % (fw, api))
+    error_arg = re.search(r"\(\s*NSError\s*\*\s*\*\s*\)\s*(\w+)", decl)
+    error = ""
+    if error_arg:
+        error = ('if (%s) { *%s = [NSError errorWithDomain:@"%s.Unimplemented" code:-1 userInfo:@{NSLocalizedDescriptionKey: '
+                 '@"%s is not implemented by the port"}]; } ' % (error_arg.group(1), error_arg.group(1), fw, api))
+    if zero_kind == "void":
+        zero = ""
+    elif zero_kind == "object":
+        zero = " return nil;"
+    elif zero_kind == "scalar":
+        zero = " return 0;"
+    else:
+        zero = " return (%s){0};" % type_text
+    if kind == "property-get":
+        head = "- (%s)%s" % (type_text, selector)
+    elif kind == "property-set":
+        head = "- (void)%s:(%s)value" % (selector[:-1], type_text)
+    else:
+        head = decl
+    return "%s { %s%s%s }" % (head, log, (" " + error) if error else " ", zero.strip())
+
+
+def cmd_trace(args):
+    fw = args.framework
+    sdk = args.sdk or SDK26
+    spec = load_spec(args.tree, fw)
+    overridden = set(load_overrides(args.tree, fw))
+    hand = hand_implementations(args.tree)
+    by_class, skipped = stub_members(spec, fw, sdk, overridden, hand)
+    lines = [MARK, "// Trace-only defaults: built only when CHARON_TRACE_DEFAULTS is set; never shipped. One class per category.",
+             "// A stub logs once `unimplemented: %s <selector>`, returns the zero of its type, and sets an NSError an NSError ** names." % fw,
+             "// Block parameters are not invoked. Members with an override or a hand implementation are not stubbed.",
+             "#ifdef CHARON_TRACE_DEFAULTS", "#import <%s/%s.h>" % (fw, fw), "#include <stdio.h>", ""]
+    stubbed = 0
+    for cls in sorted(by_class):
+        members = by_class[cls]
+        lines.append("@interface %s (CharonTrace)" % cls)
+        for api, kind, selector, type_text, zero_kind, decl in members:
+            if kind == "property-get":
+                lines.append("- (%s)%s;" % (type_text, selector))
+            elif kind == "property-set":
+                lines.append("- (void)%s:(%s)value;" % (selector[:-1], type_text))
+            else:
+                lines.append(decl.rstrip(";") + ";")
+        lines.append("@end")
+        lines.append("@implementation %s (CharonTrace)" % cls)
+        for api, kind, selector, type_text, zero_kind, decl in members:
+            if zero_kind == "struct" and type_text.strip() == "":
+                skipped.append((api, "no type text"))
+                continue
+            lines.append(stub_text(fw, cls, api, kind, selector, type_text, zero_kind, decl))
+            stubbed += 1
+        lines.append("@end")
+    lines += ["#endif"]
+    path = os.path.join(gen_dir(args.tree, fw), "trace", "%sDefaults.m" % fw)
+    write(path, "\n".join(lines) + "\n")
+    write(os.path.join(gen_dir(args.tree, fw), "trace", "skipped.tsv"), "api\treason\n" + "".join("%s\t%s\n" % s for s in skipped))
+    print("trace %s: %d stubs in %d classes, %d members left out (skipped.tsv)" % (fw, stubbed, len(by_class), len(skipped)))
+    return 0
 
 
 def getter_of(decl, name):
     found = re.search(r"getter\s*=\s*(\w+)", decl)
     return found.group(1) if found else name
-
-
-def cmd_classify(args):
-    fw = args.framework
-    spec = load_spec(args.tree, fw)
-    members = {}
-    for r in spec:
-        if r["kind"] in ("property", "method"):
-            members.setdefault(r["cls"], []).append(r)
-    probe_lines, static, per_class = [], {}, {}
-    for cls in sorted(members):
-        props = [r for r in members[cls] if r["kind"] == "property"]
-        if not props:
-            continue
-        bad, accessors = [], set()
-        for p in props:
-            name = p["api"].rstrip("]").split()[-1]
-            accessors.add(getter_of(p["decl"], name))
-            if "readonly" not in p["decl"]:
-                accessors.add("set" + name[:1].upper() + name[1:] + ":")
-        for m in members[cls]:
-            if m["kind"] != "method":
-                continue
-            selector = m["api"].rstrip("]").split(" ", 1)[1]
-            if ALLOWED_SELECTORS.match(selector) or selector in accessors:
-                continue
-            bad.append(m["api"])
-        static[cls] = bad
-        lines = ["CLASS\t%s" % cls]
-        for p in props:
-            name = p["api"].rstrip("]").split()[-1]
-            readwrite = "no" if "readonly" in p["decl"] else "yes"
-            lines.append("PROP\t%s\t%s\t%s\t%s\t%s" % (cls, name, getter_of(p["decl"], name), property_type(p["decl"]), readwrite))
-        per_class[cls] = lines
-    run = os.path.join(args.tree, ".agent-work", "runs", "gen-roundtrip", fw)
-    os.makedirs(run, exist_ok=True)
-    binary = os.path.join(run, "roundtrip")
-    source = os.path.join(args.tree, PROBE_SOURCE)
-    if args.catalyst:
-        sdk = args.catalyst_sdk
-        subprocess.run(["clang", "-fobjc-arc", "-w", "-target", "arm64-apple-ios14.0-macabi", "-isysroot", sdk,
-                        "-iframework", os.path.join(sdk, "System", "iOSSupport", "System", "Library", "Frameworks"),
-                        "-framework", "Foundation", "-framework", fw, source, "-o", binary], check=True)
-    else:
-        # the framework is linked so its classes are loaded; a class the host lacks answers absent, and is left for hand work
-        subprocess.run(["clang", "-fobjc-arc", "-w", "-framework", "Foundation", "-framework", fw, source, "-o", binary], check=True)
-    # One process per class: a class whose instance or setter crashes the probe is recorded as crashed, and left for hand work.
-    supers = {}
-    sdk = args.sdk or SDK26
-    header = header_text(sdk, fw)
-    for name, parent in re.findall(r"@interface\s+(\w+)\s*:\s*(\w+)", header):
-        supers.setdefault(name, parent)
-    no_init = unavailable_init(header)
-    measured, crashed = {}, []
-    for cls in sorted(per_class):
-        tsv = os.path.join(run, "class.tsv")
-        write(tsv, "\n".join(per_class[cls]) + "\n")
-        result = subprocess.run([binary, tsv], capture_output=True, text=True)
-        if result.returncode != 0:
-            crashed.append(cls)
-            continue
-        for line in result.stdout.splitlines():
-            f = line.split("\t")
-            if f[0] == "CLASS":
-                measured.setdefault(f[1], {"init": f[2], "props": []})
-            elif f[0] == "PROP":
-                measured[f[1]]["props"].append((f[2], f[3], f[4] if len(f) > 4 else ""))
-    rows = ["class\tverdict\tsuperclass\tinit\tproperties\tround_trip_ok\tfail\treadonly\tuntested\tderived_by\tmethods_not_allowed\treasons"]
-    holders, others = [], []
-    for cls in sorted(measured):
-        m = measured[cls]
-        status = [s for _, s, _ in m["props"]]
-        derived = sorted(set(q for _, _, moved in m["props"] for q in moved.split(",") if q))
-        reasons = []
-        if static.get(cls):
-            reasons.append("methods")
-        if m["init"] != "yes":
-            reasons.append("init")
-        if status.count("untested"):
-            reasons.append("untested")
-        if status.count("readonly"):
-            # a readonly property cannot be set, so it cannot read back what was set: the rule does not hold for it
-            reasons.append("readonly")
-        if cls in no_init:
-            # the class's own initialiser is NS_UNAVAILABLE: it is built through another initialiser, which this probe does not call
-            reasons.append("init-unavailable")
-        parent = supers.get(cls, "unknown")
-        if parent != "NSObject":
-            # a class under another framework class answers through that class's own state (an AudioUnit, a CF object)
-            reasons.append("superclass:" + parent)
-        if status.count("fail"):
-            reasons.append("fail")
-        if derived:
-            reasons.append("derived")
-        verdict = "data-holder" if not reasons else "hand"
-        (holders if verdict == "data-holder" else others).append(cls)
-        rows.append("\t".join([cls, verdict, supers.get(cls, "unknown"), m["init"], str(len(status)), str(status.count("ok")),
-                               str(status.count("fail")), str(status.count("readonly")), str(status.count("untested")),
-                               ",".join(derived), ";".join(static.get(cls, [])) or "-", ";".join(reasons) or "-"]))
-    for cls in crashed:
-        rows.append("\t".join([cls, "hand", supers.get(cls, "unknown"), "crashed", "-", "-", "-", "-", "-", "-",
-                               ";".join(static.get(cls, [])) or "-", "crashed"]))
-        others.append(cls)
-    write(os.path.join(snap_dir(args.tree, fw), "datahold.tsv"), "\n".join(rows) + "\n")
-    print("classify %s: %d classes probed, %d crashed in the probe, %d data holders, %d left for hand-written work (datahold.tsv)"
-          % (fw, len(measured), len(crashed), len(holders), len(others)))
-    return 0
 
 
 def cmd_diff(args):
@@ -1112,8 +1266,6 @@ def main():
     if args.command == "check":
         return cmd_check(args)
     if args.command == "trace":
-        if not args.cls:
-            raise SystemExit("trace needs --class")
         return cmd_trace(args)
     return cmd_diff(args)
 

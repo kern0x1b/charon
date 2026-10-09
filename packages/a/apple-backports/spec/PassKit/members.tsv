@@ -1,0 +1,513 @@
+api	hash
+PKAddSecureElementPassErrorDomain	5cce3fadf65613b1
+PKContactFieldEmailAddress	61a7d8ff5dc9cc03
+PKContactFieldName	71b483b03041728c
+PKContactFieldPhoneNumber	d4a49509ee559aec
+PKContactFieldPhoneticName	0e30f6bff44322ab
+PKContactFieldPostalAddress	c1f6fb541c7a321c
+PKDisbursementErrorContactFieldUserInfoKey	531483f5f0eb518f
+PKDisbursementErrorDomain	958cc461abefe2ff
+PKEncryptionSchemeECC_V2	6989f3d9143c3bda
+PKEncryptionSchemeRSA_V2	a505ca30d1026a6e
+PKIdentityErrorDomain	d9b8ae109cdf3cd6
+PKMerchantCategoryCodeNone	35d78ed4d4a93965
+PKPaymentErrorContactFieldUserInfoKey	8396e7123b1e1229
+PKPaymentErrorDomain	49bb4fbad04f0756
+PKPaymentErrorPostalAddressUserInfoKey	c76c503f1b95aaf1
+PKPaymentNetworkAmex	92c82d209df1f41e
+PKPaymentNetworkBancomat	ad895b0159e6799a
+PKPaymentNetworkBancontact	967546eb12bb458a
+PKPaymentNetworkBankAxept	122f0d70d7299558
+PKPaymentNetworkBarcode	dde95768a6758144
+PKPaymentNetworkCarteBancaire	2f7316bbf5ea5bb2
+PKPaymentNetworkCarteBancaires	ff171c1ab228fe35
+PKPaymentNetworkCartesBancaires	6991259de522b0ba
+PKPaymentNetworkChinaUnionPay	04e602021002b79e
+PKPaymentNetworkConecs	7001062081142186
+PKPaymentNetworkDankort	640427045eb260ac
+PKPaymentNetworkDiscover	762b6b1269cdf6c8
+PKPaymentNetworkEftpos	beb1e446a06a35e4
+PKPaymentNetworkElectron	1ecf1dad051780d6
+PKPaymentNetworkElo	f3ced736363e2c9d
+PKPaymentNetworkGirocard	13c2bc082b8049fa
+PKPaymentNetworkHimyan	8853f5ba13b3fef0
+PKPaymentNetworkIDCredit	2f2c592257c825ca
+PKPaymentNetworkInterac	c10daf13007fbe3e
+PKPaymentNetworkJCB	1866505f653faef9
+PKPaymentNetworkJaywan	c96a3ebb7a4d947d
+PKPaymentNetworkMada	46913331debfa1b3
+PKPaymentNetworkMaestro	aedc110fd08594e2
+PKPaymentNetworkMasterCard	58c6f1ae32783267
+PKPaymentNetworkMeeza	e736f84a01858d8a
+PKPaymentNetworkMir	d0d5d400dec88ef0
+PKPaymentNetworkMyDebit	ba30f009329eda50
+PKPaymentNetworkNAPAS	fb5bd4dbc9e81386
+PKPaymentNetworkNanaco	6f3869b533bc3afb
+PKPaymentNetworkPagoBancomat	722c8dc78855ce43
+PKPaymentNetworkPostFinance	b3b9de17ca50173d
+PKPaymentNetworkPrivateLabel	1a9b30c57c769083
+PKPaymentNetworkQuicPay	7b97b969a13175b6
+PKPaymentNetworkSuica	d4565ed92ba69196
+PKPaymentNetworkTmoney	5cd04fec8db18ccb
+PKPaymentNetworkVPay	4623134b746ec0f7
+PKPaymentNetworkVisa	6cacf4e0cfee6cda
+PKPaymentNetworkWaon	7ebcceb88b17a32e
+PKShareSecureElementPassErrorDomain	7a862a14eeba17cc
+PKStoredValuePassBalanceTypeCash	c0915f7c11b0c90b
+PKStoredValuePassBalanceTypeLoyaltyPoints	7f782b3a855e6d4d
+-[PKAddCarKeyPassConfiguration init]	f1063014a9196281
+-[PKAddCarKeyPassConfiguration password]	aeb5c5a3e299cc08
+-[PKAddCarKeyPassConfiguration supportedRadioTechnologies]	1ea0c7fef3018d3a
+-[PKAddCarKeyPassConfiguration manufacturerIdentifier]	8adddc5ec1e62a98
+-[PKAddCarKeyPassConfiguration provisioningTemplateIdentifier]	5bc67d4d4f690606
+-[PKIdentityDocumentMetadata init]	2051a5975f81b05e
++[PKIdentityDocumentMetadata new]	5590e51670bfe064
+-[PKIdentityDocumentMetadata credentialIdentifier]	1d234fc1199f84a7
+-[PKIdentityDocumentMetadata sharingInstanceIdentifier]	ad305564223fda1e
+-[PKIdentityDocumentMetadata cardTemplateIdentifier]	02d49bb899cde47f
+-[PKIdentityDocumentMetadata cardConfigurationIdentifier]	f11241525c2116b1
+-[PKIdentityDocumentMetadata serverEnvironmentIdentifier]	fba3a41d19d37a94
+-[PKIdentityDocumentMetadata issuingCountryCode]	6e1402c624874b08
+-[PKIdentityDocumentMetadata documentType]	c3fbebc1bfe7091e
+-[PKAddIdentityDocumentMetadata initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardTemplateIdentifier:issuingCountryCode:documentType:preview:]	c6737bb866314cff
+-[PKAddIdentityDocumentMetadata preview]	528f7205c5915fe7
+-[PKJapanIndividualNumberCardMetadata initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardTemplateIdentifier:preview:]	c5c846e3a411411b
+-[PKJapanIndividualNumberCardMetadata initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardConfigurationIdentifier:preview:]	ed18fba7d52c5439
+-[PKJapanIndividualNumberCardMetadata authenticationPassword]	d998094c474d5d90
+-[PKJapanIndividualNumberCardMetadata signingPassword]	6fd29ca3225e4bd7
+-[PKJapanIndividualNumberCardMetadata preview]	b3fbf7301f778e47
++[PKAddIdentityDocumentConfiguration configurationForMetadata:completion:]	bc7ad295371aa02e
+-[PKAddIdentityDocumentConfiguration metadata]	e42114e12c6b12f8
++[PKAddPassButton addPassButtonWithStyle:]	f5fc7c3acfd70d3b
+-[PKAddPassButton initWithAddPassButtonStyle:]	f61d03fba1dce150
+-[PKAddPassButton UI_APPEARANCE_SELECTOR]	de0ed11fe8bcbcfe
+-[PKAddPassesViewController initWithPass:]	afbf3369aa47a290
+-[PKAddPassesViewController initWithPasses:]	46236dd6a7d846bf
+-[PKAddPassesViewController initWithIssuerData:signature:error:]	1c6b71dba586151a
++[PKAddPassesViewController canAddPasses]	15e4b1bf645e12b4
+-[PKAddPassesViewController delegate]	e1d62d6f06e53292
+-[PKAddPaymentPassRequestConfiguration initWithEncryptionScheme:]	622c2b46ff112674
+-[PKAddPaymentPassRequestConfiguration encryptionScheme]	53536b7cb72bf459
+-[PKAddPaymentPassRequestConfiguration style]	deb913ccdec93d62
+-[PKAddPaymentPassRequestConfiguration cardholderName]	29a9a7806296ae07
+-[PKAddPaymentPassRequestConfiguration primaryAccountSuffix]	1bfba6e4a15deb96
+-[PKAddPaymentPassRequestConfiguration cardDetails]	b899669aaa7166ce
+-[PKAddPaymentPassRequestConfiguration localizedDescription]	18894588e1622f76
+-[PKAddPaymentPassRequestConfiguration primaryAccountIdentifier]	7be90365f1f58b35
+-[PKAddPaymentPassRequestConfiguration paymentNetwork]	7797ef16ae2fc3ac
+-[PKAddPaymentPassRequestConfiguration productIdentifiers]	ea1cc130e3c7c68a
+-[PKAddPaymentPassRequestConfiguration requiresFelicaSecureElement]	076a1f53acbe55e3
+-[PKAddPaymentPassRequest init]	92f02f9a3f61d2d1
+-[PKAddPaymentPassRequest encryptedPassData]	552375b00b7d388b
+-[PKAddPaymentPassRequest activationData]	8e7f120caf338b3c
+-[PKAddPaymentPassRequest ephemeralPublicKey]	f9f6d4f477234b87
+-[PKAddPaymentPassRequest wrappedKey]	f1c271095b1be660
++[PKAddPaymentPassViewController canAddPaymentPass]	7161be33ed8c15fe
+-[PKAddPaymentPassViewController initWithRequestConfiguration:delegate:]	e25156480b66b69e
+-[PKAddPaymentPassViewController delegate]	17bab5bfda6964cc
+-[PKAddPassMetadataPreview initWithPassThumbnail:localizedDescription:]	e44bbd181c7e454b
++[PKAddPassMetadataPreview previewWithPassThumbnail:localizedDescription:]	36375cbb027781e6
+-[PKAddPassMetadataPreview init]	d5b3f5cfa5bb6e79
++[PKAddPassMetadataPreview new]	dca3f4b772a2077b
+-[PKAddPassMetadataPreview passThumbnailImage]	cd0fb38bb1c309c4
+-[PKAddPassMetadataPreview localizedDescription]	5250b38a6ba245db
+-[PKAddSecureElementPassConfiguration init]	1d4cb353db10b744
++[PKAddSecureElementPassConfiguration new]	9ba633d506cd9556
+-[PKAddSecureElementPassConfiguration issuerIdentifier]	09306a905a1313cd
+-[PKAddSecureElementPassConfiguration localizedDescription]	3ac9f0e51e400f79
++[PKAddSecureElementPassViewController canAddSecureElementPassWithConfiguration:]	70dff8523f57dfa8
+-[PKAddSecureElementPassViewController initWithConfiguration:delegate:]	3445d952a8cf0dd1
+-[PKAddSecureElementPassViewController delegate]	6b5db3e792969690
+-[PKShareablePassMetadataPreview initWithTemplateIdentifier:]	668b946fbd94321a
++[PKShareablePassMetadataPreview previewWithTemplateIdentifier:]	7fa42fedf7eba521
+-[PKShareablePassMetadataPreview ownerDisplayName]	d7ff7891ef6279b9
+-[PKShareablePassMetadataPreview provisioningTemplateIdentifier]	127d1b9c2982510c
+-[PKShareablePassMetadata initWithProvisioningCredentialIdentifier:cardConfigurationIdentifier:sharingInstanceIdentifier:passThumbnailImage:ownerDisplayName:localizedDescription:]	88d2e0ce164a30fc
+-[PKShareablePassMetadata initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:passThumbnailImage:ownerDisplayName:localizedDescription:accountHash:templateIdentifier:relyingPartyIdentifier:requiresUnifiedAccessCapableDevice:]	7687f8db7f462aed
+-[PKShareablePassMetadata initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardTemplateIdentifier:preview:]	b4ae3a1a1090a394
+-[PKShareablePassMetadata initWithProvisioningCredentialIdentifier:sharingInstanceIdentifier:cardConfigurationIdentifier:preview:]	121e0fa7ca6ada33
+-[PKShareablePassMetadata credentialIdentifier]	6cfdf1580a47d2c9
+-[PKShareablePassMetadata sharingInstanceIdentifier]	615e6c99022061d6
+-[PKShareablePassMetadata templateIdentifier]	e019e03f96468bb3
+-[PKShareablePassMetadata cardTemplateIdentifier]	4ab3b0edb86ae232
+-[PKShareablePassMetadata cardConfigurationIdentifier]	37b9f4c03d1e564a
+-[PKShareablePassMetadata requiresUnifiedAccessCapableDevice]	ea79fa5b8c8018d0
+-[PKShareablePassMetadata serverEnvironmentIdentifier]	0c5f35d8718d7440
+-[PKShareablePassMetadata preview]	43562b8e287bb220
+-[PKShareablePassMetadata passThumbnailImage]	c2215c28b8dd6e66
+-[PKShareablePassMetadata localizedDescription]	df4a97a0031840e1
+-[PKShareablePassMetadata ownerDisplayName]	1eab9a5d7c12c8cf
+-[PKShareablePassMetadata accountHash]	77a56fcc8815479d
+-[PKShareablePassMetadata relyingPartyIdentifier]	61f5ca3f8dba2897
++[PKAddShareablePassConfiguration configurationForPassMetadata:provisioningPolicyIdentifier:primaryAction:completion:]	47f94dd6b9173108
++[PKAddShareablePassConfiguration configurationForPassMetadata:primaryAction:completion:]	748cfeb049e613b9
+-[PKAddShareablePassConfiguration primaryAction]	e4bb0429f324bca0
+-[PKAddShareablePassConfiguration credentialsMetadata]	161e2564ab787ea3
+-[PKAddShareablePassConfiguration provisioningPolicyIdentifier]	9e1a2df0ceaf1782
+-[PKAutomaticReloadPaymentRequest paymentDescription]	aa5e65c1a6bd8afc
+-[PKAutomaticReloadPaymentRequest automaticReloadBilling]	53d7091d9673f139
+-[PKAutomaticReloadPaymentRequest billingAgreement]	3098edbdafb94733
+-[PKAutomaticReloadPaymentRequest managementURL]	2e087cf000d3d31a
+-[PKAutomaticReloadPaymentRequest tokenNotificationURL]	1d6c38656ba064bf
+-[PKAutomaticReloadPaymentRequest init]	349e80ed26d2cabd
+-[PKAutomaticReloadPaymentRequest initWithPaymentDescription:automaticReloadBilling:managementURL:]	6b4582b75a95e3ce
+-[PKAutomaticReloadPaymentSummaryItem thresholdAmount]	08eb800179170f22
+-[PKBarcodeEventMetadataRequest deviceAccountIdentifier]	37ee90682d973688
+-[PKBarcodeEventMetadataRequest lastUsedBarcodeIdentifier]	96e2fec8e8ceb2a0
+-[PKBarcodeEventMetadataResponse initWithPaymentInformation:]	31d9ccedc328988d
+-[PKBarcodeEventMetadataResponse paymentInformation]	699e43189ca939f0
+-[PKBarcodeEventSignatureRequest deviceAccountIdentifier]	1c85ed2172233ed1
+-[PKBarcodeEventSignatureRequest transactionIdentifier]	293fc6b5dbfeab0c
+-[PKBarcodeEventSignatureRequest barcodeIdentifier]	53e5cec68d2c46a4
+-[PKBarcodeEventSignatureRequest rawMerchantName]	423b94d22a40d66a
+-[PKBarcodeEventSignatureRequest merchantName]	37a57f27594d6422
+-[PKBarcodeEventSignatureRequest transactionDate]	793b4aaf14901970
+-[PKBarcodeEventSignatureRequest currencyCode]	5ff4ea6145e8b60b
+-[PKBarcodeEventSignatureRequest amount]	bdf3a3c1f654040b
+-[PKBarcodeEventSignatureRequest transactionStatus]	d5cd84342e1a5f6e
+-[PKBarcodeEventSignatureRequest partialSignature]	5db588a742d99f5d
+-[PKBarcodeEventSignatureResponse initWithSignedData:]	a1c52dced8977324
+-[PKBarcodeEventSignatureResponse signedData]	9968637d2a3d6cbc
+-[PKBarcodeEventConfigurationRequest deviceAccountIdentifier]	bb68e6ecc1fa7cee
+-[PKBarcodeEventConfigurationRequest configurationData]	15d75d865672d932
+-[PKBarcodeEventConfigurationRequest configurationDataType]	7eeac80e561f7265
+-[PKContact name]	6b5aea9363cfd6af
+-[PKContact postalAddress]	b1bbb84cda63812e
+-[PKContact phoneNumber]	af61e9dddeb4567c
+-[PKContact emailAddress]	4237c6fdb9a9e676
+-[PKContact supplementarySubLocality]	122ae3f65048a344
+-[PKDateComponentsRange init]	edc2f96145685626
+-[PKDateComponentsRange initWithStartDateComponents:endDateComponents:]	63c31374dec387c4
+-[PKDateComponentsRange startDateComponents]	61ec74dd866e7320
+-[PKDateComponentsRange endDateComponents]	19eba0fcb939a5dc
+-[PKDeferredPaymentRequest paymentDescription]	00a457dadc168317
+-[PKDeferredPaymentRequest deferredBilling]	323f2df5ed46e93a
+-[PKDeferredPaymentRequest billingAgreement]	dc0d0c2ebdc26b4a
+-[PKDeferredPaymentRequest managementURL]	998d76c222866e12
+-[PKDeferredPaymentRequest tokenNotificationURL]	1f84b4502a4b997e
+-[PKDeferredPaymentRequest freeCancellationDate]	d32830a74f5cda37
+-[PKDeferredPaymentRequest freeCancellationDateTimeZone]	f8d75aeaafc3be8d
+-[PKDeferredPaymentRequest init]	d3e905fb87dc4942
+-[PKDeferredPaymentRequest initWithPaymentDescription:deferredBilling:managementURL:]	77dab01424776a66
+-[PKDeferredPaymentSummaryItem deferredDate]	31be907341eccdbb
+-[PKDisbursementRequest merchantIdentifier]	e6db566311563d8b
+-[PKDisbursementRequest regionCode]	bff2050fe7e68a15
+-[PKDisbursementRequest supportedNetworks]	0e7dcdedfc16fb9f
+-[PKDisbursementRequest merchantCapabilities]	d5fb56991315c981
+-[PKDisbursementRequest summaryItems]	c983fb09fd376d5f
+-[PKDisbursementRequest currencyCode]	4cee64758522d8af
+-[PKDisbursementRequest requiredRecipientContactFields]	a88ec7f7a7cf4deb
+-[PKDisbursementRequest recipientContact]	f0edfd4a061ba884
+-[PKDisbursementRequest supportedRegions]	d4bc96f5ed5debea
+-[PKDisbursementRequest applicationData]	36b2cf67f3e2571b
+-[PKDisbursementRequest initWithMerchantIdentifier:currencyCode:regionCode:supportedNetworks:merchantCapabilities:summaryItems:]	3b8ae15c65413e8e
++[PKDisbursementRequest disbursementContactInvalidErrorWithContactField:localizedDescription:]	c5ef321f9aa418cb
++[PKDisbursementRequest disbursementCardUnsupportedError]	7b5db4d46694854a
+-[PKIdentityAuthorizationController checkCanRequestDocument:completion:]	f47f698567067d1e
+-[PKIdentityAuthorizationController requestDocument:completion:]	8865abed9961deab
+-[PKIdentityAuthorizationController cancelRequest]	d9e18d1f2959591b
++[PKIdentityButton buttonWithLabel:style:]	54c08fbb6f9d8239
+-[PKIdentityButton initWithLabel:style:]	7adc3e6d8d4c56bb
+-[PKIdentityButton initWithFrame:]	ec484f176286e928
+-[PKIdentityButton initWithFrame:primaryAction:]	29e482fb9418af96
+-[PKIdentityButton cornerRadius]	3eb863ec71e9e61e
+-[PKIdentityDocument encryptedData]	cda0d79074bac51a
+-[PKIdentityDocument init]	7f82e036846d33f0
++[PKIdentityDocument new]	b6d2fbdd0af3c8c3
+-[PKIdentityNationalIDCardDescriptor regionCode]	84d6a70fee61a6e4
+-[PKIdentityAnyOfDescriptor descriptors]	8c0d643f975330f0
+-[PKIdentityAnyOfDescriptor initWithDescriptors:]	6b761160140b7adc
+-[PKIdentityAnyOfDescriptor init]	8e1e68f6c6ad7172
++[PKIdentityAnyOfDescriptor new]	d7aaf91ab375186f
+-[PKIdentityElement givenNameElement]	3a78fece80fe4a9e
+-[PKIdentityElement familyNameElement]	0633dffee7230aff
+-[PKIdentityElement portraitElement]	97019c75221b4bc5
+-[PKIdentityElement addressElement]	e3dc3d8aac851217
+-[PKIdentityElement heightElement]	fed56417bdf63bc4
+-[PKIdentityElement weightElement]	0743c7fb0f3a056f
+-[PKIdentityElement eyeColorElement]	82324a8b4a8c8cd4
+-[PKIdentityElement hairColorElement]	aade0841c805dc22
+-[PKIdentityElement organDonorStatusElement]	f05526578a6122d2
+-[PKIdentityElement veteranStatusElement]	65a799c86596500c
+-[PKIdentityElement issuingAuthorityElement]	5095f2831f7803c1
+-[PKIdentityElement documentIssueDateElement]	5bbe7d35a9cdf7b5
+-[PKIdentityElement documentExpirationDateElement]	c4612da58daa65fd
+-[PKIdentityElement documentDHSComplianceStatusElement]	0058a693f9c7222d
+-[PKIdentityElement documentNumberElement]	8943a63b04fbcc6c
+-[PKIdentityElement drivingPrivilegesElement]	bbea36cbbc71ae96
+-[PKIdentityElement ageElement]	acab60d92b0d3b75
+-[PKIdentityElement dateOfBirthElement]	1e7a46cb57c463c5
+-[PKIdentityElement sexElement]	59a3d1cb1f305f79
++[PKIdentityElement ageThresholdElementWithAge:]	810d6bf9b8143514
+-[PKIdentityElement init]	ae8e5097199cd6dd
++[PKIdentityElement new]	dd7d7698b0c28049
+-[PKIdentityIntentToStore willNotStoreIntent]	6aa47b9c4c59285d
+-[PKIdentityIntentToStore mayStoreIntent]	c8c1f23d683062c2
++[PKIdentityIntentToStore mayStoreIntentForDays:]	f727dcd72acfd63e
+-[PKIdentityIntentToStore init]	406ceafc0da1c070
++[PKIdentityIntentToStore new]	4ed1638db7ee805f
+-[PKIdentityRequest descriptor]	0baf98a56ab9b642
+-[PKIdentityRequest nonce]	3ab03b414a9ebd76
+-[PKIdentityRequest merchantIdentifier]	ed3ee5b9854444a9
+-[PKIdentityRequest usageDescriptionKey]	c659f211c1a99eb6
+-[PKIssuerProvisioningExtensionHandler statusWithCompletion:]	be68538616b222ba
+-[PKIssuerProvisioningExtensionHandler passEntriesWithCompletion:]	8dbb777d2c1abe63
+-[PKIssuerProvisioningExtensionHandler remotePassEntriesWithCompletion:]	9380da160a5b3f02
+-[PKIssuerProvisioningExtensionHandler generateAddPaymentPassRequestForPassEntryWithIdentifier:configuration:certificateChain:nonce:nonceSignature:completionHandler:]	3aabaf7d3e97fc48
+-[PKIssuerProvisioningExtensionPassEntry init]	d7bd18d8e3839ecb
+-[PKIssuerProvisioningExtensionPassEntry identifier]	664ec00e5b0236b5
+-[PKIssuerProvisioningExtensionPassEntry title]	9f54673e3b947fb0
+-[PKIssuerProvisioningExtensionPassEntry art]	3b066b0baf37b17b
+-[PKIssuerProvisioningExtensionPaymentPassEntry initWithIdentifier:title:art:addRequestConfiguration:]	8fe3f94e73d434d4
+-[PKIssuerProvisioningExtensionPaymentPassEntry addRequestConfiguration]	53bde2c246327107
+-[PKIssuerProvisioningExtensionStatus init]	dc7069b75668069e
+-[PKIssuerProvisioningExtensionStatus requiresAuthentication]	1adb7db5b1a1edde
+-[PKIssuerProvisioningExtensionStatus passEntriesAvailable]	56164bb15b015ed3
+-[PKIssuerProvisioningExtensionStatus remotePassEntriesAvailable]	a7e6d9806f27971b
+-[PKLabeledValue initWithLabel:value:]	0718778a5d86e612
+-[PKLabeledValue label]	b88e6b2d26a94eed
+-[PKLabeledValue value]	f5a31dcdf3c98130
+-[PKPass initWithData:error:]	f213ca3e8bede1b5
+-[PKPass passType]	2860e3eb8427d89e
+-[PKPass paymentPass]	dd5a86328bc8a60f
+-[PKPass secureElementPass]	fed8e00ae2cef9ad
+-[PKPass serialNumber]	eac2e2e3354d2357
+-[PKPass passTypeIdentifier]	9d3b3d4fba7a52ca
+-[PKPass webServiceURL]	09a23339b4acc541
+-[PKPass authenticationToken]	0f4f73f1e9a1cec4
+-[PKPass icon]	da545c77eb4019b1
+-[PKPass localizedName]	2769771c54dcb9bc
+-[PKPass localizedDescription]	336e9801206f4673
+-[PKPass organizationName]	29bbde7a6432556a
+-[PKPass relevantDate]	48f1b1e712fce93b
+-[PKPass relevantDates]	b42d297e6b8ddbe3
+-[PKPass userInfo]	d97e7c2e2bae6b71
+-[PKPass passURL]	a4a5e25ca845f720
+-[PKPass remotePass]	39d79c55dd21b1d9
+-[PKPass deviceName]	8ed0bafc0c784050
+-[PKPass localizedValueForFieldKey:]	4ca5e6bb0d82acee
++[PKPassLibrary isPassLibraryAvailable]	a8ede1dd34913e2a
++[PKPassLibrary requestAutomaticPassPresentationSuppressionWithResponseHandler:]	4c703498322886b0
++[PKPassLibrary endAutomaticPassPresentationSuppressionWithRequestToken:]	13d0fa6e294bd25c
++[PKPassLibrary isSuppressingAutomaticPassPresentation]	a8af30414f6ae597
++[PKPassLibrary isPaymentPassActivationAvailable]	fe824f3b5983ef51
+-[PKPassLibrary isPaymentPassActivationAvailable]	fe7dcaec8b423984
+-[PKPassLibrary secureElementPassActivationAvailable]	99b6c3c8cb2e994e
+-[PKPassLibrary passes]	4746f87a676ebfa4
+-[PKPassLibrary passWithPassTypeIdentifier:serialNumber:]	d3ee4901f056f069
+-[PKPassLibrary passesWithReaderIdentifier:]	6b535066248578c6
+-[PKPassLibrary passesOfType:]	6ade33d5f7eaa62d
+-[PKPassLibrary remotePaymentPasses]	22fbdd7ded0bfb33
+-[PKPassLibrary remoteSecureElementPasses]	81233a95d1cd4792
+-[PKPassLibrary removePass:]	f071c334e9a23e50
+-[PKPassLibrary containsPass:]	79d7c9865e0a2783
+-[PKPassLibrary replacePassWithPass:]	742fe43e6f66ee1a
+-[PKPassLibrary addPasses:withCompletionHandler:]	4041feb31fd87699
+-[PKPassLibrary openPaymentSetup]	b1a0b0fb09de7606
+-[PKPassLibrary presentPaymentPass:]	c8ae69f21cd078e7
+-[PKPassLibrary presentSecureElementPass:]	81ec54d0189df298
+-[PKPassLibrary canAddPaymentPassWithPrimaryAccountIdentifier:]	424cecb09c14a959
+-[PKPassLibrary canAddSecureElementPassWithPrimaryAccountIdentifier:]	473861b4056f855e
+-[PKPassLibrary canAddFelicaPass]	6d51e592cfb7ddba
+-[PKPassLibrary activatePaymentPass:withActivationData:completion:]	af5293e1dd5668bd
+-[PKPassLibrary activatePaymentPass:withActivationCode:completion:]	831acbb3514b04af
+-[PKPassLibrary activateSecureElementPass:withActivationData:completion:]	93cb180d8074f483
+-[PKPassLibrary signData:withSecureElementPass:completion:]	5295e6afecd3b4cc
+-[PKPassLibrary encryptedServiceProviderDataForSecureElementPass:completion:]	faab517143d74b00
+-[PKPassLibrary serviceProviderDataForSecureElementPass:completion:]	cfddfe48313f49ff
+-[PKPassLibrary authorizationStatusForCapability:]	58b3eb96cca1d12b
+-[PKPassLibrary requestAuthorizationForCapability:completion:]	5bb204bbbe980760
+-[PKPassRelevantDate interval]	b9b943d98707b95c
+-[PKPassRelevantDate date]	bf3f8683383488bc
++[PKPassRelevantDate new]	728f585aa4dad42c
+-[PKPassRelevantDate init]	436e50b2371573a8
+-[PKPayLaterView init]	0dae9e5617cdfff2
++[PKPayLaterView new]	d13d23f948b913c4
+-[PKPayLaterView initWithFrame:]	e2f89982246d02ac
+-[PKPayLaterView initWithCoder:]	43b97f5def69988a
+-[PKPayLaterView initWithAmount:currencyCode:]	e2cbc6bdcc1d6064
+-[PKPayLaterView delegate]	6cbea7aa3de91f1b
+-[PKPayLaterView amount]	4f4769b2ea04271a
+-[PKPayLaterView currencyCode]	af994f2b9fc6cf28
+-[PKPayLaterView displayStyle]	c65126abb567c497
+-[PKPayLaterView action]	379516f62f099d88
+-[PKPayment token]	ad7e4cafc36133fa
+-[PKPayment billingContact]	96c478f37de8c3a0
+-[PKPayment billingAddress]	b3e0dca25231b0d0
+-[PKPayment shippingContact]	aef01fd432192551
+-[PKPayment shippingAddress]	ccc96189a0e6ca1b
+-[PKPayment shippingMethod]	1ba9edc0ab09c4fb
++[PKPaymentAuthorizationController canMakePayments]	9a12a07f91c9a60f
++[PKPaymentAuthorizationController canMakePaymentsUsingNetworks:]	fb1f1355791e0fad
++[PKPaymentAuthorizationController canMakePaymentsUsingNetworks:capabilities:]	f62755303e3c27dd
+-[PKPaymentAuthorizationController delegate]	7a2dcf2effea96b8
+-[PKPaymentAuthorizationController initWithPaymentRequest:]	06fa1d8761546aab
+-[PKPaymentAuthorizationController presentWithCompletion:]	ecfafc6e29cf159e
+-[PKPaymentAuthorizationController dismissWithCompletion:]	016d84ede318c33a
++[PKPaymentAuthorizationController supportsDisbursements]	57143e43b4748c53
++[PKPaymentAuthorizationController supportsDisbursementsUsingNetworks:]	e514190a9e10d2d9
++[PKPaymentAuthorizationController supportsDisbursementsUsingNetworks:capabilities:]	87cc5d54ae61a1a6
+-[PKPaymentAuthorizationController initWithDisbursementRequest:]	bcb2b09b9fddecb5
++[PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:]	f44c9e7d80edd4a3
++[PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:capabilities:]	5e685300b4271a2c
+-[PKPaymentAuthorizationViewController delegate]	e99bd80f9dc49be3
+-[PKPaymentAuthorizationViewController initWithPaymentRequest:]	0c647fb548bc60fd
++[PKPaymentAuthorizationViewController supportsDisbursements]	db1d9de84ff903ac
++[PKPaymentAuthorizationViewController supportsDisbursementsUsingNetworks:]	b8ae59cefda5faca
++[PKPaymentAuthorizationViewController supportsDisbursementsUsingNetworks:capabilities:]	820f2dc87fc675c2
+-[PKPaymentAuthorizationViewController initWithDisbursementRequest:]	161e6ead1af44826
++[PKPaymentAuthorizationViewController canMakePayments]	7709e6f83bf367d8
+-[PKPaymentButton initWithPaymentButtonType:paymentButtonStyle:]	ff66ebcc6b99d287
++[PKPaymentButton buttonWithType:style:disableCardArt:]	adb9d0fb6241b1a1
+-[PKPaymentButton initWithPaymentButtonType:paymentButtonStyle:disableCardArt:]	4333c50ab79f7d18
+-[PKPaymentButton cornerRadius]	cb1d36090d4644bb
++[PKPaymentButton buttonWithType:style:]	165aa2bc80aae231
+-[PKPaymentMerchantSession initWithDictionary:]	d9234a783787e219
+-[PKPaymentMethod displayName]	5f7d17ab51762782
+-[PKPaymentMethod network]	fb39b42cc9c9831d
+-[PKPaymentMethod type]	5bb71eeb2f2f5834
+-[PKPaymentMethod paymentPass]	a1b69d0dfe80c3f8
+-[PKPaymentMethod secureElementPass]	3afc902de337cc98
+-[PKPaymentMethod billingAddress]	61e77e32b57e939b
+-[PKPaymentPass activationState]	8db1ab5954495977
++[PKPaymentRequest availableNetworks]	fe9ff1b51260101b
++[PKPaymentRequest paymentContactInvalidErrorWithContactField:localizedDescription:]	10adcad34b6bec60
++[PKPaymentRequest paymentShippingAddressInvalidErrorWithKey:localizedDescription:]	df14bf3ce286d1c8
++[PKPaymentRequest paymentBillingAddressInvalidErrorWithKey:localizedDescription:]	8355ad5aa3d64d73
++[PKPaymentRequest paymentShippingAddressUnserviceableErrorWithLocalizedDescription:]	912a30fe4bf012e0
++[PKPaymentRequest paymentCouponCodeInvalidErrorWithLocalizedDescription:]	0365f9917d109ef9
++[PKPaymentRequest paymentCouponCodeExpiredErrorWithLocalizedDescription:]	2eeb7756d1038a41
+-[PKPaymentRequest merchantIdentifier]	280aef3ed4492375
+-[PKPaymentRequest attributionIdentifier]	f4d4818a009177b1
+-[PKPaymentRequest countryCode]	e517b489e09a6dab
+-[PKPaymentRequest supportedNetworks]	b33cc2d963f24ce8
+-[PKPaymentRequest merchantCapabilities]	99f1a99f0c3f8c69
+-[PKPaymentRequest supportsCouponCode]	c7393820e92d677c
+-[PKPaymentRequest couponCode]	91ba804acc076a0a
+-[PKPaymentRequest merchantCategoryCode]	40d75554f91f901d
+-[PKPaymentRequest paymentSummaryItems]	1a3852c22f6fcf5d
+-[PKPaymentRequest currencyCode]	81c9c2bd2f3d30c3
+-[PKPaymentRequest requiredBillingContactFields]	079c94cfcaec277b
+-[PKPaymentRequest requiredBillingAddressFields]	f14b0bd062bd2d48
+-[PKPaymentRequest billingContact]	c8e876049a0f5a6d
+-[PKPaymentRequest requiredShippingContactFields]	6019d88d14d30e74
+-[PKPaymentRequest requiredShippingAddressFields]	de778b3fc697efa2
+-[PKPaymentRequest shippingContact]	019e21fbbb9ddd43
+-[PKPaymentRequest shippingMethods]	dec500197bca1252
+-[PKPaymentRequest shippingType]	616468c9f0a2eeb0
+-[PKPaymentRequest shippingContactEditingMode]	032347a9ec937c0c
+-[PKPaymentRequest applicationData]	29109ceb2aca1751
+-[PKPaymentRequest supportedCountries]	02d03531dbee176d
+-[PKPaymentRequest shippingAddress]	c85aaf83972b2550
+-[PKPaymentRequest billingAddress]	e64668a7ba5ece1a
+-[PKPaymentRequest multiTokenContexts]	a682793f96d6305a
+-[PKPaymentRequest recurringPaymentRequest]	69613078140525ca
+-[PKPaymentRequest automaticReloadPaymentRequest]	3ac8d5ea8c3e418b
+-[PKPaymentRequest deferredPaymentRequest]	f7c55eafe4a4e328
+-[PKPaymentRequest applePayLaterAvailability]	0ebb7ad7625924d5
+-[PKPaymentAuthorizationResult initWithStatus:errors:]	13e59292e1705e6a
+-[PKPaymentAuthorizationResult status]	41d48eb3349be4c9
+-[PKPaymentAuthorizationResult errors]	4d0b9b72580d70b8
+-[PKPaymentAuthorizationResult orderDetails]	436eeafca17911f3
+-[PKPaymentRequestUpdate initWithPaymentSummaryItems:]	525cd99c55ffd053
+-[PKPaymentRequestUpdate status]	b76aa066ec4b1013
+-[PKPaymentRequestUpdate paymentSummaryItems]	1dad8d622feb0d5a
+-[PKPaymentRequestUpdate shippingMethods]	4f06add3b1618c59
+-[PKPaymentRequestUpdate multiTokenContexts]	163b578e1cdd3569
+-[PKPaymentRequestUpdate recurringPaymentRequest]	4e8f0f07b6921139
+-[PKPaymentRequestUpdate automaticReloadPaymentRequest]	a35a1b142d36d460
+-[PKPaymentRequestUpdate deferredPaymentRequest]	72123e710fa7d5af
+-[PKPaymentRequestShippingContactUpdate initWithErrors:paymentSummaryItems:shippingMethods:]	cc5a8c775f55ba06
+-[PKPaymentRequestShippingContactUpdate shippingMethods]	5bf3b1cbd85d0b4c
+-[PKPaymentRequestShippingContactUpdate errors]	7152e45966922dd7
+-[PKPaymentRequestPaymentMethodUpdate initWithErrors:paymentSummaryItems:]	ebcadd766ad97a62
+-[PKPaymentRequestPaymentMethodUpdate errors]	993457c610d7e742
+-[PKPaymentRequestMerchantSessionUpdate initWithStatus:merchantSession:]	d7386661f42f3271
+-[PKPaymentRequestMerchantSessionUpdate status]	6c983e79e8309f37
+-[PKPaymentRequestMerchantSessionUpdate session]	0e1be1b02074fa3d
+-[PKPaymentRequestCouponCodeUpdate initWithErrors:paymentSummaryItems:shippingMethods:]	b6ed0cc44f322df8
+-[PKPaymentRequestCouponCodeUpdate errors]	0a0f8c1a8ae15c52
++[PKPaymentOrderDetails new]	c870580906d92dbf
+-[PKPaymentOrderDetails init]	88ededd978a90f29
+-[PKPaymentOrderDetails initWithOrderTypeIdentifier:orderIdentifier:webServiceURL:authenticationToken:]	27a80501f716e547
+-[PKPaymentOrderDetails orderTypeIdentifier]	c4cffd6ae5327fc4
+-[PKPaymentOrderDetails orderIdentifier]	663369a1b3703155
+-[PKPaymentOrderDetails webServiceURL]	53767800561d75f8
+-[PKPaymentOrderDetails authenticationToken]	6b412d23f9f1f37c
++[PKPaymentSummaryItem summaryItemWithLabel:amount:]	fecedfbfc39e2708
++[PKPaymentSummaryItem summaryItemWithLabel:amount:type:]	1b59628602d01811
+-[PKPaymentSummaryItem label]	bf00b1ebb22f67bd
+-[PKPaymentSummaryItem amount]	1fe2d6f23bf169e1
+-[PKPaymentSummaryItem type]	493ce45c4795c20c
+-[PKPaymentToken paymentMethod]	16d560a0e3af860a
+-[PKPaymentToken paymentInstrumentName]	e171683f373cf823
+-[PKPaymentToken paymentNetwork]	1b820d2f49d96517
+-[PKPaymentToken transactionIdentifier]	cba0b2c34c9d6898
+-[PKPaymentToken paymentData]	7166b67d4272f889
+-[PKPaymentTokenContext merchantIdentifier]	76a5c2f9159a5827
+-[PKPaymentTokenContext externalIdentifier]	35def1800e52ae1b
+-[PKPaymentTokenContext merchantName]	6e7313efbd0fba89
+-[PKPaymentTokenContext merchantDomain]	03aaf194cf4af11d
+-[PKPaymentTokenContext amount]	1077dbbb726808ec
+-[PKPaymentTokenContext init]	d0e0276447c43da6
+-[PKPaymentTokenContext initWithMerchantIdentifier:externalIdentifier:merchantName:merchantDomain:amount:]	dcf329130a8cebf0
+-[PKRecurringPaymentRequest paymentDescription]	ea97c8975e6f5159
+-[PKRecurringPaymentRequest regularBilling]	af546fd5240b42e7
+-[PKRecurringPaymentRequest trialBilling]	2b35da27dc5730bc
+-[PKRecurringPaymentRequest billingAgreement]	f0caa3ad1ca117c7
+-[PKRecurringPaymentRequest managementURL]	aa8d2f59dcb84e3c
+-[PKRecurringPaymentRequest tokenNotificationURL]	5cc0c733a3e724c9
+-[PKRecurringPaymentRequest init]	0c47b467fc1f1e70
+-[PKRecurringPaymentRequest initWithPaymentDescription:regularBilling:managementURL:]	534038662b091a10
+-[PKRecurringPaymentSummaryItem startDate]	d9f28de1e994cb11
+-[PKRecurringPaymentSummaryItem intervalUnit]	1e182025cb186007
+-[PKRecurringPaymentSummaryItem intervalCount]	8507a6bce2e38b77
+-[PKRecurringPaymentSummaryItem endDate]	fab3850ed64932b2
+-[PKSecureElementPass primaryAccountIdentifier]	fc1ca18d586fbae0
+-[PKSecureElementPass primaryAccountNumberSuffix]	3c1b1dab02bad451
+-[PKSecureElementPass deviceAccountIdentifier]	464a784c5e4d772d
+-[PKSecureElementPass deviceAccountNumberSuffix]	3f22e1ca73eb4710
+-[PKSecureElementPass passActivationState]	eca73ce9d1e7be7e
+-[PKSecureElementPass devicePassIdentifier]	33127ea54648429b
+-[PKSecureElementPass pairedTerminalIdentifier]	c04efcd2ae3f6a8b
+-[PKShareSecureElementPassViewController init]	ec0a794d026549a4
+-[PKShareSecureElementPassViewController initWithSecureElementPass:delegate:]	40ee1a84a757f2fe
+-[PKShareSecureElementPassViewController delegate]	0b7ef7655f1073d6
+-[PKShareSecureElementPassViewController promptToShareURL]	bc755022bce78179
+-[PKShippingMethod identifier]	1eeb70669c227ef6
+-[PKShippingMethod detail]	1104e3edaeb1504d
+-[PKShippingMethod dateComponentsRange]	a51de1c5e2375d68
+-[PKStoredValuePassBalance amount]	86aef05cfa0b2093
+-[PKStoredValuePassBalance currencyCode]	0b8bca6b5645be76
+-[PKStoredValuePassBalance balanceType]	f004235c7e6b99c9
+-[PKStoredValuePassBalance expiryDate]	9c364d6f5fa43f35
+-[PKStoredValuePassBalance init]	825d3ecf9203b771
++[PKStoredValuePassBalance new]	482b7cddbccbe93e
+-[PKStoredValuePassBalance isEqualToBalance:]	da1af5375afa4d03
++[PKStoredValuePassProperties passPropertiesForPass:]	67297e1510842a79
+-[PKStoredValuePassProperties blacklisted]	3fdff5fa9cee3ccb
+-[PKStoredValuePassProperties blocked]	0275034810086cff
+-[PKStoredValuePassProperties expirationDate]	d53499a4abf06817
+-[PKStoredValuePassProperties balances]	b4b0ef64d04859dc
++[PKSuicaPassProperties passPropertiesForPass:]	87074cca6c09ae9f
+-[PKSuicaPassProperties transitBalance]	00a960f6d7b2ab80
+-[PKSuicaPassProperties transitBalanceCurrencyCode]	1daa1221e8ffd33c
+-[PKSuicaPassProperties inStation]	d185dee877c15636
+-[PKSuicaPassProperties inShinkansenStation]	3e02977780b3a6c7
+-[PKSuicaPassProperties balanceAllowedForCommute]	761ae88d619d224f
+-[PKSuicaPassProperties lowBalanceGateNotificationEnabled]	5cc5d255025c8eff
+-[PKSuicaPassProperties greenCarTicketUsed]	9cc42f0ea924051d
+-[PKSuicaPassProperties blacklisted]	abd60c97568b17e5
+-[PKTransitPassProperties transitBalance]	4d21eb1175e04da3
+-[PKTransitPassProperties transitBalanceCurrencyCode]	8bba763be342017c
+-[PKTransitPassProperties blacklisted]	6017ccd7e9c59fb8
+-[PKTransitPassProperties expirationDate]	b760fa6505c7911a
+-[PKTransitPassProperties blocked]	3da37c9377db7215
+-[PKTransitPassProperties inStation]	ffb9a38829a14af1
+-[PKVehicleConnectionSession init]	28175b4b897d466a
++[PKVehicleConnectionSession new]	d6a49f5d7f098f91
+-[PKVehicleConnectionSession delegate]	c1df75c5cb048822
+-[PKVehicleConnectionSession connectionStatus]	c14bb050c663c1ec
++[PKVehicleConnectionSession sessionForPass:delegate:completion:]	91d15a21ee82c9df
+-[PKVehicleConnectionSession sendData:error:]	6513a22c65bbf7f2
+-[PKVehicleConnectionSession invalidate]	cffdb843c01d80c7

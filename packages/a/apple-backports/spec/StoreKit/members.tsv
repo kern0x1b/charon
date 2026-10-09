@@ -1,0 +1,209 @@
+api	hash
+SKANErrorDomain	45d0ffd58a5d2f04
+SKAdNetworkCoarseConversionValueHigh	1300fe10cc188272
+SKAdNetworkCoarseConversionValueLow	4122e402022f97d2
+SKAdNetworkCoarseConversionValueMedium	4b3b883fb3ddf710
+SKCloudServiceCapabilitiesDidChangeNotification	dd9dea6c7fbc2d97
+SKCloudServiceSetupActionSubscribe	92e7033efc48ebee
+SKCloudServiceSetupMessageIdentifierAddMusic	ffdcb323b2e7a170
+SKCloudServiceSetupMessageIdentifierConnect	ded0a2d93a032a4e
+SKCloudServiceSetupMessageIdentifierJoin	06dc013eef19dec0
+SKCloudServiceSetupMessageIdentifierPlayMusic	4e1a181bc7f9c4bb
+SKCloudServiceSetupOptionsActionKey	13e3c0a3d29da799
+SKCloudServiceSetupOptionsAffiliateTokenKey	e9fb50790b0f8a60
+SKCloudServiceSetupOptionsCampaignTokenKey	010091853ac15a1f
+SKCloudServiceSetupOptionsITunesItemIdentifierKey	1b12dc64c481c97c
+SKCloudServiceSetupOptionsMessageIdentifierKey	5a0ea6eb672d3536
+SKReceiptPropertyIsExpired	3e49500aa51ff3b9
+SKReceiptPropertyIsRevoked	dc891ef9783d1911
+SKReceiptPropertyIsVolumePurchase	29fe0e89e4c5c841
+SKStoreProductParameterAdNetworkAttributionSignature	d34157923ec911a0
+SKStoreProductParameterAdNetworkCampaignIdentifier	c3b117b7c69466f0
+SKStoreProductParameterAdNetworkIdentifier	4f4af1719c79bb3e
+SKStoreProductParameterAdNetworkNonce	d534c52aefd6e11b
+SKStoreProductParameterAdNetworkSourceAppStoreIdentifier	28db33529c565a95
+SKStoreProductParameterAdNetworkSourceIdentifier	2e8a98fca570d4a6
+SKStoreProductParameterAdNetworkTimestamp	ccb00bc7433ec94b
+SKStoreProductParameterAdNetworkVersion	de704d63f8bdfc80
+SKStoreProductParameterAdvertisingPartnerToken	d7e9b36950cadbcc
+SKStoreProductParameterAffiliateToken	c2ab4d98a131944a
+SKStoreProductParameterCampaignToken	4a025a2065f3eb6b
+SKStoreProductParameterCustomProductPageIdentifier	ba6ac514ed252c83
+SKStoreProductParameterProductIdentifier	b98b84c8c9d7bec9
+SKStoreProductParameterProviderToken	a6e8a39832937703
+SKStorefrontCountryCodeDidChangeNotification	10f4abc376d8a8b3
+SKStorefrontIdentifierDidChangeNotification	6e2e679019ecc916
+-[SKAdImpression initWithSourceAppStoreItemIdentifier:advertisedAppStoreItemIdentifier:adNetworkIdentifier:adCampaignIdentifier:adImpressionIdentifier:timestamp:signature:version:]	7d7c2742664cf7e5
+-[SKAdImpression sourceAppStoreItemIdentifier]	94d43dd90fc53860
+-[SKAdImpression advertisedAppStoreItemIdentifier]	d0d4f6ae52902234
+-[SKAdImpression adNetworkIdentifier]	22333cc08b3358db
+-[SKAdImpression adCampaignIdentifier]	d0ed5137d3584378
+-[SKAdImpression sourceIdentifier]	5884d42f1df9686c
+-[SKAdImpression adImpressionIdentifier]	cd761e6b204bca18
+-[SKAdImpression adType]	37b953512d36c179
+-[SKAdImpression adDescription]	265c38912688fedd
+-[SKAdImpression adPurchaserName]	015637fbbd40c21d
+-[SKAdImpression timestamp]	2487dd6284b9d474
+-[SKAdImpression signature]	aaa8cfe477621df7
+-[SKAdImpression version]	c9f2e091bcbc3ed9
++[SKAdNetwork startImpression:completionHandler:]	a12c5616721f736c
++[SKAdNetwork endImpression:completionHandler:]	e3045a889359a8f3
++[SKAdNetwork registerAppForAdNetworkAttribution]	30d72aa8be0cd595
++[SKAdNetwork updateConversionValue:]	f68fbd83df417129
++[SKAdNetwork updatePostbackConversionValue:completionHandler:]	7581fb248a5ed418
++[SKAdNetwork updatePostbackConversionValue:coarseValue:completionHandler:]	730ebd416cb05d96
++[SKAdNetwork updatePostbackConversionValue:coarseValue:lockWindow:completionHandler:]	6d59f24aa0c5f0cb
++[SKArcadeService registerArcadeAppWithRandomFromLib:randomFromLibLength:resultHandler:]	0e261c8545595a66
++[SKArcadeService arcadeSubscriptionStatusWithNonce:resultHandler:]	e912bc049c07db53
++[SKArcadeService repairArcadeApp]	baa466d25e2b18c6
++[SKCloudServiceController authorizationStatus]	0d37f326d36ee675
++[SKCloudServiceController requestAuthorization:]	24ff779d284494d5
+-[SKCloudServiceController requestCapabilitiesWithCompletionHandler:]	0cc787d4ef672008
+-[SKCloudServiceController requestStorefrontCountryCodeWithCompletionHandler:]	7b8a5b540e8ae071
+-[SKCloudServiceController requestStorefrontIdentifierWithCompletionHandler:]	8a2c02c6d133a240
+-[SKCloudServiceController requestUserTokenForDeveloperToken:completionHandler:]	b8418a60cb9afb8b
+-[SKCloudServiceController requestPersonalizationTokenForClientToken:withCompletionHandler:]	e5ac6619990b27f4
+-[SKCloudServiceSetupViewController loadWithOptions:completionHandler:]	f5669f89079d5d1e
+-[SKCloudServiceSetupViewController delegate]	fc6706c9a9787ec1
+-[SKDownload state]	7694d22886dbc8b4
+-[SKDownload downloadState]	6e8fe50fe611e27b
+-[SKDownload contentLength]	0e7b11f5a587b7e5
+-[SKDownload expectedContentLength]	6411534c62911f60
+-[SKDownload contentIdentifier]	9c12f27c24847766
+-[SKDownload contentURL]	7e78bfade71bdc0e
+-[SKDownload contentVersion]	67fbea3b66a09518
+-[SKDownload error]	81b30969a8bf0b44
+-[SKDownload progress]	4788eec4a5db94c6
+-[SKDownload timeRemaining]	46e53f0d0a63dace
+-[SKDownload transaction]	f97bb54368963473
++[SKDownload contentURLForProductID:]	53eb0214de71e041
++[SKDownload deleteContentForProductID:]	bf19dcd00289fd5f
+-[SKOverlay init]	7ee29a6f872d27b3
++[SKOverlay new]	14bf2b3d9075b407
+-[SKOverlay initWithConfiguration:]	b55951e7753682e6
+-[SKOverlay presentInScene:]	d5233a3ac45121f6
++[SKOverlay dismissOverlayInScene:]	b919094e26291032
+-[SKOverlay delegate]	7d0cf53f933b6aed
+-[SKOverlay configuration]	c3358f3ff863de70
+-[SKOverlayConfiguration init]	c38648d3818db94f
++[SKOverlayConfiguration new]	3211311c1bb90292
+-[SKOverlayAppConfiguration init]	5256504c1b6a4752
++[SKOverlayAppConfiguration new]	80a1d4aa19afa57d
+-[SKOverlayAppConfiguration initWithAppIdentifier:position:]	a96ca9259892c082
+-[SKOverlayAppConfiguration appIdentifier]	76b91a82af5e568d
+-[SKOverlayAppConfiguration campaignToken]	fc150c9450543c4c
+-[SKOverlayAppConfiguration providerToken]	1c09d5bd24a13ab4
+-[SKOverlayAppConfiguration customProductPageIdentifier]	900f07fb65f47c39
+-[SKOverlayAppConfiguration latestReleaseID]	1d04dac0bd0927ed
+-[SKOverlayAppConfiguration position]	6ece47909f995790
+-[SKOverlayAppConfiguration userDismissible]	ea156d5c8845a809
+-[SKOverlayAppConfiguration setAdditionalValue:forKey:]	6ddc9dee43e80363
+-[SKOverlayAppConfiguration additionalValueForKey:]	cc7de3c77c2f2d33
+-[SKOverlayAppConfiguration setAdImpression:]	e4ab8a17bd3a4d5d
+-[SKOverlayAppClipConfiguration init]	705fb5310c1a9f3d
++[SKOverlayAppClipConfiguration new]	a670ecee66cf49f3
+-[SKOverlayAppClipConfiguration initWithPosition:]	cd239172edc1831a
+-[SKOverlayAppClipConfiguration campaignToken]	a3e6764b1c562d53
+-[SKOverlayAppClipConfiguration providerToken]	857d1de33a749a1c
+-[SKOverlayAppClipConfiguration customProductPageIdentifier]	90e14946eec0be52
+-[SKOverlayAppClipConfiguration latestReleaseID]	a4eb4ee11601908d
+-[SKOverlayAppClipConfiguration position]	10b35cc885856d9e
+-[SKOverlayAppClipConfiguration setAdditionalValue:forKey:]	1ad584769507c29d
+-[SKOverlayAppClipConfiguration additionalValueForKey:]	7f1ac93f6540d7a9
+-[SKOverlayTransitionContext init]	f770f0fd7a6eb888
++[SKOverlayTransitionContext new]	6d12352196307006
+-[SKOverlayTransitionContext addAnimationBlock:]	4ebe761fe25c63ea
+-[SKOverlayTransitionContext startFrame]	c50f6e28c9a14318
+-[SKOverlayTransitionContext endFrame]	6cd4b852308f04b6
++[SKPayment paymentWithProduct:]	0e388ef8cfe9ce8e
++[SKPayment paymentWithProductIdentifier:]	a4a85e70861f4487
+-[SKPayment productIdentifier]	367cea08d40c2f61
+-[SKPayment requestData]	6f97c259defe9509
+-[SKPayment quantity]	3e2e523f1982a5cb
+-[SKPayment applicationUsername]	dde55c26246cca9a
+-[SKPayment simulatesAskToBuyInSandbox]	26e42fa0198c497f
+-[SKPayment paymentDiscount]	cd08d21fa2b650a5
+-[SKMutablePayment applicationUsername]	1f78067d388731f9
+-[SKMutablePayment paymentDiscount]	e585d7d33c0375ad
+-[SKMutablePayment productIdentifier]	0d9059464d796554
+-[SKMutablePayment quantity]	37c3ad4bd6b2e559
+-[SKMutablePayment requestData]	08461c5d4085f086
+-[SKMutablePayment simulatesAskToBuyInSandbox]	a39705f0391dcb4a
+-[SKPaymentDiscount initWithIdentifier:keyIdentifier:nonce:signature:timestamp:]	870989c62e9731f9
+-[SKPaymentDiscount identifier]	87bac256085aa008
+-[SKPaymentDiscount keyIdentifier]	fa290a11786283eb
+-[SKPaymentDiscount nonce]	2bd487d494f77053
+-[SKPaymentDiscount signature]	6d6be4adf00a94f4
+-[SKPaymentDiscount timestamp]	3a36c26c761f0ebf
+-[SKPaymentQueue delegate]	d00d8af3773a5823
+-[SKPaymentQueue storefront]	4323cfbf41e0e5a0
++[SKPaymentQueue defaultQueue]	b5d51e2e791589d0
++[SKPaymentQueue canMakePayments]	dda52a7c4e3f35bf
+-[SKPaymentQueue addPayment:]	69c931b0a5e525cc
+-[SKPaymentQueue restoreCompletedTransactions]	8f7dd10f727b2589
+-[SKPaymentQueue restoreCompletedTransactionsWithApplicationUsername:]	cbfa386669154c29
+-[SKPaymentQueue finishTransaction:]	7ac7a73cb03b7b26
+-[SKPaymentQueue startDownloads:]	3e9a64c4a6f6f257
+-[SKPaymentQueue pauseDownloads:]	e70553f9af5fde3c
+-[SKPaymentQueue resumeDownloads:]	792765d7f6e66b60
+-[SKPaymentQueue cancelDownloads:]	1ad4dcce55c38fb7
+-[SKPaymentQueue addTransactionObserver:]	753beb97d5e1c599
+-[SKPaymentQueue removeTransactionObserver:]	3123854639a231c4
+-[SKPaymentQueue transactionObservers]	edc3d89c37e34f65
+-[SKPaymentQueue transactions]	1f3696393e924839
+-[SKPaymentQueue showPriceConsentIfNeeded]	5c64f628cba94879
+-[SKPaymentQueue presentCodeRedemptionSheet]	4c3f734755e0f589
+-[SKPaymentTransaction error]	59f816b30185302b
+-[SKPaymentTransaction originalTransaction]	0b43d3b2d8878e8b
+-[SKPaymentTransaction payment]	6fe019315892d646
+-[SKPaymentTransaction downloads]	756d36d6a4ab644f
+-[SKPaymentTransaction transactionDate]	45475cdb28dcf5e2
+-[SKPaymentTransaction transactionIdentifier]	12183419cbc81626
+-[SKPaymentTransaction transactionReceipt]	adbd21a3f6be62b1
+-[SKPaymentTransaction transactionState]	cd8ebb9a464acf0c
+-[SKProductSubscriptionPeriod numberOfUnits]	ebea57267a9ef0fa
+-[SKProductSubscriptionPeriod unit]	65ba8b2e4684e790
+-[SKProduct localizedDescription]	a4ba265916df208a
+-[SKProduct localizedTitle]	0081db8ec2379ff8
+-[SKProduct price]	31c77981fda2e5ed
+-[SKProduct priceLocale]	a6b05ae219bd24a1
+-[SKProduct productIdentifier]	3c9f5aada772863d
+-[SKProduct isDownloadable]	8ea1fa31bb5cc9da
+-[SKProduct downloadable]	9e38125dcec720fd
+-[SKProduct isFamilyShareable]	459db82f4873b942
+-[SKProduct contentLengths]	a79937f8a6628832
+-[SKProduct downloadContentLengths]	ebe80f335434ce98
+-[SKProduct contentVersion]	518a0347cbf0c009
+-[SKProduct downloadContentVersion]	f5eaea0a0ddfe8a3
+-[SKProduct subscriptionPeriod]	2dde977115053027
+-[SKProduct introductoryPrice]	65841cbb76c7f865
+-[SKProduct subscriptionGroupIdentifier]	b50e552ca9f2b13a
+-[SKProduct discounts]	7c71dae47bb5a912
+-[SKProductDiscount price]	3eeb8c0516fbc11a
+-[SKProductDiscount priceLocale]	5af31eda62cf4284
+-[SKProductDiscount identifier]	4cb35db185b9951e
+-[SKProductDiscount subscriptionPeriod]	9bbfae8623978114
+-[SKProductDiscount numberOfPeriods]	303f5fdf4c862967
+-[SKProductDiscount paymentMode]	8debf0c65564acab
+-[SKProductDiscount type]	440e87f54b5d788f
++[SKProductStorePromotionController defaultController]	845b36caa708e4e5
+-[SKProductStorePromotionController fetchStorePromotionVisibilityForProduct:completionHandler:]	25c6940067401c58
+-[SKProductStorePromotionController updateStorePromotionVisibility:forProduct:completionHandler:]	a72e8dcaa5cb819a
+-[SKProductStorePromotionController fetchStorePromotionOrderWithCompletionHandler:]	c42cbe5475e73e3f
+-[SKProductStorePromotionController updateStorePromotionOrder:completionHandler:]	478a78ceae56e235
+-[SKProductsRequest initWithProductIdentifiers:]	9f9ac8293cf602da
+-[SKProductsRequest delegate]	481bf9f7f8aee1ef
+-[SKProductsResponse products]	8d6a2b3c64283421
+-[SKProductsResponse invalidProductIdentifiers]	1d30c6dd9ae635ef
+-[SKReceiptRefreshRequest initWithReceiptProperties:]	1305c5281d3ded61
+-[SKReceiptRefreshRequest receiptProperties]	aa0aa19abe27c725
+-[SKRequest delegate]	681c7f612a3e3b40
+-[SKRequest cancel]	2c74543344072637
+-[SKRequest start]	e4699bb5a3b62a23
+-[SKStoreProductViewController loadProductWithParameters:completionBlock:]	504b07079d3ef579
+-[SKStoreProductViewController loadProductWithParameters:impression:completionBlock:]	1168837a70a696ca
+-[SKStoreProductViewController delegate]	11cb14bb64cb6e39
++[SKStoreReviewController requestReview]	fabaa8c97fdcaf8d
++[SKStoreReviewController requestReviewInScene:]	7bdf727242f9f248
+-[SKStorefront countryCode]	9a1874dee3fe8bfd
+-[SKStorefront identifier]	706407f102608301
