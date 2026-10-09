@@ -39,6 +39,17 @@ static size_t charon_route_count;
 static size_t charon_route_capacity;
 static pthread_mutex_t charon_lock = PTHREAD_MUTEX_INITIALIZER;
 
+// The destinations this process made, and the port each one delivers to: a UMP sent to one of them is delivered here
+// without the release, since the release carries MIDI 1.0 only.
+typedef struct charon_destination {
+    MIDIEndpointRef endpoint;
+    charon_port *port;
+} charon_destination;
+static charon_destination *charon_destinations;
+static size_t charon_destination_count;
+static size_t charon_destination_capacity;
+static pthread_mutex_t charon_destination_lock = PTHREAD_MUTEX_INITIALIZER;
+
 // The receive thread of the release calls this with a list of MIDI 1.0 packets. Each packet becomes one event
 // packet of the same time stamp, in the port's protocol. The parser is the port's own, so a SysEx that is open
 // at the end of one list is continued by the next, and the list's last packet sends whatever is still held.
@@ -119,6 +130,57 @@ OSStatus CharonMIDIInputPort(MIDIClientRef client, CFStringRef portName, MIDIPro
     return status;
 }
 
+// Records that a destination delivers to a port. The table grows; it is read under its own lock.
+static void charon_register_destination(MIDIEndpointRef endpoint, charon_port *port)
+{
+    pthread_mutex_lock(&charon_destination_lock);
+    if (charon_destination_count == charon_destination_capacity) {
+        size_t capacity = charon_destination_capacity ? charon_destination_capacity * 2 : 16;
+        charon_destination *grown = realloc(charon_destinations, capacity * sizeof(charon_destination));
+        if (grown) {
+            charon_destinations = grown;
+            charon_destination_capacity = capacity;
+        }
+    }
+    if (charon_destination_count < charon_destination_capacity) {
+        charon_destinations[charon_destination_count].endpoint = endpoint;
+        charon_destinations[charon_destination_count].port = port;
+        charon_destination_count++;
+    }
+    pthread_mutex_unlock(&charon_destination_lock);
+}
+
+// Delivers a list of UMP words verbatim to a destination this process made, in the port's protocol, on the calling thread
+// (macOS delivers on its own thread: the one difference). NO when the endpoint is not one of this process's destinations.
+Boolean CharonMIDIDeliverInProcess(MIDIEndpointRef endpoint, const UInt32 *words, UInt32 count)
+{
+    charon_port *port = NULL;
+    pthread_mutex_lock(&charon_destination_lock);
+    for (size_t i = 0; i < charon_destination_count; i++) {
+        if (charon_destinations[i].endpoint == endpoint) {
+            port = charon_destinations[i].port;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&charon_destination_lock);
+    if (!port)
+        return false;
+    size_t capacity = 8 + sizeof(MIDITimeStamp) + sizeof(UInt32) + 4 * (size_t)count;
+    MIDIEventList *list = malloc(capacity);
+    if (!list)
+        return false;
+    list->protocol = port->protocol;
+    list->numPackets = 0;
+    MIDIEventPacket *end = CharonMIDIEventListAdd(list, capacity, &list->packet[0], 0, count, words);
+    if (end) {
+        MIDIReceiveBlock block = (__bridge MIDIReceiveBlock)port->block;
+        if (block)
+            block(list, NULL);
+    }
+    free(list);
+    return true;
+}
+
 OSStatus CharonMIDIDestination(MIDIClientRef client, CFStringRef name, MIDIProtocolID protocol,
                                            MIDIEndpointRef *outDest, MIDIReceiveBlock readBlock)
 {
@@ -128,10 +190,12 @@ OSStatus CharonMIDIDestination(MIDIClientRef client, CFStringRef name, MIDIProto
     if (!port)
         return charon_memFullErr;
     OSStatus status = MIDIDestinationCreate(client, name, charon_protocol_read, port, outDest);
-    if (status != noErr)
+    if (status != noErr) {
         charon_free_port(port);
-    else
+    } else {
         charon_set_protocol(*outDest, protocol);
+        charon_register_destination(*outDest, port);
+    }
     return status;
 }
 

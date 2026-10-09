@@ -20,7 +20,19 @@ with two SysEx messages is not measured.
 
 ## MIDISendUMPSysex and MIDISendUMPSysex8
 
-Not built in this revision. The request is `MIDISysexSendRequestUMP` (destination, words, word count, complete, completion
-procedure and its refcon, from the 26.2 header). A 1.0 destination carries SysEx7 only, so a SysEx8 send has no 1.0 form;
-its measured answer on a 2.0 destination is the next measurement, and the in-process route for 2.0 endpoints depends on
-the answer to the emulator question in CoreMIDI.md.
+Measured on macOS on 2026-10-09 (`tests/backports/host/coremidi/oracle/umpsysend.m`, recorded in `umpsysend-macos.txt`):
+
+- The words of the request reach the destination unchanged, for a SysEx7 and for a SysEx8, to a 1.0 destination and to a 2.0
+  destination alike: `30030102 03000000` and `50010102 03040506 07080000 00000000` arrive as they were sent.
+- After the call the request's word count is 0 and it is complete; its completion procedure runs once.
+- The answer is noErr for every destination, including 0 (no destination): the completion still runs, and nothing arrives.
+- A word count of 0 delivers nothing and completes.
+- A word that is not SysEx is sent as it is (a note word reached a 2.0 destination verbatim).
+
+What the port does: a destination this process made gets the words verbatim, in its own protocol, delivered on the calling
+thread (macOS delivers on its own thread: the one difference). Any other destination is the release's, which carries MIDI
+1.0 bytes: a SysEx7 is converted to its bytes (F0 and F7 as the message has them) and sent through the release's
+MIDISendSysex, and its completion completes the request. A SysEx8 has no 1.0 form, so it is not sent to a release
+destination, and the request completes at once: the one case where the port's answer to a destination differs from macOS,
+which sends a SysEx8 to a 1.0 destination verbatim. Facts for the release's own endpoints in another process depend on the
+virtual endpoint question in CoreMIDI.md.

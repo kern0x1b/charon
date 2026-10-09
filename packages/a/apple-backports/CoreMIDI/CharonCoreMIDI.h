@@ -97,5 +97,22 @@ OSStatus CharonMIDIDestination(MIDIClientRef client, CFStringRef name, MIDIProto
 OSStatus CharonMIDISource(MIDIClientRef client, CFStringRef name, MIDIProtocolID protocol, MIDIEndpointRef *outSrc);
 OSStatus CharonMIDISend(MIDIPortRef port, MIDIEndpointRef dest, const MIDIEventList *evtlist);
 OSStatus CharonMIDIReceive(MIDIEndpointRef src, const MIDIEventList *evtlist);
+// Delivers UMP words verbatim to a destination this process made (CharonMIDIPorts.m); NO for any other endpoint.
+Boolean CharonMIDIDeliverInProcess(MIDIEndpointRef endpoint, const UInt32 *words, UInt32 count);
+
+// The request of MIDISendUMPSysex and MIDISendUMPSysex8, as the 26.2 SDK declares it (MIDIServices.h). The host's SDK declares
+// it already, and run.sh sets CHARON_HOST_HAS_UMP_SYSEX so this file does not repeat it there.
+#ifndef CHARON_HOST_HAS_UMP_SYSEX
+typedef struct MIDISysexSendRequestUMP MIDISysexSendRequestUMP;
+typedef void (*MIDICompletionProcUMP)(MIDISysexSendRequestUMP *request);
+struct MIDISysexSendRequestUMP {
+    MIDIEndpointRef destination;
+    UInt32 *words;
+    UInt32 wordsToSend;
+    Boolean complete;
+    MIDICompletionProcUMP completionProc;
+    void *completionRefCon;
+};
+#endif
 
 #endif

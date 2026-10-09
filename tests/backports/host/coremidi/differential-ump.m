@@ -58,6 +58,86 @@ static void check_mici_classes(void)
           "MIDI-CI responder with no delegate is not made, as macOS", "");
 }
 
+// MIDISendUMPSysex and MIDISendUMPSysex8, held to macOS (oracle/umpsysend.m, umpsysend-macos.txt): the words reach a
+// destination of this process verbatim, the request's count is used up, it is marked complete, its completion runs once,
+// and the answer is noErr for every destination, a missing one included.
+static int gSendCompletions;
+static void charon_send_completed(MIDISysexSendRequestUMP *request)
+{
+    gSendCompletions++;
+}
+
+static UInt32 gReceived[8];
+static UInt32 gReceivedCount;
+static void charon_record_words(const MIDIEventList *list, void *ref)
+{
+    gReceivedCount = 0;
+    const MIDIEventPacket *p = &list->packet[0];
+    for (UInt32 i = 0; i < list->numPackets; i++) {
+        for (UInt32 w = 0; w < p->wordCount && gReceivedCount < 8; w++)
+            gReceived[gReceivedCount++] = p->words[w];
+        p = MIDIEventPacketNext(p);
+    }
+}
+
+static void check_ump_sysex_sends(void)
+{
+    MIDIClientRef client = 0;
+    MIDIClientCreateWithBlock(CFSTR("ump-sysex-check"), &client, NULL);
+    MIDIEndpointRef destination = 0;
+    CharonMIDIDestination(client, CFSTR("ump-sysex-destination"), kMIDIProtocol_2_0, &destination, ^(const MIDIEventList *l, void *r) {
+        charon_record_words(l, r);
+    });
+    UInt32 sysex7[2] = {0x30030102u, 0x03000000u};
+    MIDISysexSendRequestUMP request;
+    memset(&request, 0, sizeof(request));
+    request.destination = destination;
+    request.words = sysex7;
+    request.wordsToSend = 2;
+    request.completionProc = charon_send_completed;
+    gSendCompletions = 0;
+    gReceivedCount = 0;
+    OSStatus status = MIDISendUMPSysex(&request);
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.2, false);
+    check(status == noErr && request.wordsToSend == 0 && request.complete && gSendCompletions == 1,
+          "UMP sysex7 send: noErr, count used up, complete, completion once (umpsysend-macos.txt)", "");
+    check(gReceivedCount == 2 && gReceived[0] == 0x30030102u && gReceived[1] == 0x03000000u,
+          "UMP sysex7 send: the destination receives the words verbatim", "");
+
+    UInt32 sysex8[4] = {0x50010102u, 0x03040506u, 0x07080000u, 0x00000000u};
+    memset(&request, 0, sizeof(request));
+    request.destination = destination;
+    request.words = sysex8;
+    request.wordsToSend = 4;
+    request.completionProc = charon_send_completed;
+    gSendCompletions = 0;
+    gReceivedCount = 0;
+    status = MIDISendUMPSysex8(&request);
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.2, false);
+    check(status == noErr && gSendCompletions == 1 && gReceivedCount == 4 && gReceived[0] == 0x50010102u && gReceived[3] == 0x00000000u,
+          "UMP sysex8 send: the destination receives the four words verbatim, as macOS does for a 2.0 destination", "");
+
+    memset(&request, 0, sizeof(request));
+    request.destination = 0;
+    request.words = sysex7;
+    request.wordsToSend = 2;
+    request.completionProc = charon_send_completed;
+    gSendCompletions = 0;
+    status = MIDISendUMPSysex(&request);
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.2, false);
+    check(status == noErr && gSendCompletions == 1, "UMP send to no destination: noErr and the completion runs, as macOS", "");
+
+    memset(&request, 0, sizeof(request));
+    request.destination = destination;
+    request.words = sysex7;
+    request.wordsToSend = 0;
+    request.completionProc = charon_send_completed;
+    gSendCompletions = 0;
+    gReceivedCount = 0;
+    status = MIDISendUMPSysex(&request);
+    check(status == noErr && gSendCompletions == 1 && gReceivedCount == 0, "UMP send of zero words: noErr, completion, nothing delivered", "");
+}
+
 static void check_ump_classes(void)
 {
     // The managers list no MIDI-CI device and, before anything is made, no endpoint.
@@ -108,6 +188,7 @@ int charon_ump_classes_run(int *checks)
 {
     @autoreleasepool {
         check_mici_classes();
+        check_ump_sysex_sends();
         check_ump_classes();
     }
     *checks = gUMPChecks;

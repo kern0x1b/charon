@@ -6,6 +6,10 @@
 #import <CoreMIDI/CoreMIDI.h>
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+#import "CharonCoreMIDI.h"
 
 // The MacErrors value of paramErr (-50), which the iOS SDK does not declare; see MIDIProtocol14.m.
 static const OSStatus charon_paramErr = -50;
@@ -40,4 +44,78 @@ OSStatus MIDIEventPacketSysexBytesForGroup(const MIDIEventPacket *pkt, UInt8 gro
     }
     *outData = CFDataCreate(kCFAllocatorDefault, bytes, count);
     return *outData ? noErr : charon_paramErr;
+}
+
+// The release's completion of a MIDISendSysex this file queued: the UMP request is completed, and the bytes are released.
+typedef struct charon_ump_send {
+    MIDISysexSendRequest request;
+    MIDISysexSendRequestUMP *umpRequest;
+    UInt8 *bytes;
+} charon_ump_send;
+
+static void charon_ump_send_done(MIDISysexSendRequest *request)
+{
+    charon_ump_send *send = request->completionRefCon;
+    MIDISysexSendRequestUMP *umpRequest = send->umpRequest;
+    free(send->bytes);
+    free(send);
+    umpRequest->complete = YES;
+    if (umpRequest->completionProc)
+        umpRequest->completionProc(umpRequest);
+}
+
+// Sends the words of a UMP request, as macOS does: the words go to the destination unchanged, the request's word count is
+// used up, it is marked complete, and its completion procedure is called. A destination this process made gets the words
+// verbatim; another destination (the release's, which carries MIDI 1.0 only) gets the SysEx7 messages as MIDI 1.0 bytes, and
+// a SysEx8 has no 1.0 form, so it is not sent to one. The answer is noErr whatever the destination, as macOS answers.
+static OSStatus charon_send_ump(MIDISysexSendRequestUMP *umpRequest)
+{
+    if (!umpRequest)
+        return charon_paramErr;
+    UInt32 count = umpRequest->wordsToSend;
+    int queued = 0;
+    if (count > 0 && umpRequest->words && !CharonMIDIDeliverInProcess(umpRequest->destination, umpRequest->words, count)) {
+        CharonMIDIRPN rpn[16];
+        memset(rpn, 0, sizeof(rpn));
+        CharonMIDIBytes bytes;
+        memset(&bytes, 0, sizeof(bytes));
+        CharonMIDIUMPToBytes(umpRequest->words, count, rpn, &bytes);
+        if (bytes.count > 0 && !bytes.failed) {
+            charon_ump_send *send = calloc(1, sizeof(charon_ump_send));
+            if (send) {
+                send->umpRequest = umpRequest;
+                send->bytes = bytes.bytes;
+                send->request.destination = umpRequest->destination;
+                send->request.data = send->bytes;
+                send->request.bytesToSend = (UInt32)bytes.count;
+                send->request.completionProc = charon_ump_send_done;
+                send->request.completionRefCon = send;
+                bytes.bytes = NULL;
+                if (MIDISendSysex(&send->request) == noErr) {
+                    queued = 1;
+                } else {
+                    free(send->bytes);
+                    free(send);
+                }
+            }
+        }
+        free(bytes.bytes);
+    }
+    umpRequest->wordsToSend = 0;
+    if (!queued) {
+        umpRequest->complete = YES;
+        if (umpRequest->completionProc)
+            umpRequest->completionProc(umpRequest);
+    }
+    return noErr;
+}
+
+OSStatus MIDISendUMPSysex(MIDISysexSendRequestUMP *umpRequest)
+{
+    return charon_send_ump(umpRequest);
+}
+
+OSStatus MIDISendUMPSysex8(MIDISysexSendRequestUMP *umpRequest)
+{
+    return charon_send_ump(umpRequest);
 }
