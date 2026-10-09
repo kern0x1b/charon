@@ -23,13 +23,13 @@ xmake f -p iphoneos -a armv7 -y >"$out/configure.log" 2>&1 || {
     tail -20 "$out/configure.log" >&2
     exit 1
 }
-xmake emulate -r "$minimum" install >"$out/install.log" 2>&1 || {
+xmake emulate -d iPhone4,1 -r "$minimum" install >"$out/install.log" 2>&1 || {
     echo "the port did not install; $out/install.log says why" >&2
     tail -20 "$out/install.log" >&2
     exit 1
 }
 CHARCOREMIDI_ROOT=$root CHARCOREMIDI_MINIMUM=$minimum \
-xmake emulate -r "$minimum" run /usr/libexec/charoncoremidi >"$out/run.log" 2>&1 || true
-xmake emulate -r "$minimum" log >"$out/emulate.log" 2>&1 || true
+xmake emulate -d iPhone4,1 -r "$minimum" run /usr/libexec/charoncoremidi >"$out/run.log" 2>&1 || true
+xmake emulate -d iPhone4,1 -r "$minimum" log >"$out/emulate.log" 2>&1 || true
 cat "$out/run.log"
 echo "run folder: $out"

@@ -58,11 +58,18 @@ int main(void)
                 }
                 gDestinationPackets++;
             });
+        printf("destination status %d\n", (int)status);
         expect(status == noErr, "MIDIDestinationCreateWithProtocol returned noErr");
 
         MIDIEndpointRef source = 0;
         status = MIDISourceCreateWithProtocol(client, CFSTR("charon-source"), kMIDIProtocol_2_0, &source);
+        printf("source status   %d\n", (int)status);
         expect(status == noErr, "MIDISourceCreateWithProtocol returned noErr");
+
+        // The release's own virtual source, with no library in the way: the control for the line above.
+        MIDIEndpointRef plainSource = 0;
+        OSStatus plain = MIDISourceCreate(client, CFSTR("charon-plain-source"), &plainSource);
+        printf("control status  %d (release MIDISourceCreate)\n", (int)plain);
 
         SInt32 protocol = 0;
         MIDIObjectGetIntegerProperty(destination, kMIDIPropertyProtocolID, &protocol);
@@ -113,11 +120,11 @@ int main(void)
             usleep(100000);
 
         int received = gDestinationPackets > 0 && gDestinationWords[0] == 0x40903C00u && gDestinationWords[1] == 0xFFFF0000u;
-        printf("received        %d packet(s): %08X %08X\n", gDestinationCount, gDestinationWords[0], gDestinationWords[1]);
+        printf("received        %d packet(s): %08X %08X\n", gDestinationCount, (unsigned int)gDestinationWords[0], (unsigned int)gDestinationWords[1]);
         expect(received, "the destination received 40903C00 FFFF0000");
 
         int inputOK = gInputPackets > 0 && gInputWords[0] == 0x20903C7Fu;
-        printf("input           %d packet(s): %08X\n", gInputCount, gInputWords[0]);
+        printf("input           %d packet(s): %08X\n", gInputCount, (unsigned int)gInputWords[0]);
         expect(inputOK, "the input port received 20903C7F");
 
         printf("roundtrip: %s (%d failure%s)\n", gFailures ? "FAIL" : "PASS", gFailures, gFailures == 1 ? "" : "s");

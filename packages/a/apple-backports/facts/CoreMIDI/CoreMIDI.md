@@ -40,6 +40,17 @@ CoreMIDI of iOS 16 and 17 and the MIDI-CI and MIDI 2.0 endpoint classes of iOS 1
 sysex senders (`MIDISendUMPSysex`, `MIDISendUMPSysex8`), `MIDIEventListForEachEvent`, the Bluetooth driver calls, and the
 MIDI-CI and `MIDIUMP*` classes. They stay missing in the registry until each is built.
 
+## Emulated iPhone 4S at 6.1.3: the round trip is not reached
+
+`tests/backports/emulate/coremidi/run.sh` (`xmake emulate -d iPhone4,1 -r 6.1.3`, time scale 10) built the library into
+a daemon, and the guest's MIDIServer started. The client is made (noErr). The release refuses a virtual endpoint: its own
+`MIDISourceCreate`, called with no library in the way, returns -10844 (kMIDINotPermitted), and so does this library's
+`MIDIDestinationCreateWithProtocol` and `MIDISourceCreateWithProtocol`, since they call the release. With no endpoint the
+connection and the round trip cannot be made, and the probe's verdict is FAIL (7 failures). The guest's log does not say
+why the server refuses; the cause is not measured. Open: a launch as an application (`xmake emulate launch`, which goes
+through SpringBoard) is the next measurement, and a library that makes its own endpoints would have to replace the
+release's connect and send functions, which the backports do not do.
+
 ## Evidence
 
 The translation rules and every measurement behind them are in facts/CoreMIDI/Translation.md; the event list rules are in
