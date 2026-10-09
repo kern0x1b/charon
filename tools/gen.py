@@ -1508,6 +1508,13 @@ def cmd_scope(args):
         surf_total[fw] = surf_total.get(fw, 0) + c["surface"]
     for i, fw in enumerate(order[:60], 1):
         md.append("| %d | %s | %d | %d |" % (i, fw, queue[fw], surf_total.get(fw, 0)))
+    totals = {}
+    for (fw, kind), c in counts.items():
+        for state, n in c["states"].items():
+            totals[state] = totals.get(state, 0) + n
+    md += ["", "State totals over every surface row (each row has exactly one state):", "",
+           "| state | rows |", "| --- | --- |"]
+    md += ["| %s | %d |" % (state, n) for state, n in sorted(totals.items(), key=lambda kv: -kv[1])]
     write(os.path.join(SCOPE_DIR, "v-gen-scope.md"), "\n".join(md) + "\n")
     print("scope: %d framework-kind rows, %d frameworks -> %s" % (len(counts), len(queue), os.path.join(SCOPE_DIR, "v-gen-scope.tsv")))
     return 0
