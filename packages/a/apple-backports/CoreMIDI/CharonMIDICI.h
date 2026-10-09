@@ -7,12 +7,12 @@
 #import <CoreMIDI/MIDIServices.h>
 
 #import "CharonMIDIUMP18.h"
+#import "CharonCoreMIDIProtocols.h"
 
 @class MIDICIDeviceInfo, MIDICIProfile, MIDICIProfileState, MIDICISession, MIDICIDiscoveredNode;
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NSNumber *MIDICIInitiatiorMUID;
 typedef NSArray<MIDICIProfileState *> MIDICIProfileStateList;
 
 typedef void (^MIDICISessionDisconnectBlock)(MIDICISession *session, NSError *error);
@@ -83,13 +83,6 @@ typedef void (^MIDICIDiscoveryResponseBlock)(NSArray<MIDICIDiscoveredNode *> *di
 @interface MIDICIDiscoveryManager : NSObject
 + (MIDICIDiscoveryManager *)sharedInstance;
 - (void)discoverWithHandler:(MIDICIDiscoveryResponseBlock)completedHandler;
-@end
-
-@protocol MIDICIProfileResponderDelegate <NSObject>
-- (BOOL)connectInitiator:(MIDICIInitiatiorMUID)initiatorMUID withDeviceInfo:(MIDICIDeviceInfo *)deviceInfo;
-- (void)initiatorDisconnected:(MIDICIInitiatiorMUID)initiatorMUID;
-- (BOOL)willSetProfile:(MIDICIProfile *)aProfile onChannel:(MIDIChannelNumber)channel enabled:(BOOL)shouldEnable;
-- (void)handleDataForProfile:(MIDICIProfile *)aProfile onChannel:(MIDIChannelNumber)channel data:(NSData *)inData;
 @end
 
 @interface MIDICIResponder : NSObject
