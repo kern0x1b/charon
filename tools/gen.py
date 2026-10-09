@@ -1391,7 +1391,8 @@ SCOPE_DIR = os.path.join(os.environ.get("HOME", ""), "Git", "projects", "ios", "
 SCOPE_KINDS = ("class", "method", "property", "constant", "function", "enum", "struct", "typealias", "protocol")
 
 
-def scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing=True, protocols=frozenset(), lang="objc"):
+def scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing=True, protocols=frozenset(), lang="objc",
+                    header_only=False):
     """The one state a surface row is in, by the tables. A row the 6.1.3 release has is answered by the release, so only a
     missing row is a work item; a missing row is overridden, a stub, a hand implementation, a type iOS does not declare, a
     protocol member (the spec does not cover protocols), or a kind with no generator yet."""
@@ -1399,6 +1400,9 @@ def scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing=Tr
         return "overridden"
     if not in_missing:
         return "implemented at 6.1.3: the release answers"
+    if header_only:
+        # the ledger's header-ok rows (lift): declared in the lifted headers, no symbol to generate
+        return "header-only (lift): no symbol to generate"
     if kind == "class":
         return "class object: no generator yet"
     if kind not in ("method", "property", "constant"):
@@ -1477,7 +1481,9 @@ def cmd_scope(args):
             dotted = api
             key = (kind, api)
             in_missing = (kind, api) in led6
-            state = scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing, protocols, row.get("lang", "objc")) if snap else "no snapshot"
+            header_only = led6.get((kind, api)) == "header-ok"
+            state = scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing, protocols, row.get("lang", "objc"),
+                                    header_only) if snap else "no snapshot"
             c = counts.setdefault((fw, kind), {"surface": 0, "demand_rows": 0, "demand_apps": 0, "missing_6_1_3": 0,
                                                "missing_4_3": 0, "states": {}})
             c["surface"] += 1
