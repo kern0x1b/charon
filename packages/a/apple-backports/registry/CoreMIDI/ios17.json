@@ -1,0 +1,21 @@
+{
+  "framework": "CoreMIDI",
+  "entries": [
+    {
+      "api": "kMIDIPropertyUMPActiveGroupBitmap",
+      "kind": "constant",
+      "introduced": "17.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads through the linked symbol (NULL), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "kMIDIPropertyUMPCanTransmitGroupless",
+      "kind": "constant",
+      "introduced": "17.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads through the linked symbol (NULL), tests/backports/host/coremidi/oracle/constants.m"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "framework": "CoreMIDI",
+  "entries": [
+    {
+      "api": "kMIDIPropertyAssociatedEndpoint",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads through the linked symbol (NULL), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDICIDeviceObjectKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDICIProfileObjectKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDIUMPEndpointObjectKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDIUMPFunctionBlockObjectKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDICIDeviceWasAddedNotification",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDICIDeviceWasRemovedNotification",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDICIProfileWasRemovedNotification",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDICIProfileWasUpdatedNotification",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDIUMPEndpointWasAddedNotification",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDIUMPEndpointWasRemovedNotification",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDIUMPEndpointWasUpdatedNotification",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    },
+    {
+      "api": "MIDIUMPFunctionBlockWasUpdatedNotification",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Constants.md",
+      "source": "the value macOS CoreMIDI reads (the name itself), tests/backports/host/coremidi/oracle/constants.m"
+    }
+  ]
+}

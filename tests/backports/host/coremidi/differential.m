@@ -345,6 +345,53 @@ static void check_event_list_rules(void)
     check(packets == 3 && shortList->numPackets == 3, "event list: 64 bytes hold three packets (macOS probe2)", "");
 }
 
+// The constants of the 17 and 18 surface, read from this file's own copies (renamed by run.sh) and held to the
+// strings macOS gives them (oracle/constants.m, measured 2026-10-09). The three property constants are NULL on macOS.
+extern const CFStringRef charon_host_kMIDIPropertyUMPActiveGroupBitmap;
+extern const CFStringRef charon_host_kMIDIPropertyUMPCanTransmitGroupless;
+extern const CFStringRef charon_host_kMIDIPropertyAssociatedEndpoint;
+extern NSString *const charon_host_MIDICIDeviceObjectKey;
+extern NSString *const charon_host_MIDICIProfileObjectKey;
+extern NSString *const charon_host_MIDIUMPEndpointObjectKey;
+extern NSString *const charon_host_MIDIUMPFunctionBlockObjectKey;
+extern NSString *const charon_host_MIDICIDeviceWasAddedNotification;
+extern NSString *const charon_host_MIDICIDeviceWasRemovedNotification;
+extern NSString *const charon_host_MIDICIProfileWasRemovedNotification;
+extern NSString *const charon_host_MIDICIProfileWasUpdatedNotification;
+extern NSString *const charon_host_MIDIUMPEndpointWasAddedNotification;
+extern NSString *const charon_host_MIDIUMPEndpointWasRemovedNotification;
+extern NSString *const charon_host_MIDIUMPEndpointWasUpdatedNotification;
+extern NSString *const charon_host_MIDIUMPFunctionBlockWasUpdatedNotification;
+
+static void check_constants(void)
+{
+    check(charon_host_kMIDIPropertyUMPActiveGroupBitmap == NULL, "constant kMIDIPropertyUMPActiveGroupBitmap is NULL, as on macOS", "");
+    check(charon_host_kMIDIPropertyUMPCanTransmitGroupless == NULL, "constant kMIDIPropertyUMPCanTransmitGroupless is NULL, as on macOS", "");
+    check(charon_host_kMIDIPropertyAssociatedEndpoint == NULL, "constant kMIDIPropertyAssociatedEndpoint is NULL, as on macOS", "");
+    NSDictionary *names = @{
+        @"MIDICIDeviceObjectKey": charon_host_MIDICIDeviceObjectKey,
+        @"MIDICIProfileObjectKey": charon_host_MIDICIProfileObjectKey,
+        @"MIDIUMPEndpointObjectKey": charon_host_MIDIUMPEndpointObjectKey,
+        @"MIDIUMPFunctionBlockObjectKey": charon_host_MIDIUMPFunctionBlockObjectKey,
+        @"MIDICIDeviceWasAddedNotification": charon_host_MIDICIDeviceWasAddedNotification,
+        @"MIDICIDeviceWasRemovedNotification": charon_host_MIDICIDeviceWasRemovedNotification,
+        @"MIDICIProfileWasRemovedNotification": charon_host_MIDICIProfileWasRemovedNotification,
+        @"MIDICIProfileWasUpdatedNotification": charon_host_MIDICIProfileWasUpdatedNotification,
+        @"MIDIUMPEndpointWasAddedNotification": charon_host_MIDIUMPEndpointWasAddedNotification,
+        @"MIDIUMPEndpointWasRemovedNotification": charon_host_MIDIUMPEndpointWasRemovedNotification,
+        @"MIDIUMPEndpointWasUpdatedNotification": charon_host_MIDIUMPEndpointWasUpdatedNotification,
+        @"MIDIUMPFunctionBlockWasUpdatedNotification": charon_host_MIDIUMPFunctionBlockWasUpdatedNotification,
+    };
+    int matched = 0;
+    for (NSString *name in names) {
+        if ([(NSString *)names[name] isEqualToString:name])
+            matched++;
+    }
+    char detail[64];
+    snprintf(detail, sizeof(detail), "%d of 12 equal their names", matched);
+    check(matched == 12, "constants: the 12 keys and notifications are their names, as on macOS", detail);
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -357,6 +404,7 @@ int main(void)
         check_sysex_chunks();
         check_sysex_split();
         check_event_list_rules();
+        check_constants();
         printf("checks=%d failures=%d\n", gChecks, gFailures);
     }
     return gFailures == 0 ? 0 : 1;

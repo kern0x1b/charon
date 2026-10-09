@@ -12,7 +12,12 @@ mkdir -p "$build"
 renames=""
 for name in MIDIEventListInit MIDIEventListAdd MIDIClientCreateWithBlock MIDIInputPortCreateWithBlock \
     MIDIDestinationCreateWithBlock MIDIInputPortCreateWithProtocol MIDIDestinationCreateWithProtocol \
-    MIDISourceCreateWithProtocol MIDISendEventList MIDIReceivedEventList; do
+    MIDISourceCreateWithProtocol MIDISendEventList MIDIReceivedEventList \
+    kMIDIPropertyUMPActiveGroupBitmap kMIDIPropertyUMPCanTransmitGroupless kMIDIPropertyAssociatedEndpoint \
+    MIDICIDeviceObjectKey MIDICIProfileObjectKey MIDIUMPEndpointObjectKey MIDIUMPFunctionBlockObjectKey \
+    MIDICIDeviceWasAddedNotification MIDICIDeviceWasRemovedNotification MIDICIProfileWasRemovedNotification \
+    MIDICIProfileWasUpdatedNotification MIDIUMPEndpointWasAddedNotification MIDIUMPEndpointWasRemovedNotification \
+    MIDIUMPEndpointWasUpdatedNotification MIDIUMPFunctionBlockWasUpdatedNotification; do
     renames="$renames -D$name=charon_host_$name"
 done
 for path in "$CORE"/*.m; do
@@ -21,7 +26,7 @@ for path in "$CORE"/*.m; do
 done
 xcrun clang -c -w -I"$CORE" "$CORE/CharonCoreMIDI.c" -o "$build/CharonCoreMIDI.o"
 xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -I"$here" \
-    "$here/differential.m" "$build/CharonCoreMIDI.o" -framework Foundation -framework CoreMIDI -o "$build/differential"
+    "$here/differential.m" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -o "$build/differential"
 "$build/differential" > "$build/log" 2>&1 && result=0 || result=$?
 grep -v '^ok ' "$build/log" || true
 echo "log=$build/log"
