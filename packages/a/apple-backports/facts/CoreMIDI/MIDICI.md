@@ -1,8 +1,9 @@
 # MIDI-CI: the classes of 12 to 18, and why no MIDI-CI device is ever seen
 
-The MIDI Capability Inquiry classes come in two generations. The 1.x classes of iOS 12 and 14 (MIDICIDeviceInfo, MIDICIProfile,
-MIDICIProfileState, MIDICISession, MIDICIDiscoveredNode, MIDICIDiscoveryManager, MIDICIResponder, and the protocol
-MIDICIProfileResponderDelegate) are in `CoreMIDI/MIDICI12.m`, `CoreMIDI/MIDICI14.m` and `CoreMIDI/CharonMIDICI.h`. The
+The MIDI Capability Inquiry classes come in two generations. The 1.x classes of iOS 12, 14 and 16 (MIDICIProfile,
+MIDICIProfileState, MIDICISession (12); MIDICIDiscoveredNode, MIDICIDiscoveryManager, MIDICIResponder, and the protocol
+MIDICIProfileResponderDelegate (14); MIDICIDeviceInfo (16, by the release-split tool)) are in `CoreMIDI/MIDICI12.m`,
+`MIDICI14.m`, `MIDICI16.m` and `CoreMIDI/CharonMIDICI.h`. The
 device classes of iOS 18 are in `UMPClasses.md`.
 
 ## What was measured on macOS (2026-10-09, oracle/micicapability.m and umpclasses.m)
