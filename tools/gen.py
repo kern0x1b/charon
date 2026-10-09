@@ -435,10 +435,14 @@ def surface_frameworks():
 
 def cmd_input_all(args):
     """The spec snapshot of every surface framework that has a ledger; the rest (C header sets) are listed as skipped."""
-    done, skipped = [], []
+    done, skipped, kept = [], [], []
     for fw in surface_frameworks():
         if not os.path.exists(os.path.join(LEDGER_DIR, "ledger-w45", fw + ".tsv")):
             skipped.append(fw)
+            continue
+        if os.path.exists(spec_path(args.tree, fw)):
+            # a snapshot that exists was built with its own inputs (owned names, measured releases) and reviewed: it is kept
+            kept.append(fw)
             continue
         sub = argparse.Namespace(tree=args.tree, framework=fw, ledger=os.path.join(LEDGER_DIR, "ledger-w45"), sdk=args.sdk,
                                  owned=None, measured=None, ios_constants=None)
@@ -447,8 +451,9 @@ def cmd_input_all(args):
             done.append(fw)
         except (Exception, SystemExit) as error:  # a framework the inputs cannot read is named in the scope, not hidden
             skipped.append("%s (%s)" % (fw, str(error).splitlines()[0][:80] if str(error) else type(error).__name__))
-    write(os.path.join(args.tree, GEN_INPUT_LOG), "input --all: %d snapshots\nskipped: %s\n" % (len(done), ", ".join(skipped)))
-    print("input --all: %d snapshots, %d skipped (see %s)" % (len(done), len(skipped), GEN_INPUT_LOG))
+    write(os.path.join(args.tree, GEN_INPUT_LOG), "input --all: %d built, %d kept (existing snapshots), %d skipped\nkept: %s\nskipped: %s\n"
+          % (len(done), len(kept), len(skipped), ", ".join(kept), ", ".join(skipped)))
+    print("input --all: %d built, %d kept, %d skipped (see %s)" % (len(done), len(kept), len(skipped), GEN_INPUT_LOG))
     return 0
 
 
@@ -570,7 +575,7 @@ def load_overrides(tree, fw):
     for path in sorted(glob.glob(os.path.join(tree, REGISTRY, fw, "*.json"))):
         with open(path) as handle:
             data = json.load(handle)
-        for entry in data["entries"]:
+        for entry in (data.get("entries", []) if isinstance(data, dict) else data):
             if entry.get("status") == "implemented" and entry.get("kind") in ("method", "property", "class"):
                 if entry.get("owner", "").startswith("generator:"):
                     continue
@@ -1386,16 +1391,29 @@ SCOPE_DIR = os.path.join(os.environ.get("HOME", ""), "Git", "projects", "ios", "
 SCOPE_KINDS = ("class", "method", "property", "constant", "function", "enum", "struct", "typealias", "protocol")
 
 
-def scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing=True):
-    """The one state a surface row is in, by the tables: overridden, stub, hand, undeclared, not in the header, or generated."""
+def scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing=True, protocols=frozenset(), lang="objc"):
+    """The one state a surface row is in, by the tables. A row the 6.1.3 release has is answered by the release, so only a
+    missing row is a work item; a missing row is overridden, a stub, a hand implementation, a type iOS does not declare, a
+    protocol member (the spec does not cover protocols), or a kind with no generator yet."""
     if api in registry:
         return "overridden"
-    if kind != "class" and not in_missing:
+    if not in_missing:
         return "implemented at 6.1.3: the release answers"
-    r = spec_by_api.get(api)
-    if r is None:
-        return "not in the header parse"
+    if kind == "class":
+        return "class object: no generator yet"
+    if kind not in ("method", "property", "constant"):
+        return "needs a generator: " + kind
+    if lang == "swift":
+        # the spec is the ObjC headers; a Swift row needs the Swift interface, which v-cache26 publishes beside the ObjC tables
+        return "swift: needs the Swift interface source"
     if kind in ("method", "property"):
+        owner = re.search(r"^[-+]\[(\w+)", api) or re.search(r"^(\w+)\.", api)
+        if owner and owner.group(1) in protocols:
+            return "protocol member: needs a generator"
+    r = spec_by_api.get(api)
+    if kind in ("method", "property"):
+        if r is None:
+            return "not in the header parse (category or other)"
         reason = stub_reason.get(api)
         if reason is None:
             return "generable stub"
@@ -1404,15 +1422,15 @@ def scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing=Tr
         if reason.startswith("override or hand implementation"):
             return "hand implementation (no registry row)"
         return "not stubbed: " + reason
-    if kind == "constant":
-        if r["owned"] != "-":
-            return "owned by a live branch" if not r["owned"].startswith("registry:") else "registry decision"
-        if r["value_status"] == "found" and r["tbd"] == "exported":
-            return "generable constant"
-        if r["value_status"] == "numeric":
-            return "numeric (not a string object)"
-        return "not generated: " + (r["value_status"] if r["value_status"] else "-")
-    return "no generator"
+    if r is None:
+        return "not in the header parse (category or other)"
+    if r["owned"] != "-":
+        return "owned by a live branch" if not r["owned"].startswith("registry:") else "registry decision"
+    if r["value_status"] == "found" and r["tbd"] == "exported":
+        return "generable constant"
+    if r["value_status"] == "numeric":
+        return "numeric (not a string object)"
+    return "not generated: " + (r["value_status"] if r["value_status"] else "-")
 
 
 def cmd_scope(args):
@@ -1432,7 +1450,7 @@ def cmd_scope(args):
         led6 = ledger_status(fw, "ledger-w45") if os.path.exists(os.path.join(LEDGER_DIR, "ledger-w45", fw + ".tsv")) else {}
         led43 = ledger_status(fw, "ledger-w45-4.3") if os.path.exists(os.path.join(LEDGER_DIR, "ledger-w45-4.3", fw + ".tsv")) else {}
         snap = os.path.exists(spec_path(args.tree, fw))
-        registry = set(api for (api, kind) in [(k[1], k[0]) for k in []])
+        protocols = set(row["api"] for row in rows if row["kind"] == "protocol")
         reg = registry_entries(args.tree, fw)
         registry = set(reg)
         spec_by_api, stub_reason = {}, {}
@@ -1458,8 +1476,8 @@ def cmd_scope(args):
             api = row["api"]
             dotted = api
             key = (kind, api)
-            in_missing = (kind, api) in led6 or kind == "class"
-            state = scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing) if snap else "no snapshot"
+            in_missing = (kind, api) in led6
+            state = scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing, protocols, row.get("lang", "objc")) if snap else "no snapshot"
             c = counts.setdefault((fw, kind), {"surface": 0, "demand_rows": 0, "demand_apps": 0, "missing_6_1_3": 0,
                                                "missing_4_3": 0, "states": {}})
             c["surface"] += 1
