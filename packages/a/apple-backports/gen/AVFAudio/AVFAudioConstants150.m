@@ -2,4 +2,4 @@
 #import <AVFAudio/AVFAudio.h>
 
 NSString *const AVAudioSessionSpatialAudioEnabledKey = @"AVAudioSessionSpatializationEnabledKey";
-NSNotificationName const AVAudioSessionSpatialPlaybackCapabilitiesChangedNotification = @"AVAudioSessionSpatialPlaybackCapabilitiesChangedNotification";
+NSString *const AVAudioSessionSpatialPlaybackCapabilitiesChangedNotification = @"AVAudioSessionSpatialPlaybackCapabilitiesChangedNotification";

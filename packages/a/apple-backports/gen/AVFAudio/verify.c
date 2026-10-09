@@ -5,8 +5,6 @@
 CHARON_IMPLEMENTS(AVAudioApplication_inputMuted, 0x3cf734e9d5f1d6d8ULL, "AVAudioApplication.inputMuted");
 CHARON_IMPLEMENTS(AVAudioApplication_microphoneInjectionPermission, 0x6329a0702fc7ba82ULL, "AVAudioApplication.microphoneInjectionPermission");
 CHARON_IMPLEMENTS(AVAudioApplication_recordPermission, 0x022dcbc6217d98b1ULL, "AVAudioApplication.recordPermission");
-CHARON_IMPLEMENTS(AVAudioApplication_requestMicrophoneInjectionPermissionWithCompletionHandler, 0x52c3c66202565c4aULL, "+[AVAudioApplication requestMicrophoneInjectionPermissionWithCompletionHandler:]");
-CHARON_IMPLEMENTS(AVAudioApplication_requestRecordPermissionWithCompletionHandler, 0xd8f8afc603311a17ULL, "+[AVAudioApplication requestRecordPermissionWithCompletionHandler:]");
 CHARON_IMPLEMENTS(AVAudioApplication_setInputMuteStateChangeHandler_error, 0x608f57a1f9c45c08ULL, "-[AVAudioApplication setInputMuteStateChangeHandler:error:]");
 CHARON_IMPLEMENTS(AVAudioApplication_setInputMuted_error, 0x214c86e080c958a4ULL, "-[AVAudioApplication setInputMuted:error:]");
 CHARON_IMPLEMENTS(AVAudioApplication_sharedInstance, 0x97d96496ee9a0671ULL, "AVAudioApplication.sharedInstance");
@@ -16,8 +14,6 @@ CHARON_IMPLEMENTS(AVAudioChannelLayout_initWithLayoutTag, 0x1f35aff9963a2515ULL,
 CHARON_IMPLEMENTS(AVAudioChannelLayout_isEqual, 0x7b4503adc43306b1ULL, "-[AVAudioChannelLayout isEqual:]");
 CHARON_IMPLEMENTS(AVAudioChannelLayout_layout, 0x33d66398403bb300ULL, "AVAudioChannelLayout.layout");
 CHARON_IMPLEMENTS(AVAudioChannelLayout_layoutTag, 0x4d544c41f4822b27ULL, "AVAudioChannelLayout.layoutTag");
-CHARON_IMPLEMENTS(AVAudioChannelLayout_layoutWithLayout, 0x786bfb50a6b3b46cULL, "+[AVAudioChannelLayout layoutWithLayout:]");
-CHARON_IMPLEMENTS(AVAudioChannelLayout_layoutWithLayoutTag, 0x400822b803a4702fULL, "+[AVAudioChannelLayout layoutWithLayoutTag:]");
 CHARON_IMPLEMENTS(AVAudioEngine_disableManualRenderingMode, 0x2064bbf48e7506c2ULL, "-[AVAudioEngine disableManualRenderingMode]");
 CHARON_IMPLEMENTS(AVAudioEngine_enableManualRenderingMode_format_maximumFrameCount_error, 0x3afdc9f61bb9a6ebULL, "-[AVAudioEngine enableManualRenderingMode:format:maximumFrameCount:error:]");
 CHARON_IMPLEMENTS(AVAudioEngine_manualRenderingBlock, 0xe7f58f5118ef66feULL, "-[AVAudioEngine manualRenderingBlock]");
@@ -48,7 +44,6 @@ CHARON_IMPLEMENTS(AVAudioSessionPortExtensionBluetoothMicrophone_highQualityReco
 CHARON_IMPLEMENTS(AVAudioTime_audioTimeStamp, 0x23c97be611275462ULL, "AVAudioTime.audioTimeStamp");
 CHARON_IMPLEMENTS(AVAudioTime_extrapolateTimeFromAnchor, 0x2efbe244c6c721b6ULL, "-[AVAudioTime extrapolateTimeFromAnchor:]");
 CHARON_IMPLEMENTS(AVAudioTime_hostTime, 0x46aed217ff0ecaaaULL, "AVAudioTime.hostTime");
-CHARON_IMPLEMENTS(AVAudioTime_hostTimeForSeconds, 0x0114d865c76d9b4dULL, "+[AVAudioTime hostTimeForSeconds:]");
 CHARON_IMPLEMENTS(AVAudioTime_hostTimeValid, 0x147afeece77d4673ULL, "AVAudioTime.hostTimeValid");
 CHARON_IMPLEMENTS(AVAudioTime_initWithAudioTimeStamp_sampleRate, 0x41267189632e9462ULL, "-[AVAudioTime initWithAudioTimeStamp:sampleRate:]");
 CHARON_IMPLEMENTS(AVAudioTime_initWithHostTime, 0x3b3aeff5b9e6d6f6ULL, "-[AVAudioTime initWithHostTime:]");
@@ -57,15 +52,9 @@ CHARON_IMPLEMENTS(AVAudioTime_initWithSampleTime_atRate, 0x405df2992cc6ea89ULL, 
 CHARON_IMPLEMENTS(AVAudioTime_sampleRate, 0x8979a83e73e6d362ULL, "AVAudioTime.sampleRate");
 CHARON_IMPLEMENTS(AVAudioTime_sampleTime, 0xd45a0b3806ccec81ULL, "AVAudioTime.sampleTime");
 CHARON_IMPLEMENTS(AVAudioTime_sampleTimeValid, 0xe011a9a538db63f0ULL, "AVAudioTime.sampleTimeValid");
-CHARON_IMPLEMENTS(AVAudioTime_secondsForHostTime, 0x0c48c74fec3d4959ULL, "+[AVAudioTime secondsForHostTime:]");
-CHARON_IMPLEMENTS(AVAudioTime_timeWithAudioTimeStamp_sampleRate, 0xefb50df70f8c852bULL, "+[AVAudioTime timeWithAudioTimeStamp:sampleRate:]");
-CHARON_IMPLEMENTS(AVAudioTime_timeWithHostTime, 0x724239802ace74adULL, "+[AVAudioTime timeWithHostTime:]");
-CHARON_IMPLEMENTS(AVAudioTime_timeWithHostTime_sampleTime_atRate, 0x6f4ffccc73e87127ULL, "+[AVAudioTime timeWithHostTime:sampleTime:atRate:]");
-CHARON_IMPLEMENTS(AVAudioTime_timeWithSampleTime_atRate, 0xb43eeca0243a5fa3ULL, "+[AVAudioTime timeWithSampleTime:atRate:]");
 CHARON_IMPLEMENTS(AVAudioUnitComponentManager_componentsMatchingDescription, 0x87f68a4185008bbaULL, "-[AVAudioUnitComponentManager componentsMatchingDescription:]");
 CHARON_IMPLEMENTS(AVAudioUnitComponentManager_componentsMatchingPredicate, 0x5ffda775581693c7ULL, "-[AVAudioUnitComponentManager componentsMatchingPredicate:]");
 CHARON_IMPLEMENTS(AVAudioUnitComponentManager_componentsPassingTest, 0x6502814cdb344424ULL, "-[AVAudioUnitComponentManager componentsPassingTest:]");
-CHARON_IMPLEMENTS(AVAudioUnitComponentManager_sharedAudioUnitComponentManager, 0xfea7dbcb4e12d08bULL, "+[AVAudioUnitComponentManager sharedAudioUnitComponentManager]");
 CHARON_IMPLEMENTS(AVAudioUnitComponentManager_standardLocalizedTagNames, 0x5d9bed13e12313afULL, "AVAudioUnitComponentManager.standardLocalizedTagNames");
 CHARON_IMPLEMENTS(AVAudioUnitComponentManager_tagNames, 0x44dadcbb9f5e9365ULL, "AVAudioUnitComponentManager.tagNames");
 CHARON_IMPLEMENTS(AVAudioUnitComponent_allTagNames, 0x02348eab185ca3fbULL, "AVAudioUnitComponent.allTagNames");
@@ -125,3 +114,14 @@ CHARON_IMPLEMENTS(AVParameterEvent_initWithParameterID_scope_element_value, 0xd2
 CHARON_IMPLEMENTS(AVParameterEvent_parameterID, 0x14111a0d5d3c2153ULL, "AVParameterEvent.parameterID");
 CHARON_IMPLEMENTS(AVParameterEvent_scope, 0x1eb6961af34597e5ULL, "AVParameterEvent.scope");
 CHARON_IMPLEMENTS(AVParameterEvent_value, 0x417f812143878cedULL, "AVParameterEvent.value");
+CHARON_IMPLEMENTS(class_AVAudioApplication_requestMicrophoneInjectionPermissionWithCompletionHandler, 0x52c3c66202565c4aULL, "+[AVAudioApplication requestMicrophoneInjectionPermissionWithCompletionHandler:]");
+CHARON_IMPLEMENTS(class_AVAudioApplication_requestRecordPermissionWithCompletionHandler, 0xd8f8afc603311a17ULL, "+[AVAudioApplication requestRecordPermissionWithCompletionHandler:]");
+CHARON_IMPLEMENTS(class_AVAudioChannelLayout_layoutWithLayout, 0x786bfb50a6b3b46cULL, "+[AVAudioChannelLayout layoutWithLayout:]");
+CHARON_IMPLEMENTS(class_AVAudioChannelLayout_layoutWithLayoutTag, 0x400822b803a4702fULL, "+[AVAudioChannelLayout layoutWithLayoutTag:]");
+CHARON_IMPLEMENTS(class_AVAudioTime_hostTimeForSeconds, 0x0114d865c76d9b4dULL, "+[AVAudioTime hostTimeForSeconds:]");
+CHARON_IMPLEMENTS(class_AVAudioTime_secondsForHostTime, 0x0c48c74fec3d4959ULL, "+[AVAudioTime secondsForHostTime:]");
+CHARON_IMPLEMENTS(class_AVAudioTime_timeWithAudioTimeStamp_sampleRate, 0xefb50df70f8c852bULL, "+[AVAudioTime timeWithAudioTimeStamp:sampleRate:]");
+CHARON_IMPLEMENTS(class_AVAudioTime_timeWithHostTime, 0x724239802ace74adULL, "+[AVAudioTime timeWithHostTime:]");
+CHARON_IMPLEMENTS(class_AVAudioTime_timeWithHostTime_sampleTime_atRate, 0x6f4ffccc73e87127ULL, "+[AVAudioTime timeWithHostTime:sampleTime:atRate:]");
+CHARON_IMPLEMENTS(class_AVAudioTime_timeWithSampleTime_atRate, 0xb43eeca0243a5fa3ULL, "+[AVAudioTime timeWithSampleTime:atRate:]");
+CHARON_IMPLEMENTS(class_AVAudioUnitComponentManager_sharedAudioUnitComponentManager, 0xfea7dbcb4e12d08bULL, "+[AVAudioUnitComponentManager sharedAudioUnitComponentManager]");
