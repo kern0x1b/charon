@@ -1,0 +1,92 @@
+// Charon's own part of CoreMIDI for the releases that lack the MIDI 2.0 (UMP) API: the translation between
+// MIDI 1.0 bytes and Universal MIDI Packets, the event list builder's packet rules, and the per-channel
+// state a 2.0 -> 1.0 send keeps. Every name here begins with Charon, so internal_symbol() keeps it out of the
+// library's exports; the API files (MIDIEventList14.m, MIDIProtocol14.m, ...) call it and export only what
+// CoreMIDI declares.
+//
+// The rules are the ones macOS CoreMIDI was measured to apply, through virtual endpoints, by
+// tests/backports/host/coremidi (run.sh): see facts/CoreMIDI/Translation.md for each rule and its evidence.
+#ifndef CharonCoreMIDI_h
+#define CharonCoreMIDI_h
+
+#include <CoreMIDI/CoreMIDI.h>
+#include <stddef.h>
+#include <stdint.h>
+
+// A growable array of UMP words, filled by the parsers below. failed is set when an allocation fails, and the
+// caller then answers with an error rather than with a partial list.
+typedef struct CharonMIDIWords {
+    uint32_t *words;
+    size_t count;
+    size_t capacity;
+    int failed;
+} CharonMIDIWords;
+
+// A growable array of MIDI 1.0 bytes, filled by CharonMIDIUMPToBytes.
+typedef struct CharonMIDIBytes {
+    uint8_t *bytes;
+    size_t count;
+    size_t capacity;
+    int failed;
+} CharonMIDIBytes;
+
+// What a MIDI 1.0 byte stream carries from one packet to the next: the running status, a message whose data
+// bytes have not all arrived, and a SysEx begun with F0 that has not met its F7. A SysEx is sent as 6-byte
+// UMP chunks, and the last chunk is held back until the SysEx ends, so that a SysEx of six bytes or fewer is
+// one complete packet, as it is on macOS. A caller starts each input from a zeroed parser.
+typedef struct CharonMIDIParser {
+    uint8_t running;
+    uint8_t pendingStatus;
+    int pendingNeed;
+    int pendingHave;
+    uint8_t pendingData[2];
+    int inSysex;
+    int sysexSent;
+    uint8_t sysexCount;
+    uint8_t sysex[6];
+} CharonMIDIParser;
+
+// The registered or non-registered parameter a channel last selected on the 1.0 side. A 2.0 RPN or NRPN
+// sends its two selecting controllers only when the parameter differs from this, as macOS does.
+typedef struct CharonMIDIRPN {
+    int selected;
+    int nrpn;
+    uint8_t msb;
+    uint8_t lsb;
+} CharonMIDIRPN;
+
+void CharonMIDIWordsAppend(CharonMIDIWords *out, uint32_t word);
+
+// Parses the MIDI 1.0 bytes of one packet into UMP words of the given group, in the given protocol (1 or 2),
+// appending to out. A 1.0 channel message stays a 32-bit word; a 2.0 one becomes its 64-bit channel voice
+// message with the value scaled up (CharonMIDIUp16From7, CharonMIDIUp32From7, CharonMIDIUp32From14). A
+// real-time byte inside a SysEx sends the SysEx so far, as macOS does.
+void CharonMIDIParseBytes(CharonMIDIParser *parser, const uint8_t *data, size_t length, int protocol,
+                          uint8_t group, CharonMIDIWords *out);
+
+// Called after the last packet of a list: a SysEx still open sends what it holds, as a start or a continue,
+// and stays open for the packets that follow. macOS does the same at the end of a list.
+void CharonMIDIParseFlush(CharonMIDIParser *parser, uint8_t group, CharonMIDIWords *out);
+
+// Converts the UMP words of one event packet to MIDI 1.0 bytes, appending to out. A message with no 1.0
+// counterpart (per-note controllers, relative RPN and NRPN, per-note management, unknown types) produces no
+// bytes, as it does on macOS. rpn is the per-channel state of the destination the bytes are sent to.
+void CharonMIDIUMPToBytes(const uint32_t *words, size_t count, CharonMIDIRPN rpn[16], CharonMIDIBytes *out);
+
+// The number of words the UMP message that begins with word starts: 1, 2 or 4. Zero for a message type the
+// translation does not recognise, which then stops the packet it is in.
+int CharonMIDIUMPWordCount(uint32_t word);
+
+// MIDI 1.0 to 2.0 value scaling, as measured on macOS: a value at or below the centre is shifted up, and a
+// value above it is spread over the rest of the range.
+uint32_t CharonMIDIUp16From7(uint32_t value);
+uint32_t CharonMIDIUp32From7(uint32_t value);
+uint32_t CharonMIDIUp32From14(uint32_t value);
+
+// Appends one packet to an event list being built the way MIDIEventListAdd builds it: curPacket is the end of
+// the list's content, and an event at the timestamp of the last packet is merged into it. Returns the new end,
+// or NULL if the words do not fit in listSize bytes.
+MIDIEventPacket *CharonMIDIEventListAdd(MIDIEventList *list, size_t listSize, MIDIEventPacket *curPacket,
+                                        MIDITimeStamp time, size_t wordCount, const uint32_t *words);
+
+#endif

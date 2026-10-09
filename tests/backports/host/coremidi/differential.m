@@ -1,0 +1,363 @@
+// Differential test of the CoreMIDI translation against macOS CoreMIDI. The expected answers are the macOS
+// oracle's recorded output (coremidi-expectations.h, made by expectations.py from oracle/batch.m) and the probe
+// results written in this file beside each check, measured on this host on 2026-10-09. The translator under
+// test is packages/a/apple-backports/CoreMIDI/CharonCoreMIDI.c, built for macOS as it is for the device.
+//
+// Prints one line per check: "ok <name>" or "FAIL <name>: <detail>", then a summary. Exits with the number of
+// failures.
+#import <Foundation/Foundation.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "CharonCoreMIDI.h"
+#include "coremidi-expectations.h"
+
+static int gChecks = 0;
+static int gFailures = 0;
+
+static void check(int passed, const char *name, const char *detail)
+{
+    gChecks++;
+    if (passed) {
+        printf("ok %s\n", name);
+    } else {
+        gFailures++;
+        printf("FAIL %s: %s\n", name, detail);
+    }
+}
+
+// Whether two word lists are equal; on a difference, the first differing index goes into detail.
+static int same_words(const uint32_t *got, size_t gotCount, const unsigned int *want, int wantCount, char *detail, size_t size)
+{
+    if ((int)gotCount != wantCount) {
+        snprintf(detail, size, "got %zu words, macOS gave %d", gotCount, wantCount);
+        return 0;
+    }
+    for (size_t i = 0; i < gotCount; i++) {
+        if (got[i] != want[i]) {
+            snprintf(detail, size, "word %zu: got %08X, macOS gave %08X", i, got[i], want[i]);
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// The MIDI 1.0 bytes of a UMP channel word, as a list of one message.
+static size_t bytes_of_word(uint32_t word, uint8_t *bytes)
+{
+    bytes[0] = (uint8_t)(word >> 16);
+    bytes[1] = (uint8_t)(word >> 8);
+    bytes[2] = (uint8_t)word;
+    return (bytes[0] & 0xF0) == 0xC0 || (bytes[0] & 0xF0) == 0xD0 ? 2 : 3;
+}
+
+// The UMP MIDI 1.0 words of a byte list, one per channel message, as macOS delivers a 1.0 destination.
+static size_t words_of_bytes(const CharonMIDIBytes *bytes, uint32_t *words)
+{
+    size_t count = 0;
+    for (size_t i = 0; i < bytes->count;) {
+        uint8_t status = bytes->bytes[i];
+        size_t size = (status & 0xF0) == 0xC0 || (status & 0xF0) == 0xD0 ? 2 : 3;
+        uint32_t word = 0x20000000u | (uint32_t)status << 16;
+        if (i + 1 < bytes->count && size > 1)
+            word |= (uint32_t)bytes->bytes[i + 1] << 8;
+        if (i + 2 < bytes->count && size > 2)
+            word |= bytes->bytes[i + 2];
+        words[count++] = word;
+        i += size;
+    }
+    return count;
+}
+
+// Scaling laws the rows below rely on, stated once: the centre maps to the centre and the top to the top.
+static void check_scaling_laws(void)
+{
+    check(CharonMIDIUp16From7(0) == 0 && CharonMIDIUp16From7(127) == 0xFFFF, "scaling: 16-bit ends", "");
+    check(CharonMIDIUp32From7(0) == 0 && CharonMIDIUp32From7(127) == 0xFFFFFFFFu, "scaling: 32-bit ends", "");
+    check(CharonMIDIUp32From7(64) == 0x80000000u, "scaling: 32-bit centre", "");
+    check(CharonMIDIUp32From14(0) == 0 && CharonMIDIUp32From14(16383) == 0xFFFFFFFFu, "scaling: 14-bit ends", "");
+    check(CharonMIDIUp32From14(8192) == 0x80000000u, "scaling: 14-bit centre", "");
+    check(CharonMIDIUMPWordCount(0x20000000u) == 1 && CharonMIDIUMPWordCount(0x40000000u) == 2 && CharonMIDIUMPWordCount(0x50000000u) == 4,
+          "word counts: one, two and four words by type", "");
+}
+
+// Every MIDI 1.0 -> 2.0 row: a 1.0 channel word parsed in protocol 2 must give macOS's 2.0 words.
+static void check_up_rows(void)
+{
+    int failed = 0;
+    char detail[160];
+    for (size_t i = 0; i < sizeof(charon_expect_up) / sizeof(charon_expect_up[0]); i++) {
+        const charon_expect *row = &charon_expect_up[i];
+        uint8_t bytes[3];
+        size_t size = bytes_of_word(row->in[0], bytes);
+        CharonMIDIParser parser;
+        memset(&parser, 0, sizeof(parser));
+        CharonMIDIWords words;
+        memset(&words, 0, sizeof(words));
+        CharonMIDIParseBytes(&parser, bytes, size, 2, 0, &words);
+        if (!same_words(words.words, words.count, row->out, row->outCount, detail, sizeof(detail))) {
+            if (failed < 5)
+                printf("    %s (in %08X): %s\n", row->tag, row->in[0], detail);
+            failed++;
+        }
+        free(words.words);
+    }
+    char name[96];
+    snprintf(name, sizeof(name), "1.0 -> 2.0 rows from macOS (%zu)", sizeof(charon_expect_up) / sizeof(charon_expect_up[0]));
+    snprintf(detail, sizeof(detail), "%d rows differ", failed);
+    check(failed == 0, name, detail);
+}
+
+// Every 2.0 -> 1.0 row sampled from macOS: the 2.0 words of the row give the 1.0 words macOS delivered.
+static void check_down_rows(void)
+{
+    int failed = 0;
+    char detail[160];
+    for (size_t i = 0; i < sizeof(charon_expect_down) / sizeof(charon_expect_down[0]); i++) {
+        const charon_expect *row = &charon_expect_down[i];
+        CharonMIDIRPN rpn[16];
+        memset(rpn, 0, sizeof(rpn));
+        CharonMIDIBytes bytes;
+        memset(&bytes, 0, sizeof(bytes));
+        CharonMIDIUMPToBytes(row->in, (size_t)row->inCount, rpn, &bytes);
+        uint32_t words[16];
+        size_t count = words_of_bytes(&bytes, words);
+        if (!same_words(words, count, row->out, row->outCount, detail, sizeof(detail))) {
+            if (failed < 5)
+                printf("    %s (in %08X %08X): %s\n", row->tag, row->in[0], row->in[1], detail);
+            failed++;
+        }
+        free(bytes.bytes);
+    }
+    char name[96];
+    snprintf(name, sizeof(name), "2.0 -> 1.0 rows from macOS (%zu sampled)", sizeof(charon_expect_down) / sizeof(charon_expect_down[0]));
+    snprintf(detail, sizeof(detail), "%d rows differ", failed);
+    check(failed == 0, name, detail);
+}
+
+// Probe: a 1.0 byte stream sent through a 1.0 destination (macOS "bytes" batch, recorded on this host).
+static void check_bytes_to_ump(void)
+{
+    struct {
+        const char *name;
+        uint8_t bytes[8];
+        int count;
+        uint32_t want[4];
+        int wantCount;
+    } cases[] = {
+        {"90 3C 7F", {0x90, 0x3C, 0x7F}, 3, {0x20903C7Fu}, 1},
+        {"B0 07 40", {0xB0, 0x07, 0x40}, 3, {0x20B00740u}, 1},
+        {"E0 00 40", {0xE0, 0x00, 0x40}, 3, {0x20E00040u}, 1},
+        {"C0 05", {0xC0, 0x05}, 2, {0x20C00500u}, 1},
+        {"F8", {0xF8}, 1, {0x10F80000u}, 1},
+        {"F2 01 02", {0xF2, 0x01, 0x02}, 3, {0x10F20102u}, 1},
+        {"F0 01 02 03 F7", {0xF0, 0x01, 0x02, 0x03, 0xF7}, 5, {0x30030102u, 0x03000000u}, 2},
+    };
+    for (size_t c = 0; c < sizeof(cases) / sizeof(cases[0]); c++) {
+        CharonMIDIParser parser;
+        memset(&parser, 0, sizeof(parser));
+        CharonMIDIWords words;
+        memset(&words, 0, sizeof(words));
+        CharonMIDIParseBytes(&parser, cases[c].bytes, (size_t)cases[c].count, 1, 0, &words);
+        char detail[160];
+        int passed = same_words(words.words, words.count, cases[c].want, cases[c].wantCount, detail, sizeof(detail));
+        char name[96];
+        snprintf(name, sizeof(name), "bytes %s -> 1.0 words", cases[c].name);
+        check(passed, name, detail);
+        free(words.words);
+    }
+}
+
+// Probe: a 2.0 bank-selected program change, then RPN and NRPN sends on one channel, in one order. macOS
+// (probe2, one destination): the bank is sent as CC0 and CC32 before the program; an RPN sends its two
+// selecting controllers only when the parameter changes; the data entry is CC6, and CC38 only when non-zero.
+static void check_rpn_sequence(void)
+{
+    CharonMIDIRPN rpn[16];
+    memset(rpn, 0, sizeof(rpn));
+    struct {
+        const char *name;
+        uint32_t word0, word1;
+        uint8_t want[12];
+        int wantCount;
+    } cases[] = {
+        {"program with bank", 0x40C00001u, 0x05000A03u, {0xB0, 0x00, 0x0A, 0xB0, 0x20, 0x03, 0xC0, 0x05}, 8},
+        {"rpn 0,0 value 0x00400000", 0x40200000u, 0x00400000u, {0xB0, 0x65, 0x00, 0xB0, 0x64, 0x00, 0xB0, 0x06, 0x00, 0xB0, 0x26, 0x10}, 12},
+        {"nrpn 1,35 value 0x00400000", 0x40300000u | 0x0100u | 0x23u, 0x00400000u, {0xB0, 0x63, 0x01, 0xB0, 0x62, 0x23, 0xB0, 0x06, 0x00, 0xB0, 0x26, 0x10}, 12},
+        {"rpn 0,0 value 0", 0x40200000u, 0x00000000u, {0xB0, 0x65, 0x00, 0xB0, 0x64, 0x00, 0xB0, 0x06, 0x00}, 9},
+        {"rpn 0,0 value FFFFFFFF (same parameter)", 0x40200000u, 0xFFFFFFFFu, {0xB0, 0x06, 0x7F, 0xB0, 0x26, 0x7F}, 6},
+    };
+    for (size_t c = 0; c < sizeof(cases) / sizeof(cases[0]); c++) {
+        uint32_t words[2] = {cases[c].word0, cases[c].word1};
+        CharonMIDIBytes bytes;
+        memset(&bytes, 0, sizeof(bytes));
+        CharonMIDIUMPToBytes(words, 2, rpn, &bytes);
+        int passed = bytes.count == (size_t)cases[c].wantCount && memcmp(bytes.bytes, cases[c].want, bytes.count) == 0;
+        char name[96], detail[64];
+        snprintf(name, sizeof(name), "2.0 -> 1.0 %s", cases[c].name);
+        snprintf(detail, sizeof(detail), "got %zu bytes", bytes.count);
+        check(passed, name, detail);
+        free(bytes.bytes);
+    }
+}
+
+// Probe: 2.0 messages with no 1.0 form produce nothing (macOS: per-note pitch bend, per-note management, the
+// assignable controller, relative RPN, all dropped without a packet).
+static void check_dropped_messages(void)
+{
+    uint32_t words[][2] = {{0x40603C00u, 0x40000000u}, {0x40F03C00u, 0x00000001u}, {0x40103C00u, 0x40000000u}, {0x40400000u, 0x00400000u}};
+    for (size_t c = 0; c < sizeof(words) / sizeof(words[0]); c++) {
+        CharonMIDIRPN rpn[16];
+        memset(rpn, 0, sizeof(rpn));
+        CharonMIDIBytes bytes;
+        memset(&bytes, 0, sizeof(bytes));
+        CharonMIDIUMPToBytes(words[c], 2, rpn, &bytes);
+        char name[96];
+        snprintf(name, sizeof(name), "2.0 %08X dropped, as macOS drops it", words[c][0]);
+        check(bytes.count == 0, name, "produced bytes");
+        free(bytes.bytes);
+    }
+}
+
+// Probe: SysEx chunking into UMP SysEx7, as macOS sends it (probe5: 6 bytes is one complete packet, 7 bytes a
+// start and an end, 12 bytes a start and an end of six, a SysEx of nothing is a complete empty one).
+static void check_sysex_chunks(void)
+{
+    struct {
+        const char *name;
+        uint8_t bytes[16];
+        int count;
+        uint32_t want[8];
+        int wantCount;
+    } cases[] = {
+        {"empty", {0xF0, 0xF7}, 2, {0x30000000u, 0x00000000u}, 2},
+        {"6 bytes", {0xF0, 1, 2, 3, 4, 5, 6, 0xF7}, 8, {0x30060102u, 0x03040506u}, 2},
+        {"7 bytes", {0xF0, 1, 2, 3, 4, 5, 6, 7, 0xF7}, 9, {0x30160102u, 0x03040506u, 0x30310700u, 0x00000000u}, 4},
+        {"12 bytes", {0xF0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0xF7}, 14,
+         {0x30160102u, 0x03040506u, 0x30360708u, 0x090A0B0Cu}, 4},
+        {"open at the end of the list", {0xF0, 1, 2}, 3, {0x30120102u, 0x00000000u}, 2},
+        {"real-time byte inside", {0xF0, 1, 0xF8, 2, 0xF7}, 5,
+         {0x30010100u, 0x00000000u, 0x10F80000u, 0x30310200u, 0x00000000u}, 5},
+        {"real-time byte at the end", {0xF0, 1, 0xF8, 0xF7}, 4,
+         {0x30010100u, 0x00000000u, 0x10F80000u, 0x30300000u, 0x00000000u}, 5},
+    };
+    for (size_t c = 0; c < sizeof(cases) / sizeof(cases[0]); c++) {
+        CharonMIDIParser parser;
+        memset(&parser, 0, sizeof(parser));
+        CharonMIDIWords words;
+        memset(&words, 0, sizeof(words));
+        CharonMIDIParseBytes(&parser, cases[c].bytes, (size_t)cases[c].count, 2, 0, &words);
+        CharonMIDIParseFlush(&parser, 0, &words);
+        char detail[160], name[96];
+        int passed = same_words(words.words, words.count, cases[c].want, cases[c].wantCount, detail, sizeof(detail));
+        snprintf(name, sizeof(name), "SysEx %s -> UMP", cases[c].name);
+        check(passed, name, detail);
+        free(words.words);
+    }
+}
+
+// Probe: a SysEx split over two packets of one list is one complete message of four bytes (macOS: 30040102
+// 03040000); the same SysEx across two lists is held open between them.
+static void check_sysex_split(void)
+{
+    CharonMIDIParser parser;
+    memset(&parser, 0, sizeof(parser));
+    CharonMIDIWords words;
+    memset(&words, 0, sizeof(words));
+    uint8_t first[3] = {0xF0, 1, 2}, second[3] = {3, 4, 0xF7};
+    CharonMIDIParseBytes(&parser, first, 3, 2, 0, &words);
+    CharonMIDIParseBytes(&parser, second, 3, 2, 0, &words);
+    CharonMIDIParseFlush(&parser, 0, &words);
+    const uint32_t want[2] = {0x30040102u, 0x03040000u};
+    char detail[160];
+    check(same_words(words.words, words.count, want, 2, detail, sizeof(detail)), "SysEx split over two packets of one list", detail);
+    free(words.words);
+}
+
+// Probe: MIDIEventListAdd's packet rules (probe2 and probe3): a same time stamp merges into the packet before,
+// the buffer is counted in bytes (a list header of 8, a packet of 12 plus 4 a word), a count of zero adds nothing,
+// and a count above 64 words is kept whole.
+static void check_event_list_rules(void)
+{
+    static uint8_t buffer[1024];
+    uint32_t words[70];
+    for (int i = 0; i < 70; i++)
+        words[i] = 0x20900000u + (uint32_t)i;
+
+    MIDIEventList *list = (MIDIEventList *)buffer;
+    list->protocol = 1;
+    list->numPackets = 0;
+    MIDIEventPacket *end = &list->packet[0];
+    end = CharonMIDIEventListAdd(list, sizeof(buffer), end, 7, 2, words);
+    end = CharonMIDIEventListAdd(list, sizeof(buffer), end, 7, 2, words + 2);
+    check(list->numPackets == 1 && list->packet[0].wordCount == 4 && list->packet[0].timeStamp == 7 &&
+          list->packet[0].words[3] == 0x20900003u, "event list: same time stamp merges (macOS probe3 A)", "");
+
+    list->numPackets = 0;
+    end = &list->packet[0];
+    end = CharonMIDIEventListAdd(list, sizeof(buffer), end, 7, 1, words);
+    end = CharonMIDIEventListAdd(list, sizeof(buffer), end, 8, 1, words + 1);
+    end = CharonMIDIEventListAdd(list, sizeof(buffer), end, 8, 1, words + 2);
+    MIDIEventPacket *second = MIDIEventPacketNext(&list->packet[0]);
+    check(list->numPackets == 2 && list->packet[0].wordCount == 1 && second->wordCount == 2 &&
+          second->timeStamp == 8, "event list: new time stamp starts a packet (macOS probe3 B)", "");
+
+    list->numPackets = 0;
+    end = &list->packet[0];
+    check(CharonMIDIEventListAdd(list, sizeof(buffer), end, 7, 0, words) == end && list->numPackets == 0,
+          "event list: zero words adds nothing (macOS probe3 G)", "");
+
+    list->numPackets = 0;
+    end = &list->packet[0];
+    end = CharonMIDIEventListAdd(list, sizeof(buffer), end, 7, 65, words);
+    check(end != NULL && list->numPackets == 1 && list->packet[0].wordCount == 65,
+          "event list: 65 words kept whole (macOS probe3 D)", "");
+
+    static uint8_t small[40];
+    MIDIEventList *tiny = (MIDIEventList *)small;
+    tiny->protocol = 1;
+    tiny->numPackets = 0;
+    MIDIEventPacket *at = &tiny->packet[0];
+    int merged = 0;
+    while (at) {
+        MIDIEventPacket *next = CharonMIDIEventListAdd(tiny, sizeof(small), at, 5, 1, words);
+        if (!next)
+            break;
+        at = next;
+        merged++;
+    }
+    check(merged == 5 && tiny->numPackets == 1, "event list: 40 bytes hold five merged words (macOS probe3 I)", "");
+
+    list->numPackets = 0;
+    end = &list->packet[0];
+    int packets = 0;
+    uint8_t sixty[64];
+    MIDIEventList *shortList = (MIDIEventList *)sixty;
+    shortList->numPackets = 0;
+    end = &shortList->packet[0];
+    while (end) {
+        MIDIEventPacket *next = CharonMIDIEventListAdd(shortList, sizeof(sixty), end, (MIDITimeStamp)packets, 1, words);
+        if (!next)
+            break;
+        end = next;
+        packets++;
+    }
+    check(packets == 3 && shortList->numPackets == 3, "event list: 64 bytes hold three packets (macOS probe2)", "");
+}
+
+int main(void)
+{
+    @autoreleasepool {
+        check_scaling_laws();
+        check_up_rows();
+        check_down_rows();
+        check_bytes_to_ump();
+        check_rpn_sequence();
+        check_dropped_messages();
+        check_sysex_chunks();
+        check_sysex_split();
+        check_event_list_rules();
+        printf("checks=%d failures=%d\n", gChecks, gFailures);
+    }
+    return gFailures == 0 ? 0 : 1;
+}
