@@ -86,7 +86,12 @@
 @implementation MIDICISession {
     MIDICIDiscoveredNode *_node;
     MIDICISessionDisconnectBlock _disconnectHandler;
+    MIDICIProfileChangedBlock _profileChangedCallback;
+    MIDICIProfileSpecificDataBlock _profileSpecificDataHandler;
 }
+
+@synthesize profileChangedCallback = _profileChangedCallback;
+@synthesize profileSpecificDataHandler = _profileSpecificDataHandler;
 
 - (instancetype)initWithDiscoveredNode:(MIDICIDiscoveredNode *)discoveredNode dataReadyHandler:(void (^)(void))handler
                      disconnectHandler:(MIDICISessionDisconnectBlock)disconnectHandler

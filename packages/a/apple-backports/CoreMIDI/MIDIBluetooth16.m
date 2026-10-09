@@ -25,6 +25,10 @@ static NSString *const charon_characteristic = @"7772E5DB-3868-4112-A1A9-F2669D1
 
 @implementation CharonBLEDevice
 
+@synthesize peripheral = _peripheral;
+@synthesize source = _source;
+@synthesize refusedOnce = _refusedOnce;
+
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
 {
     for (CBService *service in peripheral.services) {
@@ -81,6 +85,11 @@ static NSString *const charon_characteristic = @"7772E5DB-3868-4112-A1A9-F2669D1
 @end
 
 @implementation CharonBLECentral
+
+@synthesize manager = _manager;
+@synthesize devices = _devices;
+@synthesize activated = _activated;
+@synthesize client = _client;
 
 - (instancetype)init
 {
