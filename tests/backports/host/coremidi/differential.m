@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <CoreMIDI/MIDIMessages.h>
 #include "CharonCoreMIDI.h"
 #include "coremidi-expectations.h"
 
@@ -514,6 +515,8 @@ static void check_new_entity_device_zero(void)
     check(status == -50 && entity == 0, "MIDIDeviceNewEntity on device 0: paramErr and no entity, as macOS", "");
 }
 
+extern int charon_ump_classes_run(int *checks);
+
 int main(void)
 {
     @autoreleasepool {
@@ -529,6 +532,11 @@ int main(void)
         check_constants();
         check_visitor();
         check_sysex_bytes_for_group();
+        {
+            int umpChecks = 0;
+            gFailures += charon_ump_classes_run(&umpChecks);
+            gChecks += umpChecks;
+        }
         check_new_entity_device_zero();
         printf("checks=%d failures=%d\n", gChecks, gFailures);
     }

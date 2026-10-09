@@ -9,7 +9,7 @@
 #ifndef CharonCoreMIDI_h
 #define CharonCoreMIDI_h
 
-#include <CoreMIDI/CoreMIDI.h>
+#include <CoreMIDI/MIDIServices.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -88,5 +88,14 @@ UInt32 CharonMIDIUp32From14(UInt32 value);
 // or NULL if the words do not fit in listSize bytes.
 MIDIEventPacket *CharonMIDIEventListAdd(MIDIEventList *list, size_t listSize, MIDIEventPacket *curPacket,
                                         MIDITimeStamp time, size_t wordCount, const UInt32 *words);
+
+// The protocol-aware ports, endpoints and sends of CharonMIDIPorts.m, which the iOS 14 API files and the iOS 18 classes call.
+OSStatus CharonMIDIInputPort(MIDIClientRef client, CFStringRef portName, MIDIProtocolID protocol, MIDIPortRef *outPort,
+                             MIDIReceiveBlock receiveBlock);
+OSStatus CharonMIDIDestination(MIDIClientRef client, CFStringRef name, MIDIProtocolID protocol, MIDIEndpointRef *outDest,
+                               MIDIReceiveBlock readBlock);
+OSStatus CharonMIDISource(MIDIClientRef client, CFStringRef name, MIDIProtocolID protocol, MIDIEndpointRef *outSrc);
+OSStatus CharonMIDISend(MIDIPortRef port, MIDIEndpointRef dest, const MIDIEventList *evtlist);
+OSStatus CharonMIDIReceive(MIDIEndpointRef src, const MIDIEventList *evtlist);
 
 #endif
