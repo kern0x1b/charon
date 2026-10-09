@@ -40,16 +40,29 @@ CoreMIDI of iOS 16 and 17 and the MIDI-CI and MIDI 2.0 endpoint classes of iOS 1
 sysex senders (`MIDISendUMPSysex`, `MIDISendUMPSysex8`), `MIDIEventListForEachEvent`, the Bluetooth driver calls, and the
 MIDI-CI and `MIDIUMP*` classes. They stay missing in the registry until each is built.
 
-## Emulated iPhone 4S at 6.1.3: the round trip is not reached
+## Virtual endpoints on the emulated iPhone 4S at 6.1.3: which processes the release lets make them
 
-`tests/backports/emulate/coremidi/run.sh` (`xmake emulate -d iPhone4,1 -r 6.1.3`, time scale 10) built the library into
-a daemon, and the guest's MIDIServer started. The client is made (noErr). The release refuses a virtual endpoint: its own
-`MIDISourceCreate`, called with no library in the way, returns -10844 (kMIDINotPermitted), and so does this library's
-`MIDIDestinationCreateWithProtocol` and `MIDISourceCreateWithProtocol`, since they call the release. With no endpoint the
-connection and the round trip cannot be made, and the probe's verdict is FAIL (7 failures). The guest's log does not say
-why the server refuses; the cause is not measured. Open: a launch as an application (`xmake emulate launch`, which goes
-through SpringBoard) is the next measurement, and a library that makes its own endpoints would have to replace the
-release's connect and send functions, which the backports do not do.
+Measured with `tests/backports/emulate/coremidi` (`xmake emulate -d iPhone4,1 -r 6.1.3`, time scale 10):
+
+- A daemon (`/usr/libexec/charoncoremidi`, started by launchd, no bundle) is refused: the release's own `MIDISourceCreate`
+  returns -10844 (kMIDINotPermitted), and so do this library's protocol endpoints. The round trip is FAIL (7 failures,
+  `run.sh`). The guest's MIDIServer runs (it is spawned by launchd at boot).
+- The same probe as an application (`run-app.sh`: an installed bundle, launched through SpringBoard) passes:
+  `roundtrip: PASS (0 failures)`, `application exit: 0`; the control `MIDISourceCreate` answers 0.
+- Isolated, for the application:
+  - without an active audio session (no AudioSessionSetActive): still PASS. The audio session is not needed.
+  - without `UIBackgroundModes` = `audio` in its Info.plist: refused (-10844 for the source, the destination and the control).
+    The declared audio background mode is what the release checks.
+- Not isolated: whether the daemon is refused for having no bundle, for not having the mode, or for running outside SpringBoard.
+  The daemon has neither the mode nor a bundle, so the two cases are not separated; both are missing in the daemon.
+
+So the emulated release can give virtual endpoints, to an application that declares the audio background mode. A port daemon
+cannot make one. An in-process substitute is therefore not needed for an application; a daemon of the port that needs an
+endpoint has to be an application with the mode (the BLE central, for one, lives in the application that loads the library).
+
+The 2026-10-09 result of the daemon run is the record of the first refusal; the application run is the one that answers the
+question. On macOS a command-line tool creates virtual endpoints (oracle/*.m), and the MIDI-CI discovery client is refused
+(-10844) there, as the MIDI-CI facts say.
 
 ## Evidence
 

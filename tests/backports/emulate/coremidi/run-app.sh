@@ -19,6 +19,18 @@ build=${COREMIDI_APP_BUILD:-${TMPDIR:-/tmp}/charon-coremidi-app/$minimum-$stamp}
 out=$build
 mkdir -p "$build"
 cp "$here/app/xmake.lua" "$here/app/control" "$here/app/Info.plist" "$build/"
+if [ -n "${CHARCOREMIDI_NO_BACKGROUND:-}" ]; then
+    # The variant without the background mode: the audio entry of UIBackgroundModes is taken out of the copy.
+    python3 - "$build/Info.plist" <<'PY'
+import plistlib, sys
+path = sys.argv[1]
+with open(path, 'rb') as h:
+    plist = plistlib.load(h)
+plist.pop('UIBackgroundModes', None)
+with open(path, 'wb') as h:
+    plistlib.dump(plist, h)
+PY
+fi
 cd "$build"
 CHARCOREMIDI_ROOT=$root CHARCOREMIDI_MINIMUM=$minimum xmake f -p iphoneos -a armv7 -y >"$out/configure.log" 2>&1 || {
     echo "the application did not configure; $out/configure.log says why" >&2
