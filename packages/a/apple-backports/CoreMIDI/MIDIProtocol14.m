@@ -16,7 +16,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+// The protocol key, as a constant of this file: the iOS SDK marks kMIDIPropertyProtocolID as available from 14.0, and
+// this library is built for releases before it, so a use of the exported constant would be unguarded there. The string
+// is the one macOS gives the constant (oracle/probe2.m prints it).
 const CFStringRef kMIDIPropertyProtocolID = CFSTR("protocol");
+static const CFStringRef charon_protocol_key = CFSTR("protocol");
+
+// The error codes of the Carbon headers (MacErrors.h), which the iOS SDK does not declare: the values are the macOS ones.
+static const OSStatus charon_paramErr = -50;
+static const OSStatus charon_memFullErr = -108;
 
 // The receive side of one port or destination: the block it was given, retained for as long as it lives, the
 // protocol its events are delivered in, and the MIDI 1.0 parser that carries a SysEx from one list to the next.
@@ -84,7 +92,7 @@ static void charon_protocol_read(const MIDIPacketList *packets, void *refCon, vo
 
 static void charon_set_protocol(MIDIEndpointRef endpoint, MIDIProtocolID protocol)
 {
-    MIDIObjectSetIntegerProperty(endpoint, kMIDIPropertyProtocolID, (SInt32)protocol);
+    MIDIObjectSetIntegerProperty(endpoint, charon_protocol_key, (SInt32)protocol);
 }
 
 static charon_port *charon_new_port(MIDIProtocolID protocol, MIDIReceiveBlock block)
@@ -108,10 +116,10 @@ OSStatus MIDIInputPortCreateWithProtocol(MIDIClientRef client, CFStringRef portN
                                          MIDIPortRef *outPort, MIDIReceiveBlock receiveBlock)
 {
     if (protocol != kMIDIProtocol_1_0 && protocol != kMIDIProtocol_2_0)
-        return paramErr;
+        return charon_paramErr;
     charon_port *port = charon_new_port(protocol, receiveBlock);
     if (!port)
-        return memFullErr;
+        return charon_memFullErr;
     OSStatus status = MIDIInputPortCreate(client, portName, charon_protocol_read, port, outPort);
     if (status != noErr)
         charon_free_port(port);
@@ -122,10 +130,10 @@ OSStatus MIDIDestinationCreateWithProtocol(MIDIClientRef client, CFStringRef nam
                                            MIDIEndpointRef *outDest, MIDIReceiveBlock readBlock)
 {
     if (protocol != kMIDIProtocol_1_0 && protocol != kMIDIProtocol_2_0)
-        return paramErr;
+        return charon_paramErr;
     charon_port *port = charon_new_port(protocol, readBlock);
     if (!port)
-        return memFullErr;
+        return charon_memFullErr;
     OSStatus status = MIDIDestinationCreate(client, name, charon_protocol_read, port, outDest);
     if (status != noErr)
         charon_free_port(port);
@@ -137,7 +145,7 @@ OSStatus MIDIDestinationCreateWithProtocol(MIDIClientRef client, CFStringRef nam
 OSStatus MIDISourceCreateWithProtocol(MIDIClientRef client, CFStringRef name, MIDIProtocolID protocol, MIDIEndpointRef *outSrc)
 {
     if (protocol != kMIDIProtocol_1_0 && protocol != kMIDIProtocol_2_0)
-        return paramErr;
+        return charon_paramErr;
     OSStatus status = MIDISourceCreate(client, name, outSrc);
     if (status == noErr)
         charon_set_protocol(*outSrc, protocol);
@@ -179,7 +187,7 @@ static OSStatus charon_send(MIDIPortRef port, MIDIEndpointRef endpoint, const MI
     }
     MIDIPacketList *packets = malloc(capacity);
     if (!packets)
-        return memFullErr;
+        return charon_memFullErr;
     CharonMIDIBytes bytes;
     memset(&bytes, 0, sizeof(bytes));
     int failed = 0;
@@ -205,7 +213,7 @@ static OSStatus charon_send(MIDIPortRef port, MIDIEndpointRef endpoint, const MI
     }
     pthread_mutex_unlock(&charon_lock);
     free(bytes.bytes);
-    OSStatus status = failed ? memFullErr : noErr;
+    OSStatus status = failed ? charon_memFullErr : noErr;
     if (status == noErr && packets->numPackets > 0)
         status = received ? MIDIReceived(endpoint, packets) : MIDISend(port, endpoint, packets);
     free(packets);

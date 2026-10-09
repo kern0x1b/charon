@@ -7,13 +7,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-void CharonMIDIWordsAppend(CharonMIDIWords *out, uint32_t word)
+void CharonMIDIWordsAppend(CharonMIDIWords *out, UInt32 word)
 {
     if (out->failed)
         return;
     if (out->count == out->capacity) {
         size_t capacity = out->capacity ? out->capacity * 2 : 32;
-        uint32_t *grown = realloc(out->words, capacity * sizeof(uint32_t));
+        UInt32 *grown = realloc(out->words, capacity * sizeof(UInt32));
         if (!grown) {
             out->failed = 1;
             return;
@@ -44,32 +44,32 @@ static void charon_bytes_append(CharonMIDIBytes *out, uint8_t byte)
 // Measured on macOS: a value at or below the centre is shifted up, and a value above it is spread over the
 // rest of the range with the slope the measurements give: 65/8 extra per step for 16 bits, a rounded line for
 // 32 bits. Each rule matches every value measured (tests/backports/host/coremidi).
-uint32_t CharonMIDIUp16From7(uint32_t value)
+UInt32 CharonMIDIUp16From7(UInt32 value)
 {
     if (value <= 64)
         return value << 9;
-    uint32_t above = value - 64;
+    UInt32 above = value - 64;
     return (value << 9) + 8 * above + (above >> 3);
 }
 
-uint32_t CharonMIDIUp32From7(uint32_t value)
+UInt32 CharonMIDIUp32From7(UInt32 value)
 {
     if (value <= 64)
         return value << 25;
     uint64_t above = value - 64;
     uint64_t half = 0x80000000ull;
-    return (uint32_t)(half + (2 * above * (half - 1) + 63) / 126);
+    return (UInt32)(half + (2 * above * (half - 1) + 63) / 126);
 }
 
-uint32_t CharonMIDIUp32From14(uint32_t value)
+UInt32 CharonMIDIUp32From14(UInt32 value)
 {
     if (value <= 8192)
         return value << 18;
-    uint32_t above = value - 8192;
+    UInt32 above = value - 8192;
     return (value << 18) + 32 * above + (above >> 8);
 }
 
-int CharonMIDIUMPWordCount(uint32_t word)
+int CharonMIDIUMPWordCount(UInt32 word)
 {
     switch (word >> 28) {
     case 0x0: case 0x1: case 0x2: case 0x6: case 0x7:
@@ -96,22 +96,22 @@ static int charon_data_bytes(uint8_t status)
     return 0;
 }
 
-static uint32_t charon_word_channel(uint32_t group, uint8_t status, uint8_t d1, uint8_t d2)
+static UInt32 charon_word_channel(UInt32 group, uint8_t status, uint8_t d1, uint8_t d2)
 {
-    return 0x20000000u | (group << 24) | ((uint32_t)status << 16) | ((uint32_t)d1 << 8) | d2;
+    return 0x20000000u | (group << 24) | ((UInt32)status << 16) | ((UInt32)d1 << 8) | d2;
 }
 
-static uint32_t charon_word_system(uint32_t group, uint8_t status, uint8_t d1, uint8_t d2)
+static UInt32 charon_word_system(UInt32 group, uint8_t status, uint8_t d1, uint8_t d2)
 {
-    return 0x10000000u | (group << 24) | ((uint32_t)status << 16) | ((uint32_t)d1 << 8) | d2;
+    return 0x10000000u | (group << 24) | ((UInt32)status << 16) | ((UInt32)d1 << 8) | d2;
 }
 
 // One complete MIDI 1.0 message, as the protocol asked for it. A 2.0 port gets the channel voice messages as
 // their 64-bit form; a note on of velocity 0 stays a 1.0 word, which is what macOS does with it.
-static void charon_emit_message(CharonMIDIWords *out, uint32_t group, int protocol, uint8_t status, uint8_t d1, uint8_t d2)
+static void charon_emit_message(CharonMIDIWords *out, UInt32 group, int protocol, uint8_t status, uint8_t d1, uint8_t d2)
 {
-    uint32_t channel = status & 0x0F;
-    uint32_t kind = status & 0xF0;
+    UInt32 channel = status & 0x0F;
+    UInt32 kind = status & 0xF0;
     if (status >= 0xF0) {
         CharonMIDIWordsAppend(out, charon_word_system(group, status, d1, d2));
         return;
@@ -120,27 +120,27 @@ static void charon_emit_message(CharonMIDIWords *out, uint32_t group, int protoc
         CharonMIDIWordsAppend(out, charon_word_channel(group, status, d1, d2));
         return;
     }
-    uint32_t base = group << 24 | channel << 16;
+    UInt32 base = group << 24 | channel << 16;
     switch (kind) {
     case 0x80:
-        CharonMIDIWordsAppend(out, 0x40800000u | base | (uint32_t)d1 << 8);
+        CharonMIDIWordsAppend(out, 0x40800000u | base | (UInt32)d1 << 8);
         CharonMIDIWordsAppend(out, CharonMIDIUp16From7(d2) << 16);
         break;
     case 0x90:
-        CharonMIDIWordsAppend(out, 0x40900000u | base | (uint32_t)d1 << 8);
+        CharonMIDIWordsAppend(out, 0x40900000u | base | (UInt32)d1 << 8);
         CharonMIDIWordsAppend(out, CharonMIDIUp16From7(d2) << 16);
         break;
     case 0xA0:
-        CharonMIDIWordsAppend(out, 0x40A00000u | base | (uint32_t)d1 << 8);
+        CharonMIDIWordsAppend(out, 0x40A00000u | base | (UInt32)d1 << 8);
         CharonMIDIWordsAppend(out, CharonMIDIUp32From7(d2));
         break;
     case 0xB0:
-        CharonMIDIWordsAppend(out, 0x40B00000u | base | (uint32_t)d1 << 8);
+        CharonMIDIWordsAppend(out, 0x40B00000u | base | (UInt32)d1 << 8);
         CharonMIDIWordsAppend(out, CharonMIDIUp32From7(d2));
         break;
     case 0xC0:
         CharonMIDIWordsAppend(out, 0x40C00000u | base);
-        CharonMIDIWordsAppend(out, (uint32_t)d1 << 24);
+        CharonMIDIWordsAppend(out, (UInt32)d1 << 24);
         break;
     case 0xD0:
         CharonMIDIWordsAppend(out, 0x40D00000u | base);
@@ -148,23 +148,23 @@ static void charon_emit_message(CharonMIDIWords *out, uint32_t group, int protoc
         break;
     case 0xE0:
         CharonMIDIWordsAppend(out, 0x40E00000u | base);
-        CharonMIDIWordsAppend(out, CharonMIDIUp32From14((uint32_t)d1 | (uint32_t)d2 << 7));
+        CharonMIDIWordsAppend(out, CharonMIDIUp32From14((UInt32)d1 | (UInt32)d2 << 7));
         break;
     }
 }
 
 // The bytes of one SysEx chunk, as a UMP SysEx7 packet of one or two words.
-static void charon_emit_sysex(CharonMIDIWords *out, uint32_t group, uint8_t status, uint8_t count, const uint8_t *bytes)
+static void charon_emit_sysex(CharonMIDIWords *out, UInt32 group, uint8_t status, uint8_t count, const uint8_t *bytes)
 {
     uint8_t padded[6] = {0, 0, 0, 0, 0, 0};
     memcpy(padded, bytes, count);
-    CharonMIDIWordsAppend(out, 0x30000000u | group << 24 | (uint32_t)status << 20 | (uint32_t)count << 16 | (uint32_t)padded[0] << 8 | padded[1]);
-    CharonMIDIWordsAppend(out, (uint32_t)padded[2] << 24 | (uint32_t)padded[3] << 16 | (uint32_t)padded[4] << 8 | padded[5]);
+    CharonMIDIWordsAppend(out, 0x30000000u | group << 24 | (UInt32)status << 20 | (UInt32)count << 16 | (UInt32)padded[0] << 8 | padded[1]);
+    CharonMIDIWordsAppend(out, (UInt32)padded[2] << 24 | (UInt32)padded[3] << 16 | (UInt32)padded[4] << 8 | padded[5]);
 }
 
 // The SysEx chunk the parser holds, sent as a start or a continue when more of the SysEx follows it, or as the
 // end or the complete message when the SysEx ends with it.
-static void charon_sysex_chunk(CharonMIDIParser *parser, CharonMIDIWords *out, uint32_t group)
+static void charon_sysex_chunk(CharonMIDIParser *parser, CharonMIDIWords *out, UInt32 group)
 {
     charon_emit_sysex(out, group, parser->sysexSent ? 2 : 1, parser->sysexCount, parser->sysex);
     parser->sysexSent = 1;
@@ -172,7 +172,7 @@ static void charon_sysex_chunk(CharonMIDIParser *parser, CharonMIDIWords *out, u
 }
 
 // The SysEx ends: what is held goes out as the end, or as the complete message if nothing was sent before it.
-static void charon_sysex_finish(CharonMIDIParser *parser, CharonMIDIWords *out, uint32_t group)
+static void charon_sysex_finish(CharonMIDIParser *parser, CharonMIDIWords *out, UInt32 group)
 {
     charon_emit_sysex(out, group, parser->sysexSent ? 3 : 0, parser->sysexCount, parser->sysex);
     parser->sysexCount = 0;
@@ -182,7 +182,7 @@ static void charon_sysex_finish(CharonMIDIParser *parser, CharonMIDIWords *out, 
 
 // A byte of a SysEx. The chunk is held until the byte after it arrives, so a SysEx of six bytes is one complete
 // message, not a start and an end.
-static void charon_sysex_byte(CharonMIDIParser *parser, CharonMIDIWords *out, uint32_t group, uint8_t byte)
+static void charon_sysex_byte(CharonMIDIParser *parser, CharonMIDIWords *out, UInt32 group, uint8_t byte)
 {
     if (parser->sysexCount == 6)
         charon_sysex_chunk(parser, out, group);
@@ -192,7 +192,7 @@ static void charon_sysex_byte(CharonMIDIParser *parser, CharonMIDIWords *out, ui
 // A real-time byte inside a SysEx sends what is held before it. Measured on macOS: with nothing sent before it, that
 // is a complete message (status 0), and the SysEx goes on as its end (status 3) after the real-time word; a
 // chunk after an earlier one is sent as a continue (status 2), which is not measured and follows the same rule.
-static void charon_sysex_realtime(CharonMIDIParser *parser, CharonMIDIWords *out, uint32_t group)
+static void charon_sysex_realtime(CharonMIDIParser *parser, CharonMIDIWords *out, UInt32 group)
 {
     charon_emit_sysex(out, group, parser->sysexSent ? 2 : 0, parser->sysexCount, parser->sysex);
     parser->sysexSent = 1;
@@ -208,7 +208,7 @@ void CharonMIDIParseFlush(CharonMIDIParser *parser, uint8_t group, CharonMIDIWor
 void CharonMIDIParseBytes(CharonMIDIParser *parser, const uint8_t *data, size_t length, int protocol,
                           uint8_t group, CharonMIDIWords *out)
 {
-    uint32_t g = (uint32_t)(group & 0x0F);
+    UInt32 g = (UInt32)(group & 0x0F);
     for (size_t i = 0; i < length; i++) {
         uint8_t byte = data[i];
         if (byte >= 0xF8) {
@@ -216,7 +216,7 @@ void CharonMIDIParseBytes(CharonMIDIParser *parser, const uint8_t *data, size_t 
             // the SysEx so far is sent first.
             if (parser->inSysex && parser->sysexCount > 0)
                 charon_sysex_realtime(parser, out, g);
-            CharonMIDIWordsAppend(out, 0x10000000u | g << 24 | (uint32_t)byte << 16);
+            CharonMIDIWordsAppend(out, 0x10000000u | g << 24 | (UInt32)byte << 16);
             continue;
         }
         if (parser->inSysex && byte < 0x80) {
@@ -292,15 +292,15 @@ static void charon_select(CharonMIDIBytes *out, CharonMIDIRPN *state, uint8_t ch
     charon_bytes_append(out, lsb);
 }
 
-void CharonMIDIUMPToBytes(const uint32_t *words, size_t count, CharonMIDIRPN rpn[16], CharonMIDIBytes *out)
+void CharonMIDIUMPToBytes(const UInt32 *words, size_t count, CharonMIDIRPN rpn[16], CharonMIDIBytes *out)
 {
     size_t i = 0;
     while (i < count) {
-        uint32_t word = words[i];
+        UInt32 word = words[i];
         int size = CharonMIDIUMPWordCount(word);
         if (size == 0 || i + (size_t)size > count)
             break;
-        uint32_t type = word >> 28;
+        UInt32 type = word >> 28;
         if (type == 0x1) {
             uint8_t status = (uint8_t)(word >> 16);
             uint8_t d1 = (uint8_t)(word >> 8), d2 = (uint8_t)word;
@@ -318,23 +318,23 @@ void CharonMIDIUMPToBytes(const uint32_t *words, size_t count, CharonMIDIRPN rpn
                     charon_bytes_append(out, (uint8_t)word & 0x7F);
             }
         } else if (type == 0x3) {
-            uint32_t status = (word >> 20) & 0x0F;
-            uint32_t n = (word >> 16) & 0x0F;
+            UInt32 status = (word >> 20) & 0x0F;
+            UInt32 n = (word >> 16) & 0x0F;
             uint8_t data[6] = {(uint8_t)(word >> 8), (uint8_t)word, (uint8_t)(words[i + 1] >> 24),
                                (uint8_t)(words[i + 1] >> 16), (uint8_t)(words[i + 1] >> 8), (uint8_t)words[i + 1]};
             if (n > 6)
                 n = 6;
             if (status == 0 || status == 1)
                 charon_bytes_append(out, 0xF0);
-            for (uint32_t k = 0; k < n; k++)
+            for (UInt32 k = 0; k < n; k++)
                 charon_bytes_append(out, data[k] & 0x7F);
             if (status == 0 || status == 3)
                 charon_bytes_append(out, 0xF7);
         } else if (type == 0x4) {
-            uint32_t opcode = (word >> 20) & 0x0F;
+            UInt32 opcode = (word >> 20) & 0x0F;
             uint8_t channel = (uint8_t)((word >> 16) & 0x0F);
             uint8_t index = (uint8_t)(word >> 8);
-            uint32_t value = words[i + 1];
+            UInt32 value = words[i + 1];
             uint8_t v7 = (uint8_t)(value >> 25);
             switch (opcode) {
             case 0x8:
@@ -407,13 +407,13 @@ void CharonMIDIUMPToBytes(const uint32_t *words, size_t count, CharonMIDIRPN rpn
 }
 
 // The words of an event packet, which begin after its time stamp and word count.
-static uint32_t *charon_packet_words(MIDIEventPacket *packet)
+static UInt32 *charon_packet_words(MIDIEventPacket *packet)
 {
-    return (uint32_t *)((uint8_t *)packet + sizeof(MIDITimeStamp) + sizeof(UInt32));
+    return (UInt32 *)((uint8_t *)packet + sizeof(MIDITimeStamp) + sizeof(UInt32));
 }
 
 MIDIEventPacket *CharonMIDIEventListAdd(MIDIEventList *list, size_t listSize, MIDIEventPacket *curPacket,
-                                        MIDITimeStamp time, size_t wordCount, const uint32_t *words)
+                                        MIDITimeStamp time, size_t wordCount, const UInt32 *words)
 {
     uint8_t *base = (uint8_t *)list;
     size_t end = (size_t)((uint8_t *)curPacket - base);
