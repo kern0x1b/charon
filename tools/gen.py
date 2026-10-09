@@ -417,10 +417,39 @@ def registry_constants(tree, fw):
     for path in sorted(glob.glob(os.path.join(tree, REGISTRY, fw, "*.json")) + glob.glob(os.path.join(tree, REGISTRY, fw + ".json"))):
         with open(path) as handle:
             data = json.load(handle)
-        for entry in data.get("entries", data if isinstance(data, list) else []):
+        for entry in (data.get("entries", []) if isinstance(data, dict) else data):
             if entry.get("kind") == "constant":
                 out.setdefault(entry["api"], os.path.relpath(path, tree))
     return out
+
+
+def surface_frameworks():
+    """Every framework the 26.2 surface table names, in the table's order (the surface is the corpus every band works from)."""
+    seen = []
+    with open(os.path.join(LEDGER_DIR, "sdk-26.2-surface.tsv"), newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t", quoting=csv.QUOTE_NONE):
+            if row["framework"] not in seen:
+                seen.append(row["framework"])
+    return seen
+
+
+def cmd_input_all(args):
+    """The spec snapshot of every surface framework that has a ledger; the rest (C header sets) are listed as skipped."""
+    done, skipped = [], []
+    for fw in surface_frameworks():
+        if not os.path.exists(os.path.join(LEDGER_DIR, "ledger-w45", fw + ".tsv")):
+            skipped.append(fw)
+            continue
+        sub = argparse.Namespace(tree=args.tree, framework=fw, ledger=os.path.join(LEDGER_DIR, "ledger-w45"), sdk=args.sdk,
+                                 owned=None, measured=None, ios_constants=None)
+        try:
+            cmd_input(sub)
+            done.append(fw)
+        except (Exception, SystemExit) as error:  # a framework the inputs cannot read is named in the scope, not hidden
+            skipped.append("%s (%s)" % (fw, str(error).splitlines()[0][:80] if str(error) else type(error).__name__))
+    write(os.path.join(args.tree, GEN_INPUT_LOG), "input --all: %d snapshots\nskipped: %s\n" % (len(done), ", ".join(skipped)))
+    print("input --all: %d snapshots, %d skipped (see %s)" % (len(done), len(skipped), GEN_INPUT_LOG))
+    return 0
 
 
 def cmd_input(args):
@@ -506,10 +535,12 @@ def cmd_input(args):
                      "value_status": "-", "value": "-", "host_value": "-", "value_source": "-", "owned": "-",
                      "tbd": "class-exported" if cls in classes else "class-not-exported", "shape": "-", "measured": "-",
                      "source": "26.2 SDK header of %s" % fw})
+    # Two members can mangle to one identifier (a selector with and without its colon); both then carry a digest of their
+    # full name, so each key is one identifier and no member is dropped.
     keys = [r["key"] for r in rows]
-    dup = sorted(set(k for k in keys if keys.count(k) > 1))
-    if dup:
-        raise SystemExit("key collision in the spec: " + ", ".join(dup[:10]))
+    for r in rows:
+        if keys.count(r["key"]) > 1:
+            r["key"] = r["key"] + "_" + digest("key", r["api"])[:8]
     path = spec_path(args.tree, fw)
     lines = ["\t".join(SPEC_COLUMNS)]
     for r in rows:
@@ -975,9 +1006,14 @@ def resolve_kind(type_text, index, depth=0):
     return "struct"
 
 
+HAND_MEMO = {}
+
+
 def hand_implementations(tree):
     """(class, selector) for every method a hand-written source of the package defines, and (class, name) for every
     @synthesize or @dynamic, so no stub replaces a hand implementation. A signature spans lines until its brace."""
+    if tree in HAND_MEMO:
+        return HAND_MEMO[tree]
     found = set()
     root = os.path.join(tree, SOURCES_ROOT)
     for dirpath, dirnames, filenames in os.walk(root):
@@ -1014,6 +1050,7 @@ def hand_implementations(tree):
                             found.add((current, sel))
                     else:
                         signature = line.strip()
+    HAND_MEMO[tree] = found
     return found
 
 
@@ -1028,8 +1065,11 @@ BUILTIN_TYPES = {"BOOL", "NSInteger", "NSUInteger", "CGFloat", "NSTimeInterval",
                  "CGRect", "CFTimeInterval", "MIDIEndpointRef", "MIDIClientRef"}
 
 
-def stub_members(spec, fw, sdk, overridden, hand):
-    """The stubs for one framework, one per member it does not implement, grouped by class; and the members left out with the reason."""
+def stub_members(spec, fw, sdk, overridden, hand, release_missing=None):
+    """The stubs for one framework, one per member it does not implement, grouped by class; and the members left out with the reason.
+
+    release_missing: the (kind, api) rows the 6.1.3 ledger lists. A member the release already has is answered by the release,
+    so it gets no stub; with no ledger every declared member is considered (the pilot's first form)."""
     index = type_index(sdk, fw)
     declared = declared_names(sdk, fw)
     seen = set()
@@ -1039,6 +1079,11 @@ def stub_members(spec, fw, sdk, overridden, hand):
             continue
         cls = r["cls"]
         decl = r["decl"].rstrip(";").strip()
+        if release_missing is not None:
+            ledger_api = r["api"] if r["kind"] == "method" else "%s.%s" % (cls, r["api"].rstrip("]").split()[-1])
+            if (r["kind"], ledger_api) not in release_missing:
+                skipped.append((r["api"], "implemented at 6.1.3: the release answers"))
+                continue
         undeclared = sorted(set(t for t in UNDECLARED_CHECK.findall(strip_nullability(decl))
                                 if t not in declared and t not in BUILTIN_TYPES and not t.startswith(("NS_", "API_", "CF_"))))
         if undeclared:
@@ -1114,12 +1159,20 @@ def stub_text(fw, cls, api, kind, selector, type_text, zero_kind, decl):
 
 
 def cmd_trace(args):
+    if args.all:
+        for fw in frameworks_with_snapshot(args.tree):
+            sub = argparse.Namespace(**vars(args))
+            sub.framework, sub.all = fw, False
+            cmd_trace(sub)
+        return 0
     fw = args.framework
     sdk = args.sdk or SDK26
     spec = load_spec(args.tree, fw)
     overridden = set(load_overrides(args.tree, fw))
     hand = hand_implementations(args.tree)
-    by_class, skipped = stub_members(spec, fw, sdk, overridden, hand)
+    ledger_path = os.path.join(LEDGER_DIR, "ledger-w45", fw + ".tsv")
+    release_missing = set(ledger_status(fw, "ledger-w45").keys()) if os.path.exists(ledger_path) else None
+    by_class, skipped = stub_members(spec, fw, sdk, overridden, hand, release_missing)
     lines = [MARK, "// Trace-only defaults: built only when CHARON_TRACE_DEFAULTS is set; never shipped. One class per category.",
              "// A stub logs once `unimplemented: %s <selector>`, returns the zero of its type, and sets an NSError an NSError ** names." % fw,
              "// Block parameters are not invoked. Members with an override or a hand implementation are not stubbed.",
@@ -1161,6 +1214,7 @@ def getter_of(decl, name):
 
 LEDGER_DIR = os.path.join(os.environ.get("HOME", ""), "Git", "projects", "ios", "coordination", "corpus")
 DOC_OUT = ".agent-work/spec-docs"
+GEN_INPUT_LOG = ".agent-work/gen-input-all.txt"
 
 
 def ledger_status(fw, release_dir):
@@ -1206,7 +1260,7 @@ def registry_entries(tree, fw):
     for path in sorted(glob.glob(os.path.join(tree, REGISTRY, fw, "*.json")) + glob.glob(os.path.join(tree, REGISTRY, fw + ".json"))):
         with open(path) as handle:
             data = json.load(handle)
-        for entry in data.get("entries", []):
+        for entry in (data.get("entries", []) if isinstance(data, dict) else data):
             out.setdefault(entry["api"], (os.path.relpath(path, tree), entry))
     return out
 
@@ -1326,6 +1380,121 @@ def cmd_doc(args):
     return 0
 
 
+# ---------------------------------------------------------------- scope: every surface row, counted from the tables
+
+SCOPE_DIR = os.path.join(os.environ.get("HOME", ""), "Git", "projects", "ios", "coordination", "wave-2026-10-03")
+SCOPE_KINDS = ("class", "method", "property", "constant", "function", "enum", "struct", "typealias", "protocol")
+
+
+def scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing=True):
+    """The one state a surface row is in, by the tables: overridden, stub, hand, undeclared, not in the header, or generated."""
+    if api in registry:
+        return "overridden"
+    if kind != "class" and not in_missing:
+        return "implemented at 6.1.3: the release answers"
+    r = spec_by_api.get(api)
+    if r is None:
+        return "not in the header parse"
+    if kind in ("method", "property"):
+        reason = stub_reason.get(api)
+        if reason is None:
+            return "generable stub"
+        if reason.startswith("type not declared for iOS"):
+            return "not declared for iOS"
+        if reason.startswith("override or hand implementation"):
+            return "hand implementation (no registry row)"
+        return "not stubbed: " + reason
+    if kind == "constant":
+        if r["owned"] != "-":
+            return "owned by a live branch" if not r["owned"].startswith("registry:") else "registry decision"
+        if r["value_status"] == "found" and r["tbd"] == "exported":
+            return "generable constant"
+        if r["value_status"] == "numeric":
+            return "numeric (not a string object)"
+        return "not generated: " + (r["value_status"] if r["value_status"] else "-")
+    return "no generator"
+
+
+def cmd_scope(args):
+    """The scope of the surface, from the tables: one row per framework and kind, and the work queue by demand."""
+    sdk = args.sdk or SDK26
+    surface = []
+    with open(os.path.join(LEDGER_DIR, "sdk-26.2-surface.tsv"), newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t", quoting=csv.QUOTE_NONE):
+            surface.append(row)
+    by_fw = {}
+    for row in surface:
+        by_fw.setdefault(row["framework"], []).append(row)
+    counts = {}
+    frameworks = surface_frameworks()
+    for fw in frameworks:
+        rows = by_fw.get(fw, [])
+        led6 = ledger_status(fw, "ledger-w45") if os.path.exists(os.path.join(LEDGER_DIR, "ledger-w45", fw + ".tsv")) else {}
+        led43 = ledger_status(fw, "ledger-w45-4.3") if os.path.exists(os.path.join(LEDGER_DIR, "ledger-w45-4.3", fw + ".tsv")) else {}
+        snap = os.path.exists(spec_path(args.tree, fw))
+        registry = set(api for (api, kind) in [(k[1], k[0]) for k in []])
+        reg = registry_entries(args.tree, fw)
+        registry = set(reg)
+        spec_by_api, stub_reason = {}, {}
+        if snap:
+            spec = load_spec(args.tree, fw)
+            for r in spec:
+                spec_by_api.setdefault(r["api"], r)
+                spec_by_api.setdefault(r["api"].replace("-[", "").rstrip("]").replace(" ", ".", 1) if r["kind"] == "property" else r["api"], r)
+            overridden = registry
+            if any(r["kind"] in ("method", "property") for r in spec):
+                index_ok = True
+                try:
+                    release_missing = set(led6.keys()) if led6 else None
+                    _, skipped = stub_members(spec, fw, sdk, overridden, hand_implementations(args.tree), release_missing)
+                except Exception as error:  # a framework whose types cannot be resolved is named, not hidden
+                    skipped, index_ok = [], False
+                    stub_reason["__error__"] = str(error)[:100]
+                stub_reason.update({api: reason for api, reason in skipped})
+        for row in rows:
+            kind = row["kind"]
+            if kind not in SCOPE_KINDS:
+                continue
+            api = row["api"]
+            dotted = api
+            key = (kind, api)
+            in_missing = (kind, api) in led6 or kind == "class"
+            state = scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing) if snap else "no snapshot"
+            c = counts.setdefault((fw, kind), {"surface": 0, "demand_rows": 0, "demand_apps": 0, "missing_6_1_3": 0,
+                                               "missing_4_3": 0, "states": {}})
+            c["surface"] += 1
+            if row.get("demand-rank"):
+                c["demand_rows"] += 1
+                c["demand_apps"] += int(row.get("demand-apps") or 0)
+            if led6.get((kind, api)) is not None:
+                c["missing_6_1_3"] += 1
+            if led43.get((kind, api)) is not None:
+                c["missing_4_3"] += 1
+            c["states"][state] = c["states"].get(state, 0) + 1
+    lines = ["framework\tkind\tsurface_rows\tdemand_rows\tdemand_apps\tmissing_6_1_3\tmissing_4_3\tstates"]
+    queue = {}
+    for (fw, kind), c in sorted(counts.items()):
+        states = "; ".join("%s=%d" % (k, v) for k, v in sorted(c["states"].items()))
+        lines.append("\t".join([fw, kind, str(c["surface"]), str(c["demand_rows"]), str(c["demand_apps"]),
+                                str(c["missing_6_1_3"]), str(c["missing_4_3"]), states]))
+        queue[fw] = queue.get(fw, 0) + c["demand_apps"]
+    os.makedirs(SCOPE_DIR, exist_ok=True)
+    write(os.path.join(SCOPE_DIR, "v-gen-scope.tsv"), "\n".join(lines) + "\n")
+    order = sorted(queue, key=lambda fw: (-queue[fw], fw))
+    md = ["# v-gen scope: every surface row, counted from the tables", "",
+          "Generated by `tools/gen.py scope` from sdk-26.2-surface.tsv, the ledgers (6.1.3 and 4.3), the registry, and the spec snapshots.",
+          "", "Work queue by demand (apps that call the framework's rows, summed):", "",
+          "| rank | framework | demand apps | surface rows |", "| --- | --- | --- | --- |"]
+    surf_total = {}
+    for (fw, kind), c in counts.items():
+        surf_total[fw] = surf_total.get(fw, 0) + c["surface"]
+    for i, fw in enumerate(order[:60], 1):
+        md.append("| %d | %s | %d | %d |" % (i, fw, queue[fw], surf_total.get(fw, 0)))
+    write(os.path.join(SCOPE_DIR, "v-gen-scope.md"), "\n".join(md) + "\n")
+    print("scope: %d framework-kind rows, %d frameworks -> %s" % (len(counts), len(queue), os.path.join(SCOPE_DIR, "v-gen-scope.tsv")))
+    return 0
+
+
 def cmd_diff(args):
     fw = args.framework
     if not os.path.isdir(os.path.join(HOST, fw + ".framework")):
@@ -1405,7 +1574,7 @@ def cmd_diff(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("command", choices=["input", "pin", "gen", "check", "trace", "diff", "sources", "classify", "doc"])
+    parser.add_argument("command", choices=["input", "pin", "gen", "check", "trace", "diff", "sources", "classify", "doc", "scope"])
     parser.add_argument("--tree", required=True)
     parser.add_argument("--framework")
     parser.add_argument("--ledger")
@@ -1421,15 +1590,20 @@ def main():
     parser.add_argument("--record", action="store_true", help="gen: also record the manifest of digests in the snapshot")
     parser.add_argument("--catalyst-sdk", default="/Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk")
     args = parser.parse_args()
-    if not args.framework and not (args.all and args.command in ("gen", "check", "doc")) and args.command != "sources":
+    if not args.framework and not (args.all and args.command in ("gen", "check", "doc", "trace", "input")) and args.command not in ("sources", "scope"):
         parser.error("--framework is required (gen and check accept --all)")
     if args.command == "sources":
         return cmd_sources(args)
     if args.command == "doc":
         return cmd_doc(args)
+    if args.command == "scope":
+        return cmd_scope(args)
     if args.command == "classify":
         return cmd_classify(args)
     if args.command == "input":
+        if args.all:
+            args.sdk = args.sdk or SDK26
+            return cmd_input_all(args)
         if not (args.ledger and args.sdk):
             raise SystemExit("input needs --ledger and --sdk")
         return cmd_input(args)
