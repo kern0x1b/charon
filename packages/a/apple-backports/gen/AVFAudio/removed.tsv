@@ -1,0 +1,2 @@
+api	reason	registry
+AVAudioUnitSampler.masterGain	registry override the 26.2 spec does not hold	packages/a/apple-backports/registry/AVFAudio/sampler8.json

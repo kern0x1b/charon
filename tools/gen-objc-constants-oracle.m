@@ -1,0 +1,45 @@
+// Host oracle for gen-objc-constants.py: reads the value of each named exported object constant
+// (an NSString or CFString, toll-free bridged) from a framework of the running macOS, through
+// dlopen and dlsym. Prints one line per name, tab separated:
+//   name <TAB> found|missing|not-object <TAB> class <TAB> value
+// The value is the UTF-8 text with \\, \" and \uXXXX (ASCII only) escapes, so the line is ASCII.
+// Usage: oracle <framework binary path> <file with one name per line>
+#import <Foundation/Foundation.h>
+#include <dlfcn.h>
+
+static NSString *escaped(NSString *s) {
+    NSMutableString *out = [NSMutableString string];
+    for (NSUInteger i = 0; i < s.length; i++) {
+        unichar c = [s characterAtIndex:i];
+        if (c == '\\') [out appendString:@"\\\\"];
+        else if (c == '"') [out appendString:@"\\\""];
+        else if (c == '\t') [out appendString:@"\\t"];
+        else if (c == '\n') [out appendString:@"\\n"];
+        else if (c >= 0x20 && c < 0x7f) [out appendFormat:@"%C", c];
+        else [out appendFormat:@"\\u%04X", c];
+    }
+    return out;
+}
+
+int main(int argc, const char *argv[]) {
+    @autoreleasepool {
+        if (argc != 3) { fprintf(stderr, "usage: oracle <framework binary> <names>\n"); return 2; }
+        void *handle = dlopen(argv[1], RTLD_LAZY);
+        if (!handle) { fprintf(stderr, "dlopen: %s\n", dlerror()); return 1; }
+        NSString *names = [NSString stringWithContentsOfFile:[NSString stringWithUTF8String:argv[2]]
+                                                    encoding:NSUTF8StringEncoding error:NULL];
+        for (NSString *name in [names componentsSeparatedByString:@"\n"]) {
+            if (name.length == 0) continue;
+            void *sym = dlsym(handle, name.UTF8String);
+            if (!sym) { printf("%s\tmissing\t-\t-\n", name.UTF8String); continue; }
+            id value = *(__unsafe_unretained id *)sym;
+            if (![value isKindOfClass:[NSString class]]) {
+                printf("%s\tnot-object\t%s\t-\n", name.UTF8String, value ? object_getClassName(value) : "nil");
+                continue;
+            }
+            printf("%s\tfound\t%s\t%s\n", name.UTF8String, object_getClassName(value), escaped(value).UTF8String);
+        }
+        dlclose(handle);
+    }
+    return 0;
+}
