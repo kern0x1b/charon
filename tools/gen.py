@@ -223,7 +223,9 @@ def string_typedefs(sdk, fw):
 def constant_decls(sdk, fw, names, typedefs):
     wanted, found = set(names), {}
     for path in sorted(glob.glob(os.path.join(sdk, "System", "Library", "Frameworks", fw + ".framework", "Headers", "*.h"))):
-        for line in read_any(path).splitlines():
+        # a comment on a declaration's line can name another constant: the comment is not part of any declaration
+        for line in re.sub(r"/\*.*?\*/", " ", read_any(path), flags=re.S).splitlines():
+            line = re.sub(r"//.*", "", line)
             marked = "extern" in line or "EXTERN" in line or "EXPORT" in line
             for token in set(re.findall(r"\b[A-Za-z_]\w*\b", line)) & wanted:
                 if token in found:
@@ -1155,6 +1157,175 @@ def getter_of(decl, name):
     return found.group(1) if found else name
 
 
+# ---------------------------------------------------------------- doc: the worker's page set (untracked, regenerated)
+
+LEDGER_DIR = os.path.join(os.environ.get("HOME", ""), "Git", "projects", "ios", "coordination", "corpus")
+DOC_OUT = ".agent-work/spec-docs"
+
+
+def ledger_status(fw, release_dir):
+    """(kind, api) -> status for the framework's rows the ledger lists; a row it does not list is implemented in that release."""
+    path = os.path.join(LEDGER_DIR, release_dir, fw + ".tsv")
+    out = {}
+    if not os.path.exists(path):
+        return out
+    with open(path, newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            if row.get("kind") and row.get("api"):
+                out[(row["kind"], row["api"])] = row["status"]
+    return out
+
+
+def surface_rows(fw):
+    """(kind, api) -> the surface row (demand, impl-lead, deprecation) for one framework."""
+    path = os.path.join(LEDGER_DIR, "sdk-26.2-surface.tsv")
+    out = {}
+    with open(path, newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            if row["framework"] == fw:
+                out[(row["kind"], row["api"])] = row
+    return out
+
+
+def oracle_defaults(fw):
+    """class -> [(item, value_kind, value, build)] from the host oracle capture in v-cache26's table."""
+    path = os.path.join(LEDGER_DIR, "cache-26.2", "oracle-defaults.tsv")
+    out = {}
+    if not os.path.exists(path):
+        return out
+    with open(path, newline="", errors="replace") as handle:
+        for row in csv.DictReader(handle, delimiter="\t", quoting=csv.QUOTE_NONE):
+            if row.get("framework") == fw:
+                out.setdefault(row["class"], []).append((row["item"], row["value_kind"], row["value"], row["build"]))
+    return out
+
+
+def registry_entries(tree, fw):
+    """api -> (registry file, entry) for every registry row of the framework, whatever its status."""
+    out = {}
+    for path in sorted(glob.glob(os.path.join(tree, REGISTRY, fw, "*.json")) + glob.glob(os.path.join(tree, REGISTRY, fw + ".json"))):
+        with open(path) as handle:
+            data = json.load(handle)
+        for entry in data.get("entries", []):
+            out.setdefault(entry["api"], (os.path.relpath(path, tree), entry))
+    return out
+
+
+def header_comment(header, cls, decl, kind, selector_or_name):
+    """The comment the header writes above a member of one class, or '' when it writes none."""
+    block = re.search(r"@interface\s+" + re.escape(cls) + r"\b(.*?)@end", header, re.S)
+    if not block:
+        return ""
+    body = block.group(1)
+    key = selector_or_name.split(":")[0] if kind == "method" else selector_or_name
+    found = re.search(r"(?m)^[^\n]*\b" + re.escape(key) + r"\b[^\n]*$", body)
+    if not found:
+        return ""
+    before = body[:found.start()].rstrip().split("\n")
+    lines = []
+    for line in reversed(before):
+        stripped = line.strip()
+        if re.match(r"^(///|/\*\*|/\*!|\*|//|\*/)", stripped) or stripped.endswith("*/"):
+            lines.insert(0, stripped)
+        else:
+            break
+    text = " ".join(re.sub(r"^(///|/\*\*|/\*!|\*/|\*|//)\s?", "", l).rstrip("*/").strip() for l in lines)
+    return " ".join(text.split())[:600].encode("ascii", "replace").decode("ascii")
+
+
+def md_cell(text):
+    return str(text).replace("|", "\\|").replace("\n", " ")[:400]
+
+
+def cmd_doc(args):
+    fws = frameworks_with_snapshot(args.tree) if args.all else [args.framework]
+    out_root = args.out or os.path.join(args.tree, DOC_OUT)
+    sdk = args.sdk or SDK26
+    for fw in fws:
+        spec = load_spec(args.tree, fw)
+        header = strip_platform_blocks(header_text(sdk, fw))
+        supers = dict(re.findall(r"@interface\s+(\w+)\s*:\s*(\w+)", header))
+        led = ledger_status(fw, "ledger-w45")
+        led43 = ledger_status(fw, "ledger-w45-4.3")
+        surf = surface_rows(fw)
+        regs = registry_entries(args.tree, fw)
+        pins = {p["api"]: p for p in load_pins(args.tree, fw)}
+        oracle = oracle_defaults(fw)
+        stubs_skipped = {}
+        if os.path.exists(os.path.join(gen_dir(args.tree, fw), "trace", "skipped.tsv")):
+            for row in csv.DictReader(open(os.path.join(gen_dir(args.tree, fw), "trace", "skipped.tsv")), delimiter="\t"):
+                stubs_skipped[row["api"]] = row["reason"]
+        out = os.path.join(out_root, fw)
+        os.makedirs(out, exist_ok=True)
+        classes = {}
+        for r in spec:
+            if r["kind"] in ("method", "property"):
+                classes.setdefault(r["cls"], []).append(r)
+        index = [
+            "# %s: worker page set" % fw, "",
+            "Regenerated by `tools/gen.py doc %s` from the committed snapshot, the ledgers and the surface table. Do not edit: regenerate." % fw, "",
+            "- Spec: the 26.2 header of %s, as recorded in `spec/%s/` (%d method and property rows, %d constant rows)." % (
+                fw, fw, sum(1 for r in spec if r["kind"] in ("method", "property")), sum(1 for r in spec if r["kind"] == "constant")),
+            "- Status at 6.1.3: ledger-w45. A member the ledger does not list is implemented in that release. Status at 4.3: ledger-w45-4.3.",
+            "- Demand and impl-lead: sdk-26.2-surface.tsv. Overrides and pins: `registry/%s/` and `overrides/hashes/%s.tsv`." % (fw, fw),
+            "- Behaviour summaries (what a method calls, its strings, constants and error domains): not produced in this run; see the report.",
+            "- REFERENCE ONLY: nothing here is Apple binary, disassembly or pseudocode, and none of it is sent to an external service.", "",
+            "## Classes (%d)" % len(classes), "",
+            "| class | superclass | members | overridden | stub | page |", "| --- | --- | --- | --- | --- | --- |",
+        ]
+        constant_rows = [r for r in spec if r["kind"] == "constant"]
+        for cls in sorted(classes):
+            members = classes[cls]
+            overridden = sum(1 for r in members if r["api"] in regs)
+            stubbed = sum(1 for r in members if r["api"] not in regs and r["api"] not in stubs_skipped)
+            index.append("| %s | %s | %d | %d | %d | [%s.md](%s.md) |" % (cls, supers.get(cls, "-"), len(members), overridden, stubbed, cls, cls))
+        index += ["", "Constants: [Constants.md](Constants.md) (%d rows)." % len(constant_rows), ""]
+        write(os.path.join(out, "index.md"), "\n".join(index) + "\n")
+        for cls in sorted(classes):
+            page = ["# %s (%s)" % (cls, fw), "",
+                    "Superclass: %s. Status at 6.1.3 and 4.3 is per member below." % supers.get(cls, "-"), "",
+                    "| kind | declaration (26.2 header, normalised) | availability | 6.1.3 | 4.3 | demand | impl-lead | ours (registry, pin) | stub |",
+                    "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
+            notes = []
+            for r in sorted(classes[cls], key=lambda x: (x["kind"], x["api"])):
+                key_kind = "method" if r["kind"] == "method" else "property"
+                ledger_key = (key_kind, r["api"])
+                s6 = led.get(ledger_key, "implemented")
+                s43 = led43.get(ledger_key, "implemented")
+                srow = surf.get(ledger_key, {})
+                demand = ("rank %s, %s, %s apps" % (srow.get("demand-rank") or "-", srow.get("demand-severity") or "-",
+                                                    srow.get("demand-apps") or "-")) if srow.get("demand-rank") else "-"
+                ours = "-"
+                if r["api"] in regs:
+                    path, entry = regs[r["api"]]
+                    pin = pins.get(r["api"])
+                    ours = "%s: %s%s" % (entry.get("status", "?"), path, (", pin %s" % pin["pinned-by"]) if pin else "")
+                stub = "hand/override" if r["api"] in regs else ("not stubbed: " + stubs_skipped[r["api"]] if r["api"] in stubs_skipped else "stub")
+                page.append("| %s | `%s` | %s | %s | %s | %s | %s | %s | %s |" % (
+                    r["kind"], md_cell(r["decl"]), md_cell(r["availability"] if r["availability"] != "-" else "-"), s6, s43, demand,
+                    md_cell(srow.get("impl-lead") or "-"), md_cell(ours), md_cell(stub)))
+                comment = header_comment(header, cls, r["decl"], r["kind"], (r["api"].rstrip("]").split(" ", 1)[1] if r["kind"] == "method" else r["api"].split(".")[-1]))
+                if comment:
+                    notes.append("- `%s`: %s" % (r["api"], comment))
+            page += ["", "## Header comments", ""] + (notes or ["- none in the header"])
+            if cls in oracle:
+                page += ["", "## Host oracle (macOS, class state and defaults; v-cache26 capture)", "", "| item | kind | value | build |", "| --- | --- | --- | --- |"]
+                page += ["| %s | %s | %s | %s |" % tuple(md_cell(x) for x in row) for row in oracle[cls][:60]]
+            page += ["", "## Behaviour summary", "", "not produced in this run (see the report)."]
+            write(os.path.join(out, cls + ".md"), "\n".join(page) + "\n")
+        constants = ["# %s constants" % fw, "", "| name | declaration | iOS 26.2 value | host value | 6.1.3 | 4.3 | ours |", "| --- | --- | --- | --- | --- | --- | --- |"]
+        for r in sorted(constant_rows, key=lambda x: x["api"]):
+            s6 = led.get(("constant", r["api"]), "implemented")
+            s43 = led43.get(("constant", r["api"]), "implemented")
+            constants.append("| %s | `%s` | %s | %s | %s | %s | %s |" % (
+                r["api"], md_cell(r["decl"]), md_cell(r["value"] if r["value_status"] == "found" else r["value_status"]),
+                md_cell(r["host_value"] if r["host_value"] != "-" else "-"), s6, s43,
+                md_cell(r["owned"] if r["owned"] != "-" else ("generated" if r["value_status"] == "found" else r["value_status"]))))
+        write(os.path.join(out, "Constants.md"), "\n".join(constants) + "\n")
+        print("doc %s: %d class pages, constants page, index -> %s" % (fw, len(classes), os.path.relpath(out, args.tree)))
+    return 0
+
+
 def cmd_diff(args):
     fw = args.framework
     if not os.path.isdir(os.path.join(HOST, fw + ".framework")):
@@ -1234,7 +1405,7 @@ def cmd_diff(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("command", choices=["input", "pin", "gen", "check", "trace", "diff", "sources", "classify"])
+    parser.add_argument("command", choices=["input", "pin", "gen", "check", "trace", "diff", "sources", "classify", "doc"])
     parser.add_argument("--tree", required=True)
     parser.add_argument("--framework")
     parser.add_argument("--ledger")
@@ -1245,14 +1416,17 @@ def main():
     parser.add_argument("--repin")
     parser.add_argument("--class", dest="cls")
     parser.add_argument("--catalyst", action="store_true", help="classify: build the probe as Mac Catalyst (UIKit)")
-    parser.add_argument("--all", action="store_true", help="gen and check: every framework that has a snapshot")
+    parser.add_argument("--all", action="store_true", help="gen, check and doc: every framework that has a snapshot")
+    parser.add_argument("--out", help="doc: where the page set is written (default: .agent-work/spec-docs under the tree)")
     parser.add_argument("--record", action="store_true", help="gen: also record the manifest of digests in the snapshot")
     parser.add_argument("--catalyst-sdk", default="/Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk")
     args = parser.parse_args()
-    if not args.framework and not (args.all and args.command in ("gen", "check")) and args.command != "sources":
+    if not args.framework and not (args.all and args.command in ("gen", "check", "doc")) and args.command != "sources":
         parser.error("--framework is required (gen and check accept --all)")
     if args.command == "sources":
         return cmd_sources(args)
+    if args.command == "doc":
+        return cmd_doc(args)
     if args.command == "classify":
         return cmd_classify(args)
     if args.command == "input":
