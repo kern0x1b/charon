@@ -3,4 +3,3 @@
 
 NSString *const PKPaymentNetworkCarteBancaire = @"CarteBancaire";
 NSString *const PKPaymentNetworkIDCredit = @"iD";
-NSString *const PKPaymentNetworkQuicPay = @"QUICPay";

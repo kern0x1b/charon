@@ -1,0 +1,71 @@
+class	verdict	superclass	init	properties	round_trip_ok	fail	readonly	untested	derived_by	methods_not_allowed	reasons
+PKAddCarKeyPassConfiguration	hand	PKAddSecureElementPassConfiguration	yes	4	3	0	0	1		-	untested;superclass:PKAddSecureElementPassConfiguration
+PKAddIdentityDocumentConfiguration	hand	PKAddSecureElementPassConfiguration	yes	1	0	0	0	1		+[PKAddIdentityDocumentConfiguration configurationForMetadata:completion:]	methods;untested;superclass:PKAddSecureElementPassConfiguration
+PKAddIdentityDocumentMetadata	hand	PKIdentityDocumentMetadata	yes	1	0	0	0	1		-	untested;superclass:PKIdentityDocumentMetadata
+PKAddPassButton	hand	UIButton	absent	0	0	0	0	0		+[PKAddPassButton addPassButtonWithStyle:]	methods;init;superclass:UIButton
+PKAddPassMetadataPreview	hand	NSObject	yes	2	0	0	1	1		+[PKAddPassMetadataPreview previewWithPassThumbnail:localizedDescription:]	methods;untested;readonly;init-unavailable
+PKAddPassesViewController	hand	UIViewController	absent	0	0	0	0	0		+[PKAddPassesViewController canAddPasses]	methods;init;superclass:UIViewController
+PKAddPaymentPassRequest	hand	NSObject	yes	4	0	0	0	4		-	untested
+PKAddPaymentPassRequestConfiguration	hand	NSObject	yes	10	5	0	0	5		-	untested
+PKAddPaymentPassViewController	hand	UIViewController	absent	0	0	0	0	0		+[PKAddPaymentPassViewController canAddPaymentPass]	methods;init;superclass:UIViewController
+PKAddSecureElementPassConfiguration	hand	NSObject	yes	2	2	0	0	0		-	init-unavailable
+PKAddSecureElementPassViewController	hand	UIViewController	absent	0	0	0	0	0		+[PKAddSecureElementPassViewController canAddSecureElementPassWithConfiguration:]	methods;init;superclass:UIViewController
+PKAddShareablePassConfiguration	hand	PKAddSecureElementPassConfiguration	yes	3	0	0	1	2		+[PKAddShareablePassConfiguration configurationForPassMetadata:provisioningPolicyIdentifier:primaryAction:completion:];+[PKAddShareablePassConfiguration configurationForPassMetadata:primaryAction:completion:]	methods;untested;readonly;superclass:PKAddSecureElementPassConfiguration
+PKAutomaticReloadPaymentRequest	hand	NSObject	yes	5	2	0	0	3		-	untested;init-unavailable
+PKAutomaticReloadPaymentSummaryItem	hand	PKPaymentSummaryItem	yes	1	0	0	0	1		-	untested;superclass:PKPaymentSummaryItem
+PKBarcodeEventConfigurationRequest	hand	NSObject	yes	3	0	0	1	2		-	untested;readonly
+PKBarcodeEventMetadataRequest	hand	NSObject	yes	2	0	0	2	0		-	readonly
+PKBarcodeEventMetadataResponse	hand	NSObject	yes	1	0	0	0	1		-	untested
+PKBarcodeEventSignatureRequest	hand	NSObject	yes	10	0	0	7	3		-	untested;readonly
+PKBarcodeEventSignatureResponse	hand	NSObject	yes	1	0	0	0	1		-	untested
+PKContact	hand	NSObject	yes	5	2	0	0	3		-	untested
+PKDateComponentsRange	hand	NSObject	yes	2	0	0	0	2		-	untested;init-unavailable
+PKDeferredPaymentRequest	hand	NSObject	yes	7	2	0	0	5		-	untested;init-unavailable
+PKDeferredPaymentSummaryItem	hand	PKPaymentSummaryItem	yes	1	0	0	0	1		-	untested;superclass:PKPaymentSummaryItem
+PKDisbursementRequest	hand	NSObject	yes	10	3	0	0	7		+[PKDisbursementRequest disbursementContactInvalidErrorWithContactField:localizedDescription:];+[PKDisbursementRequest disbursementCardUnsupportedError]	methods;untested
+PKIdentityAnyOfDescriptor	hand	NSObject	yes	1	0	0	0	1		-	untested;init-unavailable
+PKIdentityButton	hand	UIControl	absent	0	0	0	0	0		+[PKIdentityButton buttonWithLabel:style:]	methods;init;superclass:UIControl
+PKIdentityDocument	hand	NSObject	yes	1	0	0	0	1		-	untested;init-unavailable
+PKIdentityDocumentMetadata	hand	NSObject	yes	7	0	1	5	1		-	untested;readonly;init-unavailable;fail
+PKIdentityElement	hand	NSObject	no	19	0	0	0	19		+[PKIdentityElement ageThresholdElementWithAge:]	methods;init;untested;init-unavailable
+PKIdentityIntentToStore	hand	NSObject	no	2	0	0	0	2		+[PKIdentityIntentToStore mayStoreIntentForDays:]	methods;init;untested;init-unavailable
+PKIdentityNationalIDCardDescriptor	hand	NSObject	no	1	0	0	0	1		-	init;untested
+PKIdentityRequest	hand	NSObject	yes	4	2	0	0	2		-	untested
+PKIssuerProvisioningExtensionPassEntry	hand	NSObject	no	3	0	0	0	3		-	init;untested;init-unavailable
+PKIssuerProvisioningExtensionPaymentPassEntry	hand	PKIssuerProvisioningExtensionPassEntry	no	1	0	0	0	1		-	init;untested;superclass:PKIssuerProvisioningExtensionPassEntry
+PKIssuerProvisioningExtensionStatus	data-holder	NSObject	yes	3	3	0	0	0		-	-
+PKJapanIndividualNumberCardMetadata	hand	PKIdentityDocumentMetadata	yes	3	2	0	0	1		-	untested;superclass:PKIdentityDocumentMetadata
+PKLabeledValue	hand	NSObject	yes	2	0	0	2	0		-	readonly
+PKPass	hand	PKObject	yes	17	0	0	8	9		-[PKPass localizedValueForFieldKey:]	methods;untested;readonly;superclass:PKObject
+PKPassLibrary	hand	NSObject	yes	2	0	0	1	1		+[PKPassLibrary isPassLibraryAvailable];+[PKPassLibrary requestAutomaticPassPresentationSuppressionWithResponseHandler:];+[PKPassLibrary endAutomaticPassPresentationSuppressionWithRequestToken:];+[PKPassLibrary isSuppressingAutomaticPassPresentation];+[PKPassLibrary isPaymentPassActivationAvailable];-[PKPassLibrary isPaymentPassActivationAvailable];-[PKPassLibrary passes];-[PKPassLibrary passWithPassTypeIdentifier:serialNumber:];-[PKPassLibrary passesWithReaderIdentifier:];-[PKPassLibrary passesOfType:];-[PKPassLibrary remotePaymentPasses];-[PKPassLibrary removePass:];-[PKPassLibrary containsPass:];-[PKPassLibrary replacePassWithPass:];-[PKPassLibrary addPasses:withCompletionHandler:];-[PKPassLibrary __WATCHOS_PROHIBITED];-[PKPassLibrary presentPaymentPass:];-[PKPassLibrary presentSecureElementPass:];-[PKPassLibrary canAddPaymentPassWithPrimaryAccountIdentifier:];-[PKPassLibrary canAddSecureElementPassWithPrimaryAccountIdentifier:];-[PKPassLibrary canAddFelicaPass];-[PKPassLibrary activatePaymentPass:withActivationData:completion:];-[PKPassLibrary activatePaymentPass:withActivationCode:completion:];-[PKPassLibrary activateSecureElementPass:withActivationData:completion:];-[PKPassLibrary signData:withSecureElementPass:completion:];-[PKPassLibrary encryptedServiceProviderDataForSecureElementPass:completion:];-[PKPassLibrary serviceProviderDataForSecureElementPass:completion:];-[PKPassLibrary authorizationStatusForCapability:];-[PKPassLibrary requestAuthorizationForCapability:completion:]	methods;untested;readonly
+PKPassRelevantDate	hand	NSObject	yes	2	0	0	0	2		-	untested;init-unavailable
+PKPayLaterView	hand	UIView	absent	0	0	0	0	0		-	init;init-unavailable;superclass:UIView
+PKPayment	hand	NSObject	yes	5	0	0	0	5		-	untested
+PKPaymentAuthorizationController	hand	NSObject	no	1	0	0	0	1		+[PKPaymentAuthorizationController canMakePayments];+[PKPaymentAuthorizationController canMakePaymentsUsingNetworks:];+[PKPaymentAuthorizationController canMakePaymentsUsingNetworks:capabilities:];-[PKPaymentAuthorizationController presentWithCompletion:];-[PKPaymentAuthorizationController dismissWithCompletion:];+[PKPaymentAuthorizationController supportsDisbursements];+[PKPaymentAuthorizationController supportsDisbursementsUsingNetworks:];+[PKPaymentAuthorizationController supportsDisbursementsUsingNetworks:capabilities:]	methods;init;untested
+PKPaymentAuthorizationResult	hand	NSObject	yes	3	0	0	0	3		-	untested
+PKPaymentAuthorizationViewController	hand	UIViewController	no	1	0	0	0	1		+[PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:];+[PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:capabilities:];+[PKPaymentAuthorizationViewController supportsDisbursements];+[PKPaymentAuthorizationViewController supportsDisbursementsUsingNetworks:];+[PKPaymentAuthorizationViewController supportsDisbursementsUsingNetworks:capabilities:];+[PKPaymentAuthorizationViewController canMakePayments]	methods;init;untested;superclass:UIViewController
+PKPaymentButton	hand	UIButton	yes	1	1	0	0	0		+[PKPaymentButton buttonWithType:style:disableCardArt:];+[PKPaymentButton buttonWithType:style:]	methods;superclass:UIButton
+PKPaymentMethod	hand	NSObject	yes	6	0	0	1	5		-	untested;readonly
+PKPaymentOrderDetails	hand	NSObject	yes	4	3	0	0	1		-	untested;init-unavailable
+PKPaymentPass	hand	PKSecureElementPass	yes	1	0	0	0	1		-	untested;superclass:PKSecureElementPass
+PKPaymentRequest	hand	NSObject	yes	25	6	0	0	19		+[PKPaymentRequest availableNetworks];+[PKPaymentRequest paymentContactInvalidErrorWithContactField:localizedDescription:];+[PKPaymentRequest paymentShippingAddressInvalidErrorWithKey:localizedDescription:];+[PKPaymentRequest paymentBillingAddressInvalidErrorWithKey:localizedDescription:];+[PKPaymentRequest paymentShippingAddressUnserviceableErrorWithLocalizedDescription:];+[PKPaymentRequest paymentCouponCodeInvalidErrorWithLocalizedDescription:];+[PKPaymentRequest paymentCouponCodeExpiredErrorWithLocalizedDescription:]	methods;untested
+PKPaymentRequestCouponCodeUpdate	hand	PKPaymentRequestUpdate	yes	1	0	0	0	1		-	untested;superclass:PKPaymentRequestUpdate
+PKPaymentRequestMerchantSessionUpdate	hand	NSObject	yes	2	0	0	0	2		-	untested
+PKPaymentRequestPaymentMethodUpdate	hand	PKPaymentRequestUpdate	yes	1	0	0	0	1		-	untested;superclass:PKPaymentRequestUpdate
+PKPaymentRequestShippingContactUpdate	hand	PKPaymentRequestUpdate	yes	2	0	0	0	2		-	untested;superclass:PKPaymentRequestUpdate
+PKPaymentRequestUpdate	hand	NSObject	yes	7	0	0	0	7		-	untested
+PKPaymentSummaryItem	hand	NSObject	yes	3	1	0	0	2		+[PKPaymentSummaryItem summaryItemWithLabel:amount:];+[PKPaymentSummaryItem summaryItemWithLabel:amount:type:]	methods;untested
+PKPaymentToken	hand	NSObject	yes	4	0	0	1	3		-	untested;readonly
+PKPaymentTokenContext	hand	NSObject	yes	5	4	0	0	1		-	untested;init-unavailable
+PKRecurringPaymentRequest	hand	NSObject	yes	6	2	0	0	4		-	untested;init-unavailable
+PKRecurringPaymentSummaryItem	hand	PKPaymentSummaryItem	yes	4	1	0	0	3		-	untested;superclass:PKPaymentSummaryItem
+PKSecureElementPass	hand	PKPass	yes	7	0	0	6	1		-	untested;readonly;superclass:PKPass
+PKShareSecureElementPassViewController	hand	UIViewController	absent	0	0	0	0	0		-	init;init-unavailable;superclass:UIViewController
+PKShareablePassMetadata	hand	NSObject	yes	9	0	4	4	1		-	untested;readonly;fail
+PKShareablePassMetadataPreview	hand	PKAddPassMetadataPreview	yes	2	1	0	1	0		+[PKShareablePassMetadataPreview previewWithTemplateIdentifier:]	methods;readonly;superclass:PKAddPassMetadataPreview
+PKShippingMethod	hand	PKPaymentSummaryItem	yes	3	2	0	0	1		-	untested;superclass:PKPaymentSummaryItem
+PKStoredValuePassBalance	hand	NSObject	yes	4	0	0	1	3		-[PKStoredValuePassBalance isEqualToBalance:]	methods;untested;readonly;init-unavailable
+PKStoredValuePassProperties	hand	NSObject	yes	3	0	0	1	2		+[PKStoredValuePassProperties passPropertiesForPass:]	methods;untested;readonly
+PKSuicaPassProperties	hand	PKTransitPassProperties	yes	7	0	0	6	1		+[PKSuicaPassProperties passPropertiesForPass:]	methods;untested;readonly;superclass:PKTransitPassProperties
+PKTransitPassProperties	hand	PKStoredValuePassProperties	yes	3	0	0	2	1		-	untested;readonly;superclass:PKStoredValuePassProperties
+PKVehicleConnectionSession	hand	NSObject	no	2	0	0	0	2		+[PKVehicleConnectionSession sessionForPass:delegate:completion:];-[PKVehicleConnectionSession sendData:error:];-[PKVehicleConnectionSession invalidate]	methods;init;untested;init-unavailable

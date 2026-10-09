@@ -2,4 +2,15 @@
 #import <Security/Security.h>
 
 const CFStringRef kSecImportToMemoryOnly = (__bridge CFStringRef)@"memory";
+const CFStringRef kSecKeyAlgorithmECDSASignatureDigestRFC4754 = (__bridge CFStringRef)@"algid:sign:ECDSA:digest-RFC4754";
+const CFStringRef kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA1 = (__bridge CFStringRef)@"algid:sign:ECDSA:digest-RFC4754:SHA1";
+const CFStringRef kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA224 = (__bridge CFStringRef)@"algid:sign:ECDSA:digest-RFC4754:SHA224";
+const CFStringRef kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA256 = (__bridge CFStringRef)@"algid:sign:ECDSA:digest-RFC4754:SHA256";
+const CFStringRef kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA384 = (__bridge CFStringRef)@"algid:sign:ECDSA:digest-RFC4754:SHA384";
+const CFStringRef kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA512 = (__bridge CFStringRef)@"algid:sign:ECDSA:digest-RFC4754:SHA512";
+const CFStringRef kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA1 = (__bridge CFStringRef)@"algid:sign:ECDSA:message-RFC4754:SHA1";
+const CFStringRef kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA224 = (__bridge CFStringRef)@"algid:sign:ECDSA:message-RFC4754:SHA224";
+const CFStringRef kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA256 = (__bridge CFStringRef)@"algid:sign:ECDSA:message-RFC4754:SHA256";
+const CFStringRef kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA384 = (__bridge CFStringRef)@"algid:sign:ECDSA:message-RFC4754:SHA384";
+const CFStringRef kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA512 = (__bridge CFStringRef)@"algid:sign:ECDSA:message-RFC4754:SHA512";
 const CFStringRef kSecMatchHostOrSubdomainOfHost = (__bridge CFStringRef)@"m_HostOrSubdomainOfHost";

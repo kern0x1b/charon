@@ -2,4 +2,5 @@
 #import <PassKit/PassKit.h>
 
 NSString *const PKPaymentNetworkJCB = @"JCB";
+NSString *const PKPaymentNetworkQuicPay = @"QUICPay";
 NSString *const PKPaymentNetworkSuica = @"Suica";

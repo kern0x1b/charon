@@ -29,6 +29,7 @@ LIBRARIES = {
     {name = "GraphicsBackports", folder = "Graphics", frameworks = {"CoreGraphics", "CoreImage", "CoreVideo", "ImageIO", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "UIKitBackports", folder = "UIKit", frameworks = {"UIKit", "Foundation", "CoreGraphics", "QuartzCore", "MobileCoreServices", "ImageIO", "CoreLocation"}, libraries = {"FoundationBackports", "GraphicsBackports"}, archives = {"box2d"}},
     {name = "CoreLocationBackports", folder = "CoreLocation", frameworks = {"CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "CoreTextBackports", folder = "CoreText", frameworks = {"CoreText", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreDataBackports", folder = "CoreData", frameworks = {"CoreData", "Foundation"}, libraries = {"FoundationBackports"}},
     -- micro-ecc is the P-256 arithmetic iOS 6 has no way to sign with (SecKeyCreateRandomKey and
     -- SecKeyCreateSignature are iOS 8): Security/SecKeyElliptic10.m signs, verifies and exchanges over it
@@ -124,6 +125,12 @@ LIBRARIES = {
     {name = "MapKitBackports", folder = "MapKit", frameworks = {"MapKit", "UIKit", "CoreGraphics", "CoreLocation", "QuartzCore", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "MatterClusterBackports", folder = "Matter", frameworks = {"Matter", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "PassKitBackports", folder = "PassKit", frameworks = {"PassKit", "UIKit", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "CoreMediaBackports", folder = "CoreMedia", frameworks = {"CoreMedia", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "CoreFoundationBackports", folder = "CoreFoundation", frameworks = {"CoreFoundation", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "StoreKitBackports", folder = "StoreKit", frameworks = {"StoreKit", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "CoreGraphicsBackports", folder = "CoreGraphics", frameworks = {"CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "AddressBookUIBackports", folder = "AddressBookUI", frameworks = {"AddressBookUI", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "CoreVideoBackports", folder = "CoreVideo", frameworks = {"CoreVideo", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CarPlayBackports", folder = "CarPlay", frameworks = {"CarPlay", "MapKit", "UIKit", "CoreGraphics", "CoreTelephony", "Foundation"}, libraries = {"FoundationBackports"}},
     -- FileProvider arrived in iOS 11.0 and the release has none of it: no framework, and no
     -- extension host to load a provider. The manager, the domain and the requests are the port's

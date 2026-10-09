@@ -1,0 +1,19 @@
+framework	kind	api	introduced	minimum	maximum	status	effect	facts	source	owner	declhash
+CoreVideo	constant	kCVPixelFormatBitsPerComponent	11.0	6.0	11.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants110.m	generated	7346134279ee6f6c
+CoreVideo	constant	kCVPixelBufferIOSurfacePurgeableKey	16.0	6.0	16.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants160.m	generated	b4fb30a89b2525d8
+CoreVideo	constant	kCVImageBufferLogTransferFunctionKey	18.0	6.0	18.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants180.m	generated	e98b65c0d525a69e
+CoreVideo	constant	kCVImageBufferLogTransferFunction_AppleLog	18.0	6.0	18.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants180.m	generated	32109bdd5077ef2d
+CoreVideo	constant	kCVImageBufferSceneIlluminationKey	18.0	6.0	18.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants180.m	generated	98ad895439244a75
+CoreVideo	constant	kCVMetalBufferCacheMaximumBufferAgeKey	18.0	6.0	18.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants180.m	generated	9a6e85c08230b116
+CoreVideo	constant	kCVImageBufferDisplayMaskRectangleKey	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	72c774c62b94a33b
+CoreVideo	constant	kCVImageBufferDisplayMaskRectangleStereoLeftKey	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	b63200d972e307b8
+CoreVideo	constant	kCVImageBufferDisplayMaskRectangleStereoRightKey	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	4fbebc790938fc7f
+CoreVideo	constant	kCVImageBufferDisplayMaskRectangle_LeftEdgePointsKey	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	e63fc4c6ed65245e
+CoreVideo	constant	kCVImageBufferDisplayMaskRectangle_RectangleHeightKey	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	599ed87b6d2480e0
+CoreVideo	constant	kCVImageBufferDisplayMaskRectangle_RectangleLeftKey	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	6c7bb63ae46e296f
+CoreVideo	constant	kCVImageBufferDisplayMaskRectangle_RectangleTopKey	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	ec619ccfbd16fe62
+CoreVideo	constant	kCVImageBufferDisplayMaskRectangle_RectangleWidthKey	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	bd8bafef958d6d1e
+CoreVideo	constant	kCVImageBufferDisplayMaskRectangle_ReferenceRasterHeightKey	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	41f2ed3d5f782220
+CoreVideo	constant	kCVImageBufferDisplayMaskRectangle_ReferenceRasterWidthKey	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	9db0ddca21ba3c88
+CoreVideo	constant	kCVImageBufferDisplayMaskRectangle_RightEdgePointsKey	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	fa4b01491aa40b38
+CoreVideo	constant	kCVImageBufferLogTransferFunction_AppleLog2	26.0	6.0	26.0	implemented		gen/CoreVideo/README.md	gen/CoreVideo/CoreVideoConstants260.m	generated	3f89a4b8ffa6ec1f
