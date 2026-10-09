@@ -1,0 +1,8 @@
+complete 3 bytes                   group=0 status=0 bytes=F0010203F7
+complete 3 bytes, group 1          group=1 status=-50 bytes=(null)
+start 6 bytes                      group=0 status=0 bytes=F0010203040506
+continue 6 bytes                   group=0 status=0 bytes=0708090A0B0C
+end 1 byte                         group=0 status=0 bytes=0DF7
+end 0 bytes                        group=0 status=0 bytes=F7
+midi 2.0 note on                   group=0 status=-50 bytes=(null)
+complete, group 15                 group=15 status=-50 bytes=(null)

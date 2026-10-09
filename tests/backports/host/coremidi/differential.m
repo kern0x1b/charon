@@ -448,6 +448,72 @@ static void check_visitor(void)
     check(failed == 0, name, detail);
 }
 
+// MIDIEventPacketSysexBytesForGroup and MIDIDeviceNewEntity, held to macOS (oracle/sysexbytes.m and newentity2.m).
+extern OSStatus charon_host_MIDIEventPacketSysexBytesForGroup(const MIDIEventPacket *pkt, UInt8 groupIndex, CFDataRef *outData);
+extern OSStatus charon_host_MIDIDeviceNewEntity(MIDIDeviceRef device, CFStringRef name, MIDIProtocolID protocol, Boolean embedded,
+                                                ItemCount numSourceEndpoints, ItemCount numDestinationEndpoints, MIDIEntityRef *newEntity);
+
+static void check_sysex_bytes_for_group(void)
+{
+    struct {
+        const char *name;
+        UInt32 words[2];
+        int wordCount;
+        UInt8 group;
+        OSStatus status;
+        const char *want;
+    } cases[] = {
+        {"complete 3 bytes", {0x30030102u, 0x03000000u}, 2, 0, 0, "F0010203F7"},
+        {"complete 3 bytes, group 1", {0x30030102u, 0x03000000u}, 2, 1, -50, NULL},
+        {"start 6 bytes", {0x30160102u, 0x03040506u}, 2, 0, 0, "F0010203040506"},
+        {"continue 6 bytes", {0x30260708u, 0x090A0B0Cu}, 2, 0, 0, "0708090A0B0C"},
+        {"end 1 byte", {0x30310D00u, 0x00000000u}, 2, 0, 0, "0DF7"},
+        {"end 0 bytes", {0x30300000u, 0x00000000u}, 2, 0, 0, "F7"},
+        {"midi 2.0 note on", {0x40903C00u, 0xFFFF0000u}, 2, 0, -50, NULL},
+        {"complete, group 15", {0x30030102u, 0x03000000u}, 2, 15, -50, NULL},
+    };
+    int failed = 0;
+    for (size_t c = 0; c < sizeof(cases) / sizeof(cases[0]); c++) {
+        Byte buffer[256];
+        MIDIEventList *list = (MIDIEventList *)buffer;
+        MIDIEventPacket *end = MIDIEventListInit(list, kMIDIProtocol_2_0);
+        CharonMIDIEventListAdd(list, sizeof(buffer), end, 0, (size_t)cases[c].wordCount, cases[c].words);
+        CFDataRef data = NULL;
+        OSStatus status = charon_host_MIDIEventPacketSysexBytesForGroup(&list->packet[0], cases[c].group, &data);
+        int same = status == cases[c].status;
+        if (cases[c].want) {
+            same = same && data != NULL && CFDataGetLength(data) == (CFIndex)(strlen(cases[c].want) / 2);
+            if (same) {
+                const UInt8 *b = CFDataGetBytePtr(data);
+                for (size_t i = 0; same && i < strlen(cases[c].want) / 2; i++) {
+                    unsigned int v = 0;
+                    sscanf(cases[c].want + 2 * i, "%2X", &v);
+                    same = b[i] == v;
+                }
+            }
+        } else {
+            same = same && data == NULL;
+        }
+        if (!same) {
+            printf("    sysex bytes %s: status %d\n", cases[c].name, (int)status);
+            failed++;
+        }
+        if (data)
+            CFRelease(data);
+    }
+    char name[96], detail[64];
+    snprintf(name, sizeof(name), "sysex bytes for group: %zu macOS answers", sizeof(cases) / sizeof(cases[0]));
+    snprintf(detail, sizeof(detail), "%d differ", failed);
+    check(failed == 0, name, detail);
+}
+
+static void check_new_entity_device_zero(void)
+{
+    MIDIEntityRef entity = 99;
+    OSStatus status = charon_host_MIDIDeviceNewEntity(0, CFSTR("x"), kMIDIProtocol_1_0, false, 0, 0, &entity);
+    check(status == -50 && entity == 0, "MIDIDeviceNewEntity on device 0: paramErr and no entity, as macOS", "");
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -462,6 +528,8 @@ int main(void)
         check_event_list_rules();
         check_constants();
         check_visitor();
+        check_sysex_bytes_for_group();
+        check_new_entity_device_zero();
         printf("checks=%d failures=%d\n", gChecks, gFailures);
     }
     return gFailures == 0 ? 0 : 1;

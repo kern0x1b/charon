@@ -64,6 +64,14 @@
       "status": "implemented",
       "facts": "facts/CoreMIDI/CoreMIDI.md",
       "source": "the value macOS CoreMIDI gives the constant (protocol), read by tests/backports/host/coremidi/oracle/probe2.m"
+    },
+    {
+      "api": "MIDIDeviceNewEntity()",
+      "kind": "function",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/CoreMIDI/Devices.md",
+      "source": "the 26.2 header for the contract (MIDISetup.h); macOS CoreMIDI for device 0 (tests/backports/host/coremidi/oracle/newentity2.m)"
     }
   ]
 }
