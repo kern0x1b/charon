@@ -1108,10 +1108,10 @@ def stub_members(spec, fw, sdk, overridden, hand, release_missing=None):
                 skipped.append((r["api"], "same selector declared twice in the class"))
                 continue
             seen.add((cls, selector))
-            by_class.setdefault(cls, []).append(("-[%s %s]" % (cls, selector), "property-get", name, type_text, kind, decl))
-            if readwrite and (cls, "set" + name[:1].upper() + name[1:] + ":") not in hand:
-                setter = "set%s%s:" % (name[:1].upper(), name[1:])
-                by_class[cls].append(("-[%s %s]" % (cls, setter), "property-set", name, type_text, "void", decl))
+            by_class.setdefault(cls, []).append(("-[%s %s]" % (cls, selector), "property-get", selector, type_text, kind, decl))
+            setter = "set%s%s:" % (name[:1].upper(), name[1:])
+            if readwrite and (cls, setter) not in hand and "-[%s %s]" % (cls, setter) not in overridden:
+                by_class[cls].append(("-[%s %s]" % (cls, setter), "property-set", setter, type_text, "void", decl))
             continue
         selector = r["api"].rstrip("]").split(" ", 1)[1]
         if r["api"] in overridden or (cls, selector) in hand:
