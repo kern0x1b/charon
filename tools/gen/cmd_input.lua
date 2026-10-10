@@ -264,6 +264,18 @@ local function measured_releases(path)
     return out
 end
 
+-- The frameworks `input --all` skips, each with the reason it names: spec/input-skips.tsv (framework, reason). A skip on the ledger is
+-- known and stays named; a skip off it fails the run. Only the names decide: a reason is a note, with the SDK folder written as <sdk>.
+local function skip_ledger(tree)
+    local file = path.join(tree, layout.constants().SNAP_ROOT, "input-skips.tsv")
+    assert(os.isfile(file), "input --all: the skip ledger is not found: " .. file)
+    local known = {}
+    for _, row in ipairs(tsv.records(files.read_text(file))) do
+        known[row.framework] = row.reason
+    end
+    return known
+end
+
 -- The ledger rows the record covers: the constants that are missing at 6.1.3, lifted (code+lift), in the ledger's order.
 local function ledger_constants(corpus, fw)
     local out = {}
@@ -338,7 +350,9 @@ end
 local function write_framework(args, fw)
     local tree, sdk = args.tree, args.sdk
     local ledger = ledger_constants(args.coordination, fw)
-    local docs = doc_text.rows(tree, fw, sdk) or {usr = {}, api = {}}
+    -- a framework the extractor does not list has no declarations to read: its constants would all come out "undeclared", so it fails
+    local docs, reason = doc_text.rows(tree, fw, sdk)
+    assert(docs ~= nil, string.format("input %s: %s, so its constants cannot be read", fw, reason))
     local typedefs, cf_typedefs, const_typedefs = typedefs_of(tree, {fw, "Foundation", "CoreFoundation"})
     local _, security_cf = typedefs_of(tree, {"Security"})
     for name in pairs(security_cf) do
@@ -448,11 +462,20 @@ end
 function run(args)
     assert(args.sdk, "input needs --sdk: the iPhoneOS SDK the declarations are read from")
     assert(args.coordination, "input needs --coordination: the corpus folder (the ledgers and the iOS constants table)")
+    -- a required input that is not there fails with its path named, before anything is written: a missing --measured file would
+    -- otherwise write a header-only snapshot
+    assert(os.isdir(args.sdk), "input: the --sdk folder is not found: " .. args.sdk)
+    assert(os.isdir(args.coordination), "input: the --coordination folder is not found: " .. args.coordination)
+    if args.measured and not args.all then
+        assert(os.isfile(args.measured), "input: the --measured file is not found: " .. args.measured)
+    end
+    local known_skips = args.all and skip_ledger(args.tree) or {}
     local targets = args.all and surface.surface_frameworks(args.coordination) or {args.framework}
     local written, without_ledger = 0, 0
     -- a framework the inputs cannot read is named and skipped under --all (the oracle's cmd_input_all: "a framework the inputs
-    -- cannot read is named in the scope, not hidden"); a single --framework run fails with the error
-    local unreadable = {}
+    -- cannot read is named in the scope, not hidden"); a single --framework run fails with the error. A skip the ledger does not
+    -- name fails the run: the known skips are the committed ones, and a new one is a regression.
+    local unreadable, unknown = {}, {}
     for _, fw in ipairs(targets) do
         if surface.has_ledger(args.coordination, surface.ledger_6_1_3(), fw) then
             local rows, differences, conflicting
@@ -471,6 +494,9 @@ function run(args)
                 if failure then
                     local first = string.match(tostring(failure), "^[^\n]*") or ""
                     table.insert(unreadable, string.format("%s (%s)", fw, string.sub(first, 1, 80)))
+                    if known_skips[fw] == nil then
+                        table.insert(unknown, fw)
+                    end
                     print(string.format("input %s: skipped: %s", fw, first))
                     goto continue
                 end
@@ -488,9 +514,16 @@ function run(args)
     if args.all then
         print(string.format("input --all: %d built, %d skipped (%s), %d without a ledger", written, #unreadable,
             table.concat(unreadable, ", "), without_ledger))
+        if #unknown > 0 then
+            print(string.format("input --all: %d skipped framework(s) are not on the skip ledger (spec/input-skips.tsv): %s",
+                #unknown, table.concat(unknown, ", ")))
+        end
     else
         print(string.format("input: %d record(s) written, %d framework(s) without a ledger", written, without_ledger))
     end
-    -- a run that wrote nothing (a --framework with no ledger) checked nothing, and is not a pass
+    -- a skip the ledger does not name fails the run; so does a run that wrote nothing (a --framework with no ledger checked nothing)
+    if #unknown > 0 then
+        return 1
+    end
     return written > 0 and 0 or 1
 end
