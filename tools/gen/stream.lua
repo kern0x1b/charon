@@ -8,6 +8,13 @@ import("core.base.bytes")
 import("core.base.process")
 
 local SENTINEL = "\127END "
+-- The first line the wrapper prints is the program's process id: the program is started by an exec in a shell that prints its own id
+-- first, so the id is the program's own and it is known before the program writes anything. An error path kills the program and what
+-- it started by that id (kill_tree): a kill of the wrapper alone leaves them running (measured: an orphaned `sleep` outlived a raising
+-- callback, review r3 G6).
+local PID_LINE = "\127PID "
+local KILL_CHECKS = 20
+local KILL_WAIT = 50
 local CHUNK = 1 << 20
 -- The most bytes of standard error kept: the last ones, when a program writes more.
 local ERROR_LIMIT = 1 << 20
@@ -25,10 +32,56 @@ local STALL_LIMIT = 600000
 local DRAIN_WAIT = 10
 local WAIT_ERRORS = 100
 
+-- Every process of the system: pid -> {ppid, state}, from one ps call.
+local function processes()
+    local all = {}
+    for line in string.gmatch(os.iorunv("ps", {"-axo", "pid=,ppid=,state="}), "[^\n]+") do
+        local pid, ppid, state = string.match(line, "^%s*(%d+)%s+(%d+)%s+(%S+)")
+        if pid then
+            all[pid] = {ppid = ppid, state = state}
+        end
+    end
+    return all
+end
+
+-- Kills the process root and every process it started, then waits until none of them runs (a zombie has exited). Raises when one
+-- still runs after KILL_CHECKS checks.
+local function kill_tree(root)
+    local all = processes()
+    local ids, queue = {}, {root}
+    while #queue > 0 do
+        local id = table.remove(queue)
+        table.insert(ids, id)
+        for other, info in pairs(all) do
+            if info.ppid == id then
+                table.insert(queue, other)
+            end
+        end
+    end
+    os.execv("kill", table.join({"-KILL"}, ids), {try = true})
+    local left = {}
+    for _ = 1, KILL_CHECKS do
+        left = {}
+        local now = processes()
+        for _, id in ipairs(ids) do
+            if now[id] and string.sub(now[id].state, 1, 1) ~= "Z" then
+                table.insert(left, id)
+            end
+        end
+        if #left == 0 then
+            return
+        end
+        os.sleep(KILL_WAIT)
+    end
+    raise("processes still running after the kill: " .. table.concat(left, " "))
+end
+
 -- The shared loop: calls each(line) for every stdout line in order, and returns the exit status and the standard error (empty
 -- unless want_err: without it, the program's stderr goes to ours).
 local function drive(program, args, each, want_err)
-    local command = {"-c", '"$@"; printf "\\177END %d\\n" $?', "sh", program}
+    -- The wrapper runs the program under a shell that prints its own process id, then execs the program (so the id is the program's);
+    -- the wrapper waits for the program and prints the sentinel with its exit status.
+    local command = {"-c", 'sh -c \'printf "\\177PID %d\\n" $$; exec "$0" "$@"\' "$@" <&0 & wait $! 2>/dev/null; printf "\\177END %d\\n" $?', "sh", program}
     for _, arg in ipairs(args) do
         table.insert(command, arg)
     end
@@ -47,6 +100,7 @@ local function drive(program, args, each, want_err)
     end
     local buff, ebuff = bytes(CHUNK), bytes(CHUNK)
     local carry, status = "", nil
+    local program_pid = nil
     local errors = {}
     -- Reads what the program has written to its stderr so far (a read that finds nothing returns 0, and ends the read).
     local function read_errors()
@@ -66,50 +120,99 @@ local function drive(program, args, each, want_err)
     -- wait, not an exit: it is retried up to WAIT_ERRORS times.
     local exited, drained, wait_errors = false, 0, 0
     local last_byte = os.mclock()
-    while not status do
-        read_errors()
-        local n = rpipe:read(buff, CHUNK)
-        if n > 0 then
-            drained = 0
-            last_byte = os.mclock()
-            local text = carry .. buff:str(1, n)
-            local pos = 1
-            while not status do
-                local newline = string.find(text, "\n", pos, true)
-                if not newline then
-                    break
+    -- An error on the read path (a callback that raises, an assert, a pipe that fails) stops the program and the wrapper, and closes
+    -- the pipes, before the error goes on (review r3 G6): a stream that raised leaves no program running. A kill that fails too is
+    -- named with the error. The program is killed first, by its id: the wrapper's exit would leave it to launchd.
+    local function stop(cause)
+        local kill_errors = {}
+        try {
+            function()
+                if program_pid then
+                    kill_tree(tostring(program_pid))
                 end
-                local line = string.sub(text, pos, newline - 1)
-                if string.sub(line, 1, #SENTINEL) == SENTINEL then
-                    status = tonumber(string.sub(line, #SENTINEL + 1))
-                else
-                    each(line)
+            end,
+            catch {
+                function(e)
+                    table.insert(kill_errors, "killing " .. program .. " failed: " .. tostring(e))
                 end
-                pos = newline + 1
-            end
-            carry = string.sub(text, pos)
-        elseif n == 0 then
-            assert(os.mclock() - last_byte < STALL_LIMIT, "no output from " .. program .. " for ten minutes")
-            if exited then
-                drained = drained + 1
-                assert(drained <= DRAIN_READS, "the program ended without its sentinel: " .. program)
-                rpipe:wait(pipe.EV_READ, DRAIN_WAIT)
-            else
-                local result = child:wait(CHILD_CHECK)
-                if result == 1 then
-                    exited = true
-                elseif result == -1 then
-                    wait_errors = wait_errors + 1
-                    assert(wait_errors <= WAIT_ERRORS, "cannot observe the exit of " .. program)
-                    rpipe:wait(pipe.EV_READ, DRAIN_WAIT)
-                else
-                    rpipe:wait(pipe.EV_READ, 100)
+            }
+        }
+        try {
+            function()
+                child:kill()
+            end,
+            catch {
+                function(e)
+                    table.insert(kill_errors, "killing the wrapper of " .. program .. " failed: " .. tostring(e))
                 end
-            end
-        else
-            error("pipe read failed: " .. program)
+            }
+        }
+        rpipe:close()
+        if erpipe then
+            erpipe:close()
         end
+        raise(tostring(cause) .. (#kill_errors > 0 and ("; " .. table.concat(kill_errors, "; ")) or ""))
     end
+    try {
+        function()
+            while not status do
+                read_errors()
+                local n = rpipe:read(buff, CHUNK)
+                if n > 0 then
+                    drained = 0
+                    last_byte = os.mclock()
+                    local text = carry .. buff:str(1, n)
+                    local pos = 1
+                    while not status do
+                        local newline = string.find(text, "\n", pos, true)
+                        if not newline then
+                            break
+                        end
+                        local line = string.sub(text, pos, newline - 1)
+                        local at, _, digits = string.find(line, SENTINEL .. "(%d+)$")
+                        if at then
+                            -- A program whose last line has no line feed leaves that text in front of the sentinel: it is passed on.
+                            if at > 1 then
+                                each(string.sub(line, 1, at - 1))
+                            end
+                            status = tonumber(digits)
+                        elseif string.match(line, "^" .. PID_LINE .. "%d+$") then
+                            program_pid = tonumber(string.sub(line, #PID_LINE + 1))
+                        else
+                            each(line)
+                        end
+                        pos = newline + 1
+                    end
+                    carry = string.sub(text, pos)
+                elseif n == 0 then
+                    assert(os.mclock() - last_byte < STALL_LIMIT, "no output from " .. program .. " for ten minutes")
+                    if exited then
+                        drained = drained + 1
+                        assert(drained <= DRAIN_READS, "the program ended without its sentinel: " .. program)
+                        rpipe:wait(pipe.EV_READ, DRAIN_WAIT)
+                    else
+                        local result = child:wait(CHILD_CHECK)
+                        if result == 1 then
+                            exited = true
+                        elseif result == -1 then
+                            wait_errors = wait_errors + 1
+                            assert(wait_errors <= WAIT_ERRORS, "cannot observe the exit of " .. program)
+                            rpipe:wait(pipe.EV_READ, DRAIN_WAIT)
+                        else
+                            rpipe:wait(pipe.EV_READ, 100)
+                        end
+                    end
+                else
+                    raise("pipe read failed: " .. program)
+                end
+            end
+        end,
+        catch {
+            function(e)
+                stop(e)
+            end
+        }
+    }
     -- The sentinel comes after the program exited, so everything it wrote to stderr is in the pipe now.
     read_errors()
     rpipe:close()
