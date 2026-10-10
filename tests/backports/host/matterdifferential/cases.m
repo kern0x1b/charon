@@ -115,6 +115,18 @@ int main(int argc, const char *argv[])
         //                                                         other one. Not a defect.
         //   system-only                            not carried  it arrived after the SDK the port
         //                                                         compiles against. Not a defect.
+        //   port-only, and the port's header      port storage  the `...Values` table and its setter that
+        //   declares it (CHARON_STORAGE)                        the port's own header declares for the
+        //                                                         object's table. No SDK declares them, so the
+        //                                                         contract cannot list them. Named, not failed.
+        NSMutableSet *storage = [NSMutableSet set];
+        const char *storagePath = getenv("CHARON_STORAGE");
+        if (storagePath) {
+            NSString *text = [NSString stringWithContentsOfFile:@(storagePath) encoding:NSUTF8StringEncoding error:NULL];
+            for (NSString *line in [text componentsSeparatedByString:@"\n"]) {
+                if (line.length) [storage addObject:line];
+            }
+        }
         NSMutableSet *contract = [NSMutableSet set];
         const char *contractPath = getenv("CHARON_CONTRACT");
         if (contractPath) {
@@ -140,12 +152,15 @@ int main(int argc, const char *argv[])
         printf("in the contract, not in the port\t%lu\n", (unsigned long)dropped.count);
         printf("port-only, shape differs\t%lu\n", (unsigned long)shapeDiffers.count);
         printf("system-only, not carried\t%lu\n", (unsigned long)onlySystem.count);
+        NSUInteger storageNamed = 0;
         for (NSString *name in [invented.allObjects sortedArrayUsingSelector:@selector(compare:)]) {
             // A name beginning with a dot is a runtime artefact of the aliasing, not a member.
             if ([name hasPrefix:@"."]) { printf("member\tignored artefact\t%s\n", name.UTF8String); continue; }
+            if ([storage containsObject:name]) { printf("member\tport storage\t%s\n", name.UTF8String); storageNamed++; continue; }
             printf("member\tRED not in the contract\t%s\n", name.UTF8String);
             failures++;
         }
+        printf("port storage, declared by the port's header, not in the contract\t%lu\n", (unsigned long)storageNamed);
         for (NSString *name in [dropped.allObjects sortedArrayUsingSelector:@selector(compare:)]) {
             printf("member\tRED dropped from the port\t%s\n", name.UTF8String);
             failures++;

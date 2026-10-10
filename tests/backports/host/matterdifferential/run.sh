@@ -5,9 +5,9 @@
 # port's generated file is compiled for the host with the cluster's name aliased onto it, so ONE program
 # holds both the system's class and the port's, and neither can answer for the other.
 #
-# Only the clusters whose objects compile are in scope, and the list is the compile's own: run after the
-# library flags, over what compiled. A cluster whose object does not compile is not checked, because a
-# check against a class that does not build is a check of nothing.
+# Every cluster the generator wrote is built, and must build, except the ones on not-built.txt with a reason: those
+# are counted as skipped, and a listed cluster that builds is stale. A check against a class that does not build is
+# a check of nothing, so a cluster that does not build and is not listed fails the run.
 #
 # What is asked of each pair is in cases.m: that both classes exist, that the two member sets agree as
 # SETS, and that a plain-data attribute round-trips on the port's side. No command, cached read,
@@ -41,6 +41,11 @@ contracts=${CONTRACTS:-$here/../matter/contracts}
 # case-insensitive volume to the runtime-spelled file, and report the port MISSING.
 list=${CLUSTER_LIST:-$source_dir/clusters-emitted.txt}
 [ -f "$list" ] || { echo "no cluster list at $list: run the generator into $source_dir first" >&2; exit 2; }
+# The clusters that do not build against the host, each with its reason (not-built.txt beside this script). A listed cluster
+# that builds is stale, and a listed cluster that does not build is skipped; the entries are counted and the count is pinned.
+skip_file=$here/not-built.txt
+[ -f "$skip_file" ] || { echo "no skip list at $skip_file" >&2; exit 2; }
+skip_listed=$(awk 'NF && $1 !~ /^#/ { n++ } END { print n + 0 }' "$skip_file")
 
 # Every excluded name, and whether it resolves to a file the generator should not have written. On a
 # case-insensitive volume an excluded name and the runtime spelling are the same path, so "is there a file"
@@ -124,6 +129,8 @@ verdicts="$build/verdicts.txt"
 : > "$verdicts"
 checked=0
 not_built=0
+skipped=0
+stale=0
 differing=0
 no_source=0
 for cluster in $(cat "$list"); do
@@ -135,18 +142,36 @@ for cluster in $(cat "$list"); do
         no_source=$((no_source + 1))
         continue
     fi
-    # Built from a COPY, as behaviour.sh builds it: the object's own CharonMatterTypes.h is replaced by an empty header,
-    # because the host SDK declares every class that header would, and an alias that imports the real one is a
-    # duplicate interface. A superclass the object reaches (an alias's, through CharonMatterQueueStorage.h) is built
-    # with it and aliased the same way, or the link has no offset to resolve.
+    # Built from a COPY, as behaviour.sh builds it. A superclass the object reaches (an alias's, through
+    # CharonMatterQueueStorage.h) is built with it and aliased the same way, or the link has no offset to resolve.
     work="$build/src-$cluster"
     mkdir -p "$work"
     cp "$source" "$work/"
     [ -f "$source_dir/CharonMatterQueueStorage.h" ] && cp "$source_dir/CharonMatterQueueStorage.h" "$work/"
-    printf '// the host SDK declares every class this header would declare for the library SDK\n' > "$work/CharonMatterTypes.h"
+    supers=$(sed -n 's/.*((\([A-Za-z0-9_]*\) \*)self)->_charon_queue.*/\1/p' "$source" | sort -u)
+    # The header the object is built with is the port's own CharonMatterTypes.h, cut to this class and its superclasses:
+    # the preamble (the guard, the imports, the nullability region) and, for each of those classes the header declares,
+    # its properties as a class EXTENSION, `@interface NAME ()`. The host SDK declares the classes themselves, and the
+    # header's own `@interface NAME : Super` blocks would be a second declaration of each: the compiler's "duplicate
+    # interface definition", which is what the 79 port-only blocks did when the whole header was copied in.
+    keep="$cluster $(printf '%s\n' $supers | tr '\n' ' ')"
+    awk -v keep="$keep" '
+        BEGIN { n = split(keep, k, " "); for (i = 1; i <= n; i++) want[k[i]] = 1 }
+        !seen && /^@interface / { seen = 1 }
+        !seen { print; next }
+        /^@interface [A-Za-z0-9_]+ : / { blk = ($2 in want); if (blk) { print "@interface " $2 " ()" }; next }
+        blk && /^@end/ { print; blk = 0; next }
+        blk && /^@property/ { print; next }
+        blk { next }
+        /^NS_ASSUME_NONNULL_END|^#endif/ { print }' "$source_dir/CharonMatterTypes.h" > "$work/CharonMatterTypes.h"
+    # The port's own storage, by name: the `...Values` properties the header declares for the object's table (no SDK declares them).
+    # Each is its getter and its setter, which is what the class answers for it.
+    sed -n 's/^@property .*[ *]\([A-Za-z0-9_]*Values\);$/\1/p' "$work/CharonMatterTypes.h" \
+        | awk '{ print; print "set" toupper(substr($0, 1, 1)) substr($0, 2) ":" }' > "$build/storage-$cluster.txt"
+    listed=$(awk -v c="$cluster" '$1 == c { print; exit }' "$skip_file")
     aliases="-D$cluster=CharonPort$cluster"
     sources="$work/CharonMatter$cluster.m"
-    for each in $(sed -n 's/.*((\([A-Za-z0-9_]*\) \*)self)->_charon_queue.*/\1/p' "$source" | sort -u); do
+    for each in $supers; do
         cp "$source_dir/CharonMatter$each.m" "$work/"
         aliases="$aliases -D$each=CharonPort$each"
         sources="$sources $work/CharonMatter$each.m"
@@ -157,15 +182,27 @@ for cluster in $(cat "$list"); do
         $aliases "-DCHARN_PORT_CLUSTER=\"CharonPort$cluster\"" -I"$work" \
         "$here/cases.m" $sources -framework Foundation -framework Matter \
         -o "$build/$name" 2> "$build/$name.log"; then
+        if [ -n "$listed" ]; then
+            echo "skipped    $cluster  $(echo "$listed" | awk '{ $1 = ""; sub(/^ +/, ""); print }')"
+            echo "skipped $cluster" >> "$verdicts"
+            skipped=$((skipped + 1))
+            continue
+        fi
         echo "differential did not build for $cluster:" >&2
         tail -10 "$build/$name.log" >&2
         echo "not-built $cluster" >> "$verdicts"
         not_built=$((not_built + 1))
         continue
     fi
+    if [ -n "$listed" ]; then
+        echo "STALE      $cluster  builds against the host now: take it off $skip_file" >&2
+        echo "stale $cluster" >> "$verdicts"
+        stale=$((stale + 1))
+        continue
+    fi
     checked=$((checked + 1))
     if ! CHARON_DECLARED="$build/declared.tsv" CHARON_CONTRACT="$contracts/CharonMatter$cluster.m.contract" \
-        "$build/$name" "$cluster" > "$build/$name.out" 2>&1; then
+        CHARON_STORAGE="$build/storage-$cluster.txt" "$build/$name" "$cluster" > "$build/$name.out" 2>&1; then
         differing=$((differing + 1))
         echo "different $cluster" >> "$verdicts"
         echo "DIFFERENT  $cluster"
@@ -188,5 +225,11 @@ log_no_source=$(awk '/^no-source / { n++ } END { print n + 0 }' "$verdicts")
 [ "$log_same" -eq "$((checked - differing))" ] || { echo "SUMMARY DISAGREES: checked $checked less differing $differing is not same $log_same" >&2; exit 1; }
 [ "$log_not_built" -eq "$not_built" ] || { echo "SUMMARY DISAGREES: not built $not_built, the log has $log_not_built" >&2; exit 1; }
 [ "$log_no_source" -eq "$no_source" ] || { echo "SUMMARY DISAGREES: no source $no_source, the log has $log_no_source" >&2; exit 1; }
-echo "clusters listed: $((checked + not_built + no_source)), no generated source: $no_source, not built: $not_built, checked: $checked, differing: $differing   (source: $source_dir)"
-[ "$differing" -eq 0 ] && [ "$not_built" -eq 0 ]
+log_skipped=$(awk '/^skipped / { n++ } END { print n + 0 }' "$verdicts")
+log_stale=$(awk '/^stale / { n++ } END { print n + 0 }' "$verdicts")
+[ "$log_skipped" -eq "$skipped" ] || { echo "SUMMARY DISAGREES: skipped $skipped, the log has $log_skipped" >&2; exit 1; }
+[ "$log_stale" -eq "$stale" ] || { echo "SUMMARY DISAGREES: stale $stale, the log has $log_stale" >&2; exit 1; }
+# Every entry of the skip list is a cluster the run met and skipped: an entry the list no longer names is not counted here.
+[ "$skipped" -eq "$skip_listed" ] || { echo "the skip list has $skip_listed entries and the run skipped $skipped: a listed cluster was not met" >&2; exit 1; }
+echo "clusters listed: $((checked + not_built + skipped + stale + no_source)), no generated source: $no_source, not built: $not_built, skipped: $skipped (not-built.txt), stale: $stale, checked: $checked, differing: $differing   (source: $source_dir)"
+[ "$differing" -eq 0 ] && [ "$not_built" -eq 0 ] && [ "$stale" -eq 0 ]
