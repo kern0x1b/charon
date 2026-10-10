@@ -23,8 +23,8 @@ local function data_lines(text)
 end
 
 -- The problems and warnings of one framework, in the order the report prints them.
-local function diagnose(tree, fw)
-    local emitted = render.render(tree, fw)
+local function diagnose(tree, fw, corpus)
+    local emitted = render.render(tree, fw, corpus)
     local base = layout.gen_dir(tree, fw)
     local names = {}
     for name in pairs(emitted) do
@@ -103,7 +103,7 @@ function run(args)
     local targets = args.all and gen.frameworks(args.tree) or {args.framework}
     local failed = 0
     for _, fw in ipairs(targets) do
-        local problems, warnings, removed, new = diagnose(args.tree, fw)
+        local problems, warnings, removed, new = diagnose(args.tree, fw, args.coordination)
         for _, line in ipairs(problems) do
             print("CHECK " .. fw .. ": " .. line)
         end

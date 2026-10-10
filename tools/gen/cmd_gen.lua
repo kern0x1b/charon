@@ -9,25 +9,16 @@ local emit = import("emit", {anonymous = true})
 local digest = import("digest", {anonymous = true})
 local files = import("files", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
+local order = import("order", {anonymous = true})
 
--- The frameworks that have a committed snapshot, sorted.
+-- The frameworks that have a committed snapshot, in byte order.
 function frameworks(tree)
     local names = {}
     for _, spec in ipairs(files.glob(path.join(tree, layout.constants().SNAP_ROOT, "*", "spec." .. layout.constants().SDK_ID .. ".tsv"))) do
         table.insert(names, files.parent_name(spec))
     end
-    table.sort(names)
+    table.sort(names, order.less)
     return names
-end
-
--- The sorted names of a table's keys.
-local function names_of(map)
-    local out = {}
-    for name in pairs(map) do
-        table.insert(out, name)
-    end
-    table.sort(out)
-    return out
 end
 
 -- The declaration hash of a spec row: the hash the row records. A member's is the extractor's declhash (the canonical fields of its
@@ -46,7 +37,7 @@ function stale_constants(base, fw, emitted)
             table.insert(out, name)
         end
     end
-    table.sort(out)
+    table.sort(out, order.less)
     return out
 end
 
@@ -72,19 +63,19 @@ function member_changes(tree, fw)
             table.insert(result.removed, api)
         end
     end
-    for _, api in ipairs(names_of(current)) do
+    for _, api in ipairs(order.keys(current)) do
         if recorded[api] ~= nil and recorded[api] ~= current[api] then
             table.insert(result.changed, {api, recorded[api], current[api]})
         end
     end
-    table.sort(result.new)
-    table.sort(result.removed)
+    table.sort(result.new, order.less)
+    table.sort(result.removed, order.less)
     return result
 end
 
 local function record(tree, fw, emitted)
     local manifest = {}
-    for _, name in ipairs(names_of(emitted)) do
+    for _, name in ipairs(order.keys(emitted)) do
         table.insert(manifest, {name, digest.digest_of(emitted[name])})
     end
     emit.file(layout.manifest_path(tree, fw), tsv.table_text({"file", "sha256"}, manifest))
@@ -97,34 +88,47 @@ local function record(tree, fw, emitted)
     emit.file(layout.members_path(tree, fw), tsv.table_text({"api", "hash"}, members))
 end
 
--- Returns the exit status: 1 when a member declaration changed since the record and --record was not given.
+-- Writes one framework's generated files, and its record when --record is given.
+local function write_framework(args, fw)
+    local emitted = render.render(args.tree, fw, args.coordination)
+    local base = layout.gen_dir(args.tree, fw)
+    for _, name in ipairs(stale_constants(base, fw, emitted)) do
+        os.rm(path.join(base, name))
+    end
+    local before = emit.count()
+    local names = order.keys(emitted)
+    for _, name in ipairs(names) do
+        emit.file(path.join(base, name), emitted[name])
+    end
+    if args.record then
+        record(args.tree, fw, emitted)
+    end
+    print(string.format("gen %s: %d files in %s%s (%d written)", fw, #names, layout.constants().OUT_ROOT .. "/" .. fw,
+        args.record and " (manifest recorded)" or "", emit.count() - before))
+end
+
+-- Returns the exit status: 1 when a member declaration changed since the record and --record was not given. The refusal is decided
+-- before anything is written: a refused framework writes nothing, and a run over every framework (--all) goes on to the others and
+-- then names every refused framework in one line, so a single changed declaration does not stop the others from being written.
 function run(args)
     local targets = args.all and frameworks(args.tree) or {args.framework}
+    local refused = {}
     for _, fw in ipairs(targets) do
-        local emitted = render.render(args.tree, fw)
-        local base = layout.gen_dir(args.tree, fw)
-        for _, name in ipairs(stale_constants(base, fw, emitted)) do
-            os.rm(path.join(base, name))
-        end
-        local before = emit.count()
-        local names = names_of(emitted)
-        for _, name in ipairs(names) do
-            emit.file(path.join(base, name), emitted[name])
-        end
         local changes = member_changes(args.tree, fw)
         if changes and #changes.changed > 0 and not args.record then
             for _, change in ipairs(changes.changed) do
                 print(string.format("CHANGED %s: declaration hash %s -> %s (review the override or the stub, then gen --record)",
                     change[1], change[2], change[3]))
             end
-            print(string.format("gen %s: refused, %d member declaration(s) changed since the record", fw, #changes.changed))
-            return 1
+            print(string.format("gen %s: refused, %d member declaration(s) changed since the record; nothing written for it", fw, #changes.changed))
+            table.insert(refused, fw)
+        else
+            write_framework(args, fw)
         end
-        if args.record then
-            record(args.tree, fw, emitted)
-        end
-        print(string.format("gen %s: %d files in %s%s (%d written)", fw, #names, layout.constants().OUT_ROOT .. "/" .. fw,
-            args.record and " (manifest recorded)" or "", emit.count() - before))
+    end
+    if #refused > 0 then
+        print(string.format("gen: refused %d framework(s), nothing written for them: %s", #refused, table.concat(refused, ", ")))
+        return 1
     end
     return 0
 end

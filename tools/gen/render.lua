@@ -7,6 +7,7 @@ local releases = import("releases", {anonymous = true})
 local sources = import("sources", {anonymous = true})
 local protocols = import("protocols", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
+local order = import("order", {anonymous = true})
 
 local function sorted_by_key(list, field)
     local tagged = {}
@@ -15,7 +16,7 @@ local function sorted_by_key(list, field)
     end
     table.sort(tagged, function(a, b)
         if a.item[field] ~= b.item[field] then
-            return a.item[field] < b.item[field]
+            return order.less(a.item[field], b.item[field])
         end
         return a.at < b.at
     end)
@@ -68,7 +69,7 @@ local function readme(fw, spec, pins, stale, removed, new, by_release, release_l
         end
         counts[r.kind] = counts[r.kind] + 1
     end
-    table.sort(kinds)
+    table.sort(kinds, order.less)
     local count_text = {}
     for _, k in ipairs(kinds) do
         table.insert(count_text, string.format("%s %d", k, counts[k]))
@@ -120,8 +121,9 @@ local function release_tag(release)
     return (string.gsub(release, "%.", ""))
 end
 
--- The files the generator emits for a framework: name -> text.
-function render(tree, fw)
+-- The files the generator emits for a framework: name -> text. corpus is the coordination corpus when the command has it (nil in the
+-- build): the protocol set is then checked against the rule (protocols.generation_set).
+function render(tree, fw, corpus)
     local spec = snapshot.load(tree, fw)
     local index = snapshot.index(spec)
     local pins = snapshot.pins(tree, fw)
@@ -179,7 +181,7 @@ function render(tree, fw)
         end
     end
     local api_names = table.move(override_order, 1, #override_order, 1, {})
-    table.sort(api_names)
+    table.sort(api_names, order.less)
     for _, api in ipairs(api_names) do
         local found = overrides[api]
         if index[api] == nil and found.entry.kind ~= "class" and string.sub(api, 1, 2) ~= "-[" then
@@ -212,7 +214,7 @@ function render(tree, fw)
     files["rows.tsv"] = tsv.table_text({"framework", "kind", "api", "introduced", "minimum", "maximum", "status", "effect", "facts",
                                         "source", "owner", "declhash"}, index_rows)
 
-    for name, text in pairs(protocols.protocol_files(tree, fw)) do
+    for name, text in pairs(protocols.protocol_files(tree, fw, corpus)) do
         files[name] = text
     end
     return files

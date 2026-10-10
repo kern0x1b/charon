@@ -5,14 +5,67 @@ local layout = import("layout", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local files = import("files", {anonymous = true})
 local releases = import("releases", {anonymous = true})
+local surface = import("surface", {anonymous = true})
+local order = import("order", {anonymous = true})
 
 local GENERATED_STATUS = {["sdk16 body"] = true, transcribed = true}
 local EM_DASH = "\226\128\148"
+-- The release whose ledger says which members the 6.1.3 release lacks.
+local LEDGER_RELEASE = "ledger-w45"
 
--- The objc protocols whose objects are generated. The decision is the protocols command's, which is not ported yet; until it
--- is, no protocol is named, and that is what the oracle does for all 281 frameworks (the set is empty everywhere, measured).
-function generation_set(tree, fw)
-    return {}
+-- The rule of generation_set in tools/gen.py: the objc protocols missing at 6.1.3 (a row the ledger lists with a status other than
+-- header-ok, which the lift covers) and named by no registry row of the framework. It reads the coordination corpus (the surface
+-- table and the ledgers), which lives outside the repository.
+function rule_set(tree, fw, corpus)
+    local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
+    local registry = surface.registry_entries(tree, fw)
+    local out = {}
+    for _, row in pairs(surface.surface_rows(corpus, fw)) do
+        if row.kind == "protocol" and row.lang == "objc" and registry[surface.canonical_member(row.api, "protocol")] == nil then
+            local status = led6[surface.key("protocol", row.api)]
+            if status ~= nil and status ~= "header-ok" then
+                out[row.api] = true
+            end
+        end
+    end
+    return out
+end
+
+-- The reviewed set of a framework: the protocols named by its record (protocol-sets/<F>.tsv), and the empty set without a record.
+local function recorded_set(tree, fw)
+    local out = {}
+    local text = files.read_text(layout.protocol_set_path(tree, fw))
+    if text then
+        for _, row in ipairs(tsv.records(text)) do
+            out[row.protocol] = true
+        end
+    end
+    return out
+end
+
+-- The objc protocols whose objects this generator emits. Without the coordination corpus (corpus nil: the build, a clean checkout)
+-- the set is the reviewed record. With it, the rule is worked out from the corpus and must equal the record: a difference names the
+-- protocols on each side, so a change of the rule or of the corpus is reviewed through the record, never silently emitted.
+function generation_set(tree, fw, corpus)
+    local recorded = recorded_set(tree, fw)
+    if corpus == nil then
+        return recorded
+    end
+    local computed = rule_set(tree, fw, corpus)
+    local only_rule, only_record = {}, {}
+    for name in pairs(computed) do
+        if not recorded[name] then table.insert(only_rule, name) end
+    end
+    for name in pairs(recorded) do
+        if not computed[name] then table.insert(only_record, name) end
+    end
+    if #only_rule > 0 or #only_record > 0 then
+        table.sort(only_rule, order.less)
+        table.sort(only_record, order.less)
+        raise(string.format("the protocol set of %s differs from its record: the rule gives [%s], the record has [%s]; review the record",
+            fw, table.concat(only_rule, ","), table.concat(only_record, ",")))
+    end
+    return computed
 end
 
 -- name -> the protocol's record in the snapshot (its release, status, reasons, bases, and members), or none when the framework
@@ -45,9 +98,9 @@ end
 
 -- The generated protocol files of a framework: name -> text. One source per release a protocol arrived in: each source names
 -- every protocol of its release, so clang emits its protocol object there.
-function protocol_files(tree, fw)
+function protocol_files(tree, fw, corpus)
     local protocols = records(tree, fw)
-    local wanted = generation_set(tree, fw)
+    local wanted = generation_set(tree, fw, corpus)
     local generated, by_release, release_list = {}, {}, {}
     local any = false
     for name, record in pairs(protocols) do
@@ -75,7 +128,7 @@ function protocol_files(tree, fw)
     end
     for _, release in ipairs(releases.sorted(release_list)) do
         local names = table.move(by_release[release], 1, #by_release[release], 1, {})
-        table.sort(names)
+        table.sort(names, order.less)
         local tag = string.gsub(release, "%.", "")
         local body = {layout.constants().MARK}
         local sdk16 = false
