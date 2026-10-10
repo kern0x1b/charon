@@ -2710,9 +2710,24 @@ def cmd_behaviour(args):
     return 0
 
 
+def cmd_headers(args):
+    """The declaration facts of one framework's iOS header parse, one tab-separated line per fact, kind first: member (class,
+    kind, selector or name, alias, declaration, availability), declared (a typedef, class or protocol name), typedef (name and
+    the text it is defined as). The Lua generator reads them through tools/gen/headers.lua (design-spec-driven.md D3)."""
+    fw = args.framework
+    text = ios_text(header_text(args.sdk, fw))[0]
+    for cls, kind, api, alias, decl, avail in members_of(text):
+        print("\t".join(["member", cls, kind, api, alias or "-", decl.replace("\t", " "), avail or "-"]))
+    for name in sorted(declared_names(args.sdk, fw)):
+        print("\t".join(["declared", name]))
+    for name, definition in sorted(type_index(args.sdk, fw).items()):
+        print("\t".join(["typedef", name, definition.replace("\t", " ")]))
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("command", choices=["input", "pin", "gen", "check", "trace", "diff", "sources", "classify", "doc", "scope", "protocols", "functions", "objc", "swift", "behaviour"])
+    parser.add_argument("command", choices=["input", "pin", "gen", "check", "trace", "diff", "sources", "classify", "doc", "scope", "protocols", "functions", "objc", "swift", "behaviour", "headers"])
     parser.add_argument("--tree", required=True)
     parser.add_argument("--framework")
     parser.add_argument("--ledger")
@@ -2770,6 +2785,8 @@ def main():
         return cmd_swift(args)
     if args.command == "behaviour":
         return cmd_behaviour(args)
+    if args.command == "headers":
+        return cmd_headers(args)
     return cmd_diff(args)
 
 

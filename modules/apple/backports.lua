@@ -774,8 +774,8 @@ local function sections_of(file)
     return names
 end
 
--- The generated layer (tools/gen.py) is built, not committed. The snapshot it reads is committed under spec/; the generator
--- writes its output into .gen/ (gitignored) before anything reads that folder, so a clean checkout needs no manual step.
+-- The generated layer (tools/gen.lua, run under xmake) is built, not committed. The snapshot it reads is committed under spec/;
+-- the generator writes its output into .gen/ (gitignored) before anything reads that folder, so a clean checkout needs no manual step.
 -- The generator is run once per process and per package root.
 local generated = {}
 function generate(root)
@@ -788,7 +788,7 @@ function generate(root)
         return
     end
     local tree = path.absolute(path.join(root, "..", "..", ".."))
-    os.runv("python3", {path.join(tree, "tools", "gen.py"), "gen", "--tree", tree, "--all"})
+    os.runv(os.programfile(), {"l", path.join(tree, "tools", "gen.lua"), "gen", "--tree", tree, "--all"})
 end
 
 function sources(root, library)
