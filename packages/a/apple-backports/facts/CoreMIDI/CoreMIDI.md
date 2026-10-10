@@ -146,3 +146,45 @@ Alternatives, and why each lost:
 - The owned table's lock is held for the search and the reference alone. The read of the object's stamp, a call into the release
   that may be a round trip to the server, is made after the lock is let go, so a send on another thread (to any endpoint) does not
   wait for it.
+
+## What the hot paths cost on a 4S (2026-10-10)
+
+Counted, not timed: the library makes these calls, and the counts are of calls, which a host run measures exactly
+(tests/backports/host/coremidi/allocations.m, run by run.sh; the run folder keeps allocations-start.out, allocations-before.out
+and allocations-after.out). No time is stated: the host is not an A5, and the iPad 2 (A5) that could time them was not used for
+this.
+
+| Operation | malloc, calloc and realloc calls of the library, at the start of the band / before this change / after |
+| --- | --- |
+| a read callback of three short packets from a source the port has seen | 2 / 2 / 0 |
+| the first list of a new source (its parser is made) | 3 / 3 / 1 |
+| a read callback of sixty packets (does not fit the stack storage) | 2 / 2 / 1 |
+| a short 2.0 list sent to a release endpoint | 2 / 2 / 0 |
+| the first send to an endpoint (its selection state is made) | 3 / 3 / 1 |
+| a list sent to a destination the library made (the delivery's one allocation) | 1 / 1 / 1, and one property read each |
+
+- The read callback and the send build their list, their words and their bytes in stack storage (512 bytes for the list, 128
+  bytes, 32 words), and move to the heap only when a list does not fit it. The delivery to the library's own destination must
+  outlive the call, so it is one heap allocation (the port reference and the list), and the queue's own continuation, which
+  libdispatch keeps, is not counted. The copy of the block a port or destination keeps is the framework's and is made once when
+  the object is made.
+- CharonMIDIUp32From7 is written in 32-bit arithmetic: `0x80000000 + d * 34087042 + (2d + 63) / 126` with `d = x - 64`, which is
+  the 64-bit rule because 2^32 = 126 * 34087042 + 4. armv7 -O2 of CharonCoreMIDI.c at iOS 6.0 against the 16.4 SDK had `___udivdi3`
+  among its undefined symbols (a libgcc call, with no hardware 64-bit divide on the A5) and has not now (core-undefined-before.txt
+  and core-undefined-after.txt). No object of the library calls a 64-bit divide or modulo (scanned: every CoreMIDI source,
+  nm -u, no `divdi`, `moddi`, `udivmod`). differential.m checks the new rule against the 64-bit rule at all 128 inputs, and the
+  oracle rows (batch-up.txt) check it against the measured macOS answers at all 128.
+- CoreBluetooth is not linked. MIDIBluetooth16.m's undefined symbols had `_OBJC_CLASS_$_CBCentralManager` and
+  `_OBJC_CLASS_$_CBUUID`, and have none now: the framework is opened with dlopen the first time the central is used, and the
+  classes are found with objc_getClass. The line that linked it is gone from modules/apple/backports.lua. A process that never
+  activates the central (and the two driver functions are not exported, so none does) loads no CoreBluetooth image for this
+  library. The release's own libraries may have loaded it already; this library no longer causes it.
+- The sweep of the owned table is incremental. A creation reads a window of 8 rows of the owned table and 8 selection states
+  (charon_sweep, CharonMIDIPorts.m), from where the last creation stopped, with no lock held during the reads. So a creation
+  makes at most 16 property reads however many objects the process holds, where it made one for every row and every state;
+  a table of N rows is walked in N / 8 creations. The cost of that is a delay: a stale row's block is kept for up to N / 8
+  creations, and not released at the next one. It is a bounded delay in memory and never an answer: a send checks its own
+  destination when it is made. The release's removal notification (the other way to learn of a dispose, above) was not used:
+  it covers destinations and sources only, it needs a client of the library's own and a running main run loop, and it brings
+  every setup change of the process to that client.
+- A creation that finds a sweep running on another thread does not wait for it: the next creation looks at the window.

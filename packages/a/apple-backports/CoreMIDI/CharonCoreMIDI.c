@@ -13,13 +13,22 @@ void CharonMIDIWordsAppend(CharonMIDIWords *out, UInt32 word)
         return;
     if (out->count == out->capacity) {
         size_t capacity = out->capacity ? charon_grown_capacity(out->capacity, sizeof(UInt32)) : 32;
-        UInt32 *grown = capacity ? realloc(out->words, capacity * sizeof(UInt32)) : NULL;
+        UInt32 *grown = NULL;
+        if (capacity && out->heap) {
+            grown = realloc(out->words, capacity * sizeof(UInt32));
+        } else if (capacity) {
+            // The storage the caller gave is outgrown: the words move to the heap, once.
+            grown = malloc(capacity * sizeof(UInt32));
+            if (grown && out->count)
+                memcpy(grown, out->words, out->count * sizeof(UInt32));
+        }
         if (!grown) {
             out->failed = 1;
             return;
         }
         out->words = grown;
         out->capacity = capacity;
+        out->heap = 1;
     }
     out->words[out->count++] = word;
 }
@@ -30,13 +39,21 @@ static void charon_bytes_append(CharonMIDIBytes *out, uint8_t byte)
         return;
     if (out->count == out->capacity) {
         size_t capacity = out->capacity ? charon_grown_capacity(out->capacity, 1) : 64;
-        uint8_t *grown = capacity ? realloc(out->bytes, capacity) : NULL;
+        uint8_t *grown = NULL;
+        if (capacity && out->heap) {
+            grown = realloc(out->bytes, capacity);
+        } else if (capacity) {
+            grown = malloc(capacity);
+            if (grown && out->count)
+                memcpy(grown, out->bytes, out->count);
+        }
         if (!grown) {
             out->failed = 1;
             return;
         }
         out->bytes = grown;
         out->capacity = capacity;
+        out->heap = 1;
     }
     out->bytes[out->count++] = byte;
 }
@@ -56,9 +73,12 @@ UInt32 CharonMIDIUp32From7(UInt32 value)
 {
     if (value <= 64)
         return value << 25;
-    uint64_t above = value - 64;
-    uint64_t half = 0x80000000ull;
-    return (UInt32)(half + (2 * above * (half - 1) + 63) / 126);
+    // The centre plus above * (2^31 - 1) / 63, rounded as the measurements round it, in 32-bit arithmetic only (a 64-bit
+    // divide is a libgcc call on armv7). With above in 1..63, 2 * above * (2^31 - 1) + 63 is above * 126 * 34087042 +
+    // 2 * above + 63, because 2^32 = 126 * 34087042 + 4; so the quotient by 126 is above * 34087042 + (2 * above + 63) / 126,
+    // where the last term is 0 for above below 32 and 1 from 32. The largest value, above 63, is 0xFFFFFFFF.
+    UInt32 above = value - 64; // value is a MIDI data byte, 0 to 127
+    return 0x80000000u + above * 34087042u + (2 * above + 63) / 126;
 }
 
 UInt32 CharonMIDIUp32From14(UInt32 value)

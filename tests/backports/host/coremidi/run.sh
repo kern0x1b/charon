@@ -49,7 +49,7 @@ xcrun clang $sanitize -c -Wall -Werror -I"$CORE" "$CORE/CharonCoreMIDI.c" -o "$b
 xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -c \
     "$here/differential-ports.m" -o "$build/differential-ports.o"
 xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -I"$here" -I"$here/oracle" $renames \
-    "$here/differential.m" "$here/differential-ump.m" "$build/differential-ports.o" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -framework CoreBluetooth -o "$build/differential"
+    "$here/differential.m" "$here/differential-ump.m" "$build/differential-ports.o" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -o "$build/differential"
 "$build/differential" "$here/oracle" > "$build/log" 2>&1 && result=0 || result=$?
 awk '!/^ok /' "$build/log"
 echo "log=$build/log"
@@ -79,7 +79,19 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations \
     "$here/staleness.m" "$CORE/CharonMIDIPorts.m" "$build/CharonCoreMIDI.o" -framework Foundation -framework CoreMIDI -o "$build/staleness"
 "$build/staleness" > "$build/staleness.log" 2>&1 && stale=0 || stale=$?
 cat "$build/staleness.log"
-for step in "$owner" "$entity" "$stale"; do
+# The allocations and property reads of the hot paths (allocations.m): the library's own malloc family is renamed to counting
+# wrappers in the two files that make the paths, and the release's calls the paths make are stand-ins.
+counted="-Dmalloc=charon_count_malloc -Dcalloc=charon_count_calloc -Drealloc=charon_count_realloc"
+standins="-DMIDIInputPortCreate=charon_test_MIDIInputPortCreate -DMIDIDestinationCreate=charon_test_MIDIDestinationCreate \
+    -DMIDIObjectGetIntegerProperty=charon_test_MIDIObjectGetIntegerProperty -DMIDIObjectSetIntegerProperty=charon_test_MIDIObjectSetIntegerProperty \
+    -DMIDISend=charon_test_MIDISend -DMIDIReceived=charon_test_MIDIReceived"
+xcrun clang $sanitize -c -Wall -Werror -I"$CORE" $counted "$CORE/CharonCoreMIDI.c" -o "$build/counted-core.o"
+xcrun clang $sanitize -c -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" $counted $standins "$CORE/CharonMIDIPorts.m" -o "$build/counted-ports.o"
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" "$here/allocations.m" "$build/counted-ports.o" \
+    "$build/counted-core.o" -framework Foundation -framework CoreMIDI -o "$build/allocations"
+"$build/allocations" > "$build/allocations.log" 2>&1 && counted_result=0 || counted_result=$?
+cat "$build/allocations.log"
+for step in "$owner" "$entity" "$stale" "$counted_result"; do
     if [ "$result" -eq 0 ]; then result=$step; fi
 done
 exit $result

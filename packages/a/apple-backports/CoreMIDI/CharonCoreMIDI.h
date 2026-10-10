@@ -14,6 +14,7 @@
 #include <TargetConditionals.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 // The error codes of the Carbon headers (MacErrors.h), which the iOS SDK does not declare: the values are the macOS ones.
 enum {
@@ -62,21 +63,61 @@ static inline size_t charon_grown_capacity(size_t capacity, size_t element)
 }
 
 // A growable array of UMP words, filled by the parsers below. failed is set when an allocation fails, and the
-// caller then answers with an error rather than with a partial list.
+// caller then answers with an error rather than with a partial list. A caller that has storage of its own (the stack of a
+// read callback) gives it with CharonMIDIWordsUseStorage: the array lives there until it outgrows it, and only then moves to
+// the heap (heap is set). A zeroed array is on the heap from its first word. CharonMIDIWordsRelease frees what is on the heap.
 typedef struct CharonMIDIWords {
     UInt32 *words;
     size_t count;
     size_t capacity;
     int failed;
+    int heap;
 } CharonMIDIWords;
 
-// A growable array of MIDI 1.0 bytes, filled by CharonMIDIUMPToBytes.
+// A growable array of MIDI 1.0 bytes, filled by CharonMIDIUMPToBytes, with the same storage rule.
 typedef struct CharonMIDIBytes {
     uint8_t *bytes;
     size_t count;
     size_t capacity;
     int failed;
+    int heap;
 } CharonMIDIBytes;
+
+static inline void CharonMIDIWordsUseStorage(CharonMIDIWords *out, UInt32 *storage, size_t capacity)
+{
+    out->words = storage;
+    out->count = 0;
+    out->capacity = capacity;
+    out->failed = 0;
+    out->heap = 0;
+}
+
+static inline void CharonMIDIWordsRelease(CharonMIDIWords *out)
+{
+    if (out->heap)
+        free(out->words);
+    out->words = NULL;
+    out->heap = 0;
+    out->capacity = 0;
+}
+
+static inline void CharonMIDIBytesUseStorage(CharonMIDIBytes *out, uint8_t *storage, size_t capacity)
+{
+    out->bytes = storage;
+    out->count = 0;
+    out->capacity = capacity;
+    out->failed = 0;
+    out->heap = 0;
+}
+
+static inline void CharonMIDIBytesRelease(CharonMIDIBytes *out)
+{
+    if (out->heap)
+        free(out->bytes);
+    out->bytes = NULL;
+    out->heap = 0;
+    out->capacity = 0;
+}
 
 // What a MIDI 1.0 byte stream carries from one packet to the next: the running status, a message whose data
 // bytes have not all arrived, and a SysEx begun with F0 that has not met its F7. A SysEx is sent as 6-byte

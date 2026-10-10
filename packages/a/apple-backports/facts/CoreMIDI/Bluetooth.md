@@ -51,3 +51,12 @@ What is not established:
 - The 6.1.3 selectors (identifier not answered, UUID answered) are measured (tests/backports/emulate/coremidi/app/main.m).
 - The disconnect matches a device by the key CFUUIDCreateString gives on 6.1.3; the release's own UUID string for a
   peripheral is not measured against it.
+
+## CoreBluetooth is opened on first use (2026-10-10)
+
+The library does not link CoreBluetooth: the central's bodies find `CBCentralManager` and `CBUUID` by name after a dlopen of the
+framework on their first use (MIDIBluetooth16.m, charon_cb_class), and the framework is not on the library's line in
+modules/apple/backports.lua. Measured: the object's undefined symbols had the two class symbols before and have none after
+(nm -u, armv7 at iOS 6.0 against the 16.4 SDK). On the emulated 6.1.3 the framework's path opens and `CBPeripheral` is present
+(the probe of tests/backports/emulate/coremidi/app/main.m); the library's own dlopen has not run there, because the central
+has never run (see above).

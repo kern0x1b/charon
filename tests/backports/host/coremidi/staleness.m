@@ -31,7 +31,7 @@ static int gFailures;
 }
 @end
 
-#define OBJECTS 64
+#define OBJECTS 128
 typedef struct {
     int exists;          // the release knows the reference
     int hasUniqueID;     // a client and a port have none (-10835)
@@ -55,9 +55,20 @@ static int is_owner_key(CFStringRef propertyID)
 static MIDIObjectRef gHeldObject = (MIDIObjectRef)-1;
 static dispatch_semaphore_t gHeldEntered;
 static dispatch_semaphore_t gHeldRelease;
+static int gReads;
+// The same hold for the one thread that sets it: its next read of this object (or of any, for kAnyObject) is held.
+#define kNoObject ((MIDIObjectRef)0xFFFFFFFFu)
+#define kAnyObject ((MIDIObjectRef)0xFFFFFFFEu)
+static __thread MIDIObjectRef tHoldObject = kNoObject;
 
 OSStatus charon_test_MIDIObjectGetIntegerProperty(MIDIObjectRef object, CFStringRef propertyID, SInt32 *outValue)
 {
+    __atomic_add_fetch(&gReads, 1, __ATOMIC_RELAXED);
+    if (tHoldObject != kNoObject && (tHoldObject == kAnyObject || tHoldObject == object)) {
+        tHoldObject = kNoObject;
+        dispatch_semaphore_signal(gHeldEntered);
+        dispatch_semaphore_wait(gHeldRelease, DISPATCH_TIME_FOREVER);
+    }
     if (object == gHeldObject) {
         gHeldObject = (MIDIObjectRef)-1;
         dispatch_semaphore_signal(gHeldEntered);
@@ -143,6 +154,16 @@ static void own_without_uniqueid(MIDIObjectRef object)
     CharonMIDIOwnBlock(object, (__bridge_retained void *)token);
 }
 
+// Creations that do nothing but walk the table: each makes a row of an object the stand-in always answers for (63), whose
+// stamp is the last one written, so the filler before it is a replaced reference and is released by a later window. The sweep
+// is incremental (a window of rows a creation), so a stale row is released within a pass of the table, not at the next creation.
+static void creations(int count)
+{
+    gObject[63].exists = 1;
+    for (int i = 0; i < count; i++)
+        CharonMIDIOwnBlock(63, (__bridge_retained void *)[[NSObject alloc] init]);
+}
+
 // The reference given to a new object: it answers, with a UniqueID of its own and no stamp.
 static void reuse(MIDIObjectRef object, SInt32 uniqueID)
 {
@@ -179,18 +200,22 @@ int main(void)
         expect(gLive == 3, "an object whose creator set its UniqueID is the same object: its row is kept");
         gObject[2].exists = 0;
         own(4, 44);
-        expect(gLive == 3, "an object that answers paramErr is released at the next row");
+        creations(4);
+        expect(gLive == 3, "an object that answers paramErr is released within a pass of the table");
         // The release gives the reference of a disposed object to a new object, which has no stamp.
         reuse(3, 77);
         own(5, 55);
+        creations(4);
         expect(gLive == 3, "a reference given to a new object (no stamp) is released, and the live ones are kept");
         // The new object is another library instance's, with a stamp of its own.
         gObject[5].stamp ^= 0x5A5A5A5A;
         own(6, 66);
+        creations(4);
         expect(gLive == 3, "a reference that answers another stamp is released");
         // A read that fails with another status is no evidence either way.
         gObject[1].refused = -10842;
         own(7, 77);
+        creations(4);
         expect(gLive == 4, "an object whose read fails with another status is kept");
         gObject[1].refused = noErr;
         // A client or a port has no UniqueID: its identity is the stamp alone.
@@ -199,6 +224,7 @@ int main(void)
         expect(gLive == 6, "an object with no UniqueID is kept while it answers its stamp");
         gObject[8].exists = 0;
         own(10, 100);
+        creations(4);
         expect(gLive == 6, "and released when it is gone");
         // The stamp could not be written: the row is kept while the object is known and released when it is gone.
         gObject[11].setStatus = -10844;
@@ -207,7 +233,27 @@ int main(void)
         int before = gLive;
         gObject[11].exists = 0;
         own(13, 113);
+        creations(4);
         expect(gLive == before, "an object whose stamp was refused is released when it is gone");
+
+        // The sweep is bounded: a creation reads at most a window of rows however many the process holds, and a table of stale rows
+        // is released within a pass of the table (ceil(rows / window) creations).
+        int held = gLive;
+        for (int i = 0; i < 40; i++)
+            own(64 + i, 6400 + i);
+        expect(gLive == held + 40, "forty more live objects are owned");
+        for (int i = 0; i < 40; i++)
+            gObject[64 + i].exists = 0;
+        gReads = 0;
+        own(63, 6300);
+        int readsOfOne = gReads;
+        expect(readsOfOne > 0 && readsOfOne <= 16, "one creation reads at most a window of the table, not all of it");
+        int passes = 1;
+        while (gLive > held + 1 && passes < 40) {
+            own(63, 6300);
+            passes++;
+        }
+        expect(gLive == held + 1 && passes <= 8, "and every stale row is released within a pass of the table");
 
         // A send reads the object (is the destination still there?) with no lock held that another thread needs: while one
         // thread is inside that read, another thread's send to an endpoint that is not the library's returns.
@@ -264,7 +310,51 @@ int main(void)
         for (int i = 0; i < 200 && gLive != baseline + 24; i++)
             usleep(10000);
         expect(gLive == baseline + 24, "and it is released once the call has returned");
+
+        // The sweep reads objects with no lock held that a send needs. A creation whose sweep is inside the read of a row (an
+        // object of the owned table, then the endpoint of a selection state) does not stop a send or another creation.
+        static const UInt32 voice[2] = {0x40903C00u, 0x12340000u};
+        Byte listBuffer[64];
+        MIDIEventList *voiceList = (MIDIEventList *)listBuffer;
+        MIDIEventPacket *voiceEnd = MIDIEventListInit(voiceList, kMIDIProtocol_2_0);
+        CharonMIDIEventListAdd(voiceList, sizeof(listBuffer), voiceEnd, 0, 2, voice);
+        // A route (a selection state) for endpoint 70, which the stand-in knows; the owned table is made small and live.
+        gObject[70].exists = 1;
+        gObject[70].hasUniqueID = 1;
+        (void)CharonMIDIReceive(70, voiceList);
+        for (int step = 0; step < 2; step++) {
+            // step 0 holds a read of an owned row; step 1 holds the read of the route's endpoint.
+            own(100, 1000 + step);
+            MIDIObjectRef heldObject = step == 0 ? kAnyObject : 70;
+            dispatch_semaphore_t creatorDone = dispatch_semaphore_create(0);
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                tHoldObject = heldObject;
+                own(101, 1010);
+                dispatch_semaphore_signal(creatorDone);
+            });
+            int sweeping = dispatch_semaphore_wait(gHeldEntered, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
+            __block int sendOK = 0;
+            __block int creationOK = 0;
+            dispatch_semaphore_t othersDone = dispatch_semaphore_create(0);
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                Boolean ours = CharonMIDIDeliverInProcess(90, voice, 2);
+                (void)CharonMIDIReceive(71, voiceList);
+                sendOK = !ours;
+                own(102, 1020);
+                creationOK = 1;
+                dispatch_semaphore_signal(othersDone);
+            });
+            int returned = dispatch_semaphore_wait(othersDone, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
+            expect(sweeping && returned && sendOK && creationOK,
+                   step == 0 ? "a send and another creation return while a sweep is inside the read of an owned row"
+                             : "a send and another creation return while a sweep is inside the read of a selection state's endpoint");
+            dispatch_semaphore_signal(gHeldRelease);
+            dispatch_semaphore_wait(creatorDone, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC));
+            if (!returned)
+                dispatch_semaphore_wait(othersDone, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC));
+        }
     }
+
     printf("staleness: %d failures\n", gFailures);
     return gFailures ? 1 : 0;
 }

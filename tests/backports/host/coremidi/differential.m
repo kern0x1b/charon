@@ -78,6 +78,15 @@ static void check_scaling_laws(void)
     check(CharonMIDIUp16From7(0) == 0 && CharonMIDIUp16From7(127) == 0xFFFF, "scaling: 16-bit ends", "");
     check(CharonMIDIUp32From7(0) == 0 && CharonMIDIUp32From7(127) == 0xFFFFFFFFu, "scaling: 32-bit ends", "");
     check(CharonMIDIUp32From7(64) == 0x80000000u, "scaling: 32-bit centre", "");
+    // The rule is written in 32-bit arithmetic (a 64-bit divide is a library call on armv7); it is the rule the rows below
+    // measured, in 64 bits, at every one of the 128 inputs.
+    int differing = 0;
+    for (uint64_t value = 0; value < 128; value++) {
+        uint64_t rule = value <= 64 ? value << 25 : 0x80000000ull + (2 * (value - 64) * 0x7FFFFFFFull + 63) / 126;
+        if (CharonMIDIUp32From7((UInt32)value) != (UInt32)rule)
+            differing++;
+    }
+    check(differing == 0, "scaling: the 32-bit rule in 32-bit arithmetic is the 64-bit rule at all 128 inputs", "");
     check(CharonMIDIUp32From14(0) == 0 && CharonMIDIUp32From14(16383) == 0xFFFFFFFFu, "scaling: 14-bit ends", "");
     check(CharonMIDIUp32From14(8192) == 0x80000000u, "scaling: 14-bit centre", "");
     check(CharonMIDIUMPWordCount(0x20000000u) == 1 && CharonMIDIUMPWordCount(0x40000000u) == 2 && CharonMIDIUMPWordCount(0x50000000u) == 4,

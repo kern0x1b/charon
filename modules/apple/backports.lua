@@ -77,7 +77,9 @@ LIBRARIES = {
     {name = "CoreTelephonyBackports", folder = "CoreTelephony", frameworks = {"CoreTelephony", "Foundation"}, libraries = {"FoundationBackports"}},
     -- CoreMIDI's block forms (iOS 9), its Universal MIDI Packets and protocol-aware ports (iOS 14), over the release's MIDI 1.0
     -- CoreMIDI, which carries bytes only: the packets are converted here by the rules in facts/CoreMIDI/Translation.md.
-    {name = "CoreMIDIBackports", folder = "CoreMIDI", frameworks = {"CoreMIDI", "CoreBluetooth", "CoreFoundation", "Foundation"}, libraries = {"FoundationBackports"}},
+    -- CoreBluetooth is not linked: the Bluetooth central opens it with dlopen on its first use (MIDIBluetooth16.m), so a process
+    -- that never uses the central does not load the framework.
+    {name = "CoreMIDIBackports", folder = "CoreMIDI", frameworks = {"CoreMIDI", "CoreFoundation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CallKitBackports", folder = "CallKit", frameworks = {"CoreTelephony", "AVFoundation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "ContactsBackports", folder = "Contacts", frameworks = {"AddressBook", "CoreFoundation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "HomeKitBackports", folder = "HomeKit", frameworks = {"CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"monocypher"}, c_archives = {"monocypher"}},

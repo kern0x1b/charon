@@ -14,9 +14,28 @@
 #import <CoreMIDI/CoreMIDI.h>
 
 #include <dispatch/dispatch.h>
+#include <dlfcn.h>
+#include <objc/runtime.h>
 #include <stdlib.h>
 
 #import "CharonCoreMIDI.h"
+
+// CoreBluetooth is not linked: this image names no CoreBluetooth symbol, so a process that never uses the central never loads the
+// framework (a 4S has 512 MB, and the framework brings its own images with it). The framework is opened with dlopen on the first
+// use, and its classes are found by name. The headers are used for the types and the selectors alone.
+static Class charon_cb_class(const char *name)
+{
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        (void)dlopen("/System/Library/Frameworks/CoreBluetooth.framework/CoreBluetooth", RTLD_LAZY);
+    });
+    return objc_getClass(name);
+}
+
+static CBUUID *charon_uuid(NSString *string)
+{
+    return [(id)charon_cb_class("CBUUID") UUIDWithString:string];
+}
 
 // The BLE MIDI service and its I/O characteristic (the MIDI 1.0 over BLE specification's UUIDs).
 static NSString *const charon_service = @"03B80E5A-EDE8-4B33-A751-6CE34EC4C700";
@@ -55,15 +74,15 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
 {
     for (CBService *service in peripheral.services) {
-        if ([service.UUID isEqual:[CBUUID UUIDWithString:charon_service]])
-            [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:charon_characteristic]] forService:service];
+        if ([service.UUID isEqual:charon_uuid(charon_service)])
+            [peripheral discoverCharacteristics:@[charon_uuid(charon_characteristic)] forService:service];
     }
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
 {
     for (CBCharacteristic *characteristic in service.characteristics) {
-        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:charon_characteristic]])
+        if ([characteristic.UUID isEqual:charon_uuid(charon_characteristic)])
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
     }
 }
@@ -75,16 +94,25 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
     NSData *value = characteristic.value;
     if (value.length == 0 || self.source == 0)
         return;
-    // CharonBLEMIDIParse writes at most twice the notification's length (a running status is sent again with its data).
-    uint8_t *midi = malloc(2 * value.length);
-    if (!midi)
-        return;
+    // CharonBLEMIDIParse writes at most twice the notification's length (a running status is sent again with its data). A
+    // notification is at most 512 bytes (the largest attribute value), so its bytes and its list are in stack storage; a longer
+    // one is on the heap.
+    uint8_t stackMidi[1024] __attribute__((aligned(4)));
+    uint8_t *midi = stackMidi;
+    if (2 * value.length > sizeof(stackMidi)) {
+        midi = malloc(2 * value.length);
+        if (!midi)
+            return;
+    }
     size_t count = CharonBLEMIDIParse(&_parser, value.bytes, value.length, midi);
     if (count > 0) {
         // The list holds one packet of count bytes: its header is inside sizeof(MIDIPacketList), and the packet's own
         // rounding to four bytes fits in the four bytes added.
         size_t listSize = sizeof(MIDIPacketList) + count + 4;
-        Byte *buffer = malloc(listSize);
+        Byte stackList[1024 + sizeof(MIDIPacketList) + 4] __attribute__((aligned(4)));
+        Byte *buffer = stackList;
+        if (listSize > sizeof(stackList))
+            buffer = malloc(listSize);
         if (buffer) {
             MIDIPacketList *list = (MIDIPacketList *)buffer;
             if (MIDIPacketListAdd(list, listSize, MIDIPacketListInit(list), 0, count, midi) == NULL) {
@@ -97,10 +125,12 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
                     NSLog(@"charon: a Bluetooth MIDI device's bytes were not received by the release (status %d); facts/CoreMIDI/CoreMIDI.md", (int)status);
                 }
             }
-            free(buffer);
+            if (buffer != stackList)
+                free(buffer);
         }
     }
-    free(midi);
+    if (midi != stackMidi)
+        free(midi);
 }
 
 @end
@@ -125,7 +155,7 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
     self = [super init];
     if (self) {
         _devices = [NSMutableDictionary dictionary];
-        _manager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()];
+        _manager = [[(id)charon_cb_class("CBCentralManager") alloc] initWithDelegate:self queue:dispatch_get_main_queue()];
     }
     return self;
 }
@@ -133,7 +163,7 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
 {
     if (central.state == CBManagerStatePoweredOn && self.activated)
-        [central scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:charon_service]] options:nil];
+        [central scanForPeripheralsWithServices:@[charon_uuid(charon_service)] options:nil];
 }
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral
@@ -157,7 +187,7 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
     if (self.client == 0) {
         if (MIDIClientCreate(CFSTR("charon-bluetooth"), NULL, NULL, &_client) != noErr) {
             NSLog(@"charon: the release would not make a MIDI client for a Bluetooth device; its bytes are dropped");
-            [peripheral discoverServices:@[[CBUUID UUIDWithString:charon_service]]];
+            [peripheral discoverServices:@[charon_uuid(charon_service)]];
             return;
         }
     }
@@ -169,7 +199,7 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
     } else {
         NSLog(@"charon: the release refused a virtual source for a Bluetooth MIDI device (status %d); its bytes are dropped (facts/CoreMIDI/CoreMIDI.md)", (int)status);
     }
-    [peripheral discoverServices:@[[CBUUID UUIDWithString:charon_service]]];
+    [peripheral discoverServices:@[charon_uuid(charon_service)]];
 }
 
 // A connect that fails leaves no device: the entry goes, so that the next advertisement connects again.
@@ -216,7 +246,7 @@ OSStatus charon_bluetooth_activate_all_connections(void)
     dispatch_async(dispatch_get_main_queue(), ^{
         central.activated = YES;
         if (central.manager.state == CBManagerStatePoweredOn)
-            [central.manager scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:charon_service]] options:nil];
+            [central.manager scanForPeripheralsWithServices:@[charon_uuid(charon_service)] options:nil];
     });
     return noErr;
 }

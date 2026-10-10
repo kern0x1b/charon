@@ -23,6 +23,13 @@ static void charon_refused(const char *reason)
     }
 }
 
+// Stack storage of the hot paths, in 32-bit words: the list a read callback builds (512 bytes: the header, and room for about
+// ten short packets), the words of one packet, the packets a send builds (the same 512 bytes), and its bytes. What does not fit
+// is built on the heap, so that no list is refused for its size.
+#define CHARON_STACK_LIST_WORDS 128
+#define CHARON_STACK_WORDS 32
+#define CHARON_STACK_BYTES 128
+
 // The MIDI 1.0 parser of one source of a port, keyed by the reference the source was connected with (srcConnRefCon). Two
 // sources are two byte streams: the SysEx one source has open does not continue on the bytes of another.
 typedef struct charon_source {
@@ -83,8 +90,8 @@ static pthread_mutex_t charon_lock = PTHREAD_MUTEX_INITIALIZER;
 
 // The objects this file made with a block, and what each owns: the receive side of an input port or a destination (port), or
 // the retained block of a port, destination or client that MIDIBlocks9.m made (refCon). A destination row also lets this process
-// deliver to the destination itself. The release does not tell the library that an object was disposed, so the rows are swept
-// whenever a new one is made. An object the release no longer knows answers paramErr to a UniqueID read (a destination, a
+// deliver to the destination itself. The release does not tell the library that an object was disposed, so a window of the rows
+// is swept whenever a new one is made (charon_sweep). An object the release no longer knows answers paramErr to a UniqueID read (a destination, a
 // source, an input port and a client: oracle/removal-notify-macos.txt on macOS, and the 6.1.3 probe of
 // tests/backports/emulate/coremidi/app/main.m). The release may give a disposed reference to a new object, so each row also
 // carries the stamp the library wrote on the object (CHARON_OWNER_KEY) when it took it: a live object that answers another
@@ -142,17 +149,26 @@ static void charon_read_held(charon_port *port, const MIDIPacketList *packets, v
         }
         packet = MIDIPacketNext(packet);
     }
-    MIDIEventList *list = malloc(capacity);
-    if (!list) {
-        charon_refused("a list the allocator would not give");
-        return;
+    // A list of a few short packets is built in stack storage (the read thread of the release allocates nothing for it); a list
+    // that does not fit that storage is built on the heap.
+    uint32_t stackList[CHARON_STACK_LIST_WORDS] __attribute__((aligned(8)));
+    MIDIEventList *list = (MIDIEventList *)stackList;
+    MIDIEventList *heapList = NULL;
+    if (capacity > sizeof(stackList)) {
+        heapList = malloc(capacity);
+        if (!heapList) {
+            charon_refused("a list the allocator would not give");
+            return;
+        }
+        list = heapList;
     }
     list->protocol = port->protocol;
     list->numPackets = 0;
     MIDIEventPacket *end = &list->packet[0];
     MIDIEventPacket *last = NULL;
+    UInt32 stackWords[CHARON_STACK_WORDS];
     CharonMIDIWords words;
-    memset(&words, 0, sizeof(words));
+    CharonMIDIWordsUseStorage(&words, stackWords, CHARON_STACK_WORDS);
     pthread_mutex_lock(&port->lock);
     CharonMIDIParser *parser = charon_source_parser(port, srcConnRefCon);
     if (!parser)
@@ -175,11 +191,11 @@ static void charon_read_held(charon_port *port, const MIDIPacketList *packets, v
         packet = MIDIPacketNext(packet);
     }
     pthread_mutex_unlock(&port->lock);
-    free(words.words);
+    CharonMIDIWordsRelease(&words);
     if (list->numPackets > 0) {
         charon_port_call(port, list, srcConnRefCon);
     }
-    free(list);
+    free(heapList);
 }
 
 // The release's read procedure of the port's source. The reference is taken for the whole call: the release does not tell the
@@ -266,32 +282,131 @@ static void charon_free_owned(charon_owned *row)
         (void)(__bridge_transfer id)row->refCon;
 }
 
-// Forgets the endpoints that are gone from the selection states: a disposed endpoint sends nothing again. Called with the
-// owned lock held, and takes the route lock (no caller holds the route lock while it takes the owned lock).
-static void charon_prune_routes(void)
+// The sweep is incremental. Every creation of an object looks at a window of CHARON_SWEEP_ROWS rows of the owned table and of
+// CHARON_SWEEP_ROWS selection states, from where the last creation stopped, so the cost of a creation is bounded (at most
+// 2 * CHARON_SWEEP_ROWS property reads) however many objects the process holds, and a table of N rows is walked once in N /
+// CHARON_SWEEP_ROWS creations. A stale row is therefore freed within that many creations, not at the next one: the block it holds
+// is kept until then, which is a bounded delay in memory and never a wrong answer, because a send checks its own destination
+// (charon_destination_state) and does not rely on the sweep. The reads are made with no lock held: a send on another thread takes
+// the table's lock and the route lock and must not wait for the release. Rows are only appended by other threads and removed by
+// the sweeper (one at a time: charon_sweeping), so a row's index does not move between the window being copied and the removal;
+// the removal checks the object and the port nevertheless. The freed blocks are released after the lock is let go: a block's
+// destructor is application code.
+#define CHARON_SWEEP_ROWS 8
+static int charon_sweeping;
+static size_t charon_owned_cursor;
+static size_t charon_route_cursor;
+
+static void charon_sweep_owned_window(void)
 {
-    pthread_mutex_lock(&charon_lock);
-    size_t kept = 0;
-    for (size_t i = 0; i < charon_route_count; i++) {
-        if (!charon_gone(charon_routes[i].endpoint))
-            charon_routes[kept++] = charon_routes[i];
+    struct charon_window {
+        charon_owned row;
+        int stale;
+    } window[CHARON_SWEEP_ROWS];
+    size_t first = 0;
+    size_t count = 0;
+    pthread_mutex_lock(&charon_owned_lock);
+    if (charon_owned_cursor >= charon_owned_count)
+        charon_owned_cursor = 0;
+    first = charon_owned_cursor;
+    // The end of the table is looked at with a whole window (the last rows, or the whole table when it is smaller than a
+    // window), not a short one: a table that grows by a row a creation would otherwise keep the cursor at its end, looking at
+    // the newest row alone.
+    if (charon_owned_count - first < CHARON_SWEEP_ROWS)
+        first = charon_owned_count > CHARON_SWEEP_ROWS ? charon_owned_count - CHARON_SWEEP_ROWS : 0;
+    while (count < CHARON_SWEEP_ROWS && first + count < charon_owned_count) {
+        window[count].row = charon_owned_rows[first + count];
+        window[count].stale = 0;
+        count++;
     }
-    charon_route_count = kept;
+    pthread_mutex_unlock(&charon_owned_lock);
+    size_t stale = 0;
+    for (size_t i = 0; i < count; i++) {
+        window[i].stale = charon_row_stale(&window[i].row);
+        stale += window[i].stale ? 1 : 0;
+    }
+    charon_owned freed[CHARON_SWEEP_ROWS];
+    size_t freedCount = 0;
+    pthread_mutex_lock(&charon_owned_lock);
+    if (stale) {
+        // The window's rows are where they were (only appends and this sweeper's own removals move rows); one that is not the
+        // row that was read is left for a later pass.
+        size_t kept = 0;
+        size_t i = 0;
+        for (; i < count && first + i < charon_owned_count; i++) {
+            const charon_owned *row = &charon_owned_rows[first + i];
+            if (window[i].stale && row->object == window[i].row.object && row->port == window[i].row.port &&
+                row->refCon == window[i].row.refCon)
+                freed[freedCount++] = *row;
+            else
+                charon_owned_rows[first + kept++] = *row;
+        }
+        if (freedCount) {
+            size_t tail = charon_owned_count - (first + i);
+            memmove(&charon_owned_rows[first + kept], &charon_owned_rows[first + i], tail * sizeof(charon_owned));
+            charon_owned_count -= freedCount;
+        }
+        charon_owned_cursor = first + kept;
+    } else {
+        charon_owned_cursor = first + count;
+    }
+    pthread_mutex_unlock(&charon_owned_lock);
+    for (size_t i = 0; i < freedCount; i++)
+        charon_free_owned(&freed[i]);
+}
+
+// Forgets the selection states of the endpoints that are gone, a window at a time as above: a disposed endpoint sends nothing
+// again. The reads are made with no lock held, so a send is never held up by the release's answer.
+static void charon_prune_routes_window(void)
+{
+    MIDIEndpointRef window[CHARON_SWEEP_ROWS];
+    int gone[CHARON_SWEEP_ROWS];
+    size_t first = 0;
+    size_t count = 0;
+    pthread_mutex_lock(&charon_lock);
+    if (charon_route_cursor >= charon_route_count)
+        charon_route_cursor = 0;
+    first = charon_route_cursor;
+    if (charon_route_count - first < CHARON_SWEEP_ROWS)
+        first = charon_route_count > CHARON_SWEEP_ROWS ? charon_route_count - CHARON_SWEEP_ROWS : 0;
+    while (count < CHARON_SWEEP_ROWS && first + count < charon_route_count) {
+        window[count] = charon_routes[first + count].endpoint;
+        count++;
+    }
+    pthread_mutex_unlock(&charon_lock);
+    size_t goneCount = 0;
+    for (size_t i = 0; i < count; i++) {
+        gone[i] = charon_gone(window[i]);
+        goneCount += gone[i] ? 1 : 0;
+    }
+    pthread_mutex_lock(&charon_lock);
+    if (goneCount) {
+        size_t kept = 0;
+        size_t i = 0;
+        for (; i < count && first + i < charon_route_count; i++) {
+            if (gone[i] && charon_routes[first + i].endpoint == window[i])
+                continue;
+            charon_routes[first + kept++] = charon_routes[first + i];
+        }
+        size_t tail = charon_route_count - (first + i);
+        memmove(&charon_routes[first + kept], &charon_routes[first + i], tail * sizeof(charon_route));
+        charon_route_count -= i - kept;
+        charon_route_cursor = first + kept;
+    } else {
+        charon_route_cursor = first + count;
+    }
     pthread_mutex_unlock(&charon_lock);
 }
 
-// Frees the rows that are stale, and the selection states of the endpoints that are gone. Called with the owned lock held.
-static void charon_sweep_owned(void)
+// One incremental sweep of the owned rows and the selection states. A creation that finds a sweep running on another thread
+// leaves it the work: the window it would have looked at is looked at by the next creation.
+static void charon_sweep(void)
 {
-    size_t kept = 0;
-    for (size_t i = 0; i < charon_owned_count; i++) {
-        if (charon_row_stale(&charon_owned_rows[i]))
-            charon_free_owned(&charon_owned_rows[i]);
-        else
-            charon_owned_rows[kept++] = charon_owned_rows[i];
-    }
-    charon_owned_count = kept;
-    charon_prune_routes();
+    if (__atomic_exchange_n(&charon_sweeping, 1, __ATOMIC_ACQUIRE))
+        return;
+    charon_sweep_owned_window();
+    charon_prune_routes_window();
+    __atomic_store_n(&charon_sweeping, 0, __ATOMIC_RELEASE);
 }
 
 // Records an object the library made with a block, after a sweep. A row that cannot be added (the table cannot grow) leaves the
@@ -308,8 +423,8 @@ static void charon_own(MIDIObjectRef object, int destination, charon_port *port,
     // random value makes a coincidence a 2^-32 event.
     row.stamp = (SInt32)arc4random();
     row.stamped = MIDIObjectSetIntegerProperty(object, CHARON_OWNER_KEY, row.stamp) == noErr;
+    charon_sweep();
     pthread_mutex_lock(&charon_owned_lock);
-    charon_sweep_owned();
     if (charon_owned_count == charon_owned_capacity) {
         size_t capacity = charon_grown_capacity(charon_owned_capacity, sizeof(charon_owned));
         charon_owned *grown = capacity ? realloc(charon_owned_rows, capacity * sizeof(charon_owned)) : NULL;
@@ -610,11 +725,18 @@ static OSStatus charon_send(MIDIPortRef port, MIDIEndpointRef endpoint, const MI
             return charon_memFullErr;
         event = MIDIEventPacketNext(event);
     }
-    MIDIPacketList *packets = malloc(capacity);
-    if (!packets)
-        return charon_memFullErr;
+    uint32_t stackPackets[CHARON_STACK_LIST_WORDS] __attribute__((aligned(8)));
+    MIDIPacketList *packets = (MIDIPacketList *)stackPackets;
+    MIDIPacketList *heapPackets = NULL;
+    if (capacity > sizeof(stackPackets)) {
+        heapPackets = malloc(capacity);
+        if (!heapPackets)
+            return charon_memFullErr;
+        packets = heapPackets;
+    }
+    uint8_t stackBytes[CHARON_STACK_BYTES];
     CharonMIDIBytes bytes;
-    memset(&bytes, 0, sizeof(bytes));
+    CharonMIDIBytesUseStorage(&bytes, stackBytes, CHARON_STACK_BYTES);
     int failed = 0;
     pthread_mutex_lock(&charon_lock);
     CharonMIDIRPN *state = charon_state(endpoint);
@@ -637,11 +759,11 @@ static OSStatus charon_send(MIDIPortRef port, MIDIEndpointRef endpoint, const MI
         event = MIDIEventPacketNext(event);
     }
     pthread_mutex_unlock(&charon_lock);
-    free(bytes.bytes);
+    CharonMIDIBytesRelease(&bytes);
     OSStatus status = failed ? charon_memFullErr : noErr;
     if (status == noErr && packets->numPackets > 0)
         status = received ? MIDIReceived(endpoint, packets) : MIDISend(port, endpoint, packets);
-    free(packets);
+    free(heapPackets);
     return status;
 }
 
