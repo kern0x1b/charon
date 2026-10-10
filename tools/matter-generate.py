@@ -797,9 +797,11 @@ PREAMBLE = '''//
 //
 //  Every attribute reads and writes a plain value the caller set, in one table keyed by the
 //  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the {cache} cache reads
-//  the header declares are not emitted, because a release with no Matter hardware has no node to
-//  read from are implemented and answer as Apple documents: no value, and an error.
+//  command answers through its completion. Nothing here reaches a fabric: the {cache} cached reads
+//  the header declares, and every subscribe, answer as the framework does when it has nothing to
+//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  a subscribe calls its report handler once with the same, asynchronously on the cluster's
+//  queue, never calls its established handler, and leaves the stored value alone.
 //
 #import <Foundation/Foundation.h>
 #import <Matter/Matter.h>
@@ -2988,6 +2990,19 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
         body.append(SUPPRESSED_CHAIN.format(cluster=cluster))
     body.append("// A class EXTENSION, not a category: it carries the storage and is invisible at\n"
                 "// runtime, so the port's class is still the only implementation of the name.\n")
+    # A deprecated alias (Basic, BridgedDeviceBasic, TestCluster) declares only the old
+    # `initWithDevice:endpoint:queue:`; the current `initWithDevice:endpointID:queue:` is the class it
+    # aliases', and that class is a port class with ITS OWN `_charon_queue`. An object built through the
+    # inherited initializer holds its queue there and this class's stays nil, so the queue is asked of the
+    # superclass by ivar name. A function and not a method: a method here would be one more selector on the
+    # class than the framework's, and the differential compares the two lists.
+    inherits_queue = bool(initialisers) and not any(
+        selector_of(each["signature"]) == "initWithDevice:endpointID:queue:" for each in initialisers)
+    if inherits_queue:
+        body.append("#import <objc/runtime.h>\n\n"
+                    "static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)\n{\n"
+                    "    Ivar ivar = class_getInstanceVariable(class_getSuperclass(declared), \"_charon_queue\");\n"
+                    "    return ivar ? object_getIvar(object, ivar) : nil;\n}\n\n")
     body.append("@interface %s () {\n" % cluster)
     body.append("    id _charon_device;\n")
     body.append("    NSNumber *_charon_endpoint;\n")
@@ -3126,10 +3141,32 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             names = arguments_or_note(s, cluster, name, "subscribe")
             if names is None:
                 continue
-            unused = "".join("    (void)%s;\n" % each for each in names)
+            # The framework, asked on a controller that cannot answer, calls the REPORT handler once with no
+            # value and an error, asynchronously on the cluster's queue, and never the established handler;
+            # it keeps no value for the attribute, so nothing is stored here either. Measured on the host:
+            # tests/backports/host/matterdifferential/behaviour.m. The handler is the last block argument,
+            # which is what completion_of() reads, and it is the one argument that is used.
+            #
+            # The queue is the one the cluster was given. A cluster that never saw one answers on the default
+            # queue, because dispatch_async on a nil queue is a crash, which is what the first version of
+            # this body did on an object built through a superclass's initializer.
+            queue = ("(_charon_queue ?: charon_port_inherited_queue(self, [%s class]))" % cluster
+                     if inherits_queue else "_charon_queue")
+            handler, rule = completion_of(s)
+            if handler is None:
+                OFFENDERS.append((cluster, name, "subscribe", s))
+                continue
+            unused = "".join("    (void)%s;\n" % each for each in names if each != handler)
             body.append("%s\n{\n%s"
-                        "    [%s charon_port_values][@\"%s\"] = @\"subscribed\";\n}\n\n"
-                        % (s, unused, cluster, name))
+                        "    if (%s) {\n"
+                        "        dispatch_async(%s\n"
+                        "                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{\n"
+                        "            %s;\n"
+                        "        });\n"
+                        "    }\n}\n\n"
+                        % (s, unused, handler, queue,
+                           completion_call(s, handler,
+                                           error="[%s charon_port_no_node_error]" % cluster)))
     for name, info in cache.items():
         body.append("// The cached read of %s: no value and the error, because there is no node.\n" % name)
         args = arguments_or_note(info["signature"], cluster, name, "cached read")

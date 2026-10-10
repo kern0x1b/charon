@@ -17,9 +17,11 @@
 //
 //  Every attribute reads and writes a plain value the caller set, in one table keyed by the
 //  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 19 cache reads
-//  the header declares are not emitted, because a release with no Matter hardware has no node to
-//  read from are implemented and answer as Apple documents: no value, and an error.
+//  command answers through its completion. Nothing here reaches a fabric: the 19 cached reads
+//  the header declares, and every subscribe, answer as the framework does when it has nothing to
+//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  a subscribe calls its report handler once with the same, asynchronously on the cluster's
+//  queue, never calls its established handler, and leaves the stored value alone.
 //
 #import <Foundation/Foundation.h>
 #import <Matter/Matter.h>
@@ -100,8 +102,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"PhysicalMinLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // PhysicalMaxLevel, a NSNumber.
@@ -120,8 +126,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"PhysicalMaxLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // BallastStatus, a NSNumber.
@@ -140,8 +150,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"BallastStatus"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinLevel, a NSNumber.
@@ -176,8 +190,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"MinLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxLevel, a NSNumber.
@@ -212,8 +230,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"MaxLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // IntrinsicBallastFactor, a NSNumber.
@@ -248,8 +270,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"IntrinsicBallastFactor"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // BallastFactorAdjustment, a NSNumber.
@@ -284,8 +310,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"BallastFactorAdjustment"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampQuantity, a NSNumber.
@@ -304,8 +334,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"LampQuantity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampType, a NSString.
@@ -340,8 +374,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"LampType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampManufacturer, a NSString.
@@ -376,8 +414,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"LampManufacturer"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampRatedHours, a NSNumber.
@@ -412,8 +454,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"LampRatedHours"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampBurnHours, a NSNumber.
@@ -448,8 +494,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"LampBurnHours"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampAlarmMode, a NSNumber.
@@ -484,8 +534,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"LampAlarmMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampBurnHoursTripPoint, a NSNumber.
@@ -520,8 +574,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"LampBurnHoursTripPoint"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // GeneratedCommandList, a NSArray.
@@ -540,8 +598,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"GeneratedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // AcceptedCommandList, a NSArray.
@@ -560,8 +622,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"AcceptedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // AttributeList, a NSArray.
@@ -580,8 +646,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"AttributeList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // FeatureMap, a NSNumber.
@@ -600,8 +670,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"FeatureMap"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // ClusterRevision, a NSNumber.
@@ -620,8 +694,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterBallastConfiguration charon_port_values][@"ClusterRevision"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterBallastConfiguration charon_port_no_node_error]);
+        });
+    }
 }
 
 // The cached read of PhysicalMinLevel: no value and the error, because there is no node.

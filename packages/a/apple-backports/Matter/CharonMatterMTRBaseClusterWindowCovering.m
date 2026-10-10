@@ -17,9 +17,11 @@
 //
 //  Every attribute reads and writes a plain value the caller set, in one table keyed by the
 //  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 27 cache reads
-//  the header declares are not emitted, because a release with no Matter hardware has no node to
-//  read from are implemented and answer as Apple documents: no value, and an error.
+//  command answers through its completion. Nothing here reaches a fabric: the 27 cached reads
+//  the header declares, and every subscribe, answer as the framework does when it has nothing to
+//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  a subscribe calls its report handler once with the same, asynchronously on the cluster's
+//  queue, never calls its established handler, and leaves the stored value alone.
 //
 #import <Foundation/Foundation.h>
 #import <Matter/Matter.h>
@@ -100,8 +102,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"Type"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // PhysicalClosedLimitLift, a NSNumber.
@@ -120,8 +126,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"PhysicalClosedLimitLift"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // PhysicalClosedLimitTilt, a NSNumber.
@@ -140,8 +150,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"PhysicalClosedLimitTilt"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionLift, a NSNumber.
@@ -160,8 +174,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"CurrentPositionLift"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionTilt, a NSNumber.
@@ -180,8 +198,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"CurrentPositionTilt"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfActuationsLift, a NSNumber.
@@ -200,8 +222,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"NumberOfActuationsLift"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfActuationsTilt, a NSNumber.
@@ -220,8 +246,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"NumberOfActuationsTilt"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // ConfigStatus, a NSNumber.
@@ -240,8 +270,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"ConfigStatus"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionLiftPercentage, a NSNumber.
@@ -260,8 +294,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"CurrentPositionLiftPercentage"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionTiltPercentage, a NSNumber.
@@ -280,8 +318,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"CurrentPositionTiltPercentage"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // OperationalStatus, a NSNumber.
@@ -300,8 +342,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"OperationalStatus"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // TargetPositionLiftPercent100ths, a NSNumber.
@@ -320,8 +366,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"TargetPositionLiftPercent100ths"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // TargetPositionTiltPercent100ths, a NSNumber.
@@ -340,8 +390,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"TargetPositionTiltPercent100ths"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // EndProductType, a NSNumber.
@@ -360,8 +414,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"EndProductType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionLiftPercent100ths, a NSNumber.
@@ -380,8 +438,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"CurrentPositionLiftPercent100ths"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionTiltPercent100ths, a NSNumber.
@@ -400,8 +462,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"CurrentPositionTiltPercent100ths"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // InstalledOpenLimitLift, a NSNumber.
@@ -420,8 +486,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"InstalledOpenLimitLift"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // InstalledClosedLimitLift, a NSNumber.
@@ -440,8 +510,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"InstalledClosedLimitLift"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // InstalledOpenLimitTilt, a NSNumber.
@@ -460,8 +534,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"InstalledOpenLimitTilt"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // InstalledClosedLimitTilt, a NSNumber.
@@ -480,8 +558,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"InstalledClosedLimitTilt"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // Mode, a NSNumber.
@@ -516,8 +598,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"Mode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // SafetyStatus, a NSNumber.
@@ -536,8 +622,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"SafetyStatus"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // GeneratedCommandList, a NSArray.
@@ -556,8 +646,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"GeneratedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // AcceptedCommandList, a NSArray.
@@ -576,8 +670,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"AcceptedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // AttributeList, a NSArray.
@@ -596,8 +694,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"AttributeList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // FeatureMap, a NSNumber.
@@ -616,8 +718,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"FeatureMap"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // ClusterRevision, a NSNumber.
@@ -636,8 +742,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterWindowCovering charon_port_values][@"ClusterRevision"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterWindowCovering charon_port_no_node_error]);
+        });
+    }
 }
 
 // The cached read of Type: no value and the error, because there is no node.

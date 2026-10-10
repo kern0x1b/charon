@@ -17,9 +17,11 @@
 //
 //  Every attribute reads and writes a plain value the caller set, in one table keyed by the
 //  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 57 cache reads
-//  the header declares are not emitted, because a release with no Matter hardware has no node to
-//  read from are implemented and answer as Apple documents: no value, and an error.
+//  command answers through its completion. Nothing here reaches a fabric: the 57 cached reads
+//  the header declares, and every subscribe, answer as the framework does when it has nothing to
+//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  a subscribe calls its report handler once with the same, asynchronously on the cluster's
+//  queue, never calls its established handler, and leaves the stored value alone.
 //
 #import <Foundation/Foundation.h>
 #import <Matter/Matter.h>
@@ -100,8 +102,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"CurrentHue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentSaturation, a NSNumber.
@@ -120,8 +126,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"CurrentSaturation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // RemainingTime, a NSNumber.
@@ -140,8 +150,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"RemainingTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentX, a NSNumber.
@@ -160,8 +174,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"CurrentX"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentY, a NSNumber.
@@ -180,8 +198,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"CurrentY"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // DriftCompensation, a NSNumber.
@@ -200,8 +222,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"DriftCompensation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // CompensationText, a NSString.
@@ -220,8 +246,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"CompensationText"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorTemperatureMireds, a NSNumber.
@@ -240,8 +270,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorTemperatureMireds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorMode, a NSNumber.
@@ -260,8 +294,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Options, a NSNumber.
@@ -296,8 +334,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Options"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfPrimaries, a NSNumber.
@@ -316,8 +358,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"NumberOfPrimaries"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary1X, a NSNumber.
@@ -336,8 +382,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary1X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary1Y, a NSNumber.
@@ -356,8 +406,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary1Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary1Intensity, a NSNumber.
@@ -376,8 +430,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary1Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary2X, a NSNumber.
@@ -396,8 +454,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary2X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary2Y, a NSNumber.
@@ -416,8 +478,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary2Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary2Intensity, a NSNumber.
@@ -436,8 +502,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary2Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary3X, a NSNumber.
@@ -456,8 +526,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary3X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary3Y, a NSNumber.
@@ -476,8 +550,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary3Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary3Intensity, a NSNumber.
@@ -496,8 +574,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary3Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary4X, a NSNumber.
@@ -516,8 +598,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary4X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary4Y, a NSNumber.
@@ -536,8 +622,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary4Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary4Intensity, a NSNumber.
@@ -556,8 +646,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary4Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary5X, a NSNumber.
@@ -576,8 +670,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary5X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary5Y, a NSNumber.
@@ -596,8 +694,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary5Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary5Intensity, a NSNumber.
@@ -616,8 +718,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary5Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary6X, a NSNumber.
@@ -636,8 +742,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary6X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary6Y, a NSNumber.
@@ -656,8 +766,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary6Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary6Intensity, a NSNumber.
@@ -676,8 +790,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"Primary6Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // WhitePointX, a NSNumber.
@@ -715,8 +833,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"WhitePointX"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // WhitePointY, a NSNumber.
@@ -754,8 +876,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"WhitePointY"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointRX, a NSNumber.
@@ -793,8 +919,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRX"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointRY, a NSNumber.
@@ -832,8 +962,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRY"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointRIntensity, a NSNumber.
@@ -871,8 +1005,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRIntensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointGX, a NSNumber.
@@ -910,8 +1048,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGX"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointGY, a NSNumber.
@@ -949,8 +1091,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGY"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointGIntensity, a NSNumber.
@@ -988,8 +1134,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGIntensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointBX, a NSNumber.
@@ -1027,8 +1177,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBX"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointBY, a NSNumber.
@@ -1066,8 +1220,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBY"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointBIntensity, a NSNumber.
@@ -1105,8 +1263,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBIntensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnhancedCurrentHue, a NSNumber.
@@ -1125,8 +1287,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"EnhancedCurrentHue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnhancedColorMode, a NSNumber.
@@ -1145,8 +1311,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"EnhancedColorMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorLoopActive, a NSNumber.
@@ -1165,8 +1335,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorLoopActive"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorLoopDirection, a NSNumber.
@@ -1185,8 +1359,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorLoopDirection"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorLoopTime, a NSNumber.
@@ -1205,8 +1383,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorLoopTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorLoopStartEnhancedHue, a NSNumber.
@@ -1225,8 +1407,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorLoopStartEnhancedHue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorLoopStoredEnhancedHue, a NSNumber.
@@ -1245,8 +1431,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorLoopStoredEnhancedHue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorCapabilities, a NSNumber.
@@ -1265,8 +1455,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorCapabilities"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorTempPhysicalMinMireds, a NSNumber.
@@ -1285,8 +1479,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorTempPhysicalMinMireds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorTempPhysicalMaxMireds, a NSNumber.
@@ -1305,8 +1503,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ColorTempPhysicalMaxMireds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // CoupleColorTempToLevelMinMireds, a NSNumber.
@@ -1325,8 +1527,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"CoupleColorTempToLevelMinMireds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // StartUpColorTemperatureMireds, a NSNumber.
@@ -1361,8 +1567,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"StartUpColorTemperatureMireds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // GeneratedCommandList, a NSArray.
@@ -1381,8 +1591,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"GeneratedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // AcceptedCommandList, a NSArray.
@@ -1401,8 +1615,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"AcceptedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // AttributeList, a NSArray.
@@ -1421,8 +1639,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"AttributeList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // FeatureMap, a NSNumber.
@@ -1441,8 +1663,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"FeatureMap"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // ClusterRevision, a NSNumber.
@@ -1461,8 +1687,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterColorControl charon_port_values][@"ClusterRevision"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterColorControl charon_port_no_node_error]);
+        });
+    }
 }
 
 // The cached read of CurrentHue: no value and the error, because there is no node.

@@ -17,9 +17,11 @@
 //
 //  Every attribute reads and writes a plain value the caller set, in one table keyed by the
 //  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 18 cache reads
-//  the header declares are not emitted, because a release with no Matter hardware has no node to
-//  read from are implemented and answer as Apple documents: no value, and an error.
+//  command answers through its completion. Nothing here reaches a fabric: the 18 cached reads
+//  the header declares, and every subscribe, answer as the framework does when it has nothing to
+//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  a subscribe calls its report handler once with the same, asynchronously on the cluster's
+//  queue, never calls its established handler, and leaves the stored value alone.
 //
 #import <Foundation/Foundation.h>
 #import <Matter/Matter.h>
@@ -116,8 +118,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"Breadcrumb"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // BasicCommissioningInfo, a MTRGeneralCommissioningClusterBasicCommissioningInfo.
@@ -136,8 +142,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"BasicCommissioningInfo"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // RegulatoryConfig, a NSNumber.
@@ -156,8 +166,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"RegulatoryConfig"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // LocationCapability, a NSNumber.
@@ -176,8 +190,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"LocationCapability"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // SupportsConcurrentConnection, a NSNumber.
@@ -196,8 +214,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"SupportsConcurrentConnection"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // TCAcceptedVersion, a NSNumber.
@@ -216,8 +238,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"TCAcceptedVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // TCMinRequiredVersion, a NSNumber.
@@ -236,8 +262,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"TCMinRequiredVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // TCAcknowledgements, a NSNumber.
@@ -256,8 +286,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"TCAcknowledgements"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // TCAcknowledgementsRequired, a NSNumber.
@@ -276,8 +310,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"TCAcknowledgementsRequired"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // TCUpdateDeadline, a NSNumber.
@@ -296,8 +334,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"TCUpdateDeadline"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // RecoveryIdentifier, a NSData.
@@ -316,8 +358,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"RecoveryIdentifier"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // NetworkRecoveryReason, a NSNumber.
@@ -336,8 +382,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"NetworkRecoveryReason"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // IsCommissioningWithoutPower, a NSNumber.
@@ -356,8 +406,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"IsCommissioningWithoutPower"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // GeneratedCommandList, a NSArray.
@@ -376,8 +430,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"GeneratedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // AcceptedCommandList, a NSArray.
@@ -396,8 +454,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"AcceptedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // AttributeList, a NSArray.
@@ -416,8 +478,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"AttributeList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // FeatureMap, a NSNumber.
@@ -436,8 +502,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"FeatureMap"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // ClusterRevision, a NSNumber.
@@ -456,8 +526,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterGeneralCommissioning charon_port_values][@"ClusterRevision"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterGeneralCommissioning charon_port_no_node_error]);
+        });
+    }
 }
 
 // The cached read of Breadcrumb: no value and the error, because there is no node.

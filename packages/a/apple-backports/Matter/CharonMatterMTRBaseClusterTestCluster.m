@@ -17,9 +17,11 @@
 //
 //  Every attribute reads and writes a plain value the caller set, in one table keyed by the
 //  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cache reads
-//  the header declares are not emitted, because a release with no Matter hardware has no node to
-//  read from are implemented and answer as Apple documents: no value, and an error.
+//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  the header declares, and every subscribe, answer as the framework does when it has nothing to
+//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  a subscribe calls its report handler once with the same, asynchronously on the cluster's
+//  queue, never calls its established handler, and leaves the stored value alone.
 //
 #import <Foundation/Foundation.h>
 #import <Matter/Matter.h>
@@ -27,6 +29,14 @@
 
 // A class EXTENSION, not a category: it carries the storage and is invisible at
 // runtime, so the port's class is still the only implementation of the name.
+#import <objc/runtime.h>
+
+static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
+{
+    Ivar ivar = class_getInstanceVariable(class_getSuperclass(declared), "_charon_queue");
+    return ivar ? object_getIvar(object, ivar) : nil;
+}
+
 @interface MTRBaseClusterTestCluster () {
     id _charon_device;
     NSNumber *_charon_endpoint;
@@ -101,8 +111,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"IdentifyTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // IdentifyType, a id.
@@ -115,8 +129,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"IdentifyType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // GeneratedCommandList, a id.
@@ -129,8 +147,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"GeneratedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AcceptedCommandList, a id.
@@ -143,8 +165,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AcceptedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AttributeList, a id.
@@ -157,8 +183,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AttributeList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // FeatureMap, a id.
@@ -171,8 +201,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"FeatureMap"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ClusterRevision, a id.
@@ -185,8 +219,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ClusterRevision"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NameSupport, a id.
@@ -199,8 +237,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NameSupport"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OnOff, a id.
@@ -213,8 +255,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OnOff"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // GlobalSceneControl, a id.
@@ -227,8 +273,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"GlobalSceneControl"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OnTime, a id.
@@ -257,8 +307,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OnTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OffWaitTime, a id.
@@ -287,8 +341,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OffWaitTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // StartUpOnOff, a id.
@@ -317,8 +375,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpOnOff"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentLevel, a id.
@@ -331,8 +393,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RemainingTime, a id.
@@ -345,8 +411,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RemainingTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinLevel, a id.
@@ -375,8 +445,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxLevel, a id.
@@ -405,8 +479,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentFrequency, a id.
@@ -419,8 +497,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentFrequency"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinFrequency, a id.
@@ -433,8 +515,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinFrequency"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxFrequency, a id.
@@ -447,8 +533,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxFrequency"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Options, a id.
@@ -477,8 +567,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Options"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OnOffTransitionTime, a id.
@@ -507,8 +601,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OnOffTransitionTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OnLevel, a id.
@@ -537,8 +635,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OnLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OnTransitionTime, a id.
@@ -567,8 +669,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OnTransitionTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OffTransitionTime, a id.
@@ -597,8 +703,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OffTransitionTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // DefaultMoveRate, a id.
@@ -627,8 +737,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"DefaultMoveRate"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // StartUpCurrentLevel, a id.
@@ -657,8 +771,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpCurrentLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // DeviceList, a id.
@@ -671,8 +789,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"DeviceList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ServerList, a id.
@@ -685,8 +807,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ServerList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ClientList, a id.
@@ -699,8 +825,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ClientList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PartsList, a id.
@@ -713,8 +843,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PartsList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Binding, a id.
@@ -743,8 +877,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Binding"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Acl, a id.
@@ -773,8 +911,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Acl"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Extension, a id.
@@ -803,8 +945,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Extension"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SubjectsPerAccessControlEntry, a id.
@@ -817,8 +963,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SubjectsPerAccessControlEntry"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TargetsPerAccessControlEntry, a id.
@@ -831,8 +981,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TargetsPerAccessControlEntry"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AccessControlEntriesPerFabric, a id.
@@ -845,8 +999,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AccessControlEntriesPerFabric"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActionList, a id.
@@ -859,8 +1017,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActionList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EndpointLists, a id.
@@ -873,8 +1035,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EndpointLists"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SetupURL, a id.
@@ -887,8 +1053,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SetupURL"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // DataModelRevision, a id.
@@ -901,8 +1071,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"DataModelRevision"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // VendorName, a id.
@@ -915,8 +1089,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"VendorName"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // VendorID, a id.
@@ -929,8 +1107,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"VendorID"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ProductName, a id.
@@ -943,8 +1125,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ProductName"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ProductID, a id.
@@ -957,8 +1143,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ProductID"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NodeLabel, a id.
@@ -987,8 +1177,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NodeLabel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Location, a id.
@@ -1017,8 +1211,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Location"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // HardwareVersion, a id.
@@ -1031,8 +1229,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"HardwareVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // HardwareVersionString, a id.
@@ -1045,8 +1247,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"HardwareVersionString"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SoftwareVersion, a id.
@@ -1059,8 +1265,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SoftwareVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SoftwareVersionString, a id.
@@ -1073,8 +1283,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SoftwareVersionString"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ManufacturingDate, a id.
@@ -1087,8 +1301,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ManufacturingDate"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PartNumber, a id.
@@ -1101,8 +1319,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PartNumber"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ProductURL, a id.
@@ -1115,8 +1337,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ProductURL"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ProductLabel, a id.
@@ -1129,8 +1355,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ProductLabel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SerialNumber, a id.
@@ -1143,8 +1373,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SerialNumber"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LocalConfigDisabled, a id.
@@ -1173,8 +1407,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LocalConfigDisabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Reachable, a id.
@@ -1187,8 +1425,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Reachable"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UniqueID, a id.
@@ -1201,8 +1443,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UniqueID"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CapabilityMinima, a id.
@@ -1215,8 +1461,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CapabilityMinima"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // DefaultOtaProviders, a id.
@@ -1245,8 +1495,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"DefaultOtaProviders"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UpdatePossible, a id.
@@ -1259,8 +1513,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UpdatePossible"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UpdateState, a id.
@@ -1273,8 +1531,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UpdateState"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UpdateStateProgress, a id.
@@ -1287,8 +1549,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UpdateStateProgress"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveLocale, a id.
@@ -1317,8 +1583,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveLocale"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SupportedLocales, a id.
@@ -1331,8 +1601,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SupportedLocales"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // HourFormat, a id.
@@ -1361,8 +1635,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"HourFormat"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveCalendarType, a id.
@@ -1391,8 +1669,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveCalendarType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SupportedCalendarTypes, a id.
@@ -1405,8 +1687,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SupportedCalendarTypes"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TemperatureUnit, a id.
@@ -1435,8 +1721,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureUnit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Sources, a id.
@@ -1449,8 +1739,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Sources"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Status, a id.
@@ -1463,8 +1757,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Status"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Order, a id.
@@ -1477,8 +1775,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Order"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Description, a id.
@@ -1491,8 +1793,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Description"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WiredAssessedInputVoltage, a id.
@@ -1505,8 +1811,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WiredAssessedInputVoltage"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WiredAssessedInputFrequency, a id.
@@ -1519,8 +1829,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WiredAssessedInputFrequency"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WiredCurrentType, a id.
@@ -1533,8 +1847,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WiredCurrentType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WiredAssessedCurrent, a id.
@@ -1547,8 +1865,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WiredAssessedCurrent"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WiredNominalVoltage, a id.
@@ -1561,8 +1883,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WiredNominalVoltage"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WiredMaximumCurrent, a id.
@@ -1575,8 +1901,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WiredMaximumCurrent"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WiredPresent, a id.
@@ -1589,8 +1919,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WiredPresent"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveWiredFaults, a id.
@@ -1603,8 +1937,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveWiredFaults"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatVoltage, a id.
@@ -1617,8 +1955,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatVoltage"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatPercentRemaining, a id.
@@ -1631,8 +1973,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatPercentRemaining"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatTimeRemaining, a id.
@@ -1645,8 +1991,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatTimeRemaining"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatChargeLevel, a id.
@@ -1659,8 +2009,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatChargeLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatReplacementNeeded, a id.
@@ -1673,8 +2027,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatReplacementNeeded"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatReplaceability, a id.
@@ -1687,8 +2045,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatReplaceability"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatPresent, a id.
@@ -1701,8 +2063,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatPresent"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveBatFaults, a id.
@@ -1715,8 +2081,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveBatFaults"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatReplacementDescription, a id.
@@ -1729,8 +2099,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatReplacementDescription"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatCommonDesignation, a id.
@@ -1743,8 +2117,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatCommonDesignation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatANSIDesignation, a id.
@@ -1757,8 +2135,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatANSIDesignation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatIECDesignation, a id.
@@ -1771,8 +2153,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatIECDesignation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatApprovedChemistry, a id.
@@ -1785,8 +2171,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatApprovedChemistry"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatCapacity, a id.
@@ -1799,8 +2189,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatCapacity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatQuantity, a id.
@@ -1813,8 +2207,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatQuantity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatChargeState, a id.
@@ -1827,8 +2225,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatChargeState"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatTimeToFullCharge, a id.
@@ -1841,8 +2243,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatTimeToFullCharge"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatFunctionalWhileCharging, a id.
@@ -1855,8 +2261,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatFunctionalWhileCharging"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BatChargingCurrent, a id.
@@ -1869,8 +2279,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BatChargingCurrent"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveBatChargeFaults, a id.
@@ -1883,8 +2297,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveBatChargeFaults"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Breadcrumb, a id.
@@ -1913,8 +2331,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Breadcrumb"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BasicCommissioningInfo, a id.
@@ -1927,8 +2349,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BasicCommissioningInfo"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RegulatoryConfig, a id.
@@ -1941,8 +2367,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RegulatoryConfig"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LocationCapability, a id.
@@ -1955,8 +2385,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LocationCapability"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SupportsConcurrentConnection, a id.
@@ -1969,8 +2403,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SupportsConcurrentConnection"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxNetworks, a id.
@@ -1983,8 +2421,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxNetworks"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Networks, a id.
@@ -1997,8 +2439,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Networks"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ScanMaxTimeSeconds, a id.
@@ -2011,8 +2457,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ScanMaxTimeSeconds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ConnectMaxTimeSeconds, a id.
@@ -2025,8 +2475,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ConnectMaxTimeSeconds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // InterfaceEnabled, a id.
@@ -2055,8 +2509,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"InterfaceEnabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LastNetworkingStatus, a id.
@@ -2069,8 +2527,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LastNetworkingStatus"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LastNetworkID, a id.
@@ -2083,8 +2545,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LastNetworkID"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LastConnectErrorValue, a id.
@@ -2097,8 +2563,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LastConnectErrorValue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NetworkInterfaces, a id.
@@ -2111,8 +2581,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NetworkInterfaces"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RebootCount, a id.
@@ -2125,8 +2599,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RebootCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UpTime, a id.
@@ -2139,8 +2617,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UpTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TotalOperationalHours, a id.
@@ -2153,8 +2635,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TotalOperationalHours"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BootReasons, a id.
@@ -2167,8 +2653,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BootReasons"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveHardwareFaults, a id.
@@ -2181,8 +2671,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveHardwareFaults"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveRadioFaults, a id.
@@ -2195,8 +2689,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveRadioFaults"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveNetworkFaults, a id.
@@ -2209,8 +2707,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveNetworkFaults"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TestEventTriggersEnabled, a id.
@@ -2223,8 +2725,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TestEventTriggersEnabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ThreadMetrics, a id.
@@ -2237,8 +2743,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ThreadMetrics"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentHeapFree, a id.
@@ -2251,8 +2761,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentHeapFree"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentHeapUsed, a id.
@@ -2265,8 +2779,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentHeapUsed"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentHeapHighWatermark, a id.
@@ -2279,8 +2797,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentHeapHighWatermark"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Channel, a id.
@@ -2293,8 +2815,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Channel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RoutingRole, a id.
@@ -2307,8 +2833,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RoutingRole"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NetworkName, a id.
@@ -2321,8 +2851,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NetworkName"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PanId, a id.
@@ -2335,8 +2869,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PanId"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ExtendedPanId, a id.
@@ -2349,8 +2887,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ExtendedPanId"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MeshLocalPrefix, a id.
@@ -2363,8 +2905,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MeshLocalPrefix"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OverrunCount, a id.
@@ -2377,8 +2923,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OverrunCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NeighborTableList, a id.
@@ -2391,8 +2941,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NeighborTableList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RouteTableList, a id.
@@ -2405,8 +2959,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RouteTableList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PartitionId, a id.
@@ -2419,8 +2977,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PartitionId"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Weighting, a id.
@@ -2433,8 +2995,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Weighting"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // DataVersion, a id.
@@ -2447,8 +3013,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"DataVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // StableDataVersion, a id.
@@ -2461,8 +3031,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"StableDataVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LeaderRouterId, a id.
@@ -2475,8 +3049,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LeaderRouterId"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // DetachedRoleCount, a id.
@@ -2489,8 +3067,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"DetachedRoleCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ChildRoleCount, a id.
@@ -2503,8 +3085,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ChildRoleCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RouterRoleCount, a id.
@@ -2517,8 +3103,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RouterRoleCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LeaderRoleCount, a id.
@@ -2531,8 +3121,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LeaderRoleCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AttachAttemptCount, a id.
@@ -2545,8 +3139,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AttachAttemptCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PartitionIdChangeCount, a id.
@@ -2559,8 +3157,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PartitionIdChangeCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BetterPartitionAttachAttemptCount, a id.
@@ -2573,8 +3175,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BetterPartitionAttachAttemptCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ParentChangeCount, a id.
@@ -2587,8 +3193,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ParentChangeCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxTotalCount, a id.
@@ -2601,8 +3211,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxTotalCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxUnicastCount, a id.
@@ -2615,8 +3229,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxUnicastCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxBroadcastCount, a id.
@@ -2629,8 +3247,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxBroadcastCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxAckRequestedCount, a id.
@@ -2643,8 +3265,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxAckRequestedCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxAckedCount, a id.
@@ -2657,8 +3283,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxAckedCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxNoAckRequestedCount, a id.
@@ -2671,8 +3301,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxNoAckRequestedCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxDataCount, a id.
@@ -2685,8 +3319,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxDataCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxDataPollCount, a id.
@@ -2699,8 +3337,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxDataPollCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxBeaconCount, a id.
@@ -2713,8 +3355,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxBeaconCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxBeaconRequestCount, a id.
@@ -2727,8 +3373,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxBeaconRequestCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxOtherCount, a id.
@@ -2741,8 +3391,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxOtherCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxRetryCount, a id.
@@ -2755,8 +3409,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxRetryCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxDirectMaxRetryExpiryCount, a id.
@@ -2769,8 +3427,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxDirectMaxRetryExpiryCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxIndirectMaxRetryExpiryCount, a id.
@@ -2783,8 +3445,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxIndirectMaxRetryExpiryCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxErrCcaCount, a id.
@@ -2797,8 +3463,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxErrCcaCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxErrAbortCount, a id.
@@ -2811,8 +3481,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxErrAbortCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxErrBusyChannelCount, a id.
@@ -2825,8 +3499,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxErrBusyChannelCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxTotalCount, a id.
@@ -2839,8 +3517,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxTotalCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxUnicastCount, a id.
@@ -2853,8 +3535,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxUnicastCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxBroadcastCount, a id.
@@ -2867,8 +3553,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxBroadcastCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxDataCount, a id.
@@ -2881,8 +3571,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxDataCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxDataPollCount, a id.
@@ -2895,8 +3589,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxDataPollCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxBeaconCount, a id.
@@ -2909,8 +3607,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxBeaconCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxBeaconRequestCount, a id.
@@ -2923,8 +3625,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxBeaconRequestCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxOtherCount, a id.
@@ -2937,8 +3643,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxOtherCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxAddressFilteredCount, a id.
@@ -2951,8 +3661,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxAddressFilteredCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxDestAddrFilteredCount, a id.
@@ -2965,8 +3679,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxDestAddrFilteredCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxDuplicatedCount, a id.
@@ -2979,8 +3697,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxDuplicatedCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrNoFrameCount, a id.
@@ -2993,8 +3715,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxErrNoFrameCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrUnknownNeighborCount, a id.
@@ -3007,8 +3733,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxErrUnknownNeighborCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrInvalidSrcAddrCount, a id.
@@ -3021,8 +3751,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxErrInvalidSrcAddrCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrSecCount, a id.
@@ -3035,8 +3769,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxErrSecCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrFcsCount, a id.
@@ -3049,8 +3787,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxErrFcsCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrOtherCount, a id.
@@ -3063,8 +3805,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RxErrOtherCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveTimestamp, a id.
@@ -3077,8 +3823,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveTimestamp"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PendingTimestamp, a id.
@@ -3091,8 +3841,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PendingTimestamp"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Delay, a id.
@@ -3105,8 +3859,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Delay"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SecurityPolicy, a id.
@@ -3119,8 +3877,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SecurityPolicy"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ChannelPage0Mask, a id.
@@ -3133,8 +3895,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ChannelPage0Mask"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OperationalDatasetComponents, a id.
@@ -3147,8 +3913,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OperationalDatasetComponents"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveNetworkFaultsList, a id.
@@ -3161,8 +3931,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveNetworkFaultsList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Bssid, a id.
@@ -3175,8 +3949,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Bssid"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SecurityType, a id.
@@ -3189,8 +3967,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SecurityType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WiFiVersion, a id.
@@ -3203,8 +3985,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WiFiVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ChannelNumber, a id.
@@ -3217,8 +4003,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ChannelNumber"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Rssi, a id.
@@ -3231,8 +4021,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Rssi"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BeaconLostCount, a id.
@@ -3245,8 +4039,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BeaconLostCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BeaconRxCount, a id.
@@ -3259,8 +4057,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BeaconRxCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PacketMulticastRxCount, a id.
@@ -3273,8 +4075,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PacketMulticastRxCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PacketMulticastTxCount, a id.
@@ -3287,8 +4093,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PacketMulticastTxCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PacketUnicastRxCount, a id.
@@ -3301,8 +4111,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PacketUnicastRxCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PacketUnicastTxCount, a id.
@@ -3315,8 +4129,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PacketUnicastTxCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentMaxRate, a id.
@@ -3329,8 +4147,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentMaxRate"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PHYRate, a id.
@@ -3343,8 +4165,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PHYRate"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // FullDuplex, a id.
@@ -3357,8 +4183,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"FullDuplex"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PacketRxCount, a id.
@@ -3371,8 +4201,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PacketRxCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PacketTxCount, a id.
@@ -3385,8 +4219,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PacketTxCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxErrCount, a id.
@@ -3399,8 +4237,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TxErrCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CollisionCount, a id.
@@ -3413,8 +4255,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CollisionCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CarrierDetect, a id.
@@ -3427,8 +4273,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CarrierDetect"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TimeSinceReset, a id.
@@ -3441,8 +4291,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TimeSinceReset"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfPositions, a id.
@@ -3455,8 +4309,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfPositions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPosition, a id.
@@ -3469,8 +4327,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentPosition"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MultiPressMax, a id.
@@ -3483,8 +4345,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MultiPressMax"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WindowStatus, a id.
@@ -3497,8 +4363,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WindowStatus"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AdminFabricIndex, a id.
@@ -3511,8 +4381,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AdminFabricIndex"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AdminVendorId, a id.
@@ -3525,8 +4399,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AdminVendorId"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NOCs, a id.
@@ -3539,8 +4417,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NOCs"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Fabrics, a id.
@@ -3553,8 +4435,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Fabrics"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SupportedFabrics, a id.
@@ -3567,8 +4453,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SupportedFabrics"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CommissionedFabrics, a id.
@@ -3581,8 +4471,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CommissionedFabrics"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TrustedRootCertificates, a id.
@@ -3595,8 +4489,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TrustedRootCertificates"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentFabricIndex, a id.
@@ -3609,8 +4507,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentFabricIndex"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // GroupKeyMap, a id.
@@ -3639,8 +4541,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"GroupKeyMap"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // GroupTable, a id.
@@ -3653,8 +4559,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"GroupTable"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxGroupsPerFabric, a id.
@@ -3667,8 +4577,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxGroupsPerFabric"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxGroupKeysPerFabric, a id.
@@ -3681,8 +4595,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxGroupKeysPerFabric"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LabelList, a id.
@@ -3711,8 +4629,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LabelList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // StateValue, a id.
@@ -3725,8 +4647,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"StateValue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // StandardNamespace, a id.
@@ -3739,8 +4665,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"StandardNamespace"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SupportedModes, a id.
@@ -3753,8 +4683,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SupportedModes"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentMode, a id.
@@ -3767,8 +4701,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // StartUpMode, a id.
@@ -3797,8 +4735,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OnMode, a id.
@@ -3827,8 +4769,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OnMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LockState, a id.
@@ -3841,8 +4787,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LockState"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LockType, a id.
@@ -3855,8 +4805,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LockType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActuatorEnabled, a id.
@@ -3869,8 +4823,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ActuatorEnabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // DoorState, a id.
@@ -3883,8 +4841,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"DoorState"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // DoorOpenEvents, a id.
@@ -3913,8 +4875,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"DoorOpenEvents"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // DoorClosedEvents, a id.
@@ -3943,8 +4909,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"DoorClosedEvents"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OpenPeriod, a id.
@@ -3973,8 +4943,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OpenPeriod"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfTotalUsersSupported, a id.
@@ -3987,8 +4961,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfTotalUsersSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfPINUsersSupported, a id.
@@ -4001,8 +4979,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfPINUsersSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfRFIDUsersSupported, a id.
@@ -4015,8 +4997,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfRFIDUsersSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfWeekDaySchedulesSupportedPerUser, a id.
@@ -4029,8 +5015,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfWeekDaySchedulesSupportedPerUser"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfYearDaySchedulesSupportedPerUser, a id.
@@ -4043,8 +5033,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfYearDaySchedulesSupportedPerUser"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfHolidaySchedulesSupported, a id.
@@ -4057,8 +5051,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfHolidaySchedulesSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxPINCodeLength, a id.
@@ -4071,8 +5069,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxPINCodeLength"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinPINCodeLength, a id.
@@ -4085,8 +5087,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinPINCodeLength"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxRFIDCodeLength, a id.
@@ -4099,8 +5105,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxRFIDCodeLength"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinRFIDCodeLength, a id.
@@ -4113,8 +5123,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinRFIDCodeLength"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CredentialRulesSupport, a id.
@@ -4127,8 +5141,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CredentialRulesSupport"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfCredentialsSupportedPerUser, a id.
@@ -4141,8 +5159,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfCredentialsSupportedPerUser"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Language, a id.
@@ -4171,8 +5193,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Language"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LEDSettings, a id.
@@ -4201,8 +5227,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LEDSettings"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AutoRelockTime, a id.
@@ -4231,8 +5261,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AutoRelockTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SoundVolume, a id.
@@ -4261,8 +5295,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SoundVolume"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OperatingMode, a id.
@@ -4291,8 +5329,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OperatingMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SupportedOperatingModes, a id.
@@ -4305,8 +5347,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SupportedOperatingModes"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // DefaultConfigurationRegister, a id.
@@ -4319,8 +5365,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"DefaultConfigurationRegister"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnableLocalProgramming, a id.
@@ -4349,8 +5399,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EnableLocalProgramming"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnableOneTouchLocking, a id.
@@ -4379,8 +5433,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EnableOneTouchLocking"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnableInsideStatusLED, a id.
@@ -4409,8 +5467,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EnableInsideStatusLED"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnablePrivacyModeButton, a id.
@@ -4439,8 +5501,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EnablePrivacyModeButton"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LocalProgrammingFeatures, a id.
@@ -4469,8 +5535,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LocalProgrammingFeatures"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WrongCodeEntryLimit, a id.
@@ -4499,8 +5569,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WrongCodeEntryLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UserCodeTemporaryDisableTime, a id.
@@ -4529,8 +5603,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UserCodeTemporaryDisableTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SendPINOverTheAir, a id.
@@ -4559,8 +5637,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SendPINOverTheAir"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RequirePINforRemoteOperation, a id.
@@ -4589,8 +5671,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RequirePINforRemoteOperation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ExpiringUserTimeout, a id.
@@ -4619,8 +5705,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ExpiringUserTimeout"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Type, a id.
@@ -4633,8 +5723,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Type"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PhysicalClosedLimitLift, a id.
@@ -4647,8 +5741,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalClosedLimitLift"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PhysicalClosedLimitTilt, a id.
@@ -4661,8 +5759,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalClosedLimitTilt"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionLift, a id.
@@ -4675,8 +5777,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentPositionLift"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionTilt, a id.
@@ -4689,8 +5795,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentPositionTilt"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfActuationsLift, a id.
@@ -4703,8 +5813,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfActuationsLift"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfActuationsTilt, a id.
@@ -4717,8 +5831,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfActuationsTilt"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ConfigStatus, a id.
@@ -4731,8 +5849,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ConfigStatus"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionLiftPercentage, a id.
@@ -4745,8 +5867,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentPositionLiftPercentage"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionTiltPercentage, a id.
@@ -4759,8 +5885,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentPositionTiltPercentage"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OperationalStatus, a id.
@@ -4773,8 +5903,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OperationalStatus"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TargetPositionLiftPercent100ths, a id.
@@ -4787,8 +5921,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TargetPositionLiftPercent100ths"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TargetPositionTiltPercent100ths, a id.
@@ -4801,8 +5939,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TargetPositionTiltPercent100ths"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EndProductType, a id.
@@ -4815,8 +5957,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EndProductType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionLiftPercent100ths, a id.
@@ -4829,8 +5975,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentPositionLiftPercent100ths"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentPositionTiltPercent100ths, a id.
@@ -4843,8 +5993,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentPositionTiltPercent100ths"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // InstalledOpenLimitLift, a id.
@@ -4857,8 +6011,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"InstalledOpenLimitLift"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // InstalledClosedLimitLift, a id.
@@ -4871,8 +6029,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"InstalledClosedLimitLift"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // InstalledOpenLimitTilt, a id.
@@ -4885,8 +6047,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"InstalledOpenLimitTilt"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // InstalledClosedLimitTilt, a id.
@@ -4899,8 +6065,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"InstalledClosedLimitTilt"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Mode, a id.
@@ -4929,8 +6099,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Mode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SafetyStatus, a id.
@@ -4943,8 +6117,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SafetyStatus"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxPressure, a id.
@@ -4957,8 +6135,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxPressure"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxSpeed, a id.
@@ -4971,8 +6153,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxSpeed"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxFlow, a id.
@@ -4985,8 +6171,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxFlow"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinConstPressure, a id.
@@ -4999,8 +6189,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinConstPressure"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxConstPressure, a id.
@@ -5013,8 +6207,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxConstPressure"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinCompPressure, a id.
@@ -5027,8 +6225,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinCompPressure"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxCompPressure, a id.
@@ -5041,8 +6243,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxCompPressure"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinConstSpeed, a id.
@@ -5055,8 +6261,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinConstSpeed"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxConstSpeed, a id.
@@ -5069,8 +6279,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxConstSpeed"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinConstFlow, a id.
@@ -5083,8 +6297,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinConstFlow"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxConstFlow, a id.
@@ -5097,8 +6315,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxConstFlow"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinConstTemp, a id.
@@ -5111,8 +6333,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinConstTemp"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxConstTemp, a id.
@@ -5125,8 +6351,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxConstTemp"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PumpStatus, a id.
@@ -5139,8 +6369,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PumpStatus"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EffectiveOperationMode, a id.
@@ -5153,8 +6387,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EffectiveOperationMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EffectiveControlMode, a id.
@@ -5167,8 +6405,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EffectiveControlMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Capacity, a id.
@@ -5181,8 +6423,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Capacity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Speed, a id.
@@ -5195,8 +6441,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Speed"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LifetimeRunningHours, a id.
@@ -5225,8 +6475,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LifetimeRunningHours"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Power, a id.
@@ -5239,8 +6493,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Power"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LifetimeEnergyConsumed, a id.
@@ -5269,8 +6527,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LifetimeEnergyConsumed"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OperationMode, a id.
@@ -5299,8 +6561,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OperationMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ControlMode, a id.
@@ -5329,8 +6595,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ControlMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LocalTemperature, a id.
@@ -5343,8 +6613,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LocalTemperature"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OutdoorTemperature, a id.
@@ -5357,8 +6631,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OutdoorTemperature"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Occupancy, a id.
@@ -5371,8 +6649,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Occupancy"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AbsMinHeatSetpointLimit, a id.
@@ -5385,8 +6667,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AbsMinHeatSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AbsMaxHeatSetpointLimit, a id.
@@ -5399,8 +6685,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AbsMaxHeatSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AbsMinCoolSetpointLimit, a id.
@@ -5413,8 +6703,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AbsMinCoolSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AbsMaxCoolSetpointLimit, a id.
@@ -5427,8 +6721,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AbsMaxCoolSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PICoolingDemand, a id.
@@ -5441,8 +6739,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PICoolingDemand"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PIHeatingDemand, a id.
@@ -5455,8 +6757,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PIHeatingDemand"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // HVACSystemTypeConfiguration, a id.
@@ -5485,8 +6791,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"HVACSystemTypeConfiguration"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LocalTemperatureCalibration, a id.
@@ -5515,8 +6825,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LocalTemperatureCalibration"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupiedCoolingSetpoint, a id.
@@ -5545,8 +6859,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupiedCoolingSetpoint"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupiedHeatingSetpoint, a id.
@@ -5575,8 +6893,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupiedHeatingSetpoint"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UnoccupiedCoolingSetpoint, a id.
@@ -5605,8 +6927,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UnoccupiedCoolingSetpoint"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UnoccupiedHeatingSetpoint, a id.
@@ -5635,8 +6961,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UnoccupiedHeatingSetpoint"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinHeatSetpointLimit, a id.
@@ -5665,8 +6995,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinHeatSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxHeatSetpointLimit, a id.
@@ -5695,8 +7029,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxHeatSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinCoolSetpointLimit, a id.
@@ -5725,8 +7063,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinCoolSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxCoolSetpointLimit, a id.
@@ -5755,8 +7097,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxCoolSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinSetpointDeadBand, a id.
@@ -5785,8 +7131,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinSetpointDeadBand"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RemoteSensing, a id.
@@ -5815,8 +7165,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RemoteSensing"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ControlSequenceOfOperation, a id.
@@ -5845,8 +7199,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ControlSequenceOfOperation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SystemMode, a id.
@@ -5875,8 +7233,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SystemMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ThermostatRunningMode, a id.
@@ -5889,8 +7251,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ThermostatRunningMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // StartOfWeek, a id.
@@ -5903,8 +7269,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"StartOfWeek"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfWeeklyTransitions, a id.
@@ -5917,8 +7287,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfWeeklyTransitions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfDailyTransitions, a id.
@@ -5931,8 +7305,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfDailyTransitions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TemperatureSetpointHold, a id.
@@ -5961,8 +7339,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureSetpointHold"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TemperatureSetpointHoldDuration, a id.
@@ -5991,8 +7373,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureSetpointHoldDuration"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ThermostatProgrammingOperationMode, a id.
@@ -6021,8 +7407,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ThermostatProgrammingOperationMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ThermostatRunningState, a id.
@@ -6035,8 +7425,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ThermostatRunningState"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SetpointChangeSource, a id.
@@ -6049,8 +7443,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SetpointChangeSource"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SetpointChangeAmount, a id.
@@ -6063,8 +7461,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SetpointChangeAmount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SetpointChangeSourceTimestamp, a id.
@@ -6077,8 +7479,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SetpointChangeSourceTimestamp"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupiedSetback, a id.
@@ -6107,8 +7513,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupiedSetback"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupiedSetbackMin, a id.
@@ -6121,8 +7531,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupiedSetbackMin"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupiedSetbackMax, a id.
@@ -6135,8 +7549,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupiedSetbackMax"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UnoccupiedSetback, a id.
@@ -6165,8 +7583,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UnoccupiedSetback"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UnoccupiedSetbackMin, a id.
@@ -6179,8 +7601,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UnoccupiedSetbackMin"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UnoccupiedSetbackMax, a id.
@@ -6193,8 +7619,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UnoccupiedSetbackMax"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EmergencyHeatDelta, a id.
@@ -6223,8 +7653,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EmergencyHeatDelta"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACType, a id.
@@ -6253,8 +7687,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ACType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACCapacity, a id.
@@ -6283,8 +7721,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ACCapacity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACRefrigerantType, a id.
@@ -6313,8 +7755,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ACRefrigerantType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACCompressorType, a id.
@@ -6343,8 +7789,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ACCompressorType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACErrorCode, a id.
@@ -6373,8 +7823,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ACErrorCode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACLouverPosition, a id.
@@ -6403,8 +7857,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ACLouverPosition"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACCoilTemperature, a id.
@@ -6417,8 +7875,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ACCoilTemperature"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACCapacityformat, a id.
@@ -6447,8 +7909,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ACCapacityformat"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // FanMode, a id.
@@ -6477,8 +7943,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"FanMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // FanModeSequence, a id.
@@ -6507,8 +7977,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"FanModeSequence"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PercentSetting, a id.
@@ -6537,8 +8011,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PercentSetting"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PercentCurrent, a id.
@@ -6551,8 +8029,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PercentCurrent"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SpeedMax, a id.
@@ -6565,8 +8047,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SpeedMax"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SpeedSetting, a id.
@@ -6595,8 +8081,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SpeedSetting"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SpeedCurrent, a id.
@@ -6609,8 +8099,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SpeedCurrent"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RockSupport, a id.
@@ -6623,8 +8117,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RockSupport"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RockSetting, a id.
@@ -6653,8 +8151,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RockSetting"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WindSupport, a id.
@@ -6667,8 +8169,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WindSupport"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WindSetting, a id.
@@ -6697,8 +8203,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WindSetting"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TemperatureDisplayMode, a id.
@@ -6727,8 +8237,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureDisplayMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // KeypadLockout, a id.
@@ -6757,8 +8271,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"KeypadLockout"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ScheduleProgrammingVisibility, a id.
@@ -6787,8 +8305,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ScheduleProgrammingVisibility"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentHue, a id.
@@ -6801,8 +8323,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentHue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentSaturation, a id.
@@ -6815,8 +8341,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentSaturation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentX, a id.
@@ -6829,8 +8359,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentX"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentY, a id.
@@ -6843,8 +8377,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentY"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // DriftCompensation, a id.
@@ -6857,8 +8395,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"DriftCompensation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CompensationText, a id.
@@ -6871,8 +8413,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CompensationText"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorTemperatureMireds, a id.
@@ -6885,8 +8431,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorTemperatureMireds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorMode, a id.
@@ -6899,8 +8449,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfPrimaries, a id.
@@ -6913,8 +8467,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NumberOfPrimaries"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary1X, a id.
@@ -6927,8 +8485,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary1X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary1Y, a id.
@@ -6941,8 +8503,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary1Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary1Intensity, a id.
@@ -6955,8 +8521,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary1Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary2X, a id.
@@ -6969,8 +8539,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary2X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary2Y, a id.
@@ -6983,8 +8557,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary2Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary2Intensity, a id.
@@ -6997,8 +8575,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary2Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary3X, a id.
@@ -7011,8 +8593,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary3X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary3Y, a id.
@@ -7025,8 +8611,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary3Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary3Intensity, a id.
@@ -7039,8 +8629,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary3Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary4X, a id.
@@ -7053,8 +8647,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary4X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary4Y, a id.
@@ -7067,8 +8665,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary4Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary4Intensity, a id.
@@ -7081,8 +8683,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary4Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary5X, a id.
@@ -7095,8 +8701,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary5X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary5Y, a id.
@@ -7109,8 +8719,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary5Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary5Intensity, a id.
@@ -7123,8 +8737,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary5Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary6X, a id.
@@ -7137,8 +8755,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary6X"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary6Y, a id.
@@ -7151,8 +8773,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary6Y"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Primary6Intensity, a id.
@@ -7165,8 +8791,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Primary6Intensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WhitePointX, a id.
@@ -7179,8 +8809,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WhitePointX"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WhitePointY, a id.
@@ -7193,8 +8827,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WhitePointY"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointRX, a id.
@@ -7207,8 +8845,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorPointRX"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointRY, a id.
@@ -7221,8 +8863,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorPointRY"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointRIntensity, a id.
@@ -7235,8 +8881,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorPointRIntensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointGX, a id.
@@ -7249,8 +8899,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorPointGX"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointGY, a id.
@@ -7263,8 +8917,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorPointGY"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointGIntensity, a id.
@@ -7277,8 +8935,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorPointGIntensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointBX, a id.
@@ -7291,8 +8953,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorPointBX"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointBY, a id.
@@ -7305,8 +8971,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorPointBY"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorPointBIntensity, a id.
@@ -7319,8 +8989,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorPointBIntensity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnhancedCurrentHue, a id.
@@ -7333,8 +9007,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EnhancedCurrentHue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnhancedColorMode, a id.
@@ -7347,8 +9025,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EnhancedColorMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorLoopActive, a id.
@@ -7361,8 +9043,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorLoopActive"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorLoopDirection, a id.
@@ -7375,8 +9061,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorLoopDirection"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorLoopTime, a id.
@@ -7389,8 +9079,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorLoopTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorLoopStartEnhancedHue, a id.
@@ -7403,8 +9097,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorLoopStartEnhancedHue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorLoopStoredEnhancedHue, a id.
@@ -7417,8 +9115,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorLoopStoredEnhancedHue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorCapabilities, a id.
@@ -7431,8 +9133,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorCapabilities"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorTempPhysicalMinMireds, a id.
@@ -7445,8 +9151,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorTempPhysicalMinMireds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ColorTempPhysicalMaxMireds, a id.
@@ -7459,8 +9169,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ColorTempPhysicalMaxMireds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CoupleColorTempToLevelMinMireds, a id.
@@ -7473,8 +9187,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CoupleColorTempToLevelMinMireds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // StartUpColorTemperatureMireds, a id.
@@ -7503,8 +9221,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpColorTemperatureMireds"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PhysicalMinLevel, a id.
@@ -7517,8 +9239,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalMinLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PhysicalMaxLevel, a id.
@@ -7531,8 +9257,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalMaxLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BallastStatus, a id.
@@ -7545,8 +9275,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BallastStatus"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // IntrinsicBalanceFactor, a id.
@@ -7575,8 +9309,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"IntrinsicBalanceFactor"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // BallastFactorAdjustment, a id.
@@ -7605,8 +9343,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"BallastFactorAdjustment"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampQuantity, a id.
@@ -7619,8 +9361,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LampQuantity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampType, a id.
@@ -7649,8 +9395,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LampType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampManufacturer, a id.
@@ -7679,8 +9429,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LampManufacturer"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampRatedHours, a id.
@@ -7709,8 +9463,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LampRatedHours"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampBurnHours, a id.
@@ -7739,8 +9497,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LampBurnHours"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampAlarmMode, a id.
@@ -7769,8 +9531,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LampAlarmMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LampBurnHoursTripPoint, a id.
@@ -7799,8 +9565,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LampBurnHoursTripPoint"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MeasuredValue, a id.
@@ -7813,8 +9583,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MeasuredValue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinMeasuredValue, a id.
@@ -7827,8 +9601,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinMeasuredValue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxMeasuredValue, a id.
@@ -7841,8 +9619,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxMeasuredValue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Tolerance, a id.
@@ -7855,8 +9637,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Tolerance"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LightSensorType, a id.
@@ -7869,8 +9655,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LightSensorType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ScaledValue, a id.
@@ -7883,8 +9673,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ScaledValue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinScaledValue, a id.
@@ -7897,8 +9691,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MinScaledValue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxScaledValue, a id.
@@ -7911,8 +9709,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxScaledValue"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ScaledTolerance, a id.
@@ -7925,8 +9727,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ScaledTolerance"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Scale, a id.
@@ -7939,8 +9745,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Scale"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupancySensorType, a id.
@@ -7953,8 +9763,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupancySensorType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupancySensorTypeBitmap, a id.
@@ -7967,8 +9781,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupancySensorTypeBitmap"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PirOccupiedToUnoccupiedDelay, a id.
@@ -7997,8 +9815,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PirOccupiedToUnoccupiedDelay"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PirUnoccupiedToOccupiedDelay, a id.
@@ -8027,8 +9849,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PirUnoccupiedToOccupiedDelay"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PirUnoccupiedToOccupiedThreshold, a id.
@@ -8057,8 +9883,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PirUnoccupiedToOccupiedThreshold"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UltrasonicOccupiedToUnoccupiedDelay, a id.
@@ -8087,8 +9917,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UltrasonicUnoccupiedToOccupiedDelay, a id.
@@ -8117,8 +9951,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // UltrasonicUnoccupiedToOccupiedThreshold, a id.
@@ -8147,8 +9985,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PhysicalContactOccupiedToUnoccupiedDelay, a id.
@@ -8177,8 +10019,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PhysicalContactUnoccupiedToOccupiedDelay, a id.
@@ -8207,8 +10053,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PhysicalContactUnoccupiedToOccupiedThreshold, a id.
@@ -8237,8 +10087,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // MACAddress, a id.
@@ -8251,8 +10105,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"MACAddress"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ChannelList, a id.
@@ -8265,8 +10123,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ChannelList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Lineup, a id.
@@ -8279,8 +10141,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Lineup"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentChannel, a id.
@@ -8293,8 +10159,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentChannel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TargetList, a id.
@@ -8307,8 +10177,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TargetList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentTarget, a id.
@@ -8321,8 +10195,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentTarget"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentState, a id.
@@ -8335,8 +10213,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentState"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // StartTime, a id.
@@ -8349,8 +10231,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"StartTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Duration, a id.
@@ -8363,8 +10249,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Duration"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SampledPosition, a id.
@@ -8377,8 +10267,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SampledPosition"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // PlaybackSpeed, a id.
@@ -8391,8 +10285,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"PlaybackSpeed"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SeekRangeEnd, a id.
@@ -8405,8 +10303,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SeekRangeEnd"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SeekRangeStart, a id.
@@ -8419,8 +10321,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SeekRangeStart"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // InputList, a id.
@@ -8433,8 +10339,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"InputList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentInput, a id.
@@ -8447,8 +10357,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentInput"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AcceptHeader, a id.
@@ -8461,8 +10375,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AcceptHeader"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // SupportedStreamingProtocols, a id.
@@ -8491,8 +10409,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"SupportedStreamingProtocols"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OutputList, a id.
@@ -8505,8 +10427,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OutputList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentOutput, a id.
@@ -8519,8 +10445,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentOutput"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CatalogList, a id.
@@ -8533,8 +10463,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CatalogList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentApp, a id.
@@ -8563,8 +10497,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentApp"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ApplicationName, a id.
@@ -8577,8 +10515,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ApplicationName"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Application, a id.
@@ -8591,8 +10533,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Application"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ApplicationVersion, a id.
@@ -8605,8 +10551,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ApplicationVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // AllowedVendorList, a id.
@@ -8619,8 +10569,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"AllowedVendorList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Boolean, a id.
@@ -8649,8 +10603,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Boolean"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Bitmap8, a id.
@@ -8679,8 +10637,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap8"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Bitmap16, a id.
@@ -8709,8 +10671,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap16"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Bitmap32, a id.
@@ -8739,8 +10705,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap32"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Bitmap64, a id.
@@ -8769,8 +10739,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap64"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int8u, a id.
@@ -8799,8 +10773,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int8u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int16u, a id.
@@ -8829,8 +10807,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int16u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int24u, a id.
@@ -8859,8 +10841,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int24u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int32u, a id.
@@ -8889,8 +10875,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int32u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int40u, a id.
@@ -8919,8 +10909,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int40u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int48u, a id.
@@ -8949,8 +10943,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int48u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int56u, a id.
@@ -8979,8 +10977,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int56u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int64u, a id.
@@ -9009,8 +11011,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int64u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int8s, a id.
@@ -9039,8 +11045,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int8s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int16s, a id.
@@ -9069,8 +11079,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int16s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int24s, a id.
@@ -9099,8 +11113,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int24s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int32s, a id.
@@ -9129,8 +11147,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int32s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int40s, a id.
@@ -9159,8 +11181,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int40s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int48s, a id.
@@ -9189,8 +11215,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int48s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int56s, a id.
@@ -9219,8 +11249,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int56s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Int64s, a id.
@@ -9249,8 +11283,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Int64s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Enum8, a id.
@@ -9279,8 +11317,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Enum8"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Enum16, a id.
@@ -9309,8 +11351,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Enum16"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // FloatSingle, a id.
@@ -9339,8 +11385,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"FloatSingle"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // FloatDouble, a id.
@@ -9369,8 +11419,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"FloatDouble"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // OctetString, a id.
@@ -9399,8 +11453,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"OctetString"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ListInt8u, a id.
@@ -9429,8 +11487,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ListInt8u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ListOctetString, a id.
@@ -9459,8 +11521,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ListOctetString"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ListStructOctetString, a id.
@@ -9489,8 +11555,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ListStructOctetString"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LongOctetString, a id.
@@ -9519,8 +11589,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LongOctetString"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // CharString, a id.
@@ -9549,8 +11623,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"CharString"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // LongCharString, a id.
@@ -9579,8 +11657,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"LongCharString"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EpochUs, a id.
@@ -9609,8 +11691,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EpochUs"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EpochS, a id.
@@ -9639,8 +11725,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EpochS"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // VendorId, a id.
@@ -9669,8 +11759,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"VendorId"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ListNullablesAndOptionalsStruct, a id.
@@ -9699,8 +11793,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ListNullablesAndOptionalsStruct"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnumAttr, a id.
@@ -9729,8 +11827,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"EnumAttr"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // StructAttr, a id.
@@ -9759,8 +11861,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"StructAttr"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RangeRestrictedInt8u, a id.
@@ -9789,8 +11895,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt8u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RangeRestrictedInt8s, a id.
@@ -9819,8 +11929,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt8s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RangeRestrictedInt16u, a id.
@@ -9849,8 +11963,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt16u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // RangeRestrictedInt16s, a id.
@@ -9879,8 +11997,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt16s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ListLongOctetString, a id.
@@ -9909,8 +12031,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ListLongOctetString"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ListFabricScoped, a id.
@@ -9939,8 +12065,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ListFabricScoped"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // TimedWriteBoolean, a id.
@@ -9969,8 +12099,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"TimedWriteBoolean"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // GeneralErrorBoolean, a id.
@@ -9999,8 +12133,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"GeneralErrorBoolean"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // ClusterErrorBoolean, a id.
@@ -10029,8 +12167,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"ClusterErrorBoolean"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // Unsupported, a id.
@@ -10059,8 +12201,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"Unsupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableBoolean, a id.
@@ -10089,8 +12235,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBoolean"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableBitmap8, a id.
@@ -10119,8 +12269,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap8"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableBitmap16, a id.
@@ -10149,8 +12303,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap16"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableBitmap32, a id.
@@ -10179,8 +12337,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap32"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableBitmap64, a id.
@@ -10209,8 +12371,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap64"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt8u, a id.
@@ -10239,8 +12405,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt8u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt16u, a id.
@@ -10269,8 +12439,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt16u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt24u, a id.
@@ -10299,8 +12473,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt24u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt32u, a id.
@@ -10329,8 +12507,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt32u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt40u, a id.
@@ -10359,8 +12541,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt40u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt48u, a id.
@@ -10389,8 +12575,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt48u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt56u, a id.
@@ -10419,8 +12609,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt56u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt64u, a id.
@@ -10449,8 +12643,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt64u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt8s, a id.
@@ -10479,8 +12677,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt8s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt16s, a id.
@@ -10509,8 +12711,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt16s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt24s, a id.
@@ -10539,8 +12745,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt24s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt32s, a id.
@@ -10569,8 +12779,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt32s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt40s, a id.
@@ -10599,8 +12813,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt40s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt48s, a id.
@@ -10629,8 +12847,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt48s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt56s, a id.
@@ -10659,8 +12881,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt56s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableInt64s, a id.
@@ -10689,8 +12915,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt64s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableEnum8, a id.
@@ -10719,8 +12949,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableEnum8"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableEnum16, a id.
@@ -10749,8 +12983,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableEnum16"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableFloatSingle, a id.
@@ -10779,8 +13017,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableFloatSingle"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableFloatDouble, a id.
@@ -10809,8 +13051,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableFloatDouble"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableOctetString, a id.
@@ -10839,8 +13085,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableOctetString"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableCharString, a id.
@@ -10869,8 +13119,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableCharString"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableEnumAttr, a id.
@@ -10899,8 +13153,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableEnumAttr"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableStruct, a id.
@@ -10929,8 +13187,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableStruct"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableRangeRestrictedInt8u, a id.
@@ -10959,8 +13221,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt8u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableRangeRestrictedInt8s, a id.
@@ -10989,8 +13255,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt8s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableRangeRestrictedInt16u, a id.
@@ -11019,8 +13289,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt16u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // NullableRangeRestrictedInt16s, a id.
@@ -11049,8 +13323,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt16s"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // WriteOnlyInt8u, a id.
@@ -11079,8 +13357,12 @@
     (void)maxInterval;
     (void)params;
     (void)subscriptionEstablishedHandler;
-    (void)reportHandler;
-    [MTRBaseClusterTestCluster charon_port_values][@"WriteOnlyInt8u"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
+        });
+    }
 }
 
 // identify. It answers: there is nothing to reach on a release with no fabric.

@@ -17,9 +17,11 @@
 //
 //  Every attribute reads and writes a plain value the caller set, in one table keyed by the
 //  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 46 cache reads
-//  the header declares are not emitted, because a release with no Matter hardware has no node to
-//  read from are implemented and answer as Apple documents: no value, and an error.
+//  command answers through its completion. Nothing here reaches a fabric: the 46 cached reads
+//  the header declares, and every subscribe, answer as the framework does when it has nothing to
+//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  a subscribe calls its report handler once with the same, asynchronously on the cluster's
+//  queue, never calls its established handler, and leaves the stored value alone.
 //
 #import <Foundation/Foundation.h>
 #import <Matter/Matter.h>
@@ -138,8 +140,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MaxConcurrentEncoders"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxEncodedPixelRate, a NSNumber.
@@ -158,8 +164,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MaxEncodedPixelRate"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // VideoSensorParams, a MTRCameraAVStreamManagementClusterVideoSensorParamsStruct.
@@ -178,8 +188,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"VideoSensorParams"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // NightVisionUsesInfrared, a NSNumber.
@@ -198,8 +212,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"NightVisionUsesInfrared"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinViewportResolution, a MTRCameraAVStreamManagementClusterVideoResolutionStruct.
@@ -218,8 +236,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MinViewportResolution"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // RateDistortionTradeOffPoints, a NSArray.
@@ -238,8 +260,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"RateDistortionTradeOffPoints"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxContentBufferSize, a NSNumber.
@@ -258,8 +284,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MaxContentBufferSize"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // MicrophoneCapabilities, a MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct.
@@ -278,8 +308,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneCapabilities"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // SpeakerCapabilities, a MTRCameraAVStreamManagementClusterAudioCapabilitiesStruct.
@@ -298,8 +332,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerCapabilities"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // TwoWayTalkSupport, a NSNumber.
@@ -318,8 +356,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"TwoWayTalkSupport"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // SnapshotCapabilities, a NSArray.
@@ -338,8 +380,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SnapshotCapabilities"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxNetworkBandwidth, a NSNumber.
@@ -358,8 +404,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MaxNetworkBandwidth"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentFrameRate, a NSNumber.
@@ -378,8 +428,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"CurrentFrameRate"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // HDRModeEnabled, a NSNumber.
@@ -414,8 +468,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"HDRModeEnabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // SupportedStreamUsages, a NSArray.
@@ -434,8 +492,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SupportedStreamUsages"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // AllocatedVideoStreams, a NSArray.
@@ -454,8 +516,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"AllocatedVideoStreams"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // AllocatedAudioStreams, a NSArray.
@@ -474,8 +540,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"AllocatedAudioStreams"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // AllocatedSnapshotStreams, a NSArray.
@@ -494,8 +564,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"AllocatedSnapshotStreams"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // StreamUsagePriorities, a NSArray.
@@ -514,8 +588,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"StreamUsagePriorities"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // SoftRecordingPrivacyModeEnabled, a NSNumber.
@@ -550,8 +628,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SoftRecordingPrivacyModeEnabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // SoftLivestreamPrivacyModeEnabled, a NSNumber.
@@ -586,8 +668,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SoftLivestreamPrivacyModeEnabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // HardPrivacyModeOn, a NSNumber.
@@ -606,8 +692,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"HardPrivacyModeOn"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // NightVision, a NSNumber.
@@ -642,8 +732,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"NightVision"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // NightVisionIllum, a NSNumber.
@@ -678,8 +772,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"NightVisionIllum"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // Viewport, a MTRDataTypeViewportStruct.
@@ -714,8 +812,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"Viewport"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // SpeakerMuted, a NSNumber.
@@ -750,8 +852,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerMuted"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // SpeakerVolumeLevel, a NSNumber.
@@ -786,8 +892,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerVolumeLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // SpeakerMaxLevel, a NSNumber.
@@ -806,8 +916,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerMaxLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // SpeakerMinLevel, a NSNumber.
@@ -826,8 +940,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerMinLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // MicrophoneMuted, a NSNumber.
@@ -862,8 +980,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMuted"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // MicrophoneVolumeLevel, a NSNumber.
@@ -898,8 +1020,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneVolumeLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // MicrophoneMaxLevel, a NSNumber.
@@ -918,8 +1044,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMaxLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // MicrophoneMinLevel, a NSNumber.
@@ -938,8 +1068,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMinLevel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // MicrophoneAGCEnabled, a NSNumber.
@@ -974,8 +1108,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneAGCEnabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // ImageRotation, a NSNumber.
@@ -1010,8 +1148,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageRotation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // ImageFlipHorizontal, a NSNumber.
@@ -1046,8 +1188,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageFlipHorizontal"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // ImageFlipVertical, a NSNumber.
@@ -1082,8 +1228,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageFlipVertical"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // LocalVideoRecordingEnabled, a NSNumber.
@@ -1118,8 +1268,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"LocalVideoRecordingEnabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // LocalSnapshotRecordingEnabled, a NSNumber.
@@ -1154,8 +1308,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"LocalSnapshotRecordingEnabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // StatusLightEnabled, a NSNumber.
@@ -1190,8 +1348,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"StatusLightEnabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // StatusLightBrightness, a NSNumber.
@@ -1226,8 +1388,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"StatusLightBrightness"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // GeneratedCommandList, a NSArray.
@@ -1246,8 +1412,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"GeneratedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // AcceptedCommandList, a NSArray.
@@ -1266,8 +1436,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"AcceptedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // AttributeList, a NSArray.
@@ -1286,8 +1460,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"AttributeList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // FeatureMap, a NSNumber.
@@ -1306,8 +1484,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"FeatureMap"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // ClusterRevision, a NSNumber.
@@ -1326,8 +1508,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ClusterRevision"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterCameraAVStreamManagement charon_port_no_node_error]);
+        });
+    }
 }
 
 // The cached read of MaxConcurrentEncoders: no value and the error, because there is no node.

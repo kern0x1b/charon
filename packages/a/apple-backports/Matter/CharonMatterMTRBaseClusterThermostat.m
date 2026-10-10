@@ -17,9 +17,11 @@
 //
 //  Every attribute reads and writes a plain value the caller set, in one table keyed by the
 //  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 69 cache reads
-//  the header declares are not emitted, because a release with no Matter hardware has no node to
-//  read from are implemented and answer as Apple documents: no value, and an error.
+//  command answers through its completion. Nothing here reaches a fabric: the 69 cached reads
+//  the header declares, and every subscribe, answer as the framework does when it has nothing to
+//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  a subscribe calls its report handler once with the same, asynchronously on the cluster's
+//  queue, never calls its established handler, and leaves the stored value alone.
 //
 #import <Foundation/Foundation.h>
 #import <Matter/Matter.h>
@@ -100,8 +102,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"LocalTemperature"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // OutdoorTemperature, a NSNumber.
@@ -120,8 +126,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"OutdoorTemperature"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // Occupancy, a NSNumber.
@@ -140,8 +150,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"Occupancy"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // AbsMinHeatSetpointLimit, a NSNumber.
@@ -160,8 +174,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"AbsMinHeatSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // AbsMaxHeatSetpointLimit, a NSNumber.
@@ -180,8 +198,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"AbsMaxHeatSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // AbsMinCoolSetpointLimit, a NSNumber.
@@ -200,8 +222,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"AbsMinCoolSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // AbsMaxCoolSetpointLimit, a NSNumber.
@@ -220,8 +246,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"AbsMaxCoolSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // PICoolingDemand, a NSNumber.
@@ -240,8 +270,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"PICoolingDemand"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // PIHeatingDemand, a NSNumber.
@@ -260,8 +294,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"PIHeatingDemand"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // HVACSystemTypeConfiguration, a NSNumber.
@@ -296,8 +334,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"HVACSystemTypeConfiguration"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // LocalTemperatureCalibration, a NSNumber.
@@ -332,8 +374,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"LocalTemperatureCalibration"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupiedCoolingSetpoint, a NSNumber.
@@ -368,8 +414,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"OccupiedCoolingSetpoint"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupiedHeatingSetpoint, a NSNumber.
@@ -404,8 +454,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"OccupiedHeatingSetpoint"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // UnoccupiedCoolingSetpoint, a NSNumber.
@@ -440,8 +494,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedCoolingSetpoint"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // UnoccupiedHeatingSetpoint, a NSNumber.
@@ -476,8 +534,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedHeatingSetpoint"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinHeatSetpointLimit, a NSNumber.
@@ -512,8 +574,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"MinHeatSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxHeatSetpointLimit, a NSNumber.
@@ -548,8 +614,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"MaxHeatSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinCoolSetpointLimit, a NSNumber.
@@ -584,8 +654,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"MinCoolSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxCoolSetpointLimit, a NSNumber.
@@ -620,8 +694,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"MaxCoolSetpointLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinSetpointDeadBand, a NSNumber.
@@ -656,8 +734,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"MinSetpointDeadBand"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // RemoteSensing, a NSNumber.
@@ -692,8 +774,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"RemoteSensing"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ControlSequenceOfOperation, a NSNumber.
@@ -728,8 +814,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ControlSequenceOfOperation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // SystemMode, a NSNumber.
@@ -764,8 +854,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"SystemMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ThermostatRunningMode, a NSNumber.
@@ -784,8 +878,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ThermostatRunningMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // StartOfWeek, a NSNumber.
@@ -804,8 +902,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"StartOfWeek"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfWeeklyTransitions, a NSNumber.
@@ -824,8 +926,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"NumberOfWeeklyTransitions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfDailyTransitions, a NSNumber.
@@ -844,8 +950,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"NumberOfDailyTransitions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // TemperatureSetpointHold, a NSNumber.
@@ -880,8 +990,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"TemperatureSetpointHold"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // TemperatureSetpointHoldDuration, a NSNumber.
@@ -916,8 +1030,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"TemperatureSetpointHoldDuration"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ThermostatProgrammingOperationMode, a NSNumber.
@@ -952,8 +1070,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ThermostatProgrammingOperationMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ThermostatRunningState, a NSNumber.
@@ -972,8 +1094,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ThermostatRunningState"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // SetpointChangeSource, a NSNumber.
@@ -992,8 +1118,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"SetpointChangeSource"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // SetpointChangeAmount, a NSNumber.
@@ -1012,8 +1142,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"SetpointChangeAmount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // SetpointChangeSourceTimestamp, a NSNumber.
@@ -1032,8 +1166,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"SetpointChangeSourceTimestamp"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupiedSetback, a NSNumber.
@@ -1068,8 +1206,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"OccupiedSetback"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupiedSetbackMin, a NSNumber.
@@ -1088,8 +1230,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"OccupiedSetbackMin"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // OccupiedSetbackMax, a NSNumber.
@@ -1108,8 +1254,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"OccupiedSetbackMax"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // UnoccupiedSetback, a NSNumber.
@@ -1144,8 +1294,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedSetback"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // UnoccupiedSetbackMin, a NSNumber.
@@ -1164,8 +1318,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedSetbackMin"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // UnoccupiedSetbackMax, a NSNumber.
@@ -1184,8 +1342,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedSetbackMax"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // EmergencyHeatDelta, a NSNumber.
@@ -1220,8 +1382,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"EmergencyHeatDelta"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACType, a NSNumber.
@@ -1256,8 +1422,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ACType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACCapacity, a NSNumber.
@@ -1292,8 +1462,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ACCapacity"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACRefrigerantType, a NSNumber.
@@ -1328,8 +1502,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ACRefrigerantType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACCompressorType, a NSNumber.
@@ -1364,8 +1542,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ACCompressorType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACErrorCode, a NSNumber.
@@ -1400,8 +1582,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ACErrorCode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACLouverPosition, a NSNumber.
@@ -1436,8 +1622,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ACLouverPosition"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACCoilTemperature, a NSNumber.
@@ -1456,8 +1646,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ACCoilTemperature"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ACCapacityformat, a NSNumber.
@@ -1492,8 +1686,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ACCapacityformat"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // PresetTypes, a NSArray.
@@ -1512,8 +1710,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"PresetTypes"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ScheduleTypes, a NSArray.
@@ -1532,8 +1734,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ScheduleTypes"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfPresets, a NSNumber.
@@ -1552,8 +1758,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"NumberOfPresets"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfSchedules, a NSNumber.
@@ -1572,8 +1782,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"NumberOfSchedules"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfScheduleTransitions, a NSNumber.
@@ -1592,8 +1806,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"NumberOfScheduleTransitions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfScheduleTransitionPerDay, a NSNumber.
@@ -1612,8 +1830,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"NumberOfScheduleTransitionPerDay"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActivePresetHandle, a NSData.
@@ -1632,8 +1854,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ActivePresetHandle"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveScheduleHandle, a NSData.
@@ -1652,8 +1878,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ActiveScheduleHandle"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // Presets, a NSArray.
@@ -1688,8 +1918,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"Presets"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // Schedules, a NSArray.
@@ -1724,8 +1958,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"Schedules"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // SetpointHoldExpiryTimestamp, a NSNumber.
@@ -1744,8 +1982,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"SetpointHoldExpiryTimestamp"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxThermostatSuggestions, a NSNumber.
@@ -1764,8 +2006,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"MaxThermostatSuggestions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ThermostatSuggestions, a NSArray.
@@ -1784,8 +2030,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ThermostatSuggestions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // CurrentThermostatSuggestion, a MTRThermostatClusterThermostatSuggestionStruct.
@@ -1804,8 +2054,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"CurrentThermostatSuggestion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ThermostatSuggestionNotFollowingReason, a NSNumber.
@@ -1824,8 +2078,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ThermostatSuggestionNotFollowingReason"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // GeneratedCommandList, a NSArray.
@@ -1844,8 +2102,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"GeneratedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // AcceptedCommandList, a NSArray.
@@ -1864,8 +2126,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"AcceptedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // AttributeList, a NSArray.
@@ -1884,8 +2150,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"AttributeList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // FeatureMap, a NSNumber.
@@ -1904,8 +2174,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"FeatureMap"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // ClusterRevision, a NSNumber.
@@ -1924,8 +2198,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThermostat charon_port_values][@"ClusterRevision"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThermostat charon_port_no_node_error]);
+        });
+    }
 }
 
 // The cached read of LocalTemperature: no value and the error, because there is no node.

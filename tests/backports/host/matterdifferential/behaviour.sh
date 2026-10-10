@@ -12,7 +12,10 @@
 # crash" is not that.
 #
 #   sh tests/backports/host/matterdifferential/behaviour.sh
-#   CLUSTERS="MTRBaseClusterIdentify:IdentifyTime"   cluster:attribute pairs, space separated
+#   CLUSTERS="MTRBaseClusterIdentify:IdentifyTime"   cluster:attribute[:superclass,...], space separated
+#                                                    a deprecated alias is asked together with the port class
+#                                                    it aliases (MTRBaseClusterTestCluster:Boolean:MTRBaseClusterUnitTesting),
+#                                                    because its superclass is the port's and not the system's
 #   BUILD=<dir>                                       where the programs and their output go
 #
 # The SDKs are found the way params-diff.sh finds them, and the script STOPS when one is missing.
@@ -20,7 +23,7 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 build=${BUILD:-$root/.agent-work/runs/matter-behaviour}
-clusters=${CLUSTERS:-"MTRBaseClusterIdentify:IdentifyTime MTRBaseClusterOnOff:OnTime MTRBaseClusterLevelControl:OnLevel MTRBaseClusterTestCluster:Boolean"}
+clusters=${CLUSTERS:-"MTRBaseClusterIdentify:IdentifyTime MTRBaseClusterOnOff:OnTime MTRBaseClusterLevelControl:OnLevel MTRBaseClusterTestCluster:Boolean:MTRBaseClusterUnitTesting"}
 
 sdk26=""
 for candidate in "${MATTER_SDK_262:-}" "$root/.agent-work/sdk-26.2/iPhoneOS26.2.sdk" "$root/.agent-work/sdk262"; do
@@ -56,33 +59,45 @@ mkdir -p "$build"
 status=0
 for pair in $clusters; do
     cluster=${pair%%:*}
-    attribute=${pair#*:}
+    rest=${pair#*:}
+    attribute=${rest%%:*}
+    supers=""
+    [ "$rest" = "$attribute" ] || supers=$(echo "${rest#*:}" | tr ',' ' ')
     work="$build/$cluster"
     mkdir -p "$work/port"
     echo "$cluster" > "$work/classes.txt"
+    for each in $supers; do echo "$each" >> "$work/classes.txt"; done
+    aliases="-D$cluster=CharonPort$cluster"
+    for each in $supers; do aliases="$aliases -D$each=CharonPort$each"; done
     # The exit status is not read: the generator's own compile check targets iOS and the host's tree is not
     # that, so it reports an object that "does not compile"; the object is compared with the committed one
     # and compiled for the host below, which is the check that matters here.
     python3 "$root/tools/matter-generate.py" --sdk "$sdk26" --out "$work/port" --contracts "$work/contracts" \
         --sdk16 "$sdk16" --classes-from "$work/classes.txt" > "$work/generate.log" 2>&1 || true
-    source="$work/port/CharonMatter$cluster.m"
-    [ -f "$source" ] || { echo "behaviour: the generator wrote no $source" >&2; tail -5 "$work/generate.log" >&2; exit 2; }
-    if ! cmp -s "$source" "$root/packages/a/apple-backports/Matter/CharonMatter$cluster.m"; then
-        echo "behaviour: DIFFERENT - the generator no longer writes the committed $cluster; regenerate the tree" >&2
-        exit 1
-    fi
+    for each in $cluster $supers; do
+        source="$work/port/CharonMatter$each.m"
+        [ -f "$source" ] || { echo "behaviour: the generator wrote no $source" >&2; tail -5 "$work/generate.log" >&2; exit 2; }
+        if ! cmp -s "$source" "$root/packages/a/apple-backports/Matter/CharonMatter$each.m"; then
+            echo "behaviour: DIFFERENT - the generator no longer writes the committed $each; regenerate the tree" >&2
+            exit 1
+        fi
+    done
     printf '// the host SDK declares every class this header would declare for the library SDK\n' \
         > "$work/port/CharonMatterTypes.h"
     for mode in plain tsan; do
         flags=""
         [ "$mode" = tsan ] && flags="-fsanitize=thread"
-        # shellcheck disable=SC2086
-        xcrun clang -target arm64-apple-macos26.0 -isysroot "$host_sdk" -fobjc-arc -O1 -g -Wall -Wno-nonnull \
-            -Wno-objc-protocol-property-synthesis -Wno-incomplete-implementation $flags \
-            "-D$cluster=CharonPort$cluster" -I"$work/port" -c "$source" -o "$work/port-$mode.o"
+        objects=""
+        for each in $cluster $supers; do
+            # shellcheck disable=SC2086
+            xcrun clang -target arm64-apple-macos26.0 -isysroot "$host_sdk" -fobjc-arc -O1 -g -Wall -Wno-nonnull \
+                -Wno-objc-protocol-property-synthesis -Wno-incomplete-implementation $flags \
+                $aliases -I"$work/port" -c "$work/port/CharonMatter$each.m" -o "$work/port-$each-$mode.o"
+            objects="$objects $work/port-$each-$mode.o"
+        done
         # shellcheck disable=SC2086
         xcrun clang -target arm64-apple-macos26.0 -isysroot "$host_sdk" -fobjc-arc -O1 -g -Wall $flags \
-            "$here/behaviour.m" "$work/port-$mode.o" -framework Foundation -framework Matter -framework Security \
+            "$here/behaviour.m" $objects -framework Foundation -framework Matter -framework Security \
             -o "$work/behaviour-$mode"
         extra=""
         [ "$mode" = tsan ] && extra="stress"

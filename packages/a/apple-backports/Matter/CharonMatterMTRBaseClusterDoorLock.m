@@ -17,9 +17,11 @@
 //
 //  Every attribute reads and writes a plain value the caller set, in one table keyed by the
 //  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 59 cache reads
-//  the header declares are not emitted, because a release with no Matter hardware has no node to
-//  read from are implemented and answer as Apple documents: no value, and an error.
+//  command answers through its completion. Nothing here reaches a fabric: the 59 cached reads
+//  the header declares, and every subscribe, answer as the framework does when it has nothing to
+//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  a subscribe calls its report handler once with the same, asynchronously on the cluster's
+//  queue, never calls its established handler, and leaves the stored value alone.
 //
 #import <Foundation/Foundation.h>
 #import <Matter/Matter.h>
@@ -100,8 +102,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"LockState"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // LockType, a NSNumber.
@@ -120,8 +126,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"LockType"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActuatorEnabled, a NSNumber.
@@ -140,8 +150,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"ActuatorEnabled"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // DoorState, a NSNumber.
@@ -160,8 +174,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"DoorState"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // DoorOpenEvents, a NSNumber.
@@ -196,8 +214,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"DoorOpenEvents"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // DoorClosedEvents, a NSNumber.
@@ -232,8 +254,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"DoorClosedEvents"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // OpenPeriod, a NSNumber.
@@ -268,8 +294,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"OpenPeriod"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfTotalUsersSupported, a NSNumber.
@@ -288,8 +318,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"NumberOfTotalUsersSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfPINUsersSupported, a NSNumber.
@@ -308,8 +342,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"NumberOfPINUsersSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfRFIDUsersSupported, a NSNumber.
@@ -328,8 +366,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"NumberOfRFIDUsersSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfWeekDaySchedulesSupportedPerUser, a NSNumber.
@@ -348,8 +390,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"NumberOfWeekDaySchedulesSupportedPerUser"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfYearDaySchedulesSupportedPerUser, a NSNumber.
@@ -368,8 +414,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"NumberOfYearDaySchedulesSupportedPerUser"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfHolidaySchedulesSupported, a NSNumber.
@@ -388,8 +438,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"NumberOfHolidaySchedulesSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxPINCodeLength, a NSNumber.
@@ -408,8 +462,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"MaxPINCodeLength"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinPINCodeLength, a NSNumber.
@@ -428,8 +486,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"MinPINCodeLength"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // MaxRFIDCodeLength, a NSNumber.
@@ -448,8 +510,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"MaxRFIDCodeLength"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // MinRFIDCodeLength, a NSNumber.
@@ -468,8 +534,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"MinRFIDCodeLength"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // CredentialRulesSupport, a NSNumber.
@@ -488,8 +558,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"CredentialRulesSupport"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfCredentialsSupportedPerUser, a NSNumber.
@@ -508,8 +582,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"NumberOfCredentialsSupportedPerUser"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // Language, a NSString.
@@ -544,8 +622,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"Language"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // LEDSettings, a NSNumber.
@@ -580,8 +662,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"LEDSettings"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AutoRelockTime, a NSNumber.
@@ -616,8 +702,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AutoRelockTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // SoundVolume, a NSNumber.
@@ -652,8 +742,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"SoundVolume"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // OperatingMode, a NSNumber.
@@ -688,8 +782,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"OperatingMode"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // SupportedOperatingModes, a NSNumber.
@@ -708,8 +806,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"SupportedOperatingModes"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // DefaultConfigurationRegister, a NSNumber.
@@ -728,8 +830,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"DefaultConfigurationRegister"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnableLocalProgramming, a NSNumber.
@@ -764,8 +870,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"EnableLocalProgramming"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnableOneTouchLocking, a NSNumber.
@@ -800,8 +910,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"EnableOneTouchLocking"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnableInsideStatusLED, a NSNumber.
@@ -836,8 +950,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"EnableInsideStatusLED"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // EnablePrivacyModeButton, a NSNumber.
@@ -872,8 +990,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"EnablePrivacyModeButton"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // LocalProgrammingFeatures, a NSNumber.
@@ -908,8 +1030,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"LocalProgrammingFeatures"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // WrongCodeEntryLimit, a NSNumber.
@@ -944,8 +1070,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"WrongCodeEntryLimit"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // UserCodeTemporaryDisableTime, a NSNumber.
@@ -980,8 +1110,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"UserCodeTemporaryDisableTime"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // SendPINOverTheAir, a NSNumber.
@@ -1016,8 +1150,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"SendPINOverTheAir"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // RequirePINforRemoteOperation, a NSNumber.
@@ -1052,8 +1190,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"RequirePINforRemoteOperation"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // ExpiringUserTimeout, a NSNumber.
@@ -1088,8 +1230,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"ExpiringUserTimeout"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AliroReaderVerificationKey, a NSData.
@@ -1108,8 +1254,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AliroReaderVerificationKey"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AliroReaderGroupIdentifier, a NSData.
@@ -1128,8 +1278,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AliroReaderGroupIdentifier"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AliroReaderGroupSubIdentifier, a NSData.
@@ -1148,8 +1302,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AliroReaderGroupSubIdentifier"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AliroExpeditedTransactionSupportedProtocolVersions, a NSArray.
@@ -1168,8 +1326,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AliroExpeditedTransactionSupportedProtocolVersions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AliroGroupResolvingKey, a NSData.
@@ -1188,8 +1350,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AliroGroupResolvingKey"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AliroSupportedBLEUWBProtocolVersions, a NSArray.
@@ -1208,8 +1374,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AliroSupportedBLEUWBProtocolVersions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AliroBLEAdvertisingVersion, a NSNumber.
@@ -1228,8 +1398,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AliroBLEAdvertisingVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfAliroCredentialIssuerKeysSupported, a NSNumber.
@@ -1248,8 +1422,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"NumberOfAliroCredentialIssuerKeysSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // NumberOfAliroEndpointKeysSupported, a NSNumber.
@@ -1268,8 +1446,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"NumberOfAliroEndpointKeysSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // GeneratedCommandList, a NSArray.
@@ -1288,8 +1470,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"GeneratedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AcceptedCommandList, a NSArray.
@@ -1308,8 +1494,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AcceptedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AttributeList, a NSArray.
@@ -1328,8 +1518,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AttributeList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // FeatureMap, a NSNumber.
@@ -1348,8 +1542,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"FeatureMap"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // ClusterRevision, a NSNumber.
@@ -1368,8 +1566,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"ClusterRevision"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AppleAliroReaderVerificationKey, a NSData.
@@ -1388,8 +1590,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroReaderVerificationKey"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AppleAliroReaderGroupIdentifier, a NSData.
@@ -1408,8 +1614,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroReaderGroupIdentifier"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AppleAliroReaderGroupSubIdentifier, a NSData.
@@ -1428,8 +1638,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroReaderGroupSubIdentifier"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AppleAliroExpeditedTransactionSupportedProtocolVersions, a NSArray.
@@ -1448,8 +1662,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroExpeditedTransactionSupportedProtocolVersions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AppleAliroGroupResolvingKey, a NSData.
@@ -1468,8 +1686,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroGroupResolvingKey"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AppleAliroSupportedBLEUWBProtocolVersions, a NSArray.
@@ -1488,8 +1710,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroSupportedBLEUWBProtocolVersions"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AppleAliroBLEAdvertisingVersion, a NSNumber.
@@ -1508,8 +1734,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroBLEAdvertisingVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AppleNumberOfAliroCredentialIssuerKeysSupported, a NSNumber.
@@ -1528,8 +1758,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AppleNumberOfAliroCredentialIssuerKeysSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // AppleNumberOfAliroEndpointKeysSupported, a NSNumber.
@@ -1548,8 +1782,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterDoorLock charon_port_values][@"AppleNumberOfAliroEndpointKeysSupported"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterDoorLock charon_port_no_node_error]);
+        });
+    }
 }
 
 // The cached read of LockState: no value and the error, because there is no node.

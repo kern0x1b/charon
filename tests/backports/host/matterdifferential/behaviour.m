@@ -250,12 +250,14 @@ int main(int argc, const char *argv[])
                    definesOwn(cls, subscribeParams) ? @"the class itself" : @"its superclass");
             record(side, @"observe.subscribe[WithMinInterval] defined by",
                    definesOwn(cls, subscribeOld) ? @"the class itself" : @"its superclass");
-            if ([cluster respondsToSelector:subscribeParams]) {
+            // A shape the port's SDKs do not declare for this cluster is not carried, and is not asked of
+            // either side: the system keeps deprecated shapes the port was never given.
+            if ([cluster respondsToSelector:subscribeParams] && [portClass instancesRespondToSelector:subscribeParams]) {
                 observeSubscribe(side, @"WithParams", queue, NULL, ^(void (^established)(void), void (^report)(id, NSError *)) {
                     ((void (*)(id, SEL, id, id, id))objc_msgSend)(cluster, subscribeParams, params, established, report);
                 });
             }
-            if ([cluster respondsToSelector:subscribeOld]) {
+            if ([cluster respondsToSelector:subscribeOld] && [portClass instancesRespondToSelector:subscribeOld]) {
                 observeSubscribe(side, @"WithMinInterval", queue, NULL, ^(void (^established)(void), void (^report)(id, NSError *)) {
                     ((void (*)(id, SEL, id, id, id, id, id))objc_msgSend)(cluster, subscribeOld, @1, @10, params, established, report);
                 });

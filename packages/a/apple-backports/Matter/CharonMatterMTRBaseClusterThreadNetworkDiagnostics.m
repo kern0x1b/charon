@@ -17,9 +17,11 @@
 //
 //  Every attribute reads and writes a plain value the caller set, in one table keyed by the
 //  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 70 cache reads
-//  the header declares are not emitted, because a release with no Matter hardware has no node to
-//  read from are implemented and answer as Apple documents: no value, and an error.
+//  command answers through its completion. Nothing here reaches a fabric: the 70 cached reads
+//  the header declares, and every subscribe, answer as the framework does when it has nothing to
+//  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
+//  a subscribe calls its report handler once with the same, asynchronously on the cluster's
+//  queue, never calls its established handler, and leaves the stored value alone.
 //
 #import <Foundation/Foundation.h>
 #import <Matter/Matter.h>
@@ -100,8 +102,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"Channel"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RoutingRole, a NSNumber.
@@ -120,8 +126,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RoutingRole"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // NetworkName, a NSString.
@@ -140,8 +150,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"NetworkName"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // PanId, a NSNumber.
@@ -160,8 +174,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"PanId"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // ExtendedPanId, a NSNumber.
@@ -180,8 +198,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ExtendedPanId"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // MeshLocalPrefix, a NSData.
@@ -200,8 +222,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"MeshLocalPrefix"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // OverrunCount, a NSNumber.
@@ -220,8 +246,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"OverrunCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // NeighborTable, a NSArray.
@@ -240,8 +270,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"NeighborTable"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RouteTable, a NSArray.
@@ -260,8 +294,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RouteTable"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // PartitionId, a NSNumber.
@@ -280,8 +318,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"PartitionId"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // Weighting, a NSNumber.
@@ -300,8 +342,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"Weighting"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // DataVersion, a NSNumber.
@@ -320,8 +366,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"DataVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // StableDataVersion, a NSNumber.
@@ -340,8 +390,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"StableDataVersion"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // LeaderRouterId, a NSNumber.
@@ -360,8 +414,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"LeaderRouterId"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // DetachedRoleCount, a NSNumber.
@@ -380,8 +438,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"DetachedRoleCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // ChildRoleCount, a NSNumber.
@@ -400,8 +462,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ChildRoleCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RouterRoleCount, a NSNumber.
@@ -420,8 +486,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RouterRoleCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // LeaderRoleCount, a NSNumber.
@@ -440,8 +510,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"LeaderRoleCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // AttachAttemptCount, a NSNumber.
@@ -460,8 +534,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"AttachAttemptCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // PartitionIdChangeCount, a NSNumber.
@@ -480,8 +558,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"PartitionIdChangeCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // BetterPartitionAttachAttemptCount, a NSNumber.
@@ -500,8 +582,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"BetterPartitionAttachAttemptCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // ParentChangeCount, a NSNumber.
@@ -520,8 +606,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ParentChangeCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxTotalCount, a NSNumber.
@@ -540,8 +630,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxTotalCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxUnicastCount, a NSNumber.
@@ -560,8 +654,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxUnicastCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxBroadcastCount, a NSNumber.
@@ -580,8 +678,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxBroadcastCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxAckRequestedCount, a NSNumber.
@@ -600,8 +702,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxAckRequestedCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxAckedCount, a NSNumber.
@@ -620,8 +726,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxAckedCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxNoAckRequestedCount, a NSNumber.
@@ -640,8 +750,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxNoAckRequestedCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxDataCount, a NSNumber.
@@ -660,8 +774,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxDataCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxDataPollCount, a NSNumber.
@@ -680,8 +798,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxDataPollCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxBeaconCount, a NSNumber.
@@ -700,8 +822,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxBeaconCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxBeaconRequestCount, a NSNumber.
@@ -720,8 +846,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxBeaconRequestCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxOtherCount, a NSNumber.
@@ -740,8 +870,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxOtherCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxRetryCount, a NSNumber.
@@ -760,8 +894,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxRetryCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxDirectMaxRetryExpiryCount, a NSNumber.
@@ -780,8 +918,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxDirectMaxRetryExpiryCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxIndirectMaxRetryExpiryCount, a NSNumber.
@@ -800,8 +942,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxIndirectMaxRetryExpiryCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxErrCcaCount, a NSNumber.
@@ -820,8 +966,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxErrCcaCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxErrAbortCount, a NSNumber.
@@ -840,8 +990,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxErrAbortCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // TxErrBusyChannelCount, a NSNumber.
@@ -860,8 +1014,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxErrBusyChannelCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxTotalCount, a NSNumber.
@@ -880,8 +1038,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxTotalCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxUnicastCount, a NSNumber.
@@ -900,8 +1062,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxUnicastCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxBroadcastCount, a NSNumber.
@@ -920,8 +1086,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxBroadcastCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxDataCount, a NSNumber.
@@ -940,8 +1110,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxDataCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxDataPollCount, a NSNumber.
@@ -960,8 +1134,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxDataPollCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxBeaconCount, a NSNumber.
@@ -980,8 +1158,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxBeaconCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxBeaconRequestCount, a NSNumber.
@@ -1000,8 +1182,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxBeaconRequestCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxOtherCount, a NSNumber.
@@ -1020,8 +1206,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxOtherCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxAddressFilteredCount, a NSNumber.
@@ -1040,8 +1230,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxAddressFilteredCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxDestAddrFilteredCount, a NSNumber.
@@ -1060,8 +1254,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxDestAddrFilteredCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxDuplicatedCount, a NSNumber.
@@ -1080,8 +1278,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxDuplicatedCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrNoFrameCount, a NSNumber.
@@ -1100,8 +1302,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrNoFrameCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrUnknownNeighborCount, a NSNumber.
@@ -1120,8 +1326,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrUnknownNeighborCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrInvalidSrcAddrCount, a NSNumber.
@@ -1140,8 +1350,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrInvalidSrcAddrCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrSecCount, a NSNumber.
@@ -1160,8 +1374,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrSecCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrFcsCount, a NSNumber.
@@ -1180,8 +1398,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrFcsCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // RxErrOtherCount, a NSNumber.
@@ -1200,8 +1422,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrOtherCount"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveTimestamp, a NSNumber.
@@ -1220,8 +1446,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ActiveTimestamp"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // PendingTimestamp, a NSNumber.
@@ -1240,8 +1470,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"PendingTimestamp"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // Delay, a NSNumber.
@@ -1260,8 +1494,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"Delay"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // SecurityPolicy, a MTRThreadNetworkDiagnosticsClusterSecurityPolicy.
@@ -1280,8 +1518,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"SecurityPolicy"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // ChannelPage0Mask, a NSData.
@@ -1300,8 +1542,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ChannelPage0Mask"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // OperationalDatasetComponents, a MTRThreadNetworkDiagnosticsClusterOperationalDatasetComponents.
@@ -1320,8 +1566,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"OperationalDatasetComponents"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // ActiveNetworkFaultsList, a NSArray.
@@ -1340,8 +1590,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ActiveNetworkFaultsList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // ExtAddress, a NSNumber.
@@ -1360,8 +1614,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ExtAddress"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // Rloc16, a NSNumber.
@@ -1380,8 +1638,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"Rloc16"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // GeneratedCommandList, a NSArray.
@@ -1400,8 +1662,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"GeneratedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // AcceptedCommandList, a NSArray.
@@ -1420,8 +1686,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"AcceptedCommandList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // AttributeList, a NSArray.
@@ -1440,8 +1710,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"AttributeList"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // FeatureMap, a NSNumber.
@@ -1460,8 +1734,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"FeatureMap"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // ClusterRevision, a NSNumber.
@@ -1480,8 +1758,12 @@
 {
     (void)params;
     (void)subscriptionEstablished;
-    (void)reportHandler;
-    [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ClusterRevision"] = @"subscribed";
+    if (reportHandler) {
+        dispatch_async(_charon_queue
+                       ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            reportHandler(nil, [MTRBaseClusterThreadNetworkDiagnostics charon_port_no_node_error]);
+        });
+    }
 }
 
 // The cached read of Channel: no value and the error, because there is no node.
