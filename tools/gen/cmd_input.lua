@@ -193,14 +193,17 @@ local function ios_constants(path)
     return values, conflicts
 end
 
--- The measured release of each symbol the gate's release-split output names (object, symbol, release), with the symbol's leading
--- underscore removed; a MIXED-RELEASES line is not a symbol.
+-- The measured release of each symbol: the gate's release-split output names (object, symbol, release), with the symbol's leading
+-- underscore removed, and a MIXED-RELEASES line is not a symbol; or a measured.held-caches.tsv snapshot (symbol, release), whose
+-- header line is not a symbol. The snapshot is the file the writer makes from the gate's output, so reading it back reproduces it.
 local function measured_releases(path)
     local out = {}
     for _, line in ipairs(strings.lines(files.read_text(path) or "")) do
         local cells = tsv.fields(line)
         if #cells == 3 and string.sub(cells[2], 1, 1) == "_" and cells[2] ~= "_MIXED-RELEASES" then
             out[string.sub(cells[2], 2)] = cells[3]
+        elseif #cells == 2 and cells[1] ~= "symbol" then
+            out[cells[1]] = cells[2]
         end
     end
     return out
@@ -218,8 +221,10 @@ local function ledger_constants(corpus, fw)
     return out
 end
 
--- The registry's owned constants: name -> the registry file that names it, the first file (in name order, the framework's own
--- single file last) that names it, as registry_constants has it.
+-- The owned constants: name -> the label of the decision that owns it. The registry gives "registry:<file>": the first file (in
+-- name order, the framework's own single file last) that names it, as registry_constants has it. The snapshot owned.tsv (name,
+-- branch) in the framework's spec folder gives the branch: a constant a live branch owns, whose commit is not in this tree
+-- (AVFAudio's info-dictionary keys, v-avmidi), so the record reproduces the owner the oracle was given with --owned.
 local function owned_constants(tree, fw)
     local out = {}
     local candidates = files.glob(path.join(tree, layout.registry_dir(fw), "*.json"))
@@ -234,8 +239,14 @@ local function owned_constants(tree, fw)
                          or path.join(layout.registry_dir(fw), path.filename(filepath))
         for _, entry in ipairs(data.entries or data) do
             if entry.kind == "constant" and out[entry.api] == nil then
-                out[entry.api] = relative
+                out[entry.api] = "registry:" .. relative
             end
+        end
+    end
+    for _, line in ipairs(strings.lines(files.read_text(path.join(layout.snap_dir(tree, fw), "owned.tsv")) or "")) do
+        local cells = tsv.fields(line)
+        if #cells == 2 and out[cells[1]] == nil then
+            out[cells[1]] = cells[2]
         end
     end
     return out
@@ -267,13 +278,27 @@ local function write_framework(args, fw)
     local tree, sdk = args.tree, args.sdk
     local ledger = ledger_constants(args.coordination, fw)
     local docs = doc_text.rows(tree, fw, sdk) or {usr = {}, api = {}}
-    local shard_vars = {}
+    local shard_vars, declhash_of = {}, {}
     for _, r in ipairs(headers.shard_value_records(tree, fw)) do
         if r.kind == "var" then
             local name = string.match(r.usr or "", "^c:@([^@]+)$")
             if name ~= nil then
                 shard_vars[name] = r
             end
+        end
+    end
+    -- The declaration hash a shard row gives a name: a variable (c:@<name>) or an enum constant (c:@E@<enum>@<name>), a variable
+    -- winning where both exist, as spec.lua declarations_by_name has it. An enum constant's hash is kept: the record of a
+    -- Matter constant (MTRDeviceTypeIDTypeAudioDoorbellID) carries one.
+    for _, r in ipairs(headers.shard_value_records(tree, fw)) do
+        local name
+        if r.kind == "var" then
+            name = string.match(r.usr or "", "^c:@([^@]+)$")
+        elseif r.kind == "enumconst" then
+            name = string.match(r.usr or "", "@([^@]+)$")
+        end
+        if name ~= nil and (declhash_of[name] == nil or r.kind == "var") then
+            declhash_of[name] = r.declhash
         end
     end
     local typedefs, cf_typedefs = typedefs_of(tree, {fw, "Foundation", "CoreFoundation"})
@@ -326,7 +351,7 @@ local function write_framework(args, fw)
         local avail_column = d.avail ~= "" and d.avail or "-"
         local status, value = "-", "-"
         if owned[api] ~= nil then
-            status, value = "owned:registry:" .. owned[api], "-"
+            status, value = "owned:" .. owned[api], "-"
         elseif d.decl == "" then
             status, value = "undeclared", "-"
         elseif not is_string(d.decl, typedefs) then
@@ -352,16 +377,19 @@ local function write_framework(args, fw)
         local record = {kind = "constant", api = api, cls = "-", key = key_of(api), introduced = introduced,
                         type = var and var.type or "-", availability = avail_column,
                         hash = digest.digest("constant", api, d.decl, d.avail), value_status = status, value = value,
-                        host_value = host_value, value_source = source, owned = owned[api] and ("registry:" .. owned[api]) or "-",
+                        host_value = host_value, value_source = source, owned = owned[api] or "-",
                         tbd = symbols[api] and "exported" or "not-exported", shape = cls_shape,
-                        measured = measured[api] or "-", declhash = var and var.declhash or "-"}
+                        measured = measured[api] or "-", declhash = declhash_of[api] or "-"}
         local cells = {}
         for i, column in ipairs(COLUMNS) do
             cells[i] = record[column]
         end
         table.insert(lines, table.concat(cells, "\t"))
     end
-    emit.file(layout.constant_record_path(tree, fw), table.concat(lines, "\n") .. "\n")
+    -- A framework with no constant has no record: check fails on a record that holds no rows, so none is written.
+    if #lines > 1 then
+        emit.file(layout.constant_record_path(tree, fw), table.concat(lines, "\n") .. "\n")
+    end
     if args.measured then
         local rows = {}
         for name, release in pairs(measured) do
