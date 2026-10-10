@@ -269,12 +269,12 @@ local function test_pages(check)
     local marked = page_of(path.join(out_marked, FIXTURE), "FKThing.md")
     check(has(marked, "| method | `not derived: decl (ruling D8)` | API_AVAILABLE(ios(12.0)) | missing |"),
           "without doc rows a member keeps the marked declaration")
-    check(has(marked, "## Header comments\n\n- not derived: the extractor has no comment mode\n"),
+    check(has(marked, "## Header comments\n\n- not derived: the extractor does not run for this framework\n"),
           "without doc rows the header comments section is marked, not derived")
     local marked_protocol = page_of(path.join(out_marked, FIXTURE), "FKDelegate.md")
     check(has(marked_protocol, "| required | method | `not derived: decl (ruling D8)` | yes | header-ok | - | - |"),
           "without doc rows a protocol member keeps the marked declaration")
-    check(has(marked_protocol, "## Header comments\n\n- not derived: the extractor has no comment mode\n"),
+    check(has(marked_protocol, "## Header comments\n\n- not derived: the extractor does not run for this framework\n"),
           "without doc rows the protocol's header comments are marked, not derived")
     os.rm(root)
 end

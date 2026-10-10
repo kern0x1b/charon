@@ -35,7 +35,7 @@ local MEMBER_KINDS = {method = true, property = true}
 -- The text of what the extractor's doc mode does not give: a framework it cannot run for keeps the marked text for its comments and its
 -- declarations (ruling 2 and ruling D8), and a member it does not list is marked as such. Nothing is taken from the spec's or the
 -- protocols' decl column.
-local COMMENTS_NOT_DERIVED = "- not derived: the extractor has no comment mode"
+local COMMENTS_NOT_DERIVED = "- not derived: the extractor does not run for this framework"
 local DECL_NOT_DERIVED = "not derived: decl (ruling D8)"
 local NOT_IN_ROWS = "not derived: not in the doc rows"
 local NO_COMMENT = "no comment in the doc rows"
