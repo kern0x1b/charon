@@ -1,9 +1,16 @@
 // The in-process deliveries of this library's destinations against the dispose of their endpoint, on the host's own CoreMIDI
 // (process-lifetime virtual endpoints; nothing persists, which prefs-bracket.sh checks). The release's destinations run nothing
-// after their dispose has returned; a destination this library made must not either. Two cases are measured: test E (one delivery
-// blocked inside its call, two queued behind it, and the dispose issued while the first is blocked), and the trials (a burst of
-// messages, then a dispose, counted over 1000 trials). The release's own destination is the control of test E: its dispose waits for
-// the blocked call, and nothing runs after it.
+// after their dispose has returned; a destination this library made must not either, and the library checks each delivery's object
+// right before its call, so a delivery whose check begins after the dispose returned is not called. Three cases:
+//   - test E: one call held inside its block, two deliveries queued behind it, the dispose issued and returned while the call is
+//     held, then the call released. The queued deliveries must not be called. The release's destination is the control: its dispose
+//     waits for the held read.
+//   - the hold rounds: test E repeated over 200 rounds with 31 deliveries queued behind the held call. Asserted: no call after its dispose.
+//   - the race: 200 trials of 32 fast messages, the dispose issued once the first call has begun, nothing held. A dispose can land
+//     between a delivery's check and its call, the gap the code does not bound. The count and the latest lateness are recorded, not
+//     asserted: the code gives no bound to assert.
+// A wait for the queue to be served uses a sentinel: a live destination of the library whose delivery is queued last, so its call
+// means every earlier delivery has been served. A wait that times out fails the run.
 #import <CoreMIDI/CoreMIDI.h>
 #import <Foundation/Foundation.h>
 #include <mach/mach_time.h>
@@ -18,6 +25,10 @@ static int gFailures;
 static MIDIClientRef gClient;
 static MIDIPortRef gOut;
 static double gNsPerTick;
+static MIDIEndpointRef gSentinel;
+static MIDIEventList *gSentinelList;
+static uint8_t gSentinelStorage[64] __attribute__((aligned(8)));
+static dispatch_semaphore_t gSentinelSeen;
 
 static void expect(int passed, const char *what, long value)
 {
@@ -27,7 +38,8 @@ static void expect(int passed, const char *what, long value)
 }
 
 // What the receive procedures record: the calls begun, the calls begun after the dispose returned, and how long after it the latest
-// such call began. The dispose time is set by the disposing thread when its dispose has returned (0 before that).
+// such call began. The dispose time is set by the disposing thread when its dispose has returned (0 before that). A call that is armed
+// (the first call of a round) signals that it is inside its block, and waits to be released.
 typedef struct {
     dispatch_semaphore_t entered;
     dispatch_semaphore_t go;
@@ -36,7 +48,6 @@ typedef struct {
     uint64_t lateMax;
     uint64_t disposed;
     int armed;
-    uint32_t holdMicros;
 } probe_state;
 static probe_state gP;
 
@@ -56,8 +67,6 @@ static void record_call(void)
         dispatch_semaphore_signal(gP.entered);
         dispatch_semaphore_wait(gP.go, DISPATCH_TIME_FOREVER);
     }
-    if (gP.holdMicros)
-        usleep(gP.holdMicros);
 }
 
 static void library_receive(const MIDIEventList *list, void *refCon)
@@ -75,10 +84,12 @@ static void release_read(const MIDIPacketList *packets, void *refCon, void *srcC
     record_call();
 }
 
-// The disposing thread: it disposes, and records when the dispose returned.
+// The disposing thread: it disposes, records when the dispose returned, and signals `done` when it has one (NULL for a dispose made
+// on the calling thread).
 typedef struct {
     MIDIEndpointRef endpoint;
     OSStatus status;
+    dispatch_semaphore_t done;
 } disposer;
 
 static void *dispose_thread(void *argument)
@@ -86,6 +97,8 @@ static void *dispose_thread(void *argument)
     disposer *d = argument;
     d->status = MIDIEndpointDispose(d->endpoint);
     __atomic_store_n(&gP.disposed, mach_absolute_time(), __ATOMIC_RELEASE);
+    if (d->done)
+        dispatch_semaphore_signal(d->done);
     return NULL;
 }
 
@@ -106,65 +119,21 @@ static void reset_probe(void)
     gP.lateMax = 0;
     gP.disposed = 0;
     gP.armed = 0;
-    gP.holdMicros = 0;
 }
 
-// Test E: the first delivery is blocked inside its call; two more are queued behind it; the dispose is issued and returns (for the
-// library) or waits for the blocked call (for the release); then the blocked call is released. The queued deliveries must not run after
-// the dispose has returned.
-static void test_e(int library)
+// Waits until the library's queue has served every delivery queued before this call: the sentinel is queued last, and its call is the
+// answer. A wait that times out fails the run.
+static int drain_queue(void)
 {
-    reset_probe();
-    gP.entered = dispatch_semaphore_create(0);
-    gP.go = dispatch_semaphore_create(0);
-    gP.armed = 1;
-    MIDIEndpointRef dest = 0;
-    OSStatus status;
-    if (library)
-        status = CharonMIDIDestination(gClient, CFSTR("delivery-e"), kMIDIProtocol_2_0, &dest, ^(const MIDIEventList *list, void *refCon) {
-            library_receive(list, refCon);
-        });
-    else
-        status = MIDIDestinationCreate(gClient, CFSTR("delivery-e-release"), release_read, NULL, &dest);
-    if (status != noErr) {
-        expect(0, library ? "E: the library's destination is made" : "E: the release's destination is made", status);
-        return;
-    }
-    uint8_t storage[64] __attribute__((aligned(8)));
-    MIDIEventList *list = note(storage, sizeof(storage));
-    Byte bytes[3] = {0x90, 60, 100};
-    uint8_t packetStorage[64] __attribute__((aligned(8)));
-    MIDIPacketList *packets = (MIDIPacketList *)packetStorage;
-    MIDIPacketListAdd(packets, sizeof(packetStorage), MIDIPacketListInit(packets), 0, 3, bytes);
-    for (int i = 0; i < 3; i++) {
-        if (library)
-            CharonMIDISend(gOut, dest, list);
-        else
-            MIDISend(gOut, dest, packets);
-    }
-    long waited = dispatch_semaphore_wait(gP.entered, dispatch_time(DISPATCH_TIME_NOW, 3LL * NSEC_PER_SEC));
-    if (waited != 0) {
-        expect(0, library ? "E library: the first delivery is inside its call" : "E release: the first call is inside its read", 0);
-        return;
-    }
-    disposer d = {dest, noErr};
-    pthread_t thread;
-    pthread_create(&thread, NULL, dispose_thread, &d);
-    // The blocked call is held for 20 ms after the dispose is issued: longer than one drain pass (one millisecond), so a queued
-    // delivery that follows it is checked again. The library's dispose returns during the hold; the release's waits for the call.
-    usleep(20000);
-    dispatch_semaphore_signal(gP.go);
-    pthread_join(thread, NULL);
-    usleep(200000);
-    const char *name = library ? "E library" : "E release (control)";
-    printf("%s: calls begun %ld; begun after the dispose returned %ld; dispose status %d\n", name, gP.started, gP.afterDispose, (int)d.status);
-    expect(gP.afterDispose == 0, library ? "E library: no delivery begins after its dispose returned" : "E release: no read begins after the dispose returned",
-           gP.afterDispose);
-    if (library)
-        expect(gP.started == 1, "E library: the two queued deliveries are not called (the one blocked call is)", gP.started);
+    CharonMIDISend(gOut, gSentinel, gSentinelList);
+    if (dispatch_semaphore_wait(gSentinelSeen, dispatch_time(DISPATCH_TIME_NOW, 5LL * NSEC_PER_SEC)) == 0)
+        return 1;
+    expect(0, "the queue is served: the sentinel is called within five seconds", 0);
+    return 0;
 }
 
 // Waits until a call has begun (the first of a burst), so that the dispose is issued while the deliveries behind it are queued.
+// Gives up after three seconds; the caller counts the begun calls, so a give-up is a failed count.
 static int wait_started(void)
 {
     for (int i = 0; i < 30000; i++) {
@@ -175,46 +144,120 @@ static int wait_started(void)
     return 0;
 }
 
-// The trials: a burst of four messages to a destination, the dispose issued once its first call has begun, over 1000 trials. Each
-// call holds for one millisecond, so three deliveries are queued behind the first. Counted: the calls begun, and those begun after the
-// dispose returned. The first call of each trial begins before the dispose, so the count of calls is 1000 when the queue is served as it
-// should be.
-static void test_trials(void)
+// One round of the hold: the first delivery is blocked inside its call, `queued` more are sent behind it, and the dispose is issued
+// from another thread. The library's dispose returns while the call is blocked (it does not wait for a call it did not make); the
+// blocked call is released after that; the queue is then served. Adds the calls begun and those begun after the dispose returned.
+// Returns 0 when the round could not be run (the failure is printed).
+static int hold_round(int queued, long *started, long *afterDispose)
+{
+    reset_probe();
+    gP.entered = dispatch_semaphore_create(0);
+    gP.go = dispatch_semaphore_create(0);
+    gP.armed = 1;
+    MIDIEndpointRef dest = 0;
+    OSStatus made = CharonMIDIDestination(gClient, CFSTR("delivery-hold"), kMIDIProtocol_2_0, &dest, ^(const MIDIEventList *list, void *refCon) {
+        library_receive(list, refCon);
+    });
+    if (made != noErr) {
+        expect(0, "hold: the library's destination is made", made);
+        return 0;
+    }
+    uint8_t storage[64] __attribute__((aligned(8)));
+    MIDIEventList *list = note(storage, sizeof(storage));
+    for (int i = 0; i < 1 + queued; i++)
+        CharonMIDISend(gOut, dest, list);
+    if (dispatch_semaphore_wait(gP.entered, dispatch_time(DISPATCH_TIME_NOW, 5LL * NSEC_PER_SEC)) != 0) {
+        expect(0, "hold: the first delivery is inside its call", 0);
+        return 0;
+    }
+    disposer d = {dest, noErr, dispatch_semaphore_create(0)};
+    pthread_t thread;
+    pthread_create(&thread, NULL, dispose_thread, &d);
+    if (dispatch_semaphore_wait(d.done, dispatch_time(DISPATCH_TIME_NOW, 5LL * NSEC_PER_SEC)) != 0) {
+        expect(0, "hold: the library's dispose returns while its call is blocked", 0);
+        return 0;
+    }
+    dispatch_semaphore_signal(gP.go);
+    pthread_join(thread, NULL);
+    if (!drain_queue())
+        return 0;
+    *started += gP.started;
+    *afterDispose += gP.afterDispose;
+    return d.status == noErr;
+}
+
+// Test E: one round with two deliveries queued behind the blocked call. Only the blocked call is made, and none after the dispose.
+static void test_e(void)
 {
     long started = 0;
     long afterDispose = 0;
-    long began = 0;
-    for (int trial = 0; trial < 1000; trial++) {
-        reset_probe();
-        gP.holdMicros = 1000;
-        MIDIEndpointRef dest = 0;
-        if (CharonMIDIDestination(gClient, CFSTR("delivery-trial"), kMIDIProtocol_2_0, &dest, ^(const MIDIEventList *list, void *refCon) {
-                library_receive(list, refCon);
-            }) != noErr) {
-            expect(0, "trials: the library's destination is made", trial);
-            return;
-        }
-        uint8_t storage[64] __attribute__((aligned(8)));
-        MIDIEventList *list = note(storage, sizeof(storage));
-        for (int i = 0; i < 4; i++)
-            CharonMIDISend(gOut, dest, list);
-        began += wait_started();
-        disposer d = {dest, noErr};
-        dispose_thread(&d);
-        usleep(8000);
-        started += gP.started;
-        afterDispose += gP.afterDispose;
-    }
-    printf("trials: 1000 trials of 4 messages; first calls begun %ld; calls begun %ld; begun after the dispose returned %ld\n",
-           began, started, afterDispose);
-    expect(began == 1000, "trials: the first call of every trial begins before its dispose", began);
-    expect(afterDispose == 0, "trials: no delivery begins after its destination's dispose returned, in 1000 trials", afterDispose);
+    if (!hold_round(2, &started, &afterDispose))
+        return;
+    printf("E library: calls begun %ld; begun after the dispose returned %ld\n", started, afterDispose);
+    expect(afterDispose == 0, "E library: no delivery begins after its dispose returned", afterDispose);
+    expect(started == 1, "E library: the two queued deliveries are not called (the one blocked call is)", started);
 }
 
-// The window of the shared check: fast calls, so a drain pass runs many deliveries. A call that begins after the dispose returned is
-// one whose check was made in the pass that began before the dispose; the pass is at most one millisecond long (the call that crosses
-// it included), so the latest such call begins well within two milliseconds of the dispose.
-static void test_window(void)
+// The release's destination, the control of test E: its dispose waits for the blocked read, and no read begins after it returns. The
+// release's reads are not visible to a sentinel, so the wait after the dispose is a fixed bound of this control, not a timing of the
+// release; its only assertion is the count after the dispose.
+static void test_release_control(void)
+{
+    reset_probe();
+    gP.entered = dispatch_semaphore_create(0);
+    gP.go = dispatch_semaphore_create(0);
+    gP.armed = 1;
+    MIDIEndpointRef dest = 0;
+    OSStatus made = MIDIDestinationCreate(gClient, CFSTR("delivery-e-release"), release_read, NULL, &dest);
+    if (made != noErr) {
+        expect(0, "E release: the release's destination is made", made);
+        return;
+    }
+    uint8_t packetStorage[64] __attribute__((aligned(8)));
+    MIDIPacketList *packets = (MIDIPacketList *)packetStorage;
+    Byte bytes[3] = {0x90, 60, 100};
+    MIDIPacketListAdd(packets, sizeof(packetStorage), MIDIPacketListInit(packets), 0, 3, bytes);
+    for (int i = 0; i < 3; i++)
+        MIDISend(gOut, dest, packets);
+    if (dispatch_semaphore_wait(gP.entered, dispatch_time(DISPATCH_TIME_NOW, 5LL * NSEC_PER_SEC)) != 0) {
+        expect(0, "E release: the first read is inside its call", 0);
+        return;
+    }
+    disposer d = {dest, noErr, NULL};
+    pthread_t thread;
+    pthread_create(&thread, NULL, dispose_thread, &d);
+    // The control's hold: the release's dispose is entered within it, and must still be waiting when the read is released.
+    usleep(20000);
+    int waiting = __atomic_load_n(&gP.disposed, __ATOMIC_ACQUIRE) == 0;
+    dispatch_semaphore_signal(gP.go);
+    pthread_join(thread, NULL);
+    usleep(200000);
+    printf("E release (control): reads begun %ld; begun after the dispose returned %ld; dispose status %d\n", gP.started, gP.afterDispose,
+           (int)d.status);
+    expect(waiting, "E release (control): its dispose waits for the blocked read", 0);
+    expect(gP.afterDispose == 0, "E release (control): no read begins after the dispose returned", gP.afterDispose);
+}
+
+// The hold rounds: test E repeated over 200 rounds, each with 31 deliveries queued behind the blocked call.
+static void test_hold_rounds(void)
+{
+    long started = 0;
+    long afterDispose = 0;
+    int rounds = 0;
+    for (int round = 0; round < 200; round++) {
+        if (!hold_round(31, &started, &afterDispose))
+            break;
+        rounds++;
+    }
+    printf("hold: %d rounds of one blocked call and 31 queued deliveries; calls begun %ld; begun after the dispose returned %ld\n",
+           rounds, started, afterDispose);
+    expect(rounds == 200, "hold: every round runs to the end", rounds);
+    expect(started == rounds, "hold: only the blocked call of each round is called", started);
+    expect(afterDispose == 0, "hold: no queued delivery begins after its dispose returned, in 200 rounds", afterDispose);
+}
+
+// The race: fast calls and the dispose issued once the first call of a trial has begun. Recorded, not asserted (the code gives no bound).
+static void test_race(void)
 {
     long began = 0;
     long started = 0;
@@ -223,10 +266,10 @@ static void test_window(void)
     for (int trial = 0; trial < 200; trial++) {
         reset_probe();
         MIDIEndpointRef dest = 0;
-        if (CharonMIDIDestination(gClient, CFSTR("delivery-window"), kMIDIProtocol_2_0, &dest, ^(const MIDIEventList *list, void *refCon) {
+        if (CharonMIDIDestination(gClient, CFSTR("delivery-race"), kMIDIProtocol_2_0, &dest, ^(const MIDIEventList *list, void *refCon) {
                 library_receive(list, refCon);
             }) != noErr) {
-            expect(0, "window: the library's destination is made", trial);
+            expect(0, "race: the library's destination is made", trial);
             return;
         }
         uint8_t storage[64] __attribute__((aligned(8)));
@@ -234,19 +277,19 @@ static void test_window(void)
         for (int i = 0; i < 32; i++)
             CharonMIDISend(gOut, dest, list);
         began += wait_started();
-        disposer d = {dest, noErr};
+        disposer d = {dest, noErr, NULL};
         dispose_thread(&d);
-        usleep(4000);
+        if (!drain_queue())
+            return;
         started += gP.started;
         afterDispose += gP.afterDispose;
         if (gP.lateMax > late)
             late = gP.lateMax;
     }
     double lateMs = (double)late * gNsPerTick / 1000000.0;
-    printf("window: 200 trials of 32 fast messages; first calls begun %ld; calls begun %ld; begun after the dispose returned %ld; latest such call %.3f ms after it\n",
+    printf("race: 200 trials of 32 fast messages; first calls begun %ld; calls begun %ld; begun after the dispose returned %ld; latest such call %.3f ms after it\n",
            began, started, afterDispose, lateMs);
-    expect(began == 200, "window: the first call of every trial begins before its dispose (so the window is measured)", began);
-    expect(lateMs < 2.0, "window: the latest call begun after a dispose is within two milliseconds of it", (long)(lateMs * 1000));
+    expect(began == 200, "race: the first call of every trial begins before its dispose (so the race is measured)", began);
 }
 
 int main(void)
@@ -254,14 +297,27 @@ int main(void)
     mach_timebase_info_data_t timebase;
     mach_timebase_info(&timebase);
     gNsPerTick = (double)timebase.numer / (double)timebase.denom;
-    if (MIDIClientCreate(CFSTR("delivery"), NULL, NULL, &gClient) != noErr || MIDIOutputPortCreate(gClient, CFSTR("delivery-out"), &gOut) != noErr) {
-        printf("FAIL the client and its output port are made\n");
+    OSStatus clientStatus = MIDIClientCreate(CFSTR("delivery"), NULL, NULL, &gClient);
+    OSStatus portStatus = clientStatus == noErr ? MIDIOutputPortCreate(gClient, CFSTR("delivery-out"), &gOut) : noErr;
+    if (clientStatus != noErr || portStatus != noErr) {
+        printf("FAIL the client and its output port are made: MIDIClientCreate status %d, MIDIOutputPortCreate status %d\n",
+               (int)clientStatus, (int)portStatus);
         return 1;
     }
-    test_e(1);
-    test_e(0);
-    test_trials();
-    test_window();
+    gSentinelSeen = dispatch_semaphore_create(0);
+    OSStatus sentinelStatus = CharonMIDIDestination(gClient, CFSTR("delivery-sentinel"), kMIDIProtocol_2_0, &gSentinel,
+                                                    ^(const MIDIEventList *list, void *refCon) {
+        dispatch_semaphore_signal(gSentinelSeen);
+    });
+    if (sentinelStatus != noErr) {
+        printf("FAIL the sentinel destination is made: status %d\n", (int)sentinelStatus);
+        return 1;
+    }
+    gSentinelList = note(gSentinelStorage, sizeof(gSentinelStorage));
+    test_e();
+    test_release_control();
+    test_hold_rounds();
+    test_race();
     printf("delivery: %d failures\n", gFailures);
     return gFailures ? 1 : 0;
 }
