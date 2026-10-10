@@ -51,6 +51,13 @@ expect("a changed snapshot differs from its pin", problems()["Fa functions.tsv: 
 write("Fa", "functions.tsv", "api\tintroduced\nf\t13.0\n")
 expect("the snapshot restored holds its pin again", #pins.pin_problems(TREE) == 0)
 
+-- the same drift named through a relative tree (check --tree .): the glob returns relative paths, and the problems must match
+write("Fa", "functions.tsv", "api\tintroduced\nf\t13.1\n")
+local REL = "./" .. path.relative(TREE, os.curdir())
+expect("a relative tree names the same drifted snapshot", #pins.pin_problems(REL) == 1 and table.concat(pins.pin_problems(REL), "|") == table.concat(pins.pin_problems(TREE), "|"))
+write("Fa", "functions.tsv", "api\tintroduced\nf\t13.0\n")
+expect("a relative tree holds the restored snapshot to its pin", #pins.pin_problems(REL) == 0)
+
 -- a snapshot no command pinned (a file added by hand, or a nested one never recorded)
 write("Fb/Inner", "functions.tsv", "api\tintroduced\ng\t15.0\n")
 expect("an unpinned snapshot is a problem", problems()["Fb/Inner functions.tsv: not pinned (the command that writes it records the pin)"])

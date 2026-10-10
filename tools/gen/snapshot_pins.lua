@@ -52,12 +52,15 @@ function pin_record(tree, fw, file)
 end
 
 -- The snapshot files on disk: {framework, file} for each protocols.tsv or functions.tsv at any depth under the spec folder (an Accelerate
--- or include folder holds one with no declaration shard, and it is pinned too). Sorted by framework and file.
+-- or include folder holds one with no declaration shard, and it is pinned too). Sorted by framework and file. The glob returns paths
+-- as the pattern gives them: a relative tree ("--tree .") comes back without its "./", so both sides are made absolute before the
+-- root is taken off (Round 14: the speed run's check on a relative tree named every pin "gone").
 function pin_keys(tree)
     local root = path.join(tree, layout.constants().SNAP_ROOT)
+    local base = path.absolute(root)
     local keys = {}
     for _, filepath in ipairs(files.glob(path.join(root, "**.tsv"))) do
-        local rel = string.sub(filepath, #root + 2)
+        local rel = string.sub(path.absolute(filepath), #base + 2)
         local framework, file = string.match(rel, "^(.*)/([^/]+)$")
         if framework ~= nil and (file == SNAPSHOTS[1] or file == SNAPSHOTS[2]) then
             table.insert(keys, {framework, file})
