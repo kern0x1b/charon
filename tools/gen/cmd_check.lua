@@ -2,8 +2,13 @@
 -- compares the result with the build directory .gen. A drift of the build directory, a stale pin (a pinned member whose declaration
 -- differs from its pin), a protocol-set record that names a protocol a registry row implements, or a constants object the generator
 -- no longer emits fails the check. A build directory not yet written is a warning, so a fresh checkout checks with no derived file
--- present; a removed override (a registry override the spec no longer holds, kept on purpose for the releases that carry it) is a
--- warning too. A run that finds no framework to check fails: a check that checked nothing is not a pass (review r4 G11).
+-- present; a removed override (a registry override the spec no longer holds) is a warning too, and not a failure: the backports exist
+-- for exactly the APIs that 26.2 has removed or deprecated but 6.1.3 carries, so the spec does not hold them by design. Each framework's
+-- count is on its summary line, and the total is a ceiling the light guard holds (tests/gen/removed_ceiling_test.lua reads
+-- tests/gen/removed-overrides.tsv: a total that grows is a failure). A run that finds no framework to check fails: a check that checked
+-- nothing is not a pass (review r4 G11; coordinator ruling G11). The registry's targets are checked against their shards too
+-- (targets.problems): an umbrella's entries through its nested targets (no-own.tsv), a product's members through their shards
+-- (products.tsv). The gate's half, that the built dylibs export them, is check_registry and needs those dylibs.
 
 local layout = import("layout", {anonymous = true})
 local snapshot = import("spec", {anonymous = true})
@@ -12,6 +17,7 @@ local tsv = import("tsv", {anonymous = true})
 local order = import("order", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local protocols = import("protocols", {anonymous = true})
+local target_checks = import("targets", {anonymous = true})
 local gen = import("cmd_gen", {anonymous = true})
 
 -- The data lines of a table's text: every line after the header that is not empty.
@@ -81,6 +87,21 @@ local function diagnose(tree, fw, corpus)
     return problems, warnings, #removed, #new
 end
 
+-- The removed-override count of each framework that has one (framework -> count), and their total, with no output: the numbers the
+-- light guard holds to the committed ceiling.
+function removed_counts(tree)
+    snapshot.forget()
+    local counts, total = {}, 0
+    for _, fw in ipairs(snapshot.frameworks(tree)) do
+        local _, _, removed = diagnose(tree, fw, nil)
+        if removed > 0 then
+            counts[fw] = removed
+            total = total + removed
+        end
+    end
+    return counts, total
+end
+
 -- Returns the exit status: 1 when any framework has a problem, or when there is no framework to check.
 function run(args)
     snapshot.forget()
@@ -89,7 +110,7 @@ function run(args)
         print("CHECK: no framework to check in " .. args.tree)
         return 1
     end
-    local failed = 0
+    local failed, removed_total, removed_in = 0, 0, 0
     for _, fw in ipairs(targets) do
         local problems, warnings, removed, new = diagnose(args.tree, fw, args.coordination)
         for _, line in ipairs(problems) do
@@ -98,11 +119,21 @@ function run(args)
         for _, line in ipairs(warnings) do
             print("WARN " .. fw .. ": " .. line)
         end
-        print(string.format("check %s: problems %d, removed %d, members without an override (new) %d",
+        print(string.format("check %s: problems %d, removed overrides (warned) %d, members without an override (new) %d",
             fw, #problems, removed, new))
+        removed_total = removed_total + removed
+        if removed > 0 then
+            removed_in = removed_in + 1
+        end
         if #problems > 0 then
             failed = failed + 1
         end
     end
-    return failed > 0 and 1 or 0
+    print(string.format("check: removed overrides (warned) %d in %d frameworks (the ceiling is tests/gen/removed-overrides.tsv)",
+        removed_total, removed_in))
+    local target_problems = target_checks.problems(args.tree)
+    for _, line in ipairs(target_problems) do
+        print("CHECK targets: " .. line)
+    end
+    return (failed > 0 or #target_problems > 0) and 1 or 0
 end
