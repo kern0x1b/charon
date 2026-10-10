@@ -40,6 +40,40 @@ local function test_probe(check)
           and got.NSMultipleUnderlyingErrorsKey[2] == "NSMultipleUnderlyingErrorsKey", "probe reads the host framework of fw")
 end
 
+-- The files and folders under a folder, sorted, as one text (in memory; nothing is written).
+local function listing(folder)
+    local entries = {}
+    for _, filepath in ipairs(os.files(path.join(folder, "**"))) do
+        table.insert(entries, filepath)
+    end
+    for _, dir in ipairs(os.dirs(path.join(folder, "**"))) do
+        table.insert(entries, dir .. "/")
+    end
+    table.sort(entries)
+    return table.concat(entries, "\n")
+end
+
+-- A probe run leaves no file behind: the listing of the probe folder (the build directory's gen folder) is the same before and after
+-- each run, and no staging file of the names (probe-names.txt, probe-name.txt) exists in it.
+local function test_no_files(check)
+    local probe = import("gen.probe", {rootdir = TOOLS, anonymous = true})
+    local host = import("gen.host", {rootdir = TOOLS, anonymous = true})
+    local library = "/System/Library/Frameworks/Foundation.framework/Foundation"
+    local names = {"NSMultipleUnderlyingErrorsKey", "NSNoSuchNameForTheProbeTest"}
+    local folder = path.join(host.builddir(), "gen")
+    local before = listing(folder)
+    local got = probe.values(library, names)
+    local after_one = listing(folder)
+    probe.values(library, names)
+    local after_two = listing(folder)
+    check(before == after_one, "a probe run creates no file under the probe folder")
+    check(after_one == after_two, "a second probe run creates no file under the probe folder")
+    check(not os.isfile(path.join(folder, "probe-names.txt")) and not os.isfile(path.join(folder, "probe-name.txt")),
+          "no staging file of the probe names is written")
+    check(got.NSMultipleUnderlyingErrorsKey ~= nil and got.NSMultipleUnderlyingErrorsKey[1] == "found",
+          "the probe reads the names with no staging file")
+end
+
 local function test_text(check)
     local cmd = import("gen.cmd_diff", {rootdir = TOOLS, anonymous = true})
     local host = import("gen.host", {rootdir = TOOLS, anonymous = true})
@@ -53,10 +87,15 @@ local function test_text(check)
           "lines splits on CR LF, CR, VT, FF and LF as splitlines does")
     check(#host.lines("") == 0, "lines of the empty text is empty")
     check(host.tail("  abcdef  ", 3) == "def", "tail keeps the last bytes of the stripped text")
+    local ok, out, err, status = host.run("/bin/sh", {"-c", "echo kept; echo failure >&2; exit 3"})
+    check(ok == false and out == "kept\n" and err == "failure\n" and status == 3,
+          "a failing program keeps its exit status and its stderr, and its ok flag is false")
 end
 
 function main()
     local check, failures = checks()
+    -- first: the listing of the probe folder is taken before any probe run of this process
+    test_no_files(check)
     test_text(check)
     test_values(check)
     test_probe(check)

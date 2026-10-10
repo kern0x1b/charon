@@ -2,11 +2,11 @@
 -- page per class (its members with the 6.1.3 and 4.3 status, demand, registry and pin, and stub; the host oracle's defaults; the
 -- binary's ObjC metadata), one page per protocol, Constants.md, and Swift.md when the bucket has rows. The inputs: the spec, the
 -- registry, the pins and the trace's skipped list of the tree; the surface, ledgers, oracle defaults and ObjC table of the corpus
--- (--coordination); the superclasses of the header parse (--sdk, through headers.lua). Pages go through emit, and nothing else is
--- written. The header comments and the declaration text of a class or protocol member are re-derived from clang at doc time
--- (ruling 2, ruling D8): the extractor's doc mode gives them (doc_text.lua, decls --doc, read through a pipe). A member the extractor
--- does not list is marked, and a framework the extractor cannot run for keeps the marked text. Every other part is the oracle's, byte
--- for byte.
+-- (--coordination); the superclasses of the committed declaration shards (headers.shard_facts: no Python runs here). Pages go through
+-- emit, and nothing else is written. The header comments and the declaration text of a class or protocol member are re-derived from
+-- clang at doc time (ruling 2, ruling D8): the extractor's doc mode gives them (doc_text.lua, decls --doc, read through a pipe). A
+-- member the extractor does not list is marked, and a framework the extractor does not list keeps the marked text; a framework it
+-- lists whose rows cannot be produced fails the run. Every other part is the oracle's, byte for byte.
 
 local snapshot = import("spec", {anonymous = true})
 local surface = import("surface", {anonymous = true})
@@ -464,7 +464,7 @@ end
 local function write_framework(ctx, fw, objc_state)
     local tree, corpus = ctx.tree, ctx.corpus
     local spec = snapshot.load(tree, fw)
-    local parsed = headers.facts(tree, fw, ctx.sdk)
+    local parsed = headers.shard_facts(tree, fw)
     local members_by_class, class_names, constant_rows = {}, {}, {}
     for _, r in ipairs(spec) do
         if MEMBER_KINDS[r.kind] then
@@ -493,7 +493,7 @@ local function write_framework(ctx, fw, objc_state)
     for _, pin in ipairs(snapshot.pins(tree, fw)) do
         pins[pin.api] = pin
     end
-    -- the doc-time rows of the extractor (one pipe per framework); none for a framework it cannot run for: the marked text
+    -- the doc-time rows of the extractor (one pipe per framework); none for a framework it does not list: the marked text
     local doc, why = doc_text.rows(tree, fw, ctx.sdk)
     if doc == nil then
         print(string.format("doc %s: no doc rows (%s): its comments and declarations keep the marked text", fw, why))

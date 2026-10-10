@@ -3,7 +3,7 @@
 // dlopen and dlsym. Prints one line per name, tab separated:
 //   name <TAB> found|missing|not-object <TAB> class <TAB> value
 // The value is the UTF-8 text with \\, \" and \uXXXX (ASCII only) escapes, so the line is ASCII.
-// Usage: oracle <framework binary path> <file with one name per line>
+// Usage: oracle <framework binary path> <name> [<name> ...]   (the names are arguments: no file is read)
 #import <Foundation/Foundation.h>
 #include <dlfcn.h>
 
@@ -23,12 +23,11 @@ static NSString *escaped(NSString *s) {
 
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
-        if (argc != 3) { fprintf(stderr, "usage: oracle <framework binary> <names>\n"); return 2; }
+        if (argc < 2) { fprintf(stderr, "usage: oracle <framework binary> <name>...\n"); return 2; }
         void *handle = dlopen(argv[1], RTLD_LAZY);
         if (!handle) { fprintf(stderr, "dlopen: %s\n", dlerror()); return 1; }
-        NSString *names = [NSString stringWithContentsOfFile:[NSString stringWithUTF8String:argv[2]]
-                                                    encoding:NSUTF8StringEncoding error:NULL];
-        for (NSString *name in [names componentsSeparatedByString:@"\n"]) {
+        for (int i = 2; i < argc; i++) {
+            NSString *name = [NSString stringWithUTF8String:argv[i]];
             if (name.length == 0) continue;
             void *sym = dlsym(handle, name.UTF8String);
             if (!sym) { printf("%s\tmissing\t-\t-\n", name.UTF8String); continue; }

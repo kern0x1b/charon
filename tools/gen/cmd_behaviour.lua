@@ -32,7 +32,7 @@ function run(args)
     local pages, done, failed = {}, 0, 0
     for _, m in ipairs(methods) do
         local state = behaviour.new_summary()
-        local status, seconds, peak = behaviour.disassemble(heavy, cache, m.address, function(line)
+        local status, seconds, peak, notes = behaviour.disassemble(heavy, cache, m.address, function(line)
             behaviour.add_line(state, line)
         end)
         print(string.format("cost\t%s\t-[%s %s]\t%s\t%.2f s\t%.0f MB\texit %d", fw, m.cls, m.selector, m.address, seconds, peak, status))
@@ -42,6 +42,10 @@ function run(args)
             table.insert(pages[m.cls], {section = m.section, selector = m.selector, address = m.address, summary = state})
         else
             failed = failed + 1
+            io.stderr:write(string.format("error: ipsw failed on -[%s %s] (exit %d)\n", m.cls, m.selector, status))
+            for _, note in ipairs(notes) do
+                io.stderr:write("error:   " .. note .. "\n")
+            end
         end
     end
     local names = {}
@@ -52,5 +56,6 @@ function run(args)
         emit.file(behaviour.page_path(args.tree, fw, cls), behaviour.page_text(fw, cls, pages[cls]))
     end
     print(string.format("behaviour %s: %d methods, %d summarised, %d failed", fw, #methods, done, failed))
-    return 0
+    -- A failed method is a failed run: the pages of the methods that did summarise are written, and the status says the run failed.
+    return failed > 0 and 1 or 0
 end

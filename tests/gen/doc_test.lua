@@ -276,6 +276,21 @@ local function test_pages(check)
           "without doc rows a protocol member keeps the marked declaration")
     check(has(marked_protocol, "## Header comments\n\n- not derived: the extractor does not run for this framework\n"),
           "without doc rows the protocol's header comments are marked, not derived")
+
+    -- an extractor that is not built is an error, not marked text: the tree has no tools/found project to build it from
+    doc_text.use(nil)
+    local raised = false
+    try {
+        function()
+            doc_text.rows(tree, FIXTURE, "/nonexistent")
+        end,
+        catch {
+            function(e)
+                raised = string.find(tostring(e), "decls", 1, true) ~= nil
+            end
+        }
+    }
+    check(raised, "a doc run with no built extractor raises: the pages do not take marked text for it")
     os.rm(root)
 end
 

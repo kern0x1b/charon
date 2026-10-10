@@ -7,6 +7,7 @@
 -- configuration that another run reads.
 
 local emit = import("emit", {anonymous = true})
+local stream = import("stream", {anonymous = true})
 local json = import("core.base.json")
 
 -- The project folder, as an absolute path taken when the module loads (xmake reports paths relative to the working folder).
@@ -53,16 +54,28 @@ local function json_of(text)
     return json.decode(string.sub(text, (string.find(text, "{", 1, true))))
 end
 
--- Runs xmake on the project, from the project folder (xmake takes its build directory from the working folder when that folder
--- holds a .xmake folder, so the folder is fixed). Returns ok, stdout, stderr; on failure, ok is false and stderr is the error text.
-local function xmake(argv)
+-- Runs a program and returns ok (exit status 0), its standard output (one line per line of the program, each ended by a line feed),
+-- its standard error, and its exit status. The output goes through a pipe (stream.lua): no file is written for it.
+function run(program, argv)
+    local out = {}
+    local status, err = stream.run(program, argv or {}, function(line)
+        table.insert(out, line)
+    end)
+    local text = #out > 0 and (table.concat(out, "\n") .. "\n") or ""
+    return status == 0, text, err, status
+end
+
+-- Runs xmake on a project from a folder. xmake takes its configuration and its build directory from the folder it runs in (when that
+-- folder holds a .xmake folder), so the folder is part of the call. Returns ok, stdout, stderr; on failure, ok is false and stderr is
+-- the error text.
+local function xmake_at(cwd, project, argv)
     local here = os.curdir()
     local ok, out, err = true, "", ""
-    local command = table.join({argv[1]}, {"-P", PROJECT}, table.slice(argv, 2))
+    local command = table.join({argv[1]}, {"-P", project}, table.slice(argv, 2))
     try {
         function()
-            os.cd(PROJECT)
-            out, err = os.iorunv(os.programfile(), command)
+            os.cd(cwd)
+            ok, out, err = run(os.programfile(), command)
         end,
         catch {
             function(e)
@@ -72,6 +85,23 @@ local function xmake(argv)
     }
     os.cd(here)
     return ok, plain(out), plain(err)
+end
+
+-- Runs xmake on the host project, from the project folder.
+local function xmake(argv)
+    return xmake_at(PROJECT, PROJECT, argv)
+end
+
+-- The product xmake reports for a target of a project, absolute: asked from the folder cwd, so it is the product of the build folder
+-- cwd's configuration names (the same answer a build from cwd gives). The product is not checked: it may not be built yet.
+function target_product(cwd, project, name)
+    local ok, out, err = xmake_at(cwd, project, {"show", "-t", name, "--format=json"})
+    assert(ok, "xmake show failed for " .. name .. " of " .. project .. ": " .. tail(err, 300))
+    local file = json_of(out).targetfile
+    if not path.is_absolute(file) then
+        file = path.join(project, file)
+    end
+    return path.normalize(path.absolute(file))
 end
 
 -- Configures the project for one framework and its constants folder (the .gen folder of the framework in the tree).
@@ -97,13 +127,7 @@ end
 -- The product xmake builds for a target, absolute. The project must be configured.
 function product(name)
     if product_cache[name] == nil then
-        local ok, out, err = xmake({"show", "-t", name, "--format=json"})
-        assert(ok, "xmake show failed for " .. name .. ": " .. tail(err, 300))
-        local file = json_of(out).targetfile
-        if not path.is_absolute(file) then
-            file = path.join(PROJECT, file)
-        end
-        product_cache[name] = path.absolute(file)
+        product_cache[name] = target_product(PROJECT, PROJECT, name)
     end
     return product_cache[name]
 end
@@ -132,22 +156,6 @@ function build(name, force)
     end
     io.stderr:write(err)
     return true, ""
-end
-
--- Runs a host program and returns its standard output, and whether it exited with status 0.
-function run(program, argv)
-    local ok, out = true, ""
-    try {
-        function()
-            out = os.iorunv(program, argv or {})
-        end,
-        catch {
-            function()
-                ok = false
-            end
-        }
-    }
-    return ok, out
 end
 
 -- Writes a generated source of the build directory through emit: gen/<name> under the build directory. Returns its path, and

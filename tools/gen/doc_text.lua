@@ -2,16 +2,18 @@
 -- snapshot does not hold (ruling 2: the comments are re-derived from clang at doc time; ruling D8: so is the declaration text).
 -- The source is the extractor's doc mode, `decls --doc <F>` (tools/found/decls.cc; design-foundation.md 5.9): one row per
 -- declaration, ten cells, read through a pipe and never written to a file. The frameworks the extractor can run for are the ones its
--- `decls --list` names (read through the same kind of pipe). A framework it does not list, or whose parse fails, has no rows: the
--- pages keep their marked text for it.
+-- `decls --list` names (read through the same kind of pipe). A framework it does not list has no rows: the pages keep their marked
+-- text for it. A framework it lists whose rows cannot be produced (decls --doc fails) is an error: the doc command fails, and no page
+-- takes marked text in its place. The extractor is the decls target of tools/found, which host.lua asks xmake for.
 --
 -- The cells of a row, in order: framework, kind, usr, container, name, side, the parameter names (separated by " | "), the brief of
 -- the doc comment, its raw text as clang parses it, and the declaration as written. The extractor escapes a backslash, a tab, a
 -- line feed and a carriage return as \\, \t, \n, \r in every cell, so a row is one line; decode() undoes that.
 
 local stream = import("stream", {anonymous = true})
+local host = import("host", {anonymous = true})
 
--- The program: `env` sets IR_SDK for the extractor, which stream.lines starts under sh (its arguments are passed as they are).
+-- The program: `env` sets IR_SDK for the extractor, which stream.run starts under sh (its arguments are passed as they are).
 local ENV = "/usr/bin/env"
 local CELL_COUNT = 10
 local CELL = {framework = 1, kind = 2, usr = 3, container = 4, name = 5, side = 6, params = 7, brief = 8, comment = 9, decl = 10}
@@ -27,37 +29,45 @@ function use(source)
     injected = source
 end
 
--- The extractor's binary under a tree: build/macosx/arm64/release/decls (gitignored; xmake -P tools/found builds it).
+-- The extractor's binary for a tree: the decls target of tools/found, as xmake gives it when asked from the tree, so it is the product
+-- of the tree's own configuration and build folder (build/macosx/arm64/release/decls under the tree, where xmake puts it). The binary
+-- is built by xmake -P tools/found, run from the tree; one that is not built is an error, since nothing then says what is listed.
+local binary_memo = {}
+
 local function binary(tree)
-    return path.join(tree, "build", "macosx", "arm64", "release", "decls")
+    local root = path.absolute(tree)
+    if binary_memo[root] == nil then
+        local file = host.target_product(root, path.join(root, "tools", "found"), "decls")
+        assert(os.isfile(file), "the extractor is not built: " .. file .. " (build it from the tree: xmake -P tools/found)")
+        binary_memo[root] = file
+    end
+    return binary_memo[root]
 end
 
 -- The frameworks the extractor lists for an SDK, as a set: `decls --list`, read once per tree and SDK.
 local listed_cache = {}
 
 local function listed(tree, sdk)
-    local key = binary(tree) .. "\n" .. sdk
+    local file = binary(tree)
+    local key = file .. "\n" .. sdk
     if listed_cache[key] == nil then
         local names = {}
-        local status = stream.lines(ENV, {"IR_SDK=" .. sdk, binary(tree), "--list"}, function(line)
+        local status, err = stream.run(ENV, {"IR_SDK=" .. sdk, file, "--list"}, function(line)
             local name = string.match(line, "^([^\t]*)")
             if name ~= "" then
                 names[name] = true
             end
         end)
-        assert(status == 0, "decls --list failed (status " .. status .. ")")
+        assert(status == 0, "decls --list failed (status " .. status .. "): " .. host.tail(err, 300))
         listed_cache[key] = names
     end
     return listed_cache[key]
 end
 
--- Whether the extractor's doc mode can run for a framework: the binary exists and `decls --list` names the framework.
+-- Whether the extractor lists a framework for the SDK: `decls --list` names it. Its doc mode runs for a listed framework only.
 function available(tree, fw, sdk)
     if injected then
         return injected(fw, sdk) ~= nil
-    end
-    if not os.isfile(binary(tree)) then
-        return false
     end
     return listed(tree, sdk)[fw] == true
 end
@@ -115,8 +125,9 @@ local function entry_of(cells)
     }
 end
 
--- The doc-time rows of a framework, or nil and a reason when the extractor gives none (it does not list the framework, or its parse
--- fails: its own message is on stderr). The result has two maps, both built in the rows' order: usr, from each USR to its row (a USR
+-- The doc-time rows of a framework, or nil and a reason when the extractor does not list the framework (its pages keep the marked
+-- text). A listed framework whose doc mode fails is an error, with the extractor's message: no rows are returned for it. The result
+-- has two maps, both built in the rows' order: usr, from each USR to its row (a USR
 -- the extractor writes twice keeps its first row), and api, from "kind api" ("method -[Class selector]") to the first row of a member.
 -- A row is {kind, api (members only, else nil), comment, from_brief, decl, params}: comment is the raw comment text, or the brief
 -- when the raw text is empty (from_brief says so); "" when the declaration has no doc comment of the forms the extractor keeps.
@@ -137,17 +148,15 @@ function rows(tree, fw, sdk)
             end
         end
     end
-    local status
+    local status, err = 0, ""
     if injected then
         for _, line in ipairs(injected(fw, sdk)) do
             take(line)
         end
-        status = 0
     else
-        status = stream.lines(ENV, {"IR_SDK=" .. sdk, binary(tree), "--doc", fw}, take)
+        status, err = stream.run(ENV, {"IR_SDK=" .. sdk, binary(tree), "--doc", fw}, take)
     end
-    if status ~= 0 then
-        return nil, "decls --doc exits with status " .. status
-    end
+    assert(status == 0, "doc " .. fw .. ": the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status "
+           .. status .. (err ~= "" and (": " .. host.tail(err, 300)) or ""))
     return {usr = usr, api = api}
 end

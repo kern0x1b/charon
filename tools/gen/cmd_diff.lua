@@ -2,7 +2,7 @@
 -- nobody and exported on iOS, the value macOS holds is read by a reference program built against the host framework, and the
 -- value the generated constants objects hold is read by the oracle from the constants dylib and compared with it. Where macOS
 -- differs from the iOS 26.2 cache, the cache's value is the expectation (iOS wins). Prints one line per difference and a summary;
--- returns the exit status: 1 when a name differs or a host program does not build, 0 otherwise.
+-- returns the exit status: 1 when a name differs, a host program does not build or the reference program fails, 0 otherwise.
 
 local layout = import("layout", {anonymous = true})
 local snapshot = import("spec", {anonymous = true})
@@ -138,7 +138,12 @@ function run(args)
         print("NOT ON MACOS " .. name .. ": not compared")
     end
 
-    local _, out = host.run(host.product("reference"))
+    local ran, out, err, exit = host.run(host.product("reference"))
+    if not ran then
+        -- A reference that exits with an error (a crash included) has no values: the run fails, and says why.
+        print("reference crashed (exit status " .. tostring(exit) .. ")" .. (err ~= "" and (": " .. host.tail(err, 300)) or ""))
+        return 1
+    end
     local reference = {}
     for _, line in ipairs(host.lines(out)) do
         local tab = string.find(line, "\t", 1, true)
@@ -173,7 +178,8 @@ function run(args)
     for _, name in ipairs(names) do
         local entry = port[name]
         local status, value = "missing", nil
-        if entry ~= nil and entry[1] ~= "probe-crashed" then
+        if entry ~= nil then
+            -- probe-crashed: the oracle failed for this name, which is not the same as a name the constants do not hold
             status, value = entry[1], entry[2]
         end
         local ref = reference[name]

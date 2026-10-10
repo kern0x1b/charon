@@ -18,10 +18,13 @@ local SUMMARY_CALLS = 40
 -- The wall clock is in milliseconds.
 local MILLISECONDS = 1000
 
--- ipsw runs as: heavy.sh /bin/sh -c WRAP sh SECONDS CACHE ADDRESS. The inner script runs /usr/bin/time over timeout over ipsw, with
--- ipsw's stderr dropped and time's report (written to stderr) merged into the stream: the report's peak-memory line is read from the
--- stream and the markup lines are read from the same stream. The stdout of ipsw is the only text that is summarised.
-local WRAP = [[exec /usr/bin/time -l timeout "$1" /bin/sh -c 'exec ipsw dyld disass "$1" --vaddr "$2" --demangle 2>/dev/null' ipsw "$2" "$3" 2>&1]]
+-- ipsw runs as: heavy.sh /bin/sh -c WRAP sh SECONDS CACHE ADDRESS. The inner script runs /usr/bin/time over timeout over ipsw. ipsw's
+-- stderr and time's report (both written to stderr) are merged into the stream by the outer 2>&1, so a failure's text reaches the
+-- caller: the report's peak-memory line is read from the stream, the markup lines are summarised, and the other lines are kept as
+-- the failure's notes. Only the markup lines of ipsw's stdout are summarised.
+local WRAP = [[exec /usr/bin/time -l timeout "$1" /bin/sh -c 'exec ipsw dyld disass "$1" --vaddr "$2" --demangle' ipsw "$2" "$3" 2>&1]]
+-- The first lines of a run that are not markup, kept for a failed method's message.
+local NOTE_LINES = 12
 
 -- The markup line of ipsw: address, four bytes, mnemonic, operands and an optional comment after a semicolon.
 local MARKUP = "^0x[0-9a-f]+:%s+" .. string.rep("[0-9a-f][0-9a-f]%s+", 4) .. "(%S+)%s*(.*)$"
@@ -64,20 +67,24 @@ function methods(corpus, fw)
 end
 
 -- Runs ipsw on the function at address through heavy.sh under the timeout. Calls each(line) for every line the stream holds except
--- the report's memory line. Returns the exit status, the wall seconds, and the peak resident memory in MB (0 when the report is
--- missing).
+-- the report's memory line. Returns the exit status, the wall seconds, the peak resident memory in MB (0 when the report is
+-- missing), and the first NOTE_LINES lines that are not markup (the text a failure wrote before the report of time).
 function disassemble(heavy, cache, address, each)
     local peak = 0
+    local notes = {}
     local started = os.mclock()
     local status = stream.lines(heavy, {"/bin/sh", "-c", WRAP, "sh", tostring(TIMEOUT_SECONDS), cache, address}, function(line)
         local bytes = string.match(line, "(%d+)%s+maximum resident set size")
         if bytes then
             peak = tonumber(bytes) / MEGABYTE
         else
+            if #notes < NOTE_LINES and not string.match(line, MARKUP) then
+                table.insert(notes, line)
+            end
             each(line)
         end
     end)
-    return status, (os.mclock() - started) / MILLISECONDS, peak
+    return status, (os.mclock() - started) / MILLISECONDS, peak, notes
 end
 
 -- Removes the spaces at both ends of a text, as Python's strip does for ASCII.
