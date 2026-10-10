@@ -11,6 +11,9 @@
 # everything under ~/Library/Audio/MIDI Configurations) are hashed, read only, before and after, and the run fails when
 # the two digests differ. A difference is reported with the files and the lines that differ (held in memory: nothing is
 # copied), so that a change made by another process of the machine at the same moment can be told from one of the probe.
+# The host's MIDI server re-serializes the file (same content, other bytes) while endpoints exist, and writes it back when
+# they are gone: the digests are taken settled, and the after digest is waited for (see settled_digest and wait_for_digest). A
+# file that is not back to the digest of before within 20 s is a change that persisted.
 #
 # Usage:
 #   sh prefs-bracket.sh digest            print the digest of the persistent MIDI preferences
@@ -62,12 +65,46 @@ differing_lines() {
     }'
 }
 
+# The MIDI server of the host rewrites its preference file with another serialization (the same content, other bytes) when the
+# endpoints of a process come and go, and writes it back a moment later; a process of another band does the same to it. So the
+# digest is taken when it has been the same three times, a second apart (at most 15 s), before the run; and after the run it
+# is waited for until it is the digest of before again (at most 20 s). A file that is still different then is a change that
+# persisted, and fails the run. MIDI_PREFS_SETTLE=0 takes the digests at once.
+
+settled_digest() {
+    current=$(digest)
+    if [ "${MIDI_PREFS_SETTLE:-1}" = 0 ]; then
+        echo "$current"
+        return 0
+    fi
+    same=1
+    tries=0
+    while [ "$same" -lt 3 ] && [ "$tries" -lt 15 ]; do
+        sleep 1
+        next=$(digest)
+        if [ "$next" = "$current" ]; then same=$((same + 1)); else same=1; current=$next; fi
+        tries=$((tries + 1))
+    done
+    echo "$current"
+}
+
+# Waits for the digest to be $1 again.
+wait_for_digest() {
+    waited=0
+    while [ "$(digest)" != "$1" ] && [ "${MIDI_PREFS_SETTLE:-1}" != 0 ] && [ "$waited" -lt 20 ]; do
+        sleep 1
+        waited=$((waited + 1))
+    done
+    return 0
+}
+
 run() {
-    before=$(digest)
+    before=$(settled_digest)
     before_listing=$(listing "$home")
     before_text=$(texts "$home")
     status=0
     "$@" || status=$?
+    wait_for_digest "$before"
     after=$(digest)
     if [ "$before" != "$after" ]; then
         echo "prefs-bracket: the persistent MIDI preferences changed during the run (before $before, after $after)" >&2
@@ -92,12 +129,24 @@ selftest() {
     c=$(digest "$area")
     printf 'cfg\n' > "$area/Library/Audio/MIDI Configurations/Other.plist"
     d=$(digest "$area")
+    # The run: a change that persists fails it, and one the server writes back within the wait does not.
+    home=$area
+    file="$area/Library/Preferences/ByHost/com.apple.MIDI.TEST.plist"
+    persisted=pass
+    if (MIDI_PREFS_SETTLE=0 run sh -c 'printf changed > "$1"' sh "$file") > /dev/null 2>&1; then persisted=missed; fi
+    printf 'two\n' > "$file"
+    transient=fail
+    if run sh -c '(sleep 2; printf "two\n" > "$1") & printf changed > "$1"' sh "$file" > /dev/null 2>&1; then transient=pass; fi
     rm -rf "$area"
+    if [ "$persisted" != pass ] || [ "$transient" != pass ]; then
+        echo "prefs-bracket: selftest FAILED (a persisted change is $persisted: failed the run $([ "$persisted" = pass ] && echo yes || echo no); a change written back within the wait passes $transient)" >&2
+        exit 1
+    fi
     if [ "$a" != "$b" ] || [ "$a" = "$c" ] || [ "$c" = "$d" ]; then
         echo "prefs-bracket: selftest FAILED (same $([ "$a" = "$b" ] && echo yes || echo no), changed file seen $([ "$a" != "$c" ] && echo yes || echo no), new file seen $([ "$c" != "$d" ] && echo yes || echo no))" >&2
         exit 1
     fi
-    echo "prefs-bracket: selftest ok (an unchanged tree keeps its digest; a changed and an added file change it)"
+    echo "prefs-bracket: selftest ok (an unchanged tree keeps its digest; a changed and an added file change it; a persisted change fails a run and one written back within the wait does not)"
 }
 
 case "${1:-}" in
