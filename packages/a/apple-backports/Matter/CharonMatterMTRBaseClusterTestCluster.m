@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -41,22 +42,25 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRBaseClusterTestCluster
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterTestCluster class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -88,7 +92,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // IdentifyTime, a id.
 - (void)writeAttributeIdentifyTimeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"IdentifyTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"IdentifyTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -96,7 +102,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeIdentifyTimeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"IdentifyTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"IdentifyTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -284,7 +292,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OnTime, a id.
 - (void)writeAttributeOnTimeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OnTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OnTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -292,7 +302,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOnTimeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OnTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OnTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -318,7 +330,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OffWaitTime, a id.
 - (void)writeAttributeOffWaitTimeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OffWaitTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OffWaitTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -326,7 +340,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOffWaitTimeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OffWaitTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OffWaitTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -352,7 +368,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // StartUpOnOff, a id.
 - (void)writeAttributeStartUpOnOffWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpOnOff"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpOnOff"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -360,7 +378,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeStartUpOnOffWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpOnOff"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpOnOff"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -422,7 +442,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // MinLevel, a id.
 - (void)writeAttributeMinLevelWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MinLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinLevel"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -430,7 +452,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeMinLevelWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MinLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinLevel"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -456,7 +480,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // MaxLevel, a id.
 - (void)writeAttributeMaxLevelWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxLevel"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -464,7 +490,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeMaxLevelWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxLevel"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -544,7 +572,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Options, a id.
 - (void)writeAttributeOptionsWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Options"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Options"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -552,7 +582,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOptionsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Options"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Options"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -578,7 +610,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OnOffTransitionTime, a id.
 - (void)writeAttributeOnOffTransitionTimeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OnOffTransitionTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OnOffTransitionTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -586,7 +620,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOnOffTransitionTimeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OnOffTransitionTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OnOffTransitionTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -612,7 +648,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OnLevel, a id.
 - (void)writeAttributeOnLevelWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OnLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OnLevel"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -620,7 +658,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOnLevelWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OnLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OnLevel"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -646,7 +686,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OnTransitionTime, a id.
 - (void)writeAttributeOnTransitionTimeWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OnTransitionTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OnTransitionTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -654,7 +696,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOnTransitionTimeWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OnTransitionTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OnTransitionTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -680,7 +724,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OffTransitionTime, a id.
 - (void)writeAttributeOffTransitionTimeWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OffTransitionTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OffTransitionTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -688,7 +734,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOffTransitionTimeWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OffTransitionTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OffTransitionTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -714,7 +762,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // DefaultMoveRate, a id.
 - (void)writeAttributeDefaultMoveRateWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"DefaultMoveRate"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DefaultMoveRate"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -722,7 +772,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeDefaultMoveRateWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"DefaultMoveRate"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DefaultMoveRate"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -748,7 +800,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // StartUpCurrentLevel, a id.
 - (void)writeAttributeStartUpCurrentLevelWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpCurrentLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpCurrentLevel"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -756,7 +810,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeStartUpCurrentLevelWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpCurrentLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpCurrentLevel"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -854,7 +910,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Binding, a id.
 - (void)writeAttributeBindingWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Binding"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Binding"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -862,7 +920,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeBindingWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Binding"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Binding"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -888,7 +948,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Acl, a id.
 - (void)writeAttributeAclWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Acl"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Acl"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -896,7 +958,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeAclWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Acl"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Acl"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -922,7 +986,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Extension, a id.
 - (void)writeAttributeExtensionWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Extension"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Extension"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -930,7 +996,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeExtensionWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Extension"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Extension"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1154,7 +1222,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NodeLabel, a id.
 - (void)writeAttributeNodeLabelWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NodeLabel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NodeLabel"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1162,7 +1232,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNodeLabelWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NodeLabel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NodeLabel"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1188,7 +1260,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Location, a id.
 - (void)writeAttributeLocationWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Location"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Location"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1196,7 +1270,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLocationWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Location"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Location"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1384,7 +1460,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LocalConfigDisabled, a id.
 - (void)writeAttributeLocalConfigDisabledWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LocalConfigDisabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalConfigDisabled"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1392,7 +1470,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLocalConfigDisabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LocalConfigDisabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalConfigDisabled"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1472,7 +1552,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // DefaultOtaProviders, a id.
 - (void)writeAttributeDefaultOtaProvidersWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"DefaultOtaProviders"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DefaultOtaProviders"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1480,7 +1562,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeDefaultOtaProvidersWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"DefaultOtaProviders"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DefaultOtaProviders"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1560,7 +1644,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ActiveLocale, a id.
 - (void)writeAttributeActiveLocaleWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveLocale"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ActiveLocale"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1568,7 +1654,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeActiveLocaleWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveLocale"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ActiveLocale"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1612,7 +1700,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // HourFormat, a id.
 - (void)writeAttributeHourFormatWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"HourFormat"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"HourFormat"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1620,7 +1710,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeHourFormatWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"HourFormat"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"HourFormat"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1646,7 +1738,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ActiveCalendarType, a id.
 - (void)writeAttributeActiveCalendarTypeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveCalendarType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ActiveCalendarType"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1654,7 +1748,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeActiveCalendarTypeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ActiveCalendarType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ActiveCalendarType"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1698,7 +1794,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // TemperatureUnit, a id.
 - (void)writeAttributeTemperatureUnitWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureUnit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureUnit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -1706,7 +1804,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeTemperatureUnitWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureUnit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureUnit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -2308,7 +2408,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Breadcrumb, a id.
 - (void)writeAttributeBreadcrumbWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Breadcrumb"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Breadcrumb"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -2316,7 +2418,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeBreadcrumbWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Breadcrumb"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Breadcrumb"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -2486,7 +2590,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // InterfaceEnabled, a id.
 - (void)writeAttributeInterfaceEnabledWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"InterfaceEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"InterfaceEnabled"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -2494,7 +2600,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInterfaceEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"InterfaceEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"InterfaceEnabled"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4518,7 +4626,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // GroupKeyMap, a id.
 - (void)writeAttributeGroupKeyMapWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"GroupKeyMap"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"GroupKeyMap"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4526,7 +4636,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeGroupKeyMapWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"GroupKeyMap"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"GroupKeyMap"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4606,7 +4718,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LabelList, a id.
 - (void)writeAttributeLabelListWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LabelList"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LabelList"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4614,7 +4728,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLabelListWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LabelList"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LabelList"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4712,7 +4828,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // StartUpMode, a id.
 - (void)writeAttributeStartUpModeWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4720,7 +4838,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeStartUpModeWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4746,7 +4866,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OnMode, a id.
 - (void)writeAttributeOnModeWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OnMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OnMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4754,7 +4876,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOnModeWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OnMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OnMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4852,7 +4976,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // DoorOpenEvents, a id.
 - (void)writeAttributeDoorOpenEventsWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"DoorOpenEvents"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorOpenEvents"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4860,7 +4986,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeDoorOpenEventsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"DoorOpenEvents"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorOpenEvents"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4886,7 +5014,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // DoorClosedEvents, a id.
 - (void)writeAttributeDoorClosedEventsWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"DoorClosedEvents"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorClosedEvents"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4894,7 +5024,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeDoorClosedEventsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"DoorClosedEvents"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorClosedEvents"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4920,7 +5052,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OpenPeriod, a id.
 - (void)writeAttributeOpenPeriodWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OpenPeriod"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OpenPeriod"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -4928,7 +5062,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOpenPeriodWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OpenPeriod"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OpenPeriod"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5170,7 +5306,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Language, a id.
 - (void)writeAttributeLanguageWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Language"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Language"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5178,7 +5316,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLanguageWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Language"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Language"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5204,7 +5344,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LEDSettings, a id.
 - (void)writeAttributeLEDSettingsWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LEDSettings"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LEDSettings"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5212,7 +5354,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLEDSettingsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LEDSettings"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LEDSettings"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5238,7 +5382,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // AutoRelockTime, a id.
 - (void)writeAttributeAutoRelockTimeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"AutoRelockTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"AutoRelockTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5246,7 +5392,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeAutoRelockTimeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"AutoRelockTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"AutoRelockTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5272,7 +5420,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // SoundVolume, a id.
 - (void)writeAttributeSoundVolumeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"SoundVolume"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SoundVolume"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5280,7 +5430,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeSoundVolumeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"SoundVolume"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SoundVolume"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5306,7 +5458,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OperatingMode, a id.
 - (void)writeAttributeOperatingModeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OperatingMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OperatingMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5314,7 +5468,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOperatingModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OperatingMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OperatingMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5376,7 +5532,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // EnableLocalProgramming, a id.
 - (void)writeAttributeEnableLocalProgrammingWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EnableLocalProgramming"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableLocalProgramming"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5384,7 +5542,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeEnableLocalProgrammingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EnableLocalProgramming"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableLocalProgramming"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5410,7 +5570,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // EnableOneTouchLocking, a id.
 - (void)writeAttributeEnableOneTouchLockingWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EnableOneTouchLocking"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableOneTouchLocking"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5418,7 +5580,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeEnableOneTouchLockingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EnableOneTouchLocking"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableOneTouchLocking"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5444,7 +5608,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // EnableInsideStatusLED, a id.
 - (void)writeAttributeEnableInsideStatusLEDWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EnableInsideStatusLED"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableInsideStatusLED"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5452,7 +5618,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeEnableInsideStatusLEDWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EnableInsideStatusLED"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableInsideStatusLED"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5478,7 +5646,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // EnablePrivacyModeButton, a id.
 - (void)writeAttributeEnablePrivacyModeButtonWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EnablePrivacyModeButton"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnablePrivacyModeButton"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5486,7 +5656,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeEnablePrivacyModeButtonWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EnablePrivacyModeButton"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnablePrivacyModeButton"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5512,7 +5684,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LocalProgrammingFeatures, a id.
 - (void)writeAttributeLocalProgrammingFeaturesWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LocalProgrammingFeatures"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalProgrammingFeatures"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5520,7 +5694,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLocalProgrammingFeaturesWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LocalProgrammingFeatures"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalProgrammingFeatures"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5546,7 +5722,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // WrongCodeEntryLimit, a id.
 - (void)writeAttributeWrongCodeEntryLimitWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"WrongCodeEntryLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WrongCodeEntryLimit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5554,7 +5732,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeWrongCodeEntryLimitWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"WrongCodeEntryLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WrongCodeEntryLimit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5580,7 +5760,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // UserCodeTemporaryDisableTime, a id.
 - (void)writeAttributeUserCodeTemporaryDisableTimeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UserCodeTemporaryDisableTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UserCodeTemporaryDisableTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5588,7 +5770,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeUserCodeTemporaryDisableTimeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UserCodeTemporaryDisableTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UserCodeTemporaryDisableTime"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5614,7 +5798,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // SendPINOverTheAir, a id.
 - (void)writeAttributeSendPINOverTheAirWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"SendPINOverTheAir"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SendPINOverTheAir"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5622,7 +5808,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeSendPINOverTheAirWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"SendPINOverTheAir"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SendPINOverTheAir"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5648,7 +5836,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // RequirePINforRemoteOperation, a id.
 - (void)writeAttributeRequirePINforRemoteOperationWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RequirePINforRemoteOperation"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RequirePINforRemoteOperation"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5656,7 +5846,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeRequirePINforRemoteOperationWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RequirePINforRemoteOperation"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RequirePINforRemoteOperation"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5682,7 +5874,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ExpiringUserTimeout, a id.
 - (void)writeAttributeExpiringUserTimeoutWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ExpiringUserTimeout"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ExpiringUserTimeout"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -5690,7 +5884,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeExpiringUserTimeoutWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ExpiringUserTimeout"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ExpiringUserTimeout"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6076,7 +6272,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Mode, a id.
 - (void)writeAttributeModeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Mode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Mode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6084,7 +6282,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Mode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Mode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6452,7 +6652,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LifetimeRunningHours, a id.
 - (void)writeAttributeLifetimeRunningHoursWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LifetimeRunningHours"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LifetimeRunningHours"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6460,7 +6662,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLifetimeRunningHoursWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LifetimeRunningHours"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LifetimeRunningHours"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6504,7 +6708,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LifetimeEnergyConsumed, a id.
 - (void)writeAttributeLifetimeEnergyConsumedWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LifetimeEnergyConsumed"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LifetimeEnergyConsumed"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6512,7 +6718,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLifetimeEnergyConsumedWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LifetimeEnergyConsumed"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LifetimeEnergyConsumed"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6538,7 +6746,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OperationMode, a id.
 - (void)writeAttributeOperationModeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OperationMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OperationMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6546,7 +6756,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOperationModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OperationMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OperationMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6572,7 +6784,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ControlMode, a id.
 - (void)writeAttributeControlModeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ControlMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ControlMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6580,7 +6794,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeControlModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ControlMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ControlMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6768,7 +6984,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // HVACSystemTypeConfiguration, a id.
 - (void)writeAttributeHVACSystemTypeConfigurationWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"HVACSystemTypeConfiguration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"HVACSystemTypeConfiguration"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6776,7 +6994,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeHVACSystemTypeConfigurationWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"HVACSystemTypeConfiguration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"HVACSystemTypeConfiguration"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6802,7 +7022,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LocalTemperatureCalibration, a id.
 - (void)writeAttributeLocalTemperatureCalibrationWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LocalTemperatureCalibration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalTemperatureCalibration"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6810,7 +7032,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLocalTemperatureCalibrationWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LocalTemperatureCalibration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalTemperatureCalibration"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6836,7 +7060,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OccupiedCoolingSetpoint, a id.
 - (void)writeAttributeOccupiedCoolingSetpointWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupiedCoolingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedCoolingSetpoint"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6844,7 +7070,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOccupiedCoolingSetpointWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupiedCoolingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedCoolingSetpoint"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6870,7 +7098,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OccupiedHeatingSetpoint, a id.
 - (void)writeAttributeOccupiedHeatingSetpointWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupiedHeatingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedHeatingSetpoint"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6878,7 +7108,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOccupiedHeatingSetpointWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupiedHeatingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedHeatingSetpoint"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6904,7 +7136,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // UnoccupiedCoolingSetpoint, a id.
 - (void)writeAttributeUnoccupiedCoolingSetpointWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UnoccupiedCoolingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedCoolingSetpoint"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6912,7 +7146,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeUnoccupiedCoolingSetpointWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UnoccupiedCoolingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedCoolingSetpoint"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6938,7 +7174,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // UnoccupiedHeatingSetpoint, a id.
 - (void)writeAttributeUnoccupiedHeatingSetpointWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UnoccupiedHeatingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedHeatingSetpoint"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6946,7 +7184,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeUnoccupiedHeatingSetpointWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UnoccupiedHeatingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedHeatingSetpoint"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6972,7 +7212,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // MinHeatSetpointLimit, a id.
 - (void)writeAttributeMinHeatSetpointLimitWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MinHeatSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinHeatSetpointLimit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -6980,7 +7222,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeMinHeatSetpointLimitWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MinHeatSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinHeatSetpointLimit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7006,7 +7250,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // MaxHeatSetpointLimit, a id.
 - (void)writeAttributeMaxHeatSetpointLimitWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxHeatSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxHeatSetpointLimit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7014,7 +7260,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeMaxHeatSetpointLimitWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxHeatSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxHeatSetpointLimit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7040,7 +7288,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // MinCoolSetpointLimit, a id.
 - (void)writeAttributeMinCoolSetpointLimitWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MinCoolSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinCoolSetpointLimit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7048,7 +7298,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeMinCoolSetpointLimitWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MinCoolSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinCoolSetpointLimit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7074,7 +7326,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // MaxCoolSetpointLimit, a id.
 - (void)writeAttributeMaxCoolSetpointLimitWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxCoolSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxCoolSetpointLimit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7082,7 +7336,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeMaxCoolSetpointLimitWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MaxCoolSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxCoolSetpointLimit"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7108,7 +7364,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // MinSetpointDeadBand, a id.
 - (void)writeAttributeMinSetpointDeadBandWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MinSetpointDeadBand"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinSetpointDeadBand"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7116,7 +7374,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeMinSetpointDeadBandWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"MinSetpointDeadBand"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinSetpointDeadBand"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7142,7 +7402,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // RemoteSensing, a id.
 - (void)writeAttributeRemoteSensingWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RemoteSensing"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RemoteSensing"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7150,7 +7412,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeRemoteSensingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RemoteSensing"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RemoteSensing"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7176,7 +7440,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ControlSequenceOfOperation, a id.
 - (void)writeAttributeControlSequenceOfOperationWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ControlSequenceOfOperation"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ControlSequenceOfOperation"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7184,7 +7450,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeControlSequenceOfOperationWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ControlSequenceOfOperation"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ControlSequenceOfOperation"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7210,7 +7478,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // SystemMode, a id.
 - (void)writeAttributeSystemModeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"SystemMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SystemMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7218,7 +7488,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeSystemModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"SystemMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SystemMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7316,7 +7588,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // TemperatureSetpointHold, a id.
 - (void)writeAttributeTemperatureSetpointHoldWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureSetpointHold"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHold"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7324,7 +7598,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeTemperatureSetpointHoldWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureSetpointHold"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHold"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7350,7 +7626,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // TemperatureSetpointHoldDuration, a id.
 - (void)writeAttributeTemperatureSetpointHoldDurationWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureSetpointHoldDuration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHoldDuration"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7358,7 +7636,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeTemperatureSetpointHoldDurationWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureSetpointHoldDuration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHoldDuration"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7384,7 +7664,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ThermostatProgrammingOperationMode, a id.
 - (void)writeAttributeThermostatProgrammingOperationModeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ThermostatProgrammingOperationMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ThermostatProgrammingOperationMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7392,7 +7674,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeThermostatProgrammingOperationModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ThermostatProgrammingOperationMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ThermostatProgrammingOperationMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7490,7 +7774,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OccupiedSetback, a id.
 - (void)writeAttributeOccupiedSetbackWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupiedSetback"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedSetback"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7498,7 +7784,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOccupiedSetbackWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OccupiedSetback"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedSetback"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7560,7 +7848,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // UnoccupiedSetback, a id.
 - (void)writeAttributeUnoccupiedSetbackWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UnoccupiedSetback"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedSetback"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7568,7 +7858,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeUnoccupiedSetbackWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UnoccupiedSetback"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedSetback"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7630,7 +7922,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // EmergencyHeatDelta, a id.
 - (void)writeAttributeEmergencyHeatDeltaWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EmergencyHeatDelta"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EmergencyHeatDelta"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7638,7 +7932,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeEmergencyHeatDeltaWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EmergencyHeatDelta"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EmergencyHeatDelta"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7664,7 +7960,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ACType, a id.
 - (void)writeAttributeACTypeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACType"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7672,7 +7970,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeACTypeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACType"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7698,7 +7998,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ACCapacity, a id.
 - (void)writeAttributeACCapacityWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACCapacity"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacity"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7706,7 +8008,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeACCapacityWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACCapacity"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacity"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7732,7 +8036,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ACRefrigerantType, a id.
 - (void)writeAttributeACRefrigerantTypeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACRefrigerantType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACRefrigerantType"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7740,7 +8046,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeACRefrigerantTypeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACRefrigerantType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACRefrigerantType"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7766,7 +8074,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ACCompressorType, a id.
 - (void)writeAttributeACCompressorTypeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACCompressorType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCompressorType"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7774,7 +8084,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeACCompressorTypeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACCompressorType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCompressorType"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7800,7 +8112,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ACErrorCode, a id.
 - (void)writeAttributeACErrorCodeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACErrorCode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACErrorCode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7808,7 +8122,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeACErrorCodeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACErrorCode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACErrorCode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7834,7 +8150,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ACLouverPosition, a id.
 - (void)writeAttributeACLouverPositionWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACLouverPosition"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACLouverPosition"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7842,7 +8160,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeACLouverPositionWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACLouverPosition"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACLouverPosition"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7886,7 +8206,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ACCapacityformat, a id.
 - (void)writeAttributeACCapacityformatWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACCapacityformat"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacityformat"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7894,7 +8216,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeACCapacityformatWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ACCapacityformat"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacityformat"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7920,7 +8244,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // FanMode, a id.
 - (void)writeAttributeFanModeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"FanMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FanMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7928,7 +8254,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeFanModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"FanMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FanMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7954,7 +8282,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // FanModeSequence, a id.
 - (void)writeAttributeFanModeSequenceWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"FanModeSequence"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FanModeSequence"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7962,7 +8292,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeFanModeSequenceWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"FanModeSequence"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FanModeSequence"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7988,7 +8320,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // PercentSetting, a id.
 - (void)writeAttributePercentSettingWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PercentSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PercentSetting"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -7996,7 +8330,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributePercentSettingWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PercentSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PercentSetting"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8058,7 +8394,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // SpeedSetting, a id.
 - (void)writeAttributeSpeedSettingWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"SpeedSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeedSetting"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8066,7 +8404,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeSpeedSettingWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"SpeedSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeedSetting"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8128,7 +8468,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // RockSetting, a id.
 - (void)writeAttributeRockSettingWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RockSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RockSetting"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8136,7 +8478,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeRockSettingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RockSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RockSetting"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8180,7 +8524,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // WindSetting, a id.
 - (void)writeAttributeWindSettingWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"WindSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WindSetting"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8188,7 +8534,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeWindSettingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"WindSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WindSetting"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8214,7 +8562,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // TemperatureDisplayMode, a id.
 - (void)writeAttributeTemperatureDisplayModeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureDisplayMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureDisplayMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8222,7 +8572,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeTemperatureDisplayModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"TemperatureDisplayMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureDisplayMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8248,7 +8600,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // KeypadLockout, a id.
 - (void)writeAttributeKeypadLockoutWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"KeypadLockout"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"KeypadLockout"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8256,7 +8610,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeKeypadLockoutWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"KeypadLockout"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"KeypadLockout"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8282,7 +8638,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ScheduleProgrammingVisibility, a id.
 - (void)writeAttributeScheduleProgrammingVisibilityWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ScheduleProgrammingVisibility"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ScheduleProgrammingVisibility"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -8290,7 +8648,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeScheduleProgrammingVisibilityWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ScheduleProgrammingVisibility"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ScheduleProgrammingVisibility"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9198,7 +9558,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // StartUpColorTemperatureMireds, a id.
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpColorTemperatureMireds"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpColorTemperatureMireds"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9206,7 +9568,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"StartUpColorTemperatureMireds"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpColorTemperatureMireds"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9286,7 +9650,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // IntrinsicBalanceFactor, a id.
 - (void)writeAttributeIntrinsicBalanceFactorWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"IntrinsicBalanceFactor"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"IntrinsicBalanceFactor"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9294,7 +9660,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeIntrinsicBalanceFactorWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"IntrinsicBalanceFactor"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"IntrinsicBalanceFactor"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9320,7 +9688,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // BallastFactorAdjustment, a id.
 - (void)writeAttributeBallastFactorAdjustmentWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"BallastFactorAdjustment"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"BallastFactorAdjustment"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9328,7 +9698,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeBallastFactorAdjustmentWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"BallastFactorAdjustment"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"BallastFactorAdjustment"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9372,7 +9744,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LampType, a id.
 - (void)writeAttributeLampTypeWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampType"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9380,7 +9754,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLampTypeWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampType"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9406,7 +9782,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LampManufacturer, a id.
 - (void)writeAttributeLampManufacturerWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampManufacturer"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampManufacturer"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9414,7 +9792,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLampManufacturerWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampManufacturer"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampManufacturer"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9440,7 +9820,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LampRatedHours, a id.
 - (void)writeAttributeLampRatedHoursWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampRatedHours"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampRatedHours"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9448,7 +9830,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLampRatedHoursWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampRatedHours"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampRatedHours"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9474,7 +9858,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LampBurnHours, a id.
 - (void)writeAttributeLampBurnHoursWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampBurnHours"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampBurnHours"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9482,7 +9868,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLampBurnHoursWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampBurnHours"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampBurnHours"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9508,7 +9896,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LampAlarmMode, a id.
 - (void)writeAttributeLampAlarmModeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampAlarmMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampAlarmMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9516,7 +9906,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLampAlarmModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampAlarmMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampAlarmMode"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9542,7 +9934,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LampBurnHoursTripPoint, a id.
 - (void)writeAttributeLampBurnHoursTripPointWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampBurnHoursTripPoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampBurnHoursTripPoint"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9550,7 +9944,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLampBurnHoursTripPointWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LampBurnHoursTripPoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LampBurnHoursTripPoint"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9792,7 +10188,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // PirOccupiedToUnoccupiedDelay, a id.
 - (void)writeAttributePirOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PirOccupiedToUnoccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PirOccupiedToUnoccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9800,7 +10198,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributePirOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PirOccupiedToUnoccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PirOccupiedToUnoccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9826,7 +10226,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // PirUnoccupiedToOccupiedDelay, a id.
 - (void)writeAttributePirUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PirUnoccupiedToOccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PirUnoccupiedToOccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9834,7 +10236,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributePirUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PirUnoccupiedToOccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PirUnoccupiedToOccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9860,7 +10264,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // PirUnoccupiedToOccupiedThreshold, a id.
 - (void)writeAttributePirUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PirUnoccupiedToOccupiedThreshold"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PirUnoccupiedToOccupiedThreshold"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9868,7 +10274,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributePirUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PirUnoccupiedToOccupiedThreshold"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PirUnoccupiedToOccupiedThreshold"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9894,7 +10302,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // UltrasonicOccupiedToUnoccupiedDelay, a id.
 - (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9902,7 +10312,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9928,7 +10340,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // UltrasonicUnoccupiedToOccupiedDelay, a id.
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9936,7 +10350,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9962,7 +10378,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // UltrasonicUnoccupiedToOccupiedThreshold, a id.
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9970,7 +10388,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -9996,7 +10416,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // PhysicalContactOccupiedToUnoccupiedDelay, a id.
 - (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10004,7 +10426,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10030,7 +10454,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // PhysicalContactUnoccupiedToOccupiedDelay, a id.
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10038,7 +10464,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10064,7 +10492,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // PhysicalContactUnoccupiedToOccupiedThreshold, a id.
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10072,7 +10502,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10386,7 +10818,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // SupportedStreamingProtocols, a id.
 - (void)writeAttributeSupportedStreamingProtocolsWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"SupportedStreamingProtocols"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SupportedStreamingProtocols"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10394,7 +10828,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeSupportedStreamingProtocolsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"SupportedStreamingProtocols"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SupportedStreamingProtocols"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10474,7 +10910,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // CurrentApp, a id.
 - (void)writeAttributeCurrentAppWithValue:(MTRApplicationLauncherClusterApplicationEP * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentApp"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"CurrentApp"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10482,7 +10920,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeCurrentAppWithValue:(MTRApplicationLauncherClusterApplicationEP * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"CurrentApp"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"CurrentApp"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10580,7 +11020,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Boolean, a id.
 - (void)writeAttributeBooleanWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Boolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Boolean"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10588,7 +11030,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Boolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Boolean"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10614,7 +11058,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Bitmap8, a id.
 - (void)writeAttributeBitmap8WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap8"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10622,7 +11068,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeBitmap8WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap8"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10648,7 +11096,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Bitmap16, a id.
 - (void)writeAttributeBitmap16WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap16"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10656,7 +11106,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeBitmap16WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap16"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10682,7 +11134,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Bitmap32, a id.
 - (void)writeAttributeBitmap32WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap32"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap32"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10690,7 +11144,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeBitmap32WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap32"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap32"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10716,7 +11172,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Bitmap64, a id.
 - (void)writeAttributeBitmap64WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap64"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap64"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10724,7 +11182,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeBitmap64WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Bitmap64"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap64"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10750,7 +11210,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int8u, a id.
 - (void)writeAttributeInt8uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10758,7 +11220,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10784,7 +11248,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int16u, a id.
 - (void)writeAttributeInt16uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int16u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10792,7 +11258,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt16uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int16u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10818,7 +11286,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int24u, a id.
 - (void)writeAttributeInt24uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int24u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int24u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10826,7 +11296,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt24uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int24u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int24u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10852,7 +11324,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int32u, a id.
 - (void)writeAttributeInt32uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int32u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int32u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10860,7 +11334,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt32uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int32u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int32u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10886,7 +11362,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int40u, a id.
 - (void)writeAttributeInt40uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int40u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int40u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10894,7 +11372,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt40uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int40u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int40u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10920,7 +11400,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int48u, a id.
 - (void)writeAttributeInt48uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int48u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int48u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10928,7 +11410,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt48uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int48u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int48u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10954,7 +11438,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int56u, a id.
 - (void)writeAttributeInt56uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int56u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int56u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10962,7 +11448,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt56uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int56u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int56u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10988,7 +11476,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int64u, a id.
 - (void)writeAttributeInt64uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int64u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int64u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -10996,7 +11486,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt64uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int64u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int64u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11022,7 +11514,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int8s, a id.
 - (void)writeAttributeInt8sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int8s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11030,7 +11524,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt8sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int8s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11056,7 +11552,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int16s, a id.
 - (void)writeAttributeInt16sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int16s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11064,7 +11562,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt16sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int16s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11090,7 +11590,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int24s, a id.
 - (void)writeAttributeInt24sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int24s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int24s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11098,7 +11600,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt24sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int24s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int24s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11124,7 +11628,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int32s, a id.
 - (void)writeAttributeInt32sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int32s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int32s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11132,7 +11638,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt32sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int32s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int32s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11158,7 +11666,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int40s, a id.
 - (void)writeAttributeInt40sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int40s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int40s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11166,7 +11676,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt40sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int40s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int40s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11192,7 +11704,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int48s, a id.
 - (void)writeAttributeInt48sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int48s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int48s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11200,7 +11714,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt48sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int48s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int48s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11226,7 +11742,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int56s, a id.
 - (void)writeAttributeInt56sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int56s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int56s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11234,7 +11752,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt56sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int56s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int56s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11260,7 +11780,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Int64s, a id.
 - (void)writeAttributeInt64sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int64s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int64s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11268,7 +11790,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeInt64sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Int64s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int64s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11294,7 +11818,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Enum8, a id.
 - (void)writeAttributeEnum8WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Enum8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Enum8"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11302,7 +11828,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeEnum8WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Enum8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Enum8"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11328,7 +11856,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Enum16, a id.
 - (void)writeAttributeEnum16WithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Enum16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Enum16"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11336,7 +11866,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeEnum16WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Enum16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Enum16"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11362,7 +11894,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // FloatSingle, a id.
 - (void)writeAttributeFloatSingleWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"FloatSingle"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FloatSingle"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11370,7 +11904,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeFloatSingleWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"FloatSingle"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FloatSingle"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11396,7 +11932,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // FloatDouble, a id.
 - (void)writeAttributeFloatDoubleWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"FloatDouble"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FloatDouble"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11404,7 +11942,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeFloatDoubleWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"FloatDouble"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FloatDouble"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11430,7 +11970,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // OctetString, a id.
 - (void)writeAttributeOctetStringWithValue:(NSData * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11438,7 +11980,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeOctetStringWithValue:(NSData * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"OctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11464,7 +12008,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ListInt8u, a id.
 - (void)writeAttributeListInt8uWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListInt8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11472,7 +12018,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeListInt8uWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListInt8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11498,7 +12046,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ListOctetString, a id.
 - (void)writeAttributeListOctetStringWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListOctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11506,7 +12056,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeListOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListOctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11532,7 +12084,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ListStructOctetString, a id.
 - (void)writeAttributeListStructOctetStringWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListStructOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListStructOctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11540,7 +12094,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeListStructOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListStructOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListStructOctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11566,7 +12122,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LongOctetString, a id.
 - (void)writeAttributeLongOctetStringWithValue:(NSData * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LongOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LongOctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11574,7 +12132,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLongOctetStringWithValue:(NSData * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LongOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LongOctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11600,7 +12160,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // CharString, a id.
 - (void)writeAttributeCharStringWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"CharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"CharString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11608,7 +12170,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeCharStringWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"CharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"CharString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11634,7 +12198,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // LongCharString, a id.
 - (void)writeAttributeLongCharStringWithValue:(NSString * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LongCharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LongCharString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11642,7 +12208,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeLongCharStringWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"LongCharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LongCharString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11668,7 +12236,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // EpochUs, a id.
 - (void)writeAttributeEpochUsWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EpochUs"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EpochUs"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11676,7 +12246,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeEpochUsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EpochUs"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EpochUs"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11702,7 +12274,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // EpochS, a id.
 - (void)writeAttributeEpochSWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EpochS"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EpochS"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11710,7 +12284,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeEpochSWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EpochS"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EpochS"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11736,7 +12312,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // VendorId, a id.
 - (void)writeAttributeVendorIdWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"VendorId"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"VendorId"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11744,7 +12322,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeVendorIdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"VendorId"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"VendorId"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11770,7 +12350,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ListNullablesAndOptionalsStruct, a id.
 - (void)writeAttributeListNullablesAndOptionalsStructWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListNullablesAndOptionalsStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListNullablesAndOptionalsStruct"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11778,7 +12360,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeListNullablesAndOptionalsStructWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListNullablesAndOptionalsStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListNullablesAndOptionalsStruct"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11804,7 +12388,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // EnumAttr, a id.
 - (void)writeAttributeEnumAttrWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EnumAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnumAttr"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11812,7 +12398,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeEnumAttrWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"EnumAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnumAttr"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11838,7 +12426,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // StructAttr, a id.
 - (void)writeAttributeStructAttrWithValue:(MTRTestClusterClusterSimpleStruct * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"StructAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StructAttr"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11846,7 +12436,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeStructAttrWithValue:(MTRTestClusterClusterSimpleStruct * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"StructAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StructAttr"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11872,7 +12464,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // RangeRestrictedInt8u, a id.
 - (void)writeAttributeRangeRestrictedInt8uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11880,7 +12474,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeRangeRestrictedInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11906,7 +12502,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // RangeRestrictedInt8s, a id.
 - (void)writeAttributeRangeRestrictedInt8sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt8s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11914,7 +12512,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeRangeRestrictedInt8sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt8s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11940,7 +12540,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // RangeRestrictedInt16u, a id.
 - (void)writeAttributeRangeRestrictedInt16uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt16u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11948,7 +12550,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeRangeRestrictedInt16uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt16u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11974,7 +12578,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // RangeRestrictedInt16s, a id.
 - (void)writeAttributeRangeRestrictedInt16sWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt16s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -11982,7 +12588,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeRangeRestrictedInt16sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"RangeRestrictedInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt16s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12008,7 +12616,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ListLongOctetString, a id.
 - (void)writeAttributeListLongOctetStringWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListLongOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListLongOctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12016,7 +12626,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeListLongOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListLongOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListLongOctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12042,7 +12654,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ListFabricScoped, a id.
 - (void)writeAttributeListFabricScopedWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListFabricScoped"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListFabricScoped"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12050,7 +12664,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeListFabricScopedWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ListFabricScoped"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListFabricScoped"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12076,7 +12692,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // TimedWriteBoolean, a id.
 - (void)writeAttributeTimedWriteBooleanWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"TimedWriteBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TimedWriteBoolean"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12084,7 +12702,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeTimedWriteBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"TimedWriteBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TimedWriteBoolean"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12110,7 +12730,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // GeneralErrorBoolean, a id.
 - (void)writeAttributeGeneralErrorBooleanWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"GeneralErrorBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"GeneralErrorBoolean"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12118,7 +12740,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeGeneralErrorBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"GeneralErrorBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"GeneralErrorBoolean"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12144,7 +12768,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // ClusterErrorBoolean, a id.
 - (void)writeAttributeClusterErrorBooleanWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ClusterErrorBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ClusterErrorBoolean"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12152,7 +12778,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeClusterErrorBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"ClusterErrorBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ClusterErrorBoolean"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12178,7 +12806,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // Unsupported, a id.
 - (void)writeAttributeUnsupportedWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Unsupported"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Unsupported"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12186,7 +12816,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeUnsupportedWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"Unsupported"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Unsupported"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12212,7 +12844,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableBoolean, a id.
 - (void)writeAttributeNullableBooleanWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBoolean"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12220,7 +12854,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableBooleanWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBoolean"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12246,7 +12882,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableBitmap8, a id.
 - (void)writeAttributeNullableBitmap8WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap8"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12254,7 +12892,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableBitmap8WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap8"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12280,7 +12920,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableBitmap16, a id.
 - (void)writeAttributeNullableBitmap16WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap16"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12288,7 +12930,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableBitmap16WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap16"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12314,7 +12958,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableBitmap32, a id.
 - (void)writeAttributeNullableBitmap32WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap32"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap32"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12322,7 +12968,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableBitmap32WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap32"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap32"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12348,7 +12996,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableBitmap64, a id.
 - (void)writeAttributeNullableBitmap64WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap64"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap64"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12356,7 +13006,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableBitmap64WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableBitmap64"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap64"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12382,7 +13034,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt8u, a id.
 - (void)writeAttributeNullableInt8uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12390,7 +13044,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt8uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12416,7 +13072,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt16u, a id.
 - (void)writeAttributeNullableInt16uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt16u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12424,7 +13082,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt16uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt16u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12450,7 +13110,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt24u, a id.
 - (void)writeAttributeNullableInt24uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt24u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt24u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12458,7 +13120,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt24uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt24u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt24u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12484,7 +13148,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt32u, a id.
 - (void)writeAttributeNullableInt32uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt32u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt32u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12492,7 +13158,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt32uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt32u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt32u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12518,7 +13186,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt40u, a id.
 - (void)writeAttributeNullableInt40uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt40u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt40u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12526,7 +13196,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt40uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt40u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt40u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12552,7 +13224,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt48u, a id.
 - (void)writeAttributeNullableInt48uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt48u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt48u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12560,7 +13234,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt48uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt48u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt48u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12586,7 +13262,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt56u, a id.
 - (void)writeAttributeNullableInt56uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt56u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt56u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12594,7 +13272,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt56uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt56u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt56u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12620,7 +13300,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt64u, a id.
 - (void)writeAttributeNullableInt64uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt64u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt64u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12628,7 +13310,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt64uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt64u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt64u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12654,7 +13338,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt8s, a id.
 - (void)writeAttributeNullableInt8sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt8s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12662,7 +13348,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt8sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt8s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12688,7 +13376,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt16s, a id.
 - (void)writeAttributeNullableInt16sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt16s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12696,7 +13386,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt16sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt16s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12722,7 +13414,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt24s, a id.
 - (void)writeAttributeNullableInt24sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt24s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt24s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12730,7 +13424,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt24sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt24s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt24s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12756,7 +13452,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt32s, a id.
 - (void)writeAttributeNullableInt32sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt32s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt32s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12764,7 +13462,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt32sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt32s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt32s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12790,7 +13490,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt40s, a id.
 - (void)writeAttributeNullableInt40sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt40s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt40s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12798,7 +13500,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt40sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt40s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt40s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12824,7 +13528,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt48s, a id.
 - (void)writeAttributeNullableInt48sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt48s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt48s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12832,7 +13538,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt48sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt48s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt48s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12858,7 +13566,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt56s, a id.
 - (void)writeAttributeNullableInt56sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt56s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt56s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12866,7 +13576,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt56sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt56s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt56s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12892,7 +13604,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableInt64s, a id.
 - (void)writeAttributeNullableInt64sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt64s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt64s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12900,7 +13614,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableInt64sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableInt64s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt64s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12926,7 +13642,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableEnum8, a id.
 - (void)writeAttributeNullableEnum8WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableEnum8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnum8"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12934,7 +13652,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableEnum8WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableEnum8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnum8"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12960,7 +13680,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableEnum16, a id.
 - (void)writeAttributeNullableEnum16WithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableEnum16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnum16"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12968,7 +13690,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableEnum16WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableEnum16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnum16"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -12994,7 +13718,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableFloatSingle, a id.
 - (void)writeAttributeNullableFloatSingleWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableFloatSingle"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableFloatSingle"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13002,7 +13728,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableFloatSingleWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableFloatSingle"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableFloatSingle"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13028,7 +13756,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableFloatDouble, a id.
 - (void)writeAttributeNullableFloatDoubleWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableFloatDouble"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableFloatDouble"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13036,7 +13766,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableFloatDoubleWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableFloatDouble"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableFloatDouble"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13062,7 +13794,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableOctetString, a id.
 - (void)writeAttributeNullableOctetStringWithValue:(NSData * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableOctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13070,7 +13804,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableOctetStringWithValue:(NSData * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableOctetString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13096,7 +13832,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableCharString, a id.
 - (void)writeAttributeNullableCharStringWithValue:(NSString * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableCharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableCharString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13104,7 +13842,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableCharStringWithValue:(NSString * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableCharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableCharString"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13130,7 +13870,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableEnumAttr, a id.
 - (void)writeAttributeNullableEnumAttrWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableEnumAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnumAttr"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13138,7 +13880,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableEnumAttrWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableEnumAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnumAttr"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13164,7 +13908,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableStruct, a id.
 - (void)writeAttributeNullableStructWithValue:(MTRTestClusterClusterSimpleStruct * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableStruct"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13172,7 +13918,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableStructWithValue:(MTRTestClusterClusterSimpleStruct * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableStruct"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13198,7 +13946,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableRangeRestrictedInt8u, a id.
 - (void)writeAttributeNullableRangeRestrictedInt8uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13206,7 +13956,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableRangeRestrictedInt8uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13232,7 +13984,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableRangeRestrictedInt8s, a id.
 - (void)writeAttributeNullableRangeRestrictedInt8sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt8s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13240,7 +13994,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableRangeRestrictedInt8sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt8s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13266,7 +14022,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableRangeRestrictedInt16u, a id.
 - (void)writeAttributeNullableRangeRestrictedInt16uWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt16u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13274,7 +14032,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableRangeRestrictedInt16uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt16u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13300,7 +14060,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // NullableRangeRestrictedInt16s, a id.
 - (void)writeAttributeNullableRangeRestrictedInt16sWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt16s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13308,7 +14070,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeNullableRangeRestrictedInt16sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"NullableRangeRestrictedInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt16s"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13334,7 +14098,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 // WriteOnlyInt8u, a id.
 - (void)writeAttributeWriteOnlyInt8uWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"WriteOnlyInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WriteOnlyInt8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }
@@ -13342,7 +14108,9 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
 
 - (void)writeAttributeWriteOnlyInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
-    [MTRBaseClusterTestCluster charon_port_values][@"WriteOnlyInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WriteOnlyInt8u"] = value;
+    }
     if (completionHandler) {
         completionHandler(nil);
     }

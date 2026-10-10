@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 57 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 57 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRBaseClusterColorControl
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterColorControl class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -92,7 +96,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"CurrentHue"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"CurrentHue"];
+    }
     completion(written, nil);
 }
 
@@ -116,7 +123,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"CurrentSaturation"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"CurrentSaturation"];
+    }
     completion(written, nil);
 }
 
@@ -140,7 +150,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"RemainingTime"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RemainingTime"];
+    }
     completion(written, nil);
 }
 
@@ -164,7 +177,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"CurrentX"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"CurrentX"];
+    }
     completion(written, nil);
 }
 
@@ -188,7 +204,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"CurrentY"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"CurrentY"];
+    }
     completion(written, nil);
 }
 
@@ -212,7 +231,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"DriftCompensation"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"DriftCompensation"];
+    }
     completion(written, nil);
 }
 
@@ -236,7 +258,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"CompensationText"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"CompensationText"];
+    }
     completion(written, nil);
 }
 
@@ -260,7 +285,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorTemperatureMireds"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorTemperatureMireds"];
+    }
     completion(written, nil);
 }
 
@@ -284,7 +312,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorMode"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorMode"];
+    }
     completion(written, nil);
 }
 
@@ -308,13 +339,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Options"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Options"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeOptionsWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"Options"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Options"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -322,7 +358,9 @@
 
 - (void)writeAttributeOptionsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"Options"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Options"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -348,7 +386,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"NumberOfPrimaries"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfPrimaries"];
+    }
     completion(written, nil);
 }
 
@@ -372,7 +413,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary1X"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary1X"];
+    }
     completion(written, nil);
 }
 
@@ -396,7 +440,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary1Y"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary1Y"];
+    }
     completion(written, nil);
 }
 
@@ -420,7 +467,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary1Intensity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary1Intensity"];
+    }
     completion(written, nil);
 }
 
@@ -444,7 +494,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary2X"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary2X"];
+    }
     completion(written, nil);
 }
 
@@ -468,7 +521,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary2Y"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary2Y"];
+    }
     completion(written, nil);
 }
 
@@ -492,7 +548,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary2Intensity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary2Intensity"];
+    }
     completion(written, nil);
 }
 
@@ -516,7 +575,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary3X"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary3X"];
+    }
     completion(written, nil);
 }
 
@@ -540,7 +602,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary3Y"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary3Y"];
+    }
     completion(written, nil);
 }
 
@@ -564,7 +629,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary3Intensity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary3Intensity"];
+    }
     completion(written, nil);
 }
 
@@ -588,7 +656,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary4X"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary4X"];
+    }
     completion(written, nil);
 }
 
@@ -612,7 +683,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary4Y"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary4Y"];
+    }
     completion(written, nil);
 }
 
@@ -636,7 +710,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary4Intensity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary4Intensity"];
+    }
     completion(written, nil);
 }
 
@@ -660,7 +737,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary5X"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary5X"];
+    }
     completion(written, nil);
 }
 
@@ -684,7 +764,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary5Y"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary5Y"];
+    }
     completion(written, nil);
 }
 
@@ -708,7 +791,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary5Intensity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary5Intensity"];
+    }
     completion(written, nil);
 }
 
@@ -732,7 +818,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary6X"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary6X"];
+    }
     completion(written, nil);
 }
 
@@ -756,7 +845,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary6Y"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary6Y"];
+    }
     completion(written, nil);
 }
 
@@ -780,7 +872,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"Primary6Intensity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Primary6Intensity"];
+    }
     completion(written, nil);
 }
 
@@ -804,14 +899,19 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"WhitePointX"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WhitePointX"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeWhitePointXWithValue:(NSNumber * _Nonnull)value
                                 completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"WhitePointX"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WhitePointX"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -821,7 +921,9 @@
                                     params:(MTRWriteParams * _Nullable)params
                                 completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"WhitePointX"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WhitePointX"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -847,14 +949,19 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"WhitePointY"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WhitePointY"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeWhitePointYWithValue:(NSNumber * _Nonnull)value
                                 completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"WhitePointY"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WhitePointY"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -864,7 +971,9 @@
                                     params:(MTRWriteParams * _Nullable)params
                                 completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"WhitePointY"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WhitePointY"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -890,14 +999,19 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointRX"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorPointRX"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeColorPointRXWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRX"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRX"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -907,7 +1021,9 @@
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRX"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRX"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -933,14 +1049,19 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointRY"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorPointRY"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeColorPointRYWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRY"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRY"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -950,7 +1071,9 @@
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRY"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRY"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -976,14 +1099,19 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointRIntensity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorPointRIntensity"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeColorPointRIntensityWithValue:(NSNumber * _Nullable)value
                                          completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRIntensity"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRIntensity"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -993,7 +1121,9 @@
                                              params:(MTRWriteParams * _Nullable)params
                                          completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRIntensity"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRIntensity"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1019,14 +1149,19 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointGX"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorPointGX"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeColorPointGXWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGX"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGX"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1036,7 +1171,9 @@
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGX"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGX"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1062,14 +1199,19 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointGY"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorPointGY"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeColorPointGYWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGY"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGY"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1079,7 +1221,9 @@
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGY"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGY"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1105,14 +1249,19 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointGIntensity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorPointGIntensity"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeColorPointGIntensityWithValue:(NSNumber * _Nullable)value
                                          completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGIntensity"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGIntensity"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1122,7 +1271,9 @@
                                              params:(MTRWriteParams * _Nullable)params
                                          completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGIntensity"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGIntensity"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1148,14 +1299,19 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointBX"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorPointBX"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeColorPointBXWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBX"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBX"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1165,7 +1321,9 @@
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBX"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBX"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1191,14 +1349,19 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointBY"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorPointBY"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeColorPointBYWithValue:(NSNumber * _Nonnull)value
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBY"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBY"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1208,7 +1371,9 @@
                                      params:(MTRWriteParams * _Nullable)params
                                  completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBY"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBY"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1234,14 +1399,19 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointBIntensity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorPointBIntensity"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeColorPointBIntensityWithValue:(NSNumber * _Nullable)value
                                          completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBIntensity"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBIntensity"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1251,7 +1421,9 @@
                                              params:(MTRWriteParams * _Nullable)params
                                          completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBIntensity"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBIntensity"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1277,7 +1449,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"EnhancedCurrentHue"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"EnhancedCurrentHue"];
+    }
     completion(written, nil);
 }
 
@@ -1301,7 +1476,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"EnhancedColorMode"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"EnhancedColorMode"];
+    }
     completion(written, nil);
 }
 
@@ -1325,7 +1503,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorLoopActive"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorLoopActive"];
+    }
     completion(written, nil);
 }
 
@@ -1349,7 +1530,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorLoopDirection"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorLoopDirection"];
+    }
     completion(written, nil);
 }
 
@@ -1373,7 +1557,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorLoopTime"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorLoopTime"];
+    }
     completion(written, nil);
 }
 
@@ -1397,7 +1584,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorLoopStartEnhancedHue"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorLoopStartEnhancedHue"];
+    }
     completion(written, nil);
 }
 
@@ -1421,7 +1611,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorLoopStoredEnhancedHue"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorLoopStoredEnhancedHue"];
+    }
     completion(written, nil);
 }
 
@@ -1445,7 +1638,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorCapabilities"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorCapabilities"];
+    }
     completion(written, nil);
 }
 
@@ -1469,7 +1665,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorTempPhysicalMinMireds"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorTempPhysicalMinMireds"];
+    }
     completion(written, nil);
 }
 
@@ -1493,7 +1692,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ColorTempPhysicalMaxMireds"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ColorTempPhysicalMaxMireds"];
+    }
     completion(written, nil);
 }
 
@@ -1517,7 +1719,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"CoupleColorTempToLevelMinMireds"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"CoupleColorTempToLevelMinMireds"];
+    }
     completion(written, nil);
 }
 
@@ -1541,13 +1746,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"StartUpColorTemperatureMireds"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"StartUpColorTemperatureMireds"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"StartUpColorTemperatureMireds"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpColorTemperatureMireds"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1555,7 +1765,9 @@
 
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterColorControl charon_port_values][@"StartUpColorTemperatureMireds"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpColorTemperatureMireds"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1581,7 +1793,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"GeneratedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneratedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -1605,7 +1820,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"AcceptedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AcceptedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -1629,7 +1847,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"AttributeList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttributeList"];
+    }
     completion(written, nil);
 }
 
@@ -1653,7 +1874,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"FeatureMap"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FeatureMap"];
+    }
     completion(written, nil);
 }
 
@@ -1677,7 +1901,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterColorControl charon_port_values][@"ClusterRevision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterRevision"];
+    }
     completion(written, nil);
 }
 

@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterBallastConfiguration
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterBallastConfiguration class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,39 +94,51 @@
 - (NSDictionary<NSString *, id> *)readAttributePhysicalMinLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"PhysicalMinLevel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PhysicalMinLevel"];
+    }
 }
 
 // PhysicalMaxLevel, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePhysicalMaxLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"PhysicalMaxLevel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PhysicalMaxLevel"];
+    }
 }
 
 // BallastStatus, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBallastStatusWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"BallastStatus"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BallastStatus"];
+    }
 }
 
 // MinLevel, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMinLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"MinLevel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinLevel"];
+    }
 }
 
 - (void)writeAttributeMinLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"MinLevel"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MinLevel"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeMinLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"MinLevel"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MinLevel"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -131,18 +147,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeMaxLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"MaxLevel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxLevel"];
+    }
 }
 
 - (void)writeAttributeMaxLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"MaxLevel"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxLevel"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeMaxLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"MaxLevel"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxLevel"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -151,18 +173,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeIntrinsicBallastFactorWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"IntrinsicBallastFactor"];
+    @synchronized (self) {
+        return [self charon_port_values][@"IntrinsicBallastFactor"];
+    }
 }
 
 - (void)writeAttributeIntrinsicBallastFactorWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"IntrinsicBallastFactor"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"IntrinsicBallastFactor"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeIntrinsicBallastFactorWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"IntrinsicBallastFactor"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"IntrinsicBallastFactor"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -171,18 +199,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeBallastFactorAdjustmentWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"BallastFactorAdjustment"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BallastFactorAdjustment"];
+    }
 }
 
 - (void)writeAttributeBallastFactorAdjustmentWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"BallastFactorAdjustment"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"BallastFactorAdjustment"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeBallastFactorAdjustmentWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"BallastFactorAdjustment"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"BallastFactorAdjustment"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -191,25 +225,33 @@
 - (NSDictionary<NSString *, id> *)readAttributeLampQuantityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"LampQuantity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LampQuantity"];
+    }
 }
 
 // LampType, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeLampTypeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"LampType"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LampType"];
+    }
 }
 
 - (void)writeAttributeLampTypeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampType"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampType"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLampTypeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampType"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampType"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -218,18 +260,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeLampManufacturerWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"LampManufacturer"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LampManufacturer"];
+    }
 }
 
 - (void)writeAttributeLampManufacturerWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampManufacturer"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampManufacturer"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLampManufacturerWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampManufacturer"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampManufacturer"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -238,18 +286,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeLampRatedHoursWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"LampRatedHours"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LampRatedHours"];
+    }
 }
 
 - (void)writeAttributeLampRatedHoursWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampRatedHours"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampRatedHours"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLampRatedHoursWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampRatedHours"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampRatedHours"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -258,18 +312,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeLampBurnHoursWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"LampBurnHours"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LampBurnHours"];
+    }
 }
 
 - (void)writeAttributeLampBurnHoursWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampBurnHours"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampBurnHours"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLampBurnHoursWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampBurnHours"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampBurnHours"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -278,18 +338,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeLampAlarmModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"LampAlarmMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LampAlarmMode"];
+    }
 }
 
 - (void)writeAttributeLampAlarmModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampAlarmMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampAlarmMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLampAlarmModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampAlarmMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampAlarmMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -298,18 +364,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeLampBurnHoursTripPointWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"LampBurnHoursTripPoint"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LampBurnHoursTripPoint"];
+    }
 }
 
 - (void)writeAttributeLampBurnHoursTripPointWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampBurnHoursTripPoint"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampBurnHoursTripPoint"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLampBurnHoursTripPointWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterBallastConfiguration charon_port_values][@"LampBurnHoursTripPoint"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LampBurnHoursTripPoint"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -318,35 +390,45 @@
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBallastConfiguration charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 @end

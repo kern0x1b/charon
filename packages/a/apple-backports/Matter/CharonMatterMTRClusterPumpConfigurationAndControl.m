@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterPumpConfigurationAndControl
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterPumpConfigurationAndControl class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,144 +94,186 @@
 - (NSDictionary<NSString *, id> *)readAttributeMaxPressureWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MaxPressure"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxPressure"];
+    }
 }
 
 // MaxSpeed, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxSpeedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MaxSpeed"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxSpeed"];
+    }
 }
 
 // MaxFlow, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxFlowWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MaxFlow"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxFlow"];
+    }
 }
 
 // MinConstPressure, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMinConstPressureWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MinConstPressure"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinConstPressure"];
+    }
 }
 
 // MaxConstPressure, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxConstPressureWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MaxConstPressure"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxConstPressure"];
+    }
 }
 
 // MinCompPressure, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMinCompPressureWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MinCompPressure"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinCompPressure"];
+    }
 }
 
 // MaxCompPressure, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxCompPressureWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MaxCompPressure"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxCompPressure"];
+    }
 }
 
 // MinConstSpeed, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMinConstSpeedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MinConstSpeed"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinConstSpeed"];
+    }
 }
 
 // MaxConstSpeed, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxConstSpeedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MaxConstSpeed"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxConstSpeed"];
+    }
 }
 
 // MinConstFlow, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMinConstFlowWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MinConstFlow"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinConstFlow"];
+    }
 }
 
 // MaxConstFlow, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxConstFlowWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MaxConstFlow"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxConstFlow"];
+    }
 }
 
 // MinConstTemp, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMinConstTempWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MinConstTemp"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinConstTemp"];
+    }
 }
 
 // MaxConstTemp, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxConstTempWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"MaxConstTemp"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxConstTemp"];
+    }
 }
 
 // PumpStatus, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePumpStatusWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"PumpStatus"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PumpStatus"];
+    }
 }
 
 // EffectiveOperationMode, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeEffectiveOperationModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"EffectiveOperationMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"EffectiveOperationMode"];
+    }
 }
 
 // EffectiveControlMode, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeEffectiveControlModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"EffectiveControlMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"EffectiveControlMode"];
+    }
 }
 
 // Capacity, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCapacityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"Capacity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Capacity"];
+    }
 }
 
 // Speed, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSpeedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"Speed"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Speed"];
+    }
 }
 
 // LifetimeRunningHours, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeLifetimeRunningHoursWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"LifetimeRunningHours"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LifetimeRunningHours"];
+    }
 }
 
 - (void)writeAttributeLifetimeRunningHoursWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterPumpConfigurationAndControl charon_port_values][@"LifetimeRunningHours"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LifetimeRunningHours"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLifetimeRunningHoursWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterPumpConfigurationAndControl charon_port_values][@"LifetimeRunningHours"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LifetimeRunningHours"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -236,25 +282,33 @@
 - (NSDictionary<NSString *, id> *)readAttributePowerWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"Power"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Power"];
+    }
 }
 
 // LifetimeEnergyConsumed, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeLifetimeEnergyConsumedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"LifetimeEnergyConsumed"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LifetimeEnergyConsumed"];
+    }
 }
 
 - (void)writeAttributeLifetimeEnergyConsumedWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterPumpConfigurationAndControl charon_port_values][@"LifetimeEnergyConsumed"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LifetimeEnergyConsumed"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLifetimeEnergyConsumedWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterPumpConfigurationAndControl charon_port_values][@"LifetimeEnergyConsumed"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LifetimeEnergyConsumed"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -263,18 +317,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeOperationModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"OperationMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OperationMode"];
+    }
 }
 
 - (void)writeAttributeOperationModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterPumpConfigurationAndControl charon_port_values][@"OperationMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OperationMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeOperationModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterPumpConfigurationAndControl charon_port_values][@"OperationMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OperationMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -283,18 +343,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeControlModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"ControlMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ControlMode"];
+    }
 }
 
 - (void)writeAttributeControlModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterPumpConfigurationAndControl charon_port_values][@"ControlMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ControlMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeControlModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterPumpConfigurationAndControl charon_port_values][@"ControlMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ControlMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -303,35 +369,45 @@
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPumpConfigurationAndControl charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 @end

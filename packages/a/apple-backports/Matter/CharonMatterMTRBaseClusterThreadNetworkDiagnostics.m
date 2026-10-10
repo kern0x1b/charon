@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 70 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 70 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRBaseClusterThreadNetworkDiagnostics
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterThreadNetworkDiagnostics class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -92,7 +96,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"Channel"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Channel"];
+    }
     completion(written, nil);
 }
 
@@ -116,7 +123,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RoutingRole"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RoutingRole"];
+    }
     completion(written, nil);
 }
 
@@ -140,7 +150,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"NetworkName"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NetworkName"];
+    }
     completion(written, nil);
 }
 
@@ -164,7 +177,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"PanId"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PanId"];
+    }
     completion(written, nil);
 }
 
@@ -188,7 +204,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ExtendedPanId"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ExtendedPanId"];
+    }
     completion(written, nil);
 }
 
@@ -212,7 +231,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"MeshLocalPrefix"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MeshLocalPrefix"];
+    }
     completion(written, nil);
 }
 
@@ -236,7 +258,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"OverrunCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"OverrunCount"];
+    }
     completion(written, nil);
 }
 
@@ -260,7 +285,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"NeighborTable"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NeighborTable"];
+    }
     completion(written, nil);
 }
 
@@ -284,7 +312,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RouteTable"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RouteTable"];
+    }
     completion(written, nil);
 }
 
@@ -308,7 +339,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"PartitionId"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PartitionId"];
+    }
     completion(written, nil);
 }
 
@@ -332,7 +366,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"Weighting"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Weighting"];
+    }
     completion(written, nil);
 }
 
@@ -356,7 +393,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"DataVersion"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"DataVersion"];
+    }
     completion(written, nil);
 }
 
@@ -380,7 +420,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"StableDataVersion"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"StableDataVersion"];
+    }
     completion(written, nil);
 }
 
@@ -404,7 +447,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"LeaderRouterId"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LeaderRouterId"];
+    }
     completion(written, nil);
 }
 
@@ -428,7 +474,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"DetachedRoleCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"DetachedRoleCount"];
+    }
     completion(written, nil);
 }
 
@@ -452,7 +501,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ChildRoleCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ChildRoleCount"];
+    }
     completion(written, nil);
 }
 
@@ -476,7 +528,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RouterRoleCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RouterRoleCount"];
+    }
     completion(written, nil);
 }
 
@@ -500,7 +555,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"LeaderRoleCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LeaderRoleCount"];
+    }
     completion(written, nil);
 }
 
@@ -524,7 +582,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"AttachAttemptCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttachAttemptCount"];
+    }
     completion(written, nil);
 }
 
@@ -548,7 +609,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"PartitionIdChangeCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PartitionIdChangeCount"];
+    }
     completion(written, nil);
 }
 
@@ -572,7 +636,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"BetterPartitionAttachAttemptCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BetterPartitionAttachAttemptCount"];
+    }
     completion(written, nil);
 }
 
@@ -596,7 +663,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ParentChangeCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ParentChangeCount"];
+    }
     completion(written, nil);
 }
 
@@ -620,7 +690,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxTotalCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxTotalCount"];
+    }
     completion(written, nil);
 }
 
@@ -644,7 +717,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxUnicastCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxUnicastCount"];
+    }
     completion(written, nil);
 }
 
@@ -668,7 +744,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxBroadcastCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxBroadcastCount"];
+    }
     completion(written, nil);
 }
 
@@ -692,7 +771,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxAckRequestedCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxAckRequestedCount"];
+    }
     completion(written, nil);
 }
 
@@ -716,7 +798,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxAckedCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxAckedCount"];
+    }
     completion(written, nil);
 }
 
@@ -740,7 +825,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxNoAckRequestedCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxNoAckRequestedCount"];
+    }
     completion(written, nil);
 }
 
@@ -764,7 +852,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxDataCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxDataCount"];
+    }
     completion(written, nil);
 }
 
@@ -788,7 +879,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxDataPollCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxDataPollCount"];
+    }
     completion(written, nil);
 }
 
@@ -812,7 +906,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxBeaconCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxBeaconCount"];
+    }
     completion(written, nil);
 }
 
@@ -836,7 +933,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxBeaconRequestCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxBeaconRequestCount"];
+    }
     completion(written, nil);
 }
 
@@ -860,7 +960,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxOtherCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxOtherCount"];
+    }
     completion(written, nil);
 }
 
@@ -884,7 +987,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxRetryCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxRetryCount"];
+    }
     completion(written, nil);
 }
 
@@ -908,7 +1014,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxDirectMaxRetryExpiryCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxDirectMaxRetryExpiryCount"];
+    }
     completion(written, nil);
 }
 
@@ -932,7 +1041,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxIndirectMaxRetryExpiryCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxIndirectMaxRetryExpiryCount"];
+    }
     completion(written, nil);
 }
 
@@ -956,7 +1068,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxErrCcaCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxErrCcaCount"];
+    }
     completion(written, nil);
 }
 
@@ -980,7 +1095,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxErrAbortCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxErrAbortCount"];
+    }
     completion(written, nil);
 }
 
@@ -1004,7 +1122,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"TxErrBusyChannelCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TxErrBusyChannelCount"];
+    }
     completion(written, nil);
 }
 
@@ -1028,7 +1149,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxTotalCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxTotalCount"];
+    }
     completion(written, nil);
 }
 
@@ -1052,7 +1176,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxUnicastCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxUnicastCount"];
+    }
     completion(written, nil);
 }
 
@@ -1076,7 +1203,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxBroadcastCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxBroadcastCount"];
+    }
     completion(written, nil);
 }
 
@@ -1100,7 +1230,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxDataCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxDataCount"];
+    }
     completion(written, nil);
 }
 
@@ -1124,7 +1257,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxDataPollCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxDataPollCount"];
+    }
     completion(written, nil);
 }
 
@@ -1148,7 +1284,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxBeaconCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxBeaconCount"];
+    }
     completion(written, nil);
 }
 
@@ -1172,7 +1311,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxBeaconRequestCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxBeaconRequestCount"];
+    }
     completion(written, nil);
 }
 
@@ -1196,7 +1338,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxOtherCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxOtherCount"];
+    }
     completion(written, nil);
 }
 
@@ -1220,7 +1365,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxAddressFilteredCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxAddressFilteredCount"];
+    }
     completion(written, nil);
 }
 
@@ -1244,7 +1392,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxDestAddrFilteredCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxDestAddrFilteredCount"];
+    }
     completion(written, nil);
 }
 
@@ -1268,7 +1419,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxDuplicatedCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxDuplicatedCount"];
+    }
     completion(written, nil);
 }
 
@@ -1292,7 +1446,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrNoFrameCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxErrNoFrameCount"];
+    }
     completion(written, nil);
 }
 
@@ -1316,7 +1473,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrUnknownNeighborCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxErrUnknownNeighborCount"];
+    }
     completion(written, nil);
 }
 
@@ -1340,7 +1500,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrInvalidSrcAddrCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxErrInvalidSrcAddrCount"];
+    }
     completion(written, nil);
 }
 
@@ -1364,7 +1527,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrSecCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxErrSecCount"];
+    }
     completion(written, nil);
 }
 
@@ -1388,7 +1554,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrFcsCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxErrFcsCount"];
+    }
     completion(written, nil);
 }
 
@@ -1412,7 +1581,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"RxErrOtherCount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RxErrOtherCount"];
+    }
     completion(written, nil);
 }
 
@@ -1436,7 +1608,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ActiveTimestamp"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ActiveTimestamp"];
+    }
     completion(written, nil);
 }
 
@@ -1460,7 +1635,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"PendingTimestamp"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PendingTimestamp"];
+    }
     completion(written, nil);
 }
 
@@ -1484,7 +1662,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"Delay"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Delay"];
+    }
     completion(written, nil);
 }
 
@@ -1508,7 +1689,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"SecurityPolicy"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SecurityPolicy"];
+    }
     completion(written, nil);
 }
 
@@ -1532,7 +1716,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ChannelPage0Mask"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ChannelPage0Mask"];
+    }
     completion(written, nil);
 }
 
@@ -1556,7 +1743,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"OperationalDatasetComponents"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"OperationalDatasetComponents"];
+    }
     completion(written, nil);
 }
 
@@ -1580,7 +1770,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ActiveNetworkFaultsList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ActiveNetworkFaultsList"];
+    }
     completion(written, nil);
 }
 
@@ -1604,7 +1797,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ExtAddress"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ExtAddress"];
+    }
     completion(written, nil);
 }
 
@@ -1628,7 +1824,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"Rloc16"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Rloc16"];
+    }
     completion(written, nil);
 }
 
@@ -1652,7 +1851,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"GeneratedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneratedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -1676,7 +1878,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"AcceptedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AcceptedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -1700,7 +1905,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"AttributeList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttributeList"];
+    }
     completion(written, nil);
 }
 
@@ -1724,7 +1932,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"FeatureMap"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FeatureMap"];
+    }
     completion(written, nil);
 }
 
@@ -1748,7 +1959,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThreadNetworkDiagnostics charon_port_values][@"ClusterRevision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterRevision"];
+    }
     completion(written, nil);
 }
 

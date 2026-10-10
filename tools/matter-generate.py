@@ -24,8 +24,8 @@ What is generated:
     the value's own type as the header gives it.
   * for every command the header declares: the method, its params class and its
     completion, answering through the completion.
-  * the values the caller wrote, in one table keyed by the cluster and guarded by a lock,
-    because armv7 has no thread-local storage this can rely on.
+  * the values the caller wrote, in a table each object makes for itself on first use and reads and
+    writes under its own lock, as the framework's own object is the one that holds its state.
 
 What is NOT generated, because a generated body would be the silent fake the rules forbid:
 
@@ -347,7 +347,7 @@ def declarations(block, opens_body=False):
 # attributes are stored in and the error the members with no node answer with. Named here rather than
 # matched loosely, because the reverse check must be able to fail.
 PORT_OWNED = {
-    "charon_port_values": "the port's own storage table, not a cluster member",
+    "charon_port_values": "the port's own per-object storage table, not a cluster member",
     "charon_port_no_node_error": "the port's own error for a member that would need a node",
 }
 
@@ -795,9 +795,10 @@ PREAMBLE = '''//
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the {cache} cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the {cache} cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -3007,6 +3008,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
     body.append("    id _charon_device;\n")
     body.append("    NSNumber *_charon_endpoint;\n")
     body.append("    dispatch_queue_t _charon_queue;\n")
+    body.append("    NSMutableDictionary *_charon_values;\n")
     body.append("}\n")
     body.append("@end\n\n")
     body.append("@implementation %s\n\n" % cluster)
@@ -3023,16 +3025,18 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
         for _name in sorted(attributes):
             body.append("@synthesize %sValues = _%sValues;\n" % (_name, _name))
         body.append("\n")
-    body.append("// The values the caller has written, by attribute name: one table, keyed by the\n"
-                "// object, guarded by a lock, because armv7 has no thread-local storage to rely on.\n")
-    body.append("+ (NSMutableDictionary *)charon_port_values\n{\n"
-                "    static NSMutableDictionary *table;\n"
-                "    @synchronized ([%s class]) {\n"
-                "        if (!table) {\n"
-                "            table = [NSMutableDictionary dictionary];\n"
+    body.append("// The values the caller has written, by attribute name: this object's own table, made on\n"
+                "// first use - an object built through a superclass's initializer never ran this class's -\n"
+                "// and handed out under the object's lock, which every read and write below holds for the\n"
+                "// whole of its access. It is not keyed by the class: two objects of one class are two\n"
+                "// tables, as they are two sets of state in the framework.\n")
+    body.append("- (NSMutableDictionary *)charon_port_values\n{\n"
+                "    @synchronized (self) {\n"
+                "        if (!_charon_values) {\n"
+                "            _charon_values = [NSMutableDictionary dictionary];\n"
                 "        }\n"
-                "    }\n"
-                "    return table;\n}\n\n" % cluster)
+                "        return _charon_values;\n"
+                "    }\n}\n\n")
     body.append("// The error a member that would need a node answers, on a release with no Matter\n"
                 "// hardware: there is no controller to ask and no node to read from. It is the framework's\n"
                 "// own answer to a cached read on a container with no cache and to any request on a\n"
@@ -3080,9 +3084,12 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                 continue
             body.append("%s\n{\n"
                         "    if (!%s) {\n        return;\n    }\n"
-                        "    id written = [%s charon_port_values][@\"%s\"];\n"
+                        "    id written;\n"
+                        "    @synchronized (self) {\n"
+                        "        written = [self charon_port_values][@\"%s\"];\n"
+                        "    }\n"
                         "    %s;\n}\n\n"
-                        % (s, completion, cluster, name, completion_call(s, completion, "written")))
+                        % (s, completion, name, completion_call(s, completion, "written")))
         for s in info.get("read_params", []):
             names = arguments_or_note(s, cluster, name, "read_params")
             if names is None:
@@ -3094,9 +3101,12 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             unused = "".join("    (void)%s;\n" % each for each in names[:-1])
             body.append("%s\n{\n%s"
                         "    if (!%s) {\n        return;\n    }\n"
-                        "    id written = [%s charon_port_values][@\"%s\"];\n"
+                        "    id written;\n"
+                        "    @synchronized (self) {\n"
+                        "        written = [self charon_port_values][@\"%s\"];\n"
+                        "    }\n"
                         "    %s;\n}\n\n"
-                        % (s, unused, completion, cluster, name,
+                        % (s, unused, completion, name,
                            completion_call(s, completion, "written")))
         for s in info.get("read_sync", []):
             # The synchronous read: what the caller wrote into the table, or nil when nothing was written.
@@ -3107,8 +3117,11 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             if names is None:
                 continue
             unused = "".join("    (void)%s;\n" % each for each in names)
-            body.append("%s\n{\n%s    return [%s charon_port_values][@\"%s\"];\n}\n\n"
-                        % (strip_return_nullability(s), unused, cluster, name))
+            body.append("%s\n{\n%s"
+                        "    @synchronized (self) {\n"
+                        "        return [self charon_port_values][@\"%s\"];\n"
+                        "    }\n}\n\n"
+                        % (strip_return_nullability(s), unused, name))
         for s in info.get("write", []):
             names = arguments_or_note(s, cluster, name, "write")
             if names is None or len(names) < 2:
@@ -3121,9 +3134,11 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                 OFFENDERS.append((cluster, name, "write", s))
                 continue
             body.append("%s\n{\n"
-                        "    [%s charon_port_values][@\"%s\"] = %s;\n"
+                        "    @synchronized (self) {\n"
+                        "        [self charon_port_values][@\"%s\"] = %s;\n"
+                        "    }\n"
                         "    if (%s) {\n        %s;\n    }\n}\n\n"
-                        % (s, cluster, name, value_name, completion, completion_call(s, completion)))
+                        % (s, name, value_name, completion, completion_call(s, completion)))
         for s in info.get("write_expected", []):
             # The expected-value write: it stores what the caller wrote and has no completion block to
             # report through, so there is nothing else to answer. `expectedValueIntervalMs` and `params` are
@@ -3135,8 +3150,11 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                     OFFENDERS.append((cluster, name, "write_expected", s))
                 continue
             unused = "".join("    (void)%s;\n" % each for each in names[1:])
-            body.append("%s\n{\n    [%s charon_port_values][@\"%s\"] = %s;\n%s}\n\n"
-                        % (s, cluster, name, names[0], unused))
+            body.append("%s\n{\n"
+                        "    @synchronized (self) {\n"
+                        "        [self charon_port_values][@\"%s\"] = %s;\n"
+                        "    }\n%s}\n\n"
+                        % (s, name, names[0], unused))
         for s in info.get("subscribe", []):
             names = arguments_or_note(s, cluster, name, "subscribe")
             if names is None:

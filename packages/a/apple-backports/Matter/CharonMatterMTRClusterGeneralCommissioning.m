@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterGeneralCommissioning
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterGeneralCommissioning class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,18 +94,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeBreadcrumbWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"Breadcrumb"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Breadcrumb"];
+    }
 }
 
 - (void)writeAttributeBreadcrumbWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterGeneralCommissioning charon_port_values][@"Breadcrumb"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Breadcrumb"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeBreadcrumbWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterGeneralCommissioning charon_port_values][@"Breadcrumb"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Breadcrumb"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -110,119 +120,153 @@
 - (NSDictionary<NSString *, id> *)readAttributeBasicCommissioningInfoWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"BasicCommissioningInfo"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BasicCommissioningInfo"];
+    }
 }
 
 // RegulatoryConfig, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRegulatoryConfigWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"RegulatoryConfig"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RegulatoryConfig"];
+    }
 }
 
 // LocationCapability, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeLocationCapabilityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"LocationCapability"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LocationCapability"];
+    }
 }
 
 // SupportsConcurrentConnection, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSupportsConcurrentConnectionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"SupportsConcurrentConnection"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SupportsConcurrentConnection"];
+    }
 }
 
 // TCAcceptedVersion, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTCAcceptedVersionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"TCAcceptedVersion"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TCAcceptedVersion"];
+    }
 }
 
 // TCMinRequiredVersion, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTCMinRequiredVersionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"TCMinRequiredVersion"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TCMinRequiredVersion"];
+    }
 }
 
 // TCAcknowledgements, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTCAcknowledgementsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"TCAcknowledgements"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TCAcknowledgements"];
+    }
 }
 
 // TCAcknowledgementsRequired, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTCAcknowledgementsRequiredWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"TCAcknowledgementsRequired"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TCAcknowledgementsRequired"];
+    }
 }
 
 // TCUpdateDeadline, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTCUpdateDeadlineWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"TCUpdateDeadline"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TCUpdateDeadline"];
+    }
 }
 
 // RecoveryIdentifier, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRecoveryIdentifierWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"RecoveryIdentifier"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RecoveryIdentifier"];
+    }
 }
 
 // NetworkRecoveryReason, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNetworkRecoveryReasonWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"NetworkRecoveryReason"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NetworkRecoveryReason"];
+    }
 }
 
 // IsCommissioningWithoutPower, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeIsCommissioningWithoutPowerWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"IsCommissioningWithoutPower"];
+    @synchronized (self) {
+        return [self charon_port_values][@"IsCommissioningWithoutPower"];
+    }
 }
 
 // GeneratedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterGeneralCommissioning charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 // armFailSafe. It answers: there is nothing to reach on a release with no fabric.

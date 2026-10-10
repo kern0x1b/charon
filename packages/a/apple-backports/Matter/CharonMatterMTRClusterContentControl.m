@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -33,6 +34,7 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
@@ -52,17 +54,19 @@
 @synthesize ScheduledContentRatingsValues = _ScheduledContentRatingsValues;
 @synthesize ScreenDailyTimeValues = _ScreenDailyTimeValues;
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterContentControl class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -95,91 +99,117 @@
 - (NSDictionary<NSString *, id> *)readAttributeEnabledWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"Enabled"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Enabled"];
+    }
 }
 
 // OnDemandRatings, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOnDemandRatingsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"OnDemandRatings"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OnDemandRatings"];
+    }
 }
 
 // OnDemandRatingThreshold, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOnDemandRatingThresholdWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"OnDemandRatingThreshold"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OnDemandRatingThreshold"];
+    }
 }
 
 // ScheduledContentRatings, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeScheduledContentRatingsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"ScheduledContentRatings"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ScheduledContentRatings"];
+    }
 }
 
 // ScheduledContentRatingThreshold, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeScheduledContentRatingThresholdWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"ScheduledContentRatingThreshold"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ScheduledContentRatingThreshold"];
+    }
 }
 
 // ScreenDailyTime, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeScreenDailyTimeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"ScreenDailyTime"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ScreenDailyTime"];
+    }
 }
 
 // RemainingScreenTime, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRemainingScreenTimeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"RemainingScreenTime"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RemainingScreenTime"];
+    }
 }
 
 // BlockUnrated, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBlockUnratedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"BlockUnrated"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BlockUnrated"];
+    }
 }
 
 // GeneratedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterContentControl charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 // updatePIN. It answers: there is nothing to reach on a release with no fabric.

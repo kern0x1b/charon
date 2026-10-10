@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterThreadNetworkDiagnostics
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterThreadNetworkDiagnostics class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,490 +94,630 @@
 - (NSDictionary<NSString *, id> *)readAttributeChannelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"Channel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Channel"];
+    }
 }
 
 // RoutingRole, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRoutingRoleWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RoutingRole"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RoutingRole"];
+    }
 }
 
 // NetworkName, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNetworkNameWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"NetworkName"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NetworkName"];
+    }
 }
 
 // PanId, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePanIdWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"PanId"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PanId"];
+    }
 }
 
 // ExtendedPanId, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeExtendedPanIdWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"ExtendedPanId"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ExtendedPanId"];
+    }
 }
 
 // MeshLocalPrefix, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMeshLocalPrefixWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"MeshLocalPrefix"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MeshLocalPrefix"];
+    }
 }
 
 // OverrunCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOverrunCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"OverrunCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OverrunCount"];
+    }
 }
 
 // NeighborTable, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNeighborTableWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"NeighborTable"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NeighborTable"];
+    }
 }
 
 // RouteTable, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRouteTableWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RouteTable"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RouteTable"];
+    }
 }
 
 // PartitionId, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePartitionIdWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"PartitionId"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PartitionId"];
+    }
 }
 
 // Weighting, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeWeightingWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"Weighting"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Weighting"];
+    }
 }
 
 // DataVersion, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeDataVersionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"DataVersion"];
+    @synchronized (self) {
+        return [self charon_port_values][@"DataVersion"];
+    }
 }
 
 // StableDataVersion, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeStableDataVersionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"StableDataVersion"];
+    @synchronized (self) {
+        return [self charon_port_values][@"StableDataVersion"];
+    }
 }
 
 // LeaderRouterId, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeLeaderRouterIdWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"LeaderRouterId"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LeaderRouterId"];
+    }
 }
 
 // DetachedRoleCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeDetachedRoleCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"DetachedRoleCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"DetachedRoleCount"];
+    }
 }
 
 // ChildRoleCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeChildRoleCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"ChildRoleCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ChildRoleCount"];
+    }
 }
 
 // RouterRoleCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRouterRoleCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RouterRoleCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RouterRoleCount"];
+    }
 }
 
 // LeaderRoleCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeLeaderRoleCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"LeaderRoleCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LeaderRoleCount"];
+    }
 }
 
 // AttachAttemptCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttachAttemptCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"AttachAttemptCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttachAttemptCount"];
+    }
 }
 
 // PartitionIdChangeCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePartitionIdChangeCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"PartitionIdChangeCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PartitionIdChangeCount"];
+    }
 }
 
 // BetterPartitionAttachAttemptCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBetterPartitionAttachAttemptCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"BetterPartitionAttachAttemptCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BetterPartitionAttachAttemptCount"];
+    }
 }
 
 // ParentChangeCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeParentChangeCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"ParentChangeCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ParentChangeCount"];
+    }
 }
 
 // TxTotalCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxTotalCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxTotalCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxTotalCount"];
+    }
 }
 
 // TxUnicastCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxUnicastCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxUnicastCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxUnicastCount"];
+    }
 }
 
 // TxBroadcastCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxBroadcastCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxBroadcastCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxBroadcastCount"];
+    }
 }
 
 // TxAckRequestedCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxAckRequestedCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxAckRequestedCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxAckRequestedCount"];
+    }
 }
 
 // TxAckedCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxAckedCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxAckedCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxAckedCount"];
+    }
 }
 
 // TxNoAckRequestedCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxNoAckRequestedCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxNoAckRequestedCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxNoAckRequestedCount"];
+    }
 }
 
 // TxDataCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxDataCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxDataCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxDataCount"];
+    }
 }
 
 // TxDataPollCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxDataPollCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxDataPollCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxDataPollCount"];
+    }
 }
 
 // TxBeaconCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxBeaconCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxBeaconCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxBeaconCount"];
+    }
 }
 
 // TxBeaconRequestCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxBeaconRequestCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxBeaconRequestCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxBeaconRequestCount"];
+    }
 }
 
 // TxOtherCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxOtherCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxOtherCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxOtherCount"];
+    }
 }
 
 // TxRetryCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxRetryCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxRetryCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxRetryCount"];
+    }
 }
 
 // TxDirectMaxRetryExpiryCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxDirectMaxRetryExpiryCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxDirectMaxRetryExpiryCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxDirectMaxRetryExpiryCount"];
+    }
 }
 
 // TxIndirectMaxRetryExpiryCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxIndirectMaxRetryExpiryCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxIndirectMaxRetryExpiryCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxIndirectMaxRetryExpiryCount"];
+    }
 }
 
 // TxErrCcaCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxErrCcaCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxErrCcaCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxErrCcaCount"];
+    }
 }
 
 // TxErrAbortCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxErrAbortCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxErrAbortCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxErrAbortCount"];
+    }
 }
 
 // TxErrBusyChannelCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTxErrBusyChannelCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"TxErrBusyChannelCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TxErrBusyChannelCount"];
+    }
 }
 
 // RxTotalCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxTotalCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxTotalCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxTotalCount"];
+    }
 }
 
 // RxUnicastCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxUnicastCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxUnicastCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxUnicastCount"];
+    }
 }
 
 // RxBroadcastCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxBroadcastCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxBroadcastCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxBroadcastCount"];
+    }
 }
 
 // RxDataCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxDataCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxDataCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxDataCount"];
+    }
 }
 
 // RxDataPollCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxDataPollCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxDataPollCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxDataPollCount"];
+    }
 }
 
 // RxBeaconCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxBeaconCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxBeaconCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxBeaconCount"];
+    }
 }
 
 // RxBeaconRequestCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxBeaconRequestCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxBeaconRequestCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxBeaconRequestCount"];
+    }
 }
 
 // RxOtherCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxOtherCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxOtherCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxOtherCount"];
+    }
 }
 
 // RxAddressFilteredCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxAddressFilteredCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxAddressFilteredCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxAddressFilteredCount"];
+    }
 }
 
 // RxDestAddrFilteredCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxDestAddrFilteredCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxDestAddrFilteredCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxDestAddrFilteredCount"];
+    }
 }
 
 // RxDuplicatedCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxDuplicatedCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxDuplicatedCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxDuplicatedCount"];
+    }
 }
 
 // RxErrNoFrameCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxErrNoFrameCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxErrNoFrameCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxErrNoFrameCount"];
+    }
 }
 
 // RxErrUnknownNeighborCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxErrUnknownNeighborCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxErrUnknownNeighborCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxErrUnknownNeighborCount"];
+    }
 }
 
 // RxErrInvalidSrcAddrCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxErrInvalidSrcAddrCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxErrInvalidSrcAddrCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxErrInvalidSrcAddrCount"];
+    }
 }
 
 // RxErrSecCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxErrSecCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxErrSecCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxErrSecCount"];
+    }
 }
 
 // RxErrFcsCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxErrFcsCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxErrFcsCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxErrFcsCount"];
+    }
 }
 
 // RxErrOtherCount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRxErrOtherCountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"RxErrOtherCount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RxErrOtherCount"];
+    }
 }
 
 // ActiveTimestamp, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeActiveTimestampWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"ActiveTimestamp"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ActiveTimestamp"];
+    }
 }
 
 // PendingTimestamp, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePendingTimestampWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"PendingTimestamp"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PendingTimestamp"];
+    }
 }
 
 // Delay, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeDelayWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"Delay"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Delay"];
+    }
 }
 
 // SecurityPolicy, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSecurityPolicyWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"SecurityPolicy"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SecurityPolicy"];
+    }
 }
 
 // ChannelPage0Mask, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeChannelPage0MaskWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"ChannelPage0Mask"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ChannelPage0Mask"];
+    }
 }
 
 // OperationalDatasetComponents, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOperationalDatasetComponentsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"OperationalDatasetComponents"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OperationalDatasetComponents"];
+    }
 }
 
 // ActiveNetworkFaultsList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeActiveNetworkFaultsListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"ActiveNetworkFaultsList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ActiveNetworkFaultsList"];
+    }
 }
 
 // ExtAddress, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeExtAddressWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"ExtAddress"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ExtAddress"];
+    }
 }
 
 // Rloc16, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRloc16WithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"Rloc16"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Rloc16"];
+    }
 }
 
 // GeneratedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThreadNetworkDiagnostics charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 // resetCounts. It answers: there is nothing to reach on a release with no fabric.

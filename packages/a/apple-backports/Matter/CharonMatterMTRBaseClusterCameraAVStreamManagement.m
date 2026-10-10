@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 46 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 46 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -33,6 +34,7 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
@@ -85,17 +87,19 @@
 @synthesize VideoSensorParamsValues = _VideoSensorParamsValues;
 @synthesize ViewportValues = _ViewportValues;
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterCameraAVStreamManagement class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -130,7 +134,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MaxConcurrentEncoders"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MaxConcurrentEncoders"];
+    }
     completion(written, nil);
 }
 
@@ -154,7 +161,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MaxEncodedPixelRate"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MaxEncodedPixelRate"];
+    }
     completion(written, nil);
 }
 
@@ -178,7 +188,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"VideoSensorParams"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"VideoSensorParams"];
+    }
     completion(written, nil);
 }
 
@@ -202,7 +215,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"NightVisionUsesInfrared"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NightVisionUsesInfrared"];
+    }
     completion(written, nil);
 }
 
@@ -226,7 +242,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MinViewportResolution"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MinViewportResolution"];
+    }
     completion(written, nil);
 }
 
@@ -250,7 +269,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"RateDistortionTradeOffPoints"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RateDistortionTradeOffPoints"];
+    }
     completion(written, nil);
 }
 
@@ -274,7 +296,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MaxContentBufferSize"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MaxContentBufferSize"];
+    }
     completion(written, nil);
 }
 
@@ -298,7 +323,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneCapabilities"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MicrophoneCapabilities"];
+    }
     completion(written, nil);
 }
 
@@ -322,7 +350,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerCapabilities"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SpeakerCapabilities"];
+    }
     completion(written, nil);
 }
 
@@ -346,7 +377,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"TwoWayTalkSupport"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TwoWayTalkSupport"];
+    }
     completion(written, nil);
 }
 
@@ -370,7 +404,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SnapshotCapabilities"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SnapshotCapabilities"];
+    }
     completion(written, nil);
 }
 
@@ -394,7 +431,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MaxNetworkBandwidth"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MaxNetworkBandwidth"];
+    }
     completion(written, nil);
 }
 
@@ -418,7 +458,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"CurrentFrameRate"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"CurrentFrameRate"];
+    }
     completion(written, nil);
 }
 
@@ -442,13 +485,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"HDRModeEnabled"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"HDRModeEnabled"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeHDRModeEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"HDRModeEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"HDRModeEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -456,7 +504,9 @@
 
 - (void)writeAttributeHDRModeEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"HDRModeEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"HDRModeEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -482,7 +532,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SupportedStreamUsages"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SupportedStreamUsages"];
+    }
     completion(written, nil);
 }
 
@@ -506,7 +559,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"AllocatedVideoStreams"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AllocatedVideoStreams"];
+    }
     completion(written, nil);
 }
 
@@ -530,7 +586,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"AllocatedAudioStreams"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AllocatedAudioStreams"];
+    }
     completion(written, nil);
 }
 
@@ -554,7 +613,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"AllocatedSnapshotStreams"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AllocatedSnapshotStreams"];
+    }
     completion(written, nil);
 }
 
@@ -578,7 +640,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"StreamUsagePriorities"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"StreamUsagePriorities"];
+    }
     completion(written, nil);
 }
 
@@ -602,13 +667,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SoftRecordingPrivacyModeEnabled"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SoftRecordingPrivacyModeEnabled"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeSoftRecordingPrivacyModeEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SoftRecordingPrivacyModeEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SoftRecordingPrivacyModeEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -616,7 +686,9 @@
 
 - (void)writeAttributeSoftRecordingPrivacyModeEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SoftRecordingPrivacyModeEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SoftRecordingPrivacyModeEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -642,13 +714,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SoftLivestreamPrivacyModeEnabled"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SoftLivestreamPrivacyModeEnabled"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeSoftLivestreamPrivacyModeEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SoftLivestreamPrivacyModeEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SoftLivestreamPrivacyModeEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -656,7 +733,9 @@
 
 - (void)writeAttributeSoftLivestreamPrivacyModeEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SoftLivestreamPrivacyModeEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SoftLivestreamPrivacyModeEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -682,7 +761,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"HardPrivacyModeOn"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"HardPrivacyModeOn"];
+    }
     completion(written, nil);
 }
 
@@ -706,13 +788,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"NightVision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NightVision"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNightVisionWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"NightVision"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NightVision"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -720,7 +807,9 @@
 
 - (void)writeAttributeNightVisionWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"NightVision"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NightVision"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -746,13 +835,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"NightVisionIllum"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NightVisionIllum"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNightVisionIllumWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"NightVisionIllum"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NightVisionIllum"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -760,7 +854,9 @@
 
 - (void)writeAttributeNightVisionIllumWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"NightVisionIllum"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NightVisionIllum"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -786,13 +882,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"Viewport"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Viewport"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeViewportWithValue:(MTRDataTypeViewportStruct * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"Viewport"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Viewport"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -800,7 +901,9 @@
 
 - (void)writeAttributeViewportWithValue:(MTRDataTypeViewportStruct * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"Viewport"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Viewport"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -826,13 +929,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerMuted"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SpeakerMuted"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeSpeakerMutedWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerMuted"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeakerMuted"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -840,7 +948,9 @@
 
 - (void)writeAttributeSpeakerMutedWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerMuted"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeakerMuted"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -866,13 +976,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerVolumeLevel"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SpeakerVolumeLevel"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeSpeakerVolumeLevelWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerVolumeLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeakerVolumeLevel"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -880,7 +995,9 @@
 
 - (void)writeAttributeSpeakerVolumeLevelWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerVolumeLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeakerVolumeLevel"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -906,7 +1023,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerMaxLevel"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SpeakerMaxLevel"];
+    }
     completion(written, nil);
 }
 
@@ -930,7 +1050,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"SpeakerMinLevel"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SpeakerMinLevel"];
+    }
     completion(written, nil);
 }
 
@@ -954,13 +1077,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMuted"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MicrophoneMuted"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeMicrophoneMutedWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMuted"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneMuted"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -968,7 +1096,9 @@
 
 - (void)writeAttributeMicrophoneMutedWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMuted"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneMuted"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -994,13 +1124,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneVolumeLevel"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MicrophoneVolumeLevel"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeMicrophoneVolumeLevelWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneVolumeLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneVolumeLevel"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1008,7 +1143,9 @@
 
 - (void)writeAttributeMicrophoneVolumeLevelWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneVolumeLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneVolumeLevel"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1034,7 +1171,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMaxLevel"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MicrophoneMaxLevel"];
+    }
     completion(written, nil);
 }
 
@@ -1058,7 +1198,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMinLevel"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MicrophoneMinLevel"];
+    }
     completion(written, nil);
 }
 
@@ -1082,13 +1225,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneAGCEnabled"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MicrophoneAGCEnabled"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeMicrophoneAGCEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneAGCEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneAGCEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1096,7 +1244,9 @@
 
 - (void)writeAttributeMicrophoneAGCEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"MicrophoneAGCEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneAGCEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1122,13 +1272,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageRotation"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ImageRotation"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeImageRotationWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageRotation"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageRotation"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1136,7 +1291,9 @@
 
 - (void)writeAttributeImageRotationWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageRotation"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageRotation"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1162,13 +1319,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageFlipHorizontal"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ImageFlipHorizontal"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeImageFlipHorizontalWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageFlipHorizontal"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageFlipHorizontal"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1176,7 +1338,9 @@
 
 - (void)writeAttributeImageFlipHorizontalWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageFlipHorizontal"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageFlipHorizontal"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1202,13 +1366,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageFlipVertical"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ImageFlipVertical"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeImageFlipVerticalWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageFlipVertical"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageFlipVertical"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1216,7 +1385,9 @@
 
 - (void)writeAttributeImageFlipVerticalWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ImageFlipVertical"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageFlipVertical"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1242,13 +1413,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"LocalVideoRecordingEnabled"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LocalVideoRecordingEnabled"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeLocalVideoRecordingEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"LocalVideoRecordingEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalVideoRecordingEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1256,7 +1432,9 @@
 
 - (void)writeAttributeLocalVideoRecordingEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"LocalVideoRecordingEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalVideoRecordingEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1282,13 +1460,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"LocalSnapshotRecordingEnabled"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LocalSnapshotRecordingEnabled"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeLocalSnapshotRecordingEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"LocalSnapshotRecordingEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalSnapshotRecordingEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1296,7 +1479,9 @@
 
 - (void)writeAttributeLocalSnapshotRecordingEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"LocalSnapshotRecordingEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalSnapshotRecordingEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1322,13 +1507,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"StatusLightEnabled"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"StatusLightEnabled"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeStatusLightEnabledWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"StatusLightEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StatusLightEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1336,7 +1526,9 @@
 
 - (void)writeAttributeStatusLightEnabledWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"StatusLightEnabled"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StatusLightEnabled"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1362,13 +1554,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"StatusLightBrightness"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"StatusLightBrightness"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeStatusLightBrightnessWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"StatusLightBrightness"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StatusLightBrightness"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1376,7 +1573,9 @@
 
 - (void)writeAttributeStatusLightBrightnessWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"StatusLightBrightness"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StatusLightBrightness"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1402,7 +1601,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"GeneratedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneratedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -1426,7 +1628,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"AcceptedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AcceptedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -1450,7 +1655,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"AttributeList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttributeList"];
+    }
     completion(written, nil);
 }
 
@@ -1474,7 +1682,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"FeatureMap"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FeatureMap"];
+    }
     completion(written, nil);
 }
 
@@ -1498,7 +1709,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVStreamManagement charon_port_values][@"ClusterRevision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterRevision"];
+    }
     completion(written, nil);
 }
 

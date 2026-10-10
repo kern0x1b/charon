@@ -95,8 +95,11 @@ a nullability between the two SDKs - `MTRDiagnosticLogsClusterRetrieveLogsRespon
 `timeStamp` are `_Nonnull` in 16.4 and `_Nullable` in 26.2 - and the port does not redeclare the property, so
 writing 26.2's spelling is `nullability specifier '_Nullable' conflicts with existing specifier '_Nonnull'`.
 
-The class's own state is one table keyed by the attribute name and guarded by a lock, because armv7 has no
-thread-local storage to rely on. A release with no Matter hardware has no node to read from, so the class
+The class's own state is a table of each object's own, keyed by the attribute name, made on first use and read
+and written under the object's lock: one object's written value is not another's, and two threads on one object
+are not a race (`behaviour.sh`: the other instance reads nil, and eight threads of write-and-read under
+ThreadSanitizer report nothing). It was one table for the whole class, mutated with no lock, until the
+behaviour differential showed both. A release with no Matter hardware has no node to read from, so the class
 methods the header declares answer as the framework does when it has nothing to read from: no value, and
 `MTRErrorDomain` code `MTRErrorCodeInvalidState` ("Invalid object state."). Measured on the host by
 `tests/backports/host/matterdifferential/behaviour.sh`: a cached read on a container with no cache attached and

@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -33,6 +34,7 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
@@ -85,17 +87,19 @@
 @synthesize VideoSensorParamsValues = _VideoSensorParamsValues;
 @synthesize ViewportValues = _ViewportValues;
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterCameraAVStreamManagement class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -128,109 +132,141 @@
 - (NSDictionary<NSString *, id> *)readAttributeMaxConcurrentEncodersWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"MaxConcurrentEncoders"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxConcurrentEncoders"];
+    }
 }
 
 // MaxEncodedPixelRate, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxEncodedPixelRateWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"MaxEncodedPixelRate"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxEncodedPixelRate"];
+    }
 }
 
 // VideoSensorParams, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeVideoSensorParamsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"VideoSensorParams"];
+    @synchronized (self) {
+        return [self charon_port_values][@"VideoSensorParams"];
+    }
 }
 
 // NightVisionUsesInfrared, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNightVisionUsesInfraredWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"NightVisionUsesInfrared"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NightVisionUsesInfrared"];
+    }
 }
 
 // MinViewportResolution, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMinViewportResolutionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"MinViewportResolution"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinViewportResolution"];
+    }
 }
 
 // RateDistortionTradeOffPoints, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRateDistortionTradeOffPointsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"RateDistortionTradeOffPoints"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RateDistortionTradeOffPoints"];
+    }
 }
 
 // MaxContentBufferSize, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxContentBufferSizeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"MaxContentBufferSize"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxContentBufferSize"];
+    }
 }
 
 // MicrophoneCapabilities, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMicrophoneCapabilitiesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneCapabilities"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MicrophoneCapabilities"];
+    }
 }
 
 // SpeakerCapabilities, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSpeakerCapabilitiesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"SpeakerCapabilities"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SpeakerCapabilities"];
+    }
 }
 
 // TwoWayTalkSupport, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTwoWayTalkSupportWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"TwoWayTalkSupport"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TwoWayTalkSupport"];
+    }
 }
 
 // SnapshotCapabilities, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSnapshotCapabilitiesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"SnapshotCapabilities"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SnapshotCapabilities"];
+    }
 }
 
 // MaxNetworkBandwidth, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxNetworkBandwidthWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"MaxNetworkBandwidth"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxNetworkBandwidth"];
+    }
 }
 
 // CurrentFrameRate, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentFrameRateWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"CurrentFrameRate"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentFrameRate"];
+    }
 }
 
 // HDRModeEnabled, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeHDRModeEnabledWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"HDRModeEnabled"];
+    @synchronized (self) {
+        return [self charon_port_values][@"HDRModeEnabled"];
+    }
 }
 
 - (void)writeAttributeHDRModeEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"HDRModeEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"HDRModeEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeHDRModeEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"HDRModeEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"HDRModeEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -239,53 +275,69 @@
 - (NSDictionary<NSString *, id> *)readAttributeSupportedStreamUsagesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"SupportedStreamUsages"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SupportedStreamUsages"];
+    }
 }
 
 // AllocatedVideoStreams, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAllocatedVideoStreamsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"AllocatedVideoStreams"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AllocatedVideoStreams"];
+    }
 }
 
 // AllocatedAudioStreams, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAllocatedAudioStreamsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"AllocatedAudioStreams"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AllocatedAudioStreams"];
+    }
 }
 
 // AllocatedSnapshotStreams, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAllocatedSnapshotStreamsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"AllocatedSnapshotStreams"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AllocatedSnapshotStreams"];
+    }
 }
 
 // StreamUsagePriorities, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeStreamUsagePrioritiesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"StreamUsagePriorities"];
+    @synchronized (self) {
+        return [self charon_port_values][@"StreamUsagePriorities"];
+    }
 }
 
 // SoftRecordingPrivacyModeEnabled, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSoftRecordingPrivacyModeEnabledWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"SoftRecordingPrivacyModeEnabled"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SoftRecordingPrivacyModeEnabled"];
+    }
 }
 
 - (void)writeAttributeSoftRecordingPrivacyModeEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"SoftRecordingPrivacyModeEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SoftRecordingPrivacyModeEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeSoftRecordingPrivacyModeEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"SoftRecordingPrivacyModeEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SoftRecordingPrivacyModeEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -294,18 +346,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeSoftLivestreamPrivacyModeEnabledWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"SoftLivestreamPrivacyModeEnabled"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SoftLivestreamPrivacyModeEnabled"];
+    }
 }
 
 - (void)writeAttributeSoftLivestreamPrivacyModeEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"SoftLivestreamPrivacyModeEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SoftLivestreamPrivacyModeEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeSoftLivestreamPrivacyModeEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"SoftLivestreamPrivacyModeEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SoftLivestreamPrivacyModeEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -314,25 +372,33 @@
 - (NSDictionary<NSString *, id> *)readAttributeHardPrivacyModeOnWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"HardPrivacyModeOn"];
+    @synchronized (self) {
+        return [self charon_port_values][@"HardPrivacyModeOn"];
+    }
 }
 
 // NightVision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNightVisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"NightVision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NightVision"];
+    }
 }
 
 - (void)writeAttributeNightVisionWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"NightVision"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"NightVision"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeNightVisionWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"NightVision"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"NightVision"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -341,18 +407,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeNightVisionIllumWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"NightVisionIllum"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NightVisionIllum"];
+    }
 }
 
 - (void)writeAttributeNightVisionIllumWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"NightVisionIllum"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"NightVisionIllum"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeNightVisionIllumWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"NightVisionIllum"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"NightVisionIllum"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -361,18 +433,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeViewportWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"Viewport"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Viewport"];
+    }
 }
 
 - (void)writeAttributeViewportWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"Viewport"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Viewport"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeViewportWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"Viewport"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Viewport"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -381,18 +459,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeSpeakerMutedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"SpeakerMuted"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SpeakerMuted"];
+    }
 }
 
 - (void)writeAttributeSpeakerMutedWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"SpeakerMuted"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeakerMuted"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeSpeakerMutedWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"SpeakerMuted"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeakerMuted"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -401,18 +485,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeSpeakerVolumeLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"SpeakerVolumeLevel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SpeakerVolumeLevel"];
+    }
 }
 
 - (void)writeAttributeSpeakerVolumeLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"SpeakerVolumeLevel"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeakerVolumeLevel"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeSpeakerVolumeLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"SpeakerVolumeLevel"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeakerVolumeLevel"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -421,32 +511,42 @@
 - (NSDictionary<NSString *, id> *)readAttributeSpeakerMaxLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"SpeakerMaxLevel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SpeakerMaxLevel"];
+    }
 }
 
 // SpeakerMinLevel, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSpeakerMinLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"SpeakerMinLevel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SpeakerMinLevel"];
+    }
 }
 
 // MicrophoneMuted, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMicrophoneMutedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMuted"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MicrophoneMuted"];
+    }
 }
 
 - (void)writeAttributeMicrophoneMutedWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMuted"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneMuted"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeMicrophoneMutedWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMuted"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneMuted"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -455,18 +555,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeMicrophoneVolumeLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneVolumeLevel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MicrophoneVolumeLevel"];
+    }
 }
 
 - (void)writeAttributeMicrophoneVolumeLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneVolumeLevel"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneVolumeLevel"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeMicrophoneVolumeLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneVolumeLevel"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneVolumeLevel"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -475,32 +581,42 @@
 - (NSDictionary<NSString *, id> *)readAttributeMicrophoneMaxLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMaxLevel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MicrophoneMaxLevel"];
+    }
 }
 
 // MicrophoneMinLevel, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMicrophoneMinLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneMinLevel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MicrophoneMinLevel"];
+    }
 }
 
 // MicrophoneAGCEnabled, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMicrophoneAGCEnabledWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneAGCEnabled"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MicrophoneAGCEnabled"];
+    }
 }
 
 - (void)writeAttributeMicrophoneAGCEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneAGCEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneAGCEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeMicrophoneAGCEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"MicrophoneAGCEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MicrophoneAGCEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -509,18 +625,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeImageRotationWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"ImageRotation"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ImageRotation"];
+    }
 }
 
 - (void)writeAttributeImageRotationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"ImageRotation"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageRotation"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeImageRotationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"ImageRotation"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageRotation"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -529,18 +651,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeImageFlipHorizontalWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"ImageFlipHorizontal"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ImageFlipHorizontal"];
+    }
 }
 
 - (void)writeAttributeImageFlipHorizontalWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"ImageFlipHorizontal"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageFlipHorizontal"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeImageFlipHorizontalWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"ImageFlipHorizontal"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageFlipHorizontal"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -549,18 +677,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeImageFlipVerticalWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"ImageFlipVertical"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ImageFlipVertical"];
+    }
 }
 
 - (void)writeAttributeImageFlipVerticalWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"ImageFlipVertical"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageFlipVertical"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeImageFlipVerticalWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"ImageFlipVertical"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ImageFlipVertical"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -569,18 +703,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeLocalVideoRecordingEnabledWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"LocalVideoRecordingEnabled"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LocalVideoRecordingEnabled"];
+    }
 }
 
 - (void)writeAttributeLocalVideoRecordingEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"LocalVideoRecordingEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalVideoRecordingEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLocalVideoRecordingEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"LocalVideoRecordingEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalVideoRecordingEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -589,18 +729,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeLocalSnapshotRecordingEnabledWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"LocalSnapshotRecordingEnabled"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LocalSnapshotRecordingEnabled"];
+    }
 }
 
 - (void)writeAttributeLocalSnapshotRecordingEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"LocalSnapshotRecordingEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalSnapshotRecordingEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLocalSnapshotRecordingEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"LocalSnapshotRecordingEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalSnapshotRecordingEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -609,18 +755,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeStatusLightEnabledWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"StatusLightEnabled"];
+    @synchronized (self) {
+        return [self charon_port_values][@"StatusLightEnabled"];
+    }
 }
 
 - (void)writeAttributeStatusLightEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"StatusLightEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"StatusLightEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeStatusLightEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"StatusLightEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"StatusLightEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -629,18 +781,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeStatusLightBrightnessWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"StatusLightBrightness"];
+    @synchronized (self) {
+        return [self charon_port_values][@"StatusLightBrightness"];
+    }
 }
 
 - (void)writeAttributeStatusLightBrightnessWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"StatusLightBrightness"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"StatusLightBrightness"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeStatusLightBrightnessWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterCameraAVStreamManagement charon_port_values][@"StatusLightBrightness"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"StatusLightBrightness"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -649,35 +807,45 @@
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterCameraAVStreamManagement charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 // audioStreamAllocate. It answers: there is nothing to reach on a release with no fabric.

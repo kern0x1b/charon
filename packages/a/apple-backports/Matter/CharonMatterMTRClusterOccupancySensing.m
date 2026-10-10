@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterOccupancySensing
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterOccupancySensing class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,39 +94,51 @@
 - (NSDictionary<NSString *, id> *)readAttributeOccupancyWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"Occupancy"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Occupancy"];
+    }
 }
 
 // OccupancySensorType, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOccupancySensorTypeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"OccupancySensorType"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OccupancySensorType"];
+    }
 }
 
 // OccupancySensorTypeBitmap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOccupancySensorTypeBitmapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"OccupancySensorTypeBitmap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OccupancySensorTypeBitmap"];
+    }
 }
 
 // HoldTime, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeHoldTimeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"HoldTime"];
+    @synchronized (self) {
+        return [self charon_port_values][@"HoldTime"];
+    }
 }
 
 - (void)writeAttributeHoldTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterOccupancySensing charon_port_values][@"HoldTime"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"HoldTime"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeHoldTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterOccupancySensing charon_port_values][@"HoldTime"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"HoldTime"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -131,25 +147,33 @@
 - (NSDictionary<NSString *, id> *)readAttributeHoldTimeLimitsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"HoldTimeLimits"];
+    @synchronized (self) {
+        return [self charon_port_values][@"HoldTimeLimits"];
+    }
 }
 
 // PIROccupiedToUnoccupiedDelay, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePIROccupiedToUnoccupiedDelayWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"PIROccupiedToUnoccupiedDelay"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PIROccupiedToUnoccupiedDelay"];
+    }
 }
 
 - (void)writeAttributePIROccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PIROccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PIROccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributePIROccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PIROccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PIROccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -158,18 +182,24 @@
 - (NSDictionary<NSString *, id> *)readAttributePIRUnoccupiedToOccupiedDelayWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"PIRUnoccupiedToOccupiedDelay"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PIRUnoccupiedToOccupiedDelay"];
+    }
 }
 
 - (void)writeAttributePIRUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PIRUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PIRUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributePIRUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PIRUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PIRUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -178,18 +208,24 @@
 - (NSDictionary<NSString *, id> *)readAttributePIRUnoccupiedToOccupiedThresholdWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"PIRUnoccupiedToOccupiedThreshold"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PIRUnoccupiedToOccupiedThreshold"];
+    }
 }
 
 - (void)writeAttributePIRUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PIRUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PIRUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributePIRUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PIRUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PIRUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -198,18 +234,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeUltrasonicOccupiedToUnoccupiedDelayWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"];
+    @synchronized (self) {
+        return [self charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"];
+    }
 }
 
 - (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterOccupancySensing charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterOccupancySensing charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -218,18 +260,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeUltrasonicUnoccupiedToOccupiedDelayWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"];
+    @synchronized (self) {
+        return [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"];
+    }
 }
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterOccupancySensing charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterOccupancySensing charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -238,18 +286,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeUltrasonicUnoccupiedToOccupiedThresholdWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"];
+    @synchronized (self) {
+        return [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"];
+    }
 }
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterOccupancySensing charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterOccupancySensing charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UltrasonicUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -258,18 +312,24 @@
 - (NSDictionary<NSString *, id> *)readAttributePhysicalContactOccupiedToUnoccupiedDelayWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"];
+    }
 }
 
 - (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -278,18 +338,24 @@
 - (NSDictionary<NSString *, id> *)readAttributePhysicalContactUnoccupiedToOccupiedDelayWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"];
+    }
 }
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -298,18 +364,24 @@
 - (NSDictionary<NSString *, id> *)readAttributePhysicalContactUnoccupiedToOccupiedThresholdWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"];
+    }
 }
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterOccupancySensing charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PhysicalContactUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -318,35 +390,45 @@
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterOccupancySensing charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 @end

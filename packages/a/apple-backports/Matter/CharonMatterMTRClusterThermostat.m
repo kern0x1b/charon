@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterThermostat
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterThermostat class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,81 +94,105 @@
 - (NSDictionary<NSString *, id> *)readAttributeLocalTemperatureWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"LocalTemperature"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LocalTemperature"];
+    }
 }
 
 // OutdoorTemperature, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOutdoorTemperatureWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"OutdoorTemperature"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OutdoorTemperature"];
+    }
 }
 
 // Occupancy, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOccupancyWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"Occupancy"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Occupancy"];
+    }
 }
 
 // AbsMinHeatSetpointLimit, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAbsMinHeatSetpointLimitWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"AbsMinHeatSetpointLimit"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AbsMinHeatSetpointLimit"];
+    }
 }
 
 // AbsMaxHeatSetpointLimit, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAbsMaxHeatSetpointLimitWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"AbsMaxHeatSetpointLimit"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AbsMaxHeatSetpointLimit"];
+    }
 }
 
 // AbsMinCoolSetpointLimit, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAbsMinCoolSetpointLimitWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"AbsMinCoolSetpointLimit"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AbsMinCoolSetpointLimit"];
+    }
 }
 
 // AbsMaxCoolSetpointLimit, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAbsMaxCoolSetpointLimitWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"AbsMaxCoolSetpointLimit"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AbsMaxCoolSetpointLimit"];
+    }
 }
 
 // PICoolingDemand, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePICoolingDemandWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"PICoolingDemand"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PICoolingDemand"];
+    }
 }
 
 // PIHeatingDemand, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePIHeatingDemandWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"PIHeatingDemand"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PIHeatingDemand"];
+    }
 }
 
 // HVACSystemTypeConfiguration, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeHVACSystemTypeConfigurationWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"HVACSystemTypeConfiguration"];
+    @synchronized (self) {
+        return [self charon_port_values][@"HVACSystemTypeConfiguration"];
+    }
 }
 
 - (void)writeAttributeHVACSystemTypeConfigurationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"HVACSystemTypeConfiguration"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"HVACSystemTypeConfiguration"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeHVACSystemTypeConfigurationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"HVACSystemTypeConfiguration"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"HVACSystemTypeConfiguration"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -173,18 +201,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeLocalTemperatureCalibrationWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"LocalTemperatureCalibration"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LocalTemperatureCalibration"];
+    }
 }
 
 - (void)writeAttributeLocalTemperatureCalibrationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"LocalTemperatureCalibration"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalTemperatureCalibration"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLocalTemperatureCalibrationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"LocalTemperatureCalibration"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalTemperatureCalibration"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -193,18 +227,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeOccupiedCoolingSetpointWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"OccupiedCoolingSetpoint"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OccupiedCoolingSetpoint"];
+    }
 }
 
 - (void)writeAttributeOccupiedCoolingSetpointWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"OccupiedCoolingSetpoint"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedCoolingSetpoint"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeOccupiedCoolingSetpointWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"OccupiedCoolingSetpoint"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedCoolingSetpoint"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -213,18 +253,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeOccupiedHeatingSetpointWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"OccupiedHeatingSetpoint"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OccupiedHeatingSetpoint"];
+    }
 }
 
 - (void)writeAttributeOccupiedHeatingSetpointWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"OccupiedHeatingSetpoint"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedHeatingSetpoint"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeOccupiedHeatingSetpointWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"OccupiedHeatingSetpoint"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedHeatingSetpoint"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -233,18 +279,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeUnoccupiedCoolingSetpointWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"UnoccupiedCoolingSetpoint"];
+    @synchronized (self) {
+        return [self charon_port_values][@"UnoccupiedCoolingSetpoint"];
+    }
 }
 
 - (void)writeAttributeUnoccupiedCoolingSetpointWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"UnoccupiedCoolingSetpoint"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedCoolingSetpoint"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeUnoccupiedCoolingSetpointWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"UnoccupiedCoolingSetpoint"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedCoolingSetpoint"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -253,18 +305,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeUnoccupiedHeatingSetpointWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"UnoccupiedHeatingSetpoint"];
+    @synchronized (self) {
+        return [self charon_port_values][@"UnoccupiedHeatingSetpoint"];
+    }
 }
 
 - (void)writeAttributeUnoccupiedHeatingSetpointWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"UnoccupiedHeatingSetpoint"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedHeatingSetpoint"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeUnoccupiedHeatingSetpointWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"UnoccupiedHeatingSetpoint"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedHeatingSetpoint"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -273,18 +331,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeMinHeatSetpointLimitWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"MinHeatSetpointLimit"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinHeatSetpointLimit"];
+    }
 }
 
 - (void)writeAttributeMinHeatSetpointLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"MinHeatSetpointLimit"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MinHeatSetpointLimit"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeMinHeatSetpointLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"MinHeatSetpointLimit"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MinHeatSetpointLimit"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -293,18 +357,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeMaxHeatSetpointLimitWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"MaxHeatSetpointLimit"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxHeatSetpointLimit"];
+    }
 }
 
 - (void)writeAttributeMaxHeatSetpointLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"MaxHeatSetpointLimit"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxHeatSetpointLimit"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeMaxHeatSetpointLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"MaxHeatSetpointLimit"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxHeatSetpointLimit"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -313,18 +383,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeMinCoolSetpointLimitWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"MinCoolSetpointLimit"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinCoolSetpointLimit"];
+    }
 }
 
 - (void)writeAttributeMinCoolSetpointLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"MinCoolSetpointLimit"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MinCoolSetpointLimit"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeMinCoolSetpointLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"MinCoolSetpointLimit"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MinCoolSetpointLimit"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -333,18 +409,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeMaxCoolSetpointLimitWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"MaxCoolSetpointLimit"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxCoolSetpointLimit"];
+    }
 }
 
 - (void)writeAttributeMaxCoolSetpointLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"MaxCoolSetpointLimit"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxCoolSetpointLimit"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeMaxCoolSetpointLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"MaxCoolSetpointLimit"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxCoolSetpointLimit"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -353,18 +435,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeMinSetpointDeadBandWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"MinSetpointDeadBand"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinSetpointDeadBand"];
+    }
 }
 
 - (void)writeAttributeMinSetpointDeadBandWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"MinSetpointDeadBand"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MinSetpointDeadBand"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeMinSetpointDeadBandWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"MinSetpointDeadBand"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"MinSetpointDeadBand"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -373,18 +461,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeRemoteSensingWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"RemoteSensing"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RemoteSensing"];
+    }
 }
 
 - (void)writeAttributeRemoteSensingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"RemoteSensing"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"RemoteSensing"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeRemoteSensingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"RemoteSensing"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"RemoteSensing"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -393,18 +487,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeControlSequenceOfOperationWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ControlSequenceOfOperation"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ControlSequenceOfOperation"];
+    }
 }
 
 - (void)writeAttributeControlSequenceOfOperationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"ControlSequenceOfOperation"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ControlSequenceOfOperation"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeControlSequenceOfOperationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"ControlSequenceOfOperation"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ControlSequenceOfOperation"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -413,18 +513,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeSystemModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"SystemMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SystemMode"];
+    }
 }
 
 - (void)writeAttributeSystemModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"SystemMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SystemMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeSystemModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"SystemMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SystemMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -433,46 +539,60 @@
 - (NSDictionary<NSString *, id> *)readAttributeThermostatRunningModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ThermostatRunningMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ThermostatRunningMode"];
+    }
 }
 
 // StartOfWeek, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeStartOfWeekWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"StartOfWeek"];
+    @synchronized (self) {
+        return [self charon_port_values][@"StartOfWeek"];
+    }
 }
 
 // NumberOfWeeklyTransitions, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfWeeklyTransitionsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"NumberOfWeeklyTransitions"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfWeeklyTransitions"];
+    }
 }
 
 // NumberOfDailyTransitions, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfDailyTransitionsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"NumberOfDailyTransitions"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfDailyTransitions"];
+    }
 }
 
 // TemperatureSetpointHold, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTemperatureSetpointHoldWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"TemperatureSetpointHold"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TemperatureSetpointHold"];
+    }
 }
 
 - (void)writeAttributeTemperatureSetpointHoldWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"TemperatureSetpointHold"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHold"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeTemperatureSetpointHoldWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"TemperatureSetpointHold"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHold"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -481,18 +601,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeTemperatureSetpointHoldDurationWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"TemperatureSetpointHoldDuration"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TemperatureSetpointHoldDuration"];
+    }
 }
 
 - (void)writeAttributeTemperatureSetpointHoldDurationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"TemperatureSetpointHoldDuration"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHoldDuration"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeTemperatureSetpointHoldDurationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"TemperatureSetpointHoldDuration"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHoldDuration"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -501,18 +627,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeThermostatProgrammingOperationModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ThermostatProgrammingOperationMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ThermostatProgrammingOperationMode"];
+    }
 }
 
 - (void)writeAttributeThermostatProgrammingOperationModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"ThermostatProgrammingOperationMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ThermostatProgrammingOperationMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeThermostatProgrammingOperationModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"ThermostatProgrammingOperationMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ThermostatProgrammingOperationMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -521,46 +653,60 @@
 - (NSDictionary<NSString *, id> *)readAttributeThermostatRunningStateWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ThermostatRunningState"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ThermostatRunningState"];
+    }
 }
 
 // SetpointChangeSource, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSetpointChangeSourceWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"SetpointChangeSource"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SetpointChangeSource"];
+    }
 }
 
 // SetpointChangeAmount, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSetpointChangeAmountWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"SetpointChangeAmount"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SetpointChangeAmount"];
+    }
 }
 
 // SetpointChangeSourceTimestamp, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSetpointChangeSourceTimestampWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"SetpointChangeSourceTimestamp"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SetpointChangeSourceTimestamp"];
+    }
 }
 
 // OccupiedSetback, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOccupiedSetbackWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"OccupiedSetback"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OccupiedSetback"];
+    }
 }
 
 - (void)writeAttributeOccupiedSetbackWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"OccupiedSetback"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedSetback"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeOccupiedSetbackWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"OccupiedSetback"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedSetback"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -569,32 +715,42 @@
 - (NSDictionary<NSString *, id> *)readAttributeOccupiedSetbackMinWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"OccupiedSetbackMin"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OccupiedSetbackMin"];
+    }
 }
 
 // OccupiedSetbackMax, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOccupiedSetbackMaxWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"OccupiedSetbackMax"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OccupiedSetbackMax"];
+    }
 }
 
 // UnoccupiedSetback, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeUnoccupiedSetbackWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"UnoccupiedSetback"];
+    @synchronized (self) {
+        return [self charon_port_values][@"UnoccupiedSetback"];
+    }
 }
 
 - (void)writeAttributeUnoccupiedSetbackWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"UnoccupiedSetback"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedSetback"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeUnoccupiedSetbackWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"UnoccupiedSetback"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedSetback"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -603,32 +759,42 @@
 - (NSDictionary<NSString *, id> *)readAttributeUnoccupiedSetbackMinWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"UnoccupiedSetbackMin"];
+    @synchronized (self) {
+        return [self charon_port_values][@"UnoccupiedSetbackMin"];
+    }
 }
 
 // UnoccupiedSetbackMax, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeUnoccupiedSetbackMaxWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"UnoccupiedSetbackMax"];
+    @synchronized (self) {
+        return [self charon_port_values][@"UnoccupiedSetbackMax"];
+    }
 }
 
 // EmergencyHeatDelta, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeEmergencyHeatDeltaWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"EmergencyHeatDelta"];
+    @synchronized (self) {
+        return [self charon_port_values][@"EmergencyHeatDelta"];
+    }
 }
 
 - (void)writeAttributeEmergencyHeatDeltaWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"EmergencyHeatDelta"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"EmergencyHeatDelta"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeEmergencyHeatDeltaWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"EmergencyHeatDelta"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"EmergencyHeatDelta"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -637,18 +803,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeACTypeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ACType"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ACType"];
+    }
 }
 
 - (void)writeAttributeACTypeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"ACType"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACType"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeACTypeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"ACType"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACType"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -657,18 +829,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeACCapacityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ACCapacity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ACCapacity"];
+    }
 }
 
 - (void)writeAttributeACCapacityWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"ACCapacity"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacity"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeACCapacityWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"ACCapacity"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacity"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -677,18 +855,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeACRefrigerantTypeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ACRefrigerantType"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ACRefrigerantType"];
+    }
 }
 
 - (void)writeAttributeACRefrigerantTypeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"ACRefrigerantType"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACRefrigerantType"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeACRefrigerantTypeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"ACRefrigerantType"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACRefrigerantType"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -697,18 +881,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeACCompressorTypeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ACCompressorType"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ACCompressorType"];
+    }
 }
 
 - (void)writeAttributeACCompressorTypeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"ACCompressorType"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCompressorType"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeACCompressorTypeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"ACCompressorType"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCompressorType"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -717,18 +907,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeACErrorCodeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ACErrorCode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ACErrorCode"];
+    }
 }
 
 - (void)writeAttributeACErrorCodeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"ACErrorCode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACErrorCode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeACErrorCodeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"ACErrorCode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACErrorCode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -737,18 +933,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeACLouverPositionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ACLouverPosition"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ACLouverPosition"];
+    }
 }
 
 - (void)writeAttributeACLouverPositionWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"ACLouverPosition"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACLouverPosition"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeACLouverPositionWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"ACLouverPosition"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACLouverPosition"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -757,25 +959,33 @@
 - (NSDictionary<NSString *, id> *)readAttributeACCoilTemperatureWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ACCoilTemperature"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ACCoilTemperature"];
+    }
 }
 
 // ACCapacityformat, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeACCapacityformatWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ACCapacityformat"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ACCapacityformat"];
+    }
 }
 
 - (void)writeAttributeACCapacityformatWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"ACCapacityformat"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacityformat"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeACCapacityformatWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"ACCapacityformat"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacityformat"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -784,74 +994,96 @@
 - (NSDictionary<NSString *, id> *)readAttributePresetTypesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"PresetTypes"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PresetTypes"];
+    }
 }
 
 // ScheduleTypes, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeScheduleTypesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ScheduleTypes"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ScheduleTypes"];
+    }
 }
 
 // NumberOfPresets, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfPresetsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"NumberOfPresets"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfPresets"];
+    }
 }
 
 // NumberOfSchedules, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfSchedulesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"NumberOfSchedules"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfSchedules"];
+    }
 }
 
 // NumberOfScheduleTransitions, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfScheduleTransitionsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"NumberOfScheduleTransitions"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfScheduleTransitions"];
+    }
 }
 
 // NumberOfScheduleTransitionPerDay, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfScheduleTransitionPerDayWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"NumberOfScheduleTransitionPerDay"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfScheduleTransitionPerDay"];
+    }
 }
 
 // ActivePresetHandle, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeActivePresetHandleWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ActivePresetHandle"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ActivePresetHandle"];
+    }
 }
 
 // ActiveScheduleHandle, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeActiveScheduleHandleWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ActiveScheduleHandle"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ActiveScheduleHandle"];
+    }
 }
 
 // Presets, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePresetsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"Presets"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Presets"];
+    }
 }
 
 - (void)writeAttributePresetsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"Presets"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Presets"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributePresetsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"Presets"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Presets"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -860,18 +1092,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeSchedulesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"Schedules"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Schedules"];
+    }
 }
 
 - (void)writeAttributeSchedulesWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterThermostat charon_port_values][@"Schedules"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Schedules"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeSchedulesWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterThermostat charon_port_values][@"Schedules"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Schedules"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -880,70 +1118,90 @@
 - (NSDictionary<NSString *, id> *)readAttributeSetpointHoldExpiryTimestampWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"SetpointHoldExpiryTimestamp"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SetpointHoldExpiryTimestamp"];
+    }
 }
 
 // MaxThermostatSuggestions, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxThermostatSuggestionsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"MaxThermostatSuggestions"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxThermostatSuggestions"];
+    }
 }
 
 // ThermostatSuggestions, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeThermostatSuggestionsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ThermostatSuggestions"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ThermostatSuggestions"];
+    }
 }
 
 // CurrentThermostatSuggestion, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentThermostatSuggestionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"CurrentThermostatSuggestion"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentThermostatSuggestion"];
+    }
 }
 
 // ThermostatSuggestionNotFollowingReason, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeThermostatSuggestionNotFollowingReasonWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ThermostatSuggestionNotFollowingReason"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ThermostatSuggestionNotFollowingReason"];
+    }
 }
 
 // GeneratedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterThermostat charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 // setpointRaiseLower. It answers: there is nothing to reach on a release with no fabric.

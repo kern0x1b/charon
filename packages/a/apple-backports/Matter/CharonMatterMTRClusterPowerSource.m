@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterPowerSource
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterPowerSource class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,259 +94,333 @@
 - (NSDictionary<NSString *, id> *)readAttributeStatusWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"Status"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Status"];
+    }
 }
 
 // Order, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOrderWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"Order"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Order"];
+    }
 }
 
 // Description, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeDescriptionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"Description"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Description"];
+    }
 }
 
 // WiredAssessedInputVoltage, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeWiredAssessedInputVoltageWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"WiredAssessedInputVoltage"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WiredAssessedInputVoltage"];
+    }
 }
 
 // WiredAssessedInputFrequency, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeWiredAssessedInputFrequencyWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"WiredAssessedInputFrequency"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WiredAssessedInputFrequency"];
+    }
 }
 
 // WiredCurrentType, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeWiredCurrentTypeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"WiredCurrentType"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WiredCurrentType"];
+    }
 }
 
 // WiredAssessedCurrent, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeWiredAssessedCurrentWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"WiredAssessedCurrent"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WiredAssessedCurrent"];
+    }
 }
 
 // WiredNominalVoltage, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeWiredNominalVoltageWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"WiredNominalVoltage"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WiredNominalVoltage"];
+    }
 }
 
 // WiredMaximumCurrent, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeWiredMaximumCurrentWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"WiredMaximumCurrent"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WiredMaximumCurrent"];
+    }
 }
 
 // WiredPresent, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeWiredPresentWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"WiredPresent"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WiredPresent"];
+    }
 }
 
 // ActiveWiredFaults, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeActiveWiredFaultsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"ActiveWiredFaults"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ActiveWiredFaults"];
+    }
 }
 
 // BatVoltage, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatVoltageWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatVoltage"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatVoltage"];
+    }
 }
 
 // BatPercentRemaining, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatPercentRemainingWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatPercentRemaining"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatPercentRemaining"];
+    }
 }
 
 // BatTimeRemaining, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatTimeRemainingWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatTimeRemaining"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatTimeRemaining"];
+    }
 }
 
 // BatChargeLevel, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatChargeLevelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatChargeLevel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatChargeLevel"];
+    }
 }
 
 // BatReplacementNeeded, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatReplacementNeededWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatReplacementNeeded"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatReplacementNeeded"];
+    }
 }
 
 // BatReplaceability, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatReplaceabilityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatReplaceability"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatReplaceability"];
+    }
 }
 
 // BatPresent, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatPresentWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatPresent"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatPresent"];
+    }
 }
 
 // ActiveBatFaults, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeActiveBatFaultsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"ActiveBatFaults"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ActiveBatFaults"];
+    }
 }
 
 // BatReplacementDescription, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatReplacementDescriptionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatReplacementDescription"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatReplacementDescription"];
+    }
 }
 
 // BatCommonDesignation, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatCommonDesignationWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatCommonDesignation"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatCommonDesignation"];
+    }
 }
 
 // BatANSIDesignation, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatANSIDesignationWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatANSIDesignation"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatANSIDesignation"];
+    }
 }
 
 // BatIECDesignation, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatIECDesignationWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatIECDesignation"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatIECDesignation"];
+    }
 }
 
 // BatApprovedChemistry, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatApprovedChemistryWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatApprovedChemistry"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatApprovedChemistry"];
+    }
 }
 
 // BatCapacity, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatCapacityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatCapacity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatCapacity"];
+    }
 }
 
 // BatQuantity, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatQuantityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatQuantity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatQuantity"];
+    }
 }
 
 // BatChargeState, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatChargeStateWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatChargeState"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatChargeState"];
+    }
 }
 
 // BatTimeToFullCharge, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatTimeToFullChargeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatTimeToFullCharge"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatTimeToFullCharge"];
+    }
 }
 
 // BatFunctionalWhileCharging, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatFunctionalWhileChargingWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatFunctionalWhileCharging"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatFunctionalWhileCharging"];
+    }
 }
 
 // BatChargingCurrent, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeBatChargingCurrentWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"BatChargingCurrent"];
+    @synchronized (self) {
+        return [self charon_port_values][@"BatChargingCurrent"];
+    }
 }
 
 // ActiveBatChargeFaults, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeActiveBatChargeFaultsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"ActiveBatChargeFaults"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ActiveBatChargeFaults"];
+    }
 }
 
 // EndpointList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeEndpointListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"EndpointList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"EndpointList"];
+    }
 }
 
 // GeneratedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterPowerSource charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 @end

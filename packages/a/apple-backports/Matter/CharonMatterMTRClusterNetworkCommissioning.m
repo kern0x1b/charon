@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterNetworkCommissioning
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterNetworkCommissioning class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,46 +94,60 @@
 - (NSDictionary<NSString *, id> *)readAttributeMaxNetworksWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"MaxNetworks"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxNetworks"];
+    }
 }
 
 // Networks, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNetworksWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"Networks"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Networks"];
+    }
 }
 
 // ScanMaxTimeSeconds, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeScanMaxTimeSecondsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"ScanMaxTimeSeconds"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ScanMaxTimeSeconds"];
+    }
 }
 
 // ConnectMaxTimeSeconds, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeConnectMaxTimeSecondsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"ConnectMaxTimeSeconds"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ConnectMaxTimeSeconds"];
+    }
 }
 
 // InterfaceEnabled, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeInterfaceEnabledWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"InterfaceEnabled"];
+    @synchronized (self) {
+        return [self charon_port_values][@"InterfaceEnabled"];
+    }
 }
 
 - (void)writeAttributeInterfaceEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterNetworkCommissioning charon_port_values][@"InterfaceEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"InterfaceEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeInterfaceEnabledWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterNetworkCommissioning charon_port_values][@"InterfaceEnabled"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"InterfaceEnabled"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -138,77 +156,99 @@
 - (NSDictionary<NSString *, id> *)readAttributeLastNetworkingStatusWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"LastNetworkingStatus"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LastNetworkingStatus"];
+    }
 }
 
 // LastNetworkID, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeLastNetworkIDWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"LastNetworkID"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LastNetworkID"];
+    }
 }
 
 // LastConnectErrorValue, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeLastConnectErrorValueWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"LastConnectErrorValue"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LastConnectErrorValue"];
+    }
 }
 
 // SupportedWiFiBands, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSupportedWiFiBandsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"SupportedWiFiBands"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SupportedWiFiBands"];
+    }
 }
 
 // SupportedThreadFeatures, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSupportedThreadFeaturesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"SupportedThreadFeatures"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SupportedThreadFeatures"];
+    }
 }
 
 // ThreadVersion, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeThreadVersionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"ThreadVersion"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ThreadVersion"];
+    }
 }
 
 // GeneratedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterNetworkCommissioning charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 // scanNetworks. It answers: there is nothing to reach on a release with no fabric.

@@ -95,8 +95,9 @@ int main(int argc, const char *argv[])
             [systemMembers addObject:NSStringFromSelector(method_getName(methods[i]))];
         }
         free(methods);
-        // The port adds one storage helper of its own, which the system has no reason to have; it is
-        // removed here so the comparison is about the cluster's members and not the port's bookkeeping.
+        // The port adds one storage helper of its own, an instance method that makes and returns the
+        // object's own table, which the system has no reason to have; it is removed here so the comparison
+        // is about the cluster's members and not the port's bookkeeping.
         [portMembers removeObject:@"charon_port_values"];
         printf("image\tport class %s\t%s\n", PORT_CLUSTER, portImage ? portImage : "(none)");
         printf("image\tsystem class %s\t%s\n", real.UTF8String,

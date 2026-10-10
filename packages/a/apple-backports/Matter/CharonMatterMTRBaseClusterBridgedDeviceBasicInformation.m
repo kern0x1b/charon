@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 23 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 23 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRBaseClusterBridgedDeviceBasicInformation
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterBridgedDeviceBasicInformation class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -92,7 +96,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"VendorName"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"VendorName"];
+    }
     completion(written, nil);
 }
 
@@ -116,7 +123,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"VendorID"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"VendorID"];
+    }
     completion(written, nil);
 }
 
@@ -140,7 +150,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"ProductName"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ProductName"];
+    }
     completion(written, nil);
 }
 
@@ -164,7 +177,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"ProductID"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ProductID"];
+    }
     completion(written, nil);
 }
 
@@ -188,13 +204,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"NodeLabel"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NodeLabel"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNodeLabelWithValue:(NSString * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"NodeLabel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NodeLabel"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -202,7 +223,9 @@
 
 - (void)writeAttributeNodeLabelWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"NodeLabel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NodeLabel"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -228,7 +251,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"HardwareVersion"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"HardwareVersion"];
+    }
     completion(written, nil);
 }
 
@@ -252,7 +278,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"HardwareVersionString"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"HardwareVersionString"];
+    }
     completion(written, nil);
 }
 
@@ -276,7 +305,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"SoftwareVersion"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SoftwareVersion"];
+    }
     completion(written, nil);
 }
 
@@ -300,7 +332,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"SoftwareVersionString"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SoftwareVersionString"];
+    }
     completion(written, nil);
 }
 
@@ -324,7 +359,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"ManufacturingDate"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ManufacturingDate"];
+    }
     completion(written, nil);
 }
 
@@ -348,7 +386,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"PartNumber"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PartNumber"];
+    }
     completion(written, nil);
 }
 
@@ -372,7 +413,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"ProductURL"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ProductURL"];
+    }
     completion(written, nil);
 }
 
@@ -396,7 +440,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"ProductLabel"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ProductLabel"];
+    }
     completion(written, nil);
 }
 
@@ -420,7 +467,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"SerialNumber"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SerialNumber"];
+    }
     completion(written, nil);
 }
 
@@ -444,7 +494,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"Reachable"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Reachable"];
+    }
     completion(written, nil);
 }
 
@@ -468,7 +521,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"UniqueID"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"UniqueID"];
+    }
     completion(written, nil);
 }
 
@@ -492,7 +548,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"ProductAppearance"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ProductAppearance"];
+    }
     completion(written, nil);
 }
 
@@ -516,7 +575,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"ConfigurationVersion"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ConfigurationVersion"];
+    }
     completion(written, nil);
 }
 
@@ -540,7 +602,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"GeneratedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneratedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -564,7 +629,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"AcceptedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AcceptedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -588,7 +656,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"AttributeList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttributeList"];
+    }
     completion(written, nil);
 }
 
@@ -612,7 +683,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"FeatureMap"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FeatureMap"];
+    }
     completion(written, nil);
 }
 
@@ -636,7 +710,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterBridgedDeviceBasicInformation charon_port_values][@"ClusterRevision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterRevision"];
+    }
     completion(written, nil);
 }
 

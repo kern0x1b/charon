@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 59 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 59 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRBaseClusterDoorLock
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterDoorLock class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -92,7 +96,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"LockState"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LockState"];
+    }
     completion(written, nil);
 }
 
@@ -116,7 +123,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"LockType"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LockType"];
+    }
     completion(written, nil);
 }
 
@@ -140,7 +150,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"ActuatorEnabled"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ActuatorEnabled"];
+    }
     completion(written, nil);
 }
 
@@ -164,7 +177,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"DoorState"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"DoorState"];
+    }
     completion(written, nil);
 }
 
@@ -188,13 +204,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"DoorOpenEvents"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"DoorOpenEvents"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeDoorOpenEventsWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"DoorOpenEvents"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorOpenEvents"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -202,7 +223,9 @@
 
 - (void)writeAttributeDoorOpenEventsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"DoorOpenEvents"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorOpenEvents"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -228,13 +251,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"DoorClosedEvents"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"DoorClosedEvents"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeDoorClosedEventsWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"DoorClosedEvents"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorClosedEvents"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -242,7 +270,9 @@
 
 - (void)writeAttributeDoorClosedEventsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"DoorClosedEvents"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorClosedEvents"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -268,13 +298,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"OpenPeriod"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"OpenPeriod"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeOpenPeriodWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"OpenPeriod"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OpenPeriod"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -282,7 +317,9 @@
 
 - (void)writeAttributeOpenPeriodWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"OpenPeriod"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OpenPeriod"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -308,7 +345,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"NumberOfTotalUsersSupported"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfTotalUsersSupported"];
+    }
     completion(written, nil);
 }
 
@@ -332,7 +372,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"NumberOfPINUsersSupported"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfPINUsersSupported"];
+    }
     completion(written, nil);
 }
 
@@ -356,7 +399,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"NumberOfRFIDUsersSupported"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfRFIDUsersSupported"];
+    }
     completion(written, nil);
 }
 
@@ -380,7 +426,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"NumberOfWeekDaySchedulesSupportedPerUser"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfWeekDaySchedulesSupportedPerUser"];
+    }
     completion(written, nil);
 }
 
@@ -404,7 +453,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"NumberOfYearDaySchedulesSupportedPerUser"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfYearDaySchedulesSupportedPerUser"];
+    }
     completion(written, nil);
 }
 
@@ -428,7 +480,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"NumberOfHolidaySchedulesSupported"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfHolidaySchedulesSupported"];
+    }
     completion(written, nil);
 }
 
@@ -452,7 +507,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"MaxPINCodeLength"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MaxPINCodeLength"];
+    }
     completion(written, nil);
 }
 
@@ -476,7 +534,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"MinPINCodeLength"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MinPINCodeLength"];
+    }
     completion(written, nil);
 }
 
@@ -500,7 +561,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"MaxRFIDCodeLength"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MaxRFIDCodeLength"];
+    }
     completion(written, nil);
 }
 
@@ -524,7 +588,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"MinRFIDCodeLength"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MinRFIDCodeLength"];
+    }
     completion(written, nil);
 }
 
@@ -548,7 +615,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"CredentialRulesSupport"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"CredentialRulesSupport"];
+    }
     completion(written, nil);
 }
 
@@ -572,7 +642,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"NumberOfCredentialsSupportedPerUser"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfCredentialsSupportedPerUser"];
+    }
     completion(written, nil);
 }
 
@@ -596,13 +669,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"Language"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Language"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeLanguageWithValue:(NSString * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"Language"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Language"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -610,7 +688,9 @@
 
 - (void)writeAttributeLanguageWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"Language"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Language"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -636,13 +716,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"LEDSettings"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LEDSettings"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeLEDSettingsWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"LEDSettings"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LEDSettings"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -650,7 +735,9 @@
 
 - (void)writeAttributeLEDSettingsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"LEDSettings"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LEDSettings"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -676,13 +763,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AutoRelockTime"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AutoRelockTime"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeAutoRelockTimeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"AutoRelockTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"AutoRelockTime"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -690,7 +782,9 @@
 
 - (void)writeAttributeAutoRelockTimeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"AutoRelockTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"AutoRelockTime"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -716,13 +810,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"SoundVolume"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SoundVolume"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeSoundVolumeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"SoundVolume"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SoundVolume"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -730,7 +829,9 @@
 
 - (void)writeAttributeSoundVolumeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"SoundVolume"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SoundVolume"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -756,13 +857,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"OperatingMode"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"OperatingMode"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeOperatingModeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"OperatingMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OperatingMode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -770,7 +876,9 @@
 
 - (void)writeAttributeOperatingModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"OperatingMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OperatingMode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -796,7 +904,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"SupportedOperatingModes"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SupportedOperatingModes"];
+    }
     completion(written, nil);
 }
 
@@ -820,7 +931,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"DefaultConfigurationRegister"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"DefaultConfigurationRegister"];
+    }
     completion(written, nil);
 }
 
@@ -844,13 +958,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"EnableLocalProgramming"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"EnableLocalProgramming"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeEnableLocalProgrammingWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"EnableLocalProgramming"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableLocalProgramming"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -858,7 +977,9 @@
 
 - (void)writeAttributeEnableLocalProgrammingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"EnableLocalProgramming"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableLocalProgramming"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -884,13 +1005,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"EnableOneTouchLocking"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"EnableOneTouchLocking"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeEnableOneTouchLockingWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"EnableOneTouchLocking"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableOneTouchLocking"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -898,7 +1024,9 @@
 
 - (void)writeAttributeEnableOneTouchLockingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"EnableOneTouchLocking"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableOneTouchLocking"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -924,13 +1052,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"EnableInsideStatusLED"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"EnableInsideStatusLED"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeEnableInsideStatusLEDWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"EnableInsideStatusLED"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableInsideStatusLED"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -938,7 +1071,9 @@
 
 - (void)writeAttributeEnableInsideStatusLEDWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"EnableInsideStatusLED"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableInsideStatusLED"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -964,13 +1099,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"EnablePrivacyModeButton"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"EnablePrivacyModeButton"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeEnablePrivacyModeButtonWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"EnablePrivacyModeButton"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnablePrivacyModeButton"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -978,7 +1118,9 @@
 
 - (void)writeAttributeEnablePrivacyModeButtonWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"EnablePrivacyModeButton"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnablePrivacyModeButton"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1004,13 +1146,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"LocalProgrammingFeatures"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LocalProgrammingFeatures"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeLocalProgrammingFeaturesWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"LocalProgrammingFeatures"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalProgrammingFeatures"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1018,7 +1165,9 @@
 
 - (void)writeAttributeLocalProgrammingFeaturesWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"LocalProgrammingFeatures"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalProgrammingFeatures"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1044,13 +1193,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"WrongCodeEntryLimit"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WrongCodeEntryLimit"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeWrongCodeEntryLimitWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"WrongCodeEntryLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WrongCodeEntryLimit"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1058,7 +1212,9 @@
 
 - (void)writeAttributeWrongCodeEntryLimitWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"WrongCodeEntryLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WrongCodeEntryLimit"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1084,13 +1240,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"UserCodeTemporaryDisableTime"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"UserCodeTemporaryDisableTime"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeUserCodeTemporaryDisableTimeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"UserCodeTemporaryDisableTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UserCodeTemporaryDisableTime"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1098,7 +1259,9 @@
 
 - (void)writeAttributeUserCodeTemporaryDisableTimeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"UserCodeTemporaryDisableTime"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UserCodeTemporaryDisableTime"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1124,13 +1287,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"SendPINOverTheAir"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SendPINOverTheAir"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeSendPINOverTheAirWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"SendPINOverTheAir"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SendPINOverTheAir"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1138,7 +1306,9 @@
 
 - (void)writeAttributeSendPINOverTheAirWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"SendPINOverTheAir"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SendPINOverTheAir"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1164,13 +1334,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"RequirePINforRemoteOperation"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RequirePINforRemoteOperation"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeRequirePINforRemoteOperationWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"RequirePINforRemoteOperation"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RequirePINforRemoteOperation"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1178,7 +1353,9 @@
 
 - (void)writeAttributeRequirePINforRemoteOperationWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"RequirePINforRemoteOperation"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RequirePINforRemoteOperation"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1204,13 +1381,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"ExpiringUserTimeout"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ExpiringUserTimeout"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeExpiringUserTimeoutWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"ExpiringUserTimeout"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ExpiringUserTimeout"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1218,7 +1400,9 @@
 
 - (void)writeAttributeExpiringUserTimeoutWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterDoorLock charon_port_values][@"ExpiringUserTimeout"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ExpiringUserTimeout"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1244,7 +1428,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AliroReaderVerificationKey"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AliroReaderVerificationKey"];
+    }
     completion(written, nil);
 }
 
@@ -1268,7 +1455,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AliroReaderGroupIdentifier"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AliroReaderGroupIdentifier"];
+    }
     completion(written, nil);
 }
 
@@ -1292,7 +1482,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AliroReaderGroupSubIdentifier"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AliroReaderGroupSubIdentifier"];
+    }
     completion(written, nil);
 }
 
@@ -1316,7 +1509,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AliroExpeditedTransactionSupportedProtocolVersions"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AliroExpeditedTransactionSupportedProtocolVersions"];
+    }
     completion(written, nil);
 }
 
@@ -1340,7 +1536,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AliroGroupResolvingKey"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AliroGroupResolvingKey"];
+    }
     completion(written, nil);
 }
 
@@ -1364,7 +1563,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AliroSupportedBLEUWBProtocolVersions"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AliroSupportedBLEUWBProtocolVersions"];
+    }
     completion(written, nil);
 }
 
@@ -1388,7 +1590,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AliroBLEAdvertisingVersion"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AliroBLEAdvertisingVersion"];
+    }
     completion(written, nil);
 }
 
@@ -1412,7 +1617,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"NumberOfAliroCredentialIssuerKeysSupported"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfAliroCredentialIssuerKeysSupported"];
+    }
     completion(written, nil);
 }
 
@@ -1436,7 +1644,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"NumberOfAliroEndpointKeysSupported"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfAliroEndpointKeysSupported"];
+    }
     completion(written, nil);
 }
 
@@ -1460,7 +1671,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"GeneratedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneratedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -1484,7 +1698,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AcceptedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AcceptedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -1508,7 +1725,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AttributeList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttributeList"];
+    }
     completion(written, nil);
 }
 
@@ -1532,7 +1752,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"FeatureMap"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FeatureMap"];
+    }
     completion(written, nil);
 }
 
@@ -1556,7 +1779,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"ClusterRevision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterRevision"];
+    }
     completion(written, nil);
 }
 
@@ -1580,7 +1806,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroReaderVerificationKey"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AppleAliroReaderVerificationKey"];
+    }
     completion(written, nil);
 }
 
@@ -1604,7 +1833,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroReaderGroupIdentifier"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AppleAliroReaderGroupIdentifier"];
+    }
     completion(written, nil);
 }
 
@@ -1628,7 +1860,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroReaderGroupSubIdentifier"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AppleAliroReaderGroupSubIdentifier"];
+    }
     completion(written, nil);
 }
 
@@ -1652,7 +1887,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroExpeditedTransactionSupportedProtocolVersions"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AppleAliroExpeditedTransactionSupportedProtocolVersions"];
+    }
     completion(written, nil);
 }
 
@@ -1676,7 +1914,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroGroupResolvingKey"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AppleAliroGroupResolvingKey"];
+    }
     completion(written, nil);
 }
 
@@ -1700,7 +1941,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroSupportedBLEUWBProtocolVersions"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AppleAliroSupportedBLEUWBProtocolVersions"];
+    }
     completion(written, nil);
 }
 
@@ -1724,7 +1968,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AppleAliroBLEAdvertisingVersion"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AppleAliroBLEAdvertisingVersion"];
+    }
     completion(written, nil);
 }
 
@@ -1748,7 +1995,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AppleNumberOfAliroCredentialIssuerKeysSupported"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AppleNumberOfAliroCredentialIssuerKeysSupported"];
+    }
     completion(written, nil);
 }
 
@@ -1772,7 +2022,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterDoorLock charon_port_values][@"AppleNumberOfAliroEndpointKeysSupported"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AppleNumberOfAliroEndpointKeysSupported"];
+    }
     completion(written, nil);
 }
 

@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 69 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 69 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRBaseClusterThermostat
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterThermostat class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -92,7 +96,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"LocalTemperature"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LocalTemperature"];
+    }
     completion(written, nil);
 }
 
@@ -116,7 +123,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"OutdoorTemperature"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"OutdoorTemperature"];
+    }
     completion(written, nil);
 }
 
@@ -140,7 +150,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"Occupancy"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Occupancy"];
+    }
     completion(written, nil);
 }
 
@@ -164,7 +177,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"AbsMinHeatSetpointLimit"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AbsMinHeatSetpointLimit"];
+    }
     completion(written, nil);
 }
 
@@ -188,7 +204,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"AbsMaxHeatSetpointLimit"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AbsMaxHeatSetpointLimit"];
+    }
     completion(written, nil);
 }
 
@@ -212,7 +231,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"AbsMinCoolSetpointLimit"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AbsMinCoolSetpointLimit"];
+    }
     completion(written, nil);
 }
 
@@ -236,7 +258,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"AbsMaxCoolSetpointLimit"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AbsMaxCoolSetpointLimit"];
+    }
     completion(written, nil);
 }
 
@@ -260,7 +285,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"PICoolingDemand"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PICoolingDemand"];
+    }
     completion(written, nil);
 }
 
@@ -284,7 +312,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"PIHeatingDemand"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PIHeatingDemand"];
+    }
     completion(written, nil);
 }
 
@@ -308,13 +339,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"HVACSystemTypeConfiguration"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"HVACSystemTypeConfiguration"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeHVACSystemTypeConfigurationWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"HVACSystemTypeConfiguration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"HVACSystemTypeConfiguration"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -322,7 +358,9 @@
 
 - (void)writeAttributeHVACSystemTypeConfigurationWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"HVACSystemTypeConfiguration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"HVACSystemTypeConfiguration"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -348,13 +386,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"LocalTemperatureCalibration"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LocalTemperatureCalibration"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeLocalTemperatureCalibrationWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"LocalTemperatureCalibration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalTemperatureCalibration"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -362,7 +405,9 @@
 
 - (void)writeAttributeLocalTemperatureCalibrationWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"LocalTemperatureCalibration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalTemperatureCalibration"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -388,13 +433,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"OccupiedCoolingSetpoint"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"OccupiedCoolingSetpoint"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeOccupiedCoolingSetpointWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"OccupiedCoolingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedCoolingSetpoint"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -402,7 +452,9 @@
 
 - (void)writeAttributeOccupiedCoolingSetpointWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"OccupiedCoolingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedCoolingSetpoint"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -428,13 +480,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"OccupiedHeatingSetpoint"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"OccupiedHeatingSetpoint"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeOccupiedHeatingSetpointWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"OccupiedHeatingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedHeatingSetpoint"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -442,7 +499,9 @@
 
 - (void)writeAttributeOccupiedHeatingSetpointWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"OccupiedHeatingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedHeatingSetpoint"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -468,13 +527,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedCoolingSetpoint"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"UnoccupiedCoolingSetpoint"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeUnoccupiedCoolingSetpointWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedCoolingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedCoolingSetpoint"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -482,7 +546,9 @@
 
 - (void)writeAttributeUnoccupiedCoolingSetpointWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedCoolingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedCoolingSetpoint"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -508,13 +574,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedHeatingSetpoint"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"UnoccupiedHeatingSetpoint"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeUnoccupiedHeatingSetpointWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedHeatingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedHeatingSetpoint"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -522,7 +593,9 @@
 
 - (void)writeAttributeUnoccupiedHeatingSetpointWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedHeatingSetpoint"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedHeatingSetpoint"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -548,13 +621,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"MinHeatSetpointLimit"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MinHeatSetpointLimit"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeMinHeatSetpointLimitWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"MinHeatSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinHeatSetpointLimit"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -562,7 +640,9 @@
 
 - (void)writeAttributeMinHeatSetpointLimitWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"MinHeatSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinHeatSetpointLimit"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -588,13 +668,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"MaxHeatSetpointLimit"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MaxHeatSetpointLimit"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeMaxHeatSetpointLimitWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"MaxHeatSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxHeatSetpointLimit"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -602,7 +687,9 @@
 
 - (void)writeAttributeMaxHeatSetpointLimitWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"MaxHeatSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxHeatSetpointLimit"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -628,13 +715,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"MinCoolSetpointLimit"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MinCoolSetpointLimit"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeMinCoolSetpointLimitWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"MinCoolSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinCoolSetpointLimit"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -642,7 +734,9 @@
 
 - (void)writeAttributeMinCoolSetpointLimitWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"MinCoolSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinCoolSetpointLimit"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -668,13 +762,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"MaxCoolSetpointLimit"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MaxCoolSetpointLimit"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeMaxCoolSetpointLimitWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"MaxCoolSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxCoolSetpointLimit"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -682,7 +781,9 @@
 
 - (void)writeAttributeMaxCoolSetpointLimitWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"MaxCoolSetpointLimit"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MaxCoolSetpointLimit"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -708,13 +809,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"MinSetpointDeadBand"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MinSetpointDeadBand"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeMinSetpointDeadBandWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"MinSetpointDeadBand"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinSetpointDeadBand"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -722,7 +828,9 @@
 
 - (void)writeAttributeMinSetpointDeadBandWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"MinSetpointDeadBand"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MinSetpointDeadBand"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -748,13 +856,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"RemoteSensing"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RemoteSensing"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeRemoteSensingWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"RemoteSensing"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RemoteSensing"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -762,7 +875,9 @@
 
 - (void)writeAttributeRemoteSensingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"RemoteSensing"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RemoteSensing"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -788,13 +903,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ControlSequenceOfOperation"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ControlSequenceOfOperation"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeControlSequenceOfOperationWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ControlSequenceOfOperation"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ControlSequenceOfOperation"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -802,7 +922,9 @@
 
 - (void)writeAttributeControlSequenceOfOperationWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ControlSequenceOfOperation"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ControlSequenceOfOperation"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -828,13 +950,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"SystemMode"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SystemMode"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeSystemModeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"SystemMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SystemMode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -842,7 +969,9 @@
 
 - (void)writeAttributeSystemModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"SystemMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SystemMode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -868,7 +997,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ThermostatRunningMode"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ThermostatRunningMode"];
+    }
     completion(written, nil);
 }
 
@@ -892,7 +1024,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"StartOfWeek"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"StartOfWeek"];
+    }
     completion(written, nil);
 }
 
@@ -916,7 +1051,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"NumberOfWeeklyTransitions"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfWeeklyTransitions"];
+    }
     completion(written, nil);
 }
 
@@ -940,7 +1078,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"NumberOfDailyTransitions"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfDailyTransitions"];
+    }
     completion(written, nil);
 }
 
@@ -964,13 +1105,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"TemperatureSetpointHold"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TemperatureSetpointHold"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeTemperatureSetpointHoldWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"TemperatureSetpointHold"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHold"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -978,7 +1124,9 @@
 
 - (void)writeAttributeTemperatureSetpointHoldWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"TemperatureSetpointHold"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHold"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1004,13 +1152,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"TemperatureSetpointHoldDuration"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TemperatureSetpointHoldDuration"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeTemperatureSetpointHoldDurationWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"TemperatureSetpointHoldDuration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHoldDuration"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1018,7 +1171,9 @@
 
 - (void)writeAttributeTemperatureSetpointHoldDurationWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"TemperatureSetpointHoldDuration"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TemperatureSetpointHoldDuration"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1044,13 +1199,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ThermostatProgrammingOperationMode"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ThermostatProgrammingOperationMode"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeThermostatProgrammingOperationModeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ThermostatProgrammingOperationMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ThermostatProgrammingOperationMode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1058,7 +1218,9 @@
 
 - (void)writeAttributeThermostatProgrammingOperationModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ThermostatProgrammingOperationMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ThermostatProgrammingOperationMode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1084,7 +1246,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ThermostatRunningState"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ThermostatRunningState"];
+    }
     completion(written, nil);
 }
 
@@ -1108,7 +1273,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"SetpointChangeSource"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SetpointChangeSource"];
+    }
     completion(written, nil);
 }
 
@@ -1132,7 +1300,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"SetpointChangeAmount"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SetpointChangeAmount"];
+    }
     completion(written, nil);
 }
 
@@ -1156,7 +1327,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"SetpointChangeSourceTimestamp"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SetpointChangeSourceTimestamp"];
+    }
     completion(written, nil);
 }
 
@@ -1180,13 +1354,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"OccupiedSetback"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"OccupiedSetback"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeOccupiedSetbackWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"OccupiedSetback"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedSetback"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1194,7 +1373,9 @@
 
 - (void)writeAttributeOccupiedSetbackWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"OccupiedSetback"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OccupiedSetback"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1220,7 +1401,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"OccupiedSetbackMin"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"OccupiedSetbackMin"];
+    }
     completion(written, nil);
 }
 
@@ -1244,7 +1428,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"OccupiedSetbackMax"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"OccupiedSetbackMax"];
+    }
     completion(written, nil);
 }
 
@@ -1268,13 +1455,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedSetback"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"UnoccupiedSetback"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeUnoccupiedSetbackWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedSetback"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedSetback"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1282,7 +1474,9 @@
 
 - (void)writeAttributeUnoccupiedSetbackWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedSetback"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnoccupiedSetback"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1308,7 +1502,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedSetbackMin"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"UnoccupiedSetbackMin"];
+    }
     completion(written, nil);
 }
 
@@ -1332,7 +1529,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"UnoccupiedSetbackMax"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"UnoccupiedSetbackMax"];
+    }
     completion(written, nil);
 }
 
@@ -1356,13 +1556,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"EmergencyHeatDelta"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"EmergencyHeatDelta"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeEmergencyHeatDeltaWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"EmergencyHeatDelta"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EmergencyHeatDelta"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1370,7 +1575,9 @@
 
 - (void)writeAttributeEmergencyHeatDeltaWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"EmergencyHeatDelta"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EmergencyHeatDelta"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1396,13 +1603,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ACType"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ACType"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeACTypeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACType"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1410,7 +1622,9 @@
 
 - (void)writeAttributeACTypeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACType"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1436,13 +1650,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ACCapacity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ACCapacity"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeACCapacityWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACCapacity"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacity"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1450,7 +1669,9 @@
 
 - (void)writeAttributeACCapacityWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACCapacity"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacity"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1476,13 +1697,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ACRefrigerantType"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ACRefrigerantType"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeACRefrigerantTypeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACRefrigerantType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACRefrigerantType"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1490,7 +1716,9 @@
 
 - (void)writeAttributeACRefrigerantTypeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACRefrigerantType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACRefrigerantType"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1516,13 +1744,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ACCompressorType"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ACCompressorType"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeACCompressorTypeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACCompressorType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCompressorType"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1530,7 +1763,9 @@
 
 - (void)writeAttributeACCompressorTypeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACCompressorType"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCompressorType"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1556,13 +1791,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ACErrorCode"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ACErrorCode"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeACErrorCodeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACErrorCode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACErrorCode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1570,7 +1810,9 @@
 
 - (void)writeAttributeACErrorCodeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACErrorCode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACErrorCode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1596,13 +1838,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ACLouverPosition"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ACLouverPosition"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeACLouverPositionWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACLouverPosition"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACLouverPosition"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1610,7 +1857,9 @@
 
 - (void)writeAttributeACLouverPositionWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACLouverPosition"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACLouverPosition"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1636,7 +1885,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ACCoilTemperature"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ACCoilTemperature"];
+    }
     completion(written, nil);
 }
 
@@ -1660,13 +1912,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ACCapacityformat"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ACCapacityformat"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeACCapacityformatWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACCapacityformat"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacityformat"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1674,7 +1931,9 @@
 
 - (void)writeAttributeACCapacityformatWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"ACCapacityformat"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ACCapacityformat"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1700,7 +1959,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"PresetTypes"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PresetTypes"];
+    }
     completion(written, nil);
 }
 
@@ -1724,7 +1986,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ScheduleTypes"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ScheduleTypes"];
+    }
     completion(written, nil);
 }
 
@@ -1748,7 +2013,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"NumberOfPresets"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfPresets"];
+    }
     completion(written, nil);
 }
 
@@ -1772,7 +2040,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"NumberOfSchedules"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfSchedules"];
+    }
     completion(written, nil);
 }
 
@@ -1796,7 +2067,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"NumberOfScheduleTransitions"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfScheduleTransitions"];
+    }
     completion(written, nil);
 }
 
@@ -1820,7 +2094,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"NumberOfScheduleTransitionPerDay"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NumberOfScheduleTransitionPerDay"];
+    }
     completion(written, nil);
 }
 
@@ -1844,7 +2121,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ActivePresetHandle"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ActivePresetHandle"];
+    }
     completion(written, nil);
 }
 
@@ -1868,7 +2148,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ActiveScheduleHandle"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ActiveScheduleHandle"];
+    }
     completion(written, nil);
 }
 
@@ -1892,13 +2175,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"Presets"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Presets"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributePresetsWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"Presets"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Presets"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1906,7 +2194,9 @@
 
 - (void)writeAttributePresetsWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"Presets"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Presets"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1932,13 +2222,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"Schedules"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Schedules"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeSchedulesWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"Schedules"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Schedules"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1946,7 +2241,9 @@
 
 - (void)writeAttributeSchedulesWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterThermostat charon_port_values][@"Schedules"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Schedules"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1972,7 +2269,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"SetpointHoldExpiryTimestamp"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SetpointHoldExpiryTimestamp"];
+    }
     completion(written, nil);
 }
 
@@ -1996,7 +2296,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"MaxThermostatSuggestions"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MaxThermostatSuggestions"];
+    }
     completion(written, nil);
 }
 
@@ -2020,7 +2323,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ThermostatSuggestions"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ThermostatSuggestions"];
+    }
     completion(written, nil);
 }
 
@@ -2044,7 +2350,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"CurrentThermostatSuggestion"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"CurrentThermostatSuggestion"];
+    }
     completion(written, nil);
 }
 
@@ -2068,7 +2377,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ThermostatSuggestionNotFollowingReason"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ThermostatSuggestionNotFollowingReason"];
+    }
     completion(written, nil);
 }
 
@@ -2092,7 +2404,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"GeneratedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneratedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -2116,7 +2431,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"AcceptedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AcceptedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -2140,7 +2458,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"AttributeList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttributeList"];
+    }
     completion(written, nil);
 }
 
@@ -2164,7 +2485,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"FeatureMap"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FeatureMap"];
+    }
     completion(written, nil);
 }
 
@@ -2188,7 +2512,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterThermostat charon_port_values][@"ClusterRevision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterRevision"];
+    }
     completion(written, nil);
 }
 

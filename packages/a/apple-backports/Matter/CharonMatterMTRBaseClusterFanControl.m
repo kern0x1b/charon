@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 17 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 17 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRBaseClusterFanControl
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterFanControl class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -92,13 +96,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"FanMode"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FanMode"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeFanModeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"FanMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FanMode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -106,7 +115,9 @@
 
 - (void)writeAttributeFanModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"FanMode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FanMode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -132,13 +143,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"FanModeSequence"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FanModeSequence"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeFanModeSequenceWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"FanModeSequence"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FanModeSequence"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -146,7 +162,9 @@
 
 - (void)writeAttributeFanModeSequenceWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"FanModeSequence"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FanModeSequence"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -172,13 +190,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"PercentSetting"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PercentSetting"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributePercentSettingWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"PercentSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PercentSetting"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -186,7 +209,9 @@
 
 - (void)writeAttributePercentSettingWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"PercentSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"PercentSetting"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -212,7 +237,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"PercentCurrent"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PercentCurrent"];
+    }
     completion(written, nil);
 }
 
@@ -236,7 +264,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"SpeedMax"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SpeedMax"];
+    }
     completion(written, nil);
 }
 
@@ -260,13 +291,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"SpeedSetting"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SpeedSetting"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeSpeedSettingWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"SpeedSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeedSetting"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -274,7 +310,9 @@
 
 - (void)writeAttributeSpeedSettingWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"SpeedSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeedSetting"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -300,7 +338,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"SpeedCurrent"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SpeedCurrent"];
+    }
     completion(written, nil);
 }
 
@@ -324,7 +365,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"RockSupport"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RockSupport"];
+    }
     completion(written, nil);
 }
 
@@ -348,13 +392,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"RockSetting"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RockSetting"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeRockSettingWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"RockSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RockSetting"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -362,7 +411,9 @@
 
 - (void)writeAttributeRockSettingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"RockSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RockSetting"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -388,7 +439,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"WindSupport"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WindSupport"];
+    }
     completion(written, nil);
 }
 
@@ -412,13 +466,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"WindSetting"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WindSetting"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeWindSettingWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"WindSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WindSetting"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -426,7 +485,9 @@
 
 - (void)writeAttributeWindSettingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"WindSetting"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WindSetting"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -452,13 +513,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"AirflowDirection"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AirflowDirection"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeAirflowDirectionWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"AirflowDirection"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"AirflowDirection"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -466,7 +532,9 @@
 
 - (void)writeAttributeAirflowDirectionWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterFanControl charon_port_values][@"AirflowDirection"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"AirflowDirection"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -492,7 +560,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"GeneratedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneratedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -516,7 +587,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"AcceptedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AcceptedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -540,7 +614,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"AttributeList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttributeList"];
+    }
     completion(written, nil);
 }
 
@@ -564,7 +641,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"FeatureMap"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FeatureMap"];
+    }
     completion(written, nil);
 }
 
@@ -588,7 +668,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterFanControl charon_port_values][@"ClusterRevision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterRevision"];
+    }
     completion(written, nil);
 }
 

@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 15 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 15 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -33,6 +34,7 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
@@ -54,17 +56,19 @@
 @synthesize TiltMinValues = _TiltMinValues;
 @synthesize ZoomMaxValues = _ZoomMaxValues;
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterCameraAVSettingsUserLevelManagement class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -99,7 +103,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"MPTZPosition"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MPTZPosition"];
+    }
     completion(written, nil);
 }
 
@@ -123,7 +130,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"MaxPresets"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MaxPresets"];
+    }
     completion(written, nil);
 }
 
@@ -147,7 +157,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"MPTZPresets"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MPTZPresets"];
+    }
     completion(written, nil);
 }
 
@@ -171,7 +184,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"DPTZStreams"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"DPTZStreams"];
+    }
     completion(written, nil);
 }
 
@@ -195,7 +211,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"ZoomMax"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ZoomMax"];
+    }
     completion(written, nil);
 }
 
@@ -219,7 +238,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"TiltMin"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TiltMin"];
+    }
     completion(written, nil);
 }
 
@@ -243,7 +265,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"TiltMax"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TiltMax"];
+    }
     completion(written, nil);
 }
 
@@ -267,7 +292,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"PanMin"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PanMin"];
+    }
     completion(written, nil);
 }
 
@@ -291,7 +319,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"PanMax"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"PanMax"];
+    }
     completion(written, nil);
 }
 
@@ -315,7 +346,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"MovementState"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MovementState"];
+    }
     completion(written, nil);
 }
 
@@ -339,7 +373,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"GeneratedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneratedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -363,7 +400,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"AcceptedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AcceptedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -387,7 +427,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"AttributeList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttributeList"];
+    }
     completion(written, nil);
 }
 
@@ -411,7 +454,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"FeatureMap"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FeatureMap"];
+    }
     completion(written, nil);
 }
 
@@ -435,7 +481,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterCameraAVSettingsUserLevelManagement charon_port_values][@"ClusterRevision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterRevision"];
+    }
     completion(written, nil);
 }
 

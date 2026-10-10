@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterColorControl
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterColorControl class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,81 +94,105 @@
 - (NSDictionary<NSString *, id> *)readAttributeCurrentHueWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"CurrentHue"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentHue"];
+    }
 }
 
 // CurrentSaturation, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentSaturationWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"CurrentSaturation"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentSaturation"];
+    }
 }
 
 // RemainingTime, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRemainingTimeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"RemainingTime"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RemainingTime"];
+    }
 }
 
 // CurrentX, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentXWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"CurrentX"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentX"];
+    }
 }
 
 // CurrentY, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentYWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"CurrentY"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentY"];
+    }
 }
 
 // DriftCompensation, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeDriftCompensationWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"DriftCompensation"];
+    @synchronized (self) {
+        return [self charon_port_values][@"DriftCompensation"];
+    }
 }
 
 // CompensationText, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCompensationTextWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"CompensationText"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CompensationText"];
+    }
 }
 
 // ColorTemperatureMireds, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeColorTemperatureMiredsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorTemperatureMireds"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorTemperatureMireds"];
+    }
 }
 
 // ColorMode, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeColorModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorMode"];
+    }
 }
 
 // Options, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOptionsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Options"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Options"];
+    }
 }
 
 - (void)writeAttributeOptionsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"Options"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Options"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeOptionsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"Options"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Options"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -173,146 +201,188 @@
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfPrimariesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"NumberOfPrimaries"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfPrimaries"];
+    }
 }
 
 // Primary1X, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary1XWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary1X"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary1X"];
+    }
 }
 
 // Primary1Y, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary1YWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary1Y"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary1Y"];
+    }
 }
 
 // Primary1Intensity, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary1IntensityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary1Intensity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary1Intensity"];
+    }
 }
 
 // Primary2X, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary2XWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary2X"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary2X"];
+    }
 }
 
 // Primary2Y, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary2YWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary2Y"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary2Y"];
+    }
 }
 
 // Primary2Intensity, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary2IntensityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary2Intensity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary2Intensity"];
+    }
 }
 
 // Primary3X, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary3XWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary3X"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary3X"];
+    }
 }
 
 // Primary3Y, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary3YWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary3Y"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary3Y"];
+    }
 }
 
 // Primary3Intensity, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary3IntensityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary3Intensity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary3Intensity"];
+    }
 }
 
 // Primary4X, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary4XWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary4X"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary4X"];
+    }
 }
 
 // Primary4Y, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary4YWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary4Y"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary4Y"];
+    }
 }
 
 // Primary4Intensity, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary4IntensityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary4Intensity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary4Intensity"];
+    }
 }
 
 // Primary5X, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary5XWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary5X"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary5X"];
+    }
 }
 
 // Primary5Y, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary5YWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary5Y"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary5Y"];
+    }
 }
 
 // Primary5Intensity, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary5IntensityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary5Intensity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary5Intensity"];
+    }
 }
 
 // Primary6X, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary6XWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary6X"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary6X"];
+    }
 }
 
 // Primary6Y, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary6YWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary6Y"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary6Y"];
+    }
 }
 
 // Primary6Intensity, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePrimary6IntensityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"Primary6Intensity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Primary6Intensity"];
+    }
 }
 
 // WhitePointX, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeWhitePointXWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"WhitePointX"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WhitePointX"];
+    }
 }
 
 - (void)writeAttributeWhitePointXWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary
                      expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"WhitePointX"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"WhitePointX"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
@@ -320,7 +390,9 @@
                      expectedValueInterval:(NSNumber *)expectedValueIntervalMs
                                     params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"WhitePointX"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"WhitePointX"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -329,13 +401,17 @@
 - (NSDictionary<NSString *, id> *)readAttributeWhitePointYWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"WhitePointY"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WhitePointY"];
+    }
 }
 
 - (void)writeAttributeWhitePointYWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary
                      expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"WhitePointY"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"WhitePointY"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
@@ -343,7 +419,9 @@
                      expectedValueInterval:(NSNumber *)expectedValueIntervalMs
                                     params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"WhitePointY"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"WhitePointY"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -352,13 +430,17 @@
 - (NSDictionary<NSString *, id> *)readAttributeColorPointRXWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorPointRX"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorPointRX"];
+    }
 }
 
 - (void)writeAttributeColorPointRXWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointRX"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRX"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
@@ -366,7 +448,9 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
                                      params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointRX"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRX"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -375,13 +459,17 @@
 - (NSDictionary<NSString *, id> *)readAttributeColorPointRYWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorPointRY"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorPointRY"];
+    }
 }
 
 - (void)writeAttributeColorPointRYWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointRY"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRY"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
@@ -389,7 +477,9 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
                                      params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointRY"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRY"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -398,13 +488,17 @@
 - (NSDictionary<NSString *, id> *)readAttributeColorPointRIntensityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorPointRIntensity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorPointRIntensity"];
+    }
 }
 
 - (void)writeAttributeColorPointRIntensityWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointRIntensity"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRIntensity"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
@@ -412,7 +506,9 @@
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
                                              params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointRIntensity"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointRIntensity"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -421,13 +517,17 @@
 - (NSDictionary<NSString *, id> *)readAttributeColorPointGXWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorPointGX"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorPointGX"];
+    }
 }
 
 - (void)writeAttributeColorPointGXWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointGX"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGX"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
@@ -435,7 +535,9 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
                                      params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointGX"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGX"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -444,13 +546,17 @@
 - (NSDictionary<NSString *, id> *)readAttributeColorPointGYWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorPointGY"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorPointGY"];
+    }
 }
 
 - (void)writeAttributeColorPointGYWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointGY"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGY"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
@@ -458,7 +564,9 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
                                      params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointGY"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGY"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -467,13 +575,17 @@
 - (NSDictionary<NSString *, id> *)readAttributeColorPointGIntensityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorPointGIntensity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorPointGIntensity"];
+    }
 }
 
 - (void)writeAttributeColorPointGIntensityWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointGIntensity"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGIntensity"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
@@ -481,7 +593,9 @@
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
                                              params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointGIntensity"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointGIntensity"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -490,13 +604,17 @@
 - (NSDictionary<NSString *, id> *)readAttributeColorPointBXWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorPointBX"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorPointBX"];
+    }
 }
 
 - (void)writeAttributeColorPointBXWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointBX"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBX"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
@@ -504,7 +622,9 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
                                      params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointBX"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBX"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -513,13 +633,17 @@
 - (NSDictionary<NSString *, id> *)readAttributeColorPointBYWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorPointBY"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorPointBY"];
+    }
 }
 
 - (void)writeAttributeColorPointBYWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointBY"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBY"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
@@ -527,7 +651,9 @@
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
                                      params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointBY"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBY"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -536,13 +662,17 @@
 - (NSDictionary<NSString *, id> *)readAttributeColorPointBIntensityWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorPointBIntensity"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorPointBIntensity"];
+    }
 }
 
 - (void)writeAttributeColorPointBIntensityWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointBIntensity"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBIntensity"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
@@ -550,7 +680,9 @@
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
                                              params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"ColorPointBIntensity"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ColorPointBIntensity"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -559,95 +691,123 @@
 - (NSDictionary<NSString *, id> *)readAttributeEnhancedCurrentHueWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"EnhancedCurrentHue"];
+    @synchronized (self) {
+        return [self charon_port_values][@"EnhancedCurrentHue"];
+    }
 }
 
 // EnhancedColorMode, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeEnhancedColorModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"EnhancedColorMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"EnhancedColorMode"];
+    }
 }
 
 // ColorLoopActive, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeColorLoopActiveWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorLoopActive"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorLoopActive"];
+    }
 }
 
 // ColorLoopDirection, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeColorLoopDirectionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorLoopDirection"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorLoopDirection"];
+    }
 }
 
 // ColorLoopTime, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeColorLoopTimeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorLoopTime"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorLoopTime"];
+    }
 }
 
 // ColorLoopStartEnhancedHue, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeColorLoopStartEnhancedHueWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorLoopStartEnhancedHue"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorLoopStartEnhancedHue"];
+    }
 }
 
 // ColorLoopStoredEnhancedHue, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeColorLoopStoredEnhancedHueWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorLoopStoredEnhancedHue"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorLoopStoredEnhancedHue"];
+    }
 }
 
 // ColorCapabilities, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeColorCapabilitiesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorCapabilities"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorCapabilities"];
+    }
 }
 
 // ColorTempPhysicalMinMireds, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeColorTempPhysicalMinMiredsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorTempPhysicalMinMireds"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorTempPhysicalMinMireds"];
+    }
 }
 
 // ColorTempPhysicalMaxMireds, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeColorTempPhysicalMaxMiredsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ColorTempPhysicalMaxMireds"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ColorTempPhysicalMaxMireds"];
+    }
 }
 
 // CoupleColorTempToLevelMinMireds, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCoupleColorTempToLevelMinMiredsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"CoupleColorTempToLevelMinMireds"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CoupleColorTempToLevelMinMireds"];
+    }
 }
 
 // StartUpColorTemperatureMireds, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeStartUpColorTemperatureMiredsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"StartUpColorTemperatureMireds"];
+    @synchronized (self) {
+        return [self charon_port_values][@"StartUpColorTemperatureMireds"];
+    }
 }
 
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterColorControl charon_port_values][@"StartUpColorTemperatureMireds"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpColorTemperatureMireds"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterColorControl charon_port_values][@"StartUpColorTemperatureMireds"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"StartUpColorTemperatureMireds"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -656,35 +816,45 @@
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterColorControl charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 // moveToHue. It answers: there is nothing to reach on a release with no fabric.

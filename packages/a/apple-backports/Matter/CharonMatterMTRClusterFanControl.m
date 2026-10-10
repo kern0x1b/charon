@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterFanControl
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterFanControl class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,18 +94,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeFanModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"FanMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FanMode"];
+    }
 }
 
 - (void)writeAttributeFanModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterFanControl charon_port_values][@"FanMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"FanMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeFanModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterFanControl charon_port_values][@"FanMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"FanMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -110,18 +120,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeFanModeSequenceWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"FanModeSequence"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FanModeSequence"];
+    }
 }
 
 - (void)writeAttributeFanModeSequenceWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterFanControl charon_port_values][@"FanModeSequence"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"FanModeSequence"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeFanModeSequenceWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterFanControl charon_port_values][@"FanModeSequence"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"FanModeSequence"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -130,18 +146,24 @@
 - (NSDictionary<NSString *, id> *)readAttributePercentSettingWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"PercentSetting"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PercentSetting"];
+    }
 }
 
 - (void)writeAttributePercentSettingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterFanControl charon_port_values][@"PercentSetting"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PercentSetting"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributePercentSettingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterFanControl charon_port_values][@"PercentSetting"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"PercentSetting"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -150,32 +172,42 @@
 - (NSDictionary<NSString *, id> *)readAttributePercentCurrentWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"PercentCurrent"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PercentCurrent"];
+    }
 }
 
 // SpeedMax, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSpeedMaxWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"SpeedMax"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SpeedMax"];
+    }
 }
 
 // SpeedSetting, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSpeedSettingWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"SpeedSetting"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SpeedSetting"];
+    }
 }
 
 - (void)writeAttributeSpeedSettingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterFanControl charon_port_values][@"SpeedSetting"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeedSetting"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeSpeedSettingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterFanControl charon_port_values][@"SpeedSetting"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SpeedSetting"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -184,32 +216,42 @@
 - (NSDictionary<NSString *, id> *)readAttributeSpeedCurrentWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"SpeedCurrent"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SpeedCurrent"];
+    }
 }
 
 // RockSupport, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRockSupportWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"RockSupport"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RockSupport"];
+    }
 }
 
 // RockSetting, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeRockSettingWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"RockSetting"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RockSetting"];
+    }
 }
 
 - (void)writeAttributeRockSettingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterFanControl charon_port_values][@"RockSetting"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"RockSetting"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeRockSettingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterFanControl charon_port_values][@"RockSetting"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"RockSetting"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -218,25 +260,33 @@
 - (NSDictionary<NSString *, id> *)readAttributeWindSupportWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"WindSupport"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WindSupport"];
+    }
 }
 
 // WindSetting, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeWindSettingWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"WindSetting"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WindSetting"];
+    }
 }
 
 - (void)writeAttributeWindSettingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterFanControl charon_port_values][@"WindSetting"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"WindSetting"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeWindSettingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterFanControl charon_port_values][@"WindSetting"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"WindSetting"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -245,18 +295,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeAirflowDirectionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"AirflowDirection"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AirflowDirection"];
+    }
 }
 
 - (void)writeAttributeAirflowDirectionWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterFanControl charon_port_values][@"AirflowDirection"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"AirflowDirection"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeAirflowDirectionWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterFanControl charon_port_values][@"AirflowDirection"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"AirflowDirection"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -265,35 +321,45 @@
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterFanControl charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 // step. It answers: there is nothing to reach on a release with no fabric.

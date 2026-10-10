@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 7 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 7 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -33,6 +34,7 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
@@ -46,17 +48,19 @@
 @synthesize SelectedDrynessLevelValues = _SelectedDrynessLevelValues;
 @synthesize SupportedDrynessLevelsValues = _SupportedDrynessLevelsValues;
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterLaundryDryerControls class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -91,7 +95,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterLaundryDryerControls charon_port_values][@"SupportedDrynessLevels"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SupportedDrynessLevels"];
+    }
     completion(written, nil);
 }
 
@@ -115,13 +122,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterLaundryDryerControls charon_port_values][@"SelectedDrynessLevel"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"SelectedDrynessLevel"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeSelectedDrynessLevelWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterLaundryDryerControls charon_port_values][@"SelectedDrynessLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SelectedDrynessLevel"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -129,7 +141,9 @@
 
 - (void)writeAttributeSelectedDrynessLevelWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterLaundryDryerControls charon_port_values][@"SelectedDrynessLevel"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"SelectedDrynessLevel"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -155,7 +169,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterLaundryDryerControls charon_port_values][@"GeneratedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneratedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -179,7 +196,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterLaundryDryerControls charon_port_values][@"AcceptedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AcceptedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -203,7 +223,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterLaundryDryerControls charon_port_values][@"AttributeList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttributeList"];
+    }
     completion(written, nil);
 }
 
@@ -227,7 +250,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterLaundryDryerControls charon_port_values][@"FeatureMap"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FeatureMap"];
+    }
     completion(written, nil);
 }
 
@@ -251,7 +277,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterLaundryDryerControls charon_port_values][@"ClusterRevision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterRevision"];
+    }
     completion(written, nil);
 }
 

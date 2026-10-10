@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterDoorLock
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterDoorLock class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,46 +94,60 @@
 - (NSDictionary<NSString *, id> *)readAttributeLockStateWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"LockState"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LockState"];
+    }
 }
 
 // LockType, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeLockTypeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"LockType"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LockType"];
+    }
 }
 
 // ActuatorEnabled, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeActuatorEnabledWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"ActuatorEnabled"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ActuatorEnabled"];
+    }
 }
 
 // DoorState, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeDoorStateWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"DoorState"];
+    @synchronized (self) {
+        return [self charon_port_values][@"DoorState"];
+    }
 }
 
 // DoorOpenEvents, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeDoorOpenEventsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"DoorOpenEvents"];
+    @synchronized (self) {
+        return [self charon_port_values][@"DoorOpenEvents"];
+    }
 }
 
 - (void)writeAttributeDoorOpenEventsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"DoorOpenEvents"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorOpenEvents"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeDoorOpenEventsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"DoorOpenEvents"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorOpenEvents"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -138,18 +156,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeDoorClosedEventsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"DoorClosedEvents"];
+    @synchronized (self) {
+        return [self charon_port_values][@"DoorClosedEvents"];
+    }
 }
 
 - (void)writeAttributeDoorClosedEventsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"DoorClosedEvents"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorClosedEvents"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeDoorClosedEventsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"DoorClosedEvents"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"DoorClosedEvents"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -158,18 +182,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeOpenPeriodWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"OpenPeriod"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OpenPeriod"];
+    }
 }
 
 - (void)writeAttributeOpenPeriodWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"OpenPeriod"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OpenPeriod"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeOpenPeriodWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"OpenPeriod"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OpenPeriod"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -178,102 +208,132 @@
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfTotalUsersSupportedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"NumberOfTotalUsersSupported"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfTotalUsersSupported"];
+    }
 }
 
 // NumberOfPINUsersSupported, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfPINUsersSupportedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"NumberOfPINUsersSupported"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfPINUsersSupported"];
+    }
 }
 
 // NumberOfRFIDUsersSupported, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfRFIDUsersSupportedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"NumberOfRFIDUsersSupported"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfRFIDUsersSupported"];
+    }
 }
 
 // NumberOfWeekDaySchedulesSupportedPerUser, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfWeekDaySchedulesSupportedPerUserWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"NumberOfWeekDaySchedulesSupportedPerUser"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfWeekDaySchedulesSupportedPerUser"];
+    }
 }
 
 // NumberOfYearDaySchedulesSupportedPerUser, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfYearDaySchedulesSupportedPerUserWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"NumberOfYearDaySchedulesSupportedPerUser"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfYearDaySchedulesSupportedPerUser"];
+    }
 }
 
 // NumberOfHolidaySchedulesSupported, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfHolidaySchedulesSupportedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"NumberOfHolidaySchedulesSupported"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfHolidaySchedulesSupported"];
+    }
 }
 
 // MaxPINCodeLength, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxPINCodeLengthWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"MaxPINCodeLength"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxPINCodeLength"];
+    }
 }
 
 // MinPINCodeLength, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMinPINCodeLengthWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"MinPINCodeLength"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinPINCodeLength"];
+    }
 }
 
 // MaxRFIDCodeLength, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMaxRFIDCodeLengthWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"MaxRFIDCodeLength"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MaxRFIDCodeLength"];
+    }
 }
 
 // MinRFIDCodeLength, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeMinRFIDCodeLengthWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"MinRFIDCodeLength"];
+    @synchronized (self) {
+        return [self charon_port_values][@"MinRFIDCodeLength"];
+    }
 }
 
 // CredentialRulesSupport, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCredentialRulesSupportWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"CredentialRulesSupport"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CredentialRulesSupport"];
+    }
 }
 
 // NumberOfCredentialsSupportedPerUser, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfCredentialsSupportedPerUserWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"NumberOfCredentialsSupportedPerUser"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfCredentialsSupportedPerUser"];
+    }
 }
 
 // Language, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeLanguageWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"Language"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Language"];
+    }
 }
 
 - (void)writeAttributeLanguageWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"Language"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Language"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLanguageWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"Language"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Language"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -282,18 +342,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeLEDSettingsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"LEDSettings"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LEDSettings"];
+    }
 }
 
 - (void)writeAttributeLEDSettingsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"LEDSettings"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LEDSettings"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLEDSettingsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"LEDSettings"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LEDSettings"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -302,18 +368,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeAutoRelockTimeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AutoRelockTime"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AutoRelockTime"];
+    }
 }
 
 - (void)writeAttributeAutoRelockTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"AutoRelockTime"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"AutoRelockTime"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeAutoRelockTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"AutoRelockTime"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"AutoRelockTime"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -322,18 +394,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeSoundVolumeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"SoundVolume"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SoundVolume"];
+    }
 }
 
 - (void)writeAttributeSoundVolumeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"SoundVolume"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SoundVolume"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeSoundVolumeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"SoundVolume"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SoundVolume"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -342,18 +420,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeOperatingModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"OperatingMode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OperatingMode"];
+    }
 }
 
 - (void)writeAttributeOperatingModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"OperatingMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OperatingMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeOperatingModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"OperatingMode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"OperatingMode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -362,32 +446,42 @@
 - (NSDictionary<NSString *, id> *)readAttributeSupportedOperatingModesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"SupportedOperatingModes"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SupportedOperatingModes"];
+    }
 }
 
 // DefaultConfigurationRegister, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeDefaultConfigurationRegisterWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"DefaultConfigurationRegister"];
+    @synchronized (self) {
+        return [self charon_port_values][@"DefaultConfigurationRegister"];
+    }
 }
 
 // EnableLocalProgramming, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeEnableLocalProgrammingWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"EnableLocalProgramming"];
+    @synchronized (self) {
+        return [self charon_port_values][@"EnableLocalProgramming"];
+    }
 }
 
 - (void)writeAttributeEnableLocalProgrammingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"EnableLocalProgramming"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableLocalProgramming"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeEnableLocalProgrammingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"EnableLocalProgramming"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableLocalProgramming"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -396,18 +490,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeEnableOneTouchLockingWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"EnableOneTouchLocking"];
+    @synchronized (self) {
+        return [self charon_port_values][@"EnableOneTouchLocking"];
+    }
 }
 
 - (void)writeAttributeEnableOneTouchLockingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"EnableOneTouchLocking"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableOneTouchLocking"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeEnableOneTouchLockingWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"EnableOneTouchLocking"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableOneTouchLocking"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -416,18 +516,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeEnableInsideStatusLEDWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"EnableInsideStatusLED"];
+    @synchronized (self) {
+        return [self charon_port_values][@"EnableInsideStatusLED"];
+    }
 }
 
 - (void)writeAttributeEnableInsideStatusLEDWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"EnableInsideStatusLED"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableInsideStatusLED"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeEnableInsideStatusLEDWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"EnableInsideStatusLED"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"EnableInsideStatusLED"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -436,18 +542,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeEnablePrivacyModeButtonWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"EnablePrivacyModeButton"];
+    @synchronized (self) {
+        return [self charon_port_values][@"EnablePrivacyModeButton"];
+    }
 }
 
 - (void)writeAttributeEnablePrivacyModeButtonWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"EnablePrivacyModeButton"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"EnablePrivacyModeButton"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeEnablePrivacyModeButtonWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"EnablePrivacyModeButton"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"EnablePrivacyModeButton"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -456,18 +568,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeLocalProgrammingFeaturesWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"LocalProgrammingFeatures"];
+    @synchronized (self) {
+        return [self charon_port_values][@"LocalProgrammingFeatures"];
+    }
 }
 
 - (void)writeAttributeLocalProgrammingFeaturesWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"LocalProgrammingFeatures"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalProgrammingFeatures"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeLocalProgrammingFeaturesWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"LocalProgrammingFeatures"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"LocalProgrammingFeatures"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -476,18 +594,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeWrongCodeEntryLimitWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"WrongCodeEntryLimit"];
+    @synchronized (self) {
+        return [self charon_port_values][@"WrongCodeEntryLimit"];
+    }
 }
 
 - (void)writeAttributeWrongCodeEntryLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"WrongCodeEntryLimit"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"WrongCodeEntryLimit"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeWrongCodeEntryLimitWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"WrongCodeEntryLimit"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"WrongCodeEntryLimit"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -496,18 +620,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeUserCodeTemporaryDisableTimeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"UserCodeTemporaryDisableTime"];
+    @synchronized (self) {
+        return [self charon_port_values][@"UserCodeTemporaryDisableTime"];
+    }
 }
 
 - (void)writeAttributeUserCodeTemporaryDisableTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"UserCodeTemporaryDisableTime"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UserCodeTemporaryDisableTime"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeUserCodeTemporaryDisableTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"UserCodeTemporaryDisableTime"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"UserCodeTemporaryDisableTime"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -516,18 +646,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeSendPINOverTheAirWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"SendPINOverTheAir"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SendPINOverTheAir"];
+    }
 }
 
 - (void)writeAttributeSendPINOverTheAirWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"SendPINOverTheAir"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SendPINOverTheAir"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeSendPINOverTheAirWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"SendPINOverTheAir"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"SendPINOverTheAir"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -536,18 +672,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeRequirePINforRemoteOperationWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"RequirePINforRemoteOperation"];
+    @synchronized (self) {
+        return [self charon_port_values][@"RequirePINforRemoteOperation"];
+    }
 }
 
 - (void)writeAttributeRequirePINforRemoteOperationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"RequirePINforRemoteOperation"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"RequirePINforRemoteOperation"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeRequirePINforRemoteOperationWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"RequirePINforRemoteOperation"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"RequirePINforRemoteOperation"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -556,18 +698,24 @@
 - (NSDictionary<NSString *, id> *)readAttributeExpiringUserTimeoutWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"ExpiringUserTimeout"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ExpiringUserTimeout"];
+    }
 }
 
 - (void)writeAttributeExpiringUserTimeoutWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterDoorLock charon_port_values][@"ExpiringUserTimeout"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ExpiringUserTimeout"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeExpiringUserTimeoutWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterDoorLock charon_port_values][@"ExpiringUserTimeout"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"ExpiringUserTimeout"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -576,161 +724,207 @@
 - (NSDictionary<NSString *, id> *)readAttributeAliroReaderVerificationKeyWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AliroReaderVerificationKey"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AliroReaderVerificationKey"];
+    }
 }
 
 // AliroReaderGroupIdentifier, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAliroReaderGroupIdentifierWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AliroReaderGroupIdentifier"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AliroReaderGroupIdentifier"];
+    }
 }
 
 // AliroReaderGroupSubIdentifier, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAliroReaderGroupSubIdentifierWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AliroReaderGroupSubIdentifier"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AliroReaderGroupSubIdentifier"];
+    }
 }
 
 // AliroExpeditedTransactionSupportedProtocolVersions, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAliroExpeditedTransactionSupportedProtocolVersionsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AliroExpeditedTransactionSupportedProtocolVersions"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AliroExpeditedTransactionSupportedProtocolVersions"];
+    }
 }
 
 // AliroGroupResolvingKey, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAliroGroupResolvingKeyWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AliroGroupResolvingKey"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AliroGroupResolvingKey"];
+    }
 }
 
 // AliroSupportedBLEUWBProtocolVersions, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAliroSupportedBLEUWBProtocolVersionsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AliroSupportedBLEUWBProtocolVersions"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AliroSupportedBLEUWBProtocolVersions"];
+    }
 }
 
 // AliroBLEAdvertisingVersion, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAliroBLEAdvertisingVersionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AliroBLEAdvertisingVersion"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AliroBLEAdvertisingVersion"];
+    }
 }
 
 // NumberOfAliroCredentialIssuerKeysSupported, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfAliroCredentialIssuerKeysSupportedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"NumberOfAliroCredentialIssuerKeysSupported"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfAliroCredentialIssuerKeysSupported"];
+    }
 }
 
 // NumberOfAliroEndpointKeysSupported, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfAliroEndpointKeysSupportedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"NumberOfAliroEndpointKeysSupported"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfAliroEndpointKeysSupported"];
+    }
 }
 
 // GeneratedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 // AppleAliroReaderVerificationKey, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAppleAliroReaderVerificationKeyWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AppleAliroReaderVerificationKey"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AppleAliroReaderVerificationKey"];
+    }
 }
 
 // AppleAliroReaderGroupIdentifier, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAppleAliroReaderGroupIdentifierWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AppleAliroReaderGroupIdentifier"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AppleAliroReaderGroupIdentifier"];
+    }
 }
 
 // AppleAliroReaderGroupSubIdentifier, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAppleAliroReaderGroupSubIdentifierWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AppleAliroReaderGroupSubIdentifier"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AppleAliroReaderGroupSubIdentifier"];
+    }
 }
 
 // AppleAliroExpeditedTransactionSupportedProtocolVersions, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAppleAliroExpeditedTransactionSupportedProtocolVersionsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AppleAliroExpeditedTransactionSupportedProtocolVersions"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AppleAliroExpeditedTransactionSupportedProtocolVersions"];
+    }
 }
 
 // AppleAliroGroupResolvingKey, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAppleAliroGroupResolvingKeyWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AppleAliroGroupResolvingKey"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AppleAliroGroupResolvingKey"];
+    }
 }
 
 // AppleAliroSupportedBLEUWBProtocolVersions, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAppleAliroSupportedBLEUWBProtocolVersionsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AppleAliroSupportedBLEUWBProtocolVersions"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AppleAliroSupportedBLEUWBProtocolVersions"];
+    }
 }
 
 // AppleAliroBLEAdvertisingVersion, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAppleAliroBLEAdvertisingVersionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AppleAliroBLEAdvertisingVersion"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AppleAliroBLEAdvertisingVersion"];
+    }
 }
 
 // AppleNumberOfAliroCredentialIssuerKeysSupported, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAppleNumberOfAliroCredentialIssuerKeysSupportedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AppleNumberOfAliroCredentialIssuerKeysSupported"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AppleNumberOfAliroCredentialIssuerKeysSupported"];
+    }
 }
 
 // AppleNumberOfAliroEndpointKeysSupported, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAppleNumberOfAliroEndpointKeysSupportedWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterDoorLock charon_port_values][@"AppleNumberOfAliroEndpointKeysSupported"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AppleNumberOfAliroEndpointKeysSupported"];
+    }
 }
 
 // lockDoor. It answers: there is nothing to reach on a release with no fabric.

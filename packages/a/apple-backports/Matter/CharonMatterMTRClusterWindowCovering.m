@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterWindowCovering
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterWindowCovering class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,158 +94,204 @@
 - (NSDictionary<NSString *, id> *)readAttributeTypeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"Type"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Type"];
+    }
 }
 
 // PhysicalClosedLimitLift, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePhysicalClosedLimitLiftWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"PhysicalClosedLimitLift"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PhysicalClosedLimitLift"];
+    }
 }
 
 // PhysicalClosedLimitTilt, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePhysicalClosedLimitTiltWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"PhysicalClosedLimitTilt"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PhysicalClosedLimitTilt"];
+    }
 }
 
 // CurrentPositionLift, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentPositionLiftWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"CurrentPositionLift"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentPositionLift"];
+    }
 }
 
 // CurrentPositionTilt, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentPositionTiltWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"CurrentPositionTilt"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentPositionTilt"];
+    }
 }
 
 // NumberOfActuationsLift, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfActuationsLiftWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"NumberOfActuationsLift"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfActuationsLift"];
+    }
 }
 
 // NumberOfActuationsTilt, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNumberOfActuationsTiltWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"NumberOfActuationsTilt"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NumberOfActuationsTilt"];
+    }
 }
 
 // ConfigStatus, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeConfigStatusWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"ConfigStatus"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ConfigStatus"];
+    }
 }
 
 // CurrentPositionLiftPercentage, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentPositionLiftPercentageWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"CurrentPositionLiftPercentage"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentPositionLiftPercentage"];
+    }
 }
 
 // CurrentPositionTiltPercentage, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentPositionTiltPercentageWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"CurrentPositionTiltPercentage"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentPositionTiltPercentage"];
+    }
 }
 
 // OperationalStatus, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeOperationalStatusWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"OperationalStatus"];
+    @synchronized (self) {
+        return [self charon_port_values][@"OperationalStatus"];
+    }
 }
 
 // TargetPositionLiftPercent100ths, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTargetPositionLiftPercent100thsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"TargetPositionLiftPercent100ths"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TargetPositionLiftPercent100ths"];
+    }
 }
 
 // TargetPositionTiltPercent100ths, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeTargetPositionTiltPercent100thsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"TargetPositionTiltPercent100ths"];
+    @synchronized (self) {
+        return [self charon_port_values][@"TargetPositionTiltPercent100ths"];
+    }
 }
 
 // EndProductType, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeEndProductTypeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"EndProductType"];
+    @synchronized (self) {
+        return [self charon_port_values][@"EndProductType"];
+    }
 }
 
 // CurrentPositionLiftPercent100ths, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentPositionLiftPercent100thsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"CurrentPositionLiftPercent100ths"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentPositionLiftPercent100ths"];
+    }
 }
 
 // CurrentPositionTiltPercent100ths, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeCurrentPositionTiltPercent100thsWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"CurrentPositionTiltPercent100ths"];
+    @synchronized (self) {
+        return [self charon_port_values][@"CurrentPositionTiltPercent100ths"];
+    }
 }
 
 // InstalledOpenLimitLift, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeInstalledOpenLimitLiftWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"InstalledOpenLimitLift"];
+    @synchronized (self) {
+        return [self charon_port_values][@"InstalledOpenLimitLift"];
+    }
 }
 
 // InstalledClosedLimitLift, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeInstalledClosedLimitLiftWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"InstalledClosedLimitLift"];
+    @synchronized (self) {
+        return [self charon_port_values][@"InstalledClosedLimitLift"];
+    }
 }
 
 // InstalledOpenLimitTilt, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeInstalledOpenLimitTiltWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"InstalledOpenLimitTilt"];
+    @synchronized (self) {
+        return [self charon_port_values][@"InstalledOpenLimitTilt"];
+    }
 }
 
 // InstalledClosedLimitTilt, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeInstalledClosedLimitTiltWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"InstalledClosedLimitTilt"];
+    @synchronized (self) {
+        return [self charon_port_values][@"InstalledClosedLimitTilt"];
+    }
 }
 
 // Mode, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeModeWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"Mode"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Mode"];
+    }
 }
 
 - (void)writeAttributeModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterWindowCovering charon_port_values][@"Mode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Mode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterWindowCovering charon_port_values][@"Mode"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"Mode"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -250,42 +300,54 @@
 - (NSDictionary<NSString *, id> *)readAttributeSafetyStatusWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"SafetyStatus"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SafetyStatus"];
+    }
 }
 
 // GeneratedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterWindowCovering charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 // upOrOpen. It answers: there is nothing to reach on a release with no fabric.

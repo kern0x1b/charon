@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 0 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRClusterBridgedDeviceBasicInformation
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRClusterBridgedDeviceBasicInformation class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -90,46 +94,60 @@
 - (NSDictionary<NSString *, id> *)readAttributeVendorNameWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"VendorName"];
+    @synchronized (self) {
+        return [self charon_port_values][@"VendorName"];
+    }
 }
 
 // VendorID, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeVendorIDWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"VendorID"];
+    @synchronized (self) {
+        return [self charon_port_values][@"VendorID"];
+    }
 }
 
 // ProductName, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeProductNameWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"ProductName"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ProductName"];
+    }
 }
 
 // ProductID, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeProductIDWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"ProductID"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ProductID"];
+    }
 }
 
 // NodeLabel, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeNodeLabelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"NodeLabel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"NodeLabel"];
+    }
 }
 
 - (void)writeAttributeNodeLabelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
-    [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"NodeLabel"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"NodeLabel"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
 }
 
 - (void)writeAttributeNodeLabelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
-    [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"NodeLabel"] = dataValueDictionary;
+    @synchronized (self) {
+        [self charon_port_values][@"NodeLabel"] = dataValueDictionary;
+    }
     (void)expectedValueIntervalMs;
     (void)params;
 }
@@ -138,126 +156,162 @@
 - (NSDictionary<NSString *, id> *)readAttributeHardwareVersionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"HardwareVersion"];
+    @synchronized (self) {
+        return [self charon_port_values][@"HardwareVersion"];
+    }
 }
 
 // HardwareVersionString, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeHardwareVersionStringWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"HardwareVersionString"];
+    @synchronized (self) {
+        return [self charon_port_values][@"HardwareVersionString"];
+    }
 }
 
 // SoftwareVersion, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSoftwareVersionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"SoftwareVersion"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SoftwareVersion"];
+    }
 }
 
 // SoftwareVersionString, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSoftwareVersionStringWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"SoftwareVersionString"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SoftwareVersionString"];
+    }
 }
 
 // ManufacturingDate, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeManufacturingDateWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"ManufacturingDate"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ManufacturingDate"];
+    }
 }
 
 // PartNumber, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributePartNumberWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"PartNumber"];
+    @synchronized (self) {
+        return [self charon_port_values][@"PartNumber"];
+    }
 }
 
 // ProductURL, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeProductURLWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"ProductURL"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ProductURL"];
+    }
 }
 
 // ProductLabel, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeProductLabelWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"ProductLabel"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ProductLabel"];
+    }
 }
 
 // SerialNumber, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeSerialNumberWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"SerialNumber"];
+    @synchronized (self) {
+        return [self charon_port_values][@"SerialNumber"];
+    }
 }
 
 // Reachable, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeReachableWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"Reachable"];
+    @synchronized (self) {
+        return [self charon_port_values][@"Reachable"];
+    }
 }
 
 // UniqueID, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeUniqueIDWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"UniqueID"];
+    @synchronized (self) {
+        return [self charon_port_values][@"UniqueID"];
+    }
 }
 
 // ProductAppearance, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeProductAppearanceWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"ProductAppearance"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ProductAppearance"];
+    }
 }
 
 // ConfigurationVersion, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeConfigurationVersionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"ConfigurationVersion"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ConfigurationVersion"];
+    }
 }
 
 // GeneratedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeGeneratedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"GeneratedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"GeneratedCommandList"];
+    }
 }
 
 // AcceptedCommandList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAcceptedCommandListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"AcceptedCommandList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AcceptedCommandList"];
+    }
 }
 
 // AttributeList, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeAttributeListWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"AttributeList"];
+    @synchronized (self) {
+        return [self charon_port_values][@"AttributeList"];
+    }
 }
 
 // FeatureMap, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeFeatureMapWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"FeatureMap"];
+    @synchronized (self) {
+        return [self charon_port_values][@"FeatureMap"];
+    }
 }
 
 // ClusterRevision, a value dictionary, the only type these headers state for it.
 - (NSDictionary<NSString *, id> *)readAttributeClusterRevisionWithParams:(MTRReadParams * _Nullable)params
 {
     (void)params;
-    return [MTRClusterBridgedDeviceBasicInformation charon_port_values][@"ClusterRevision"];
+    @synchronized (self) {
+        return [self charon_port_values][@"ClusterRevision"];
+    }
 }
 
 // keepActive. It answers: there is nothing to reach on a release with no fabric.

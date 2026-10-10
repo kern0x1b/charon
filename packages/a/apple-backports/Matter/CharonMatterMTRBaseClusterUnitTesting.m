@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 95 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 95 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRBaseClusterUnitTesting
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterUnitTesting class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -92,13 +96,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Boolean"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Boolean"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Boolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Boolean"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -106,7 +115,9 @@
 
 - (void)writeAttributeBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Boolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Boolean"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -132,13 +143,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap8"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Bitmap8"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeBitmap8WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap8"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -146,7 +162,9 @@
 
 - (void)writeAttributeBitmap8WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap8"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -172,13 +190,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap16"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Bitmap16"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeBitmap16WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap16"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -186,7 +209,9 @@
 
 - (void)writeAttributeBitmap16WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap16"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -212,13 +237,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap32"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Bitmap32"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeBitmap32WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap32"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap32"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -226,7 +256,9 @@
 
 - (void)writeAttributeBitmap32WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap32"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap32"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -252,13 +284,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap64"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Bitmap64"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeBitmap64WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap64"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap64"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -266,7 +303,9 @@
 
 - (void)writeAttributeBitmap64WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Bitmap64"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Bitmap64"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -292,13 +331,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int8u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int8u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -306,7 +350,9 @@
 
 - (void)writeAttributeInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -332,13 +378,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int16u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int16u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt16uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int16u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -346,7 +397,9 @@
 
 - (void)writeAttributeInt16uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int16u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -372,13 +425,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int24u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int24u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt24uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int24u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int24u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -386,7 +444,9 @@
 
 - (void)writeAttributeInt24uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int24u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int24u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -412,13 +472,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int32u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int32u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt32uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int32u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int32u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -426,7 +491,9 @@
 
 - (void)writeAttributeInt32uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int32u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int32u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -452,13 +519,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int40u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int40u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt40uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int40u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int40u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -466,7 +538,9 @@
 
 - (void)writeAttributeInt40uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int40u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int40u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -492,13 +566,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int48u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int48u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt48uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int48u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int48u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -506,7 +585,9 @@
 
 - (void)writeAttributeInt48uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int48u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int48u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -532,13 +613,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int56u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int56u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt56uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int56u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int56u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -546,7 +632,9 @@
 
 - (void)writeAttributeInt56uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int56u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int56u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -572,13 +660,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int64u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int64u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt64uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int64u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int64u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -586,7 +679,9 @@
 
 - (void)writeAttributeInt64uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int64u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int64u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -612,13 +707,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int8s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int8s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt8sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int8s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -626,7 +726,9 @@
 
 - (void)writeAttributeInt8sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int8s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -652,13 +754,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int16s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int16s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt16sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int16s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -666,7 +773,9 @@
 
 - (void)writeAttributeInt16sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int16s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -692,13 +801,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int24s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int24s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt24sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int24s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int24s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -706,7 +820,9 @@
 
 - (void)writeAttributeInt24sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int24s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int24s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -732,13 +848,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int32s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int32s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt32sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int32s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int32s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -746,7 +867,9 @@
 
 - (void)writeAttributeInt32sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int32s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int32s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -772,13 +895,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int40s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int40s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt40sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int40s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int40s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -786,7 +914,9 @@
 
 - (void)writeAttributeInt40sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int40s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int40s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -812,13 +942,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int48s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int48s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt48sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int48s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int48s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -826,7 +961,9 @@
 
 - (void)writeAttributeInt48sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int48s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int48s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -852,13 +989,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int56s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int56s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt56sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int56s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int56s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -866,7 +1008,9 @@
 
 - (void)writeAttributeInt56sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int56s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int56s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -892,13 +1036,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Int64s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Int64s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeInt64sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int64s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int64s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -906,7 +1055,9 @@
 
 - (void)writeAttributeInt64sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Int64s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Int64s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -932,13 +1083,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Enum8"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Enum8"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeEnum8WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Enum8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Enum8"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -946,7 +1102,9 @@
 
 - (void)writeAttributeEnum8WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Enum8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Enum8"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -972,13 +1130,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Enum16"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Enum16"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeEnum16WithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Enum16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Enum16"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -986,7 +1149,9 @@
 
 - (void)writeAttributeEnum16WithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Enum16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Enum16"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1012,13 +1177,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"FloatSingle"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FloatSingle"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeFloatSingleWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"FloatSingle"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FloatSingle"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1026,7 +1196,9 @@
 
 - (void)writeAttributeFloatSingleWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"FloatSingle"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FloatSingle"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1052,13 +1224,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"FloatDouble"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FloatDouble"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeFloatDoubleWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"FloatDouble"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FloatDouble"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1066,7 +1243,9 @@
 
 - (void)writeAttributeFloatDoubleWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"FloatDouble"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FloatDouble"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1092,13 +1271,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"OctetString"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"OctetString"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeOctetStringWithValue:(NSData * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"OctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1106,7 +1290,9 @@
 
 - (void)writeAttributeOctetStringWithValue:(NSData * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"OctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"OctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1132,13 +1318,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"ListInt8u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ListInt8u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeListInt8uWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1146,7 +1337,9 @@
 
 - (void)writeAttributeListInt8uWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1172,13 +1365,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"ListOctetString"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ListOctetString"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeListOctetStringWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListOctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1186,7 +1384,9 @@
 
 - (void)writeAttributeListOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListOctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1212,13 +1412,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"ListStructOctetString"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ListStructOctetString"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeListStructOctetStringWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListStructOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListStructOctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1226,7 +1431,9 @@
 
 - (void)writeAttributeListStructOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListStructOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListStructOctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1252,13 +1459,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"LongOctetString"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LongOctetString"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeLongOctetStringWithValue:(NSData * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"LongOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LongOctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1266,7 +1478,9 @@
 
 - (void)writeAttributeLongOctetStringWithValue:(NSData * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"LongOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LongOctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1292,13 +1506,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"CharString"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"CharString"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeCharStringWithValue:(NSString * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"CharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"CharString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1306,7 +1525,9 @@
 
 - (void)writeAttributeCharStringWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"CharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"CharString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1332,13 +1553,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"LongCharString"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"LongCharString"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeLongCharStringWithValue:(NSString * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"LongCharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LongCharString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1346,7 +1572,9 @@
 
 - (void)writeAttributeLongCharStringWithValue:(NSString * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"LongCharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"LongCharString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1372,13 +1600,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"EpochUs"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"EpochUs"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeEpochUsWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"EpochUs"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EpochUs"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1386,7 +1619,9 @@
 
 - (void)writeAttributeEpochUsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"EpochUs"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EpochUs"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1412,13 +1647,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"EpochS"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"EpochS"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeEpochSWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"EpochS"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EpochS"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1426,7 +1666,9 @@
 
 - (void)writeAttributeEpochSWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"EpochS"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EpochS"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1452,13 +1694,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"VendorId"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"VendorId"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeVendorIdWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"VendorId"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"VendorId"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1466,7 +1713,9 @@
 
 - (void)writeAttributeVendorIdWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"VendorId"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"VendorId"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1492,13 +1741,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"ListNullablesAndOptionalsStruct"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ListNullablesAndOptionalsStruct"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeListNullablesAndOptionalsStructWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListNullablesAndOptionalsStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListNullablesAndOptionalsStruct"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1506,7 +1760,9 @@
 
 - (void)writeAttributeListNullablesAndOptionalsStructWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListNullablesAndOptionalsStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListNullablesAndOptionalsStruct"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1532,13 +1788,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"EnumAttr"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"EnumAttr"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeEnumAttrWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"EnumAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnumAttr"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1546,7 +1807,9 @@
 
 - (void)writeAttributeEnumAttrWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"EnumAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"EnumAttr"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1572,13 +1835,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"StructAttr"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"StructAttr"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeStructAttrWithValue:(MTRUnitTestingClusterSimpleStruct * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"StructAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StructAttr"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1586,7 +1854,9 @@
 
 - (void)writeAttributeStructAttrWithValue:(MTRUnitTestingClusterSimpleStruct * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"StructAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"StructAttr"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1612,13 +1882,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt8u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RangeRestrictedInt8u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeRangeRestrictedInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1626,7 +1901,9 @@
 
 - (void)writeAttributeRangeRestrictedInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1652,13 +1929,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt8s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RangeRestrictedInt8s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeRangeRestrictedInt8sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt8s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1666,7 +1948,9 @@
 
 - (void)writeAttributeRangeRestrictedInt8sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt8s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1692,13 +1976,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt16u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RangeRestrictedInt16u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeRangeRestrictedInt16uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt16u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1706,7 +1995,9 @@
 
 - (void)writeAttributeRangeRestrictedInt16uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt16u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1732,13 +2023,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt16s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"RangeRestrictedInt16s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeRangeRestrictedInt16sWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt16s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1746,7 +2042,9 @@
 
 - (void)writeAttributeRangeRestrictedInt16sWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"RangeRestrictedInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"RangeRestrictedInt16s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1772,13 +2070,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"ListLongOctetString"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ListLongOctetString"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeListLongOctetStringWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListLongOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListLongOctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1786,7 +2089,9 @@
 
 - (void)writeAttributeListLongOctetStringWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListLongOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListLongOctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1813,13 +2118,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"ListFabricScoped"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ListFabricScoped"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeListFabricScopedWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListFabricScoped"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListFabricScoped"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1827,7 +2137,9 @@
 
 - (void)writeAttributeListFabricScopedWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ListFabricScoped"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ListFabricScoped"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1853,13 +2165,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"TimedWriteBoolean"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"TimedWriteBoolean"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeTimedWriteBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"TimedWriteBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TimedWriteBoolean"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1867,7 +2184,9 @@
 
 - (void)writeAttributeTimedWriteBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"TimedWriteBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"TimedWriteBoolean"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1893,13 +2212,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"GeneralErrorBoolean"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneralErrorBoolean"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeGeneralErrorBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"GeneralErrorBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"GeneralErrorBoolean"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1907,7 +2231,9 @@
 
 - (void)writeAttributeGeneralErrorBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"GeneralErrorBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"GeneralErrorBoolean"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1933,13 +2259,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"ClusterErrorBoolean"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterErrorBoolean"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeClusterErrorBooleanWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ClusterErrorBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ClusterErrorBoolean"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1947,7 +2278,9 @@
 
 - (void)writeAttributeClusterErrorBooleanWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ClusterErrorBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ClusterErrorBoolean"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1973,13 +2306,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"GlobalEnum"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GlobalEnum"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeGlobalEnumWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"GlobalEnum"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"GlobalEnum"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -1987,7 +2325,9 @@
 
 - (void)writeAttributeGlobalEnumWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"GlobalEnum"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"GlobalEnum"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2013,13 +2353,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"GlobalStruct"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GlobalStruct"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeGlobalStructWithValue:(MTRDataTypeTestGlobalStruct * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"GlobalStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"GlobalStruct"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2027,7 +2372,9 @@
 
 - (void)writeAttributeGlobalStructWithValue:(MTRDataTypeTestGlobalStruct * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"GlobalStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"GlobalStruct"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2053,13 +2400,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"UnsupportedAttributeRequiringAdminPrivilege"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"UnsupportedAttributeRequiringAdminPrivilege"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeUnsupportedAttributeRequiringAdminPrivilegeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"UnsupportedAttributeRequiringAdminPrivilege"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnsupportedAttributeRequiringAdminPrivilege"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2067,7 +2419,9 @@
 
 - (void)writeAttributeUnsupportedAttributeRequiringAdminPrivilegeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"UnsupportedAttributeRequiringAdminPrivilege"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"UnsupportedAttributeRequiringAdminPrivilege"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2093,13 +2447,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"Unsupported"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Unsupported"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeUnsupportedWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Unsupported"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Unsupported"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2107,7 +2466,9 @@
 
 - (void)writeAttributeUnsupportedWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"Unsupported"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"Unsupported"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2133,13 +2494,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"ReadFailureCode"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ReadFailureCode"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeReadFailureCodeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ReadFailureCode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ReadFailureCode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2147,7 +2513,9 @@
 
 - (void)writeAttributeReadFailureCodeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"ReadFailureCode"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"ReadFailureCode"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2173,13 +2541,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"FailureInt32U"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FailureInt32U"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeFailureInt32UWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"FailureInt32U"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FailureInt32U"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2187,7 +2560,9 @@
 
 - (void)writeAttributeFailureInt32UWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"FailureInt32U"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"FailureInt32U"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2213,13 +2588,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableBoolean"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableBoolean"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableBooleanWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBoolean"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2227,7 +2607,9 @@
 
 - (void)writeAttributeNullableBooleanWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableBoolean"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBoolean"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2253,13 +2635,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap8"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableBitmap8"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableBitmap8WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap8"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2267,7 +2654,9 @@
 
 - (void)writeAttributeNullableBitmap8WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap8"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2293,13 +2682,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap16"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableBitmap16"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableBitmap16WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap16"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2307,7 +2701,9 @@
 
 - (void)writeAttributeNullableBitmap16WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap16"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2333,13 +2729,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap32"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableBitmap32"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableBitmap32WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap32"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap32"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2347,7 +2748,9 @@
 
 - (void)writeAttributeNullableBitmap32WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap32"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap32"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2373,13 +2776,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap64"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableBitmap64"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableBitmap64WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap64"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap64"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2387,7 +2795,9 @@
 
 - (void)writeAttributeNullableBitmap64WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableBitmap64"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableBitmap64"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2413,13 +2823,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt8u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt8u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt8uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2427,7 +2842,9 @@
 
 - (void)writeAttributeNullableInt8uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2453,13 +2870,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt16u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt16u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt16uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt16u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2467,7 +2889,9 @@
 
 - (void)writeAttributeNullableInt16uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt16u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2493,13 +2917,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt24u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt24u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt24uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt24u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt24u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2507,7 +2936,9 @@
 
 - (void)writeAttributeNullableInt24uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt24u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt24u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2533,13 +2964,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt32u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt32u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt32uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt32u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt32u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2547,7 +2983,9 @@
 
 - (void)writeAttributeNullableInt32uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt32u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt32u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2573,13 +3011,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt40u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt40u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt40uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt40u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt40u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2587,7 +3030,9 @@
 
 - (void)writeAttributeNullableInt40uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt40u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt40u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2613,13 +3058,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt48u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt48u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt48uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt48u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt48u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2627,7 +3077,9 @@
 
 - (void)writeAttributeNullableInt48uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt48u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt48u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2653,13 +3105,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt56u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt56u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt56uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt56u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt56u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2667,7 +3124,9 @@
 
 - (void)writeAttributeNullableInt56uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt56u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt56u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2693,13 +3152,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt64u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt64u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt64uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt64u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt64u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2707,7 +3171,9 @@
 
 - (void)writeAttributeNullableInt64uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt64u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt64u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2733,13 +3199,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt8s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt8s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt8sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt8s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2747,7 +3218,9 @@
 
 - (void)writeAttributeNullableInt8sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt8s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2773,13 +3246,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt16s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt16s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt16sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt16s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2787,7 +3265,9 @@
 
 - (void)writeAttributeNullableInt16sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt16s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2813,13 +3293,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt24s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt24s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt24sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt24s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt24s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2827,7 +3312,9 @@
 
 - (void)writeAttributeNullableInt24sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt24s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt24s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2853,13 +3340,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt32s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt32s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt32sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt32s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt32s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2867,7 +3359,9 @@
 
 - (void)writeAttributeNullableInt32sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt32s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt32s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2893,13 +3387,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt40s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt40s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt40sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt40s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt40s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2907,7 +3406,9 @@
 
 - (void)writeAttributeNullableInt40sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt40s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt40s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2933,13 +3434,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt48s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt48s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt48sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt48s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt48s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2947,7 +3453,9 @@
 
 - (void)writeAttributeNullableInt48sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt48s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt48s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2973,13 +3481,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt56s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt56s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt56sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt56s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt56s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -2987,7 +3500,9 @@
 
 - (void)writeAttributeNullableInt56sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt56s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt56s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3013,13 +3528,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt64s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableInt64s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableInt64sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt64s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt64s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3027,7 +3547,9 @@
 
 - (void)writeAttributeNullableInt64sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableInt64s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableInt64s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3053,13 +3575,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableEnum8"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableEnum8"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableEnum8WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableEnum8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnum8"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3067,7 +3594,9 @@
 
 - (void)writeAttributeNullableEnum8WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableEnum8"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnum8"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3093,13 +3622,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableEnum16"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableEnum16"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableEnum16WithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableEnum16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnum16"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3107,7 +3641,9 @@
 
 - (void)writeAttributeNullableEnum16WithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableEnum16"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnum16"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3133,13 +3669,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableFloatSingle"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableFloatSingle"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableFloatSingleWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableFloatSingle"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableFloatSingle"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3147,7 +3688,9 @@
 
 - (void)writeAttributeNullableFloatSingleWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableFloatSingle"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableFloatSingle"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3173,13 +3716,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableFloatDouble"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableFloatDouble"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableFloatDoubleWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableFloatDouble"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableFloatDouble"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3187,7 +3735,9 @@
 
 - (void)writeAttributeNullableFloatDoubleWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableFloatDouble"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableFloatDouble"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3213,13 +3763,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableOctetString"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableOctetString"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableOctetStringWithValue:(NSData * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableOctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3227,7 +3782,9 @@
 
 - (void)writeAttributeNullableOctetStringWithValue:(NSData * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableOctetString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableOctetString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3253,13 +3810,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableCharString"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableCharString"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableCharStringWithValue:(NSString * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableCharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableCharString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3267,7 +3829,9 @@
 
 - (void)writeAttributeNullableCharStringWithValue:(NSString * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableCharString"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableCharString"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3293,13 +3857,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableEnumAttr"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableEnumAttr"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableEnumAttrWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableEnumAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnumAttr"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3307,7 +3876,9 @@
 
 - (void)writeAttributeNullableEnumAttrWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableEnumAttr"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableEnumAttr"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3333,13 +3904,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableStruct"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableStruct"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableStructWithValue:(MTRUnitTestingClusterSimpleStruct * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableStruct"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3347,7 +3923,9 @@
 
 - (void)writeAttributeNullableStructWithValue:(MTRUnitTestingClusterSimpleStruct * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableStruct"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3373,13 +3951,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt8u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableRangeRestrictedInt8u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt8uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3387,7 +3970,9 @@
 
 - (void)writeAttributeNullableRangeRestrictedInt8uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3413,13 +3998,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt8s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableRangeRestrictedInt8s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt8sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt8s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3427,7 +4017,9 @@
 
 - (void)writeAttributeNullableRangeRestrictedInt8sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt8s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt8s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3453,13 +4045,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt16u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableRangeRestrictedInt16u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt16uWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt16u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3467,7 +4064,9 @@
 
 - (void)writeAttributeNullableRangeRestrictedInt16uWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt16u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt16u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3493,13 +4092,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt16s"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableRangeRestrictedInt16s"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableRangeRestrictedInt16sWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt16s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3507,7 +4111,9 @@
 
 - (void)writeAttributeNullableRangeRestrictedInt16sWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableRangeRestrictedInt16s"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableRangeRestrictedInt16s"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3533,13 +4139,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"WriteOnlyInt8u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WriteOnlyInt8u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeWriteOnlyInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"WriteOnlyInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WriteOnlyInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3547,7 +4158,9 @@
 
 - (void)writeAttributeWriteOnlyInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"WriteOnlyInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"WriteOnlyInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3573,13 +4186,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableGlobalEnum"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableGlobalEnum"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableGlobalEnumWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableGlobalEnum"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableGlobalEnum"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3587,7 +4205,9 @@
 
 - (void)writeAttributeNullableGlobalEnumWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableGlobalEnum"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableGlobalEnum"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3613,13 +4233,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"NullableGlobalStruct"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"NullableGlobalStruct"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeNullableGlobalStructWithValue:(MTRDataTypeTestGlobalStruct * _Nullable)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableGlobalStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableGlobalStruct"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3627,7 +4252,9 @@
 
 - (void)writeAttributeNullableGlobalStructWithValue:(MTRDataTypeTestGlobalStruct * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"NullableGlobalStruct"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"NullableGlobalStruct"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3653,7 +4280,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"GeneratedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneratedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -3677,7 +4307,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"AcceptedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AcceptedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -3701,7 +4334,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"AttributeList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttributeList"];
+    }
     completion(written, nil);
 }
 
@@ -3725,7 +4361,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"FeatureMap"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FeatureMap"];
+    }
     completion(written, nil);
 }
 
@@ -3749,7 +4388,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"ClusterRevision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterRevision"];
+    }
     completion(written, nil);
 }
 
@@ -3773,13 +4415,18 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterUnitTesting charon_port_values][@"MeiInt8u"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"MeiInt8u"];
+    }
     completion(written, nil);
 }
 
 - (void)writeAttributeMeiInt8uWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"MeiInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MeiInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }
@@ -3787,7 +4434,9 @@
 
 - (void)writeAttributeMeiInt8uWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
-    [MTRBaseClusterUnitTesting charon_port_values][@"MeiInt8u"] = value;
+    @synchronized (self) {
+        [self charon_port_values][@"MeiInt8u"] = value;
+    }
     if (completion) {
         completion(nil);
     }

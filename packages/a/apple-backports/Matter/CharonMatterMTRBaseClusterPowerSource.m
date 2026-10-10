@@ -15,9 +15,10 @@
 //  a class the device does not have is never loaded, and the port's job here is to BE the class, which
 //  is the shape every other port in this package takes.
 //
-//  Every attribute reads and writes a plain value the caller set, in one table keyed by the
-//  cluster and guarded by a lock, because armv7 has no thread-local storage to rely on. Every
-//  command answers through its completion. Nothing here reaches a fabric: the 37 cached reads
+//  Every attribute reads and writes a plain value the caller set, in a table of the object's
+//  own - one object's value is not another's, as it is not in the framework - made on first use
+//  and read and written under the object's lock, so two threads on one object are not a race.
+//  Every command answers through its completion. Nothing here reaches a fabric: the 37 cached reads
 //  the header declares, and every subscribe, answer as the framework does when it has nothing to
 //  read from. A cached read completes with no value and the error of +charon_port_no_node_error;
 //  a subscribe calls its report handler once with the same, asynchronously on the cluster's
@@ -42,22 +43,25 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
+    NSMutableDictionary *_charon_values;
 }
 @end
 
 @implementation MTRBaseClusterPowerSource
 
-// The values the caller has written, by attribute name: one table, keyed by the
-// object, guarded by a lock, because armv7 has no thread-local storage to rely on.
-+ (NSMutableDictionary *)charon_port_values
+// The values the caller has written, by attribute name: this object's own table, made on
+// first use - an object built through a superclass's initializer never ran this class's -
+// and handed out under the object's lock, which every read and write below holds for the
+// whole of its access. It is not keyed by the class: two objects of one class are two
+// tables, as they are two sets of state in the framework.
+- (NSMutableDictionary *)charon_port_values
 {
-    static NSMutableDictionary *table;
-    @synchronized ([MTRBaseClusterPowerSource class]) {
-        if (!table) {
-            table = [NSMutableDictionary dictionary];
+    @synchronized (self) {
+        if (!_charon_values) {
+            _charon_values = [NSMutableDictionary dictionary];
         }
+        return _charon_values;
     }
-    return table;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -92,7 +96,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"Status"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Status"];
+    }
     completion(written, nil);
 }
 
@@ -116,7 +123,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"Order"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Order"];
+    }
     completion(written, nil);
 }
 
@@ -140,7 +150,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"Description"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"Description"];
+    }
     completion(written, nil);
 }
 
@@ -164,7 +177,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"WiredAssessedInputVoltage"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WiredAssessedInputVoltage"];
+    }
     completion(written, nil);
 }
 
@@ -188,7 +204,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"WiredAssessedInputFrequency"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WiredAssessedInputFrequency"];
+    }
     completion(written, nil);
 }
 
@@ -212,7 +231,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"WiredCurrentType"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WiredCurrentType"];
+    }
     completion(written, nil);
 }
 
@@ -236,7 +258,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"WiredAssessedCurrent"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WiredAssessedCurrent"];
+    }
     completion(written, nil);
 }
 
@@ -260,7 +285,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"WiredNominalVoltage"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WiredNominalVoltage"];
+    }
     completion(written, nil);
 }
 
@@ -284,7 +312,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"WiredMaximumCurrent"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WiredMaximumCurrent"];
+    }
     completion(written, nil);
 }
 
@@ -308,7 +339,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"WiredPresent"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"WiredPresent"];
+    }
     completion(written, nil);
 }
 
@@ -332,7 +366,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"ActiveWiredFaults"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ActiveWiredFaults"];
+    }
     completion(written, nil);
 }
 
@@ -356,7 +393,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatVoltage"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatVoltage"];
+    }
     completion(written, nil);
 }
 
@@ -380,7 +420,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatPercentRemaining"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatPercentRemaining"];
+    }
     completion(written, nil);
 }
 
@@ -404,7 +447,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatTimeRemaining"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatTimeRemaining"];
+    }
     completion(written, nil);
 }
 
@@ -428,7 +474,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatChargeLevel"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatChargeLevel"];
+    }
     completion(written, nil);
 }
 
@@ -452,7 +501,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatReplacementNeeded"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatReplacementNeeded"];
+    }
     completion(written, nil);
 }
 
@@ -476,7 +528,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatReplaceability"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatReplaceability"];
+    }
     completion(written, nil);
 }
 
@@ -500,7 +555,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatPresent"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatPresent"];
+    }
     completion(written, nil);
 }
 
@@ -524,7 +582,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"ActiveBatFaults"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ActiveBatFaults"];
+    }
     completion(written, nil);
 }
 
@@ -548,7 +609,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatReplacementDescription"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatReplacementDescription"];
+    }
     completion(written, nil);
 }
 
@@ -572,7 +636,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatCommonDesignation"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatCommonDesignation"];
+    }
     completion(written, nil);
 }
 
@@ -596,7 +663,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatANSIDesignation"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatANSIDesignation"];
+    }
     completion(written, nil);
 }
 
@@ -620,7 +690,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatIECDesignation"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatIECDesignation"];
+    }
     completion(written, nil);
 }
 
@@ -644,7 +717,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatApprovedChemistry"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatApprovedChemistry"];
+    }
     completion(written, nil);
 }
 
@@ -668,7 +744,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatCapacity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatCapacity"];
+    }
     completion(written, nil);
 }
 
@@ -692,7 +771,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatQuantity"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatQuantity"];
+    }
     completion(written, nil);
 }
 
@@ -716,7 +798,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatChargeState"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatChargeState"];
+    }
     completion(written, nil);
 }
 
@@ -740,7 +825,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatTimeToFullCharge"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatTimeToFullCharge"];
+    }
     completion(written, nil);
 }
 
@@ -764,7 +852,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatFunctionalWhileCharging"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatFunctionalWhileCharging"];
+    }
     completion(written, nil);
 }
 
@@ -788,7 +879,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"BatChargingCurrent"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"BatChargingCurrent"];
+    }
     completion(written, nil);
 }
 
@@ -812,7 +906,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"ActiveBatChargeFaults"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ActiveBatChargeFaults"];
+    }
     completion(written, nil);
 }
 
@@ -836,7 +933,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"EndpointList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"EndpointList"];
+    }
     completion(written, nil);
 }
 
@@ -860,7 +960,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"GeneratedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"GeneratedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -884,7 +987,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"AcceptedCommandList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AcceptedCommandList"];
+    }
     completion(written, nil);
 }
 
@@ -908,7 +1014,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"AttributeList"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"AttributeList"];
+    }
     completion(written, nil);
 }
 
@@ -932,7 +1041,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"FeatureMap"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"FeatureMap"];
+    }
     completion(written, nil);
 }
 
@@ -956,7 +1068,10 @@
     if (!completion) {
         return;
     }
-    id written = [MTRBaseClusterPowerSource charon_port_values][@"ClusterRevision"];
+    id written;
+    @synchronized (self) {
+        written = [self charon_port_values][@"ClusterRevision"];
+    }
     completion(written, nil);
 }
 
