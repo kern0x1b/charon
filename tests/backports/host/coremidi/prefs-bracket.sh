@@ -50,7 +50,7 @@ digest() {
 texts() {
     files "$1" | LC_ALL=C sort | while IFS= read -r file; do
         printf '== %s\n' "$file"
-        plutil -p "$file" 2>/dev/null || cat -v "$file"
+        plutil -p "$file" || cat -v "$file"
     done
 }
 
