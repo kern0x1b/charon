@@ -1,0 +1,11 @@
+protocol	introduced	status	reasons	bases	section	kind	instance	selector	decl	in16
+MTLTensor	26.0	transcribed		MTLResource	-	-	-	-	-	-
+MTLTensor	26.0	transcribed		MTLResource	required	property	no	gpuResourceID	@property (atomic, readonly) MTLResourceID gpuResourceID;	-
+MTLTensor	26.0	transcribed		MTLResource	required	property	no	buffer	@property (atomic, readonly) id<MTLBuffer> _Nullable buffer;	-
+MTLTensor	26.0	transcribed		MTLResource	required	property	no	bufferOffset	@property (atomic, readonly) NSUInteger bufferOffset;	-
+MTLTensor	26.0	transcribed		MTLResource	required	property	no	strides	@property (atomic, readonly) MTLTensorExtents * _Nullable strides;	-
+MTLTensor	26.0	transcribed		MTLResource	required	property	no	dimensions	@property (atomic, readonly) MTLTensorExtents * _Nonnull dimensions;	-
+MTLTensor	26.0	transcribed		MTLResource	required	property	no	dataType	@property (atomic, readonly) MTLTensorDataType dataType;	-
+MTLTensor	26.0	transcribed		MTLResource	required	property	no	usage	@property (atomic, readonly) MTLTensorUsage usage;	-
+MTLTensor	26.0	transcribed		MTLResource	required	method	yes	replaceSliceOrigin:sliceDimensions:withBytes:strides:	- (void)replaceSliceOrigin:(MTLTensorExtents * _Nonnull)sliceOrigin sliceDimensions:(MTLTensorExtents * _Nonnull)sliceDimensions withBytes:(const void * _Nonnull)bytes strides:(MTLTensorExtents * _Nonnull)strides;	-
+MTLTensor	26.0	transcribed		MTLResource	required	method	yes	getBytes:strides:fromSliceOrigin:sliceDimensions:	- (void)getBytes:(void * _Nonnull)bytes strides:(MTLTensorExtents * _Nonnull)strides fromSliceOrigin:(MTLTensorExtents * _Nonnull)sliceOrigin sliceDimensions:(MTLTensorExtents * _Nonnull)sliceDimensions;	-

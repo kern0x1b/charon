@@ -1,0 +1,253 @@
+protocol	introduced	status	reasons	bases	section	kind	instance	selector	decl	in16
+ARAnchorCopying	12.0	sdk16 body		NSCopying	-	-	-	-	-	-
+ARAnchorCopying	12.0	sdk16 body		NSCopying	required	method	yes	initWithAnchor:	- (instancetype _Nonnull)initWithAnchor:(ARAnchor * _Nonnull)anchor;	yes
+ARCoachingOverlayViewDelegate	13.0	sdk16 body		NSObject	-	-	-	-	-	-
+ARCoachingOverlayViewDelegate	13.0	sdk16 body		NSObject	optional	method	yes	coachingOverlayViewDidRequestSessionReset:	- (void)coachingOverlayViewDidRequestSessionReset:(ARCoachingOverlayView * _Nonnull)coachingOverlayView;	yes
+ARCoachingOverlayViewDelegate	13.0	sdk16 body		NSObject	optional	method	yes	coachingOverlayViewWillActivate:	- (void)coachingOverlayViewWillActivate:(ARCoachingOverlayView * _Nonnull)coachingOverlayView;	yes
+ARCoachingOverlayViewDelegate	13.0	sdk16 body		NSObject	optional	method	yes	coachingOverlayViewDidDeactivate:	- (void)coachingOverlayViewDidDeactivate:(ARCoachingOverlayView * _Nonnull)coachingOverlayView;	yes
+ARSCNViewDelegate	11.0	sdk16 body		SCNSceneRendererDelegate,ARSessionObserver	-	-	-	-	-	-
+ARSCNViewDelegate	11.0	sdk16 body		SCNSceneRendererDelegate,ARSessionObserver	optional	method	yes	renderer:nodeForAnchor:	- (SCNNode * _Nullable)renderer:(id<SCNSceneRenderer>  _Nonnull)renderer nodeForAnchor:(ARAnchor * _Nonnull)anchor;	yes
+ARSCNViewDelegate	11.0	sdk16 body		SCNSceneRendererDelegate,ARSessionObserver	optional	method	yes	renderer:didAddNode:forAnchor:	- (void)renderer:(id<SCNSceneRenderer>  _Nonnull)renderer didAddNode:(SCNNode * _Nonnull)node forAnchor:(ARAnchor * _Nonnull)anchor;	yes
+ARSCNViewDelegate	11.0	sdk16 body		SCNSceneRendererDelegate,ARSessionObserver	optional	method	yes	renderer:willUpdateNode:forAnchor:	- (void)renderer:(id<SCNSceneRenderer>  _Nonnull)renderer willUpdateNode:(SCNNode * _Nonnull)node forAnchor:(ARAnchor * _Nonnull)anchor;	yes
+ARSCNViewDelegate	11.0	sdk16 body		SCNSceneRendererDelegate,ARSessionObserver	optional	method	yes	renderer:didUpdateNode:forAnchor:	- (void)renderer:(id<SCNSceneRenderer>  _Nonnull)renderer didUpdateNode:(SCNNode * _Nonnull)node forAnchor:(ARAnchor * _Nonnull)anchor;	yes
+ARSCNViewDelegate	11.0	sdk16 body		SCNSceneRendererDelegate,ARSessionObserver	optional	method	yes	renderer:didRemoveNode:forAnchor:	- (void)renderer:(id<SCNSceneRenderer>  _Nonnull)renderer didRemoveNode:(SCNNode * _Nonnull)node forAnchor:(ARAnchor * _Nonnull)anchor;	yes
+ARSKViewDelegate	11.0	sdk16 body		SKViewDelegate,ARSessionObserver	-	-	-	-	-	-
+ARSKViewDelegate	11.0	sdk16 body		SKViewDelegate,ARSessionObserver	optional	method	yes	view:nodeForAnchor:	- (SKNode * _Nullable)view:(ARSKView * _Nonnull)view nodeForAnchor:(ARAnchor * _Nonnull)anchor;	yes
+ARSKViewDelegate	11.0	sdk16 body		SKViewDelegate,ARSessionObserver	optional	method	yes	view:didAddNode:forAnchor:	- (void)view:(ARSKView * _Nonnull)view didAddNode:(SKNode * _Nonnull)node forAnchor:(ARAnchor * _Nonnull)anchor;	yes
+ARSKViewDelegate	11.0	sdk16 body		SKViewDelegate,ARSessionObserver	optional	method	yes	view:willUpdateNode:forAnchor:	- (void)view:(ARSKView * _Nonnull)view willUpdateNode:(SKNode * _Nonnull)node forAnchor:(ARAnchor * _Nonnull)anchor;	yes
+ARSKViewDelegate	11.0	sdk16 body		SKViewDelegate,ARSessionObserver	optional	method	yes	view:didUpdateNode:forAnchor:	- (void)view:(ARSKView * _Nonnull)view didUpdateNode:(SKNode * _Nonnull)node forAnchor:(ARAnchor * _Nonnull)anchor;	yes
+ARSKViewDelegate	11.0	sdk16 body		SKViewDelegate,ARSessionObserver	optional	method	yes	view:didRemoveNode:forAnchor:	- (void)view:(ARSKView * _Nonnull)view didRemoveNode:(SKNode * _Nonnull)node forAnchor:(ARAnchor * _Nonnull)anchor;	yes
+ARSessionDelegate	11.0	sdk16 body		ARSessionObserver	-	-	-	-	-	-
+ARSessionDelegate	11.0	sdk16 body		ARSessionObserver	optional	method	yes	session:didUpdateFrame:	- (void)session:(ARSession * _Nonnull)session didUpdateFrame:(ARFrame * _Nonnull)frame;	yes
+ARSessionDelegate	11.0	sdk16 body		ARSessionObserver	optional	method	yes	session:didAddAnchors:	- (void)session:(ARSession * _Nonnull)session didAddAnchors:(NSArray< ARAnchor *> * _Nonnull)anchors;	yes
+ARSessionDelegate	11.0	sdk16 body		ARSessionObserver	optional	method	yes	session:didUpdateAnchors:	- (void)session:(ARSession * _Nonnull)session didUpdateAnchors:(NSArray< ARAnchor *> * _Nonnull)anchors;	yes
+ARSessionDelegate	11.0	sdk16 body		ARSessionObserver	optional	method	yes	session:didRemoveAnchors:	- (void)session:(ARSession * _Nonnull)session didRemoveAnchors:(NSArray< ARAnchor *> * _Nonnull)anchors;	yes
+ARSessionObserver	11.0	sdk16 body		NSObject	-	-	-	-	-	-
+ARSessionObserver	11.0	sdk16 body		NSObject	optional	method	yes	session:didFailWithError:	- (void)session:(ARSession * _Nonnull)session didFailWithError:(NSError * _Nonnull)error;	yes
+ARSessionObserver	11.0	sdk16 body		NSObject	optional	method	yes	session:cameraDidChangeTrackingState:	- (void)session:(ARSession * _Nonnull)session cameraDidChangeTrackingState:(ARCamera * _Nonnull)camera;	yes
+ARSessionObserver	11.0	sdk16 body		NSObject	optional	method	yes	sessionWasInterrupted:	- (void)sessionWasInterrupted:(ARSession * _Nonnull)session;	yes
+ARSessionObserver	11.0	sdk16 body		NSObject	optional	method	yes	sessionInterruptionEnded:	- (void)sessionInterruptionEnded:(ARSession * _Nonnull)session;	yes
+ARSessionObserver	11.0	sdk16 body		NSObject	optional	method	yes	sessionShouldAttemptRelocalization:	- (BOOL)sessionShouldAttemptRelocalization:(ARSession * _Nonnull)session;	yes
+ARSessionObserver	11.0	sdk16 body		NSObject	optional	method	yes	session:didOutputAudioSampleBuffer:	- (void)session:(ARSession * _Nonnull)session didOutputAudioSampleBuffer:(CMSampleBufferRef _Nonnull)audioSampleBuffer;	yes
+ARSessionObserver	11.0	sdk16 body		NSObject	optional	method	yes	session:didOutputCollaborationData:	- (void)session:(ARSession * _Nonnull)session didOutputCollaborationData:(ARCollaborationData * _Nonnull)data;	yes
+ARSessionObserver	11.0	sdk16 body		NSObject	optional	method	yes	session:didChangeGeoTrackingStatus:	- (void)session:(ARSession * _Nonnull)session didChangeGeoTrackingStatus:(ARGeoTrackingStatus * _Nonnull)geoTrackingStatus;	yes
+ARTrackable	11.0	sdk16 body		NSObject	-	-	-	-	-	-
+ARTrackable	11.0	sdk16 body		NSObject	required	property	no	isTracked	@property (nonatomic, readonly) BOOL isTracked;	yes
+MTLBuffer	8.0	sdk16 body		MTLResource	-	-	-	-	-	-
+MTLBuffer	8.0	sdk16 body		MTLResource	required	property	no	length	@property (atomic, readonly) NSUInteger length;	yes
+MTLBuffer	8.0	sdk16 body		MTLResource	required	method	yes	contents	- (void * _Nonnull)contents;	yes
+MTLBuffer	8.0	sdk16 body		MTLResource	required	method	yes	didModifyRange:	- (void)didModifyRange:(NSRange)range;	yes
+MTLBuffer	8.0	sdk16 body		MTLResource	required	method	yes	newTextureWithDescriptor:offset:bytesPerRow:	- (id<MTLTexture> _Nullable)newTextureWithDescriptor:(MTLTextureDescriptor * _Nonnull)descriptor offset:(NSUInteger)offset bytesPerRow:(NSUInteger)bytesPerRow;	yes
+MTLBuffer	8.0	sdk16 body		MTLResource	required	method	yes	newTensorWithDescriptor:offset:error:	- (id<MTLTensor> _Nullable)newTensorWithDescriptor:(MTLTensorDescriptor * _Nonnull)descriptor offset:(NSUInteger)offset error:(NSError * _Nullable * _Nullable)error;	no
+MTLBuffer	8.0	sdk16 body		MTLResource	required	method	yes	addDebugMarker:range:	- (void)addDebugMarker:(NSString * _Nonnull)marker range:(NSRange)range;	yes
+MTLBuffer	8.0	sdk16 body		MTLResource	required	method	yes	removeAllDebugMarkers	- (void)removeAllDebugMarkers;	yes
+MTLBuffer	8.0	sdk16 body		MTLResource	required	property	no	gpuAddress	@property (atomic, readonly) MTLGPUAddress gpuAddress;	yes
+MTLBuffer	8.0	sdk16 body		MTLResource	required	property	no	sparseBufferTier	@property (atomic, readonly) MTLBufferSparseTier sparseBufferTier;	no
+MTLCommandBuffer	8.0	sdk16 body		NSObject	-	-	-	-	-	-
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	device	@property (atomic, readonly) id<MTLDevice> _Nonnull device;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	commandQueue	@property (atomic, readonly) id<MTLCommandQueue> _Nonnull commandQueue;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	retainedReferences	@property (atomic, readonly) BOOL retainedReferences;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	errorOptions	@property (atomic, readonly) MTLCommandBufferErrorOption errorOptions;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	label	@property (atomic, readwrite, copy) NSString * _Nullable label;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	kernelStartTime	@property (atomic, readonly) CFTimeInterval kernelStartTime;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	kernelEndTime	@property (atomic, readonly) CFTimeInterval kernelEndTime;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	logs	@property (atomic, readonly) id<MTLLogContainer> _Nonnull logs;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	GPUStartTime	@property (atomic, readonly) CFTimeInterval GPUStartTime;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	GPUEndTime	@property (atomic, readonly) CFTimeInterval GPUEndTime;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	enqueue	- (void)enqueue;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	commit	- (void)commit;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	addScheduledHandler:	- (void)addScheduledHandler:(MTLCommandBufferHandler  _Nonnull)block;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	presentDrawable:	- (void)presentDrawable:(id<MTLDrawable>  _Nonnull)drawable;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	presentDrawable:atTime:	- (void)presentDrawable:(id<MTLDrawable>  _Nonnull)drawable atTime:(CFTimeInterval)presentationTime;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	presentDrawable:afterMinimumDuration:	- (void)presentDrawable:(id<MTLDrawable>  _Nonnull)drawable afterMinimumDuration:(CFTimeInterval)duration;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	waitUntilScheduled	- (void)waitUntilScheduled;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	addCompletedHandler:	- (void)addCompletedHandler:(MTLCommandBufferHandler  _Nonnull)block;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	waitUntilCompleted	- (void)waitUntilCompleted;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	status	@property (atomic, readonly) MTLCommandBufferStatus status;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	property	no	error	@property (atomic, readonly) NSError * _Nullable error;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	blitCommandEncoder	- (id<MTLBlitCommandEncoder> _Nullable)blitCommandEncoder;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	renderCommandEncoderWithDescriptor:	- (id<MTLRenderCommandEncoder> _Nullable)renderCommandEncoderWithDescriptor:(MTLRenderPassDescriptor * _Nonnull)renderPassDescriptor;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	computeCommandEncoderWithDescriptor:	- (id<MTLComputeCommandEncoder> _Nullable)computeCommandEncoderWithDescriptor:(MTLComputePassDescriptor * _Nonnull)computePassDescriptor;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	blitCommandEncoderWithDescriptor:	- (id<MTLBlitCommandEncoder> _Nullable)blitCommandEncoderWithDescriptor:(MTLBlitPassDescriptor * _Nonnull)blitPassDescriptor;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	computeCommandEncoder	- (id<MTLComputeCommandEncoder> _Nullable)computeCommandEncoder;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	computeCommandEncoderWithDispatchType:	- (id<MTLComputeCommandEncoder> _Nullable)computeCommandEncoderWithDispatchType:(MTLDispatchType)dispatchType;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	encodeWaitForEvent:value:	- (void)encodeWaitForEvent:(id<MTLEvent>  _Nonnull)event value:(uint64_t)value;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	encodeSignalEvent:value:	- (void)encodeSignalEvent:(id<MTLEvent>  _Nonnull)event value:(uint64_t)value;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	parallelRenderCommandEncoderWithDescriptor:	- (id<MTLParallelRenderCommandEncoder> _Nullable)parallelRenderCommandEncoderWithDescriptor:(MTLRenderPassDescriptor * _Nonnull)renderPassDescriptor;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	resourceStateCommandEncoder	- (id<MTLResourceStateCommandEncoder> _Nullable)resourceStateCommandEncoder;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	resourceStateCommandEncoderWithDescriptor:	- (id<MTLResourceStateCommandEncoder> _Nullable)resourceStateCommandEncoderWithDescriptor:(MTLResourceStatePassDescriptor * _Nonnull)resourceStatePassDescriptor;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	accelerationStructureCommandEncoder	- (id<MTLAccelerationStructureCommandEncoder> _Nullable)accelerationStructureCommandEncoder;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	accelerationStructureCommandEncoderWithDescriptor:	- (id<MTLAccelerationStructureCommandEncoder> _Nonnull)accelerationStructureCommandEncoderWithDescriptor:(MTLAccelerationStructurePassDescriptor * _Nonnull)descriptor;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	pushDebugGroup:	- (void)pushDebugGroup:(NSString * _Nonnull)string;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	popDebugGroup	- (void)popDebugGroup;	yes
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	useResidencySet:	- (void)useResidencySet:(id<MTLResidencySet>  _Nonnull)residencySet;	no
+MTLCommandBuffer	8.0	sdk16 body		NSObject	required	method	yes	useResidencySets:count:	- (void)useResidencySets:(id<MTLResidencySet>  _Nonnull const * _Nonnull)residencySets count:(NSUInteger)count;	no
+MTLDevice	8.0	sdk16 body		NSObject	-	-	-	-	-	-
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	name	@property (atomic, readonly) NSString * _Nonnull name;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	registryID	@property (atomic, readonly) uint64_t registryID;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	architecture	@property (atomic, readonly) MTLArchitecture * _Nonnull architecture;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	maxThreadsPerThreadgroup	@property (atomic, readonly) MTLSize maxThreadsPerThreadgroup;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	lowPower	@property (atomic, readonly, getter=isLowPower) BOOL lowPower;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	headless	@property (atomic, readonly, getter=isHeadless) BOOL headless;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	removable	@property (atomic, readonly, getter=isRemovable) BOOL removable;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	hasUnifiedMemory	@property (atomic, readonly) BOOL hasUnifiedMemory;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	recommendedMaxWorkingSetSize	@property (atomic, readonly) uint64_t recommendedMaxWorkingSetSize;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	depth24Stencil8PixelFormatSupported	@property (atomic, readonly, getter=isDepth24Stencil8PixelFormatSupported) BOOL depth24Stencil8PixelFormatSupported;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	readWriteTextureSupport	@property (atomic, readonly) MTLReadWriteTextureTier readWriteTextureSupport;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	argumentBuffersSupport	@property (atomic, readonly) MTLArgumentBuffersTier argumentBuffersSupport;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	rasterOrderGroupsSupported	@property (atomic, readonly, getter=areRasterOrderGroupsSupported) BOOL rasterOrderGroupsSupported;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supports32BitFloatFiltering	@property (atomic, readonly) BOOL supports32BitFloatFiltering;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supports32BitMSAA	@property (atomic, readonly) BOOL supports32BitMSAA;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supportsQueryTextureLOD	@property (atomic, readonly) BOOL supportsQueryTextureLOD;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supportsBCTextureCompression	@property (atomic, readonly) BOOL supportsBCTextureCompression;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supportsPullModelInterpolation	@property (atomic, readonly) BOOL supportsPullModelInterpolation;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	barycentricCoordsSupported	@property (atomic, readonly, getter=areBarycentricCoordsSupported) BOOL barycentricCoordsSupported;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supportsShaderBarycentricCoordinates	@property (atomic, readonly) BOOL supportsShaderBarycentricCoordinates;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	currentAllocatedSize	@property (atomic, readonly) NSUInteger currentAllocatedSize;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newLogStateWithDescriptor:error:	- (id<MTLLogState> _Nullable)newLogStateWithDescriptor:(MTLLogStateDescriptor * _Nonnull)descriptor error:(NSError *  _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newCommandQueue	- (id<MTLCommandQueue> _Nullable)newCommandQueue;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newCommandQueueWithMaxCommandBufferCount:	- (id<MTLCommandQueue> _Nullable)newCommandQueueWithMaxCommandBufferCount:(NSUInteger)maxCommandBufferCount;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newCommandQueueWithDescriptor:	- (id<MTLCommandQueue> _Nullable)newCommandQueueWithDescriptor:(MTLCommandQueueDescriptor * _Nonnull)descriptor;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	heapTextureSizeAndAlignWithDescriptor:	- (MTLSizeAndAlign)heapTextureSizeAndAlignWithDescriptor:(MTLTextureDescriptor * _Nonnull)desc;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	heapBufferSizeAndAlignWithLength:options:	- (MTLSizeAndAlign)heapBufferSizeAndAlignWithLength:(NSUInteger)length options:(MTLResourceOptions)options;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newHeapWithDescriptor:	- (id<MTLHeap> _Nullable)newHeapWithDescriptor:(MTLHeapDescriptor * _Nonnull)descriptor;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newBufferWithLength:options:	- (id<MTLBuffer> _Nullable)newBufferWithLength:(NSUInteger)length options:(MTLResourceOptions)options;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newBufferWithBytes:length:options:	- (id<MTLBuffer> _Nullable)newBufferWithBytes:(const void * _Nonnull)pointer length:(NSUInteger)length options:(MTLResourceOptions)options;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newBufferWithBytesNoCopy:length:options:deallocator:	- (id<MTLBuffer> _Nullable)newBufferWithBytesNoCopy:(void * _Nonnull)pointer length:(NSUInteger)length options:(MTLResourceOptions)options deallocator:(void (^ _Nullable)(void * _Nonnull, NSUInteger))deallocator;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newDepthStencilStateWithDescriptor:	- (id<MTLDepthStencilState> _Nullable)newDepthStencilStateWithDescriptor:(MTLDepthStencilDescriptor * _Nonnull)descriptor;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newTextureWithDescriptor:	- (id<MTLTexture> _Nullable)newTextureWithDescriptor:(MTLTextureDescriptor * _Nonnull)descriptor;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newTextureWithDescriptor:iosurface:plane:	- (id<MTLTexture> _Nullable)newTextureWithDescriptor:(MTLTextureDescriptor * _Nonnull)descriptor iosurface:(IOSurfaceRef _Nonnull)iosurface plane:(NSUInteger)plane;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newSharedTextureWithDescriptor:	- (id<MTLTexture> _Nullable)newSharedTextureWithDescriptor:(MTLTextureDescriptor * _Nonnull)descriptor;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newSharedTextureWithHandle:	- (id<MTLTexture> _Nullable)newSharedTextureWithHandle:(MTLSharedTextureHandle * _Nonnull)sharedHandle;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newSamplerStateWithDescriptor:	- (id<MTLSamplerState> _Nullable)newSamplerStateWithDescriptor:(MTLSamplerDescriptor * _Nonnull)descriptor;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newDefaultLibrary	- (id<MTLLibrary> _Nullable)newDefaultLibrary;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newDefaultLibraryWithBundle:error:	- (id<MTLLibrary> _Nullable)newDefaultLibraryWithBundle:(NSBundle * _Nonnull)bundle error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newLibraryWithFile:error:	- (id<MTLLibrary> _Nullable)newLibraryWithFile:(NSString * _Nonnull)filepath error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newLibraryWithURL:error:	- (id<MTLLibrary> _Nullable)newLibraryWithURL:(NSURL * _Nonnull)url error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newLibraryWithData:error:	- (id<MTLLibrary> _Nullable)newLibraryWithData:(dispatch_data_t  _Nonnull)data error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newLibraryWithSource:options:error:	- (id<MTLLibrary> _Nullable)newLibraryWithSource:(NSString * _Nonnull)source options:(MTLCompileOptions * _Nullable)options error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newLibraryWithSource:options:completionHandler:	- (void)newLibraryWithSource:(NSString * _Nonnull)source options:(MTLCompileOptions * _Nullable)options completionHandler:(MTLNewLibraryCompletionHandler  _Nonnull)completionHandler;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newLibraryWithStitchedDescriptor:error:	- (id<MTLLibrary> _Nullable)newLibraryWithStitchedDescriptor:(MTLStitchedLibraryDescriptor * _Nonnull)descriptor error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newLibraryWithStitchedDescriptor:completionHandler:	- (void)newLibraryWithStitchedDescriptor:(MTLStitchedLibraryDescriptor * _Nonnull)descriptor completionHandler:(MTLNewLibraryCompletionHandler  _Nonnull)completionHandler;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newRenderPipelineStateWithDescriptor:error:	- (id<MTLRenderPipelineState> _Nullable)newRenderPipelineStateWithDescriptor:(MTLRenderPipelineDescriptor * _Nonnull)descriptor error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newRenderPipelineStateWithDescriptor:options:reflection:error:	- (id<MTLRenderPipelineState> _Nullable)newRenderPipelineStateWithDescriptor:(MTLRenderPipelineDescriptor * _Nonnull)descriptor options:(MTLPipelineOption)options reflection:(MTLAutoreleasedRenderPipelineReflection * _Nullable)reflection error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newRenderPipelineStateWithDescriptor:completionHandler:	- (void)newRenderPipelineStateWithDescriptor:(MTLRenderPipelineDescriptor * _Nonnull)descriptor completionHandler:(MTLNewRenderPipelineStateCompletionHandler  _Nonnull)completionHandler;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newRenderPipelineStateWithDescriptor:options:completionHandler:	- (void)newRenderPipelineStateWithDescriptor:(MTLRenderPipelineDescriptor * _Nonnull)descriptor options:(MTLPipelineOption)options completionHandler:(MTLNewRenderPipelineStateWithReflectionCompletionHandler  _Nonnull)completionHandler;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newComputePipelineStateWithFunction:error:	- (id<MTLComputePipelineState> _Nullable)newComputePipelineStateWithFunction:(id<MTLFunction>  _Nonnull)computeFunction error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newComputePipelineStateWithFunction:options:reflection:error:	- (id<MTLComputePipelineState> _Nullable)newComputePipelineStateWithFunction:(id<MTLFunction>  _Nonnull)computeFunction options:(MTLPipelineOption)options reflection:(MTLAutoreleasedComputePipelineReflection * _Nullable)reflection error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newComputePipelineStateWithFunction:completionHandler:	- (void)newComputePipelineStateWithFunction:(id<MTLFunction>  _Nonnull)computeFunction completionHandler:(MTLNewComputePipelineStateCompletionHandler  _Nonnull)completionHandler;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newComputePipelineStateWithFunction:options:completionHandler:	- (void)newComputePipelineStateWithFunction:(id<MTLFunction>  _Nonnull)computeFunction options:(MTLPipelineOption)options completionHandler:(MTLNewComputePipelineStateWithReflectionCompletionHandler  _Nonnull)completionHandler;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newComputePipelineStateWithDescriptor:options:reflection:error:	- (id<MTLComputePipelineState> _Nullable)newComputePipelineStateWithDescriptor:(MTLComputePipelineDescriptor * _Nonnull)descriptor options:(MTLPipelineOption)options reflection:(MTLAutoreleasedComputePipelineReflection * _Nullable)reflection error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newComputePipelineStateWithDescriptor:options:completionHandler:	- (void)newComputePipelineStateWithDescriptor:(MTLComputePipelineDescriptor * _Nonnull)descriptor options:(MTLPipelineOption)options completionHandler:(MTLNewComputePipelineStateWithReflectionCompletionHandler  _Nonnull)completionHandler;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newFence	- (id<MTLFence> _Nullable)newFence;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	supportsFeatureSet:	- (BOOL)supportsFeatureSet:(MTLFeatureSet)featureSet;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	supportsFamily:	- (BOOL)supportsFamily:(MTLGPUFamily)gpuFamily;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	supportsTextureSampleCount:	- (BOOL)supportsTextureSampleCount:(NSUInteger)sampleCount;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	minimumLinearTextureAlignmentForPixelFormat:	- (NSUInteger)minimumLinearTextureAlignmentForPixelFormat:(MTLPixelFormat)format;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	minimumTextureBufferAlignmentForPixelFormat:	- (NSUInteger)minimumTextureBufferAlignmentForPixelFormat:(MTLPixelFormat)format;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newRenderPipelineStateWithTileDescriptor:options:reflection:error:	- (id<MTLRenderPipelineState> _Nullable)newRenderPipelineStateWithTileDescriptor:(MTLTileRenderPipelineDescriptor * _Nonnull)descriptor options:(MTLPipelineOption)options reflection:(MTLAutoreleasedRenderPipelineReflection * _Nullable)reflection error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newRenderPipelineStateWithTileDescriptor:options:completionHandler:	- (void)newRenderPipelineStateWithTileDescriptor:(MTLTileRenderPipelineDescriptor * _Nonnull)descriptor options:(MTLPipelineOption)options completionHandler:(MTLNewRenderPipelineStateWithReflectionCompletionHandler  _Nonnull)completionHandler;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newRenderPipelineStateWithMeshDescriptor:options:reflection:error:	- (id<MTLRenderPipelineState> _Nullable)newRenderPipelineStateWithMeshDescriptor:(MTLMeshRenderPipelineDescriptor * _Nonnull)descriptor options:(MTLPipelineOption)options reflection:(MTLAutoreleasedRenderPipelineReflection * _Nullable)reflection error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newRenderPipelineStateWithMeshDescriptor:options:completionHandler:	- (void)newRenderPipelineStateWithMeshDescriptor:(MTLMeshRenderPipelineDescriptor * _Nonnull)descriptor options:(MTLPipelineOption)options completionHandler:(MTLNewRenderPipelineStateWithReflectionCompletionHandler  _Nonnull)completionHandler;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	maxThreadgroupMemoryLength	@property (atomic, readonly) NSUInteger maxThreadgroupMemoryLength;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	maxArgumentBufferSamplerCount	@property (atomic, readonly) NSUInteger maxArgumentBufferSamplerCount;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	programmableSamplePositionsSupported	@property (atomic, readonly, getter=areProgrammableSamplePositionsSupported) BOOL programmableSamplePositionsSupported;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	getDefaultSamplePositions:count:	- (void)getDefaultSamplePositions:(MTLSamplePosition * _Nonnull)positions count:(NSUInteger)count;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newArgumentEncoderWithArguments:	- (id<MTLArgumentEncoder> _Nullable)newArgumentEncoderWithArguments:(NSArray<MTLArgumentDescriptor *> * _Nonnull)arguments;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	supportsRasterizationRateMapWithLayerCount:	- (BOOL)supportsRasterizationRateMapWithLayerCount:(NSUInteger)layerCount;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newRasterizationRateMapWithDescriptor:	- (id<MTLRasterizationRateMap> _Nullable)newRasterizationRateMapWithDescriptor:(MTLRasterizationRateMapDescriptor * _Nonnull)descriptor;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newIndirectCommandBufferWithDescriptor:maxCommandCount:options:	- (id<MTLIndirectCommandBuffer> _Nullable)newIndirectCommandBufferWithDescriptor:(MTLIndirectCommandBufferDescriptor * _Nonnull)descriptor maxCommandCount:(NSUInteger)maxCount options:(MTLResourceOptions)options;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newEvent	- (id<MTLEvent> _Nullable)newEvent;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newSharedEvent	- (id<MTLSharedEvent> _Nullable)newSharedEvent;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newSharedEventWithHandle:	- (id<MTLSharedEvent> _Nullable)newSharedEventWithHandle:(MTLSharedEventHandle * _Nonnull)sharedEventHandle;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newIOHandleWithURL:error:	- (id<MTLIOFileHandle> _Nullable)newIOHandleWithURL:(NSURL * _Nonnull)url error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newIOCommandQueueWithDescriptor:error:	- (id<MTLIOCommandQueue> _Nullable)newIOCommandQueueWithDescriptor:(MTLIOCommandQueueDescriptor * _Nonnull)descriptor error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newIOHandleWithURL:compressionMethod:error:	- (id<MTLIOFileHandle> _Nullable)newIOHandleWithURL:(NSURL * _Nonnull)url compressionMethod:(MTLIOCompressionMethod)compressionMethod error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newIOFileHandleWithURL:error:	- (id<MTLIOFileHandle> _Nullable)newIOFileHandleWithURL:(NSURL * _Nonnull)url error:(NSError *  _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newIOFileHandleWithURL:compressionMethod:error:	- (id<MTLIOFileHandle> _Nullable)newIOFileHandleWithURL:(NSURL * _Nonnull)url compressionMethod:(MTLIOCompressionMethod)compressionMethod error:(NSError *  _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	sparseTileSizeWithTextureType:pixelFormat:sampleCount:	- (MTLSize)sparseTileSizeWithTextureType:(MTLTextureType)textureType pixelFormat:(MTLPixelFormat)pixelFormat sampleCount:(NSUInteger)sampleCount;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	sparseTileSizeInBytes	@property (atomic, readonly) NSUInteger sparseTileSizeInBytes;	yes
+MTLDevice	8.0	sdk16 body		NSObject	optional	method	yes	convertSparsePixelRegions:toTileRegions:withTileSize:alignmentMode:numRegions:	- (void)convertSparsePixelRegions:(const MTLRegion * _Nonnull)pixelRegions toTileRegions:(MTLRegion * _Nonnull)tileRegions withTileSize:(MTLSize)tileSize alignmentMode:(MTLSparseTextureRegionAlignmentMode)mode numRegions:(NSUInteger)numRegions;	yes
+MTLDevice	8.0	sdk16 body		NSObject	optional	method	yes	convertSparseTileRegions:toPixelRegions:withTileSize:numRegions:	- (void)convertSparseTileRegions:(const MTLRegion * _Nonnull)tileRegions toPixelRegions:(MTLRegion * _Nonnull)pixelRegions withTileSize:(MTLSize)tileSize numRegions:(NSUInteger)numRegions;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	sparseTileSizeInBytesForSparsePageSize:	- (NSUInteger)sparseTileSizeInBytesForSparsePageSize:(MTLSparsePageSize)sparsePageSize;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	sparseTileSizeWithTextureType:pixelFormat:sampleCount:sparsePageSize:	- (MTLSize)sparseTileSizeWithTextureType:(MTLTextureType)textureType pixelFormat:(MTLPixelFormat)pixelFormat sampleCount:(NSUInteger)sampleCount sparsePageSize:(MTLSparsePageSize)sparsePageSize;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	maxBufferLength	@property (atomic, readonly) NSUInteger maxBufferLength;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	counterSets	@property (atomic, readonly) NSArray<id<MTLCounterSet>> * _Nullable counterSets;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newCounterSampleBufferWithDescriptor:error:	- (id<MTLCounterSampleBuffer> _Nullable)newCounterSampleBufferWithDescriptor:(MTLCounterSampleBufferDescriptor * _Nonnull)descriptor error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	sampleTimestamps:gpuTimestamp:	- (void)sampleTimestamps:(MTLTimestamp * _Nonnull)cpuTimestamp gpuTimestamp:(MTLTimestamp * _Nonnull)gpuTimestamp;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newArgumentEncoderWithBufferBinding:	- (id<MTLArgumentEncoder> _Nonnull)newArgumentEncoderWithBufferBinding:(id<MTLBufferBinding>  _Nonnull)bufferBinding;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	supportsCounterSampling:	- (BOOL)supportsCounterSampling:(MTLCounterSamplingPoint)samplingPoint;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	supportsVertexAmplificationCount:	- (BOOL)supportsVertexAmplificationCount:(NSUInteger)count;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supportsDynamicLibraries	@property (atomic, readonly) BOOL supportsDynamicLibraries;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supportsRenderDynamicLibraries	@property (atomic, readonly) BOOL supportsRenderDynamicLibraries;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newDynamicLibrary:error:	- (id<MTLDynamicLibrary> _Nullable)newDynamicLibrary:(id<MTLLibrary>  _Nonnull)library error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newDynamicLibraryWithURL:error:	- (id<MTLDynamicLibrary> _Nullable)newDynamicLibraryWithURL:(NSURL * _Nonnull)url error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newBinaryArchiveWithDescriptor:error:	- (id<MTLBinaryArchive> _Nullable)newBinaryArchiveWithDescriptor:(MTLBinaryArchiveDescriptor * _Nonnull)descriptor error:(NSError *  _Nullable * _Nullable)error;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supportsRaytracing	@property (atomic, readonly) BOOL supportsRaytracing;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	accelerationStructureSizesWithDescriptor:	- (MTLAccelerationStructureSizes)accelerationStructureSizesWithDescriptor:(MTLAccelerationStructureDescriptor * _Nonnull)descriptor;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newAccelerationStructureWithSize:	- (id<MTLAccelerationStructure> _Nullable)newAccelerationStructureWithSize:(NSUInteger)size;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newAccelerationStructureWithDescriptor:	- (id<MTLAccelerationStructure> _Nullable)newAccelerationStructureWithDescriptor:(MTLAccelerationStructureDescriptor * _Nonnull)descriptor;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	heapAccelerationStructureSizeAndAlignWithSize:	- (MTLSizeAndAlign)heapAccelerationStructureSizeAndAlignWithSize:(NSUInteger)size;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	heapAccelerationStructureSizeAndAlignWithDescriptor:	- (MTLSizeAndAlign)heapAccelerationStructureSizeAndAlignWithDescriptor:(MTLAccelerationStructureDescriptor * _Nonnull)descriptor;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supportsFunctionPointers	@property (atomic, readonly) BOOL supportsFunctionPointers;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supportsFunctionPointersFromRender	@property (atomic, readonly) BOOL supportsFunctionPointersFromRender;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supportsRaytracingFromRender	@property (atomic, readonly) BOOL supportsRaytracingFromRender;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	supportsPrimitiveMotionBlur	@property (atomic, readonly) BOOL supportsPrimitiveMotionBlur;	yes
+MTLDevice	8.0	sdk16 body		NSObject	required	property	no	maximumConcurrentCompilationTaskCount	@property (atomic, readonly) NSUInteger maximumConcurrentCompilationTaskCount;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newResidencySetWithDescriptor:error:	- (id<MTLResidencySet> _Nullable)newResidencySetWithDescriptor:(MTLResidencySetDescriptor * _Nonnull)desc error:(NSError * _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	tensorSizeAndAlignWithDescriptor:	- (MTLSizeAndAlign)tensorSizeAndAlignWithDescriptor:(MTLTensorDescriptor * _Nonnull)descriptor;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newTensorWithDescriptor:error:	- (id<MTLTensor> _Nullable)newTensorWithDescriptor:(MTLTensorDescriptor * _Nonnull)descriptor error:(NSError * _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	functionHandleWithFunction:	- (id<MTLFunctionHandle> _Nullable)functionHandleWithFunction:(id<MTLFunction>  _Nonnull)function;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newCommandAllocator	- (id<MTL4CommandAllocator> _Nullable)newCommandAllocator;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newCommandAllocatorWithDescriptor:error:	- (id<MTL4CommandAllocator> _Nullable)newCommandAllocatorWithDescriptor:(MTL4CommandAllocatorDescriptor * _Nonnull)descriptor error:(NSError *  _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newMTL4CommandQueue	- (id<MTL4CommandQueue> _Nullable)newMTL4CommandQueue;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newMTL4CommandQueueWithDescriptor:error:	- (id<MTL4CommandQueue> _Nullable)newMTL4CommandQueueWithDescriptor:(MTL4CommandQueueDescriptor * _Nonnull)descriptor error:(NSError * _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newCommandBuffer	- (id<MTL4CommandBuffer> _Nullable)newCommandBuffer;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newArgumentTableWithDescriptor:error:	- (id<MTL4ArgumentTable> _Nullable)newArgumentTableWithDescriptor:(MTL4ArgumentTableDescriptor * _Nonnull)descriptor error:(NSError * _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newTextureViewPoolWithDescriptor:error:	- (id<MTLTextureViewPool> _Nullable)newTextureViewPoolWithDescriptor:(MTLResourceViewPoolDescriptor * _Nonnull)descriptor error:(NSError * _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newCompilerWithDescriptor:error:	- (id<MTL4Compiler> _Nullable)newCompilerWithDescriptor:(MTL4CompilerDescriptor * _Nonnull)descriptor error:(NSError *  _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newArchiveWithURL:error:	- (id<MTL4Archive> _Nullable)newArchiveWithURL:(NSURL * _Nonnull)url error:(NSError *  _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newPipelineDataSetSerializerWithDescriptor:	- (id<MTL4PipelineDataSetSerializer> _Nonnull)newPipelineDataSetSerializerWithDescriptor:(MTL4PipelineDataSetSerializerDescriptor * _Nonnull)descriptor;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newBufferWithLength:options:placementSparsePageSize:	- (id<MTLBuffer> _Nullable)newBufferWithLength:(NSUInteger)length options:(MTLResourceOptions)options placementSparsePageSize:(MTLSparsePageSize)placementSparsePageSize;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	newCounterHeapWithDescriptor:error:	- (id<MTL4CounterHeap> _Nullable)newCounterHeapWithDescriptor:(MTL4CounterHeapDescriptor * _Nonnull)descriptor error:(NSError * _Nullable * _Nullable)error;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	sizeOfCounterHeapEntry:	- (NSUInteger)sizeOfCounterHeapEntry:(MTL4CounterHeapType)type;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	queryTimestampFrequency	- (uint64_t)queryTimestampFrequency;	no
+MTLDevice	8.0	sdk16 body		NSObject	required	method	yes	functionHandleWithBinaryFunction:	- (id<MTLFunctionHandle> _Nullable)functionHandleWithBinaryFunction:(id<MTL4BinaryFunction>  _Nonnull)function;	no
+MTLTexture	8.0	sdk16 body		MTLResource	-	-	-	-	-	-
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	rootResource	@property (atomic, readonly) id<MTLResource> _Nullable rootResource;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	parentTexture	@property (atomic, readonly) id<MTLTexture> _Nullable parentTexture;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	parentRelativeLevel	@property (atomic, readonly) NSUInteger parentRelativeLevel;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	parentRelativeSlice	@property (atomic, readonly) NSUInteger parentRelativeSlice;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	buffer	@property (atomic, readonly) id<MTLBuffer> _Nullable buffer;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	bufferOffset	@property (atomic, readonly) NSUInteger bufferOffset;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	bufferBytesPerRow	@property (atomic, readonly) NSUInteger bufferBytesPerRow;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	iosurface	@property (atomic, readonly) IOSurfaceRef _Nullable iosurface;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	iosurfacePlane	@property (atomic, readonly) NSUInteger iosurfacePlane;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	textureType	@property (atomic, readonly) MTLTextureType textureType;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	pixelFormat	@property (atomic, readonly) MTLPixelFormat pixelFormat;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	width	@property (atomic, readonly) NSUInteger width;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	height	@property (atomic, readonly) NSUInteger height;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	depth	@property (atomic, readonly) NSUInteger depth;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	mipmapLevelCount	@property (atomic, readonly) NSUInteger mipmapLevelCount;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	sampleCount	@property (atomic, readonly) NSUInteger sampleCount;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	arrayLength	@property (atomic, readonly) NSUInteger arrayLength;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	usage	@property (atomic, readonly) MTLTextureUsage usage;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	shareable	@property (atomic, readonly, getter=isShareable) BOOL shareable;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	framebufferOnly	@property (atomic, readonly, getter=isFramebufferOnly) BOOL framebufferOnly;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	firstMipmapInTail	@property (atomic, readonly) NSUInteger firstMipmapInTail;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	tailSizeInBytes	@property (atomic, readonly) NSUInteger tailSizeInBytes;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	isSparse	@property (atomic, readonly) BOOL isSparse;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	allowGPUOptimizedContents	@property (atomic, readonly) BOOL allowGPUOptimizedContents;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	compressionType	@property (atomic, readonly) MTLTextureCompressionType compressionType;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	gpuResourceID	@property (atomic, readonly) MTLResourceID gpuResourceID;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	method	yes	getBytes:bytesPerRow:bytesPerImage:fromRegion:mipmapLevel:slice:	- (void)getBytes:(void * _Nonnull)pixelBytes bytesPerRow:(NSUInteger)bytesPerRow bytesPerImage:(NSUInteger)bytesPerImage fromRegion:(MTLRegion)region mipmapLevel:(NSUInteger)level slice:(NSUInteger)slice;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	method	yes	replaceRegion:mipmapLevel:slice:withBytes:bytesPerRow:bytesPerImage:	- (void)replaceRegion:(MTLRegion)region mipmapLevel:(NSUInteger)level slice:(NSUInteger)slice withBytes:(const void * _Nonnull)pixelBytes bytesPerRow:(NSUInteger)bytesPerRow bytesPerImage:(NSUInteger)bytesPerImage;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	method	yes	getBytes:bytesPerRow:fromRegion:mipmapLevel:	- (void)getBytes:(void * _Nonnull)pixelBytes bytesPerRow:(NSUInteger)bytesPerRow fromRegion:(MTLRegion)region mipmapLevel:(NSUInteger)level;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	method	yes	replaceRegion:mipmapLevel:withBytes:bytesPerRow:	- (void)replaceRegion:(MTLRegion)region mipmapLevel:(NSUInteger)level withBytes:(const void * _Nonnull)pixelBytes bytesPerRow:(NSUInteger)bytesPerRow;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	method	yes	newTextureViewWithPixelFormat:	- (id<MTLTexture> _Nullable)newTextureViewWithPixelFormat:(MTLPixelFormat)pixelFormat;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	method	yes	newTextureViewWithPixelFormat:textureType:levels:slices:	- (id<MTLTexture> _Nullable)newTextureViewWithPixelFormat:(MTLPixelFormat)pixelFormat textureType:(MTLTextureType)textureType levels:(NSRange)levelRange slices:(NSRange)sliceRange;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	method	yes	newSharedTextureHandle	- (MTLSharedTextureHandle * _Nullable)newSharedTextureHandle;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	method	yes	newTextureViewWithDescriptor:	- (id<MTLTexture> _Nullable)newTextureViewWithDescriptor:(MTLTextureViewDescriptor * _Nonnull)descriptor;	no
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	swizzle	@property (nonatomic, readonly) MTLTextureSwizzleChannels swizzle;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	method	yes	newTextureViewWithPixelFormat:textureType:levels:slices:swizzle:	- (id<MTLTexture> _Nullable)newTextureViewWithPixelFormat:(MTLPixelFormat)pixelFormat textureType:(MTLTextureType)textureType levels:(NSRange)levelRange slices:(NSRange)sliceRange swizzle:(MTLTextureSwizzleChannels)swizzle;	yes
+MTLTexture	8.0	sdk16 body		MTLResource	required	property	no	sparseTextureTier	@property (atomic, readonly) MTLTextureSparseTier sparseTextureTier;	no

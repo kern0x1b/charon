@@ -1,0 +1,10 @@
+protocol	introduced	status	reasons	bases	section	kind	instance	selector	decl	in16
+PHLivePhotoFrame	10	sdk16 body			-	-	-	-	-	-
+PHLivePhotoFrame	10	sdk16 body			required	property	no	image	@property (atomic, readonly) CIImage * _Nonnull image;	yes
+PHLivePhotoFrame	10	sdk16 body			required	property	no	time	@property (atomic, readonly) CMTime time;	yes
+PHLivePhotoFrame	10	sdk16 body			required	property	no	type	@property (nonatomic, readonly) PHLivePhotoFrameType type;	yes
+PHLivePhotoFrame	10	sdk16 body			required	property	no	renderScale	@property (atomic, readonly) CGFloat renderScale;	yes
+PHPhotoLibraryAvailabilityObserver	13	sdk16 body		NSObject	-	-	-	-	-	-
+PHPhotoLibraryAvailabilityObserver	13	sdk16 body		NSObject	required	method	yes	photoLibraryDidBecomeUnavailable:	- (void)photoLibraryDidBecomeUnavailable:(PHPhotoLibrary * _Nonnull)photoLibrary;	yes
+PHPhotoLibraryChangeObserver	8	sdk16 body		NSObject	-	-	-	-	-	-
+PHPhotoLibraryChangeObserver	8	sdk16 body		NSObject	required	method	yes	photoLibraryDidChange:	- (void)photoLibraryDidChange:(PHChange * _Nonnull)changeInstance;	yes
