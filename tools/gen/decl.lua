@@ -259,3 +259,123 @@ function resolve_kind(type_text, index, depth)
     end
     return "struct"
 end
+
+-- The scans of strip_macros: each is run on every run of word characters (the \b positions of the oracle's patterns). scan(text, a, b)
+-- returns the position after a match that starts at the run a..b, or nil. The classes are ASCII ranges, not the locale's.
+
+-- The availability macro of a declaration: a word that holds AVAILABLE, DEPRECATED or OBSOLETED, with its argument list.
+local function availability_scan(text, a, b)
+    local word = string.sub(text, a, b)
+    if not (string.find(word, "AVAILABLE", 1, true) or string.find(word, "DEPRECATED", 1, true)
+            or string.find(word, "OBSOLETED", 1, true)) then
+        return nil
+    end
+    local open = string.match(text, "^[ \t\n\r\f\v]*()", b + 1)
+    if string.sub(text, open, open) ~= "(" then
+        return nil
+    end
+    return arguments_end(text, open)
+end
+
+-- The prefixes of the SDK's call-like macros: API_DEPRECATED("..."), NS_REFINED_FOR_SWIFT, __TVOS_PROHIBITED and the like.
+local CALL_MACRO_PREFIXES = {"API", "NS", "OS", "CF", "__"}
+
+-- A call-like macro: a prefix, an optional _, one capital and then capitals, digits and _, then its argument list.
+local function call_macro_scan(text, a, b)
+    for _, prefix in ipairs(CALL_MACRO_PREFIXES) do
+        if string.sub(text, a, a + #prefix - 1) == prefix then
+            local r = a + #prefix
+            if string.sub(text, r, r) == "_" then
+                r = r + 1
+            end
+            if not string.match(text, "^[A-Z]", r) then
+                return nil
+            end
+            local stop = string.match(text, "^[A-Z0-9_]*()", r)
+            local open = string.match(text, "^[ \t\n\r\f\v]*()", stop)
+            if string.sub(text, open, open) ~= "(" then
+                return nil
+            end
+            return arguments_end(text, open)
+        end
+    end
+    return nil
+end
+
+-- A name macro with no argument list: a whole word of API_, NS_, OS_ or CF_ and capitals, or of __ and capitals.
+local NAME_MACRO_PATTERNS = {"^API_[A-Z][A-Z0-9_]*$", "^NS_[A-Z][A-Z0-9_]*$", "^OS_[A-Z][A-Z0-9_]*$", "^CF_[A-Z][A-Z0-9_]*$",
+                             "^__[A-Z][A-Z0-9_]*$"}
+
+local function name_macro_scan(text, a, b)
+    local word = string.sub(text, a, b)
+    for _, pattern in ipairs(NAME_MACRO_PATTERNS) do
+        if string.match(word, pattern) then
+            return b + 1
+        end
+    end
+    return nil
+end
+
+-- __attribute__((...)) of the compiler, with its two argument lists.
+local function attribute_scan(text, a, b)
+    if string.sub(text, a, b) ~= "__attribute__" then
+        return nil
+    end
+    local open = string.match(text, "^[ \t\n\r\f\v]*()", b + 1)
+    if string.sub(text, open, open + 1) ~= "((" then
+        return nil
+    end
+    local stop = arguments_end(text, open + 1)
+    if stop and string.sub(text, stop, stop) == ")" then
+        return stop + 1
+    end
+    return nil
+end
+
+-- An NS_ enumeration or option macro (NS_ENUM, NS_OPTIONS and the like), with its argument list when it has one.
+local function enum_macro_scan(text, a, b)
+    if not string.match(string.sub(text, a, b), "^NS_[A-Z_]+$") then
+        return nil
+    end
+    local open = string.match(text, "^[ \t\n\r\f\v]*()", b + 1)
+    if string.sub(text, open, open) == "(" then
+        local stop = arguments_end(text, open)
+        if stop then
+            return stop
+        end
+    end
+    return b + 1
+end
+
+-- The text with each match of a scan replaced by a space. The scan is tried at each run of word characters, left to right.
+local function blank_matches(text, scan)
+    local out, copied, pos = {}, 1, 1
+    while true do
+        local a, b = string.find(text, "[A-Za-z0-9_]+", pos)
+        if a == nil then
+            break
+        end
+        local stop = scan(text, a, b)
+        if stop then
+            table.insert(out, string.sub(text, copied, a - 1))
+            table.insert(out, " ")
+            copied, pos = stop, stop
+        else
+            pos = b + 1
+        end
+    end
+    table.insert(out, string.sub(text, copied))
+    return table.concat(out)
+end
+
+-- The declaration without the availability and SDK macros in it (the oracle's strip_macros, its clean text): the availability
+-- macros, the call-like and name macros, __attribute__ and the NS_ enumeration macros are each replaced by a space, and the
+-- whitespace is single-spaced. The availability text the oracle also returns is not needed by the callers and is not kept.
+function strip_macros(text)
+    local clean = blank_matches(text, availability_scan)
+    clean = blank_matches(clean, call_macro_scan)
+    clean = blank_matches(clean, name_macro_scan)
+    clean = blank_matches(clean, attribute_scan)
+    clean = blank_matches(clean, enum_macro_scan)
+    return strings.collapse(clean)
+end

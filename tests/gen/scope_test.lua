@@ -1,0 +1,165 @@
+-- Fixture-free checks of the scope command's rules: the state of a row, the gap reason of a member (the extractor's skipped list, read
+-- from a text), the work queue's order, the tie-out arithmetic, and the escape of non-ASCII text. No SDK is read or parsed. Run:
+-- xmake l tests/gen/scope_test.lua (exits 1 on any failure).
+
+local TOOLS = path.join(os.scriptdir(), "..", "..", "tools")
+
+local scope = import("gen.cmd_scope", {rootdir = TOOLS, anonymous = true})
+local surface = import("gen.surface", {rootdir = TOOLS, anonymous = true})
+local coverage = import("gen.coverage", {rootdir = TOOLS, anonymous = true})
+local strings = import("gen.strings", {rootdir = TOOLS, anonymous = true})
+
+local function checks()
+    local failures = 0
+    local function check(ok, label)
+        if not ok then
+            failures = failures + 1
+            print("FAIL " .. label)
+        end
+    end
+    return check, function() return failures end
+end
+
+-- A framework's facts with nothing in them: each test sets the fields it reads.
+local function empty_context()
+    return {
+        led6 = {}, registry = {}, protocols = {}, proto = {}, functions = {}, class_decisions = {}, spec_by_api = {},
+        stub_reason_of = function() return nil end, stub_keys = {}, gap_of = nil,
+    }
+end
+
+local function test_states(check)
+    local ctx = empty_context()
+    local function missing(kind, api)
+        ctx.led6[surface.key(kind, api)] = "missing"
+    end
+    missing("method", "-[Thing reset]")
+    missing("method", "-[Thing setLevel:error:]")
+    missing("method", "-[Thing lift]")
+    ctx.led6[surface.key("method", "-[Thing lift]")] = "header-ok"
+    ctx.stub_keys["-[Thing reset]"] = true
+    ctx.spec_by_api["-[Thing reset]"] = {kind = "method", api = "-[Thing reset]"}
+    ctx.spec_by_api["-[Thing setLevel:error:]"] = {kind = "method", api = "-[Thing setLevel:error:]"}
+    check(scope.row_state("method", "-[Thing items]", "objc", ctx) == "implemented at 6.1.3: the release answers",
+          "a row the 6.1.3 ledger does not list is implemented there")
+    check(scope.row_state("method", "-[Thing lift]", "objc", ctx) == "header-only (lift): no symbol to generate",
+          "a header-ok row is header-only")
+    check(scope.row_state("method", "-[Thing reset]", "objc", ctx) == "generable stub", "a stubbed member is a generable stub")
+    ctx.stub_reason_of = function(key) return key == "-[Thing setLevel:error:]" and "type not declared for iOS: NSFoo" or nil end
+    check(scope.row_state("method", "-[Thing setLevel:error:]", "objc", ctx) == "not declared for iOS",
+          "a member whose type iOS does not declare is not declared for iOS")
+    ctx.registry["-[Thing legacy]"] = true
+    missing("method", "-[Thing legacy]")
+    check(scope.row_state("method", "-[Thing legacy]", "objc", ctx) == "overridden", "a registry row answers the state first")
+    missing("property", "Thing.swiftOnly")
+    check(scope.row_state("property", "Thing.swiftOnly", "swift", ctx) == "swift: needs the Swift interface source",
+          "a swift row needs the Swift interface")
+    missing("constant", "FKLimit")
+    ctx.spec_by_api["FKLimit"] = {owned = "-", tbd = "exported", value_status = "found"}
+    check(scope.row_state("constant", "FKLimit", "objc", ctx) == "generable constant", "an exported string constant is generable")
+    missing("class", "Thing")
+    ctx.class_decisions["Thing"] = {generated = false, reason = "the package's own sources define the class"}
+    check(scope.row_state("class", "Thing", "objc", ctx) == "class object: hand code covers it (not generated)",
+          "a class the package defines is hand code")
+    missing("method", "-[Other sel]")
+    ctx.gap_of = function() return "spelled by the headers, not parsed (parse gap)" end
+    check(scope.row_state("method", "-[Other sel]", "objc", ctx) == "spelled by the headers, not parsed (parse gap)",
+          "a member the spec does not hold takes its gap reason")
+    missing("function", "CFOo()")
+    ctx.functions["CFOo()"] = {status = "generable", reasons = ""}
+    check(scope.row_state("function", "CFOo()", "objc", ctx) == "C function: generable stub (trace layer)",
+          "a generable C function is a stub of the trace layer")
+    missing("method", "-[Pl reset]")
+    ctx.protocols["Pl"] = true
+    ctx.proto["Pl"] = {status = "transcribed", members = {{selector = "reset", in16 = "-"}}}
+    check(scope.row_state("method", "-[Pl reset]", "objc", ctx) == "protocol member: in the transcribed protocol header",
+          "a protocol member of a transcribed protocol is in its header")
+end
+
+local function test_gaps_and_queue(check)
+    check(scope.gap_reason("-[Thing init]", nil) ==
+          "init/new: not spelled by the 26.2 headers (implicit, or unavailable by a macro)", "a bare init is implicit")
+    check(scope.gap_reason("-[Thing init]", "no Objective-C or C header") ==
+          "init/new: not spelled by the 26.2 headers (implicit, or unavailable by a macro)", "an init stays implicit in a skipped framework")
+    check(scope.gap_reason("-[Thing reset]", nil) == "not in the extractor's parse (the framework is parsed and declares no such member)",
+          "a member of a parsed framework that the spec lacks is not in the parse")
+    check(scope.gap_reason("-[Thing reset]", "no Objective-C or C header; Swift interface only")
+          == "framework skipped by the extractor: no Objective-C or C header; Swift interface only",
+          "a member of a framework the extractor skips takes the list's reason")
+    check(scope.queue_item("generable stub") == nil, "a decided state is not queued")
+    check(scope.queue_item("not in the extractor's parse (the framework is parsed and declares no such member)")
+          == "member the parse of a parsed framework does not declare", "a member the parse does not hold is queued")
+    check(scope.queue_item("framework skipped by the extractor: x") == "member of a framework the extractor skips",
+          "a member of a skipped framework is queued")
+
+    local function item(fw, api, rank, apps, seq)
+        return {fw = fw, api = api, unranked = rank == nil, rank = rank or 0, apps = apps, seq = seq}
+    end
+    local queued = {
+        item("Y", "-[Y c]", nil, 50, 1),
+        item("X", "-[X b]", 2, 100, 2),
+        item("X", "-[X a]", 1, 5, 3),
+        item("X", "-[X d]", 1, 9, 4),
+        item("X", "z", nil, 50, 5),
+        item("X", "a", nil, 50, 6),
+        item("X", "-[X b]", 1, 9, 7),
+    }
+    local sorted = scope.sort_queue(queued)
+    local got = {}
+    for _, q in ipairs(sorted) do
+        table.insert(got, q.seq)
+    end
+    check(table.concat(got, ",") == "7,4,3,2,6,5,1", "the queue is ranked first, by apps, by framework and api, then by table order: got "
+          .. table.concat(got, ","))
+end
+
+local function test_tie_out(check)
+    local md, console = scope.tie_out(10, 10)
+    check(md == "Tie-out: 10 surface rows, 10 rows in the state totals: tie.", "a tie-out that ties reads tie")
+    check(console == "tie-out: 10 surface rows, 10 in state totals", "the console tie-out line")
+    local untied = scope.tie_out(10, 9)
+    check(untied == "Tie-out: 10 surface rows, 9 rows in the state totals: DO NOT TIE.", "a tie-out that does not tie says so")
+    local ranked = scope.ranked_totals({a = 2, b = 3, c = 2}, {"a", "b", "c"})
+    local names = {}
+    for _, r in ipairs(ranked) do
+        table.insert(names, r.state)
+    end
+    check(table.concat(names, ",") == "b,a,c", "state totals: most first, a tie in the order first counted")
+end
+
+local function test_escapes(check)
+    check(strings.backslash_replace("norwegianBokm\195\165l") == "norwegianBokm\\xe5l", "a code point below 0x100 is \\xhh")
+    check(strings.backslash_replace("a\226\128\153b") == "a\\u2019b", "a code point below 0x10000 is \\uhhhh")
+    check(strings.backslash_replace("x\240\159\152\128") == "x\\U0001f600", "a code point above is \\Uhhhhhhhh")
+    check(strings.backslash_replace("plain") == "plain", "ASCII passes through")
+end
+
+local LIST_TEXT = [==[# the frameworks of the SDK with no declaration the extractor reads, and why: one line each
+Charts	no Objective-C or C header; Swift interface only
+AutomaticAssessmentConfiguration/AACClient	no public header in Headers/ and no module map header
+]==]
+
+local function test_coverage(check)
+    local listed = coverage.parse(LIST_TEXT)
+    check(listed["Charts"] == "no Objective-C or C header; Swift interface only", "the list gives a framework's reason")
+    check(listed["AutomaticAssessmentConfiguration/AACClient"] == "no public header in Headers/ and no module map header",
+          "a subframework is its own entry")
+    local count = 0
+    for _ in pairs(listed) do
+        count = count + 1
+    end
+    check(count == 2, "the comment line is no entry (got " .. count .. ")")
+end
+
+function main()
+    local check, failures = checks()
+    test_states(check)
+    test_gaps_and_queue(check)
+    test_tie_out(check)
+    test_escapes(check)
+    test_coverage(check)
+    print("scope test: " .. (failures() == 0 and "OK" or ("FAIL " .. failures())))
+    if failures() > 0 then
+        os.exit(1)
+    end
+end

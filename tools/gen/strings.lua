@@ -60,3 +60,34 @@ function lines(text)
     local marked = string.gsub(universal(text), "[\11\12\28-\30]", "\n")
     return tsv.lines(marked)
 end
+
+-- The text with each character that is not ASCII written as an escape, as Python's encode("ascii", "backslashreplace") writes it: \xhh
+-- for a code point below 0x100, \uhhhh below 0x10000 and \Uhhhhhhhh above. The text is UTF-8, read as code points.
+function backslash_replace(text)
+    if not string.find(text, "[\128-\255]") then
+        return text
+    end
+    local out, i, n = {}, 1, #text
+    while i <= n do
+        local b = string.byte(text, i)
+        if b < 128 then
+            table.insert(out, string.char(b))
+            i = i + 1
+        else
+            local length = b >= 0xF0 and 4 or (b >= 0xE0 and 3 or 2)
+            local code = b & (0xFF >> (length + 1))
+            for k = 1, length - 1 do
+                code = (code << 6) | (string.byte(text, i + k) & 0x3F)
+            end
+            if code < 0x100 then
+                table.insert(out, string.format("\\x%02x", code))
+            elseif code < 0x10000 then
+                table.insert(out, string.format("\\u%04x", code))
+            else
+                table.insert(out, string.format("\\U%08x", code))
+            end
+            i = i + length
+        end
+    end
+    return table.concat(out)
+end
