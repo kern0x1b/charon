@@ -38,13 +38,14 @@ function ledger_status(corpus, fw, release_dir)
     return out
 end
 
--- The surface table, read once: framework -> (kind, api) key -> the surface row (demand, impl-lead, deprecation). Read a line at a
--- time from the file, so the 16 MB table is never held as one string.
+-- The surface table, read once: framework -> (kind, api) key -> the surface row (demand, impl-lead, deprecation), and framework -> the
+-- keys in the order the table first names them. A key that the table names again keeps its first place and takes the later row, as
+-- a Python dict does. Read a line at a time from the file, so the 16 MB table is never held as one string.
 local function surface(corpus)
     if surface_memo[corpus] then
         return surface_memo[corpus]
     end
-    local rows, order = {}, {}
+    local rows, order, sequence = {}, {}, {}
     local header = nil
     for line in io.lines(path.join(corpus, "sdk-26.2-surface.tsv")) do
         local cells = tsv.fields(line)
@@ -57,12 +58,17 @@ local function surface(corpus)
             end
             if rows[row.framework] == nil then
                 rows[row.framework] = {}
+                sequence[row.framework] = {}
                 table.insert(order, row.framework)
             end
-            rows[row.framework][key(row.kind, row.api)] = row
+            local k = key(row.kind, row.api)
+            if rows[row.framework][k] == nil then
+                table.insert(sequence[row.framework], k)
+            end
+            rows[row.framework][k] = row
         end
     end
-    surface_memo[corpus] = {rows = rows, order = order}
+    surface_memo[corpus] = {rows = rows, order = order, sequence = sequence}
     return surface_memo[corpus]
 end
 
@@ -71,10 +77,46 @@ function surface_rows(corpus, fw)
     return surface(corpus).rows[fw] or {}
 end
 
+-- The surface rows of one framework as a list, in the order the table first names each (kind, api); each is the row the table
+-- gives that key last. The bucket of bucket.tsv is written in this order.
+function ordered_rows(corpus, fw)
+    local data = surface(corpus)
+    local out = {}
+    for _, k in ipairs(data.sequence[fw] or {}) do
+        table.insert(out, data.rows[fw][k])
+    end
+    return out
+end
+
 -- Every framework the surface table names, in the table's order.
 function surface_frameworks(corpus)
     local known = surface(corpus).order
     return table.move(known, 1, #known, 1, {})
+end
+
+-- Every row of the surface table, a row the table names twice included: {rows = fw -> the framework's rows in the table's order, order =
+-- the frameworks in the order the table first names them}. The scope counts each row, so it cannot use the map of surface_rows, which
+-- keeps one row per key. Read a line at a time, and the empty lines skipped, as csv.DictReader skips them.
+function all_rows(corpus)
+    local rows, order = {}, {}
+    local header = nil
+    for line in io.lines(path.join(corpus, "sdk-26.2-surface.tsv")) do
+        local cells = tsv.fields(line)
+        if header == nil then
+            header = cells
+        elseif line ~= "" then
+            local row = {}
+            for column, name in ipairs(header) do
+                row[name] = cells[column]
+            end
+            if rows[row.framework] == nil then
+                rows[row.framework] = {}
+                table.insert(order, row.framework)
+            end
+            table.insert(rows[row.framework], row)
+        end
+    end
+    return {rows = rows, order = order}
 end
 
 -- class -> the list of {item, value_kind, value, build} from the host oracle capture, for one framework.
