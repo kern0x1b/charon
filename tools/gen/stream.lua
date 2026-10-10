@@ -13,6 +13,8 @@ local SENTINEL = "\127END "
 -- it started by that id (kill_tree): a kill of the wrapper alone leaves them running (measured: an orphaned `sleep` outlived a raising
 -- callback, review r3 G6).
 local PID_LINE = "\127PID "
+-- The checks, and the milliseconds between them, that kill_tree makes before it reports a process still running (one second at most):
+-- a process just signalled can still show in ps for a moment, and a check that passes first time costs nothing more.
 local KILL_CHECKS = 20
 local KILL_WAIT = 50
 local CHUNK = 1 << 20
