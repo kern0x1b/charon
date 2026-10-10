@@ -6,9 +6,10 @@
 local BOOLEAN_OPTIONS = {all = true, record = true, members = true, catalyst = true}
 local VALUE_OPTIONS = {tree = true, framework = true, ledger = true, sdk = true, owned = true, measured = true,
                        ["ios-constants"] = true, repin = true, class = true, out = true, limit = true, selector = true,
-                       ["catalyst-sdk"] = true, coordination = true, ["ipsw-cache"] = true}
+                       ["catalyst-sdk"] = true, coordination = true, ["ipsw-cache"] = true, against = true, reference = true,
+                       disabled = true}
 local COMMANDS = {"input", "pin", "gen", "check", "trace", "diff", "sources", "doc", "scope", "protocols",
-                  "functions", "objc", "swift", "behaviour", "members"}
+                  "functions", "objc", "swift", "behaviour", "members", "classify"}
 
 -- The options after the command: --name value, or a flag. Returns a table keyed by the option's name with dashes as underscores.
 local function parse(argv)
