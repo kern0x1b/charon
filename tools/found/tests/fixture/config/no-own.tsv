@@ -1,0 +1,2 @@
+# The reviewed classification of the fixture sweep's frameworks with no shard whose headers declare nothing of their own (name, TAB, class, TAB, target, TAB, reason).
+FixtureUmbrella	umbrella	FixtureUmbrella/FixtureNested	the umbrella of the fixture: its header includes its nested framework, which declares the fixture's values (Accelerate's shape)

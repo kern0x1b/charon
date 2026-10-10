@@ -7,9 +7,7 @@ Compression	the compression library's C API (compression.modulemap, compression.
 Darwin	the Darwin umbrella of the BSD headers (Darwin.modulemap, first header bitstring.h); not one of the ruling's seven
 DispatchIntrospection	the introspection hooks of libdispatch (dispatch/introspection.h), a second module of dispatch.modulemap; Dispatch itself is one of the seven
 ICU	the ICU Unicode library's C headers (unicode.modulemap, first header unicode/uconfig.h); not one of the ruling's seven
-MacTypes	the classic typedef header MacTypes.h (MacTypes.modulemap); typedefs only; not one of the ruling's seven
 MachO	the Mach-O image-format headers (DarwinBasic.modulemap, umbrella mach-o); a file format, not one of the seven
-ObjectiveC	the Objective-C runtime headers (ObjectiveC.modulemap, umbrella objc); the runtime's C API; not one of the seven
 SQLite3	the SQLite library's C API (SQLite3.modulemap, sqlite3.h); not one of the ruling's seven
 TargetConditionals	the target-platform macro header (DarwinFoundation1.modulemap, _modules/_TargetConditionals.h); macros only; not one of the seven
 XPCOverlay	a second module of xpc.modulemap (XPC is one of the seven); not one of the ruling's seven

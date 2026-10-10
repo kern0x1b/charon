@@ -34,6 +34,9 @@
 --   IR_REPIN   if set, write mode re-records the shards whose libclang identity differs from this machine's (the version, the
 --                 digest of the dylib it loads, and the target). Without it a difference is refused in both modes: a re-pin is a
 --                 reviewed event (review F8).
+--   IR_NO_OWN  the reviewed list of the frameworks with no shard whose headers declare nothing of their own (default
+--                 tools/found/config/no-own.tsv). write and check fail on a framework with no shard that is neither in the unparsed list nor
+--                 in this one, and on a row that names a framework with a shard or no framework of the SDK (coordinator ruling 5).
 local SDK = os.getenv("IR_SDK")
 if not SDK then raise("IR_SDK must name the iPhoneOS SDK (for example .../iPhoneOS26.2.sdk)") end
 SDK = path.absolute(SDK)
@@ -62,15 +65,17 @@ local function decls(args)
     end
     return lines
 end
+local NO_OWN = os.getenv("IR_NO_OWN") or path.join("tools", "found", "config", "no-own.tsv")
 -- the target the extractor compiles for (decls owns it: decls --target)
 local TRIPLE = (decls({"--target"})[1]:gsub("%s+$", ""))
 local COLUMNS = 18
--- The columns a shard keeps: kind, usr, container, name, side, type (typedef rows only), avail, message, declhash. The IR's other columns are derived or are
+-- The columns a shard keeps: kind, usr, container, name, side, type (typedef rows only), avail, message, declhash, value (an enum constant's
+-- value as clang evaluates it: the other rows leave it "-", ruling 2). The IR's other columns are derived or are
 -- build products: framework is the folder, availhash is derived from avail, header and line are for documentation, decl is for the
 -- docs (ruling D8: re-derived from clang at doc time), and type, params, nullab, attrs and value are inside the declaration hash.
 -- name and side are stored only where the USR does not give them (shard.lua). avail and message are rendered by the generator
 -- (avail.lua, ruling D7).
-local SHARD_NAMES = "kind,usr,container,name,side,type,params,attrs,availability,message,declhash"
+local SHARD_NAMES = "kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value"
 local shard = import("shard", {rootdir = path.join(os.curdir(), "tools", "found")})
 local avail = import("avail", {rootdir = path.join(os.curdir(), "tools", "found")})
 -- the one atomic writer of the generators (tools/atomic.lua, shared with tools/gen/emit.lua)
@@ -257,11 +262,17 @@ for _, f in ipairs(frameworks) do
             -- the typed set: a column is in a shard only when a committed stage reads it (ruling of 2026-10-10, per column). The type is
             -- the return type of a method or a function, the field or variable type (with its qualifiers), the underlying type of a
             -- typedef; the parameters are the parameter types and names, which the trace stubs read (the NSError ** detection, named by
-            -- v-gen); the attributes are the property's, which the property stubs read. The nullability and the value have no committed
-            -- reader and stay in the full IR; decl and the locations are not in a shard.
+            -- v-gen); the attributes are the property's, which the property stubs read. The nullability has no committed
+            -- reader and stays in the full IR; the value is an enum constant's (ruling 2); decl and the locations are not in a shard.
+            -- the value is an enum constant's (the constants record reads it); a row of any other kind has none, and the write refuses one
+            -- that has (the declaration hash covers the value cell as written, so the file must not leave out a value the hash covers)
+            if kind ~= "enumconst" and row[14] ~= "-" then
+                raise(f.name .. ": a " .. kind .. " row has a value; only an enum constant has one: " .. usr)
+            end
+            local value = kind == "enumconst" and row[14] or "-"
             if kind ~= "accessor" then
                 table.insert(lines, table.concat({kind, usr, row[4], stored_name, stored_side, row[11], row[12], row[13], row[9],
-                    row[18], row[15]}, "\t"))
+                    row[18], row[15], value}, "\t"))
             end
             table.insert(full, table.concat(row, "\t") .. "\n")
         end
@@ -271,6 +282,34 @@ for _, f in ipairs(frameworks) do
         table.insert(unparsed, {f.name, reason})
         table.insert(full, unparsed_row(f.name, reason))
     end
+end
+
+-- The contract (ruling 5): every framework of the sweep with no shard is classified, none silently: it is in the unparsed list (the
+-- extractor's reason) or in no-own.tsv (its class and reason). A listed name must be a framework of the sweep with no shard.
+if MODE == "write" or MODE == "check" then
+    local classified = {}
+    for _, u in ipairs(unparsed) do classified[u[1]] = "unparsed" end
+    local no_own = {}
+    for line in (os.isfile(NO_OWN) and io.readfile(NO_OWN) or ""):gmatch("[^\n]+") do
+        local name = line:match("^([^\t#][^\t]*)\t")
+        if name then no_own[name] = true end
+    end
+    local unclassified, stale, both = {}, {}, {}
+    local swept = {}
+    for _, f in ipairs(frameworks) do
+        swept[f.name] = true
+        if no_own[f.name] and classified[f.name] then table.insert(both, f.name) end
+        if not shards[f.name] and not classified[f.name] and not no_own[f.name] then table.insert(unclassified, f.name) end
+    end
+    for name in pairs(no_own) do
+        if not swept[name] or shards[name] then table.insert(stale, name) end
+    end
+    table.sort(unclassified); table.sort(stale); table.sort(both)
+    if #unclassified > 0 then
+        raise("a framework with no shard is neither unparsed nor in " .. NO_OWN .. ": " .. table.concat(unclassified, " "))
+    end
+    if #stale > 0 then raise(NO_OWN .. " names a framework that has a shard or is not in the sweep: " .. table.concat(stale, " ")) end
+    if #both > 0 then raise(NO_OWN .. " and the unparsed list both name: " .. table.concat(both, " ")) end
 end
 
 -- The gaps: each framework of the snapshot (IR_SNAPSHOT, one folder per framework) that has no shard, named with the extractor's own

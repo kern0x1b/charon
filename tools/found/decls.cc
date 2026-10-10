@@ -2,14 +2,15 @@
 //
 // usage: decls --version | --target | --digest TEXT | --list
 //        decls [--doc] [--timeout SECONDS] <framework>
-// The SDK is IR_SDK. <framework> is a name --list prints: a framework of System/Library/Frameworks (a nested one is Outer/Inner), or a
+// The SDK is IR_SDK. <framework> is a name --list prints: a framework of System/Library/Frameworks or System/Library/SubFrameworks (a nested one is Outer/Inner), or a
 // usr/include module the sweep covers (IR_CONFIG's usr-modules.tsv). decls resolves the framework's headers itself, from its module map, by the rule
 // of ir.lua's sweep (module_headers below): the sweep and the doc mode share that one code path. A framework's headers become one
 // unsaved buffer of #import lines; a usr/include module is imported as the module its own map declares (-fmodule-map-file, -fmodules,
 // @import), so the module build compiles its headers as the SDK does. Nothing is written to disk. IR_RESOURCE, if set, is the
 // compiler's resource directory (default: libclang's).
 // A framework's own declarations are those under its Headers/; a usr/include module's are those written in the directories of its
-// headers. --target prints the target the rows are compiled for.
+// headers, or in its header when that header is in the include root (the root holds other modules' headers). --target prints the target
+// the rows are compiled for.
 // IR_CONFIG names the reviewed configuration folder (default tools/found/config, read from the working directory: decls runs from the
 // repository root, as ir.lua does). usr-modules.tsv leaves usr/include modules out of the sweep, each row with its reason; a row that no
 // module map declares, or a file that cannot be read, is an error. fallback.tsv lists the frameworks with no module-map header that are
@@ -422,7 +423,7 @@ struct Record {
 
 struct Context {
   std::string framework;
-  std::vector<std::string> own;  // the directories whose headers are the framework's own, each with its trailing slash
+  std::vector<std::string> own;  // the directories whose headers are the framework's own, each with its trailing slash; or one header, with none
   CXTranslationUnit tu;
   std::vector<Record> records;  // every declaration in source order; resolve() writes them
   std::set<std::string> tags;   // the tags emitted, by USR: each is one declaration
@@ -440,10 +441,13 @@ bool in_framework(CXCursor c, const Context& ctx, std::string* file_out, unsigne
   unsigned line = 0, column = 0, offset = 0;
   clang_getExpansionLocation(loc, &file, &line, &column, &offset);
   if (!file) return false;
-  std::string path = text(clang_getFileName(file));
-  for (const std::string& dir : ctx.own) {
-    if (path.compare(0, dir.size(), dir) == 0) {
-      *file_out = path.substr(dir.size());
+  // the path lexically normal: a header reached as Headers/../Frameworks/Nested.framework/... is the nested framework's, not the umbrella's
+  std::string path = std::filesystem::path(text(clang_getFileName(file))).lexically_normal().string();
+  for (const std::string& own : ctx.own) {
+    // a directory (with its trailing slash) owns the headers under it; a header with no slash owns that header alone
+    bool directory = own.back() == '/';
+    if (directory ? path.compare(0, own.size(), own) == 0 : path == own) {
+      *file_out = directory ? path.substr(own.size()) : path.substr(path.find_last_of('/') + 1);
       *line_out = line;
       return true;
     }
@@ -1331,8 +1335,8 @@ std::vector<std::string> module_headers(const fs::path& map, const fs::path& hea
   return out;
 }
 
-// The headers a framework is parsed from: its module map's list. A framework with no module-map header reads its umbrella header, else
-// every header of its Headers/ folder, but only when fallback.tsv lists it (review F29); a listed one that has a module-map header, or
+// The headers a framework is parsed from: its module map's list. A framework with no module-map header reads every header of its Headers/
+// folder (its umbrella header first), but only when fallback.tsv lists it (review F29); a listed one that has a module-map header, or
 // no header to read, is a stale row. A usr/include module has its map's list and nothing else. When there are none, *reason says why.
 bool headers_of(const Framework& f, const std::map<std::string, std::string>& fallback, const fs::path& fallback_config,
                 std::vector<std::string>* out, std::string* reason, std::string* error) {
@@ -1350,14 +1354,13 @@ bool headers_of(const Framework& f, const std::map<std::string, std::string>& fa
     }
     return true;
   }
+  // every header of Headers/, the umbrella first: a header the umbrella does not include is the framework's own too (ruling 4 of v-gen's
+  // open points; RealityKit and vecLib leave headers out of their umbrella's closure)
   std::vector<std::string> read;
-  fs::path umbrella = f.root / "Headers" / (f.base + ".h");
-  if (is_file(umbrella)) {
-    read = {normal(umbrella)};
-  } else {
-    for (const fs::path& p : entries_of(f.root / "Headers")) {
-      if (p.extension() == ".h" && is_file(p)) read.push_back(normal(p));
-    }
+  const fs::path umbrella = f.root / "Headers" / (f.base + ".h");
+  if (is_file(umbrella)) read.push_back(normal(umbrella));
+  for (const fs::path& p : entries_of(f.root / "Headers")) {
+    if (p.extension() == ".h" && is_file(p) && normal(p) != normal(umbrella)) read.push_back(normal(p));
   }
   if (read.empty()) {
     if (listed) {
@@ -1386,6 +1389,8 @@ bool headers_of(const Framework& f, const std::map<std::string, std::string>& fa
 bool discover(const std::string& sdk, const fs::path& usr_config, const std::map<std::string, std::string>& excluded,
               std::vector<Framework>* out, std::string* error) {
   frameworks_in(fs::path(sdk) / "System" / "Library" / "Frameworks", "", out);
+  // the SDK also ships its SubFrameworks folder (UIUtilities): the same rule, read from the SDK layout (ruling 1 of v-gen's open points)
+  frameworks_in(fs::path(sdk) / "System" / "Library" / "SubFrameworks", "", out);
   const fs::path include = fs::path(sdk) / "usr" / "include";
   const std::set<std::string> declared = usr_modules_declared(include);
   for (const auto& row : excluded) {
@@ -1528,9 +1533,18 @@ int main(int argc, char** argv) {
   ctx.doc = doc;
   ctx.framework = name;
   if (framework->usr) {
+    // a header of the include root belongs to the module that names it, not to the root: the root holds other modules' headers too
     std::set<std::string> dirs;
-    for (const std::string& h : headers) dirs.insert(fs::path(h).parent_path().string() + "/");
-    ctx.own.assign(dirs.begin(), dirs.end());
+    const std::string include = normal(framework->root);
+    for (const std::string& h : headers) {
+      fs::path parent = fs::path(h).parent_path();
+      if (normal(parent) == include) {
+        ctx.own.push_back(h);
+      } else {
+        dirs.insert(parent.string() + "/");
+      }
+    }
+    ctx.own.insert(ctx.own.end(), dirs.begin(), dirs.end());
   } else {
     ctx.own.push_back(framework->root.string() + "/Headers/");
   }
