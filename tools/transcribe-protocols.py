@@ -259,7 +259,8 @@ def names_of(qual):
     text = re.sub(r"\b_Nullable_result\b|\b_Nullable\b|\b_Nonnull\b|\b_None\b|\b_Null_unspecified\b|\b_null_unspecified\b"
                   r"|\b__kindof\b|\b__strong\b|\b__weak\b|\b__unsafe_unretained\b|\b__autoreleasing\b", "", qual)
     text = re.sub(r"\bid\s*<[^<>]*>", "id", text)
-    return [p for p in re.findall(r"[A-Za-z_][A-Za-z0-9_]*", text) if p not in KEYWORDS]
+    # availability and namespace macros (API_AVAILABLE(...) after a property, NS_SWIFT_NAME) are not types a header must name
+    return [p for p in re.findall(r"[A-Za-z_][A-Za-z0-9_]*", text) if p not in KEYWORDS and not p.startswith(("API_", "NS_", "CF_", "__"))]
 
 
 def type_of(member):
@@ -446,3 +447,47 @@ for (folder, framework), entries in sorted(per_library.items()):
     with open(path, "w", encoding="utf-8") as stream:
         stream.write("\n".join(lines))
     print("%-24s %2d protocols (from %s) -> %s" % (folder, len(entries), framework, path))
+
+
+# CHARON_PROTOCOL_FACTS=<file>: also write, as JSON, what each wanted protocol is and how each member reads, for
+# gen.py's snapshot. Nothing above changes with it, and nothing else is written.
+facts_path = os.environ.get("CHARON_PROTOCOL_FACTS")
+if facts_path:
+    transcribed_names = {entry[0] for entries in per_library.values() for entry in entries if len(entry) > 2}
+
+    def reasons_of(name):
+        return [line for line in missing + refusals if line.startswith((name + ":", name + "."))]
+
+    def members_json(members):
+        records = []
+        for optional, member in members:
+            if member["kind"] == "ObjCPropertyDecl":
+                kind, decl = "property", render_property(member)
+            else:
+                kind, decl = "method", render_method(member)
+            records.append({"section": "optional" if optional else "required", "kind": kind,
+                            "instance": member.get("instance") is True, "selector": member["name"], "decl": decl})
+        return records
+
+    records = []
+    for name in sorted(wanted):
+        framework, introduced = wanted[name]
+        record = {"name": name, "framework": framework, "introduced": introduced}
+        if name in defined16:
+            record["status"] = "sdk16 body"
+        elif name in transcribed_names:
+            record["status"] = "transcribed"
+        elif name in have:
+            record["status"] = "hand header"
+        elif reasons_of(name):
+            record["status"] = "refused"
+        else:
+            record["status"] = "missing"
+        record["reasons"] = reasons_of(name)
+        if name in decls:
+            record["bases"], record["members"] = decls[name][0], members_json(decls[name][1])
+        if name in protocols16 and any(defines(node) for node in protocols16[name]):
+            record["members16"] = sorted(member["name"] for _, member in definition(name, protocols16[name])[1])
+        records.append(record)
+    with open(facts_path, "w", encoding="utf-8") as stream:
+        json.dump(records, stream, indent=1, sort_keys=True)
