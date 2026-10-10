@@ -27,7 +27,10 @@ static Class charon_cb_class(const char *name)
 {
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        (void)dlopen("/System/Library/Frameworks/CoreBluetooth.framework/CoreBluetooth", RTLD_LAZY);
+        // A framework that will not open leaves its classes unfound (objc_getClass answers nil and the central messages nil): the
+        // refusal is written once, with the loader's own reason.
+        if (!dlopen("/System/Library/Frameworks/CoreBluetooth.framework/CoreBluetooth", RTLD_LAZY))
+            NSLog(@"charon: CoreBluetooth would not open (%s); the Bluetooth MIDI central has no framework", dlerror());
     });
     return objc_getClass(name);
 }
@@ -101,8 +104,10 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
     uint8_t *midi = stackMidi;
     if (2 * value.length > sizeof(stackMidi)) {
         midi = malloc(2 * value.length);
-        if (!midi)
+        if (!midi) {
+            NSLog(@"charon: a Bluetooth MIDI notification of %lu bytes could not be given memory and is dropped", (unsigned long)value.length);
             return;
+        }
     }
     size_t count = CharonBLEMIDIParse(&_parser, value.bytes, value.length, midi);
     if (count > 0) {
@@ -113,7 +118,9 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
         Byte *buffer = stackList;
         if (listSize > sizeof(stackList))
             buffer = malloc(listSize);
-        if (buffer) {
+        if (!buffer) {
+            NSLog(@"charon: a Bluetooth MIDI notification of %lu bytes could not be given memory and is dropped", (unsigned long)count);
+        } else {
             MIDIPacketList *list = (MIDIPacketList *)buffer;
             if (MIDIPacketListAdd(list, listSize, MIDIPacketListInit(list), 0, count, midi) == NULL) {
                 // An empty list is not handed to the release: the notification's bytes are dropped, and the drop is logged.
