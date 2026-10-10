@@ -51,7 +51,10 @@ conversion rounds.
   per-note controller (1), the per-note registered controller (0), relative RPN (4) and relative NRPN (5). Measured for
   each of them: no packet at all. The attribute type of a note (bits 7 to 0 of the first word) is ignored: a note on with
   attribute type 1 or 2 goes out the same as one without.
-- System common and real-time messages are sent as their bytes. A SysEx is sent from its SysEx7 packets: F0 before a start
+- System common and real-time messages are sent as their bytes, and a type 1 word that is not one of them is not sent: measured
+  on macOS (oracle/ump-invalid-system.m, ump-invalid-system-macos.txt), F0, F4, F5, F7, a bare data byte and a channel status
+  with no data (10900000) are sent as nothing, and F1, F2, F6, F8 and FE as their bytes (F3 and F9 to FF follow the same rule,
+  not measured). A SysEx is sent from its SysEx7 packets: F0 before a start
   or a complete message, F7 after an end or a complete message, and the data bytes of each packet.
 - Not sent: SysEx8 and mixed data (types 5 and 13 to 15), flex data, the UMP stream and utility messages. The 1.0 side
   cannot carry them. Their handling in macOS was not measured.

@@ -97,7 +97,7 @@ size_t CharonBLEMIDIParse(CharonBLEParser *parser, const uint8_t *data, size_t l
 // bytes, as it does on macOS. rpn is the per-channel state of the destination the bytes are sent to.
 void CharonMIDIUMPToBytes(const UInt32 *words, size_t count, CharonMIDIRPN rpn[16], CharonMIDIBytes *out);
 
-// The number of words the UMP message that begins with word starts: 1, 2 or 4. Zero for a message type the
+// The number of words the UMP message that begins with word starts: 1, 2, 3 or 4. Zero for a message type the
 // translation does not recognise, which then stops the packet it is in.
 int CharonMIDIUMPWordCount(UInt32 word);
 

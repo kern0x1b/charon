@@ -69,17 +69,30 @@ UInt32 CharonMIDIUp32From14(UInt32 value)
     return (value << 18) + 32 * above + (above >> 8);
 }
 
+// The sizes of the message types, as the macOS visitor reads them (oracle/visit-sizes.m, visit-sizes-macos.txt): types 6 and 7
+// are one word, 8 to 0xA two, 0xB and 0xC three, 0xD, 0xE and 0xF four (0xD and 0xF are in visit-expectations.h).
 int CharonMIDIUMPWordCount(UInt32 word)
 {
     switch (word >> 28) {
     case 0x0: case 0x1: case 0x2: case 0x6: case 0x7:
         return 1;
-    case 0x3: case 0x4: case 0x8: case 0x9: case 0xA: case 0xB:
+    case 0x3: case 0x4: case 0x8: case 0x9: case 0xA:
         return 2;
-    case 0x5: case 0xC: case 0xD: case 0xE: case 0xF:
+    case 0xB: case 0xC:
+        return 3;
+    case 0x5: case 0xD: case 0xE: case 0xF:
         return 4;
     }
     return 0;
+}
+
+// The system messages a type 1 word carries, as macOS sends them (oracle/ump-invalid-system.m, ump-invalid-system-macos.txt):
+// F1, F2, F6, F8 and FE were measured as sent. F3 and F9 to FF are not measured: they follow the same rule. F0 and F7
+// are not sent from a system word (a SysEx is type 3), nor are F4 and F5 (undefined), a status below F1, or a channel
+// status (a 1.0 message in a system word): measured as not sent for F0, F4, F5, F7, 0x45 and 0x90.
+static int charon_system_word(uint8_t status)
+{
+    return (status >= 0xF1 && status <= 0xF3) || status == 0xF6 || status >= 0xF8;
 }
 
 // How many data bytes a channel or system common status carries in MIDI 1.0.
@@ -304,11 +317,13 @@ void CharonMIDIUMPToBytes(const UInt32 *words, size_t count, CharonMIDIRPN rpn[1
         if (type == 0x1) {
             uint8_t status = (uint8_t)(word >> 16);
             uint8_t d1 = (uint8_t)(word >> 8), d2 = (uint8_t)word;
-            charon_bytes_append(out, status);
-            if (charon_data_bytes(status) > 0)
-                charon_bytes_append(out, d1 & 0x7F);
-            if (charon_data_bytes(status) > 1)
-                charon_bytes_append(out, d2 & 0x7F);
+            if (charon_system_word(status)) {
+                charon_bytes_append(out, status);
+                if (charon_data_bytes(status) > 0)
+                    charon_bytes_append(out, d1 & 0x7F);
+                if (charon_data_bytes(status) > 1)
+                    charon_bytes_append(out, d2 & 0x7F);
+            }
         } else if (type == 0x2) {
             uint8_t status = (uint8_t)(word >> 16);
             if (status >= 0x80 && status < 0xF0) {

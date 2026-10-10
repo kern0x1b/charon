@@ -649,6 +649,88 @@ static void check_ble_parse(void)
     check_ble_case("BLE: two notes, each with its own timestamp", twoNotes, 1, "90 3C 7F 90 3E 00");
 }
 
+// The system words of type 1, each alone, as macOS sends them to a 1.0 destination (oracle/ump-invalid-system.m,
+// ump-invalid-system-macos.txt): the bytes received, and none where macOS sent none.
+static void check_system_words(void)
+{
+    struct {
+        const char *name;
+        uint32_t word;
+        const char *want;
+    } cases[] = {
+        {"F0", 0x10F00000u, ""},
+        {"F7", 0x10F70000u, ""},
+        {"data 45 in the status position", 0x10450000u, ""},
+        {"90 with no data", 0x10900000u, ""},
+        {"MTC", 0x10F10000u, "F1 00"},
+        {"clock", 0x10F80000u, "F8"},
+        {"F4", 0x10F40000u, ""},
+        {"F5", 0x10F50000u, ""},
+        {"tune request", 0x10F60000u, "F6"},
+        {"active sensing", 0x10FE0000u, "FE"},
+        {"song position 0", 0x10F20000u, "F2 00 00"},
+    };
+    int failed = 0;
+    for (size_t c = 0; c < sizeof(cases) / sizeof(cases[0]); c++) {
+        CharonMIDIRPN rpn[16];
+        memset(rpn, 0, sizeof(rpn));
+        CharonMIDIBytes bytes;
+        memset(&bytes, 0, sizeof(bytes));
+        UInt32 word = cases[c].word;
+        CharonMIDIUMPToBytes(&word, 1, rpn, &bytes);
+        uint8_t want[8];
+        size_t wantCount = hex_bytes(cases[c].want, want);
+        int same = !bytes.failed && bytes.count == wantCount && memcmp(bytes.bytes, want, wantCount) == 0;
+        if (!same) {
+            printf("    system word %s: got %zu bytes\n", cases[c].name, bytes.count);
+            failed++;
+        }
+        free(bytes.bytes);
+    }
+    char name[96], detail[64];
+    snprintf(name, sizeof(name), "UMP system words: the %zu measured answers of macOS", sizeof(cases) / sizeof(cases[0]));
+    snprintf(detail, sizeof(detail), "%d differ", failed);
+    check(failed == 0, name, detail);
+}
+
+// The events the visitor reports for a packet of one word of each type, then a NOOP, a system clock and a note on, as macOS
+// visits it (oracle/visit-sizes.m, visit-sizes-macos.txt): the word sizes of the types the visitor had no measurement for.
+static void check_visit_word_sizes(void)
+{
+    struct {
+        const char *name;
+        uint32_t head;
+        int events;
+    } cases[] = {
+        {"type 6", 0x60ABCDEFu, 4},
+        {"type 7", 0x70ABCDEFu, 4},
+        {"type 8", 0x80ABCDEFu, 3},
+        {"type 9", 0x90ABCDEFu, 3},
+        {"type A", 0xA0ABCDEFu, 3},
+        {"type B", 0xB0ABCDEFu, 2},
+        {"type C", 0xC0ABCDEFu, 2},
+        {"type E", 0xE0ABCDEFu, 1},
+    };
+    int failed = 0;
+    for (size_t c = 0; c < sizeof(cases) / sizeof(cases[0]); c++) {
+        Byte buffer[256];
+        MIDIEventList *list = (MIDIEventList *)buffer;
+        UInt32 words[4] = {cases[c].head, 0x00000000u, 0x10F80000u, 0x20903C7Fu};
+        MIDIEventPacket *end = MIDIEventListInit(list, kMIDIProtocol_2_0);
+        CharonMIDIEventListAdd(list, sizeof(buffer), end, 42, 4, words);
+        gVisitedCount = 0;
+        charon_host_MIDIEventListForEachEvent(list, charon_visit_record, NULL);
+        if (gVisitedCount != cases[c].events) {
+            printf("    visitor %s: %d events, macOS %d\n", cases[c].name, gVisitedCount, cases[c].events);
+            failed++;
+        }
+    }
+    char name[96], detail[64];
+    snprintf(name, sizeof(name), "visitor: the event count of %zu word types, as macOS", sizeof(cases) / sizeof(cases[0]));
+    snprintf(detail, sizeof(detail), "%d differ", failed);
+    check(failed == 0, name, detail);
+}
+
 extern int charon_ump_classes_run(int *checks);
 
 int main(void)
@@ -674,6 +756,8 @@ int main(void)
         }
         check_new_entity_device_zero();
         check_ble_parse();
+        check_system_words();
+        check_visit_word_sizes();
         printf("checks=%d failures=%d\n", gChecks, gFailures);
     }
     return gFailures == 0 ? 0 : 1;
