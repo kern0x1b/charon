@@ -16,7 +16,7 @@ local FOREIGN = "dylib-sha256=" .. string.rep("0", 64)
 -- Runs ir.lua in a mode with the fixture's inputs. Returns true, or false and the message the run raised.
 local function run_ir(mode, repin)
     local envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = FIXTURE_CONFIG, IR_MODE = mode, IR_SPEC = SPEC, IR_CONFLICTS = CONFLICTS,
-                  IR_UNPARSED = path.join(RUN, "unparsed.tsv")}
+                  IR_UNPARSED = path.join(RUN, "unparsed.tsv"), IR_NO_OWN = path.join(FIXTURE_CONFIG, "no-own.tsv")}
     if repin then
         envs.IR_REPIN = "1"
     end
