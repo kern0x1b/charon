@@ -27,6 +27,12 @@ HEADER = """#import <Foundation/Foundation.h>
 @end
 
 NSInteger FKCountThings(NSInteger count, NSError **error);
+
+// a class the release lacks: the trace layer defines it when every member is a stub
+@interface FKWidget : NSObject
+@property (nonatomic, readwrite) NSInteger count;
+- (BOOL)refreshWithError:(NSError **)error;
+@end
 """
 
 PROGRAM = r"""
@@ -36,6 +42,8 @@ PROGRAM = r"""
 // the class itself is the framework's to define; every member is the trace layer's stub, in its category
 @implementation FKThing
 @end
+
+// FKWidget is not defined here: the trace layer's class object is the only definition
 
 static int failures = 0;
 
@@ -57,6 +65,11 @@ int main(void) {
         [thing reset];
         CHECK([thing name] == nil, "readonly object property returns nil");
         NSError *countError = nil;
+        FKWidget *widget = [[FKWidget alloc] init];
+        CHECK([widget count] == 0, "class object: integer property returns 0");
+        [widget setCount:2];
+        NSError *widgetError = nil;
+        CHECK([widget refreshWithError:&widgetError] == NO, "class object: method with NSError ** returns NO");
         CHECK(FKCountThings(3, &countError) == 0, "C function returns 0 for an integer result");
         CHECK(countError != nil && [[countError domain] isEqualToString:@"FixtureKit.Unimplemented"],
               "C function sets an NSError ** in the framework's domain");
@@ -97,9 +110,26 @@ def main():
     try:
         sdk, tree, rows = write_fixture(root)
         args = type("Args", (), {"tree": tree, "framework": FRAMEWORK, "sdk": sdk, "all": False})()
-        if gen.cmd_trace(args) != 0:
-            print("FAIL the trace layer could not be generated")
-            return 1
+        ledger = os.path.join(root, "ledger", "ledger-w45")
+        os.makedirs(ledger)
+        with open(os.path.join(ledger, FRAMEWORK + ".tsv"), "w", encoding="ascii") as handle:
+            handle.write("kind\tlang\tapi\tintroduced\theader-introduced\tstatus\tneeds\treason\n")
+            for kind, api in [("property", "FKThing.scope"), ("property", "FKThing.enabled"), ("property", "FKThing.name"),
+                              ("method", "-[FKThing setLevel:error:]"), ("method", "-[FKThing items]"), ("method", "-[FKThing reset]"),
+                              ("class", "FKWidget"), ("property", "FKWidget.count"), ("method", "-[FKWidget refreshWithError:]")]:
+                handle.write("%s\tobjc\t%s\t7.0\t7.0\tmissing\t-\tfixture\n" % (kind, api))
+        with open(os.path.join(root, "ledger", "sdk-26.2-surface.tsv"), "w", encoding="ascii") as handle:
+            handle.write("framework\tkind\tlang\tapi\tintroduced\tdemand-rank\tdemand-apps\timpl-lead\n")
+            for line in open(os.path.join(ledger, FRAMEWORK + ".tsv"), encoding="ascii").read().splitlines()[1:]:
+                kind, _, api = line.split("\t")[:3]
+                handle.write("%s\t%s\tobjc\t%s\t7.0\t-\t-\t-\n" % (FRAMEWORK, kind, api))
+        saved, gen.LEDGER_DIR = gen.LEDGER_DIR, os.path.join(root, "ledger")
+        try:
+            if gen.cmd_trace(args) != 0:
+                print("FAIL the trace layer could not be generated")
+                return 1
+        finally:
+            gen.LEDGER_DIR = saved
         stub_file = os.path.join(tree, gen.OUT_ROOT, FRAMEWORK, "trace", FRAMEWORK + "Defaults.m")
         program = os.path.join(root, "main.m")
         with open(program, "w", encoding="ascii") as handle:
@@ -115,11 +145,14 @@ def main():
         run = subprocess.run([binary], capture_output=True, text=True)
         print(run.stdout, end="")
         logged = [line for line in run.stderr.splitlines() if line.startswith("unimplemented:")]
-        expected = ["unimplemented: FixtureKit -[FKThing setScope:]", "unimplemented: FixtureKit -[FKThing scope]",
+        expected = ["unimplemented: FixtureKit -[FKWidget count]", "unimplemented: FixtureKit -[FKWidget setCount:]",
+                    "unimplemented: FixtureKit -[FKWidget refreshWithError:]",
+                    "unimplemented: FixtureKit -[FKThing setScope:]", "unimplemented: FixtureKit -[FKThing scope]",
                     "unimplemented: FixtureKit -[FKThing isEnabled]", "unimplemented: FixtureKit -[FKThing setEnabled:]",
                     "unimplemented: FixtureKit -[FKThing setLevel:error:]", "unimplemented: FixtureKit -[FKThing items]",
                     "unimplemented: FixtureKit -[FKThing reset]", "unimplemented: FixtureKit -[FKThing name]",
                     "unimplemented: FixtureKit FKCountThings"]
+        expected = sorted(set(expected))
         for line in expected:
             count = logged.count(line)
             if count != 1:
@@ -129,6 +162,11 @@ def main():
         if extra:
             failed += 1
             print("FAIL unexpected log lines: %s" % extra)
+        widget = os.path.join(tree, gen.OUT_ROOT, FRAMEWORK, "trace", "classes.tsv")
+        decided = dict(line.split("\t")[:2] for line in open(widget).read().splitlines()[1:] if line)
+        if decided.get("FKWidget") != "yes":
+            failed += 1
+            print("FAIL FKWidget is not a generated class object: %s" % decided.get("FKWidget"))
         if run.returncode != 0:
             failed += 1
             print("FAIL the program reported failures (exit %d)" % run.returncode)

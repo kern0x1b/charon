@@ -45,6 +45,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 
 VERSION = "2"
 SOURCES_ROOT = "packages/a/apple-backports"
@@ -128,6 +129,23 @@ def strip_macros(text):
     return " ".join(text.split()), " ".join(avail.split())
 
 
+TRAILING_MACRO = re.compile(r"(?:\s+[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+(?:\s*\((?:[^()]|\([^()]*\))*\))?)+\s*$")
+
+
+def property_name(decl):
+    """The name a property declaration gives its property: the name inside a block's or function pointer's parentheses, else the
+    last identifier once the trailing macros are gone."""
+    core = without_trailing_macros(decl)
+    named = re.search(r"\(\s*\^\s*(\w+)\s*\)", core)
+    return named.group(1) if named else re.findall(r"([A-Za-z_]\w*)\s*$", core)[-1]
+
+
+def without_trailing_macros(text):
+    """The declaration without the project macros after it (CS_TVOS_UNAVAILABLE, UI_APPEARANCE_SELECTOR, FILEPROVIDER_API_
+    AVAILABILITY_DESKTOP): a name or a selector is the last identifier that is not one of them. The declaration text keeps them."""
+    return TRAILING_MACRO.sub("", " " + text.rstrip(" ;") + " ").strip()
+
+
 def selector_of(stmt):
     s = stmt.lstrip("-+ ").strip()
     prev = None
@@ -154,7 +172,8 @@ def members_of(text):
             continue
         end = next((e[0] for e in events[index + 1:] if e[1] == "close"), len(text))
         body = text[match.end():end]
-        body = re.sub(r"^\s*(?::\s*\w+\s*(?:<[^>]*>)?)?\s*", "", body, count=1)
+        # a superclass (`: Base <Proto>`) or a category's protocol list (`(Cat) <Proto>`) comes before the members
+        body = re.sub(r"^\s*(?::\s*\w+\s*)?(?:<[^>]*>)?\s*", "", body, count=1)
         if body.startswith("{"):
             depth = 0
             for i, ch in enumerate(body):
@@ -171,12 +190,15 @@ def members_of(text):
             stmt = re.sub(r"^(?:\s*[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\s+)+(?=@property\b|[-+]\s*\()", "", stmt)
             if stmt.startswith("@property"):
                 clean, avail = strip_macros(stmt)
-                name = re.findall(r"([A-Za-z_]\w*)\s*$", clean.rstrip(" ;"))
+                core = without_trailing_macros(clean)
+                # a block or function-pointer property names itself inside its parentheses: (^completionHandler)
+                named = re.search(r"\(\s*\^\s*(\w+)\s*\)", core)
+                name = [named.group(1)] if named else re.findall(r"([A-Za-z_]\w*)\s*$", core)
                 if name:
                     out.append((cls, "property", "-[%s %s]" % (cls, name[-1]), "%s.%s" % (cls, name[-1]), clean, avail))
             elif stmt[:1] in "-+":
                 clean, avail = strip_macros(stmt)
-                sel = selector_of(clean)
+                sel = selector_of(without_trailing_macros(clean))
                 if sel:
                     api = "%s[%s %s]" % (stmt[0], cls, sel)
                     out.append((cls, "method", api, api, clean, avail))
@@ -1059,14 +1081,21 @@ def ios_text(text):
 
 def declared_names(sdk, fw):
     """Every typedef, class and protocol name the iOS build sees in the framework and the frameworks its types come from."""
-    names = set()
+    names, unavailable_on_ios = set(), set()
     for f in (fw,) + TYPE_INDEX_FRAMEWORKS + ("AVFAudio",):
         for path in glob.glob(os.path.join(sdk, "System", "Library", "Frameworks", f + ".framework", "Headers", "*.h")):
             text = strip_platform_blocks(re.sub(r"//[^\n]*", " ", re.sub(r"/\*.*?\*/", " ", read_any(path), flags=re.S)))
             names.update(re.findall(r"typedef\s[^;]*?\b(\w+)\s*(?:NS_\w+|API_\w+|OS_\w+|CF_\w+)?[^;]*;", text))
             names.update(re.findall(r"@(?:interface|protocol)\s+(\w+)", text))
             names.update(re.findall(r"typedef\s+(?:NS_ENUM|NS_OPTIONS|NS_TYPED_ENUM|NS_TYPED_EXTENSIBLE_ENUM|CF_ENUM|enum)[^;]*?\b(\w+)\s*;", text, re.S))
-    return names
+            # a class the iOS SDK marks unavailable is not a type the iOS build can name (CASpatialAudioExperience, visionOS only)
+            for found in re.finditer(r"@interface\s+(\w+)\s*(?=[:<{\n])", text):
+                # a class, not a category: its availability macros are on the line after the previous declaration, or on its own line
+                before = re.split(r"[;}]|@end", text[:found.start()])[-1]
+                after = text[found.end():].split("\n", 1)[0]
+                if re.search(r"API_UNAVAILABLE\s*\([^)]*\bios\b", before + " " + after):
+                    unavailable_on_ios.add(found.group(1))
+    return names - unavailable_on_ios
 
 
 def type_index(sdk, fw):
@@ -1269,6 +1298,76 @@ def stub_text(fw, cls, api, kind, selector, type_text, zero_kind, decl):
     return "%s { %s%s%s }" % (head, log, (" " + error) if error else " ", zero.strip())
 
 
+# ---------------------------------------------------------------- class objects: the classes the release lacks, when every member is covered
+
+def hand_class_names(tree):
+    """The classes the package's own sources define with @implementation NAME (not a category): a class the hand code defines is
+    not generated. Read once per run."""
+    if "hand_classes" not in HAND_MEMO:
+        names = set()
+        root = os.path.join(tree, SOURCES_ROOT)
+        for base, dirs, files in os.walk(root):
+            dirs[:] = [d for d in dirs if d not in (".gen", "spec", "overrides", "registry", ".agent-work")]
+            for name in files:
+                if name.endswith((".m", ".mm")):
+                    text = read_any(os.path.join(base, name))
+                    names.update(re.findall(r"@implementation\s+(\w+)\s*(?=\n|\{|$)", text, re.M))
+        HAND_MEMO["hand_classes"] = names
+    return HAND_MEMO["hand_classes"]
+
+
+def class_object_decisions(tree, fw, spec, stub_keys, overridden, surface, led6, sdk, skip_reasons):
+    """cls -> (generated, reason). A class the 6.1.3 release lacks is generated as a trace-only class object (an @implementation with
+    every stub) when every missing member row of the surface it owns is a stub: then presence implies the full surface. Any other
+    class is listed with its reasons: a Swift-only member, a member no stub answers, an override or a hand class (the hand code
+    defines it), or a superclass that is neither in the release nor generated."""
+    header = re.sub(r"//[^\n]*|/\*.*?\*/", " ", header_text(sdk, fw), flags=re.S)
+    supers = dict(re.findall(r"@interface\s+(\w+)\s*:\s*(\w+)", header))
+    hand = hand_class_names(tree)
+    owned = {}
+    for (kind, api), row in surface.items():
+        if kind not in ("method", "property") or (kind, api) not in led6 or led6[(kind, api)] == "header-ok":
+            continue
+        m = re.search(r"^[-+]\[(\w+)", api) or re.search(r"^(\w+)\.", api)
+        if m:
+            owned.setdefault(m.group(1), []).append((kind, api, row["lang"]))
+    spec_apis = {canonical_member(r["api"], r["kind"]) for r in spec if r["kind"] in ("method", "property")}
+    candidates = sorted({r["cls"] for r in spec if r["kind"] in ("method", "property")
+                         if led6.get(("class", r["cls"])) not in (None, "header-ok")})
+    reasons = {}
+    for cls in candidates:
+        why = []
+        if cls in hand:
+            why.append("the package's own sources define the class")
+        members = owned.get(cls, [])
+        if not members:
+            why.append("no missing member rows in the surface")
+        for kind, api, lang in members:
+            canon = canonical_member(api, kind)
+            if lang == "swift":
+                why.append("Swift-only member")
+            elif api in overridden or canon in overridden:
+                why.append("override (hand code)")
+            elif canon not in stub_keys:
+                if canon not in spec_apis:
+                    why.append("member not in the header parse")
+                else:
+                    why.append("no stub: " + (skip_reasons.get(canon) or skip_reasons.get(api) or "not stubbed"))
+        reasons[cls] = why
+    generated = {cls for cls, why in reasons.items() if not why}
+    changed = True
+    while changed:
+        changed = False
+        for cls in list(generated):
+            sup = supers.get(cls)
+            if sup in reasons and sup not in generated:
+                generated.discard(cls)
+                reasons[cls] = ["superclass %s is neither in the release nor generated" % sup]
+                changed = True
+    return {cls: (cls in generated, "; ".join(sorted(set(why))) if why else "generated: every member is a stub")
+            for cls, why in reasons.items()}
+
+
 def cmd_trace(args):
     if args.all:
         for fw in frameworks_with_snapshot(args.tree):
@@ -1279,12 +1378,41 @@ def cmd_trace(args):
     fw = args.framework
     sdk = args.sdk or SDK26
     spec = load_spec(args.tree, fw)
-    overridden = set(load_overrides(args.tree, fw))
+    # every registry row is a decision the stub layer does not override, whatever its status: an 'absent' row says the release's
+    # inherited behaviour is what a call reaches (ARAnchor +new is NSObject's), and a stub there would replace it
+    overridden = set(registry_entries(args.tree, fw))
     hand = hand_implementations(args.tree)
     ledger_path = os.path.join(LEDGER_DIR, "ledger-w45", fw + ".tsv")
     release_missing = set(ledger_status(fw, "ledger-w45").keys()) if os.path.exists(ledger_path) else None
     by_class, skipped = stub_members(spec, fw, sdk, overridden, hand, release_missing)
-    lines = [MARK, "// Trace-only defaults: built only when CHARON_TRACE_DEFAULTS is set; never shipped. One class per category.",
+    stub_keys = set()
+    for cls, members in by_class.items():
+        for api, kind, selector, type_text, zero_kind, decl in members:
+            if kind in ("property-get", "property-set"):
+                stub_keys.add("-[%s %s]" % (cls, property_name(decl)))
+            else:
+                stub_keys.add(api)
+    skip_reasons = {api: why for api, why in skipped}
+    # an init, new or copy the surface does not list is the inherited NSObject behaviour, which a call reaches (CLCondition init
+    # is NSObject's): a stub there would return nil to every caller, so it is left out and the reason says so
+    surface_methods = {canonical_member(api, "method") for (kind, api) in surface_rows(fw) if kind == "method"}
+    for cls in list(by_class):
+        kept = []
+        for member in by_class[cls]:
+            api, kind, selector = member[0], member[1], member[2]
+            bare = kind == "method" and selector in ("init", "new", "copy", "mutableCopy") and api not in surface_methods
+            if bare:
+                skipped.append((api, "init/new/copy the surface does not list: the inherited NSObject behaviour is what a call reaches"))
+            else:
+                kept.append(member)
+        by_class[cls] = kept
+        if not kept:
+            del by_class[cls]
+    decisions = class_object_decisions(args.tree, fw, spec, stub_keys, overridden, surface_rows(fw), led6_of(fw), sdk, skip_reasons) \
+        if release_missing is not None else {}
+    generated = {cls for cls, (yes, _) in decisions.items() if yes}
+    lines = [MARK, "// Trace-only defaults: built only when CHARON_TRACE_DEFAULTS is set; never shipped. One class per category,",
+             "// and a class the release lacks, when every member is a stub, is one @implementation (presence = full surface).",
              "// A stub logs once `unimplemented: %s <selector>`, returns the zero of its type, and sets an NSError an NSError ** names." % fw,
              "// Block parameters are not invoked. Members with an override or a hand implementation are not stubbed.",
              "#ifdef CHARON_TRACE_DEFAULTS", "#import <%s/%s.h>" % (fw, fw), "#include <stdio.h>", ""]
@@ -1292,16 +1420,19 @@ def cmd_trace(args):
     stub_rows = []
     for cls in sorted(by_class):
         members = by_class[cls]
-        lines.append("@interface %s (CharonTrace)" % cls)
-        for api, kind, selector, type_text, zero_kind, decl in members:
-            if kind == "property-get":
-                lines.append("- (%s)%s;" % (type_text, selector))
-            elif kind == "property-set":
-                lines.append("- (void)%s:(%s)value;" % (selector[:-1], type_text))
-            else:
-                lines.append(decl.rstrip(";") + ";")
-        lines.append("@end")
-        lines.append("@implementation %s (CharonTrace)" % cls)
+        if cls in generated:
+            lines.append("@implementation %s" % cls)
+        else:
+            lines.append("@interface %s (CharonTrace)" % cls)
+            for api, kind, selector, type_text, zero_kind, decl in members:
+                if kind == "property-get":
+                    lines.append("- (%s)%s;" % (type_text, selector))
+                elif kind == "property-set":
+                    lines.append("- (void)%s:(%s)value;" % (selector[:-1], type_text))
+                else:
+                    lines.append(decl.rstrip(";") + ";")
+            lines.append("@end")
+            lines.append("@implementation %s (CharonTrace)" % cls)
         for api, kind, selector, type_text, zero_kind, decl in members:
             if zero_kind == "struct" and type_text.strip() == "":
                 skipped.append((api, "no type text"))
@@ -1310,7 +1441,7 @@ def cmd_trace(args):
             stubbed += 1
             if kind in ("property-get", "property-set"):
                 # the surface row a property's getter and setter both belong to: the property, by its declared name
-                stub_rows.append(("-[%s %s]" % (cls, re.findall(r"([A-Za-z_]\w*)\s*$", decl.rstrip(";").strip())[-1]), kind))
+                stub_rows.append(("-[%s %s]" % (cls, property_name(decl)), kind))
             else:
                 stub_rows.append((api, kind))
         lines.append("@end")
@@ -1328,6 +1459,8 @@ def cmd_trace(args):
     # one row per stub, keyed by the surface row it answers: a property's getter and setter are both its property's row
     write(os.path.join(gen_dir(args.tree, fw), "trace", "stubs.tsv"), "api\tkind\n" + "".join(
         "%s\t%s\n" % row for row in sorted(set(stub_rows))))
+    write(os.path.join(gen_dir(args.tree, fw), "trace", "classes.tsv"), "class\tgenerated\treason\n" + "".join(
+        "%s\t%s\t%s\n" % (cls, "yes" if yes else "no", why) for cls, (yes, why) in sorted(decisions.items())))
     print("trace %s: %d stubs in %d classes, %d members left out (skipped.tsv)" % (fw, stubbed, len(by_class), len(skipped)))
     return 0
 
@@ -1357,15 +1490,18 @@ def ledger_status(fw, release_dir):
     return out
 
 
+SURFACE_MEMO = {}
+
+
 def surface_rows(fw):
-    """(kind, api) -> the surface row (demand, impl-lead, deprecation) for one framework."""
-    path = os.path.join(LEDGER_DIR, "sdk-26.2-surface.tsv")
-    out = {}
-    with open(path, newline="") as handle:
-        for row in csv.DictReader(handle, delimiter="\t"):
-            if row["framework"] == fw:
-                out[(row["kind"], row["api"])] = row
-    return out
+    """(kind, api) -> the surface row (demand, impl-lead, deprecation) for one framework. The table is read once per process."""
+    if "rows" not in SURFACE_MEMO:
+        rows = {}
+        with open(os.path.join(LEDGER_DIR, "sdk-26.2-surface.tsv"), newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                rows.setdefault(row["framework"], {})[(row["kind"], row["api"])] = row
+        SURFACE_MEMO["rows"] = rows
+    return SURFACE_MEMO["rows"].get(fw, {})
 
 
 def oracle_defaults(fw):
@@ -1388,7 +1524,8 @@ def registry_entries(tree, fw):
         with open(path) as handle:
             data = json.load(handle)
         for entry in (data.get("entries", []) if isinstance(data, dict) else data):
-            out.setdefault(entry["api"], (os.path.relpath(path, tree), entry))
+            # keyed as the spec and the surface key a member: a property written 'Class.name' is '-[Class name]'
+            out.setdefault(canonical_member(entry["api"], entry.get("kind", "method")), (os.path.relpath(path, tree), entry))
     return out
 
 
@@ -1582,8 +1719,8 @@ def protocol_member_state(owner, api, proto):
     record = (proto or {}).get(owner)
     if record is None:
         return "protocol member: protocol not in the transcriber's facts"
-    prefix = "-[%s " % owner
-    selector = api[len(prefix):-1] if api.startswith(prefix) else api
+    canon = canonical_member(api, "property" if "." in api and not api.startswith(("-[", "+[")) else "method")
+    selector = re.sub(r"^[-+]\[%s |\]$" % re.escape(owner), "", canon)
     member = next((m for m in record["members"] if m["selector"] == selector), None)
     if record["status"] == "sdk16 body":
         if member is None:
@@ -1622,6 +1759,10 @@ def parse_gap_reason(api, platform_only, names):
     return "spelled by the headers, not parsed (parse gap)"
 
 
+def led6_of(fw):
+    return ledger_status(fw, "ledger-w45")
+
+
 def canonical_member(api, kind):
     """The key a member row has in the trace layer's stub list: a property written 'Class.name' is '-[Class name]'."""
     if kind == "property" and not api.startswith(("-[", "+[")) and "." in api:
@@ -1630,11 +1771,11 @@ def canonical_member(api, kind):
 
 
 def scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing=True, protocols=frozenset(), lang="objc",
-                    header_only=False, proto=None, gaps=None, functions=None, stubs=None):
+                    header_only=False, proto=None, gaps=None, functions=None, stubs=None, class_decisions=None):
     """The one state a surface row is in, by the tables. A row the 6.1.3 release has is answered by the release, so only a
     missing row is a work item; a missing row is overridden, a stub, a hand implementation, a type iOS does not declare, a
     protocol member (the spec does not cover protocols), or a kind with no generator yet."""
-    if api in registry:
+    if canonical_member(api, kind) in registry:
         return "overridden"
     if not in_missing:
         return "implemented at 6.1.3: the release answers"
@@ -1645,7 +1786,14 @@ def scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing=Tr
         # the spec is the ObjC headers; a Swift row of any kind needs the Swift interface, which v-cache26 publishes beside the ObjC tables
         return "swift: needs the Swift interface source"
     if kind == "class":
-        return "class object: no generator yet"
+        if class_decisions is None or api not in class_decisions:
+            return "class object: not a candidate (no missing member rows in the header parse)"
+        generated, why = class_decisions[api]
+        if generated:
+            return "class object: generated (trace layer; every member a stub)"
+        if "own sources" in why or "override" in why:
+            return "class object: hand code covers it (not generated)"
+        return "class object: not generated (a member uncovered, or the superclass is not in the release)"
     if kind == "function" and lang == "objc":
         record = (functions or {}).get(api)
         if record is None:
@@ -1694,6 +1842,27 @@ def scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing=Tr
 
 GENERABLE_STATES = {"generable stub", "C function: generable stub (trace layer)"}
 
+# The open states the work queue lists, each with its kind of work and the next step. A state not here is decided or generated.
+QUEUE_NEXT = [
+    ("protocol member: 26.2 only", "protocol member added after the 16.4 body", "a registry decision: the protocol object is the 16.4 body, so the member needs a transcribed or hand body for it"),
+    ("protocol member: not in the 26.2 facts", "protocol member with no 26.2 fact", "read the header by hand; the member's owner is not the protocol the surface names"),
+    ("spelled by the headers, not parsed", "parse gap", "fix the parser for this declaration (see the scope reason)"),
+    ("class object: not generated", "class object with uncovered members", "cover each listed member with a stub or a registry decision, or leave the class out"),
+    ("C function: exported by the 26.2 .tbd", "C function exported without a declaration", "find its declaration in the SDK (no header declares it): a decision on the name"),
+    ("not stubbed: not stubbed by the trace layer", "row with no stub and no skip reason", "should be empty: a stub-layer defect"),
+    ("not spelled by this framework's 26.2 headers", "name not spelled by the framework's headers", "check the other framework headers (umbrella subframeworks) and the runtime; decide per row"),
+    ("init/new: not spelled", "init or new not spelled by the headers", "decide per class: implicit from NSObject, or unavailable by a macro"),
+    ("not in the header parse (category or other)", "not in the header parse", "read the header by hand"),
+    ("swift: needs the Swift interface source", "Swift row", "declaration from the .swiftinterface text, then a decision on overlay (see the Swift page)"),
+]
+
+
+def queue_item(state):
+    for prefix, kind, step in QUEUE_NEXT:
+        if state.startswith(prefix):
+            return kind, step
+    return None
+
 
 def cmd_scope(args):
     """The scope of the surface, from the tables: one row per framework and kind, and the work queue by demand."""
@@ -1707,6 +1876,7 @@ def cmd_scope(args):
         by_fw.setdefault(row["framework"], []).append(row)
     counts = {}
     generable = {}
+    queue_items = []
     frameworks = surface_frameworks()
     for fw in frameworks:
         rows = by_fw.get(fw, [])
@@ -1715,7 +1885,9 @@ def cmd_scope(args):
         snap = os.path.exists(spec_path(args.tree, fw))
         proto = load_protocols(args.tree, fw) if snap else None
         fns = load_functions(args.tree, fw) if snap else None
-        protocols = set(row["api"] for row in rows if row["kind"] == "protocol")
+        cls_dec = load_class_decisions(args.tree, fw) if snap else None
+        # the objc protocols only: a Swift protocol row with a class's name (CLCondition) is not a protocol the class's members belong to
+        protocols = set(row["api"] for row in rows if row["kind"] == "protocol" and row.get("lang") == "objc")
         protocols |= set(proto or {})
         reg = registry_entries(args.tree, fw)
         registry = set(reg)
@@ -1754,7 +1926,7 @@ def cmd_scope(args):
             in_missing = (kind, api) in led6
             header_only = led6.get((kind, api)) == "header-ok"
             state = scope_row_state(kind, api, registry, spec_by_api, stub_reason, in_missing, protocols, row.get("lang", "objc"),
-                                    header_only, proto, gaps=gap_of if snap else None, functions=fns, stubs=stub_keys) if snap else "no snapshot"
+                                    header_only, proto, gaps=gap_of if snap else None, functions=fns, stubs=stub_keys, class_decisions=cls_dec) if snap else "no snapshot"
             c = counts.setdefault((fw, kind), {"surface": 0, "demand_rows": 0, "demand_apps": 0, "missing_6_1_3": 0,
                                                "missing_4_3": 0, "states": {}})
             c["surface"] += 1
@@ -1768,6 +1940,9 @@ def cmd_scope(args):
             c["states"][state] = c["states"].get(state, 0) + 1
             if state in GENERABLE_STATES:
                 generable.setdefault(fw, set()).add(canonical_member(api, kind))
+            item = queue_item(state)
+            if item:
+                queue_items.append((fw, kind, api, state, item[0], item[1], row.get("demand-rank") or "-", row.get("demand-apps") or "0"))
     # Reconciliation: the rows the scope calls generable against the stubs the trace layer writes (trace/stubs.tsv, one row per
     # stub, keyed by the surface row it answers). One set: a row is generable exactly when a stub answers it.
     reconcile, stubbed_total, generable_total, both = [], 0, 0, 0
@@ -1784,8 +1959,8 @@ def cmd_scope(args):
             reconcile.append((fw, api, "trace stub that answers no surface row (spec-only member, or a class the surface does not list)"))
         for api in sorted(gen_rows - stubs):
             reconcile.append((fw, api, "surface row the scope calls generable with no trace stub (should be empty: one definition)"))
-    write(os.path.join(SCOPE_DIR, "v-gen-reconcile.tsv"), "framework\tapi\treason\n" + "".join(
-        "%s\t%s\t%s\n" % row for row in reconcile))
+    write(os.path.join(SCOPE_DIR, "v-gen-reconcile.tsv"), ("framework\tapi\treason\n" + "".join(
+        "%s\t%s\t%s\n" % row for row in reconcile)).encode("ascii", "backslashreplace").decode("ascii"))
     print("reconcile: %d generable rows, %d stubs, %d in both, %d differences -> v-gen-reconcile.tsv"
           % (generable_total, stubbed_total, both, len(reconcile)))
     lines = ["framework\tkind\tsurface_rows\tdemand_rows\tdemand_apps\tmissing_6_1_3\tmissing_4_3\tstates"]
@@ -1815,6 +1990,12 @@ def cmd_scope(args):
            "| state | rows |", "| --- | --- |"]
     md += ["| %s | %d |" % (state, n) for state, n in sorted(totals.items(), key=lambda kv: -kv[1])]
     surface_total = sum(len(v) for v in by_fw.values())
+    # the work queue: every open row, by demand (demand rank first, then apps); swift rows are counted per framework, not listed
+    queued = sorted(queue_items, key=lambda q: (q[6] == "-", int(q[6]) if q[6] != "-" else 0, -int(q[7] or 0), q[0], q[2]))
+    write(os.path.join(SCOPE_DIR, "v-gen-queue.tsv"), ("framework\tkind\tapi\tstate\twork\tnext_step\tdemand_rank\tdemand_apps\n" + "".join(
+        "\t".join([q[0], q[1], q[2], q[3], q[4], q[5], q[6], q[7]]) + "\n" for q in queued)).encode("ascii", "backslashreplace").decode("ascii"))
+    for item in sorted({q[4] for q in queued}):
+        print("queue: %6d  %s" % (sum(1 for q in queued if q[4] == item), item))
     tied = sum(totals.values())
     md += ["", "Tie-out: %d surface rows, %d rows in the state totals: %s." % (surface_total, tied,
                                                                              "tie" if tied == surface_total else "DO NOT TIE")]
@@ -2214,6 +2395,16 @@ def cmd_functions(args):
     return 0
 
 
+def load_class_decisions(tree, fw):
+    """class -> (generated, reason) from the trace layer's classes.tsv; {} when the trace has not run for the framework."""
+    path = os.path.join(gen_dir(tree, fw), "trace", "classes.tsv")
+    out = {}
+    if os.path.exists(path):
+        for row in csv.DictReader(open(path, encoding="ascii", newline=""), delimiter="\t", quoting=csv.QUOTE_NONE):
+            out[row["class"]] = (row["generated"] == "yes", row["reason"])
+    return out
+
+
 def load_functions(tree, fw):
     path = os.path.join(snap_dir(tree, fw), "functions.tsv")
     if not os.path.exists(path):
@@ -2363,9 +2554,165 @@ def cmd_swift(args):
     return 0
 
 
+# ---------------------------------------------------------------- behaviour: per method, on demand, from the 26.2 binary (REFERENCE ONLY)
+
+# The 26.2 iOS cache is read with ipsw (`ipsw dyld disass --vaddr`), one method at a time: the implementation address is the
+# objc-26.2 extract's. Every call goes through coordination/heavy.sh under timeout, one process at a time; the decompiler flags
+# (--dec, --dec-llm) are never used, because they send the code to an external service. The raw output and the summary are
+# untracked (.agent-work); nothing from them is committed or copied into product code.
+IPSW_CACHE = os.path.join(os.environ.get("HOME", ""), "Git", "projects", "ios", "charon", ".agent-work", "scratch", "ipsw-26.2",
+                          "23C55__iPhone17,1", "dyld_shared_cache_arm64e")
+HEAVY = os.path.join(os.environ.get("HOME", ""), "Git", "projects", "ios", "coordination", "heavy.sh")
+BEHAVIOUR_DIR = os.path.join(".agent-work", "behaviour")
+
+
+def behaviour_methods(tree, fw):
+    """(cls, section, selector, address) for each objc method of the framework that the 26.2 extract gives an address."""
+    out = []
+    for key, row in sorted(objc_facts(tree, fw).items()):
+        if key[0] == "method" and row["address"] and row["address"] != "-":
+            out.append((key[1], key[2], key[3], row["address"]))
+    return out
+
+
+def run_ipsw_disass(tree, address, out_json, timeout=300):
+    """One ipsw disassembly of the function at address, through heavy.sh. Returns (wall seconds, peak resident MB, exit code)."""
+    os.makedirs(os.path.dirname(out_json), exist_ok=True)
+    err_path = out_json + ".err"
+    command = [HEAVY, "/usr/bin/time", "-l", "timeout", str(timeout), "ipsw", "dyld", "disass", IPSW_CACHE,
+               "--vaddr", address, "--demangle"]
+    started = time.time()
+    with open(out_json, "w", encoding="utf-8") as stdout, open(err_path, "w", encoding="utf-8") as stderr:
+        code = subprocess.run(command, stdout=stdout, stderr=stderr).returncode
+    wall = time.time() - started
+    peak = 0.0
+    for line in read_any(err_path).splitlines():
+        found = re.search(r"(\d+)\s+maximum resident set size", line)
+        if found:
+            peak = int(found.group(1)) / 1048576.0
+    return wall, peak, code
+
+
+EXPORTS_TABLE = os.path.join(LEDGER_DIR, "cache-26.2", "exports-26.2.tsv.gz")
+CONSTANTS_TABLE = os.path.join(LEDGER_DIR, "cache-26.2", "constants-26.2.tsv.gz")
+BEHAVIOUR_MEMO = {}
+
+
+def behaviour_symbols():
+    """address -> (symbol, kind) from the 26.2 exports table, and symbol -> iOS value for the string constants; read once per run."""
+    if "symbols" not in BEHAVIOUR_MEMO:
+        by_address, values = {}, {}
+        with gzip.open(EXPORTS_TABLE, "rt", encoding="utf-8", errors="replace") as table:
+            header = table.readline().rstrip("\n").split("\t")
+            col = {name: i for i, name in enumerate(header)}
+            for line in table:
+                fields = line.rstrip("\n").split("\t")
+                if len(fields) > col["address"] and fields[col["address"]].startswith("0x"):
+                    by_address.setdefault(int(fields[col["address"]], 16), (fields[col["symbol"]], fields[col["kind"]]))
+        with gzip.open(CONSTANTS_TABLE, "rt", encoding="utf-8", errors="replace") as table:
+            header = table.readline().rstrip("\n").split("\t")
+            col = {name: i for i, name in enumerate(header)}
+            for line in table:
+                fields = line.rstrip("\n").split("\t")
+                if len(fields) > max(col.get("symbol", 0), col.get("value", 0)):
+                    values.setdefault(fields[col["symbol"]], fields[col["value"]])
+        BEHAVIOUR_MEMO["symbols"] = (by_address, values)
+    return BEHAVIOUR_MEMO["symbols"]
+
+
+def markup_lines(text):
+    """(address, mnemonic, operands, comment) of each instruction line of ipsw's markup disassembly of one function."""
+    out = []
+    for line in text.splitlines():
+        found = re.match(r"^(0x[0-9a-f]+):\s+(?:[0-9a-f]{2}\s+){4}(\S+)\s*(.*)$", line)
+        if not found:
+            continue
+        operands, _, comment = found.group(3).partition(";")
+        out.append((int(found.group(1), 16), found.group(2), operands.strip(), comment.strip()))
+    return out
+
+
+def summarise_behaviour(text):
+    """What one function does, read from ipsw's markup disassembly in address order: the calls by name (demangled by ipsw), the
+    branches that test a register (the argument branches are the ones on x0..x7), the constants and strings its comments name,
+    and the NSError domain a call to errorWithDomain passes. A straight-line pass: no control flow is followed, so a call in a
+    branch is listed where it is in the code."""
+    rows = markup_lines(text)
+    calls, branches, constants, strings, domains = [], [], [], [], []
+    last_comment = {}
+    for address, mnemonic, operands, comment in rows:
+        if mnemonic in ("bl", "blr", "b") and not operands.startswith("loc_") and "loc_" not in operands:
+            target = operands or "indirect"
+            calls.append(target)
+            if "errorWithDomain" in target and "x2" in last_comment:
+                domains.append(last_comment["x2"])
+        elif mnemonic.startswith("b.") or mnemonic in ("cbz", "cbnz", "tbz", "tbnz"):
+            tested = re.match(r"([wx]\d+|\w+)", operands)
+            branches.append(tested.group(1) if tested and mnemonic not in ("b.eq", "b.ne") or mnemonic in ("b.eq", "b.ne") else "flags")
+        if comment:
+            for quoted in re.findall(r'"([^"]*)"', comment):
+                strings.append(quoted)
+            for symbol in re.findall(r"\b(_?k[A-Z]\w+|_?CF[A-Z]\w+|_?NS[A-Z]\w+)\b", comment):
+                constants.append(symbol)
+            destination = re.match(r"([wx]\d+)", operands)
+            if destination:
+                last_comment[destination.group(1).replace("w", "x")] = comment
+    return {"instructions": len(rows), "calls": calls, "argument_branches": branches, "strings": strings,
+            "constants": constants, "error_domains": domains}
+
+
+def cmd_behaviour(args):
+    """The behaviour summary of the framework's objc methods, one at a time through heavy.sh (--limit N, --selector to pick one).
+    Writes untracked pages under .agent-work/spec-docs/<F>/behaviour/ and the cost of each call to .agent-work/behaviour/costs.tsv."""
+    fw = args.framework
+    methods = behaviour_methods(args.tree, fw)
+    if args.selector:
+        methods = [m for m in methods if m[2] == args.selector]
+    methods = methods[:args.limit]
+    raw_dir = os.path.join(args.tree, BEHAVIOUR_DIR, fw)
+    page_dir = os.path.join(args.tree, DOC_OUT, fw, "behaviour")
+    os.makedirs(page_dir, exist_ok=True)
+    costs_path = os.path.join(args.tree, BEHAVIOUR_DIR, "costs.tsv")
+    if not os.path.exists(costs_path):
+        write(costs_path, "framework\tmethod\taddress\tseconds\tpeak_mb\texit\tcalls\tbranches\n")
+    pages = {}
+    done = failed = 0
+    for cls, section, selector, address in methods:
+        raw = os.path.join(raw_dir, "%s__%s.txt" % (cls, re.sub(r"[^A-Za-z0-9_.]", "_", selector)))
+        wall, peak, code = run_ipsw_disass(args.tree, address, raw)
+        summary = summarise_behaviour(read_any(raw)) if code == 0 else None
+        if summary is None:
+            failed += 1
+        else:
+            done += 1
+            pages.setdefault(cls, []).append((section, selector, address, summary))
+        with open(costs_path, "a", encoding="ascii") as handle:
+            handle.write("%s\t-[%s %s]\t%s\t%.2f\t%.0f\t%d\t%s\t%s\n" % (
+                fw, cls, selector, address, wall, peak, code, len(summary["calls"]) if summary else "-",
+                len(summary["argument_branches"]) if summary else "-"))
+    for cls, items in sorted(pages.items()):
+        page = ["# %s behaviour (%s)" % (cls, fw), "",
+                "REFERENCE ONLY. Read from the 26.2 iOS cache by ipsw (markup, demangled), one function at a time: calls in the order the"
+                " code makes them (a straight line through the function, no branch followed), the branches that test a register, the"
+                " constants and strings named in comments, and the NSError domain a call passes. Nothing here is a decompilation, and"
+                " nothing is sent to an external service.", ""]
+        for section, selector, address, summary in items:
+            page += ["## %s[%s %s]" % ("-" if section == "instance" else "+", cls, selector), "",
+                     "address %s, %d instructions" % (address, summary["instructions"]), ""]
+            page += ["Calls, in order: " + ("; ".join(summary["calls"][:40]) or "none"), ""]
+            page += ["Argument branches on: " + (", ".join(summary["argument_branches"]) or "none"), ""]
+            page += ["Strings: " + ("; ".join(summary["strings"]) or "none in comments"), ""]
+            page += ["Constants: " + (", ".join(summary["constants"]) or "none in comments"), ""]
+            page += ["Error domains: " + (", ".join(summary["error_domains"]) or "none"), ""]
+        write(os.path.join(page_dir, cls + ".md"), "\n".join(page) + "\n")
+    print("behaviour %s: %d methods, %d summarised, %d failed (costs in %s)" % (
+        fw, len(methods), done, failed, os.path.relpath(costs_path, args.tree)))
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("command", choices=["input", "pin", "gen", "check", "trace", "diff", "sources", "classify", "doc", "scope", "protocols", "functions", "objc", "swift"])
+    parser.add_argument("command", choices=["input", "pin", "gen", "check", "trace", "diff", "sources", "classify", "doc", "scope", "protocols", "functions", "objc", "swift", "behaviour"])
     parser.add_argument("--tree", required=True)
     parser.add_argument("--framework")
     parser.add_argument("--ledger")
@@ -2380,6 +2727,8 @@ def main():
     parser.add_argument("--out", help="doc: where the page set is written (default: .agent-work/spec-docs under the tree)")
     parser.add_argument("--record", action="store_true", help="gen: also record the manifest of digests in the snapshot")
     parser.add_argument("--members", action="store_true", help="input: re-read the member rows only, keeping the constant layer")
+    parser.add_argument("--limit", type=int, default=5, help="behaviour: the number of methods to summarise (default 5)")
+    parser.add_argument("--selector", help="behaviour: the one selector to summarise")
     parser.add_argument("--catalyst-sdk", default="/Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk")
     args = parser.parse_args()
     if not args.framework and not (args.all and args.command in ("gen", "check", "doc", "trace", "input", "protocols", "functions", "objc", "swift")) and args.command not in ("sources", "scope", "swift", "objc"):
@@ -2419,6 +2768,8 @@ def main():
         return cmd_objc_extract(args)
     if args.command == "swift":
         return cmd_swift(args)
+    if args.command == "behaviour":
+        return cmd_behaviour(args)
     return cmd_diff(args)
 
 
