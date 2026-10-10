@@ -13,7 +13,8 @@ while [ $# -gt 0 ]; do
         *) echo "unknown argument: $1" >&2; exit 1 ;;
     esac
 done
-work=${WORK:-$here/.agent-work}
+# The run folder is this checkout's own (.agent-work/runs at its root), never a folder inside the test directory.
+work=${WORK:-$root/.agent-work}
 stamp=$(date +%Y%m%d-%H%M%S)
 out=$work/runs/coremidi-$minimum-$stamp
 mkdir -p "$out"
