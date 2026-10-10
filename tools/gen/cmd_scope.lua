@@ -342,11 +342,18 @@ local function new_context(args, fw, rows, tally)
     local led6 = surface.ledger_status(corpus, fw, LEDGER_6_1_3)
     local led43 = surface.ledger_status(corpus, fw, LEDGER_4_3)
     local snap = os.isfile(layout.spec_path(tree, fw))
-    local registry = {}
-    for canonical in pairs(surface.registry_entries(tree, fw)) do
-        registry[canonical] = true
-    end
+    -- the registry's covered keys, as the trace layer keys them (a class property by its +[...] api)
+    local registry = trace.overrides_of(tree, fw, headers.shard_facts(tree, fw))
     local stub_keys = trace_files.load_stub_keys(tree, fw)
+    if stub_keys ~= nil then
+        -- a class property's stub is keyed by its class accessor (+[Cls name]); the surface names it by its dotted name, which keys
+        -- as the instance form, so the instance key is added beside it
+        for _, api in pairs(trace.class_property_apis(headers.shard_facts(tree, fw))) do
+            if stub_keys[api] then
+                stub_keys["-" .. string.sub(api, 2)] = true
+            end
+        end
+    end
     tally.stub_sets[fw] = stub_keys or {}
     local ctx = {
         led6 = led6, led43 = led43, snap = snap, registry = registry, stub_keys = stub_keys,
@@ -366,11 +373,11 @@ local function new_context(args, fw, rows, tally)
                 break
             end
         end
-        -- the header facts of the framework: one parse serves the skip reasons and the gap reasons, and runs only when one is read
+        -- the typed facts of the framework (headers.shard_facts), which the trace layer's skip reasons are decided from: read only when one is read
         local parsed = nil
         local function facts_of()
             if parsed == nil then
-                parsed = headers.facts(tree, fw, args.sdk)
+                parsed = headers.shard_facts(tree, fw)
             end
             return parsed
         end
@@ -384,7 +391,7 @@ local function new_context(args, fw, rows, tally)
                     if not is_empty(led6) then
                         release_missing = led6
                     end
-                    for _, s in ipairs(trace.members_left_out(tree, spec, facts_of(), registry, release_missing)) do
+                    for _, s in ipairs(trace.members_left_out(tree, fw, spec, facts_of(), registry, release_missing)) do
                         reasons[s.api] = s.reason
                     end
                 end

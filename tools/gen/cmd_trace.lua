@@ -2,13 +2,13 @@
 -- does not implement, one class per category (or one class object where the release lacks the class and every member is a stub),
 -- the members left out with their reasons (skipped.tsv), one row per stub (stubs.tsv) and the class-object decisions (classes.tsv).
 -- --all: every framework that has a snapshot. The stubs are compiled only with CHARON_TRACE_DEFAULTS and are never shipped.
--- The SDK is --sdk (required); the corpus of ledgers and the surface table is --coordination (required).
+-- The stubs read the typed fields of the declaration shards (design-foundation.md 5.7), not the header parser and not declaration text;
+-- the corpus of ledgers and the surface table is --coordination (required).
 
 local layout = import("layout", {anonymous = true})
 local snapshot = import("spec", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local headers = import("headers", {anonymous = true})
-local decl = import("decl", {anonymous = true})
 local stubs = import("stubs", {anonymous = true})
 local classes = import("classes", {anonymous = true})
 local hand = import("hand", {anonymous = true})
@@ -26,7 +26,6 @@ local INHERITED_SELECTORS = strings.set({"init", "new", "copy", "mutableCopy"})
 local INHERITED_REASON = "init/new/copy the surface does not list: the inherited NSObject behaviour is what a call reaches"
 -- The status of a C function the trace layer stubs.
 local GENERABLE = "generable"
-local NO_TYPE_TEXT = "no type text"
 
 -- The first lines of a generated file: the mark, what the stubs are, and the import and the guard.
 local function preamble(fw)
@@ -93,7 +92,7 @@ local function stub_keys_of(found)
             if m.kind == "method" then
                 keys[m.api] = true
             else
-                keys["-[" .. cls .. " " .. decl.property_name(m.decl) .. "]"] = true
+                keys[m.sign .. "[" .. cls .. " " .. m.name .. "]"] = true
             end
         end
     end
@@ -108,30 +107,20 @@ local function class_lines(fw, cls, members, generated, lines, stub_rows, skippe
     else
         table.insert(lines, "@interface " .. cls .. " (CharonTrace)")
         for _, m in ipairs(members) do
-            if m.kind == "property-get" then
-                table.insert(lines, "- (" .. m.type_text .. ")" .. m.selector .. ";")
-            elseif m.kind == "property-set" then
-                table.insert(lines, "- (void)" .. string.sub(m.selector, 1, #m.selector - 1) .. ":(" .. m.type_text .. ")value;")
-            else
-                table.insert(lines, strings.rstrip(m.decl, ";") .. ";")
-            end
+            table.insert(lines, stubs.signature(m) .. ";")
         end
         table.insert(lines, "@end")
         table.insert(lines, "@implementation " .. cls .. " (CharonTrace)")
     end
     local written = 0
     for _, m in ipairs(members) do
-        if m.zero == "struct" and strings.strip(m.type_text) == "" then
-            table.insert(skipped, {api = m.api, reason = NO_TYPE_TEXT})
-        else
-            table.insert(lines, stubs.stub_text(fw, m.api, m.kind, m.selector, m.type_text, m.zero, m.decl))
-            written = written + 1
-            local row = m.api
-            if m.kind == "property-get" or m.kind == "property-set" then
-                row = "-[" .. cls .. " " .. decl.property_name(m.decl) .. "]"
-            end
-            table.insert(stub_rows, {row, m.kind})
+        table.insert(lines, stubs.stub_text(fw, m))
+        written = written + 1
+        local row = m.api
+        if m.kind == "property-get" or m.kind == "property-set" then
+            row = m.sign .. "[" .. cls .. " " .. m.name .. "]"
         end
+        table.insert(stub_rows, {row, m.kind})
     end
     table.insert(lines, "@end")
     return written
@@ -151,35 +140,95 @@ local function generable_functions(tree, fw)
     return rows
 end
 
--- Writes the trace layer of one framework.
-local function trace_one(args, fw)
-    local tree, sdk, corpus = args.tree, args.sdk, args.coordination
-    local spec = snapshot.load(tree, fw)
-    local facts = headers.facts(tree, fw, sdk)
-    local overridden = {}
-    for canonical in pairs(surface.registry_entries(tree, fw)) do
-        overridden[canonical] = true
+-- The environment of the stub rule for one framework: the typed facts of its members by api, the functions by name, the typedef index and
+-- the declared names (headers), the overrides, and the hand sources.
+local function rule_env(tree, fw, facts, overridden, release_missing)
+    local by_api = {}
+    for _, m in ipairs(facts.members) do
+        if by_api[m.api] == nil then
+            by_api[m.api] = m
+        end
     end
-    -- the 6.1.3 ledger: the members the release lacks are the ones to stub; with no ledger every declared member is considered
-    local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
-    local release_missing = nil
-    if os.isfile(path.join(corpus, LEDGER_RELEASE, fw .. ".tsv")) then
-        release_missing = led6
-    end
-    local found, skipped = stubs.members(spec, {
-        index = facts.typedefs,
-        declared = facts.declared,
+    return {
+        members = by_api,
+        functions = facts.functions,
+        index = headers.typedef_index(tree, fw),
+        declared = headers.declared_names(tree, fw),
         overridden = overridden,
         hand = hand.implementations(tree),
         release_missing = release_missing,
-    })
+    }
+end
+
+-- The 6.1.3 ledger of one framework and the members it lacks (nil when the ledger is not there: every member is considered).
+local function release_of(corpus, fw)
+    local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
+    if os.isfile(path.join(corpus, LEDGER_RELEASE, fw .. ".tsv")) then
+        return led6, led6
+    end
+    return led6, nil
+end
+
+-- The class properties of a framework's shard, by the dotted name the ledgers and the registry give them (Cls.name): each one's api
+-- (+[Cls name]). surface.canonical_member gives the instance form of a dotted name, so the class property is keyed through this map.
+function class_property_apis(facts)
+    local out = {}
+    for _, m in ipairs(facts.members) do
+        if m.kind == "property" and string.sub(m.api, 1, 2) == "+[" then
+            out[m.alias] = m.api
+        end
+    end
+    return out
+end
+
+-- The overrides of a framework: the canonical keys its registry rows cover, and for a class property the key of its class accessor
+-- (both keys: the instance form is what surface.canonical_member names).
+function overrides_of(tree, fw, facts)
+    local class_props = class_property_apis(facts)
+    local overridden = {}
+    for canonical, found in pairs(surface.registry_entries(tree, fw)) do
+        overridden[canonical] = true
+        if found.entry.kind == "property" and class_props[found.entry.api] then
+            overridden[class_props[found.entry.api]] = true
+        end
+    end
+    return overridden
+end
+
+-- The surface rows with the key of each class property (canon, the api of its class accessor): the class decisions compare it with the
+-- stub keys. A copy: the surface table is shared.
+local function with_class_keys(rows, facts)
+    local class_props = class_property_apis(facts)
+    local out = {}
+    for key, row in pairs(rows) do
+        local copy = {}
+        for field, value in pairs(row) do
+            copy[field] = value
+        end
+        if row.kind == "property" and class_props[row.api] then
+            copy.canon = class_props[row.api]
+        end
+        out[key] = copy
+    end
+    return out
+end
+
+-- Writes the trace layer of one framework.
+local function trace_one(args, fw)
+    local tree, corpus = args.tree, args.coordination
+    local spec = snapshot.load(tree, fw)
+    local facts = headers.shard_facts(tree, fw)
+    local overridden = overrides_of(tree, fw, facts)
+    local led6, release_missing = release_of(corpus, fw)
+    local env = rule_env(tree, fw, facts, overridden, release_missing)
+    local found, skipped = stubs.members(spec, env)
     local stub_keys = stub_keys_of(found)
     -- the reasons the class decisions read: taken before the inherited-selector rule adds its own, as the oracle does
     local skip_reasons = {}
     for _, s in ipairs(skipped) do
         skip_reasons[s.api] = s.reason
     end
-    local rows = surface.surface_rows(corpus, fw)
+    local rows = with_class_keys(surface.surface_rows(corpus, fw), facts)
     local surface_methods = {}
     for _, row in pairs(rows) do
         if row.kind == "method" then
@@ -203,11 +252,10 @@ local function trace_one(args, fw)
         local generated = decisions[cls] ~= nil and decisions[cls].generated
         stubbed = stubbed + class_lines(fw, cls, found.members[cls], generated, lines, stub_rows, skipped)
     end
-    for _, row in ipairs(generable_functions(tree, fw)) do
-        local zero = decl.resolve_kind(row.returns, facts.typedefs)
-        table.insert(lines, stubs.stub_text(fw, row.api, "function", row.api, row.returns, zero, row.decl))
+    for _, m in ipairs(stubs.functions(generable_functions(tree, fw), env, skipped)) do
+        table.insert(lines, stubs.stub_text(fw, m))
         stubbed = stubbed + 1
-        table.insert(stub_rows, {row.api .. "()", "function"})
+        table.insert(stub_rows, {m.api .. "()", "function"})
     end
     table.insert(lines, "#endif")
     emit.file(trace_files.defaults_file(tree, fw), table.concat(lines, "\n") .. "\n")
@@ -230,23 +278,16 @@ end
 
 -- The members the stub rule leaves out of one framework, with the reason each is left out, in the order they were decided: the scope's
 -- reasons (stub_members of tools/gen.py, which runs before the inherited-selector rule trace_one adds). tree: the repository tree;
--- spec: the framework's spec rows; facts: the header facts of the framework (headers.facts); overridden: the set of the canonical keys
--- a registry row covers; release_missing: the 6.1.3 ledger's statuses keyed by surface.key, or nil when the rule considers every
--- declared member.
-function members_left_out(tree, spec, facts, overridden, release_missing)
-    local _, skipped = stubs.members(spec, {
-        index = facts.typedefs,
-        declared = facts.declared,
-        overridden = overridden,
-        hand = hand.implementations(tree),
-        release_missing = release_missing,
-    })
+-- fw: the framework; spec: the framework's spec rows; facts: the typed facts of the framework (headers.shard_facts); overridden: the set
+-- of the canonical keys a registry row covers; release_missing: the 6.1.3 ledger's statuses keyed by surface.key, or nil when the rule
+-- considers every declared member.
+function members_left_out(tree, fw, spec, facts, overridden, release_missing)
+    local _, skipped = stubs.members(spec, rule_env(tree, fw, facts, overridden, release_missing))
     return skipped
 end
 
 -- Returns the exit status.
 function run(args)
-    assert(args.sdk, "trace needs --sdk: the iOS SDK directory")
     assert(args.coordination, "trace needs --coordination: the corpus folder")
     local targets = args.all and gen.frameworks(args.tree) or {args.framework}
     for _, fw in ipairs(targets) do

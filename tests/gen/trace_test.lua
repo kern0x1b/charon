@@ -2,9 +2,10 @@
 -- the program calls each stub through the Objective-C runtime. Each call logs its selector once to stderr and returns the safe
 -- default: nil for an object, 0 for a scalar, NO for BOOL, a zeroed struct, and an NSError in the framework's own domain for an
 -- NSError ** parameter. Setters are the selector the property names (setScope:). FKWidget is a class the release lacks: its class
--- object is generated, since every member is a stub. The fixture facts, superclasses included, are injected through headers.use, so no
--- header is parsed; the fixture header is written only so that the program compiles. The declaration rules and the stub text are
--- checked against the oracle's output.
+-- object is generated, since every member is a stub. The fixture's typed facts (the type, params and attrs columns of each member, the
+-- functions, the typedefs, the declared names and the superclasses) are injected through headers.use, so no header is parsed and no
+-- shard is read; the fixture header is written only so that the program compiles. The typed rules (the spelling of a type, the kind a
+-- type is, the parameters, the NSError ** test) and the stub text are checked case by case.
 -- Run: xmake l tests/gen/trace_test.lua (needs clang; exits 1 on any failure). Scratch files live in a folder under the system
 -- temporary directory, removed when the test ends.
 
@@ -35,17 +36,22 @@ NSInteger FKCountThings(NSInteger count, NSError **error);
 @end
 ]==]
 
--- The members the header declares, as the oracle's member parse gives them: class, kind, api and declaration.
+-- The members the header declares, as the shard's typed columns give them: class, kind, api, type, params and attrs (the spelling of
+-- the shard: nullability words inside the types, and the parameters as "TYPE NAME | TYPE NAME").
 local MEMBERS = {
-    {"FKThing", "property", "-[FKThing scope]", "@property (nonatomic, readwrite) NSInteger scope"},
-    {"FKThing", "property", "-[FKThing enabled]", "@property (nonatomic, readwrite, getter=isEnabled) BOOL enabled"},
-    {"FKThing", "property", "-[FKThing name]", "@property (nonatomic, readonly, copy) NSString *name"},
-    {"FKThing", "method", "-[FKThing setLevel:error:]", "- (BOOL)setLevel:(NSInteger)level error:(NSError **)error"},
-    {"FKThing", "method", "-[FKThing items]", "- (NSArray *)items"},
-    {"FKThing", "method", "-[FKThing reset]", "- (void)reset"},
-    {"FKWidget", "property", "-[FKWidget count]", "@property (nonatomic, readwrite) NSInteger count"},
-    {"FKWidget", "method", "-[FKWidget refreshWithError:]", "- (BOOL)refreshWithError:(NSError **)error"},
+    {"FKThing", "property", "-[FKThing scope]", "NSInteger", "-", "nonatomic"},
+    {"FKThing", "property", "-[FKThing enabled]", "BOOL", "-", "nonatomic,getter=isEnabled"},
+    {"FKThing", "property", "-[FKThing name]", "NSString *", "-", "readonly,copy,nonatomic"},
+    {"FKThing", "method", "-[FKThing setLevel:error:]", "BOOL", "NSInteger level | NSError * _Nullable * error", "-"},
+    {"FKThing", "method", "-[FKThing items]", "NSArray *", "-", "-"},
+    {"FKThing", "method", "-[FKThing reset]", "void", "-", "-"},
+    {"FKWidget", "property", "-[FKWidget count]", "NSInteger", "-", "nonatomic"},
+    {"FKWidget", "method", "-[FKWidget refreshWithError:]", "BOOL", "NSError * _Nullable * error", "-"},
 }
+
+-- The C function the fixture declares: its type text ("RET (PARAMS)") and its params, as the shard's function row gives them.
+local FUNCTION_TYPE = "NSInteger (NSInteger, NSError * _Nullable *)"
+local FUNCTION_PARAMS = "NSInteger count | NSError * _Nullable * error"
 
 -- The ledger rows of the release that lacks every member: the class and each member, by the api the ledger spells.
 local LEDGER = {
@@ -107,29 +113,50 @@ int main(void) {
 }
 ]==]
 
--- The stub text the oracle's stub_text writes for each case: the framework, the api, the kind, the selector, the type text, the kind
--- of the zero, the declaration, and the text (the oracle's output, copied).
-local STUB_TEXT = {
-    {"-[FKThing setLevel:error:]", "method", "setLevel:error:", "BOOL", "scalar", "- (BOOL)setLevel:(NSInteger)level error:(NSError **)error",
-     [==[- (BOOL)setLevel:(NSInteger)level error:(NSError **)error { static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: FixtureKit %s\n", "-[FKThing setLevel:error:]"); } if (error) { *error = [NSError errorWithDomain:@"FixtureKit.Unimplemented" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"-[FKThing setLevel:error:] is not implemented by the port"}]; } return 0; }]==]},
-    {"-[FKThing items]", "method", "items", "NSArray *", "object", "- (NSArray *)items",
-     [==[- (NSArray *)items { static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: FixtureKit %s\n", "-[FKThing items]"); } return nil; }]==]},
-    {"-[FKThing reset]", "method", "reset", "void", "void", "- (void)reset",
-     [==[- (void)reset { static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: FixtureKit %s\n", "-[FKThing reset]"); }  }]==]},
-    {"-[FKThing scope]", "property-get", "scope", "NSInteger", "scalar", "@property (nonatomic, readwrite) NSInteger scope",
-     [==[- (NSInteger)scope { static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: FixtureKit %s\n", "-[FKThing scope]"); } return 0; }]==]},
-    {"-[FKThing setScope:]", "property-set", "setScope:", "NSInteger", "void", "@property (nonatomic, readwrite) NSInteger scope",
-     [==[- (void)setScope:(NSInteger)value { static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: FixtureKit %s\n", "-[FKThing setScope:]"); }  }]==]},
-    {"-[FKThing rect]", "method", "rect", "CGRect", "struct", "- (CGRect)rect",
-     [==[- (CGRect)rect { static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: FixtureKit %s\n", "-[FKThing rect]"); } return (CGRect){0}; }]==]},
-    {"-[FKThing blank]", "method", "blank", "", "struct", "- (void)blank",
-     [==[- (void)blank { static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: FixtureKit %s\n", "-[FKThing blank]"); } return (){0}; }]==]},
-    {"FKCountThings", "function", "FKCountThings", "NSInteger", "scalar", "NSInteger FKCountThings(NSInteger count, NSError **error)",
-     [==[NSInteger FKCountThings(NSInteger count, NSError **error) { static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: FixtureKit %s\n", "FKCountThings"); } if (error) { *error = [NSError errorWithDomain:@"FixtureKit.Unimplemented" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"FKCountThings is not implemented by the port"}]; } return 0; }]==]},
-    {"FKMake", "function", "FKMake", "FKThing *", "object", "FKThing *FKMake(void)",
-     [==[FKThing *FKMake(void) { static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: FixtureKit %s\n", "FKMake"); } return NULL; }]==]},
-    {"-[FKThing copyWithError:]", "method", "copyWithError:", "id", "object", "- (id)copyWithError:(NSError * _Nullable * _Nullable)error",
-     [==[- (id)copyWithError:(NSError * _Nullable * _Nullable)error { static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: FixtureKit %s\n", "-[FKThing copyWithError:]"); } return nil; }]==]},
+-- The member records the stub rule gives each case (the fields stubs.members and stubs.functions keep), and the text the stub of each
+-- must have: the signature composed from the typed fields, then the body (the log line once, the error in the framework's domain, the
+-- zero of the type).
+local function log_of(api)
+    return 'static BOOL charon_logged = NO; if (!charon_logged) { charon_logged = YES; fprintf(stderr, "unimplemented: FixtureKit %s\\n", "' .. api .. '"); }'
+end
+local ERROR = 'if (error) { *error = [NSError errorWithDomain:@"FixtureKit.Unimplemented" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"%s is not implemented by the port"}]; } '
+local STUB_CASES = {
+    {member = {api = "-[FKThing setLevel:error:]", kind = "method", sign = "-", selector = "setLevel:error:", type_text = "BOOL",
+               zero = "scalar", params = {{type = "NSInteger", name = "level"}, {type = "NSError **", name = "error"}}, error_arg = "error"},
+     text = '- (BOOL)setLevel:(NSInteger)level error:(NSError **)error { ' .. log_of("-[FKThing setLevel:error:]")
+            .. " " .. string.format(ERROR, "-[FKThing setLevel:error:]") .. "return 0; }"},
+    {member = {api = "-[FKThing items]", kind = "method", sign = "-", selector = "items", type_text = "NSArray *", zero = "object",
+               params = {}},
+     text = "- (NSArray *)items { " .. log_of("-[FKThing items]") .. " return nil; }"},
+    {member = {api = "-[FKThing reset]", kind = "method", sign = "-", selector = "reset", type_text = "void", zero = "void", params = {}},
+     text = "- (void)reset { " .. log_of("-[FKThing reset]") .. "  }"},
+    {member = {api = "-[FKThing scope]", kind = "property-get", sign = "-", selector = "scope", type_text = "NSInteger", zero = "scalar",
+               params = {}, name = "scope"},
+     text = "- (NSInteger)scope { " .. log_of("-[FKThing scope]") .. " return 0; }"},
+    {member = {api = "-[FKThing setScope:]", kind = "property-set", sign = "-", selector = "setScope:", type_text = "NSInteger",
+               zero = "void", params = {}, name = "scope"},
+     text = "- (void)setScope:(NSInteger)value { " .. log_of("-[FKThing setScope:]") .. "  }"},
+    {member = {api = "-[FKThing rect]", kind = "method", sign = "-", selector = "rect", type_text = "CGRect", zero = "struct", params = {}},
+     text = "- (CGRect)rect { " .. log_of("-[FKThing rect]") .. " return (CGRect){0}; }"},
+    {member = {api = "+[FKThing shared]", kind = "property-get", sign = "+", selector = "shared", type_text = "BOOL",
+               zero = "scalar", params = {}, name = "shared"},
+     text = "+ (BOOL)shared { " .. log_of("+[FKThing shared]") .. " return 0; }"},
+    {member = {api = "+[FKThing setShared:]", kind = "property-set", sign = "+", selector = "setShared:", type_text = "BOOL",
+               zero = "void", params = {}, name = "shared"},
+     text = "+ (void)setShared:(BOOL)value { " .. log_of("+[FKThing setShared:]") .. "  }"},
+    {member = {api = "FKCountThings", kind = "function", sign = "", selector = "FKCountThings", type_text = "NSInteger", zero = "scalar",
+               params = {{type = "NSInteger", name = "count"}, {type = "NSError **", name = "error"}}, error_arg = "error"},
+     text = "NSInteger FKCountThings(NSInteger count, NSError **error) { " .. log_of("FKCountThings") .. " "
+            .. string.format(ERROR, "FKCountThings") .. "return 0; }"},
+    {member = {api = "FKFill", kind = "function", sign = "", selector = "FKFill", type_text = "void", zero = "void",
+               params = {{type = "CGSize[]", name = "buffer"}}},
+     text = "void FKFill(CGSize buffer[]) { " .. log_of("FKFill") .. "  }"},
+    {member = {api = "FKMake", kind = "function", sign = "", selector = "FKMake", type_text = "FKThing *", zero = "object", params = {}},
+     text = "FKThing *FKMake(void) { " .. log_of("FKMake") .. " return NULL; }"},
+    {member = {api = "-[FKThing copyWithError:]", kind = "method", sign = "-", selector = "copyWithError:", type_text = "id",
+               zero = "object", params = {{type = "NSError **", name = "error"}}, error_arg = "error"},
+     text = "- (id)copyWithError:(NSError **)error { " .. log_of("-[FKThing copyWithError:]") .. " "
+            .. string.format(ERROR, "-[FKThing copyWithError:]") .. "return nil; }"},
 }
 
 local function checks()
@@ -144,45 +171,65 @@ local function checks()
     return check, function() return failures end, function() return count end
 end
 
--- The oracle's answer for each declaration rule, from its regular expressions: the same inputs as tools/gen.py gives them.
-local function test_declarations(check)
+-- The typed rules: the canonical spelling of a type, the kind a type is through the typedefs, the parameters of a method or a
+-- function, the NSError ** test, the return type of a C function, and the attributes of a property.
+local function test_typed_rules(check)
+    local decl = import("gen.decl", {rootdir = TOOLS, anonymous = true})
+    local function same(label, got, want)
+        check(got == want, string.format("%s: got %q, want %q", label, tostring(got), tostring(want)))
+    end
+    local index = {FKFlags = "enum FKFlags", FKBox = "struct FKBoxS", FKAlias = "FKOther", FKOther = "long", FKCount = "unsigned int",
+                   FKTypedefObj = "NSString *", CFStringRef = "const struct __CFString *", CGRect = "struct CGRect",
+                   CBLAS_TRANSPOSE = "enum CBLAS_TRANSPOSE", A = "B", B = "C", C = "D", D = "E", E = "F", F = "G", G = "long"}
+    same("canonical drops nullability", decl.canonical("NSString * _Nullable", index), "NSString *")
+    same("canonical joins the stars of a nullable out-error", decl.canonical("NSError * _Nullable * _Nullable", index), "NSError **")
+    same("canonical attached nullability", decl.canonical("NSString *_Nullable", index), "NSString *")
+    same("canonical keeps a block's parameters", decl.canonical("id  _Nullable (^)(NSError * _Nonnull, NSErrorUserInfoKey _Nonnull)",
+         index), "id (^)(NSError *, NSErrorUserInfoKey)")
+    same("canonical drops an availability macro", decl.canonical("API_AVAILABLE NSString *", index), "NSString *")
+    same("canonical drops a macro with an underscore", decl.canonical("__TVOS_PROHIBITED NSString *", index), "NSString *")
+    same("canonical keeps a typedef named in capitals", decl.canonical("CBLAS_TRANSPOSE", index), "CBLAS_TRANSPOSE")
+    same("canonical keeps __kindof", decl.canonical("__kindof UIView *", index), "__kindof UIView *")
+    local kinds = {
+        {"void", "void"}, {"NSInteger", "scalar"}, {"NSString *", "object"}, {"id", "object"}, {"instancetype", "object"},
+        {"CGRect", "struct"}, {"FKFlags", "scalar"}, {"FKBox", "struct"}, {"FKAlias", "scalar"}, {"A", nil},
+        {"NSUInteger", "scalar"}, {"CBLAS_TRANSPOSE", "scalar"}, {"FKCount", "scalar"}, {"FKTypedefObj", "object"},
+        {"const NSInteger", "scalar"}, {"NSArray<NSString *> *", "object"}, {"BOOL", "scalar"}, {"_Bool", "scalar"},
+        {"char *", "object"}, {"enum Thing", "scalar"}, {"struct Thing", "struct"}, {"void (^)(int)", "object"},
+        {"NoSuchType", nil}, {"CFStringRef", "object"},
+    }
+    for _, case in ipairs(kinds) do
+        same("kind_of " .. case[1], decl.kind_of(case[1], index), case[2])
+    end
+    local params = decl.parse_params("NSInteger level | NSError * _Nullable * error", index)
+    check(#params == 2 and params[1].type == "NSInteger" and params[1].name == "level" and params[2].type == "NSError **"
+          and params[2].name == "error", "parse_params names the parameters and spells the out-error")
+    check(decl.is_error_out("NSError * _Nullable *", index) and decl.is_error_out("NSError **", index)
+          and not decl.is_error_out("NSError *", index), "is_error_out is NSError ** once the nullability words are gone")
+    local unnamed = decl.parse_params("ColorSyncProfileRef | unsigned int | struct CGRect | long long count | NSString *const", index)
+    check(#unnamed == 5 and unnamed[1].name == nil and unnamed[2].name == nil and unnamed[3].name == nil
+          and unnamed[4].name == "count" and unnamed[5].name == nil, "parse_params leaves a type-only parameter unnamed")
+    local block = decl.parse_params("void (^)(BOOL, NSError * _Nullable) completionHandler", index)
+    same("a block parameter's type", block[1].type, "void (^)(BOOL, NSError *)")
+    same("a block parameter's name", block[1].name, "completionHandler")
+    check(#decl.parse_params("-", index) == 0 and #decl.parse_params("", index) == 0, "no params column is no parameters")
+    same("function_return", decl.function_return("NSInteger (NSInteger, NSError * _Nullable *)", index), "NSInteger")
+    same("function_return of a pointer", decl.function_return("FKThing * (void)", index), "FKThing *")
+    same("function_return with a block parameter", decl.function_return("void (void (^)(BOOL))", index), "void")
+    same("function_return of a type that closes with no group", decl.function_return("void", index), nil)
+    same("attribute_value getter", decl.attribute_value("nonatomic,getter=isEnabled", "getter"), "isEnabled")
+    same("attribute_value without one", decl.attribute_value("-", "getter"), nil)
+    check(decl.has_attribute("readonly,copy", "readonly") and not decl.has_attribute("copy,nonatomic", "readonly"),
+          "has_attribute reads the bare attribute names")
+    same("member_name", decl.member_name("-[FKThing scope]"), "scope")
+end
+
+-- The selectors of the hand sources (hand.lua reads them through selector_of).
+local function test_selectors(check)
     local decl = import("gen.decl", {rootdir = TOOLS, anonymous = true})
     local function same(label, got, want)
         check(got == want, string.format("%s: got %q, the oracle's %q", label, tostring(got), want))
     end
-    same("strip_nullability", decl.strip_nullability("- (NSString * _Nullable)name"), "- (NSString * )name")
-    same("strip_nullability property", decl.strip_nullability("@property (nonatomic, readonly, nullable) NSString *title"),
-         "@property (nonatomic, readonly, ) NSString *title")
-    same("strip_nullability macro after parameter", decl.strip_nullability(
-         "- (void)setX:(nullable NSString *)x API_AVAILABLE(ios(7.0)) __TVOS_PROHIBITED"), "- (void)setX:( NSString *)x API_AVAILABLE(ios(7.0))")
-    same("strip_nullability keeps a lowercase run", decl.strip_nullability("- (BOOL)foo __IOS_AVAILABLE_foo(1)"), "- (BOOL)foo foo(1)")
-    same("strip_nullability keeps attributes", decl.strip_nullability("NSInteger FK(void) __attribute__((x)) __CF_AVAILABLE_ME"),
-         "NSInteger FK(void) __attribute__((x))")
-    same("strip_nullability needs a word start", decl.strip_nullability("- (void)m__TVOS_PROHIBITED"), "- (void)m__TVOS_PROHIBITED")
-    same("strip_nullability needs whole words", decl.strip_nullability("xnullable nullable_x _Null_unspecified"), "xnullable nullable_x")
-    same("strip_nullability with a nested macro argument", decl.strip_nullability(
-         "- (id _Nonnull)a __OSX_X(1) bar __IOS_NOTE(a (b)) c"), "- (id )a bar (a (b)) c")
-    local trailing = {
-        {"@property (nonatomic) NSInteger scope CS_TVOS_UNAVAILABLE", "@property (nonatomic) NSInteger scope"},
-        {"@property NSInteger foo UI_APPEARANCE_SELECTOR", "@property NSInteger foo"},
-        {"@property NSInteger foo FILEPROVIDER_API_AVAILABILITY_DESKTOP", "@property NSInteger foo"},
-        {"@property NSInteger foo BAR_BAZ(x (y)) QUX_Y", "@property NSInteger foo"},
-        {"@property BOOL enabled", "@property BOOL enabled"},
-        {"@property NSString *name ABC", "@property NSString *name ABC"},
-        {"@property int a_B", "@property int a_B"},
-        {"@property int a_B_ C_D", "@property int a_B_"},
-        {"@property NSInteger foo A_B( ) C_D(z)  ", "@property NSInteger foo"},
-        {"@property NSInteger foo A_B((z)) ", "@property NSInteger foo"},
-        {"@property NSInteger foo A_B(", "@property NSInteger foo A_B("},
-    }
-    for _, case in ipairs(trailing) do
-        same("without_trailing_macros " .. case[1], decl.without_trailing_macros(case[1]), case[2])
-    end
-    same("property_name of a block", decl.property_name("@property (copy) void (^handler)(int)"), "handler")
-    same("property_name before a macro", decl.property_name("@property (nonatomic, readwrite) NSInteger scope CS_TVOS_UNAVAILABLE"),
-         "scope")
-    same("property_name after a macro", decl.property_name("@property NSInteger foo UI_APPEARANCE_SELECTOR"), "foo")
-    same("property_name as the last word", decl.property_name("@property (nonatomic) NSString *ab abc"), "abc")
     local selectors = {
         {"- (BOOL)setLevel:(NSInteger)level error:(NSError **)error", "setLevel:error:"},
         {"+ (id)make", "make"},
@@ -197,33 +244,6 @@ local function test_declarations(check)
     }
     for _, case in ipairs(selectors) do
         same("selector_of " .. case[1], decl.selector_of(case[1]), case[2])
-    end
-    same("getter_of", decl.getter_of("@property (nonatomic, readwrite, getter=isEnabled) BOOL enabled", "enabled"), "isEnabled")
-    same("getter_of without one", decl.getter_of("@property (nonatomic) BOOL on", "on"), "on")
-    local types = {
-        {"@property (nonatomic, readwrite) NSInteger scope", "scope", "NSInteger"},
-        {"@property (nonatomic, readwrite, getter=isEnabled) BOOL enabled", "enabled", "BOOL"},
-        {"@property (nonatomic, readonly, copy) NSString *name", "name", "NSString *"},
-        {"@property (nonatomic) NSString *ab abc", "ab", "NSString *ab"},
-        {"@property (nonatomic) NSString *ab abc", "abc", "NSString *ab"},
-        {"@property (copy) void (^handler)(int)", "handler", "void"},
-        {"@property NSString *(^h)(int)", "h", "NSString *"},
-    }
-    for _, case in ipairs(types) do
-        same("property_type_text " .. case[1], decl.property_type_text(decl.strip_nullability(case[1]), case[2]), case[3])
-    end
-    local index = {FKFlags = "NS_OPTIONS(NSUInteger, FKFlags)", FKBox = "struct FKBoxS", FKAlias = "FKOther", FKOther = "long",
-                   A = "B", B = "C", C = "D", D = "E", E = "F", F = "G", G = "long", FKEnumT = "NS_ENUM(NSInteger, FKEnumT)",
-                   FKCount = "unsigned int", FKTypedefObj = "NSString *"}
-    local kinds = {
-        {"void", "void"}, {"NSInteger", "scalar"}, {"NSString *", "object"}, {"id", "object"}, {"instancetype", "object"},
-        {"CGRect", "struct"}, {"FKFlags", "scalar"}, {"FKBox", "struct"}, {"FKAlias", "scalar"}, {"A", "struct"},
-        {"NSUInteger", "scalar"}, {"NSSomeOptions", "scalar"}, {"FKEnumT", "scalar"}, {"FKCount", "scalar"},
-        {"FKTypedefObj", "object"}, {"const NSInteger", "scalar"}, {"", "struct"}, {"NSArray<NSString *> *", "object"},
-        {"BOOL", "scalar"}, {"char *", "object"}, {"enum Thing", "scalar"}, {"NS_OPTIONS(NSInteger, Q)", "scalar"},
-    }
-    for _, case in ipairs(kinds) do
-        same("resolve_kind " .. case[1], decl.resolve_kind(case[1], index), case[2])
     end
 end
 
@@ -249,12 +269,12 @@ local function test_superclass(check)
     check(decide("NSObject").C1.generated == true, "a class under a superclass the framework does not list is generated")
 end
 
--- The stub text is the oracle's, byte for byte.
+-- The stub text is composed from the typed fields: the signature and the body of each case.
 local function test_stub_text(check)
     local stubs = import("gen.stubs", {rootdir = TOOLS, anonymous = true})
-    for _, case in ipairs(STUB_TEXT) do
-        local got = stubs.stub_text(FRAMEWORK, case[1], case[2], case[3], case[4], case[5], case[6])
-        check(got == case[7], "stub text of " .. case[1] .. " is the oracle's: " .. got)
+    for _, case in ipairs(STUB_CASES) do
+        local got = stubs.stub_text(FRAMEWORK, case.member)
+        check(got == case.text, "stub text of " .. case.member.api .. " is composed from the typed fields: " .. got)
     end
 end
 
@@ -274,7 +294,7 @@ local function write_fixture(root)
         for _, column in ipairs(layout.constants().SPEC_COLUMNS) do
             cells[column] = "-"
         end
-        cells.kind, cells.api, cells.cls, cells.decl = m[2], m[3], m[1], m[4]
+        cells.kind, cells.api, cells.cls = m[2], m[3], m[1]
         cells.key = (string.gsub(m[3], "[^%w]+", "_"))
         cells.hash = string.rep("0", 16)
         local row = {}
@@ -299,11 +319,12 @@ local function write_fixture(root)
     headers.use(function(fw, sdk_dir)
         local members = {}
         for _, m in ipairs(MEMBERS) do
-            table.insert(members, {cls = m[1], kind = m[2], api = m[3], decl = m[4]})
+            table.insert(members, {cls = m[1], kind = m[2], api = m[3], type = m[4], params = m[5], attrs = m[6]})
         end
         return {members = members, declared = {FKThing = true, FKWidget = true, NSObject = true},
                 typedefs = {NSInteger = "long", NSUInteger = "unsigned long", BOOL = "signed char"},
-                superclasses = {FKThing = "NSObject", FKWidget = "NSObject"}}
+                superclasses = {FKThing = "NSObject", FKWidget = "NSObject"},
+                functions = {FKCountThings = {type = FUNCTION_TYPE, params = FUNCTION_PARAMS}}}
     end)
     return tree, sdk, corpus
 end
@@ -372,7 +393,8 @@ end
 
 function main()
     local check, failures, count = checks()
-    test_declarations(check)
+    test_typed_rules(check)
+    test_selectors(check)
     test_superclass(check)
     test_stub_text(check)
     local root = path.join(os.tmpdir(), "charon-trace-test-" .. tostring(os.time()) .. "-" .. tostring(math.random(1000000)))
@@ -386,7 +408,7 @@ function main()
     }
     os.rm(root)
     if err ~= nil then
-        error(err)
+        check(false, "the trace run raised: " .. tostring(err))
     end
     local verdict = failures() == 0 and "OK" or ("FAIL " .. failures())
     print(string.format("trace run test: %s (%d checks)", verdict, count()))

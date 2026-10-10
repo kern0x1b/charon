@@ -37,7 +37,7 @@ local function class_reasons(input, spec_apis, owned, hand_classes, candidates)
             table.insert(why, "no missing member rows in the surface")
         end
         for _, row in ipairs(members) do
-            local canon = surface.canonical_member(row.api, row.kind)
+            local canon = row.canon or surface.canonical_member(row.api, row.kind)
             if row.lang == "swift" then
                 table.insert(why, "Swift-only member")
             elseif input.overridden[row.api] or input.overridden[canon] then
