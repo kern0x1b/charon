@@ -1,5 +1,5 @@
--- Behaviour of the generator's support modules: the SHA-256 digest, the one writer (emit), the pipe stream, and the header interface's
--- injected facts. The real header parser is tested in parser_real_test.lua. Run:
+-- Behaviour of the generator's support modules: the SHA-256 digest, the one writer (emit), the pipe stream, and the zero-writes rule
+-- of a second gen on an unchanged tree. Run:
 --   xmake l tests/gen/gen_test.lua
 -- The writer's test works in a scratch directory under .agent-work/runs of this checkout, removed when the test ends.
 
@@ -59,19 +59,6 @@ local function test_emit(check)
     os.rm(dir)
 end
 
--- The header interface: injected facts come back untouched (the real parser is parser_real_test.lua).
-local function test_headers(check)
-    local headers = import("gen.headers", {rootdir = TOOLS, anonymous = true})
-    headers.use(function(fw, sdk)
-        return {members = {{cls = "FKThing", kind = "method", api = "-[FKThing reset]", decl = "- (void)reset"}},
-                declared = {FKThing = true}, typedefs = {FKFlag = "NSInteger"}, superclasses = {FKThing = "NSObject"}}
-    end)
-    local fixture = headers.facts(TOOLS, "FixtureKit", "/nonexistent")
-    check(#fixture.members == 1 and fixture.members[1].api == "-[FKThing reset]" and fixture.declared.FKThing == true
-          and fixture.typedefs.FKFlag == "NSInteger", "an injected fact source answers in place of the parser")
-    headers.use(nil)
-end
-
 -- A second `gen --all` on an unchanged tree writes no file: the emitter compares before it writes (design-spec-driven.md D2).
 local function test_zero_writes(check)
     local gen = import("gen.cmd_gen", {rootdir = TOOLS, anonymous = true})
@@ -105,7 +92,6 @@ function main()
     test_emit(check)
     test_stream(check)
     test_zero_writes(check)
-    test_headers(check)
     print("gen support test: " .. (failures() == 0 and "OK" or ("FAIL " .. failures())))
     if failures() > 0 then
         os.exit(1)

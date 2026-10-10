@@ -8,10 +8,10 @@ over and not yet had re-verified byte for byte against this file (the v-gen2 ban
     gen.py input  --tree T --framework F --ledger L --sdk S [--owned FILE]   the constants record: the 26.2 SDK headers and
                                                                              the values of the macOS framework (the host
                                                                              oracle, tools/gen-objc-constants-oracle.m)
-    gen.py protocols | functions | headers                                   not ported
+    gen.py protocols | functions                                             not ported
     gen.py doc | scope | objc | swift | behaviour                            ported; the reference of the port's checks
 
-The copies of gen, check, pin, trace, diff, sources and members that this file once held were removed: the Lua commands had
+The copies of gen, check, pin, trace, diff, sources, members and headers that this file once held were removed: the Lua commands had
 replaced them (their output differs by design since the switch to the shards), so they could no longer serve as an oracle.
 Design: coordination/wave-2026-10-03/design-spec-driven.md.
 """
@@ -840,15 +840,6 @@ def property_type_text(decl, name):
     text = " ".join(text.rstrip(";").split())
     return " ".join(text[:text.rfind(name)].split()) if name in text else text
 
-
-# ---------------------------------------------------------------- superclasses (the header parse prints them as facts)
-
-
-def superclasses(sdk, fw):
-    """class -> superclass for every `@interface NAME : SUPER` in the framework's headers, comments removed (a later line of the same
-    class wins). The header parse prints them as the superclass facts; the class-object decisions read them."""
-    header = re.sub(r"//[^\n]*|/\*.*?\*/", " ", header_text(sdk, fw), flags=re.S)
-    return dict(re.findall(r"@interface\s+(\w+)\s*:\s*(\w+)", header))
 
 
 def getter_of(decl, name):
@@ -1941,27 +1932,10 @@ def cmd_behaviour(args):
     return 0
 
 
-def cmd_headers(args):
-    """The declaration facts of one framework's iOS header parse, one tab-separated line per fact, kind first: member (class,
-    kind, selector or name, alias, declaration, availability), declared (a typedef, class or protocol name), typedef (name and
-    the text it is defined as), superclass (class and the superclass its @interface names). The Lua generator reads them through
-    tools/gen/headers.lua (design-spec-driven.md D3)."""
-    fw = args.framework
-    text = ios_text(header_text(args.sdk, fw))[0]
-    for cls, kind, api, alias, decl, avail in members_of(text):
-        print("\t".join(["member", cls, kind, api, alias or "-", decl.replace("\t", " "), avail or "-"]))
-    for name in sorted(declared_names(args.sdk, fw)):
-        print("\t".join(["declared", name]))
-    for name, definition in sorted(type_index(args.sdk, fw).items()):
-        print("\t".join(["typedef", name, definition.replace("\t", " ")]))
-    for cls, sup in sorted(superclasses(args.sdk, fw).items()):
-        print("\t".join(["superclass", cls, sup]))
-    return 0
-
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("command", choices=["input", "doc", "scope", "protocols", "functions", "objc", "swift", "behaviour", "headers"])
+    parser.add_argument("command", choices=["input", "doc", "scope", "protocols", "functions", "objc", "swift", "behaviour"])
     parser.add_argument("--tree", required=True)
     parser.add_argument("--framework")
     parser.add_argument("--ledger")
@@ -1995,9 +1969,7 @@ def main():
         return cmd_objc_extract(args)
     if args.command == "swift":
         return cmd_swift(args)
-    if args.command == "behaviour":
-        return cmd_behaviour(args)
-    return cmd_headers(args)
+    return cmd_behaviour(args)
 
 
 if __name__ == "__main__":
