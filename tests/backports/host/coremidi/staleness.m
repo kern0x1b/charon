@@ -255,8 +255,9 @@ int main(void)
         }
         expect(gLive == held + 1 && passes <= 8, "and every stale row is released within a pass of the table");
 
-        // A send reads the object (is the destination still there?) with no lock held that another thread needs: while one
-        // thread is inside that read, another thread's send to an endpoint that is not the library's returns.
+        // The delivery reads the object (is the destination still there?) on the drain thread, right before its block is called, with
+        // no lock held that another thread needs: while the drain thread is inside that read, another thread's send to an endpoint
+        // that is not the library's returns. The sender reads nothing; its send only queues the delivery.
         static const UInt32 words[2] = {0x40903C00u, 0x12340000u};
         gHeldEntered = dispatch_semaphore_create(0);
         gHeldRelease = dispatch_semaphore_create(0);
@@ -285,11 +286,11 @@ int main(void)
         });
         int otherReturned = dispatch_semaphore_wait(otherDone, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
         expect(inRead && otherReturned && !otherResult,
-               "a send to another endpoint returns while a send of another thread is inside its read of the object");
+               "a send to another endpoint returns while the drain thread is inside its check of the object");
         dispatch_semaphore_signal(gHeldRelease);
         int firstReturned = dispatch_semaphore_wait(firstDone, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
         int arrived = dispatch_semaphore_wait(delivered, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
-        expect(firstReturned && firstResult && arrived && deliveries == 1, "and that send is delivered to the block once");
+        expect(firstReturned && firstResult && arrived && deliveries == 1, "and the delivery of that destination reaches its block once");
         if (!otherReturned)
             dispatch_semaphore_wait(otherDone, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC));
 
