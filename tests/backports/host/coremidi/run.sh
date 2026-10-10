@@ -57,10 +57,13 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$build" -
 awk '!/^ok /' "$build/log"
 echo "log=$build/log"
 # The request of MIDISendUMPSysex, against a release that completes the send before it returns (ownership.m): the
-# MIDISendSysex of MIDISysex17.m is renamed to the stand-in, and nothing is linked from the release for it.
+# MIDISendSysex of the release route (CharonMIDIPorts.m, where the bytes are sent) is renamed to the stand-in, and nothing is
+# linked from the release for it.
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations \
+    -DMIDISendSysex=charon_test_MIDISendSysex -I"$CORE" -I"$here" -c "$CORE/CharonMIDIPorts.m" -o "$build/ownership-ports.o"
 xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations \
     -DMIDISendSysex=charon_test_MIDISendSysex -I"$CORE" -I"$here" "$here/ownership.m" "$CORE/MIDISysex17.m" \
-    "$build/CharonCoreMIDI.o" "$build/CharonMIDIPorts.m.o" -framework Foundation -framework CoreMIDI -o "$build/ownership"
+    "$build/CharonCoreMIDI.o" "$build/ownership-ports.o" -framework Foundation -framework CoreMIDI -o "$build/ownership"
 "$build/ownership" > "$build/ownership.log" 2>&1 && owner=0 || owner=$?
 cat "$build/ownership.log"
 # MIDIDeviceNewEntity against stand-ins for the three release calls it makes (entity.m): the host forbids a real entity, and the
@@ -111,7 +114,13 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" "$
     "$build/counted-core.o" -framework Foundation -framework CoreMIDI -o "$build/allocations"
 "$build/allocations" > "$build/allocations.log" 2>&1 && counted_result=0 || counted_result=$?
 cat "$build/allocations.log"
-for step in "$owner" "$entity" "$stale" "$bounded" "$counted_result"; do
+# The in-process deliveries against the dispose of their destination, on the host's own CoreMIDI (delivery.m): the library's
+# queue is linked as it is, and the release is the real one. Test E is deterministic; the trials count over 1000 disposes.
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" "$here/delivery.m" "$build/CharonMIDIPorts.m.o" \
+    "$build/CharonCoreMIDI.o" -framework Foundation -framework CoreMIDI -o "$build/delivery"
+"$build/delivery" > "$build/delivery.log" 2>&1 && delivered=0 || delivered=$?
+cat "$build/delivery.log"
+for step in "$owner" "$entity" "$stale" "$bounded" "$counted_result" "$delivered"; do
     if [ "$result" -eq 0 ]; then result=$step; fi
 done
 exit $result

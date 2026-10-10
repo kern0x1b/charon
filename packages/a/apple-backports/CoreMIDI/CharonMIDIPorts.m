@@ -8,6 +8,7 @@
 #import "CharonCoreMIDI.h"
 
 #include <dispatch/dispatch.h>
+#include <mach/mach_time.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
@@ -103,14 +104,43 @@ static void charon_port_call(charon_port *port, const MIDIEventList *list, void 
     block(list, srcConnRefCon);
 }
 
-// The 2.0 parameter selection each destination (or source) last sent on each channel.
+// The index of the first entry of a table whose reference is not before the key (or, when `after` is set, the first one after
+// it). Every entry of these tables starts with its reference, and the table is sorted by it, so one search serves the owned rows
+// and the routes: a binary search, with no allocation, and a midpoint that is a shift (no divide on the 32-bit size_t of the 4S).
+static size_t charon_bound(const void *table, size_t count, size_t stride, MIDIObjectRef key, int after)
+{
+    const char *base = table;
+    size_t low = 0;
+    size_t high = count;
+    while (low < high) {
+        size_t middle = low + ((high - low) >> 1);
+        MIDIObjectRef at = *(const MIDIObjectRef *)(base + middle * stride);
+        if (at < key || (after && at == key))
+            low = middle + 1;
+        else
+            high = middle;
+    }
+    return low;
+}
+
+// The 2.0 parameter selection an endpoint last sent on each channel: the state the 1.0 translation carries from one list to the
+// next. A route is a heap object, so its address stays put while the table of routes moves. The table keeps one reference to it
+// and each send that translates through it holds another; the route's lock is held for the translation (the table's lock is not).
 typedef struct charon_route {
-    MIDIEndpointRef endpoint;
+    int references;
+    pthread_mutex_t lock;
     CharonMIDIRPN rpn[16];
 } charon_route;
 
-// The table grows with the endpoints that send; every access takes the lock.
-static charon_route *charon_routes;
+// One entry of the table of routes: the endpoint reference, and the route the table holds a reference to.
+typedef struct charon_route_entry {
+    MIDIEndpointRef endpoint;
+    charon_route *route;
+} charon_route_entry;
+
+// The table is sorted by endpoint reference, and every access takes the lock. The lock is held for the search and the update
+// alone.
+static charon_route_entry *charon_routes;
 static size_t charon_route_count;
 static size_t charon_route_capacity;
 static pthread_mutex_t charon_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -123,7 +153,8 @@ static pthread_mutex_t charon_lock = PTHREAD_MUTEX_INITIALIZER;
 // tests/backports/emulate/coremidi/app/main.m). The release may give a disposed reference to a new object, so each row also
 // carries the stamp the library wrote on the object (CHARON_OWNER_KEY) when it took it: a live object that answers another
 // stamp, or none, is a reference that was given again. The stamp is the library's own key, so what an application does to the
-// object's UniqueID (the creator's to set) does not change the row.
+// object's UniqueID (the creator's to set) does not change the row. The rows are sorted by the object's reference (charon_bound);
+// a reference the release gave again has a row for each object, and the newest row is the one that counts.
 typedef struct charon_owned {
     MIDIObjectRef object;
     int destination;
@@ -253,6 +284,9 @@ static charon_port *charon_new_port(MIDIProtocolID protocol, MIDIReceiveBlock bl
     return port;
 }
 
+// The port's block is released here when the last reference goes, on the thread that drops it: a read procedure of the release can
+// be the one (a row swept while its read was running), and then the block's release runs on the release's read thread, as the block
+// itself runs there.
 static void charon_free_port(charon_port *port)
 {
     if (port->block)
@@ -310,14 +344,15 @@ static void charon_free_owned(charon_owned *row)
 }
 
 // The sweep is incremental. Every creation of an object looks at a window of CHARON_SWEEP_ROWS rows of the owned table and of
-// CHARON_SWEEP_ROWS selection states, from where the last creation stopped, so the cost of a creation is bounded (at most
+// CHARON_SWEEP_ROWS routes, from where the last creation stopped, so the cost of a creation is bounded (at most
 // 2 * CHARON_SWEEP_ROWS property reads) however many objects the process holds, and a table of N rows is walked once in N /
 // CHARON_SWEEP_ROWS creations. A stale row is therefore freed within that many creations, not at the next one: the block it holds
-// is kept until then, which is a bounded delay in memory and never a wrong answer, because a send checks its own destination
-// (charon_destination_state) and does not rely on the sweep. The reads are made with no lock held: a send on another thread takes
-// the table's lock and the route lock and must not wait for the release. Rows are only appended by other threads and removed by
-// the sweeper (one at a time: charon_sweeping), so a row's index does not move between the window being copied and the removal;
-// the removal checks the object and the port nevertheless. The freed blocks are released after the lock is let go: a block's
+// is kept until then, which is a bounded delay in memory and never a wrong answer, because a delivery checks its own destination
+// before it calls the block (charon_drain) and does not rely on the sweep. A process that makes no more objects sweeps nothing,
+// so its stale rows and their blocks are kept until the next creation. The reads are made with no lock held: a send on another
+// thread takes the table's lock and must not wait for the release. Rows are appended and inserted by other threads and removed by
+// the sweeper (one at a time: charon_sweeping), so a row's index may move between the window being copied and the removal; the
+// removal checks the object and the port nevertheless. The freed blocks are released after the lock is let go: a block's
 // destructor is application code.
 #define CHARON_SWEEP_ROWS 8
 static int charon_sweeping;
@@ -356,7 +391,7 @@ static void charon_sweep_owned_window(void)
     size_t freedCount = 0;
     pthread_mutex_lock(&charon_owned_lock);
     if (stale) {
-        // The window's rows are where they were (only appends and this sweeper's own removals move rows); one that is not the
+        // The window's rows are where they were (only inserts and this sweeper's own removals move rows); one that is not the
         // row that was read is left for a later pass.
         size_t kept = 0;
         size_t i = 0;
@@ -382,11 +417,20 @@ static void charon_sweep_owned_window(void)
         charon_free_owned(&freed[i]);
 }
 
-// Forgets the selection states of the endpoints that are gone, a window at a time as above: a disposed endpoint sends nothing
-// again. The reads are made with no lock held, so a send is never held up by the release's answer.
+static void charon_route_release(charon_route *route)
+{
+    if (__atomic_sub_fetch(&route->references, 1, __ATOMIC_ACQ_REL) == 0) {
+        pthread_mutex_destroy(&route->lock);
+        free(route);
+    }
+}
+
+// Forgets the routes of the endpoints that are gone, a window at a time as above: a disposed endpoint sends nothing again. The reads
+// are made with no lock held, so a send is never held up by the release's answer.
 static void charon_prune_routes_window(void)
 {
     MIDIEndpointRef window[CHARON_SWEEP_ROWS];
+    charon_route *routes[CHARON_SWEEP_ROWS];
     int gone[CHARON_SWEEP_ROWS];
     size_t first = 0;
     size_t count = 0;
@@ -398,6 +442,7 @@ static void charon_prune_routes_window(void)
         first = charon_route_count > CHARON_SWEEP_ROWS ? charon_route_count - CHARON_SWEEP_ROWS : 0;
     while (count < CHARON_SWEEP_ROWS && first + count < charon_route_count) {
         window[count] = charon_routes[first + count].endpoint;
+        routes[count] = charon_routes[first + count].route;
         count++;
     }
     pthread_mutex_unlock(&charon_lock);
@@ -406,27 +451,34 @@ static void charon_prune_routes_window(void)
         gone[i] = charon_gone(window[i]);
         goneCount += gone[i] ? 1 : 0;
     }
+    charon_route *freed[CHARON_SWEEP_ROWS];
+    size_t freedCount = 0;
     pthread_mutex_lock(&charon_lock);
     if (goneCount) {
         size_t kept = 0;
         size_t i = 0;
         for (; i < count && first + i < charon_route_count; i++) {
-            if (gone[i] && charon_routes[first + i].endpoint == window[i])
+            const charon_route_entry *entry = &charon_routes[first + i];
+            if (gone[i] && entry->endpoint == window[i] && entry->route == routes[i]) {
+                freed[freedCount++] = entry->route;
                 continue;
-            charon_routes[first + kept++] = charon_routes[first + i];
+            }
+            charon_routes[first + kept++] = *entry;
         }
         size_t tail = charon_route_count - (first + i);
-        memmove(&charon_routes[first + kept], &charon_routes[first + i], tail * sizeof(charon_route));
+        memmove(&charon_routes[first + kept], &charon_routes[first + i], tail * sizeof(charon_route_entry));
         charon_route_count -= i - kept;
         charon_route_cursor = first + kept;
     } else {
         charon_route_cursor = first + count;
     }
     pthread_mutex_unlock(&charon_lock);
+    for (size_t i = 0; i < freedCount; i++)
+        charon_route_release(freed[i]);
 }
 
-// One incremental sweep of the owned rows and the selection states. A creation that finds a sweep running on another thread
-// leaves it the work: the window it would have looked at is looked at by the next creation.
+// One incremental sweep of the owned rows and the routes. A creation that finds a sweep running on another thread leaves it the
+// work: the window it would have looked at is looked at by the next creation.
 static void charon_sweep(void)
 {
     if (__atomic_exchange_n(&charon_sweeping, 1, __ATOMIC_ACQUIRE))
@@ -434,6 +486,23 @@ static void charon_sweep(void)
     charon_sweep_owned_window();
     charon_prune_routes_window();
     __atomic_store_n(&charon_sweeping, 0, __ATOMIC_RELEASE);
+}
+
+// The route of an endpoint is the selection state of a reference the release may have given to another object: a new object
+// that takes the reference must not inherit the state of the old one. The route is dropped when a row is made for the reference.
+static void charon_route_forget(MIDIObjectRef object)
+{
+    charon_route *dropped = NULL;
+    pthread_mutex_lock(&charon_lock);
+    size_t i = charon_bound(charon_routes, charon_route_count, sizeof(charon_route_entry), object, 0);
+    if (i < charon_route_count && charon_routes[i].endpoint == object) {
+        dropped = charon_routes[i].route;
+        memmove(&charon_routes[i], &charon_routes[i + 1], (charon_route_count - i - 1) * sizeof(charon_route_entry));
+        charon_route_count--;
+    }
+    pthread_mutex_unlock(&charon_lock);
+    if (dropped)
+        charon_route_release(dropped);
 }
 
 // Records an object the library made with a block, after a sweep. A row that cannot be added (the table cannot grow) leaves the
@@ -451,6 +520,7 @@ static void charon_own(MIDIObjectRef object, int destination, charon_port *port,
     row.stamp = (SInt32)arc4random();
     row.stamped = MIDIObjectSetIntegerProperty(object, CHARON_OWNER_KEY, row.stamp) == noErr;
     charon_sweep();
+    charon_route_forget(object);
     pthread_mutex_lock(&charon_owned_lock);
     if (charon_owned_count == charon_owned_capacity) {
         size_t capacity = charon_grown_capacity(charon_owned_capacity, sizeof(charon_owned));
@@ -460,58 +530,41 @@ static void charon_own(MIDIObjectRef object, int destination, charon_port *port,
             charon_owned_capacity = capacity;
         }
     }
-    if (charon_owned_count < charon_owned_capacity)
-        charon_owned_rows[charon_owned_count++] = row;
+    if (charon_owned_count < charon_owned_capacity) {
+        // After the rows of the same reference: the newest row of a reference is the last of them.
+        size_t i = charon_bound(charon_owned_rows, charon_owned_count, sizeof(charon_owned), object, 1);
+        memmove(&charon_owned_rows[i + 1], &charon_owned_rows[i], (charon_owned_count - i) * sizeof(charon_owned));
+        charon_owned_rows[i] = row;
+        charon_owned_count++;
+    }
     pthread_mutex_unlock(&charon_owned_lock);
 }
 
-// What this process made an endpoint: a destination with a live receive side (its port is returned, with a reference the caller
-// releases), a destination that is gone (sends to it deliver nothing), or an endpoint that is not one of this process's
-// destinations, which is so when its reference is not in the table or the reference now belongs to another object.
-typedef enum {
-    charon_not_ours,
-    charon_ours_live,
-    charon_ours_gone
-} charon_ownership;
-
-// The table is searched under its lock, which is held for the search and the reference alone: the property read that decides
-// whether the object is still there is a call into the release (it may be a round trip to the server), and a send on another
-// thread must not wait for it.
-static charon_ownership charon_destination_state(MIDIEndpointRef endpoint, charon_port **outPort)
+// The newest destination row this process made for an endpoint, with its port retained for the caller (who releases it), and the
+// stamp the row was taken with. NULL when the endpoint is not one of this process's destinations. The search reads no property: the
+// object is checked by the delivery, before the block is called (charon_drain). The table's lock is held for the search alone.
+static charon_port *charon_destination_port(MIDIEndpointRef endpoint, int *stamped, SInt32 *stamp)
 {
     charon_port *port = NULL;
-    int stamped = 0;
-    SInt32 stamp = 0;
     pthread_mutex_lock(&charon_owned_lock);
-    for (size_t i = 0; i < charon_owned_count; i++) {
-        const charon_owned *row = &charon_owned_rows[i];
-        if (!row->destination || row->object != endpoint || !row->port)
-            continue;
-        port = row->port;
-        stamped = row->stamped;
-        stamp = row->stamp;
-        charon_port_retain(port);
-        break;
+    size_t i = charon_bound(charon_owned_rows, charon_owned_count, sizeof(charon_owned), endpoint, 1);
+    while (i > 0 && charon_owned_rows[i - 1].object == endpoint) {
+        const charon_owned *row = &charon_owned_rows[--i];
+        if (row->destination && row->port) {
+            port = row->port;
+            *stamped = row->stamped;
+            *stamp = row->stamp;
+            charon_port_retain(port);
+            break;
+        }
     }
     pthread_mutex_unlock(&charon_owned_lock);
-    if (!port)
-        return charon_not_ours;
-    switch (charon_object_check(endpoint, stamped, stamp)) {
-    case charon_object_live:
-        *outPort = port;
-        return charon_ours_live;
-    case charon_object_gone:
-        charon_port_release(port);
-        return charon_ours_gone;
-    case charon_object_replaced:
-        break;
-    }
-    charon_port_release(port);
-    return charon_not_ours;
+    return port;
 }
 
-// The one queue every in-process delivery runs on, serial, so that the sends of this process arrive in the order they were made.
-// macOS delivers on its own thread and after the send returns (oracle/removal-notify-macos.txt: the block ran after the call).
+// The in-process deliveries: a queue of the sends to this process's destinations, drained on one serial queue of the process, in
+// the order they were made. The order of the deliveries to different destinations is the order of the sends, as before, and the
+// block runs after the send has returned (oracle/removal-notify-macos.txt: the block ran after the call), on a thread of its own.
 static dispatch_queue_t charon_delivery_queue(void)
 {
     static dispatch_queue_t queue;
@@ -522,14 +575,21 @@ static dispatch_queue_t charon_delivery_queue(void)
     return queue;
 }
 
-// One queued delivery: the port whose block is called (the delivery holds a reference to it) and the list, in one allocation.
+// One queued delivery: the port whose block is called (the delivery holds a reference to it), the endpoint and the stamp of the row
+// it was made for, and the list, in one allocation. The sender's output port is the one a list is sent through when the endpoint
+// was given to another object before the delivery ran (the release route), and `ump` says the list holds a UMP request's words.
 typedef struct charon_delivery {
+    struct charon_delivery *next;
     charon_port *port;
+    MIDIEndpointRef endpoint;
+    int stamped;
+    SInt32 stamp;
+    MIDIPortRef out;
+    int ump;
     MIDIEventList list;
 } charon_delivery;
 
-// An allocation for a delivery of a list of `bytes` bytes (a list header, packets and words, as the caller sized them). The port
-// is stored by charon_deliver_async.
+// An allocation for a delivery of a list of `bytes` bytes (a list header, packets and words, as the caller sized them).
 static charon_delivery *charon_delivery_new(size_t bytes)
 {
     size_t total = offsetof(charon_delivery, list);
@@ -538,20 +598,188 @@ static charon_delivery *charon_delivery_new(size_t bytes)
     return malloc(total);
 }
 
-static void charon_delivery_run(void *context)
+// The queue of deliveries, under its own lock: a sender appends, and the drain takes from the head. One drain is scheduled at a time.
+static pthread_mutex_t charon_pending_lock = PTHREAD_MUTEX_INITIALIZER;
+static charon_delivery *charon_pending_head;
+static charon_delivery *charon_pending_tail;
+static int charon_pending_scheduled;
+
+// A drain pass delivers at most CHARON_DRAIN_MESSAGES deliveries and runs for at most one millisecond, and then schedules the next
+// pass. Within a pass, consecutive deliveries to the same row share one check of the object (charon_object_check), which is the one
+// property read of the release a delivery costs: the check is repeated on the next pass, so the window between a check and the call
+// it allows is at most one pass.
+#define CHARON_DRAIN_MESSAGES 16
+
+static uint64_t charon_drain_ticks(void)
 {
-    charon_delivery *delivery = context;
-    charon_port_call(delivery->port, &delivery->list, NULL);
+    static uint64_t ticks;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        mach_timebase_info_data_t timebase;
+        mach_timebase_info(&timebase);
+        ticks = 1000000ull * timebase.denom / timebase.numer;
+    });
+    return ticks;
+}
+
+static void charon_drain(void *context);
+
+static void charon_enqueue(charon_delivery *delivery)
+{
+    int schedule = 0;
+    delivery->next = NULL;
+    pthread_mutex_lock(&charon_pending_lock);
+    if (charon_pending_tail)
+        charon_pending_tail->next = delivery;
+    else
+        charon_pending_head = delivery;
+    charon_pending_tail = delivery;
+    if (!charon_pending_scheduled) {
+        charon_pending_scheduled = 1;
+        schedule = 1;
+    }
+    pthread_mutex_unlock(&charon_pending_lock);
+    if (schedule)
+        dispatch_async_f(charon_delivery_queue(), NULL, charon_drain);
+}
+
+// The release's completion of a MIDISendSysex this file queued: the UMP request is completed (when there is one), and the bytes are
+// released. The request is one the sender still owns, or none: a delivery that is sent late has no request to complete.
+typedef struct charon_ump_send {
+    MIDISysexSendRequest request;
+    MIDISysexSendRequestUMP *umpRequest;
+    UInt8 *bytes;
+} charon_ump_send;
+
+static void charon_ump_send_done(MIDISysexSendRequest *request)
+{
+    charon_ump_send *send = request->completionRefCon;
+    MIDISysexSendRequestUMP *umpRequest = send->umpRequest;
+    free(send->bytes);
+    free(send);
+    if (umpRequest) {
+        umpRequest->complete = YES;
+        if (umpRequest->completionProc)
+            umpRequest->completionProc(umpRequest);
+    }
+}
+
+// Sends UMP words to a destination of the release as MIDI 1.0 bytes, through its sysex send: the bytes are made here, and the
+// release's completion frees them. 1 when the release has the bytes (its completion then completes the request, if there is one), and
+// 0 when it has not, in which case nothing is kept and the caller completes the request.
+int CharonMIDIUMPReleaseSend(MIDISysexSendRequestUMP *umpRequest, MIDIEndpointRef dest, const UInt32 *words, UInt32 count)
+{
+    CharonMIDIRPN rpn[16];
+    memset(rpn, 0, sizeof(rpn));
+    CharonMIDIBytes bytes;
+    memset(&bytes, 0, sizeof(bytes));
+    CharonMIDIUMPToBytes(words, count, rpn, &bytes);
+    int queued = 0;
+    if (bytes.count > 0 && !bytes.failed) {
+        charon_ump_send *send = calloc(1, sizeof(charon_ump_send));
+        if (send) {
+            send->umpRequest = umpRequest;
+            send->bytes = bytes.bytes;
+            send->request.destination = dest;
+            send->request.data = send->bytes;
+            send->request.bytesToSend = (UInt32)bytes.count;
+            send->request.completionProc = charon_ump_send_done;
+            send->request.completionRefCon = send;
+            bytes.bytes = NULL;
+            if (MIDISendSysex(&send->request) == noErr) {
+                queued = 1;
+            } else {
+                charon_refused("a UMP sysex the release refused");
+                free(send->bytes);
+                free(send);
+            }
+        }
+    }
+    free(bytes.bytes);
+    return queued;
+}
+
+// The forward declaration of the 1.0 route: a list sent through the release, which the fallback of a delivery takes.
+static OSStatus charon_send(MIDIPortRef port, MIDIEndpointRef endpoint, const MIDIEventList *list, int received);
+
+// The endpoint was given to another object (the release reused its reference) before the delivery ran: the list takes the route a
+// send to any other endpoint takes, as it would have had the reference never been this library's. A UMP request's words take the
+// release's sysex route, as a UMP send to any other destination does. A refusal of the release is logged where it is made.
+static void charon_fallback(charon_delivery *delivery)
+{
+    if (delivery->ump) {
+        const MIDIEventPacket *packet = &delivery->list.packet[0];
+        (void)CharonMIDIUMPReleaseSend(NULL, delivery->endpoint, packet->words, packet->wordCount);
+        return;
+    }
+    if (charon_send(delivery->out, delivery->endpoint, &delivery->list, 0) != noErr)
+        charon_refused("a send to a reference given to another object, which the release refused");
+}
+
+// Delivers one queued list, once the object's state is known: the block is called for a live object, nothing is called for a
+// disposed one (the release delivers nothing to a disposed destination), and a reference that was given to another object takes the
+// release's route.
+static void charon_deliver_checked(charon_delivery *delivery, charon_object_state state)
+{
+    switch (state) {
+    case charon_object_live:
+        charon_port_call(delivery->port, &delivery->list, NULL);
+        break;
+    case charon_object_gone:
+        break;
+    case charon_object_replaced:
+        charon_fallback(delivery);
+        break;
+    }
     charon_port_release(delivery->port);
     free(delivery);
 }
 
-// Hands a delivery to its port's block on the delivery queue. The delivery owns the reference the caller took (it is released
-// after the block returns) and the memory (freed then).
-static void charon_deliver_async(charon_port *port, charon_delivery *delivery)
+static void charon_drain(void *context)
 {
-    delivery->port = port;
-    dispatch_async_f(charon_delivery_queue(), delivery, charon_delivery_run);
+    (void)context;
+    uint64_t start = mach_absolute_time();
+    uint64_t limit = charon_drain_ticks();
+    size_t done = 0;
+    int checked = 0;
+    MIDIEndpointRef checkedEndpoint = 0;
+    charon_port *checkedPort = NULL;
+    SInt32 checkedStamp = 0;
+    charon_object_state state = charon_object_live;
+    for (;;) {
+        pthread_mutex_lock(&charon_pending_lock);
+        charon_delivery *delivery = charon_pending_head;
+        if (delivery) {
+            charon_pending_head = delivery->next;
+            if (!charon_pending_head)
+                charon_pending_tail = NULL;
+        } else {
+            charon_pending_scheduled = 0;
+        }
+        pthread_mutex_unlock(&charon_pending_lock);
+        if (!delivery)
+            return;
+        // The same row is the same endpoint, port and stamp: a port freed during the pass can have its address given to another one.
+        if (!checked || delivery->endpoint != checkedEndpoint || delivery->port != checkedPort || delivery->stamp != checkedStamp) {
+            state = charon_object_check(delivery->endpoint, delivery->stamped, delivery->stamp);
+            checked = 1;
+            checkedEndpoint = delivery->endpoint;
+            checkedPort = delivery->port;
+            checkedStamp = delivery->stamp;
+        }
+        charon_deliver_checked(delivery, state);
+        done++;
+        if (done == CHARON_DRAIN_MESSAGES || mach_absolute_time() - start >= limit) {
+            pthread_mutex_lock(&charon_pending_lock);
+            int more = charon_pending_head != NULL;
+            if (!more)
+                charon_pending_scheduled = 0;
+            pthread_mutex_unlock(&charon_pending_lock);
+            if (more)
+                dispatch_async_f(charon_delivery_queue(), NULL, charon_drain);
+            return;
+        }
+    }
 }
 
 OSStatus CharonMIDIInputPort(MIDIClientRef client, CFStringRef portName, MIDIProtocolID protocol,
@@ -570,16 +798,16 @@ OSStatus CharonMIDIInputPort(MIDIClientRef client, CFStringRef portName, MIDIPro
     return status;
 }
 
-// Delivers a list of UMP words verbatim to a destination this process made, in the port's protocol, on the delivery queue. NO when
-// the endpoint is not one of this process's destinations; a destination that is gone takes nothing, as macOS delivers nothing to one.
+// Delivers a list of UMP words verbatim to a destination this process made, in the port's protocol, through the delivery queue. NO
+// when the endpoint is not one of this process's destinations; a destination that is gone takes nothing, as macOS delivers nothing to
+// one (checked on the delivery, not here: the send makes no property read).
 Boolean CharonMIDIDeliverInProcess(MIDIEndpointRef endpoint, const UInt32 *words, UInt32 count)
 {
-    charon_port *port = NULL;
-    charon_ownership state = charon_destination_state(endpoint, &port);
-    if (state == charon_not_ours)
+    int stamped = 0;
+    SInt32 stamp = 0;
+    charon_port *port = charon_destination_port(endpoint, &stamped, &stamp);
+    if (!port)
         return false;
-    if (state == charon_ours_gone)
-        return true;
     if (!port->block) {
         charon_port_release(port);
         return true;
@@ -596,12 +824,18 @@ Boolean CharonMIDIDeliverInProcess(MIDIEndpointRef endpoint, const UInt32 *words
         charon_port_release(port);
         return true;
     }
+    delivery->port = port;
+    delivery->endpoint = endpoint;
+    delivery->stamped = stamped;
+    delivery->stamp = stamp;
+    delivery->out = 0;
+    delivery->ump = 1;
     MIDIEventList *list = &delivery->list;
     list->protocol = (MIDIProtocolID)port->protocol;
     list->numPackets = 0;
     MIDIEventPacket *last = NULL;
     if (CharonMIDIEventListAppend(list, bytes, &list->packet[0], &last, 0, count, words)) {
-        charon_deliver_async(port, delivery);
+        charon_enqueue(delivery);
     } else {
         free(delivery);
         charon_port_release(port);
@@ -612,19 +846,18 @@ Boolean CharonMIDIDeliverInProcess(MIDIEndpointRef endpoint, const UInt32 *words
 // A list sent to a 2.0 destination this process made goes to its block as it is: each packet's time stamp and words, with no
 // conversion to MIDI 1.0 and back, which cuts a 2.0 value to 7 bits (the release's route). NO when the endpoint is not such a
 // destination, and then the list takes the release's route; a list that cannot be copied answers memFullErr and sends nothing.
-static int charon_deliver_2_0(MIDIEndpointRef endpoint, const MIDIEventList *source, OSStatus *status)
+static int charon_deliver_2_0(MIDIPortRef out, MIDIEndpointRef endpoint, const MIDIEventList *source, OSStatus *status)
 {
-    charon_port *port = NULL;
-    charon_ownership state = charon_destination_state(endpoint, &port);
-    if (state == charon_not_ours)
+    int stamped = 0;
+    SInt32 stamp = 0;
+    charon_port *port = charon_destination_port(endpoint, &stamped, &stamp);
+    if (!port)
         return 0;
-    if (state == charon_ours_live && port->protocol != kMIDIProtocol_2_0) {
+    if (port->protocol != kMIDIProtocol_2_0) {
         charon_port_release(port);
         return 0;
     }
     *status = noErr;
-    if (state == charon_ours_gone)
-        return 1;
     if (!port->block) {
         charon_port_release(port);
         return 1;
@@ -647,6 +880,12 @@ static int charon_deliver_2_0(MIDIEndpointRef endpoint, const MIDIEventList *sou
         charon_port_release(port);
         return 1;
     }
+    delivery->port = port;
+    delivery->endpoint = endpoint;
+    delivery->stamped = stamped;
+    delivery->stamp = stamp;
+    delivery->out = out;
+    delivery->ump = 0;
     MIDIEventList *list = &delivery->list;
     list->protocol = kMIDIProtocol_2_0;
     list->numPackets = 0;
@@ -658,7 +897,7 @@ static int charon_deliver_2_0(MIDIEndpointRef endpoint, const MIDIEventList *sou
         event = MIDIEventPacketNext(event);
     }
     if (end) {
-        charon_deliver_async(port, delivery);
+        charon_enqueue(delivery);
     } else {
         *status = charon_memFullErr;
         free(delivery);
@@ -715,25 +954,54 @@ OSStatus CharonMIDISource(MIDIClientRef client, CFStringRef name, MIDIProtocolID
     return noErr;
 }
 
-// The selection state of an endpoint, found or made. NULL when the table cannot grow: the list is then converted
-// with no state carried from the list before, and the caller says so by failing the conversion.
-static CharonMIDIRPN *charon_state(MIDIEndpointRef endpoint)
+// The route of an endpoint, retained for the caller (who releases it), made when the endpoint has none. NULL when the route cannot be
+// made or the table cannot grow. The route is made outside the table's lock, and kept only when no other thread made one meanwhile.
+static charon_route *charon_route_retain(MIDIEndpointRef endpoint)
 {
-    for (size_t i = 0; i < charon_route_count; i++)
-        if (charon_routes[i].endpoint == endpoint)
-            return charon_routes[i].rpn;
-    if (charon_route_count == charon_route_capacity) {
-        size_t capacity = charon_route_capacity ? charon_grown_capacity(charon_route_capacity, sizeof(charon_route)) : 16;
-        charon_route *grown = capacity ? realloc(charon_routes, capacity * sizeof(charon_route)) : NULL;
-        if (!grown)
-            return NULL;
-        charon_routes = grown;
-        charon_route_capacity = capacity;
+    pthread_mutex_lock(&charon_lock);
+    size_t i = charon_bound(charon_routes, charon_route_count, sizeof(charon_route_entry), endpoint, 0);
+    if (i < charon_route_count && charon_routes[i].endpoint == endpoint) {
+        charon_route *route = charon_routes[i].route;
+        __atomic_add_fetch(&route->references, 1, __ATOMIC_RELAXED);
+        pthread_mutex_unlock(&charon_lock);
+        return route;
     }
-    charon_route *route = &charon_routes[charon_route_count++];
-    route->endpoint = endpoint;
-    memset(route->rpn, 0, sizeof(route->rpn));
-    return route->rpn;
+    pthread_mutex_unlock(&charon_lock);
+    charon_route *made = calloc(1, sizeof(charon_route));
+    if (!made)
+        return NULL;
+    made->references = 1;
+    pthread_mutex_init(&made->lock, NULL);
+    charon_route *route = NULL;
+    pthread_mutex_lock(&charon_lock);
+    i = charon_bound(charon_routes, charon_route_count, sizeof(charon_route_entry), endpoint, 0);
+    if (i < charon_route_count && charon_routes[i].endpoint == endpoint) {
+        route = charon_routes[i].route;
+        __atomic_add_fetch(&route->references, 1, __ATOMIC_RELAXED);
+    } else {
+        if (charon_route_count == charon_route_capacity) {
+            size_t capacity = charon_route_capacity ? charon_grown_capacity(charon_route_capacity, sizeof(charon_route_entry)) : 16;
+            charon_route_entry *grown = capacity ? realloc(charon_routes, capacity * sizeof(charon_route_entry)) : NULL;
+            if (grown) {
+                charon_routes = grown;
+                charon_route_capacity = capacity;
+            }
+        }
+        if (charon_route_count < charon_route_capacity) {
+            memmove(&charon_routes[i + 1], &charon_routes[i], (charon_route_count - i) * sizeof(charon_route_entry));
+            charon_routes[i].endpoint = endpoint;
+            charon_routes[i].route = made;
+            charon_route_count++;
+            made->references++;
+            route = made;
+        }
+    }
+    pthread_mutex_unlock(&charon_lock);
+    if (route != made) {
+        pthread_mutex_destroy(&made->lock);
+        free(made);
+    }
+    return route;
 }
 
 // Converts an event list to MIDI 1.0 packets and hands them to the release: MIDISend for a list sent from a port,
@@ -764,30 +1032,37 @@ static OSStatus charon_send(MIDIPortRef port, MIDIEndpointRef endpoint, const MI
     uint8_t stackBytes[CHARON_STACK_BYTES];
     CharonMIDIBytes bytes;
     CharonMIDIBytesUseStorage(&bytes, stackBytes, CHARON_STACK_BYTES);
-    int failed = 0;
-    pthread_mutex_lock(&charon_lock);
-    CharonMIDIRPN *state = charon_state(endpoint);
-    if (!state)
-        failed = 1;
-    MIDIPacket *packet = MIDIPacketListInit(packets);
-    event = &list->packet[0];
-    for (UInt32 i = 0; i < list->numPackets && !failed; i++) {
-        bytes.count = 0;
-        CharonMIDIUMPToBytes(event->words, event->wordCount, state, &bytes);
-        if (bytes.failed) {
-            failed = 1;
-        } else if (bytes.count > 0) {
-            MIDIPacket *next = MIDIPacketListAdd(packets, capacity, packet, event->timeStamp, bytes.count, bytes.bytes);
-            if (next)
-                packet = next;
-            else
+    OSStatus status = noErr;
+    charon_route *route = charon_route_retain(endpoint);
+    if (!route) {
+        status = charon_memFullErr;
+    } else {
+        // The route's lock is held for the translation of the whole list: the 1.0 state it carries is the route's, and no other list
+        // of this endpoint may be translated on it meanwhile.
+        int failed = 0;
+        pthread_mutex_lock(&route->lock);
+        MIDIPacket *packet = MIDIPacketListInit(packets);
+        event = &list->packet[0];
+        for (UInt32 i = 0; i < list->numPackets && !failed; i++) {
+            bytes.count = 0;
+            CharonMIDIUMPToBytes(event->words, event->wordCount, route->rpn, &bytes);
+            if (bytes.failed) {
                 failed = 1;
+            } else if (bytes.count > 0) {
+                MIDIPacket *next = MIDIPacketListAdd(packets, capacity, packet, event->timeStamp, bytes.count, bytes.bytes);
+                if (next)
+                    packet = next;
+                else
+                    failed = 1;
+            }
+            event = MIDIEventPacketNext(event);
         }
-        event = MIDIEventPacketNext(event);
+        pthread_mutex_unlock(&route->lock);
+        charon_route_release(route);
+        if (failed)
+            status = charon_memFullErr;
     }
-    pthread_mutex_unlock(&charon_lock);
     CharonMIDIBytesRelease(&bytes);
-    OSStatus status = failed ? charon_memFullErr : noErr;
     if (status == noErr && packets->numPackets > 0)
         status = received ? MIDIReceived(endpoint, packets) : MIDISend(port, endpoint, packets);
     free(heapPackets);
@@ -797,7 +1072,7 @@ static OSStatus charon_send(MIDIPortRef port, MIDIEndpointRef endpoint, const MI
 OSStatus CharonMIDISend(MIDIPortRef port, MIDIEndpointRef dest, const MIDIEventList *evtlist)
 {
     OSStatus status = noErr;
-    if (charon_deliver_2_0(dest, evtlist, &status))
+    if (charon_deliver_2_0(port, dest, evtlist, &status))
         return status;
     return charon_send(port, dest, evtlist, 0);
 }

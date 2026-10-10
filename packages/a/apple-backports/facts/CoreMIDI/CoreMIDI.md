@@ -153,9 +153,41 @@ Alternatives, and why each lost:
   out-parameter: armv7 -O2 of the lookup called objc_retainBlock and objc_autorelease on every send, and the read callback called
   objc_retainBlock and objc_release on every callback (counted in the run folder of the band, asm-c3-before.txt and
   asm-c3-after.txt: the calls of the send, delivery and read paths are 0 after).
-- The owned table's lock is held for the search and the reference alone. The read of the object's stamp, a call into the release
-  that may be a round trip to the server, is made after the lock is let go, so a send on another thread (to any endpoint) does not
-  wait for it.
+- The owned table's lock is held for the search and the reference alone, and the search reads no property: a send to a destination
+  the library made takes its port and queues the list, and makes no call into the release (Round 6; before it, the send read the
+  object's stamp, a round trip to the server, on the sender's thread). The owner check is made on the delivery thread, right before
+  the block is called (see "Deliveries to a destination the library made" below).
+- The 1.0 route state of an endpoint is a route object of its own, found by a binary search of the table of routes (sorted by the
+  endpoint reference). The table's lock is held for the search and the reference alone; the route's own lock is held while its list
+  is translated, so two endpoints translate in parallel, and two lists of one endpoint keep the order of their 1.0 state. A route
+  is dropped when a row is made for its reference (its state is the old object's), and a route whose endpoint is gone is swept.
+
+## Deliveries to a destination the library made (Round 6, 2026-10-10)
+
+- A send to a destination the library made (its row is found by a binary search of the owned table) queues the list: one allocation
+  (the delivery, with the list in it), appended to one FIFO under its own lock. A drain runs on the serial queue
+  charon.in-process-delivery, one at a time, and takes the deliveries in the order they were queued.
+- A drain pass delivers at most 16 deliveries and runs at most 1 ms (the delivery that crosses 1 ms is the last of the pass); the next
+  pass is scheduled while deliveries remain. Consecutive deliveries to the same row in a pass share one owner check
+  (charon_object_check, one property read); the next pass checks again. The check is the only property read of a delivery.
+- What a delivery does with the check: a live object gets its block called; a disposed object (paramErr) gets nothing, as the release
+  delivers nothing to a disposed destination; a reference the release gave to another object (the stamp answers another value or
+  none) takes the release's route instead: a 2.0 list is converted to MIDI 1.0 and sent with MIDISend through the port the sender
+  gave; a UMP request's words take the release's sysex route (CharonMIDIUMPReleaseSend), as a UMP send to any other destination does.
+- Measured on the macOS 27.0.1 host with a benchmark program (bench.m in the run folder v-midifix7, built against the library's folder;
+  not committed). The sender's cost of a 2.0 send to a library destination, against Apple's
+  MIDISendEventList to a 1.0 destination in the same run (not like for like: Apple's send converts to 1.0 and hands it to the release,
+  the library's queues the list). Before Round 6: 24313 ns against 81 ns (ratio 302) with one owned row, 20461 against 81 (253) with
+  64, and 20067 against 77 (260) with 1024. After (the final tree, measured 2026-10-10 18:38): 24 ns against 55 (0.44) with one row,
+  32 against 86 (0.37) with 64, and 42 against 91 (0.46) with 1024. The delivery pipeline (first to last block call, per message,
+  20000 messages): before 20009, 21716 and 20448 ns for one, 64 and 1024 rows; after 1162, 1157 and 1167 ns.
+- The owned table is searched by reference: a binary search, no allocation and no divide. The 1.0 route's cost with owned rows (a
+  2.0 note to a 1.0 release destination, not this library's; Apple's MIDISendEventList in the same run in brackets): before, 116 ns at
+  one row (81), 99 ns at 64 (81), 585 ns at 1024 (77), a ratio of 7.56 at 1024; after (the final tree), 125 ns at one row (55), 88 ns
+  at 64 (86), 155 ns at 1024 (91). The ratio is noisy between runs (1.02 to 2.29 in the final run; an earlier run of the tree before
+  its last edit gave 1.52, 1.46 and 1.79), so the absolute cost is the figure: it does not grow with the rows as before.
+- The sweep reads a window of the owned table and of the routes at each creation, as above. A process that makes no more objects keeps
+  its stale rows and their blocks until the next creation: the sweep runs only when an object is made.
 
 ## What the hot paths cost on a 4S (2026-10-10)
 
@@ -170,8 +202,8 @@ this.
 | the first list of a new source (its parser is made) | 3 / 3 / 1 |
 | a read callback of sixty packets (does not fit the stack storage) | 2 / 2 / 1 |
 | a short 2.0 list sent to a release endpoint | 2 / 2 / 0 |
-| the first send to an endpoint (its selection state is made) | 3 / 3 / 1 |
-| a list sent to a destination the library made (the delivery's one allocation) | 1 / 1 / 1, and one property read each |
+| the first send to an endpoint (its selection state is made) | 3 / 3 / 1 (Round 6: 2 for the process's first endpoint, the route and the table's first growth; 1 for each later endpoint, its route) |
+| a list sent to a destination the library made (the delivery's one allocation) | 1 / 1 / 1, and one property read each (Round 6: none on the sender's thread; the owner check is the drain's, one per pass of up to 16 deliveries) |
 
 - The read callback and the send build their list, their words and their bytes in stack storage (512 bytes for the list, 128
   bytes, 32 words), and move to the heap only when a list does not fit it. The delivery to the library's own destination must
@@ -189,7 +221,7 @@ this.
   classes are found with objc_getClass. The line that linked it is gone from modules/apple/backports.lua. A process that never
   activates the central (and the two driver functions are not exported, so none does) loads no CoreBluetooth image for this
   library. The release's own libraries may have loaded it already; this library no longer causes it.
-- The sweep of the owned table is incremental. A creation reads a window of 8 rows of the owned table and 8 selection states
+- The sweep of the owned table is incremental. A creation reads a window of 8 rows of the owned table and 8 routes
   (charon_sweep, CharonMIDIPorts.m), from where the last creation stopped, with no lock held during the reads. So a creation
   makes at most 16 property reads however many objects the process holds, where it made one for every row and every state;
   a table of N rows is walked in N / 8 creations. The cost of that is a delay: a stale row's block is kept for up to N / 8
@@ -214,9 +246,20 @@ What the library's lifetime rule does with that. A row is freed by the sweep onl
 the object is gone or answers another stamp, and the read says so only once the dispose has come back, which (measured above)
 is after any read procedure that was running has returned. And the release gives no list to a disposed destination (a send to it delivers 0 calls, above). So the sweep's free of a row
 does not overlap a read procedure of that object; the reference the read holds (charon_port_retain) is for the paths the dispose does
-not order: a queued in-process delivery, and a send that found the row before the sweep removed it. What is not measured: a dispose
-called from inside the object's own read procedure, a dispose while a list is queued but its procedure has not started, and more
-than one object at a time.
+not order: a queued in-process delivery, and a send that found the row before the sweep removed it.
+
+A queued in-process delivery is checked before its block is called (Round 6, "Deliveries to a destination the library made" below):
+a destination disposed before the call runs nothing, and a reference given to another object takes the release's route. Measured on
+the host (tests/backports/host/coremidi/delivery.m): test E (one call blocked inside its block, two deliveries queued behind it, the
+dispose issued while it is blocked) runs neither queued delivery after the dispose returned, where the library before Round 6 ran
+both (2 of 2); the release's own destination, the control, runs none after its dispose either. Over 1000 trials of a burst of four
+with the dispose issued while the first call is blocked, 0 calls begin after the dispose returned (2996 of 4000 before). What remains is the
+window of a check: a delivery whose check was made before the dispose may run after it, inside the drain pass that made the check.
+The pass is at most 16 deliveries and 1 ms long (the call that crosses 1 ms included), so such a call begins at most 1 ms plus one call
+after its check. On the host, in 200 trials of 32 fast messages, 0 of 6400 calls began after their dispose in one run (the tree before
+its last edit), and 16 of 6400 in each of two runs of the final tree, the latest 0.007 ms and 0.043 ms after its dispose. The window is not closed by the library: a dispose does not wait for a block that is queued but not called
+(the release's dispose waits for its own running read procedure; the library's block is not the release's). What is not measured:
+a dispose called from inside the object's own block, and more than one object at a time.
 
 ## What the owner stamp costs a client (measured 2026-10-10)
 

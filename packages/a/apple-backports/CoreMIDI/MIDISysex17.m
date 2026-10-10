@@ -64,24 +64,6 @@ OSStatus MIDIEventPacketSysexBytesForGroup(const MIDIEventPacket *pkt, UInt8 gro
     return noErr;
 }
 
-// The release's completion of a MIDISendSysex this file queued: the UMP request is completed, and the bytes are released.
-typedef struct charon_ump_send {
-    MIDISysexSendRequest request;
-    MIDISysexSendRequestUMP *umpRequest;
-    UInt8 *bytes;
-} charon_ump_send;
-
-static void charon_ump_send_done(MIDISysexSendRequest *request)
-{
-    charon_ump_send *send = request->completionRefCon;
-    MIDISysexSendRequestUMP *umpRequest = send->umpRequest;
-    free(send->bytes);
-    free(send);
-    umpRequest->complete = YES;
-    if (umpRequest->completionProc)
-        umpRequest->completionProc(umpRequest);
-}
-
 // Sends the words of a UMP request, as macOS does: the words go to the destination unchanged, the request's word count is
 // used up, it is marked complete, and its completion procedure is called. A destination this process made gets the words
 // verbatim; another destination (the release's, which carries MIDI 1.0 only) gets the SysEx7 messages as MIDI 1.0 bytes, and
@@ -95,33 +77,8 @@ static OSStatus charon_send_ump(MIDISysexSendRequestUMP *umpRequest)
     // send on its own thread, or before the call returns, and the completion may free the request.
     umpRequest->wordsToSend = 0;
     int queued = 0;
-    if (count > 0 && umpRequest->words && !CharonMIDIDeliverInProcess(umpRequest->destination, umpRequest->words, count)) {
-        CharonMIDIRPN rpn[16];
-        memset(rpn, 0, sizeof(rpn));
-        CharonMIDIBytes bytes;
-        memset(&bytes, 0, sizeof(bytes));
-        CharonMIDIUMPToBytes(umpRequest->words, count, rpn, &bytes);
-        if (bytes.count > 0 && !bytes.failed) {
-            charon_ump_send *send = calloc(1, sizeof(charon_ump_send));
-            if (send) {
-                send->umpRequest = umpRequest;
-                send->bytes = bytes.bytes;
-                send->request.destination = umpRequest->destination;
-                send->request.data = send->bytes;
-                send->request.bytesToSend = (UInt32)bytes.count;
-                send->request.completionProc = charon_ump_send_done;
-                send->request.completionRefCon = send;
-                bytes.bytes = NULL;
-                if (MIDISendSysex(&send->request) == noErr) {
-                    queued = 1;
-                } else {
-                    free(send->bytes);
-                    free(send);
-                }
-            }
-        }
-        free(bytes.bytes);
-    }
+    if (count > 0 && umpRequest->words && !CharonMIDIDeliverInProcess(umpRequest->destination, umpRequest->words, count))
+        queued = CharonMIDIUMPReleaseSend(umpRequest, umpRequest->destination, umpRequest->words, count);
     // Only a request this call still owns is touched here: a queued one belongs to its completion.
     if (!queued) {
         umpRequest->complete = YES;

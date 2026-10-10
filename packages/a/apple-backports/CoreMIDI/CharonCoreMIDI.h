@@ -232,4 +232,8 @@ struct MIDISysexSendRequestUMP {
 };
 #endif
 
+// Sends UMP words to a destination of the release as MIDI 1.0 bytes through MIDISendSysex (CharonMIDIPorts.m): 1 when the release
+// has the bytes (the request, if one is given, is completed by the release's completion), 0 when nothing was queued.
+int CharonMIDIUMPReleaseSend(MIDISysexSendRequestUMP *umpRequest, MIDIEndpointRef dest, const UInt32 *words, UInt32 count);
+
 #endif

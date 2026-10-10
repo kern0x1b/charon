@@ -9,6 +9,7 @@
 #import <CoreMIDI/CoreMIDI.h>
 #import <Foundation/Foundation.h>
 #include <dispatch/dispatch.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -64,23 +65,30 @@ OSStatus charon_test_MIDIInputPortCreate(MIDIClientRef client, CFStringRef portN
     return noErr;
 }
 
+// The references the stand-in gives to destinations: each one is new (the owned table is keyed by the reference).
+static MIDIEndpointRef gNextDestination = 2;
 static MIDIReadProc gDestProc;
 
 OSStatus charon_test_MIDIDestinationCreate(MIDIClientRef client, CFStringRef name, MIDIReadProc readProc, void *refCon,
                                            MIDIEndpointRef *outDest)
 {
     gDestProc = readProc;
-    *outDest = 2;
+    *outDest = gNextDestination++;
     return noErr;
 }
 
-// The properties the stand-in object holds: any key reads back what was written; an unwritten key is unknown.
-static SInt32 gOwnerValue[8];
-static int gOwnerSet[8];
+// The properties the stand-in object holds: any key reads back what was written; an unwritten key is unknown. The table holds the
+// references of the test's own destinations (up to 1024 of them, from 1000 on).
+#define STANDIN_OBJECTS 4096
+static SInt32 gOwnerValue[STANDIN_OBJECTS];
+static int gOwnerSet[STANDIN_OBJECTS];
+// The thread that makes the sends: the reads it makes are the ones a send makes (the test counts them apart).
+static pthread_t gSender;
+static long gSenderReads;
 
 OSStatus charon_test_MIDIObjectSetIntegerProperty(MIDIObjectRef object, CFStringRef propertyID, SInt32 value)
 {
-    if (object < 8 && propertyID && CFEqual(propertyID, CHARON_OWNER_KEY)) {
+    if (object < STANDIN_OBJECTS && propertyID && CFEqual(propertyID, CHARON_OWNER_KEY)) {
         gOwnerValue[object] = value;
         gOwnerSet[object] = 1;
     }
@@ -90,7 +98,9 @@ OSStatus charon_test_MIDIObjectSetIntegerProperty(MIDIObjectRef object, CFString
 OSStatus charon_test_MIDIObjectGetIntegerProperty(MIDIObjectRef object, CFStringRef propertyID, SInt32 *outValue)
 {
     gReads++;
-    if (object < 8 && propertyID && CFEqual(propertyID, CHARON_OWNER_KEY) && gOwnerSet[object]) {
+    if (pthread_equal(pthread_self(), gSender))
+        gSenderReads++;
+    if (object < STANDIN_OBJECTS && propertyID && CFEqual(propertyID, CHARON_OWNER_KEY) && gOwnerSet[object]) {
         *outValue = gOwnerValue[object];
         return noErr;
     }
@@ -129,6 +139,7 @@ int main(void)
 {
     @autoreleasepool {
         gDeliveredSignal = dispatch_semaphore_create(0);
+        gSender = pthread_self();
         MIDIPortRef port = 0;
         // A 2.0 input port with a block: the library's read procedure is registered with the release (the stand-in).
         OSStatus status = CharonMIDIInputPort(0, CFSTR("port"), kMIDIProtocol_2_0, &port, ^(const MIDIEventList *list, void *ref) {
@@ -185,7 +196,9 @@ int main(void)
         gSent = 0;
         OSStatus sent = CharonMIDISend(0, 99, list);
         long firstSend = gMallocs;
-        expect(sent == noErr && gSent == 1 && firstSend <= 1, "the first send to a release endpoint makes its selection state", firstSend);
+        // The route of the endpoint is one object (one allocation), and the table of routes grows from nothing at the first one
+        // (another): two in all. A second endpoint makes its route alone (checked below).
+        expect(sent == noErr && gSent == 1 && firstSend == 2, "the first send to a release endpoint makes its route and the table's first growth", firstSend);
         gMallocs = 0;
         gReads = 0;
         gSent = 0;
@@ -203,11 +216,50 @@ int main(void)
         gMallocs = 0;
         gReads = 0;
         gDelivered = 0;
+        gSenderReads = 0;
         OSStatus inProcess = destStatus == noErr ? CharonMIDISend(0, dest, list) : destStatus;
         long delivery = gMallocs;
+        long senderReads = gSenderReads;
         int arrived = dispatch_semaphore_wait(gDeliveredSignal, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
-        expect(inProcess == noErr && arrived && gDelivered == 1 && delivery == 1,
-               "a list sent to the library's own destination is delivered with one allocation", delivery);
+        expect(inProcess == noErr && arrived && gDelivered == 1 && delivery == 1 && senderReads == 0,
+               "a list sent to the library's own destination is delivered with one allocation, and its send reads no property", delivery);
+
+        // A process with 1024 destinations of its own: the owned table is searched by reference, so a send reaches the first and the
+        // last of them alike, each with one allocation (its delivery) and no property read on the sender's thread.
+        gNextDestination = 1000;
+        static MIDIEndpointRef rows[1024];
+        int made = 1;
+        for (int i = 0; i < 1024 && made; i++)
+            made = CharonMIDIDestination(0, CFSTR("row"), kMIDIProtocol_2_0, &rows[i], ^(const MIDIEventList *received, void *ref) {
+                dispatch_semaphore_signal(gDeliveredSignal);
+            }) == noErr;
+        long rowAllocations = 0;
+        long rowReads = 0;
+        int reached = made;
+        MIDIEndpointRef ends[2] = {rows[0], rows[1023]};
+        for (int k = 0; k < 2 && reached; k++) {
+            gMallocs = 0;
+            gSenderReads = 0;
+            OSStatus rowStatus = CharonMIDISend(0, ends[k], list);
+            rowAllocations += gMallocs;
+            rowReads += gSenderReads;
+            reached = rowStatus == noErr && dispatch_semaphore_wait(gDeliveredSignal, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
+        }
+        expect(reached && rowAllocations == 2 && rowReads == 0,
+               "a send to the first and the last of 1024 destinations is delivered, one allocation each, with no read on the sender's thread",
+               rowAllocations);
+        // A second release endpoint makes its route alone; a send through an existing route allocates nothing and reads nothing.
+        gMallocs = 0;
+        gSent = 0;
+        OSStatus second = CharonMIDISend(0, 100, list);
+        long secondEndpoint = gMallocs;
+        expect(second == noErr && gSent == 1 && secondEndpoint == 1, "a second release endpoint makes its route alone", secondEndpoint);
+        gMallocs = 0;
+        gReads = 0;
+        gSent = 0;
+        second = CharonMIDISend(0, 100, list);
+        expect(second == noErr && gSent == 1 && gMallocs == 0 && gReads == 0, "a send through an existing route allocates nothing and reads nothing",
+               gMallocs);
 
         // A refusal is written once for its reason, and one reason's refusal does not hide another's: the allocator is made to
         // fail, and the same refusal is made three times for each of three reasons. The table of reasons is two here
