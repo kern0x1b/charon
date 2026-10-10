@@ -2999,16 +2999,23 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
     # A deprecated alias (Basic, BridgedDeviceBasic, TestCluster) declares only the old
     # `initWithDevice:endpoint:queue:`; the current `initWithDevice:endpointID:queue:` is the class it
     # aliases', and that class is a port class with ITS OWN `_charon_queue`. An object built through the
-    # inherited initializer holds its queue there and this class's stays nil, so the queue is asked of the
-    # superclass by ivar name. A function and not a method: a method here would be one more selector on the
-    # class than the framework's, and the differential compares the two lists.
+    # inherited initializer holds its queue there and this class's stays nil, so the queue is read from the
+    # superclass's ivar. That ivar is private to the superclass's own file, so this file declares it again,
+    # PROTECTED, in an extension of the superclass: the compiler then reads it at the offset the superclass's
+    # object defines (_OBJC_IVAR_$_<superclass>._charon_queue, private external there, so it links inside the
+    # library and is exported by none). Not a method - the differential compares the method lists - and not a
+    # runtime lookup by name. Measured: compiles for armv7-apple-ios6.1.3 and the host with 0 errors, and a
+    # file-private static function that reads the ivar does not compile ("is private").
     inherits_queue = bool(initialisers) and not any(
         selector_of(each["signature"]) == "initWithDevice:endpointID:queue:" for each in initialisers)
     if inherits_queue:
-        body.append("#import <objc/runtime.h>\n\n"
-                    "static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)\n{\n"
-                    "    Ivar ivar = class_getInstanceVariable(class_getSuperclass(declared), \"_charon_queue\");\n"
-                    "    return ivar ? object_getIvar(object, ivar) : nil;\n}\n\n")
+        if not supers:
+            raise SystemExit("%s inherits its queue but names no superclass to read it from" % cluster)
+        body.append("@interface %s () {\n"
+                    "    @protected\n"
+                    "    dispatch_queue_t _charon_queue;\n"
+                    "}\n"
+                    "@end\n\n" % supers)
     body.append("@interface %s () {\n" % cluster)
     body.append("    id _charon_device;\n")
     body.append("    NSNumber *_charon_endpoint;\n")
@@ -3173,7 +3180,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             # The queue is the one the cluster was given. A cluster that never saw one answers on the default
             # queue, because dispatch_async on a nil queue is a crash, which is what the first version of
             # this body did on an object built through a superclass's initializer.
-            queue = ("(_charon_queue ?: charon_port_inherited_queue(self, [%s class]))" % cluster
+            queue = ("(_charon_queue ?: ((%s *)self)->_charon_queue)" % supers
                      if inherits_queue else "_charon_queue")
             handler, rule = completion_of(s)
             if handler is None:

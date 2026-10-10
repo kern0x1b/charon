@@ -30,13 +30,11 @@
 
 // A class EXTENSION, not a category: it carries the storage and is invisible at
 // runtime, so the port's class is still the only implementation of the name.
-#import <objc/runtime.h>
-
-static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
-{
-    Ivar ivar = class_getInstanceVariable(class_getSuperclass(declared), "_charon_queue");
-    return ivar ? object_getIvar(object, ivar) : nil;
+@interface MTRBaseClusterUnitTesting () {
+    @protected
+    dispatch_queue_t _charon_queue;
 }
+@end
 
 @interface MTRBaseClusterTestCluster () {
     id _charon_device;
@@ -120,7 +118,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -138,7 +136,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -156,7 +154,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -174,7 +172,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -192,7 +190,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -210,7 +208,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -228,7 +226,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -246,7 +244,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -264,7 +262,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -282,7 +280,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -320,7 +318,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -358,7 +356,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -396,7 +394,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -414,7 +412,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -432,7 +430,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -470,7 +468,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -508,7 +506,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -526,7 +524,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -544,7 +542,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -562,7 +560,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -600,7 +598,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -638,7 +636,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -676,7 +674,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -714,7 +712,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -752,7 +750,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -790,7 +788,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -828,7 +826,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -846,7 +844,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -864,7 +862,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -882,7 +880,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -900,7 +898,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -938,7 +936,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -976,7 +974,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1014,7 +1012,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1032,7 +1030,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1050,7 +1048,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1068,7 +1066,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1086,7 +1084,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1104,7 +1102,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1122,7 +1120,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1140,7 +1138,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1158,7 +1156,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1176,7 +1174,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1194,7 +1192,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1212,7 +1210,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1250,7 +1248,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1288,7 +1286,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1306,7 +1304,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1324,7 +1322,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1342,7 +1340,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1360,7 +1358,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1378,7 +1376,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1396,7 +1394,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1414,7 +1412,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1432,7 +1430,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1450,7 +1448,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1488,7 +1486,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1506,7 +1504,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1524,7 +1522,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1542,7 +1540,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1580,7 +1578,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1598,7 +1596,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1616,7 +1614,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1634,7 +1632,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1672,7 +1670,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1690,7 +1688,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1728,7 +1726,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1766,7 +1764,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1784,7 +1782,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1822,7 +1820,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1840,7 +1838,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1858,7 +1856,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1876,7 +1874,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1894,7 +1892,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1912,7 +1910,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1930,7 +1928,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1948,7 +1946,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1966,7 +1964,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -1984,7 +1982,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2002,7 +2000,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2020,7 +2018,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2038,7 +2036,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2056,7 +2054,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2074,7 +2072,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2092,7 +2090,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2110,7 +2108,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2128,7 +2126,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2146,7 +2144,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2164,7 +2162,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2182,7 +2180,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2200,7 +2198,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2218,7 +2216,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2236,7 +2234,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2254,7 +2252,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2272,7 +2270,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2290,7 +2288,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2308,7 +2306,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2326,7 +2324,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2344,7 +2342,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2362,7 +2360,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2380,7 +2378,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2398,7 +2396,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2436,7 +2434,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2454,7 +2452,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2472,7 +2470,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2490,7 +2488,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2508,7 +2506,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2526,7 +2524,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2544,7 +2542,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2562,7 +2560,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2580,7 +2578,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2618,7 +2616,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2636,7 +2634,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2654,7 +2652,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2672,7 +2670,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2690,7 +2688,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2708,7 +2706,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2726,7 +2724,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2744,7 +2742,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2762,7 +2760,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2780,7 +2778,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2798,7 +2796,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2816,7 +2814,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2834,7 +2832,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2852,7 +2850,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2870,7 +2868,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2888,7 +2886,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2906,7 +2904,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2924,7 +2922,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2942,7 +2940,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2960,7 +2958,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2978,7 +2976,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -2996,7 +2994,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3014,7 +3012,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3032,7 +3030,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3050,7 +3048,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3068,7 +3066,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3086,7 +3084,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3104,7 +3102,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3122,7 +3120,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3140,7 +3138,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3158,7 +3156,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3176,7 +3174,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3194,7 +3192,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3212,7 +3210,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3230,7 +3228,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3248,7 +3246,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3266,7 +3264,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3284,7 +3282,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3302,7 +3300,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3320,7 +3318,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3338,7 +3336,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3356,7 +3354,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3374,7 +3372,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3392,7 +3390,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3410,7 +3408,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3428,7 +3426,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3446,7 +3444,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3464,7 +3462,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3482,7 +3480,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3500,7 +3498,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3518,7 +3516,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3536,7 +3534,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3554,7 +3552,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3572,7 +3570,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3590,7 +3588,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3608,7 +3606,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3626,7 +3624,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3644,7 +3642,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3662,7 +3660,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3680,7 +3678,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3698,7 +3696,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3716,7 +3714,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3734,7 +3732,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3752,7 +3750,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3770,7 +3768,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3788,7 +3786,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3806,7 +3804,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3824,7 +3822,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3842,7 +3840,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3860,7 +3858,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3878,7 +3876,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3896,7 +3894,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3914,7 +3912,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3932,7 +3930,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3950,7 +3948,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3968,7 +3966,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -3986,7 +3984,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4004,7 +4002,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4022,7 +4020,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4040,7 +4038,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4058,7 +4056,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4076,7 +4074,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4094,7 +4092,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4112,7 +4110,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4130,7 +4128,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4148,7 +4146,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4166,7 +4164,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4184,7 +4182,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4202,7 +4200,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4220,7 +4218,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4238,7 +4236,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4256,7 +4254,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4274,7 +4272,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4292,7 +4290,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4310,7 +4308,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4328,7 +4326,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4346,7 +4344,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4364,7 +4362,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4382,7 +4380,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4400,7 +4398,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4418,7 +4416,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4436,7 +4434,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4454,7 +4452,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4472,7 +4470,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4490,7 +4488,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4508,7 +4506,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4526,7 +4524,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4544,7 +4542,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4562,7 +4560,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4580,7 +4578,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4598,7 +4596,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4616,7 +4614,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4654,7 +4652,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4672,7 +4670,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4690,7 +4688,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4708,7 +4706,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4746,7 +4744,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4764,7 +4762,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4782,7 +4780,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4800,7 +4798,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4818,7 +4816,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4856,7 +4854,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4894,7 +4892,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4912,7 +4910,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4930,7 +4928,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4948,7 +4946,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -4966,7 +4964,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5004,7 +5002,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5042,7 +5040,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5080,7 +5078,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5098,7 +5096,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5116,7 +5114,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5134,7 +5132,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5152,7 +5150,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5170,7 +5168,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5188,7 +5186,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5206,7 +5204,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5224,7 +5222,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5242,7 +5240,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5260,7 +5258,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5278,7 +5276,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5296,7 +5294,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5334,7 +5332,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5372,7 +5370,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5410,7 +5408,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5448,7 +5446,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5486,7 +5484,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5504,7 +5502,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5522,7 +5520,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5560,7 +5558,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5598,7 +5596,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5636,7 +5634,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5674,7 +5672,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5712,7 +5710,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5750,7 +5748,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5788,7 +5786,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5826,7 +5824,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5864,7 +5862,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5902,7 +5900,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5920,7 +5918,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5938,7 +5936,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5956,7 +5954,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5974,7 +5972,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -5992,7 +5990,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6010,7 +6008,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6028,7 +6026,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6046,7 +6044,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6064,7 +6062,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6082,7 +6080,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6100,7 +6098,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6118,7 +6116,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6136,7 +6134,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6154,7 +6152,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6172,7 +6170,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6190,7 +6188,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6208,7 +6206,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6226,7 +6224,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6244,7 +6242,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6262,7 +6260,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6300,7 +6298,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6318,7 +6316,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6336,7 +6334,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6354,7 +6352,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6372,7 +6370,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6390,7 +6388,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6408,7 +6406,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6426,7 +6424,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6444,7 +6442,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6462,7 +6460,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6480,7 +6478,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6498,7 +6496,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6516,7 +6514,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6534,7 +6532,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6552,7 +6550,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6570,7 +6568,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6588,7 +6586,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6606,7 +6604,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6624,7 +6622,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6642,7 +6640,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6680,7 +6678,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6698,7 +6696,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6736,7 +6734,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6774,7 +6772,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6812,7 +6810,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6830,7 +6828,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6848,7 +6846,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6866,7 +6864,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6884,7 +6882,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6902,7 +6900,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6920,7 +6918,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6938,7 +6936,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6956,7 +6954,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -6974,7 +6972,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7012,7 +7010,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7050,7 +7048,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7088,7 +7086,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7126,7 +7124,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7164,7 +7162,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7202,7 +7200,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7240,7 +7238,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7278,7 +7276,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7316,7 +7314,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7354,7 +7352,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7392,7 +7390,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7430,7 +7428,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7468,7 +7466,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7506,7 +7504,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7524,7 +7522,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7542,7 +7540,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7560,7 +7558,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7578,7 +7576,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7616,7 +7614,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7654,7 +7652,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7692,7 +7690,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7710,7 +7708,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7728,7 +7726,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7746,7 +7744,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7764,7 +7762,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7802,7 +7800,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7820,7 +7818,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7838,7 +7836,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7876,7 +7874,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7894,7 +7892,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7912,7 +7910,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7950,7 +7948,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -7988,7 +7986,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8026,7 +8024,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8064,7 +8062,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8102,7 +8100,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8140,7 +8138,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8178,7 +8176,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8196,7 +8194,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8234,7 +8232,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8272,7 +8270,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8310,7 +8308,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8348,7 +8346,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8366,7 +8364,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8384,7 +8382,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8422,7 +8420,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8440,7 +8438,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8458,7 +8456,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8496,7 +8494,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8514,7 +8512,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8552,7 +8550,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8590,7 +8588,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8628,7 +8626,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8666,7 +8664,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8684,7 +8682,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8702,7 +8700,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8720,7 +8718,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8738,7 +8736,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8756,7 +8754,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8774,7 +8772,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8792,7 +8790,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8810,7 +8808,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8828,7 +8826,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8846,7 +8844,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8864,7 +8862,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8882,7 +8880,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8900,7 +8898,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8918,7 +8916,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8936,7 +8934,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8954,7 +8952,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8972,7 +8970,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -8990,7 +8988,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9008,7 +9006,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9026,7 +9024,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9044,7 +9042,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9062,7 +9060,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9080,7 +9078,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9098,7 +9096,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9116,7 +9114,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9134,7 +9132,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9152,7 +9150,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9170,7 +9168,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9188,7 +9186,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9206,7 +9204,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9224,7 +9222,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9242,7 +9240,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9260,7 +9258,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9278,7 +9276,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9296,7 +9294,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9314,7 +9312,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9332,7 +9330,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9350,7 +9348,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9368,7 +9366,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9386,7 +9384,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9404,7 +9402,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9422,7 +9420,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9440,7 +9438,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9458,7 +9456,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9476,7 +9474,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9494,7 +9492,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9512,7 +9510,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9530,7 +9528,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9548,7 +9546,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9586,7 +9584,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9604,7 +9602,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9622,7 +9620,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9640,7 +9638,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9678,7 +9676,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9716,7 +9714,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9734,7 +9732,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9772,7 +9770,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9810,7 +9808,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9848,7 +9846,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9886,7 +9884,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9924,7 +9922,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9962,7 +9960,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9980,7 +9978,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -9998,7 +9996,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10016,7 +10014,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10034,7 +10032,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10052,7 +10050,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10070,7 +10068,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10088,7 +10086,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10106,7 +10104,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10124,7 +10122,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10142,7 +10140,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10160,7 +10158,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10178,7 +10176,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10216,7 +10214,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10254,7 +10252,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10292,7 +10290,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10330,7 +10328,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10368,7 +10366,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10406,7 +10404,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10444,7 +10442,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10482,7 +10480,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10520,7 +10518,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10538,7 +10536,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10556,7 +10554,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10574,7 +10572,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10592,7 +10590,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10610,7 +10608,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10628,7 +10626,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10646,7 +10644,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10664,7 +10662,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10682,7 +10680,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10700,7 +10698,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10718,7 +10716,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10736,7 +10734,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10754,7 +10752,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10772,7 +10770,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10790,7 +10788,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10808,7 +10806,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10846,7 +10844,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10864,7 +10862,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10882,7 +10880,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10900,7 +10898,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10938,7 +10936,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10956,7 +10954,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10974,7 +10972,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -10992,7 +10990,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11010,7 +11008,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11048,7 +11046,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11086,7 +11084,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11124,7 +11122,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11162,7 +11160,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11200,7 +11198,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11238,7 +11236,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11276,7 +11274,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11314,7 +11312,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11352,7 +11350,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11390,7 +11388,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11428,7 +11426,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11466,7 +11464,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11504,7 +11502,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11542,7 +11540,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11580,7 +11578,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11618,7 +11616,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11656,7 +11654,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11694,7 +11692,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11732,7 +11730,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11770,7 +11768,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11808,7 +11806,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11846,7 +11844,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11884,7 +11882,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11922,7 +11920,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11960,7 +11958,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -11998,7 +11996,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12036,7 +12034,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12074,7 +12072,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12112,7 +12110,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12150,7 +12148,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12188,7 +12186,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12226,7 +12224,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12264,7 +12262,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12302,7 +12300,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12340,7 +12338,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12378,7 +12376,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12416,7 +12414,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12454,7 +12452,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12492,7 +12490,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12530,7 +12528,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12568,7 +12566,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12606,7 +12604,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12644,7 +12642,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12682,7 +12680,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12720,7 +12718,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12758,7 +12756,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12796,7 +12794,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12834,7 +12832,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12872,7 +12870,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12910,7 +12908,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12948,7 +12946,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -12986,7 +12984,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13024,7 +13022,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13062,7 +13060,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13100,7 +13098,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13138,7 +13136,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13176,7 +13174,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13214,7 +13212,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13252,7 +13250,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13290,7 +13288,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13328,7 +13326,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13366,7 +13364,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13404,7 +13402,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13442,7 +13440,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13480,7 +13478,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13518,7 +13516,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13556,7 +13554,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13594,7 +13592,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13632,7 +13630,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13670,7 +13668,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13708,7 +13706,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13746,7 +13744,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13784,7 +13782,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13822,7 +13820,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13860,7 +13858,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13898,7 +13896,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13936,7 +13934,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -13974,7 +13972,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -14012,7 +14010,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -14050,7 +14048,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -14088,7 +14086,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
@@ -14126,7 +14124,7 @@ static dispatch_queue_t charon_port_inherited_queue(id object, Class declared)
     (void)params;
     (void)subscriptionEstablishedHandler;
     if (reportHandler) {
-        dispatch_async((_charon_queue ?: charon_port_inherited_queue(self, [MTRBaseClusterTestCluster class]))
+        dispatch_async((_charon_queue ?: ((MTRBaseClusterUnitTesting *)self)->_charon_queue)
                        ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             reportHandler(nil, [MTRBaseClusterTestCluster charon_port_no_node_error]);
         });
