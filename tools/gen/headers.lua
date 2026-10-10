@@ -102,12 +102,12 @@ function shard_facts(tree, fw)
                 -- a class property takes the sign of a class method ("+"): the side the shard records (design-foundation.md 3.5)
                 local api = side .. "[" .. cls .. " " .. name .. "]"
                 local alias = r.kind == "method" and api or (cls .. "." .. name)
-                table.insert(out.members, {cls = cls, kind = r.kind, api = api, alias = alias, avail = r.avail,
-                                           message = r.message, text = avail.render(r.avail, r.message), hash = r.declhash,
-                                           usr = r.usr, key = r.container})
+                table.insert(out.members, {cls = cls, kind = r.kind, api = api, alias = alias, availability = r.availability,
+                                           message = r.message, text = avail.render(r.availability, r.message),
+                                           type = r.type, attrs = r.attrs, hash = r.declhash, usr = r.usr, key = r.container})
             end
         elseif r.kind == "typedef" then
-            out.typedefs[name] = true
+            out.typedefs[name] = r.type
         elseif entities[r.kind] then
             out.declared[name] = true
         elseif r.kind == "super" then
