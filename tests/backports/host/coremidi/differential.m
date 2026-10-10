@@ -1,17 +1,18 @@
 // Differential test of the CoreMIDI translation against macOS CoreMIDI. The expected answers are the macOS
-// oracle's recorded output (coremidi-expectations.h, made by expectations.lua from oracle/batch.m) and the probe
-// results written in this file beside each check, measured on this host on 2026-10-09. The translator under
-// test is packages/a/apple-backports/CoreMIDI/CharonCoreMIDI.c, built for macOS as it is for the device.
+// oracle's recorded output (oracle/batch-up.txt and oracle/batch-down.txt, from oracle/batch.m, every row of each, read at run
+// time from the directory argv[1]) and the probe results written in this file beside each check, measured on this host on
+// 2026-10-09. The translator under test is packages/a/apple-backports/CoreMIDI/CharonCoreMIDI.c, built for macOS as it is for
+// the device.
 //
 // Prints one line per check: "ok <name>" or "FAIL <name>: <detail>", then a summary. Exits with the number of
 // failures.
 #import <Foundation/Foundation.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <CoreMIDI/MIDIMessages.h>
 #include "CharonCoreMIDI.h"
-#include "coremidi-expectations.h"
 
 static int gChecks = 0;
 static int gFailures = 0;
@@ -82,13 +83,114 @@ static void check_scaling_laws(void)
           "word counts: one, two and four words by type", "");
 }
 
-// Every MIDI 1.0 -> 2.0 row: a 1.0 channel word parsed in protocol 2 must give macOS's 2.0 words.
+// One answer macOS gave the oracle: the input words of a message and the words it came out as.
+typedef struct charon_expect {
+    char tag[40];
+    unsigned int in[4];
+    int inCount;
+    unsigned int out[8];
+    int outCount;
+} charon_expect;
+
+// The directory of the recorded oracle output (argv[1]).
+static const char *gOracleDir;
+
+// The words of a "<hex> <hex> ..." list into out, at most max; returns the count, or -1 when a token is not a hex word or
+// there are more than max.
+static int parse_words(const char *text, size_t length, unsigned int *out, int max)
+{
+    int count = 0;
+    size_t i = 0;
+    while (i < length) {
+        while (i < length && text[i] == ' ')
+            i++;
+        if (i >= length)
+            break;
+        unsigned int value = 0;
+        int digits = 0;
+        while (i < length && text[i] != ' ') {
+            char c = text[i++];
+            int digit = c >= '0' && c <= '9' ? c - '0' : c >= 'A' && c <= 'F' ? c - 'A' + 10 : c >= 'a' && c <= 'f' ? c - 'a' + 10 : -1;
+            if (digit < 0)
+                return -1;
+            value = value << 4 | (unsigned int)digit;
+            digits++;
+        }
+        if (digits == 0 || digits > 8 || count == max)
+            return -1;
+        out[count++] = value;
+    }
+    return count;
+}
+
+// Every row of one recorded file ("<tag> in: <words> -> <words>", one per message; the lines that begin MISMATCH or cases= are
+// the oracle's own summary). Returns the rows, or NULL with *count 0 when the file cannot be read or a row is not of that
+// form: a recorded answer the test cannot read is a failure of the test, not a row it skips.
+static charon_expect *load_rows(const char *name, size_t *count)
+{
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/%s", gOracleDir ? gOracleDir : ".", name);
+    *count = 0;
+    FILE *file = fopen(path, "r");
+    if (!file)
+        return NULL;
+    size_t capacity = 1024, used = 0;
+    charon_expect *rows = malloc(capacity * sizeof(charon_expect));
+    char line[512];
+    int bad = 0;
+    while (rows && fgets(line, sizeof(line), file)) {
+        if (!strncmp(line, "MISMATCH", 8) || !strncmp(line, "cases=", 6))
+            continue;
+        char *inMark = strstr(line, " in: ");
+        char *arrow = inMark ? strstr(inMark, " -> ") : NULL;
+        if (!inMark || !arrow || (size_t)(inMark - line) >= sizeof(rows[0].tag)) {
+            bad++;
+            continue;
+        }
+        if (used == capacity) {
+            capacity *= 2;
+            charon_expect *grown = realloc(rows, capacity * sizeof(charon_expect));
+            if (!grown) {
+                bad++;
+                break;
+            }
+            rows = grown;
+        }
+        charon_expect *row = &rows[used];
+        memcpy(row->tag, line, (size_t)(inMark - line));
+        row->tag[inMark - line] = 0;
+        char *inWords = inMark + 5;
+        char *outWords = arrow + 4;
+        size_t outLength = strlen(outWords);
+        while (outLength > 0 && (outWords[outLength - 1] == '\n' || outWords[outLength - 1] == ' '))
+            outLength--;
+        row->inCount = parse_words(inWords, (size_t)(arrow - inWords), row->in, 4);
+        row->outCount = parse_words(outWords, outLength, row->out, 8);
+        if (row->inCount < 0 || row->outCount < 0) {
+            bad++;
+            continue;
+        }
+        used++;
+    }
+    fclose(file);
+    if (bad || !rows) {
+        printf("    %s: %d rows that cannot be read\n", name, bad);
+        free(rows);
+        return NULL;
+    }
+    *count = used;
+    return rows;
+}
+
+// Every MIDI 1.0 -> 2.0 row of the recorded oracle: a 1.0 channel word parsed in protocol 2 must give macOS's 2.0 words.
 static void check_up_rows(void)
 {
+    size_t count = 0;
+    charon_expect *rows = load_rows("batch-up.txt", &count);
     int failed = 0;
     char detail[160];
-    for (size_t i = 0; i < sizeof(charon_expect_up) / sizeof(charon_expect_up[0]); i++) {
-        const charon_expect *row = &charon_expect_up[i];
+    for (size_t i = 0; i < count; i++) {
+        const charon_expect *row = &rows[i];
         uint8_t bytes[3];
         size_t size = bytes_of_word(row->in[0], bytes);
         CharonMIDIParser parser;
@@ -104,26 +206,29 @@ static void check_up_rows(void)
         free(words.words);
     }
     char name[96];
-    snprintf(name, sizeof(name), "1.0 -> 2.0 rows from macOS (%zu)", sizeof(charon_expect_up) / sizeof(charon_expect_up[0]));
+    snprintf(name, sizeof(name), "1.0 -> 2.0 rows from macOS (%zu, all of the recorded answers)", count);
     snprintf(detail, sizeof(detail), "%d rows differ", failed);
-    check(failed == 0, name, detail);
+    check(rows != NULL && count > 0 && failed == 0, name, rows ? detail : "the recorded answers cannot be read");
+    free(rows);
 }
 
-// Every 2.0 -> 1.0 row sampled from macOS: the 2.0 words of the row give the 1.0 words macOS delivered.
+// Every 2.0 -> 1.0 row of the recorded oracle: the 2.0 words of the row give the 1.0 words macOS delivered.
 static void check_down_rows(void)
 {
+    size_t count = 0;
+    charon_expect *rows = load_rows("batch-down.txt", &count);
     int failed = 0;
     char detail[160];
-    for (size_t i = 0; i < sizeof(charon_expect_down) / sizeof(charon_expect_down[0]); i++) {
-        const charon_expect *row = &charon_expect_down[i];
+    for (size_t i = 0; i < count; i++) {
+        const charon_expect *row = &rows[i];
         CharonMIDIRPN rpn[16];
         memset(rpn, 0, sizeof(rpn));
         CharonMIDIBytes bytes;
         memset(&bytes, 0, sizeof(bytes));
         CharonMIDIUMPToBytes(row->in, (size_t)row->inCount, rpn, &bytes);
         uint32_t words[16];
-        size_t count = words_of_bytes(&bytes, words);
-        if (!same_words(words, count, row->out, row->outCount, detail, sizeof(detail))) {
+        size_t produced = words_of_bytes(&bytes, words);
+        if (!same_words(words, produced, row->out, row->outCount, detail, sizeof(detail))) {
             if (failed < 5)
                 printf("    %s (in %08X %08X): %s\n", row->tag, row->in[0], row->in[1], detail);
             failed++;
@@ -131,9 +236,10 @@ static void check_down_rows(void)
         free(bytes.bytes);
     }
     char name[96];
-    snprintf(name, sizeof(name), "2.0 -> 1.0 rows from macOS (%zu sampled)", sizeof(charon_expect_down) / sizeof(charon_expect_down[0]));
+    snprintf(name, sizeof(name), "2.0 -> 1.0 rows from macOS (%zu, all of the recorded answers)", count);
     snprintf(detail, sizeof(detail), "%d rows differ", failed);
-    check(failed == 0, name, detail);
+    check(rows != NULL && count > 0 && failed == 0, name, rows ? detail : "the recorded answers cannot be read");
+    free(rows);
 }
 
 // Probe: a 1.0 byte stream sent through a 1.0 destination (macOS "bytes" batch, recorded on this host).
@@ -746,8 +852,9 @@ static void check_visit_word_sizes(void)
 extern int charon_ump_classes_run(int *checks);
 extern int charon_ports_run(int *checks);
 
-int main(void)
+int main(int argc, char **argv)
 {
+    gOracleDir = argc > 1 ? argv[1] : ".";
     @autoreleasepool {
         check_scaling_laws();
         check_up_rows();

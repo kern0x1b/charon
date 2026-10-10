@@ -4,8 +4,8 @@ The release has MIDI 1.0 bytes only, so a port that is made for Universal MIDI P
 below is one macOS CoreMIDI was measured to apply, through virtual endpoints on this host (macOS, arm64) on 2026-10-09;
 the measurements are the lines of the oracle's output, `tests/backports/host/coremidi/oracle/batch.m`, and the probes
 recorded beside them. `CharonCoreMIDI.c` implements the rules and `tests/backports/host/coremidi/run.sh` holds it to
-them: 896 of the 1.0 to 2.0 answers, 418 of the 2.0 to 1.0 answers (every 256th of 65 536 velocities and of the 32-bit
-values), and the probes. Nothing here is taken from the 26.2 headers, which say what a value means and not how a
+them: every one of the 896 recorded 1.0 to 2.0 answers and of the 106 880 recorded 2.0 to 1.0 answers (the 65 536 velocities,
+the 32-bit values and the rest of that batch), read from the recorded files at run time, and the probes. Nothing here is taken from the 26.2 headers, which say what a value means and not how a
 conversion rounds.
 
 ## 1.0 to 2.0 (a 2.0 port receiving a 1.0 packet)
@@ -92,4 +92,4 @@ bytes is complete, as measured: 6 bytes give `30060102 03040506`, 7 bytes give a
 
 `tests/backports/host/coremidi/run.sh` runs the differential against the recorded answers. The recording itself is
 `tests/backports/host/coremidi/oracle/batch.m` (run it on macOS: `batch down` and `batch up`), and
-`tests/backports/host/coremidi/expectations.py` writes `coremidi-expectations.h` from its output.
+the differential reads the two recorded files (`oracle/batch-up.txt`, `oracle/batch-down.txt`) itself: no header is generated from them.

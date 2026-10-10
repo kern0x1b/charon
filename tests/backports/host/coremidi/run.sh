@@ -1,6 +1,6 @@
 #!/bin/sh
 # Differential test of the CoreMIDI translation (packages/a/apple-backports/CoreMIDI) against macOS CoreMIDI:
-# the answers macOS gave the oracle (coremidi-expectations.h, from oracle/batch.m) and the probes in
+# every answer macOS gave the oracle (oracle/batch-up.txt and oracle/batch-down.txt, from oracle/batch.m) and the probes in
 # differential.m. The API files are compiled too, with their functions renamed, so a file that stops compiling
 # stops this run instead of hiding in the library.
 set -eu
@@ -41,7 +41,7 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -c
     "$here/differential-ports.m" -o "$build/differential-ports.o"
 xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -I"$here" $renames \
     "$here/differential.m" "$here/differential-ump.m" "$build/differential-ports.o" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -framework CoreBluetooth -o "$build/differential"
-"$build/differential" > "$build/log" 2>&1 && result=0 || result=$?
+"$build/differential" "$here/oracle" > "$build/log" 2>&1 && result=0 || result=$?
 awk '!/^ok /' "$build/log"
 echo "log=$build/log"
 # The request of MIDISendUMPSysex, against a release that completes the send before it returns (ownership.m): the
