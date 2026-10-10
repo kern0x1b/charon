@@ -18,23 +18,36 @@
 static int gFailures;
 static long gMallocs;
 static long gReads;
+static int gFailAllocations;
 
 void *charon_count_malloc(size_t size)
 {
     gMallocs++;
-    return malloc(size);
+    return gFailAllocations ? NULL : malloc(size);
 }
 
 void *charon_count_calloc(size_t count, size_t size)
 {
     gMallocs++;
-    return calloc(count, size);
+    return gFailAllocations ? NULL : calloc(count, size);
 }
 
 void *charon_count_realloc(void *pointer, size_t size)
 {
     gMallocs++;
-    return realloc(pointer, size);
+    return gFailAllocations ? NULL : realloc(pointer, size);
+}
+
+// The log: NSLog in CharonMIDIPorts.m is renamed to this (run.sh), which keeps what was written.
+static NSMutableArray *gLog;
+
+void charon_test_NSLog(NSString *format, ...)
+{
+    va_list arguments;
+    va_start(arguments, format);
+    NSString *line = [[NSString alloc] initWithFormat:format arguments:arguments];
+    va_end(arguments);
+    [gLog addObject:line];
 }
 
 static MIDIReadProc gReadProc;
@@ -101,6 +114,13 @@ OSStatus charon_test_MIDIReceived(MIDIEndpointRef src, const MIDIPacketList *pkt
 static void expect(int passed, const char *what, long allocations)
 {
     printf("%s %s (%ld allocation(s), %ld property read(s))\n", passed ? "ok" : "FAIL", what, allocations, gReads);
+    if (!passed)
+        gFailures++;
+}
+
+static void expect_lines(int passed, const char *what, long lines)
+{
+    printf("%s %s (%ld log line(s) so far)\n", passed ? "ok" : "FAIL", what, lines);
     if (!passed)
         gFailures++;
 }
@@ -188,7 +208,41 @@ int main(void)
         int arrived = dispatch_semaphore_wait(gDeliveredSignal, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
         expect(inProcess == noErr && arrived && gDelivered == 1 && delivery == 1,
                "a list sent to the library's own destination is delivered with one allocation", delivery);
+
+        // A refusal is written once for its reason, and one reason's refusal does not hide another's: the allocator is made to
+        // fail, and the same refusal is made three times for each of three reasons. The table of reasons is two here
+        // (CHARON_REFUSED_REASONS, renamed in the build), so the third is the one that finds it full.
+        gLog = [NSMutableArray array];
+        gFailAllocations = 1;
+        for (int i = 0; i < 3; i++)
+            gReadProc(bigList, gReadRefCon, (void *)1); // a list that needs the heap: "a list the allocator would not give"
+        NSUInteger afterFirst = gLog.count;
+        for (int i = 0; i < 5; i++)
+            gReadProc(packets, gReadRefCon, (void *)(uintptr_t)(10 + i)); // the fifth source of the port does not fit its table: "a source whose parser cannot be made"
+        NSUInteger afterSecond = gLog.count;
+        // More than the 32 words of the stack storage in one packet: "the words of a packet, which could not be allocated".
+        static Byte many[512];
+        MIDIPacketList *manyList = (MIDIPacketList *)many;
+        MIDIPacket *manyPacket = MIDIPacketListInit(manyList);
+        Byte notes[60];
+        for (int i = 0; i < 20; i++) {
+            notes[3 * i] = 0x90;
+            notes[3 * i + 1] = (Byte)i;
+            notes[3 * i + 2] = 0x7F;
+        }
+        MIDIPacketListAdd(manyList, sizeof(many), manyPacket, 1, sizeof(notes), notes);
+        for (int i = 0; i < 3; i++)
+            gReadProc(manyList, gReadRefCon, (void *)1);
+        gFailAllocations = 0;
+        BOOL firstOnce = afterFirst == 1 && [gLog[0] containsString:@"a list the allocator would not give"];
+        BOOL secondAnother = afterSecond == 2 && [gLog[1] containsString:@"a source whose parser cannot be made"];
+        BOOL thirdFull = gLog.count == 3 && [gLog[2] containsString:@"more than 2 different things"];
+        expect_lines(firstOnce, "a refusal is written once, and not again when it is made again", (long)afterFirst);
+        expect_lines(secondAnother, "a refusal of another reason is written after it (one reason does not hide another)", (long)afterSecond);
+        expect_lines(thirdFull, "a reason that does not fit the bounded table says so once, and nothing is written after", (long)gLog.count);
+        gLog = nil;
     }
     printf("allocations: %d failures\n", gFailures);
+
     return gFailures ? 1 : 0;
 }

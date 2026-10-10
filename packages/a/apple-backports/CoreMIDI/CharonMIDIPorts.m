@@ -12,16 +12,43 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Logs the first refusal, once: a packet or an event the library cannot carry is not dropped silently, and the same refusal is
-// not written again for every packet that meets it.
-static void charon_refused(const char *reason)
+// Logs the first refusal of each reason, once: a packet or an event the library cannot carry is not dropped silently, and the
+// same refusal is not written again for every packet that meets it, nor does one reason's refusal hide another's. The reasons
+// seen are a bounded table (CHARON_REFUSED_REASONS, 16: the file has nine); the refusals of a reason that does not fit it are
+// not written, and the table's being full is written once. The reason is a string literal (the macro makes a variable a compile
+// error), so the table holds the pointers.
+#ifndef CHARON_REFUSED_REASONS
+#define CHARON_REFUSED_REASONS 16
+#endif
+static const char *charon_refused_seen[CHARON_REFUSED_REASONS];
+static size_t charon_refused_count;
+static int charon_refused_full;
+static pthread_mutex_t charon_refused_lock = PTHREAD_MUTEX_INITIALIZER;
+
+static void charon_refused_once(const char *reason)
 {
-    static int logged = 0;
-    if (!logged) {
-        logged = 1;
-        NSLog(@"charon: CoreMIDI refused %s (the first refusal is logged; later ones are not written)", reason);
+    int write = 0;
+    int full = 0;
+    pthread_mutex_lock(&charon_refused_lock);
+    int seen = 0;
+    for (size_t i = 0; i < charon_refused_count && !seen; i++)
+        seen = strcmp(charon_refused_seen[i], reason) == 0;
+    if (!seen) {
+        if (charon_refused_count < CHARON_REFUSED_REASONS) {
+            charon_refused_seen[charon_refused_count++] = reason;
+            write = 1;
+        } else if (!charon_refused_full) {
+            charon_refused_full = 1;
+            full = 1;
+        }
     }
+    pthread_mutex_unlock(&charon_refused_lock);
+    if (write)
+        NSLog(@"charon: CoreMIDI refused %s (written once for this reason; later refusals of it are not written)", reason);
+    if (full)
+        NSLog(@"charon: CoreMIDI refused more than %d different things; the refusals of the others are not written", CHARON_REFUSED_REASONS);
 }
+#define charon_refused(reason) charon_refused_once("" reason)
 
 // Stack storage of the hot paths, in 32-bit words: the list a read callback builds (512 bytes: the header, and room for about
 // ten short packets), the words of one packet, the packets a send builds (the same 512 bytes), and its bytes. What does not fit

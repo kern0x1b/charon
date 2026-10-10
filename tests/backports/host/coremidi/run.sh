@@ -85,11 +85,13 @@ cat "$build/staleness.log"
 # The allocations and property reads of the hot paths (allocations.m): the library's own malloc family is renamed to counting
 # wrappers in the two files that make the paths, and the release's calls the paths make are stand-ins.
 counted="-Dmalloc=charon_count_malloc -Dcalloc=charon_count_calloc -Drealloc=charon_count_realloc"
+# The log is the test's, and the table of refusal reasons is two entries, so that the test can fill it.
+logged="-DNSLog=charon_test_NSLog -DCHARON_REFUSED_REASONS=2"
 standins="-DMIDIInputPortCreate=charon_test_MIDIInputPortCreate -DMIDIDestinationCreate=charon_test_MIDIDestinationCreate \
     -DMIDIObjectGetIntegerProperty=charon_test_MIDIObjectGetIntegerProperty -DMIDIObjectSetIntegerProperty=charon_test_MIDIObjectSetIntegerProperty \
     -DMIDISend=charon_test_MIDISend -DMIDIReceived=charon_test_MIDIReceived"
 xcrun clang $sanitize -c -Wall -Werror -I"$CORE" $counted "$CORE/CharonCoreMIDI.c" -o "$build/counted-core.o"
-xcrun clang $sanitize -c -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" $counted $standins "$CORE/CharonMIDIPorts.m" -o "$build/counted-ports.o"
+xcrun clang $sanitize -c -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" $counted $standins $logged "$CORE/CharonMIDIPorts.m" -o "$build/counted-ports.o"
 xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" "$here/allocations.m" "$build/counted-ports.o" \
     "$build/counted-core.o" -framework Foundation -framework CoreMIDI -o "$build/allocations"
 "$build/allocations" > "$build/allocations.log" 2>&1 && counted_result=0 || counted_result=$?
