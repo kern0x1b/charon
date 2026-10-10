@@ -63,8 +63,9 @@ Both string constants are the values macOS CoreMIDI gives them, read from the ho
   new object after a dispose is not taken for the old one (CharonMIDIPorts.m, charon_object_check; "Which identity" below). The
   UniqueID is not part of a row: it is the creator's to set (MIDIServices.h, kMIDIPropertyUniqueID), and an application that sets
   it on its own destination has the same live object.
-- The library learns of a dispose only by the read above, when it makes another object: the release gives it no call for a
-  dispose, and the notification above goes to a client's notify proc, not to the library.
+- The library learns of a dispose by reads it makes itself: on each in-process delivery, right before its block is called
+  (charon_drain), and on each creation's sweep (charon_sweep, a window of rows). The release gives it no call for a dispose, and the
+  notification above goes to a client's notify proc, not to the library.
 
 ## What is not built here
 
@@ -168,8 +169,10 @@ Alternatives, and why each lost:
   (the delivery, with the list in it), appended to one FIFO under its own lock. A drain runs on the serial queue
   charon.in-process-delivery, one at a time, and takes the deliveries in the order they were queued.
 - A drain pass delivers at most 16 deliveries and runs at most 1 ms (the delivery that crosses 1 ms is the last of the pass); the next
-  pass is scheduled while deliveries remain. Consecutive deliveries to the same row in a pass share one owner check
-  (charon_object_check, one property read); the next pass checks again. The check is the only property read of a delivery.
+  pass is scheduled while deliveries remain. Each delivery checks its object once, right before its block is called
+  (charon_object_check, one property read, about 18 us per call on the host: 17.7 to 18.2 us in the same-slot run); no check is carried over from the delivery before it
+  (Round 8: before, consecutive deliveries to one row shared a check per pass). The check is the only property read of a delivery.
+  The gap between a delivery's check and its call is not bounded by the code (see "Window of the check" below).
 - What a delivery does with the check: a live object gets its block called; a disposed object (paramErr) gets nothing, as the release
   delivers nothing to a disposed destination; a reference the release gave to another object (the stamp answers another value or
   none) takes the release's route instead: a 2.0 list is converted to MIDI 1.0 and sent with MIDISend through the port the sender
@@ -180,12 +183,24 @@ Alternatives, and why each lost:
   the library's queues the list). Before Round 6: 24313 ns against 81 ns (ratio 302) with one owned row, 20461 against 81 (253) with
   64, and 20067 against 77 (260) with 1024. After (the final tree, measured 2026-10-10 18:38): 24 ns against 55 (0.44) with one row,
   32 against 86 (0.37) with 64, and 42 against 91 (0.46) with 1024. The delivery pipeline (first to last block call, per message,
-  20000 messages): before 20009, 21716 and 20448 ns for one, 64 and 1024 rows; after 1162, 1157 and 1167 ns.
+  20000 messages): before 20009, 21716 and 20448 ns for one, 64 and 1024 rows; with the check once per run of deliveries (the tree before Round 8), 1162, 1157 and 1167 ns.
+  With the check per delivery (Round 8, the tree of this round's last code commit, host only; bench.m's delivery pipeline, the median
+  of three runs in each of three interleaved rounds): 19007, 18013 and 18011 ns per message for one, 64 and 1024 rows, about 53000 to
+  55000 messages a second on the drain thread. The same bench with the check replaced by a live answer (a build for this measurement
+  only, not committed) runs 178 ns per message at 64 and 1024 rows; its one-row figure is not valid (a reset race in bench.m: the span
+  reads from the machine's boot), so it is not reported. The difference, about 17.8 us per delivery, is the check's read.
 - The owned table is searched by reference: a binary search, no allocation and no divide. The 1.0 route's cost with owned rows (a
   2.0 note to a 1.0 release destination, not this library's; Apple's MIDISendEventList in the same run in brackets): before, 116 ns at
   one row (81), 99 ns at 64 (81), 585 ns at 1024 (77), a ratio of 7.56 at 1024; after (the final tree), 125 ns at one row (55), 88 ns
   at 64 (86), 155 ns at 1024 (91). The ratio is noisy between runs (1.02 to 2.29 in the final run; an earlier run of the tree before
   its last edit gave 1.52, 1.46 and 1.79), so the absolute cost is the figure: it does not grow with the rows as before.
+  Round 8 (host only, interleaved: four variants of the tree, five rounds per row count, medians of the five rounds): the route 106,
+  156 and 132 ns against Apple's 56, 88 and 91 (ratios 1.89, 1.77 and 1.45 at one, 64 and 1024 rows). The release's own legacy
+  MIDISend of the same one note costs 62, 92 and 102 ns in the same rounds; the library's own work, with that call replaced by a
+  no-op, costs 24, 26 and 31 ns. The variants without the owned-row lookup or without the route's retain moved the medians by -46 to
+  +23 ns with no consistent sign, against a spread of 38 to 118 ns across the rounds of one variant: neither is shown to cost time,
+  and neither was removed. Apple's MIDISendEventList is not a 6.1.3 comparison: the release of iOS 6.1.3 has no MIDISendEventList (the
+  library provides it, MIDIProtocol14.m), so the route calls the legacy MIDISend.
 - The sweep reads a window of the owned table and of the routes at each creation, as above. A process that makes no more objects keeps
   its stale rows and their blocks until the next creation: the sweep runs only when an object is made.
 
@@ -203,7 +218,7 @@ this.
 | a read callback of sixty packets (does not fit the stack storage) | 2 / 2 / 1 |
 | a short 2.0 list sent to a release endpoint | 2 / 2 / 0 |
 | the first send to an endpoint (its selection state is made) | 3 / 3 / 1 (Round 6: 2 for the process's first endpoint, the route and the table's first growth; 1 for each later endpoint, its route) |
-| a list sent to a destination the library made (the delivery's one allocation) | 1 / 1 / 1, and one property read each (Round 6: none on the sender's thread; the owner check is the drain's, one per pass of up to 16 deliveries) |
+| a list sent to a destination the library made (the delivery's one allocation) | 1 / 1 / 1, and no property read on the sender's thread (Round 6 and 8; the owner check is the drain's, one per delivery, right before its call) |
 
 - The read callback and the send build their list, their words and their bytes in stack storage (512 bytes for the list, 128
   bytes, 32 words), and move to the heap only when a list does not fit it. The delivery to the library's own destination must
@@ -248,18 +263,23 @@ is after any read procedure that was running has returned. And the release gives
 does not overlap a read procedure of that object; the reference the read holds (charon_port_retain) is for the paths the dispose does
 not order: a queued in-process delivery, and a send that found the row before the sweep removed it.
 
-A queued in-process delivery is checked before its block is called (Round 6, "Deliveries to a destination the library made" below):
-a destination disposed before the call runs nothing, and a reference given to another object takes the release's route. Measured on
-the host (tests/backports/host/coremidi/delivery.m): test E (one call blocked inside its block, two deliveries queued behind it, the
-dispose issued while it is blocked) runs neither queued delivery after the dispose returned, where the library before Round 6 ran
-both (2 of 2); the release's own destination, the control, runs none after its dispose either. Over 1000 trials of a burst of four
-with the dispose issued while the first call is blocked, 0 calls begin after the dispose returned (2996 of 4000 before). What remains is the
-window of a check: a delivery whose check was made before the dispose may run after it, inside the drain pass that made the check.
-The pass is at most 16 deliveries and 1 ms long (the call that crosses 1 ms included), so such a call begins at most 1 ms plus one call
-after its check. On the host, in 200 trials of 32 fast messages, 0 of 6400 calls began after their dispose in one run (the tree before
-its last edit), and 16 of 6400 in each of two runs of the final tree, the latest 0.007 ms and 0.043 ms after its dispose. The window is not closed by the library: a dispose does not wait for a block that is queued but not called
-(the release's dispose waits for its own running read procedure; the library's block is not the release's). What is not measured:
-a dispose called from inside the object's own block, and more than one object at a time.
+A queued in-process delivery is checked right before its block is called (Round 6; per delivery since Round 8, "Deliveries to a
+destination the library made" above): a destination disposed before the check runs nothing, and a reference given to another object
+takes the release's route. Measured on the host (tests/backports/host/coremidi/delivery.m; macOS 27.0.1, Apple M4 Pro): test E (one call
+held inside its block, two deliveries queued behind it, the dispose issued and returned while it is held) runs neither queued delivery
+after the dispose returned, where the library before Round 6 ran both (2 of 2); the release's own destination, the control, runs none
+after its dispose either. In the hold rounds (200 rounds of that shape, 31 deliveries queued behind the held call) 0 calls begin after
+the dispose returned, in each of 24 runs of the test; the check-less mutant of Round 8 runs 6200 of 6400 after it.
+
+What remains is the gap between a delivery's check and its call. The code does not bound it: the check's reply and the drain thread's
+scheduling lie inside the gap, so a dispose that returns in it is followed by the call. The race of delivery.m measures the gap: 200
+trials of 32 fast messages, the dispose issued once the first call has begun, nothing held. In 24 runs of the test, the calls begun
+after the dispose returned in a run were 0 (6 runs) or 1 to 10 (18 runs; median 2 over the 24), and the latest such call began 0.003 to
+0.069 ms after its dispose (median 0.011 ms over the 18 runs with late calls). Round 6 stated "1 ms plus one call" as a bound; the code
+does not give it, and one of 19 runs of the Round 7 tip (the check made once per run of deliveries; review r5) showed a call 3.240 ms after its dispose.
+The library does not close the gap: a dispose does not wait for a block that is queued but not called (the release's dispose waits for
+its own running read procedure; the library's block is not the release's). What is not measured: a dispose called from inside the
+object's own block, more than one object at a time, and the A5 CPU of the iPhone 4S and the iPad 2 (every figure here is the host's).
 
 ## What the owner stamp costs a client (measured 2026-10-10)
 
