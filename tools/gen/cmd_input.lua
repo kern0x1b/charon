@@ -1,16 +1,17 @@
 -- `input`: the constant record of a framework, spec/<F>/constants.tsv (committed data, one row per constant the 6.1.3 ledger lists as
 -- missing and the port has to export), and measured.held-caches.tsv when --measured names the gate's release-split output. It is the
--- port of tools/gen.py@52253c0650 cmd_input, the oracle until its round-14 deletion; design-spec-driven.md "Records" and the report say where the two
--- differ. Each row is read from the source that owns the fact:
---   * the declaration shard (the extractor's IR): the variable's type, its introduced release (the iOS field of its availability) and
---     the declaration hash the record keeps as declhash;
---   * the extractor's doc text (decls --doc, doc_text.lua): the declaration as written, from which the record takes the text before the
---     name (what the record hashes) and the availability macros written after it;
+-- port of the input stage of tools/gen.py, the oracle until its deletion: the record's rows equal the oracle's constant rows, byte for
+-- byte, with the oracle's "decl" column named "type" (the proof is in the round-15 report). Each row is read from the source that owns
+-- the fact:
+--   * the declaration shard (spec/<F>/declarations.tsv, the extractor's IR): the typedefs, which give the string and CFString shapes
+--     and the constant pointer typedefs (`typedef NSString *const X`, whose constants are const);
+--   * the extractor's doc text (decls --doc, doc_text.lua): the declaration as written. The record's type is the text before the name
+--     with its macros dropped (declared_type); its hash is the digest of that type and the availability macros the declaration writes;
 --   * the coordination corpus: the ledger (the constants 6.1.3 lacks, in ledger order) and the iOS 26.2 cache's constants table (the value
 --     of each string constant, and where it came from);
---   * the registry: a constant a registry row names is owned, and its value is not read;
+--   * the owned.tsv snapshot and the registry: a constant either names is owned, and its value is not read;
 --   * the host oracle (probe.lua): the macOS value of each string constant the iOS table does not answer for;
---   * the SDK's .tbd (exported or not), and the typedefs of the shards (the string and CFString shapes).
+--   * the SDK's .tbd (exported or not).
 -- The record is written through emit, which rewrites the file only when its bytes change.
 
 local layout = import("layout", {anonymous = true})
@@ -28,9 +29,9 @@ local order = import("order", {anonymous = true})
 local strings = import("strings", {anonymous = true})
 local json = import("core.base.json")
 
--- The record's columns, in the order the file holds them (the declaration hash last).
+-- The record's columns, in the order the file holds them.
 local COLUMNS = {"kind", "api", "cls", "key", "introduced", "type", "availability", "hash", "value_status", "value", "host_value",
-                 "value_source", "owned", "tbd", "shape", "measured", "declhash"}
+                 "value_source", "owned", "tbd", "shape", "measured"}
 local STRING_TYPES = {NSString = true, CFStringRef = true}
 local LINKAGE = {extern = true}
 local NULLABILITY = {_Nonnull = true, __nonnull = true, _Nullable = true, __nullable = true}
@@ -44,32 +45,98 @@ local function key_of(api)
     return (string.gsub(key, "_+$", ""))
 end
 
--- The declaration of a constant before its name, as the record holds it: the words before the name (its first whole-word occurrence),
--- without a linkage word at the start (extern, FOUNDATION_EXPORT) and the nullability words, one space between words.
-local function declared_before(text, name)
+-- The text before a name: what the declaration writes before its first whole-word occurrence of the name, or nil when it has none.
+local function text_before(text, name)
     local from = 1
     while true do
         local s, e = string.find(text, name, from, true)
         if s == nil then
-            return "-"
+            return nil
         end
         local before, after = string.sub(text, s - 1, s - 1), string.sub(text, e + 1, e + 1)
         if not string.find(before, "[%w_]") and not string.find(after, "[%w_]") then
-            local head = string.gsub(string.sub(text, 1, s - 1), "^%s*", "")
-            local first = string.match(head, "^([%w_]*)")
-            if LINKAGE[first] or (first ~= "" and (string.find(first, "EXTERN", 1, true) or string.find(first, "EXPORT", 1, true))) then
-                head = string.gsub(head, "^[%w_]*%s*", "", 1)
-            end
-            local words = {}
-            for word in string.gmatch(head, "%S+") do
-                if not NULLABILITY[word] then
-                    table.insert(words, word)
-                end
-            end
-            return table.concat(words, " ")
+            return string.sub(text, 1, s - 1)
         end
         from = e + 1
     end
+end
+
+-- Whether a word is a macro the type drops (gen.py's strip_macros): one that names AVAILABLE, DEPRECATED or OBSOLETED, an API_, NS_,
+-- OS_, CF_ or __ macro in capitals, or __attribute__.
+local function is_macro(word)
+    return string.find(word, "AVAILABLE", 1, true) ~= nil or string.find(word, "DEPRECATED", 1, true) ~= nil
+        or string.find(word, "OBSOLETED", 1, true) ~= nil or word == "__attribute__"
+        or string.match(word, "^API_?%u[%u%d_]*$") ~= nil or string.match(word, "^NS_?%u[%u%d_]*$") ~= nil
+        or string.match(word, "^OS_?%u[%u%d_]*$") ~= nil or string.match(word, "^CF_?%u[%u%d_]*$") ~= nil
+        or string.match(word, "^__%u[%u%d_]*$") ~= nil
+end
+
+-- The position after the parenthesised group that opens at `at` (nested parentheses balanced), or after the text.
+local function after_group(text, at)
+    local depth = 0
+    repeat
+        local ch = string.sub(text, at, at)
+        if ch == "(" then
+            depth = depth + 1
+        elseif ch == ")" then
+            depth = depth - 1
+        end
+        at = at + 1
+    until depth == 0 or at > #text
+    return at
+end
+
+-- The type a declaration writes before a name, as gen.py's declared_type writes it: the macros and their argument lists dropped
+-- (availability, attributes, and the all-capitals project macros such as MTL_EXTERN), the linkage and nullability words dropped, and
+-- one space between the words that remain.
+local function declared_type(before)
+    local out, pos = {}, 1
+    while true do
+        local s, e = string.find(before, "[%a_][%w_]*", pos)
+        if s == nil then
+            break
+        end
+        table.insert(out, string.sub(before, pos, s - 1))
+        local word = string.sub(before, s, e)
+        pos = e + 1
+        if is_macro(word) then
+            local open = string.match(string.sub(before, e + 1), "^%s*()%(")
+            if open ~= nil then
+                pos = after_group(before, e + open)
+            end
+        else
+            table.insert(out, word)
+        end
+    end
+    table.insert(out, string.sub(before, pos))
+    local text = string.gsub(table.concat(out), "%f[%w_][%u][%u%d]*_[%u%d_]+%f[^%w_]", " ")
+    local words = {}
+    for word in string.gmatch(text, "%S+") do
+        local linkage = string.match(word, "^[%w_]*$") ~= nil and (string.find(word, "EXTERN", 1, true) ~= nil
+                        or string.find(word, "EXPORT", 1, true) ~= nil)
+        if not LINKAGE[word] and not NULLABILITY[word] and not linkage then
+            table.insert(words, word)
+        end
+    end
+    return table.concat(words, " ")
+end
+
+-- The declared type with "const " in front when it names a constant pointer typedef and does not say const itself: a constant of
+-- `typedef NSString *const X` is const (gen.py's constant_decls prepends it).
+local function with_const(decl, const_typedefs)
+    local words = {}
+    for word in string.gmatch(decl, "%S+") do
+        if word == "const" then
+            return decl
+        end
+        table.insert(words, word)
+    end
+    for _, word in ipairs(words) do
+        if const_typedefs[word] then
+            return "const " .. decl
+        end
+    end
+    return decl
 end
 
 -- The availability macros of a declaration: each identifier that names AVAILABLE, DEPRECATED or OBSOLETED and its parenthesised
@@ -104,18 +171,6 @@ local function availability_of(text)
     end
     local joined = string.gsub(table.concat(out, " "), "%s+", " ")
     return (string.gsub(joined, "^%s*(.-)%s*$", "%1"))
-end
-
--- The iOS release a shard row introduces its declaration in: the ios field of its availability ("ios=8.0/-/-/0", the platforms comma
--- separated, the field's first part the introduced release), or nil when the row names no iOS introduction.
-local function ios_introduced(availability)
-    for field in string.gmatch(availability or "", "[^,]+") do
-        local release = string.match(field, "^ios=([^/]+)")
-        if release ~= nil and release ~= "-" then
-            return release
-        end
-    end
-    return nil
 end
 
 -- The first identifier of a declaration's words that is not const or volatile: the type the shape reads ("NSString" when none).
@@ -227,35 +282,39 @@ end
 -- (AVFAudio's info-dictionary keys, v-avmidi), so the record reproduces the owner the oracle was given with --owned.
 local function owned_constants(tree, fw)
     local out = {}
-    local candidates = files.glob(path.join(tree, layout.registry_dir(fw), "*.json"))
-    table.sort(candidates, order.less)
-    local single = path.join(tree, layout.constants().REGISTRY, fw .. ".json")
-    if os.isfile(single) then
-        table.insert(candidates, single)
-    end
-    for _, filepath in ipairs(candidates) do
-        local data = json.decode(files.read_text(filepath))
-        local relative = filepath == single and path.join(layout.constants().REGISTRY, fw .. ".json")
-                         or path.join(layout.registry_dir(fw), path.filename(filepath))
-        for _, entry in ipairs(data.entries or data) do
-            if entry.kind == "constant" and out[entry.api] == nil then
-                out[entry.api] = "registry:" .. relative
-            end
-        end
-    end
+    -- the snapshot first: gen.py's cmd_input reads owned.tsv, then adds the registry's names it does not hold
     for _, line in ipairs(strings.lines(files.read_text(path.join(layout.snap_dir(tree, fw), "owned.tsv")) or "")) do
         local cells = tsv.fields(line)
         if #cells == 2 and out[cells[1]] == nil then
             out[cells[1]] = cells[2]
         end
     end
+    -- the registry files in full-path order (gen.py's registry_constants sorts them as paths: the framework's single file sorts first)
+    local found = {}
+    for _, filepath in ipairs(files.glob(path.join(tree, layout.registry_dir(fw), "*.json"))) do
+        table.insert(found, {full = filepath, relative = path.join(layout.registry_dir(fw), path.filename(filepath))})
+    end
+    local single = path.join(tree, layout.constants().REGISTRY, fw .. ".json")
+    if os.isfile(single) then
+        table.insert(found, {full = single, relative = path.join(layout.constants().REGISTRY, fw .. ".json")})
+    end
+    table.sort(found, function (a, b) return a.full < b.full end)
+    for _, file in ipairs(found) do
+        local data = json.decode(files.read_text(file.full))
+        for _, entry in ipairs(data.entries or data) do
+            if entry.kind == "constant" and out[entry.api] == nil then
+                out[entry.api] = "registry:" .. file.relative
+            end
+        end
+    end
     return out
 end
 
--- The typedefs of the shards that name a string type (string) and a CFStringRef (cf), read over the framework and the two it is
--- built on, as tools/gen.py@52253c0650 string_typedefs and cf_typedefs read them.
+-- The typedefs of the shards that name a string type (string), a CFStringRef (cf), and a constant NSString pointer (const, the
+-- `NSString *const` shape), read over the framework and the two it is built on, as gen.py's string_typedefs, cf_typedefs and
+-- const_typedefs read them.
 local function typedefs_of(tree, fws)
-    local string_names, cf_names = {}, {}
+    local string_names, cf_names, const_names = {}, {}, {}
     for _, fw in ipairs(fws) do
         for _, r in ipairs(headers.shard_records(tree, fw)) do
             if r.kind == "typedef" then
@@ -265,12 +324,14 @@ local function typedefs_of(tree, fws)
                     string_names[name] = true
                     if base == "CFStringRef" then
                         cf_names[name] = true
+                    elseif string.find(r.type or "", "%*%s*const%s*$") then
+                        const_names[name] = true
                     end
                 end
             end
         end
     end
-    return string_names, cf_names
+    return string_names, cf_names, const_names
 end
 
 -- Writes the record of one framework (and measured.held-caches.tsv when measured is given). Returns the counts for the summary.
@@ -278,30 +339,7 @@ local function write_framework(args, fw)
     local tree, sdk = args.tree, args.sdk
     local ledger = ledger_constants(args.coordination, fw)
     local docs = doc_text.rows(tree, fw, sdk) or {usr = {}, api = {}}
-    local shard_vars, declhash_of = {}, {}
-    for _, r in ipairs(headers.shard_value_records(tree, fw)) do
-        if r.kind == "var" then
-            local name = string.match(r.usr or "", "^c:@([^@]+)$")
-            if name ~= nil then
-                shard_vars[name] = r
-            end
-        end
-    end
-    -- The declaration hash a shard row gives a name: a variable (c:@<name>) or an enum constant (c:@E@<enum>@<name>), a variable
-    -- winning where both exist, as spec.lua declarations_by_name has it. An enum constant's hash is kept: the record of a
-    -- Matter constant (MTRDeviceTypeIDTypeAudioDoorbellID) carries one.
-    for _, r in ipairs(headers.shard_value_records(tree, fw)) do
-        local name
-        if r.kind == "var" then
-            name = string.match(r.usr or "", "^c:@([^@]+)$")
-        elseif r.kind == "enumconst" then
-            name = string.match(r.usr or "", "@([^@]+)$")
-        end
-        if name ~= nil and (declhash_of[name] == nil or r.kind == "var") then
-            declhash_of[name] = r.declhash
-        end
-    end
-    local typedefs, cf_typedefs = typedefs_of(tree, {fw, "Foundation", "CoreFoundation"})
+    local typedefs, cf_typedefs, const_typedefs = typedefs_of(tree, {fw, "Foundation", "CoreFoundation"})
     local _, security_cf = typedefs_of(tree, {"Security"})
     for name in pairs(security_cf) do
         cf_typedefs[name] = true
@@ -333,9 +371,9 @@ local function write_framework(args, fw)
     local decls = {}
     for _, row in ipairs(ledger) do
         local doc = docs.usr["c:@" .. row.api]
-        local decl = doc and doc.decl or "-"
-        if decl ~= "-" then
-            decls[row.api] = {decl = declared_before(decl, row.api), avail = availability_of(decl)}
+        local before = doc and doc.decl and text_before(doc.decl, row.api)
+        if before ~= nil then
+            decls[row.api] = {decl = with_const(declared_type(before), const_typedefs), avail = availability_of(doc.decl)}
         end
     end
     local strings_to_probe = {}
@@ -347,16 +385,10 @@ local function write_framework(args, fw)
     end
     local host = #strings_to_probe > 0 and probe.probe(tree, fw, strings_to_probe) or {}
 
-    local lines, differences, disagreements = {table.concat(COLUMNS, "\t")}, {}, {}
+    local lines, differences = {table.concat(COLUMNS, "\t")}, {}
     for _, row in ipairs(ledger) do
         local api = row.api
         local d = decls[api] or {decl = "", avail = ""}
-        local var = shard_vars[api]
-        local ir_ios = var and ios_introduced(var.availability)
-        local introduced = ir_ios or row.introduced
-        if ir_ios and ir_ios ~= row.introduced then
-            table.insert(disagreements, {api, row.introduced, ir_ios})
-        end
         local avail_column = d.avail ~= "" and d.avail or "-"
         local status, value = "-", "-"
         if owned[api] ~= nil then
@@ -383,12 +415,12 @@ local function write_framework(args, fw)
             value, host_value = "-", "-"
         end
         local cls_shape = (base_of(d.decl) == "CFStringRef" or cf_typedefs[base_of(d.decl)]) and "cf" or "ns"
-        local record = {kind = "constant", api = api, cls = "-", key = key_of(api), introduced = introduced,
-                        type = var and var.type or "-", availability = avail_column,
+        local record = {kind = "constant", api = api, cls = "-", key = key_of(api), introduced = row.introduced,
+                        type = d.decl ~= "" and d.decl or "-", availability = avail_column,
                         hash = digest.digest("constant", api, d.decl, d.avail), value_status = status, value = value,
                         host_value = host_value, value_source = source, owned = owned[api] or "-",
                         tbd = symbols[api] and "exported" or "not-exported", shape = cls_shape,
-                        measured = measured[api] or "-", declhash = declhash_of[api] or "-"}
+                        measured = measured[api] or "-"}
         local cells = {}
         for i, column in ipairs(COLUMNS) do
             cells[i] = record[column]
@@ -408,7 +440,7 @@ local function write_framework(args, fw)
         emit.file(path.join(layout.snap_dir(tree, fw), "measured.held-caches.tsv"),
                   "symbol\trelease\n" .. (#rows > 0 and table.concat(rows, "\n") .. "\n" or ""))
     end
-    return #ledger, differences, disagreements, conflicting
+    return #ledger, differences, conflicting
 end
 
 -- Returns the exit status. --framework F writes one record; --all writes every surface framework that has a ledger.
@@ -422,12 +454,12 @@ function run(args)
     local unreadable = {}
     for _, fw in ipairs(targets) do
         if surface.has_ledger(args.coordination, surface.ledger_6_1_3(), fw) then
-            local rows, differences, disagreements, conflicting
+            local rows, differences, conflicting
             if args.all then
                 local failure = nil
                 try {
                     function()
-                        rows, differences, disagreements, conflicting = write_framework(args, fw)
+                        rows, differences, conflicting = write_framework(args, fw)
                     end,
                     catch {
                         function(e)
@@ -442,14 +474,11 @@ function run(args)
                     goto continue
                 end
             else
-                rows, differences, disagreements, conflicting = write_framework(args, fw)
+                rows, differences, conflicting = write_framework(args, fw)
             end
             written = written + 1
-            print(string.format("input %s: %d constants, %d differ from the host (the iOS value wins), %d cache symbols with conflicting values, %d introduced releases differ from the ledger (the IR wins)",
-                fw, rows, #differences, conflicting, #disagreements))
-            for _, d in ipairs(disagreements) do
-                print(string.format("  introduced %s: ledger %s, IR %s", d[1], d[2], d[3]))
-            end
+            print(string.format("input %s: %d constants, %d differ from the host (the iOS value wins), %d cache symbols with conflicting values",
+                fw, rows, #differences, conflicting))
         else
             without_ledger = without_ledger + 1
         end

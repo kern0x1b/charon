@@ -38,7 +38,7 @@ local function complete(r)
 end
 
 -- The declarations a shard holds under a name: a variable (its USR is c:@<name>) or an enum constant (c:@E@<enum>@<name>), by the name the
--- USR gives. name -> {declhash, value} for the framework's shard rows; a variable wins where both exist. A name no shard declares is absent.
+-- USR gives. name -> {value, kind} for the framework's shard rows; a variable wins where both exist. A name no shard declares is absent.
 local declared_key, declared_map = nil, nil
 
 local function declarations_by_name(tree, fw)
@@ -55,7 +55,7 @@ local function declarations_by_name(tree, fw)
             name = string.match(r.usr, "@([^@]+)$")
         end
         if name ~= nil and (out[name] == nil or r.kind == "var") then
-            out[name] = {declhash = r.declhash, value = r.value, kind = r.kind}
+            out[name] = {value = r.value, kind = r.kind}
         end
     end
     -- kept for the framework the commands ask about next (refused and constant_rows both ask): one slot, dropped by forget()
@@ -64,9 +64,8 @@ local function declarations_by_name(tree, fw)
 end
 
 -- The rows of the constant record (constants.tsv: the measured constant rows, one record per framework, committed as data), or none.
--- Each row keeps the declaration hash it was recorded against (declhash); "-" for a constant no shard declares. A row the record leaves
--- undeclared (value_status "undeclared") takes its value from the shard when a shard declares the name as an enum constant: the
--- shard's value column is what clang evaluates (review ruling 2), so the value is derived, not left out.
+-- A row the record leaves undeclared (value_status "undeclared") takes its value from the shard when a shard declares the name as an
+-- enum constant: the shard's value column is what clang evaluates (review ruling 2), so the value is derived, not left out.
 local function constant_rows(tree, fw)
     local out = {}
     local text = files.read_text(layout.constant_record_path(tree, fw))
@@ -77,7 +76,6 @@ local function constant_rows(tree, fw)
     for _, r in ipairs(tsv.records(text)) do
         if r.kind == "constant" then
             local row = complete(r)
-            row.declhash = r.declhash or "-"
             if row.value_status == "undeclared" then
                 declared = declared or declarations_by_name(tree, fw)
                 local d = declared[row.key]
@@ -238,16 +236,8 @@ function refused(tree, fw)
             table.insert(out, {key = p.key, api = p.api, old = p.pinned, new = r.hash, kind = "pinned"})
         end
     end
-    -- The constant record is data, changed only through this refusal, as the pins are: a constant is refused when the declaration the
-    -- shard holds under its name (its USR, c:@<name>) differs from the hash its record row was made against ("-" when no shard declares it).
-    local declared = declarations_by_name(tree, fw)
-    for _, c in ipairs(constant_rows(tree, fw)) do
-        local d = declared[c.key]
-        local now = d ~= nil and d.declhash or "-"
-        if now ~= c.declhash then
-            table.insert(out, {key = c.key, api = c.api, old = c.declhash, new = now, kind = "constant"})
-        end
-    end
+    -- The constant record has no refusal: it is input's output (input --all rewrites it from the ledger, the headers and the corpus),
+    -- and the Python it ports kept no declaration hash per row to refuse on (round 15: the declhash column is gone with the owner's rule).
     table.sort(out, function(a, b) return order.less(a.key, b.key) end)
     return out
 end

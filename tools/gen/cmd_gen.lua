@@ -1,7 +1,8 @@
 -- `gen`: writes the derived files of a framework (or of every framework with a declaration shard) under .gen, through emit, so a file
 -- the build directory already holds is not rewritten. The inputs are committed: the declaration shards, the overrides and registry
--- rows, the pin sidecars and the constant record. A pinned member whose shard declaration hash differs from its pin is refused, unless
--- --record re-records it: gen --record writes each new hash into its pin (pinned-by repin) and writes nothing else into the tree.
+-- rows and the pin sidecars (the constant record is input's output, and gen reads it). A pinned member whose shard declaration hash differs
+-- from its pin is refused, unless --record re-records it: gen --record writes each new hash into its pin (pinned-by repin) and writes
+-- nothing else into the tree.
 
 local layout = import("layout", {anonymous = true})
 local snapshot = import("spec", {anonymous = true})
@@ -67,17 +68,12 @@ local function manifest_text(emitted)
     return tsv.table_text({"file", "sha256"}, manifest)
 end
 
--- Re-records the refused records of a framework: each new hash goes into its pin (marked repin) or into its constant row (the value
--- stays as it was measured). Every other row is kept as it is, and a file is written only when its bytes change (emit).
+-- Re-records the refused pins of a framework: each new hash goes into its pin, marked repin. Every other row is kept as it is, and a file
+-- is written only when its bytes change (emit). The constant record is not re-recorded here: input writes it.
 local function rerecord(tree, fw, refused)
-    local pinned_changes, constant_changes, constant_count = {}, {}, 0
+    local pinned_changes = {}
     for _, change in ipairs(refused) do
-        if change.kind == "constant" then
-            constant_changes[change.key] = change
-            constant_count = constant_count + 1
-        else
-            pinned_changes[change.key] = change
-        end
+        pinned_changes[change.key] = change
     end
     local list = snapshot.pins(tree, fw)
     for _, p in ipairs(list) do
@@ -88,27 +84,6 @@ local function rerecord(tree, fw, refused)
         end
     end
     emit.file(layout.pins_path(tree, fw), snapshot.pins_text(list))
-    if constant_count > 0 then
-        local columns = {}
-        for _, name in ipairs(layout.constants().SPEC_COLUMNS) do
-            table.insert(columns, name)
-        end
-        table.insert(columns, "declhash")
-        local rows = {}
-        for _, r in ipairs(tsv.records(files.read_text(layout.constant_record_path(tree, fw)))) do
-            local row = {}
-            for i, name in ipairs(columns) do
-                local value = r[name] or "-"
-                local change = constant_changes[r.key]
-                if name == "declhash" and change ~= nil then
-                    value = change.new
-                end
-                row[i] = value
-            end
-            table.insert(rows, row)
-        end
-        emit.file(layout.constant_record_path(tree, fw), tsv.table_text(columns, rows))
-    end
 end
 
 -- Writes one framework's derived files into its build directory.
@@ -127,18 +102,13 @@ local function write_framework(args, fw)
     print(string.format("gen %s: %d files in %s (%d written)", fw, #names, layout.constants().OUT_ROOT .. "/" .. fw, emit.count() - before))
 end
 
--- The message of one refused record: a pin (its key and api, the pinned and the shard's declaration hash) or a constant (its name, the
--- recorded and the shard's declaration hash), and the command that re-records it.
+-- The message of one refused pin: its key and api, the pinned and the shard's declaration hash, and the command that re-records it.
 function refusal(tree, fw, change)
-    if change.kind == "constant" then
-        return string.format("REFUSED constant %s: recorded declaration hash %s, the shard has %s. Review the constant, then re-record it: "
-            .. "xmake l tools/gen.lua gen --tree %s --framework %s --record", change.key, change.old, change.new, tree, fw)
-    end
     return string.format("REFUSED %s %s: pinned declaration hash %s, the shard has %s. Review the override, then re-record it: "
         .. "xmake l tools/gen.lua gen --tree %s --framework %s --record", change.key, change.api, change.old, change.new, tree, fw)
 end
 
--- Returns the exit status: 1 when a pinned member's or a constant's declaration changed and --record was not given. The refusal is decided before anything
+-- Returns the exit status: 1 when a pinned member's declaration changed and --record was not given. The refusal is decided before anything
 -- is written for a framework: a refused framework writes nothing, and a run over every framework (--all) goes on to the others and then
 -- names every refused framework, so a single change does not stop the others from being written.
 function run(args)
@@ -151,13 +121,12 @@ function run(args)
             for _, change in ipairs(refused) do
                 print(refusal(args.tree, fw, change))
             end
-            print(string.format("gen %s: refused, %d record(s) changed since they were recorded (pins and constants); nothing written for it",
-                fw, #refused))
+            print(string.format("gen %s: refused, %d pin(s) changed since they were recorded; nothing written for it", fw, #refused))
             table.insert(refused_frameworks, fw)
         else
             if #refused > 0 then
                 rerecord(args.tree, fw, refused)
-                print(string.format("gen %s: re-recorded %d record(s): pins as repin, constants by their declaration hash", fw, #refused))
+                print(string.format("gen %s: re-recorded %d pin(s) as repin", fw, #refused))
             end
             write_framework(args, fw)
         end
