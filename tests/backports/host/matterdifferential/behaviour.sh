@@ -69,11 +69,14 @@ for pair in $clusters; do
     for each in $supers; do echo "$each" >> "$work/classes.txt"; done
     aliases="-D$cluster=CharonPort$cluster"
     for each in $supers; do aliases="$aliases -D$each=CharonPort$each"; done
-    # The exit status is not read: the generator's own compile check targets iOS and the host's tree is not
-    # that, so it reports an object that "does not compile"; the object is compared with the committed one
-    # and compiled for the host below, which is the check that matters here.
-    python3 "$root/tools/matter-generate.py" --sdk "$sdk26" --out "$work/port" --contracts "$work/contracts" \
-        --sdk16 "$sdk16" --classes-from "$work/classes.txt" > "$work/generate.log" 2>&1 || true
+    # The generator's status is read: a run that fails (its compile check against the library's SDK and triple, or
+    # any other check it makes) has written objects this comparison must not stand on.
+    if ! python3 "$root/tools/matter-generate.py" --sdk "$sdk26" --out "$work/port" --contracts "$work/contracts" \
+        --sdk16 "$sdk16" --shared-types --classes-from "$work/classes.txt" > "$work/generate.log" 2>&1; then
+        echo "behaviour: the generator failed for $cluster; its log says why: $work/generate.log" >&2
+        tail -5 "$work/generate.log" >&2
+        exit 2
+    fi
     for each in $cluster $supers; do
         source="$work/port/CharonMatter$each.m"
         [ -f "$source" ] || { echo "behaviour: the generator wrote no $source" >&2; tail -5 "$work/generate.log" >&2; exit 2; }

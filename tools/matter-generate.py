@@ -50,6 +50,7 @@ darwin zap-generated tree says so, and it has no THIRD-PARTY file at its top lev
 
 import argparse
 import collections
+import concurrent.futures
 import subprocess
 import os
 import re
@@ -3385,34 +3386,35 @@ def check_header_stands_alone(path, sdk16):
         cwd=os.path.dirname(path) or ".")
     return outcome
 
-def compile_objects(directory, sdk16, jobs=4):
-    """Every object the run wrote, compiled the way the library builds. Returns the failures by name.
+def compile_objects(directory, sdk16, target, jobs=4):
+    """Every object the run wrote, compiled the way the library builds. Returns (name, first error) per failure.
 
     The developer's SDK has the 26.2 headers, so an object that names a type the library's SDK does not
     declare compiles here and not there - 94 of 142 did, and nothing else in the pipeline could see it: the
     invariant counts selectors, the differential compiles against macOS where Matter exists, and the light
-    guard runs on the host. So the compile is part of the generator, against the SDK the library is built
-    with, and the run fails if any object does not compile.
+    guard runs on the host. So the compile is part of the generator, against the SDK and the triple the
+    library is built with, and the run fails if any object does not compile.
+
+    Each object goes to clang on stdin, so nothing is written beside the objects, and it is compiled in the
+    output directory, where "CharonMatterTypes.h" resolves as it does for the library.
     """
     if not sdk16 or not os.path.isdir(directory):
         return []
     names = sorted(name for name in os.listdir(directory) if name.endswith(".m"))
-    marks = os.path.abspath(os.path.join(directory, ".compile-failures"))
-    # Created empty before any compile: under xargs -P 4 each failing compile appends to this file, and
-    # several racing `>>` on a file that does not exist yet is how a whole tree was reported as failing.
-    open(marks, "w").close()
-    listing = os.path.abspath(os.path.join(directory, ".compile-list"))
-    with open(listing, "w") as out:
-        out.write("\n".join(names) + "\n")
-    command = ('xcrun clang -target arm64-apple-ios13.0 -isysroot %s -fobjc-arc -Wall -fsyntax-only "$0" '
-               '>/dev/null 2>&1 || echo "$0" >> %s') % (sdk16, marks)
-    subprocess.call(["xargs", "-P", str(jobs), "-n", "1", "sh", "-c", command],
-                    stdin=open(listing), cwd=directory)
-    with open(marks) as handle:
-        failed = [line.strip() for line in handle if line.strip()]
-    os.remove(marks)
-    os.remove(listing)
-    return failed
+
+    def compiles(name):
+        with open(os.path.join(directory, name), "rb") as source:
+            run = subprocess.run(["xcrun", "clang", "-target", target, "-isysroot", sdk16, "-fobjc-arc", "-Wall",
+                                  "-fsyntax-only", "-x", "objective-c", "-"],
+                                 stdin=source, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, cwd=directory)
+        if run.returncode == 0:
+            return None
+        errors = [line for line in run.stderr.decode(errors="replace").splitlines() if "error:" in line]
+        return errors[0].strip() if errors else "clang exited %d" % run.returncode
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as pool:
+        results = list(pool.map(compiles, names))
+    return [(name, error) for name, error in zip(names, results) if error is not None]
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__,
@@ -3424,6 +3426,8 @@ def main():
     parser.add_argument("--contracts", help="where the .contract files go; they are TEST FIXTURES and do not belong in the package tree")
     parser.add_argument("--shared-types", action="store_true", help="emit CharonMatterTypes.h and one object per shared class")
     parser.add_argument("--sdk16", help="the SDK the LIBRARY builds against; types it does not declare get a forward declaration")
+    parser.add_argument("--target", default="armv7-apple-ios6.1.3",
+                        help="the triple the LIBRARY's objects are compiled for, checked by the compile of --out (the gate's release, 6.1.3)")
     parser.add_argument("--paths", action="store_true", help="also emit MTRClusterPath and the three that extend it")
     parser.add_argument("--generic-clusters", action="store_true",
                         help="also emit the concrete MTRCluster* classes - every one the SDK declares whose"
@@ -3784,7 +3788,9 @@ def main():
             PARAMS_MISSING.extend(missing)
         PAYLOAD_INTERFACES.extend(interfaces)
 
-    if CLUSTER_INTERFACES or PAYLOAD_INTERFACES:
+    # Every object imports CharonMatterTypes.h, so with --shared-types the header is written even when a run's own
+    # classes declare nothing in it: a run of one cluster (behaviour.sh) compiled against a header that was missing.
+    if arguments.shared_types or CLUSTER_INTERFACES or PAYLOAD_INTERFACES:
         emit_shared_types(arguments, lambda name: "CharonMatter%s" % name,
                           CLUSTER_INTERFACES, PAYLOAD_INTERFACES)
 
@@ -3920,12 +3926,12 @@ def main():
                   " that does not compile by itself is a defect the objects were hiding")
             HEADER_NOT_ALONE.append("CharonMatterTypes.h")
 
-    failed = compile_objects(arguments.out, arguments.sdk16)
+    failed = compile_objects(arguments.out, arguments.sdk16, arguments.target)
     if failed:
         print("OBJECTS THAT DO NOT COMPILE against the SDK the library builds with: %d" % len(failed))
-        for name in failed[:10]:
-            print("  %s" % name)
-        COMPILE_FAILURES.extend(failed)
+        for name, error in failed[:10]:
+            print("  %s: %s" % (name, error))
+        COMPILE_FAILURES.extend(name for name, _ in failed)
     else:
         print("every object compiles against the SDK the library builds with: %d" % len(
             [name for name in os.listdir(arguments.out) if name.endswith(".m")]))
