@@ -1,0 +1,40 @@
+-- The member rows built from shard facts (tools/gen/members.lua): the api, the key, the hash, the availability text and the tbd flag
+-- of each row, on a fixture of the facts; and the real AVFAudio shard's member count through headers.shard_facts (656).
+-- Run: xmake l tests/gen/members_test.lua
+
+local TOOLS = path.join(os.scriptdir(), "..", "..", "tools")
+
+function main()
+    local members = import("gen.members", {rootdir = TOOLS, anonymous = true})
+    local headers = import("gen.headers", {rootdir = TOOLS, anonymous = true})
+    local failures = 0
+    local function check(ok, label)
+        if not ok then
+            failures = failures + 1
+            print("FAIL " .. label)
+        end
+    end
+
+    local facts = {
+        {cls = "Fixture", kind = "method", api = "-[Fixture setLevel:]", text = "API_AVAILABLE(ios(14.0))", hash = "aaaaaaaaaaaaaaaa"},
+        {cls = "Fixture", kind = "property", api = "+[Fixture shared]", text = "", hash = "bbbbbbbbbbbbbbbb"},
+        {cls = "Fixture", kind = "method", api = "-[Fixture setLevel:]", text = "dup", hash = "cccccccccccccccc"},
+        {cls = "Other", kind = "method", api = "-[Other class]", text = "", hash = "dddddddddddddddd"},
+    }
+    local rows = members.rows(facts, {Fixture = true}, "Fixture")
+    check(#rows == 3, "the first occurrence of each api is one row (got " .. #rows .. ")")
+    check(rows[1].key == "Fixture_setLevel_" or rows[1].key == "Fixture_setLevel", "the instance key is a C identifier (got " .. rows[1].key .. ")")
+    check(rows[2].key == "class_Fixture_shared", "a class member's key starts with class_ (got " .. rows[2].key .. ")")
+    check(rows[1].hash == "aaaaaaaaaaaaaaaa", "the hash is the declaration hash of the row")
+    check(rows[1].availability == "API_AVAILABLE(ios(14.0))" and rows[2].availability == "-", "availability is the rendered text or -")
+    check(rows[1].tbd == "class-exported" and rows[3].tbd == "class-not-exported", "tbd follows the class's export")
+    check(rows[1].decl == "-", "the spec row carries no declaration text")
+
+    local real = headers.shard_facts(path.join(TOOLS, ".."), "AVFAudio")
+    check(#members.rows(real.members, {}, "AVFAudio") == 656, "AVFAudio's shard gives 656 member rows")
+
+    print("members test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
+    if failures > 0 then
+        os.exit(1)
+    end
+end

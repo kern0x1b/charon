@@ -1,0 +1,122 @@
+-- The .tbd exports of a framework's arm64 slice: the symbols and the Objective-C classes the framework exports, as two sets. A
+-- .tbd is YAML-like text, read here as data with string.find and explicit splitting (not as a header). It holds several documents
+-- (the framework, then the private frameworks it re-exports), and each document several slices: version 3 writes `archs:` and
+-- version 4 writes `targets:`; a slice counts when one of its names is arm64 or starts with arm64-.
+
+local files = import("files", {anonymous = true})
+
+local DOCUMENT_MARK = "--- !tapi-tbd"
+
+-- The position of the next slice header at or after pos: a line break, blanks, "-", blanks, then archs: or targets:. Returns the
+-- position of that header's word and the position after the word, or nil when there is none.
+local function next_slice(document, pos)
+    local archs_start, archs_end, archs_at = string.find(document, "\n%s*%-%s+()archs:", pos)
+    local targets_start, targets_end, targets_at = string.find(document, "\n%s*%-%s+()targets:", pos)
+    if archs_start == nil and targets_start == nil then
+        return nil
+    end
+    if targets_start == nil or (archs_start ~= nil and archs_start < targets_start) then
+        return archs_at, archs_end
+    end
+    return targets_at, targets_end
+end
+
+-- The slices of one document: each slice's text, from its header word to the next slice's header. The text before the first header
+-- is not a slice (re.split(...)[1:] in tools/gen.py).
+local function slices_of(document)
+    local starts = {}
+    local at, after = next_slice(document, 1)
+    while at ~= nil do
+        table.insert(starts, at)
+        at, after = next_slice(document, after)
+    end
+    local out = {}
+    for i, start in ipairs(starts) do
+        local stop = starts[i + 1] and (starts[i + 1] - 1) or #document
+        table.insert(out, string.sub(document, start, stop))
+    end
+    return out
+end
+
+-- The names a slice header lists (archs: [ ... ] or targets: [ ... ]), or nil when the block is no slice header.
+local function slice_names(block)
+    local list = string.match(block, "^archs:%s*%[([^%]]*)%]") or string.match(block, "^targets:%s*%[([^%]]*)%]")
+    if list == nil then
+        return nil
+    end
+    local names = {}
+    for name in string.gmatch(list .. ",", "([^,]*),") do
+        table.insert(names, (string.gsub(string.gsub(name, "^%s+", ""), "%s+$", "")))
+    end
+    return names
+end
+
+-- True when a slice's names include arm64 (arm64 or arm64-<platform>).
+local function is_arm64(names)
+    for _, name in ipairs(names) do
+        if name == "arm64" or string.sub(name, 1, 6) == "arm64-" then
+            return true
+        end
+    end
+    return false
+end
+
+-- The items of a list field (key: [ ... ]) of a slice, added to the set. The field is the first one after a line break.
+local function add_list(block, key, into)
+    local _, after = string.find(block, "\n%s*" .. key .. ":%s*%[")
+    if after == nil then
+        return
+    end
+    local close = string.find(block, "]", after, true)
+    assert(close, "a " .. key .. " list is not closed in a .tbd slice")
+    local text = string.gsub(string.sub(block, after + 1, close - 1), "\n", " ")
+    for item in string.gmatch(text .. ",", "([^,]*),") do
+        local name = string.gsub(string.gsub(item, "^%s+", ""), "%s+$", "")
+        if name ~= "" then
+            into[name] = true
+        end
+    end
+end
+
+-- The exports of a framework's arm64 slice in the SDK: symbols (the leading underscore dropped, as the spec compares them) and
+-- objc-classes, two sets keyed by name with the value true. Both are empty when the framework has no .tbd in the SDK.
+function exports(sdk, fw)
+    local symbols, classes = {}, {}
+    local text = files.read_text(path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework", fw .. ".tbd"))
+    if text == nil then
+        return symbols, classes
+    end
+    local pos = 1
+    while true do
+        local mark = string.find(text, DOCUMENT_MARK, pos, true)
+        if mark == nil then
+            break
+        end
+        local start = mark + #DOCUMENT_MARK
+        local stop_mark = string.find(text, DOCUMENT_MARK, start, true)
+        local document = string.sub(text, start, (stop_mark or (#text + 1)) - 1)
+        for _, block in ipairs(slices_of(document)) do
+            local names = slice_names(block)
+            if names ~= nil and is_arm64(names) then
+                add_list(block, "symbols", symbols)
+                add_list(block, "objc%-classes", classes)
+            end
+        end
+        pos = stop_mark or (#text + 1)
+    end
+    local stripped = {}
+    for name in pairs(symbols) do
+        stripped[string.sub(name, 1, 1) == "_" and string.sub(name, 2) or name] = true
+    end
+    return stripped, classes
+end
+
+-- The sorted names of a set, one per line (the form the checks compare).
+function sorted_names(set)
+    local out = {}
+    for name in pairs(set) do
+        table.insert(out, name)
+    end
+    table.sort(out)
+    return out
+end

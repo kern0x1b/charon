@@ -121,14 +121,9 @@ function shard_facts(tree, fw)
         if r.kind == "method" or r.kind == "property" then
             local cls = string.match(r.usr, "^c:objc%(cs%)([^%(]+)")
             if cls then
-                local api, alias
-                if r.kind == "method" then
-                    api = side .. "[" .. cls .. " " .. name .. "]"
-                    alias = api
-                else
-                    api = "-[" .. cls .. " " .. name .. "]"
-                    alias = cls .. "." .. name
-                end
+                -- a class property takes the sign of a class method ("+"): the side the shard records (design-foundation.md 3.5)
+                local api = side .. "[" .. cls .. " " .. name .. "]"
+                local alias = r.kind == "method" and api or (cls .. "." .. name)
                 table.insert(out.members, {cls = cls, kind = r.kind, api = api, alias = alias, avail = r.avail,
                                            message = r.message, text = avail.render(r.avail, r.message), hash = r.declhash,
                                            usr = r.usr, key = r.container})
