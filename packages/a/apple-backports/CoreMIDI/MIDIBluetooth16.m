@@ -1,12 +1,14 @@
-// MIDIBluetoothDriverActivateAllConnections and MIDIBluetoothDriverDisconnect, of iOS 16: the calls that bring up and
-// take down the connections of Bluetooth LE MIDI devices. The release has no Bluetooth MIDI driver, so this file is the
-// central: CoreBluetooth (on 6.1.3 since iOS 5) scans for the MIDI service, connects to the devices it finds, reads the
-// MIDI I/O characteristic, and turns each BLE MIDI packet into MIDI 1.0 bytes (CharonBLEMIDIParse, CharonCoreMIDI.c).
+// The Bluetooth LE MIDI central, which MIDIBluetoothDriverActivateAllConnections and MIDIBluetoothDriverDisconnect (of iOS 16)
+// would call. It is NOT exported under those names: the central has never run (not on a device, and the emulator has no
+// Bluetooth), so the registry says `owed` for the two functions, and a built symbol under a name the registry says is owed would
+// be an answer the registry does not give. The functions are kept here under charon_bluetooth_* so that the file keeps compiling
+// (the framing and the connections are the work the device run must check), and so that the day they run they are one rename.
 //
-// The bytes go to a virtual source the central makes through the release's MIDISourceCreate, one per device. Whether the
-// release lets a process make a virtual source is the open question in facts/CoreMIDI/CoreMIDI.md: when it refuses
-// (kMIDINotPermitted, -10844, as the emulated 4S does), the device stays connected and its bytes are dropped, and the
-// refusal is written to the log once. Nothing here is measured against a real BLE device; the emulator has no Bluetooth.
+// The central is CoreBluetooth (on 6.1.3 since iOS 5): it scans for the MIDI service, connects to the devices it finds, reads the
+// MIDI I/O characteristic, and turns each BLE MIDI packet into MIDI 1.0 bytes (CharonBLEMIDIParse, CharonCoreMIDI.c). The bytes go
+// to a virtual source the central makes through the release's MIDISourceCreate, one per device. Whether the release lets a
+// process make a virtual source is the open question in facts/CoreMIDI/CoreMIDI.md: when it refuses (kMIDINotPermitted, -10844,
+// as the emulated 4S does), the device stays connected and its bytes are dropped, and the refusal is written to the log once.
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <CoreMIDI/CoreMIDI.h>
@@ -22,12 +24,13 @@ static NSString *const charon_characteristic = @"7772E5DB-3868-4112-A1A9-F2669D1
 
 // The release's peripheral before iOS 7 has the UUID as a CFUUIDRef, and the 26.2 SDK no longer declares it. It is declared
 // here, without an implementation, so that the one call to it is typed; it is only sent where identifier is not answered.
+// On 6.1.3 identifier is not answered and UUID is (the probe of tests/backports/emulate/coremidi/app/main.m).
 @interface CBPeripheral (CharonUUID)
 - (CFUUIDRef)UUID;
 @end
 
-// The key of a peripheral in the central's table: its identifier as a UUID string, the form MIDIBluetoothDriverDisconnect
-// is given. From iOS 7 the identifier is an NSUUID; on 6.1.3 the CFUUIDRef of the release is formatted the same way.
+// The key of a peripheral in the central's table: its identifier as a UUID string, the form the driver's disconnect is given.
+// From iOS 7 the identifier is an NSUUID; on 6.1.3 the CFUUIDRef of the release is formatted the same way.
 static NSString *charon_peripheral_key(CBPeripheral *peripheral)
 {
     if ([peripheral respondsToSelector:@selector(identifier)])
@@ -65,8 +68,8 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
     }
 }
 
-// The bytes of one notification become MIDI 1.0 bytes in a packet of the release's own list. The parser's state (a SysEx
-// open across notifications, the running status) belongs to the device, and the buffers are sized from the notification.
+// The bytes of one notification become MIDI 1.0 bytes in a packet of the release's own list. The parser's state (a SysEx open
+// across notifications, the running status) belongs to the device, and the buffers are sized from the notification.
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
     NSData *value = characteristic.value;
@@ -84,7 +87,8 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
         Byte *buffer = malloc(listSize);
         if (buffer) {
             MIDIPacketList *list = (MIDIPacketList *)buffer;
-            MIDIPacketListAdd(list, listSize, MIDIPacketListInit(list), 0, count, midi);
+            if (MIDIPacketListAdd(list, listSize, MIDIPacketListInit(list), 0, count, midi) == NULL)
+                NSLog(@"charon: a Bluetooth MIDI notification of %lu bytes did not fit its packet list", (unsigned long)count);
             OSStatus status = MIDIReceived(self.source, list);
             if (status != noErr && !self.refusedOnce) {
                 self.refusedOnce = YES;
@@ -147,13 +151,16 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
     CharonBLEDevice *device = self.devices[charon_peripheral_key(peripheral)];
     if (!device)
         return;
-    if (!self.client) {
-        if (MIDIClientCreate(CFSTR("charon-bluetooth"), NULL, NULL, &_client) != noErr)
-            NSLog(@"charon: the release would not make a MIDI client for a Bluetooth device");
+    if (self.client == 0) {
+        if (MIDIClientCreate(CFSTR("charon-bluetooth"), NULL, NULL, &_client) != noErr) {
+            NSLog(@"charon: the release would not make a MIDI client for a Bluetooth device; its bytes are dropped");
+            [peripheral discoverServices:@[[CBUUID UUIDWithString:charon_service]]];
+            return;
+        }
     }
     NSString *name = peripheral.name ? peripheral.name : @"Bluetooth MIDI";
     MIDIEndpointRef source = 0;
-    OSStatus status = self.client ? MIDISourceCreate(self.client, (__bridge CFStringRef)name, &source) : -1;
+    OSStatus status = MIDISourceCreate(self.client, (__bridge CFStringRef)name, &source);
     if (status == noErr) {
         device.source = source;
     } else {
@@ -174,12 +181,14 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
     [self forgetDevice:charon_peripheral_key(peripheral)];
 }
 
-// Drops a device and disposes its virtual source, so a reconnect makes one source and not a second of the same name.
+// Drops a device and disposes its virtual source, so a reconnect makes one source and not a second of the same name. A source the
+// release will not dispose is logged: the device is forgotten either way.
 - (void)forgetDevice:(NSString *)key
 {
     CharonBLEDevice *device = self.devices[key];
     if (device.source != 0) {
-        MIDIEndpointDispose(device.source);
+        if (MIDIEndpointDispose(device.source) != noErr)
+            NSLog(@"charon: the virtual source of a Bluetooth MIDI device could not be disposed");
         device.source = 0;
     }
     [self.devices removeObjectForKey:key];
@@ -197,7 +206,8 @@ static CharonBLECentral *charon_central(void)
     return central;
 }
 
-OSStatus MIDIBluetoothDriverActivateAllConnections(void)
+// The bodies of the two functions the registry owes (see the file's head): not exported under their names.
+OSStatus charon_bluetooth_activate_all_connections(void)
 {
     CharonBLECentral *central = charon_central();
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -208,7 +218,7 @@ OSStatus MIDIBluetoothDriverActivateAllConnections(void)
     return noErr;
 }
 
-OSStatus MIDIBluetoothDriverDisconnect(CFStringRef uuid)
+OSStatus charon_bluetooth_disconnect(CFStringRef uuid)
 {
     CharonBLECentral *central = charon_central();
     NSString *key = (__bridge NSString *)uuid;

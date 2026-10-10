@@ -87,7 +87,7 @@
 }
 
 // No MIDI-CI transport: the session cannot send a profile change, so the change is refused with no error detail.
-- (BOOL)enableProfile:(MIDICIProfile *)profile onChannel:(MIDIChannelNumber)channel error:(NSError **)outError { return NO; }
-- (BOOL)disableProfile:(MIDICIProfile *)profile onChannel:(MIDIChannelNumber)channel error:(NSError **)outError { return NO; }
+- (BOOL)enableProfile:(MIDICIProfile *)profile onChannel:(MIDIChannelNumber)channel error:(NSError **)outError { charon_ci_inert(__PRETTY_FUNCTION__); return NO; }
+- (BOOL)disableProfile:(MIDICIProfile *)profile onChannel:(MIDIChannelNumber)channel error:(NSError **)outError { charon_ci_inert(__PRETTY_FUNCTION__); return NO; }
 
 @end

@@ -99,4 +99,9 @@ typedef void (^MIDICIDiscoveryResponseBlock)(NSArray<MIDICIDiscoveredNode *> *di
 
 NS_ASSUME_NONNULL_END
 
+// A MIDI-CI action on this port: the port has no MIDI-CI transport, so the action does nothing. Each action says so once, the
+// first time it is used (the registry's inert state, registry/README.md). The answer it gives is the release's on this host,
+// where the release's own MIDI-CI client is refused (facts/CoreMIDI/MIDICI.md).
+void charon_ci_inert(const char * _Nonnull action);
+
 #endif

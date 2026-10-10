@@ -36,3 +36,14 @@ machine where a MIDI-CI device answers: no such device was measured.
 - MIDIUMPCIProfile and MIDICIDevice objects: they describe a discovered device, so they are never made here.
 - The protocol MIDICIProfileResponderDelegate is declared and its methods are the responder's (the responder never calls them);
   it is not registered as a protocol row, since the protocol-header pipeline (tools/transcribe-protocols.py) is not run for it.
+
+## The action stubs (round 3)
+
+- The MI-CI actions that would do something on a transport are `inert` in the registry: discoverWithHandler (MIDICIDiscoveryManager),
+  start, notifyProfile and sendProfile (MIDICIResponder and its delegate protocol), and enableProfile and disableProfile
+  (MICISession). Each does nothing and answers NO or returns, and says once in the log that it has no MI-CI transport
+  (charon_ci_inert, MIDICI14.m). macOS refuses its own MIDI-CI client on the measured host and never calls the discovery handler
+  (oracle/micicapability-macos.txt), so that no-op is the measured answer there.
+- The getters of the MI-CI device, profile and manager classes (no profiles, zero MUID and counts, nil names, empty device lists)
+  answer for a port that has no MI-CI device at all. Those rows stay `implemented`: the device lists measured empty on macOS
+  (oracle/umpclasses2-macos.txt), and an object that is not there answers those values.

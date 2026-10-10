@@ -6,6 +6,24 @@
 // produced by this port, since it has no MIDI-CI transport (facts/CoreMIDI/MIDICI.md).
 #import "CharonMIDICI.h"
 
+// The MIDI-CI actions have no transport: each does nothing, and says so once, the first time it is used (the registry's inert
+// state). The names are the methods' own, as __PRETTY_FUNCTION__ gives them.
+void charon_ci_inert(const char * _Nonnull action)
+{
+    static NSMutableSet *said;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        said = [NSMutableSet set];
+    });
+    NSString *name = [NSString stringWithUTF8String:action];
+    @synchronized (said) {
+        if ([said containsObject:name])
+            return;
+        [said addObject:name];
+    }
+    NSLog(@"charon: %s does nothing: this port has no MIDI-CI transport (facts/CoreMIDI/MIDICI.md)", action);
+}
+
 @implementation MIDICIProfile (CharonMIDI14)
 
 - (instancetype)initWithData:(NSData *)data
@@ -73,6 +91,7 @@
 // every run, as it has no MIDI-CI transport to discover through.
 - (void)discoverWithHandler:(MIDICIDiscoveryResponseBlock)completedHandler
 {
+    charon_ci_inert(__PRETTY_FUNCTION__);
 }
 
 @end
@@ -102,9 +121,9 @@
 - (MIDICIDeviceInfo *)deviceInfo { return _deviceInfo; }
 
 // No MIDI-CI transport: no initiator connects to the responder, and no profile is notified or sent.
-- (BOOL)notifyProfile:(MIDICIProfile *)aProfile onChannel:(MIDIChannelNumber)channel isEnabled:(BOOL)enabledState { return NO; }
-- (BOOL)sendProfile:(MIDICIProfile *)aProfile onChannel:(MIDIChannelNumber)channel profileData:(NSData *)profileSpecificData { return NO; }
-- (BOOL)start { return NO; }
+- (BOOL)notifyProfile:(MIDICIProfile *)aProfile onChannel:(MIDIChannelNumber)channel isEnabled:(BOOL)enabledState { charon_ci_inert(__PRETTY_FUNCTION__); return NO; }
+- (BOOL)sendProfile:(MIDICIProfile *)aProfile onChannel:(MIDIChannelNumber)channel profileData:(NSData *)profileSpecificData { charon_ci_inert(__PRETTY_FUNCTION__); return NO; }
+- (BOOL)start { charon_ci_inert(__PRETTY_FUNCTION__); return NO; }
 - (void)stop { }
 
 @end

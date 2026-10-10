@@ -38,3 +38,13 @@ What is not established:
   not checked here.
 - "Paired" devices: the central connects to any device advertising the service once activated, and keeps no list of paired
   devices across launches. macOS keeps such a list in the system's Bluetooth settings; that store is not reproduced.
+
+## Status in the registry (round 3)
+
+- The two driver functions are not exported under their names: the registry says `owed` (registry/CoreMIDI/ios16.json). The
+  central's bodies are charon_bluetooth_activate_all_connections and charon_bluetooth_disconnect (MIDIBluetooth16.m), so a
+  device run is one rename away from `implemented`. The reason is that the central has never run: no BLE MIDI device has been
+  used, and the emulated 4S has no Bluetooth.
+- The 6.1.3 selectors (identifier not answered, UUID answered) are measured (tests/backports/emulate/coremidi/app/main.m).
+- The disconnect matches a device by the key CFUUIDCreateString gives on 6.1.3; the release's own UUID string for a
+  peripheral is not measured against it.

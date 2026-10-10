@@ -85,7 +85,9 @@
       "api": "MIDICIDiscoveryManager",
       "kind": "class",
       "introduced": "14.0",
-      "status": "implemented",
+      "status": "inert",
+      "reason": "the port has no MIDI-CI transport: discoverWithHandler does nothing and says so once in the log (charon_ci_inert, MIDICI14.m). On the measured host macOS refuses its own MIDI-CI client (-10844) and never calls the handler (oracle/micicapability-macos.txt), so the no-op is that answer; a machine with a MIDI-CI device is not measured.",
+      "effect": "the discovery handler is never called, and no device is listed.",
       "facts": "facts/CoreMIDI/MIDICI.md",
       "source": "the 26.2 header for the contract (MIDICapabilityInquiry.h); macOS CoreMIDI for the answers (tests/backports/host/coremidi/oracle/micicapability.m)"
     },
@@ -93,7 +95,9 @@
       "api": "MIDICIResponder",
       "kind": "class",
       "introduced": "14.0",
-      "status": "implemented",
+      "status": "inert",
+      "reason": "the port has no MIDI-CI transport: start, notifyProfile and sendProfile do nothing and answer NO, each saying so once in the log (charon_ci_inert, MIDICI14.m). The responder is not made on the measured host (oracle/micicapability-macos.txt).",
+      "effect": "a responder never starts, notifies or sends a profile.",
       "facts": "facts/CoreMIDI/MIDICI.md",
       "source": "the 26.2 header for the contract (MIDICapabilityInquiry.h); macOS CoreMIDI for the answers (tests/backports/host/coremidi/oracle/micicapability.m)"
     },
@@ -101,7 +105,9 @@
       "api": "MIDICIProfileResponderDelegate",
       "kind": "protocol",
       "introduced": "14.0",
-      "status": "implemented",
+      "status": "inert",
+      "reason": "the responder that would call this protocol's methods never runs (no MIDI-CI transport), so the methods are never called; the protocol is declared for the header's contract.",
+      "effect": "a delegate is never called by the port.",
       "facts": "facts/CoreMIDI/MIDICI.md",
       "source": "the 26.2 header for the contract (MIDICapabilityInquiry.h); the protocol's methods are the responder's, which never calls them (no MIDI-CI transport)"
     }

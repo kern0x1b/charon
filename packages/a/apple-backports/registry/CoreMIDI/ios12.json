@@ -21,7 +21,9 @@
       "api": "MIDICISession",
       "kind": "class",
       "introduced": "12.0",
-      "status": "implemented",
+      "status": "inert",
+      "reason": "the port has no MIDI-CI transport: enableProfile:onChannel:error:, disableProfile:onChannel:error: and the profile sends do nothing and answer NO, each saying so once in the log (charon_ci_inert, MIDICI12.m, MIDICI14.m). The measured host refuses MIDI-CI (oracle/micicapability-macos.txt).",
+      "effect": "a session enables or disables no profile and sends none.",
       "facts": "facts/CoreMIDI/MIDICI.md",
       "source": "the 26.2 header for the contract (MIDICapabilityInquiry.h); macOS CoreMIDI for the answers (tests/backports/host/coremidi/oracle/micicapability.m)"
     }
