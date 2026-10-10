@@ -24,11 +24,12 @@ did not earn.
 
 **The mute state** is kept by the shared application object and read back by `isInputMuted`; a change
 made through `-setInputMuted:error:` posts `AVAudioApplicationInputMuteStateChangeNotification` with
-`AVAudioApplicationMuteStateKey` in its `userInfo`, and a handler set through
-`-setInputMuteStateChangeHandler:error:` is called with the new state. Nothing on this release flips
-the hardware switch on its own, so the handler fires only for a change this process made - which is
-what the header's own note says the handler is for ("This handler should be set by the process doing
-the call's audio I/O").
+`AVAudioApplicationMuteStateKey` in its `userInfo`. Nothing on this release flips the hardware switch
+on its own, so the notification fires only for a change this process made.
+
+**`-setInputMuteStateChangeHandler:error:`** is not on iOS: the SDK declares it
+`API_UNAVAILABLE(ios, watchos, tvos, macCatalyst, visionos)` (`AVAudioApplication.h:104`, macOS 14
+only), so its registry row is `absent` and no handler can be set through this port.
 
 **`-init` answers the shared instance** rather than a second object: two `AVAudioApplication`
 objects would each keep their own mute state, and this API has one mute state. `-init` is in the

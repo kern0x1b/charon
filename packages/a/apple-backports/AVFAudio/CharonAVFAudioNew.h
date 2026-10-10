@@ -42,7 +42,6 @@ typedef NS_ENUM(NSInteger, AVAudioApplicationMicrophoneInjectionPermission) {
 - (instancetype)init NS_UNAVAILABLE;
 - (BOOL)setInputMuted:(BOOL)muted error:(NSError **)outError;
 @property (readonly, nonatomic, getter=isInputMuted) BOOL inputMuted;
-- (BOOL)setInputMuteStateChangeHandler:(BOOL (^_Nullable)(BOOL inputShouldBeMuted))inputMuteHandler error:(NSError **)outError;
 @property (readonly) AVAudioApplicationRecordPermission recordPermission;
 + (void)requestRecordPermissionWithCompletionHandler:(void (^)(BOOL granted))response;
 @property (readonly) AVAudioApplicationMicrophoneInjectionPermission microphoneInjectionPermission;
