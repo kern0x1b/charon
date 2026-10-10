@@ -1,5 +1,5 @@
 // Differential test of the CoreMIDI translation against macOS CoreMIDI. The expected answers are the macOS
-// oracle's recorded output (coremidi-expectations.h, made by expectations.py from oracle/batch.m) and the probe
+// oracle's recorded output (coremidi-expectations.h, made by expectations.lua from oracle/batch.m) and the probe
 // results written in this file beside each check, measured on this host on 2026-10-09. The translator under
 // test is packages/a/apple-backports/CoreMIDI/CharonCoreMIDI.c, built for macOS as it is for the device.
 //

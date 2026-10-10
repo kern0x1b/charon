@@ -13,23 +13,15 @@ while [ $# -gt 0 ]; do
     esac
 done
 stamp=$(date +%Y%m%d-%H%M%S)
-# Built outside the checkout: the application's project sits inside the daemon's directory, and xmake would pick the daemon's
-# project for it there (the display-probe run does the same, in the system temp path).
-build=${COREMIDI_APP_BUILD:-${TMPDIR:-/tmp}/charon-coremidi-app/$minimum-$stamp}
+# Built outside the daemon's directory: the application's project sits there otherwise, and xmake would pick the daemon's
+# project for it. The default is a run folder of this checkout (.agent-work/runs), never the system temp directory.
+build=${COREMIDI_APP_BUILD:-$root/.agent-work/runs/coremidi-app/$minimum-$stamp}
 out=$build
 mkdir -p "$build"
 cp "$here/app/xmake.lua" "$here/app/control" "$here/app/Info.plist" "$build/"
 if [ -n "${CHARCOREMIDI_NO_BACKGROUND:-}" ]; then
     # The variant without the background mode: the audio entry of UIBackgroundModes is taken out of the copy.
-    python3 - "$build/Info.plist" <<'PY'
-import plistlib, sys
-path = sys.argv[1]
-with open(path, 'rb') as h:
-    plist = plistlib.load(h)
-plist.pop('UIBackgroundModes', None)
-with open(path, 'wb') as h:
-    plistlib.dump(plist, h)
-PY
+    plutil -remove UIBackgroundModes "$build/Info.plist"
 fi
 cd "$build"
 CHARCOREMIDI_ROOT=$root CHARCOREMIDI_MINIMUM=$minimum xmake f -p iphoneos -a armv7 -y >"$out/configure.log" 2>&1 || {
