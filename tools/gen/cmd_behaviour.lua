@@ -48,12 +48,13 @@ function run(args)
             end
         end
     end
+    local files = behaviour.page_files(corpus, fw)
     local names = {}
     for cls in pairs(pages) do
         table.insert(names, cls)
     end
     for _, cls in ipairs(order.strings(names)) do
-        emit.file(behaviour.page_path(args.tree, fw, cls), behaviour.page_text(fw, cls, pages[cls]))
+        emit.file(behaviour.page_path(args.tree, fw, files, cls), behaviour.page_text(fw, cls, pages[cls]))
     end
     print(string.format("behaviour %s: %d methods, %d summarised, %d failed", fw, #methods, done, failed))
     -- A failed method is a failed run: the pages of the methods that did summarise are written, and the status says the run failed.

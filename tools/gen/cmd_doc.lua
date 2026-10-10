@@ -1,6 +1,6 @@
 -- `doc`: the worker's page set, written into --out (default: .agent-work/spec-docs under --tree). For each framework: an index, one
 -- page per class (its members with the 6.1.3 and 4.3 status, demand, registry and pin, and stub; the host oracle's defaults; the
--- binary's ObjC metadata), one page per protocol, Constants.md, and Swift.md when the bucket has rows. The inputs: the spec, the
+-- binary's ObjC metadata), one page per protocol (<Name>.protocol.md; pages.lua names the pages), Constants.md, and Swift.md when the bucket has rows. The inputs: the spec, the
 -- registry, the pins and the trace's skipped list of the tree; the surface, ledgers, oracle defaults and ObjC table of the corpus
 -- (--coordination); the superclasses of the committed declaration shards (headers.shard_facts: no Python runs here). Pages go through
 -- emit, and nothing else is written. The header comments and the declaration text of a class or protocol member are re-derived from
@@ -19,6 +19,7 @@ local trace_files = import("trace_files", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local files = import("files", {anonymous = true})
 local order = import("order", {anonymous = true})
+local pages = import("pages", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 
 -- The ObjC rows are read through this function: objc.each by default, replaced by tests with a fixture.
@@ -31,6 +32,8 @@ local LEDGER_6_1_3 = "ledger-w45"
 local LEDGER_4_3 = "ledger-w45-4.3"
 local IMPLEMENTED = "implemented"
 local NO_VALUE = "-"
+-- The pages of a framework folder besides the class and protocol pages.
+local FIXED_PAGES = {"index.md", "Constants.md", "Swift.md"}
 local MEMBER_KINDS = {method = true, property = true}
 -- The text of what the extractor's doc mode does not give: a framework it cannot run for keeps the marked text for its comments and its
 -- declarations (ruling 2 and ruling D8), and a member it does not list is marked as such. Nothing is taken from the spec's or the
@@ -516,6 +519,14 @@ local function write_framework(ctx, fw, objc_state)
         table.insert(proto_names, name)
     end
     proto_names = order.strings(proto_names)
+    local entries = {}
+    for _, cls in ipairs(classes) do
+        table.insert(entries, {kind = "class", name = cls})
+    end
+    for _, name in ipairs(proto_names) do
+        table.insert(entries, {kind = "protocol", name = name})
+    end
+    local page_files = pages.names(entries, FIXED_PAGES)
 
     local out = path.join(ctx.out_root, fw)
     local index = {"# " .. fw .. ": worker page set", "",
@@ -538,8 +549,9 @@ local function write_framework(ctx, fw, objc_state)
                 stubbed = stubbed + 1
             end
         end
-        index[#index + 1] = string.format("| %s | %s | %d | %d | %d | [%s.md](%s.md) |", cls, either(parsed.superclasses[cls], NO_VALUE),
-                                          #members, overridden, stubbed, cls, cls)
+        local file = page_files[pages.key("class", cls)]
+        index[#index + 1] = string.format("| %s | %s | %d | %d | %d | [%s](%s) |", cls, either(parsed.superclasses[cls], NO_VALUE),
+                                          #members, overridden, stubbed, file, file)
     end
     if #proto_names > 0 then
         index[#index + 1] = ""
@@ -548,7 +560,8 @@ local function write_framework(ctx, fw, objc_state)
         index[#index + 1] = "| protocol | status | members | page |"
         index[#index + 1] = "| --- | --- | --- | --- |"
         for _, name in ipairs(proto_names) do
-            index[#index + 1] = string.format("| %s | %s | %d | [%s.md](%s.md) |", name, protos[name].status, #protos[name].members, name, name)
+            local file = page_files[pages.key("protocol", name)]
+            index[#index + 1] = string.format("| %s | %s | %d | [%s](%s) |", name, protos[name].status, #protos[name].members, file, file)
         end
     end
     index[#index + 1] = ""
@@ -558,11 +571,11 @@ local function write_framework(ctx, fw, objc_state)
 
     for _, cls in ipairs(classes) do
         local page = class_page(parsed, fw, cls, members_by_class[cls], ctx_fw)
-        emit.file(path.join(out, cls .. ".md"), table.concat(page, "\n") .. "\n")
+        emit.file(path.join(out, page_files[pages.key("class", cls)]), table.concat(page, "\n") .. "\n")
     end
     for _, name in ipairs(proto_names) do
         local page = protocol_page(fw, name, protos[name], ctx_fw)
-        emit.file(path.join(out, name .. ".md"), table.concat(page, "\n") .. "\n")
+        emit.file(path.join(out, page_files[pages.key("protocol", name)]), table.concat(page, "\n") .. "\n")
     end
 
     local constants = {"# " .. fw .. " constants", "", "| name | declaration | iOS 26.2 value | host value | 6.1.3 | 4.3 | ours |",

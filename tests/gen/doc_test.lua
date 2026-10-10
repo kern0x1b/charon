@@ -53,6 +53,9 @@ local function write_fixture(tree, corpus)
         {"FKDelegate", "12.0", "transcribed", "", "NSObject", "required", "method", "yes", "didFinish", "- (void)didFinish;", "yes"},
         {"FKDelegate", "12.0", "transcribed", "", "NSObject", "required", "method", "no", "make", "+ (instancetype)make;", "yes"},
         {"FKDelegate", "12.0", "transcribed", "", "NSObject", "optional", "property", "yes", "name", "@property NSString *name;", "no"},
+        -- a protocol and a class of one name
+        {"FKShape", "12.0", "transcribed", "", "NSObject", "-", "-", "-", "-", "-", "-"},
+        {"FKShape", "12.0", "transcribed", "", "NSObject", "required", "method", "yes", "area", "- (double)area;", "yes"},
     }))
     emit.file(path.join(package, "registry", FIXTURE, "ios.json"),
               '{"entries": [{"api": "-[FKThing reset]", "kind": "method", "status": "implemented", "owner": "hand"}]}\n')
@@ -122,8 +125,13 @@ local function fixture_headers(fw, sdk)
             member("FKThing", "method", "-[FKThing setName:age:]", "API_AVAILABLE(ios(12.0))", "void", "2222222222222222"),
             member("FKThing", "property", "-[FKThing title]", "", "NSString *", "3333333333333333"),
             member("FKThing", "method", "+[FKThing make]", "", "instancetype", "4444444444444444"),
+            -- a class named as a protocol; two classes that differ in case only; a class named as the index page
+            member("FKShape", "method", "-[FKShape draw]", "", "void", "5555555555555555"),
+            member("FKcase", "method", "-[FKcase lower]", "", "void", "6666666666666666"),
+            member("FKCase", "method", "-[FKCase upper]", "", "void", "7777777777777777"),
+            member("index", "method", "-[index entry]", "", "void", "8888888888888888"),
         },
-        declared = {}, typedefs = {}, superclasses = {FKThing = "NSObject", FKDelegate = "NSObject"},
+        declared = {}, typedefs = {}, superclasses = {FKThing = "NSObject", FKDelegate = "NSObject", FKShape = "NSObject"},
     }
 end
 
@@ -215,10 +223,29 @@ local function test_pages(check)
 
     local dir = path.join(out, FIXTURE)
     local index = page_of(dir, "index.md")
-    check(has(index, "## Classes (1)"), "the index counts one class")
+    check(has(index, "## Classes (5)"), "the index counts its classes")
     check(has(index, "| FKThing | NSObject | 4 | 1 | 2 | [FKThing.md](FKThing.md) |"),
           "the index row counts members, overridden and stubbed (the skipped member is not stubbed)")
-    check(has(index, "| FKDelegate | transcribed | 3 | [FKDelegate.md](FKDelegate.md) |"), "the index lists the protocol with its members")
+    check(has(index, "| FKDelegate | transcribed | 3 | [FKDelegate.protocol.md](FKDelegate.protocol.md) |"),
+          "the index lists the protocol with its members, and its own page")
+    check(has(index, "## Protocols (2)"), "the index counts its protocols")
+
+    -- the page names (pages.lua): a class and a protocol of one name are two pages, names that differ in case only are two pages
+    -- under a suffix of their own (sha256 of "class <Name>", first eight digits, computed outside of the code), and a class named as
+    -- the index page does not replace the index
+    check(has(index, "| FKShape | NSObject | 1 | 0 | 1 | [FKShape.md](FKShape.md) |"), "a class of the name of a protocol keeps <Name>.md")
+    check(has(index, "| FKShape | transcribed | 1 | [FKShape.protocol.md](FKShape.protocol.md) |"), "the protocol of that name is <Name>.protocol.md")
+    check(page_of(dir, "FKShape.md") ~= nil and has(page_of(dir, "FKShape.md"), "# FKShape (FixtureKit)"),
+          "the class page of FKShape is the class")
+    check(has(page_of(dir, "FKShape.protocol.md"), "# FKShape (FixtureKit, protocol)"), "the protocol page of FKShape is the protocol")
+    check(has(index, "[FKcase.1d2bb690.md](FKcase.1d2bb690.md)") and has(index, "[FKCase.25c49261.md](FKCase.25c49261.md)"),
+          "two classes whose names differ in case only have a hash suffix each, from their own identity")
+    check(has(page_of(dir, "FKcase.1d2bb690.md"), "# FKcase (FixtureKit)") and has(page_of(dir, "FKCase.25c49261.md"), "# FKCase (FixtureKit)"),
+          "and each page is its class")
+    check(not os.isfile(path.join(dir, "FKcase.md")), "no page is written under the unsuffixed name of the pair")
+    check(has(index, "[index.44c92e6b.md](index.44c92e6b.md)") ,
+          "a class named index is suffixed: index.md stays the index of the framework")
+    check(has(page_of(dir, "index.44c92e6b.md"), "# index (FixtureKit)"), "the page of the class named index is its class")
     check(has(index, "Constants: [Constants.md](Constants.md) (1 rows)."), "the index counts the constant rows")
 
     local class = page_of(dir, "FKThing.md")
@@ -247,7 +274,7 @@ local function test_pages(check)
     check(has(class, "| `-[FKThing title]` | @16@0:8 | 0x5 |"), "a property's binary row is found by its name")
     check(has(class, "| `+[FKThing make]` | not in the table | - |"), "a member the binary does not hold says so")
 
-    local protocol = page_of(dir, "FKDelegate.md")
+    local protocol = page_of(dir, "FKDelegate.protocol.md")
     check(has(protocol, "Status in the transcriber's facts: transcribed. Introduced 12.0. Bases: NSObject."), "the protocol page gives its record")
     check(has(protocol, "| required | method | `- (void)didFinish;` | yes | header-ok | - | - |"),
           "a protocol member row shows its extractor declaration, its section and its status at 6.1.3")
@@ -281,7 +308,7 @@ local function test_pages(check)
           "without doc rows a member keeps the marked declaration")
     check(has(marked, "## Header comments\n\n- not derived: the extractor does not run for this framework\n"),
           "without doc rows the header comments section is marked, not derived")
-    local marked_protocol = page_of(path.join(out_marked, FIXTURE), "FKDelegate.md")
+    local marked_protocol = page_of(path.join(out_marked, FIXTURE), "FKDelegate.protocol.md")
     check(has(marked_protocol, "| required | method | `not derived: decl (ruling D8)` | yes | header-ok | - | - |"),
           "without doc rows a protocol member keeps the marked declaration")
     check(has(marked_protocol, "## Header comments\n\n- not derived: the extractor does not run for this framework\n"),
@@ -301,6 +328,35 @@ local function test_pages(check)
         }
     }
     check(raised, "a doc run with no built extractor raises: the pages do not take marked text for it")
+
+    -- the page names are a function of the entities, not of their order, and a name that cannot be made unique raises
+    local pages = import("gen.pages", {rootdir = TOOLS, anonymous = true})
+    local group = {{kind = "class", name = "Ab"}, {kind = "class", name = "aB"}, {kind = "protocol", name = "Ab"}, {kind = "class", name = "Zed"}}
+    local reversed = {group[4], group[3], group[2], group[1]}
+    local one, other = pages.names(group, {"index.md"}), pages.names(reversed, {"index.md"})
+    local same = true
+    for _, entry in ipairs(group) do
+        same = same and one[pages.key(entry.kind, entry.name)] == other[pages.key(entry.kind, entry.name)]
+    end
+    check(same, "the file names do not depend on the order of the entities")
+    check(one[pages.key("class", "Zed")] == "Zed.md", "a name of no collision is <Name>.md")
+    check(one[pages.key("protocol", "Ab")] == "Ab.protocol.md",
+          "a protocol page is <Name>.protocol.md")
+    check(one[pages.key("class", "Ab")] ~= one[pages.key("class", "aB")]
+          and string.lower(one[pages.key("class", "Ab")]) ~= string.lower(one[pages.key("class", "aB")]),
+          "two classes whose names fold to one file name are two files, whatever the case of the file system")
+    local twice = false
+    try {
+        function()
+            pages.names({{kind = "class", name = "Same"}, {kind = "class", name = "Same"}}, {})
+        end,
+        catch {
+            function(e)
+                twice = string.find(tostring(e), "one file name", 1, true) ~= nil
+            end
+        }
+    }
+    check(twice, "two pages that cannot be told apart raise instead of one overwriting the other")
     os.rm(root)
 end
 

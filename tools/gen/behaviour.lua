@@ -7,6 +7,7 @@
 local stream = import("stream", {anonymous = true})
 local objc = import("objc", {anonymous = true})
 local order = import("order", {anonymous = true})
+local pages = import("pages", {anonymous = true})
 
 -- The summaries of a framework are written under the tree's untracked spec-docs folder.
 local DOC_OUT = ".agent-work/spec-docs"
@@ -40,9 +41,22 @@ function heavy_path(corpus)
     return heavy
 end
 
--- The summary page of one class of a framework.
-function page_path(tree, fw, cls)
-    return path.join(tree, DOC_OUT, fw, "behaviour", cls .. ".md")
+-- The summary page of one class of a framework: files is page_files() of the framework, cls a key of it.
+function page_path(tree, fw, files, cls)
+    return path.join(tree, DOC_OUT, fw, "behaviour", files[pages.key("class", cls)])
+end
+
+-- The file names of the summary pages of every class of a framework that has a method with an address, not of the classes of one
+-- run: a class keeps its page name whatever --selector and --limit select. The folder holds nothing but these pages.
+function page_files(corpus, fw)
+    local seen, entries = {}, {}
+    for _, m in ipairs(methods(corpus, fw)) do
+        if not seen[m.cls] then
+            seen[m.cls] = true
+            table.insert(entries, {kind = "class", name = m.cls})
+        end
+    end
+    return pages.names(entries, {})
 end
 
 -- The methods of a framework that the 26.2 table gives an address: {cls, section, selector, address}, sorted by class, section and
