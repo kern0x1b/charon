@@ -5,22 +5,9 @@
 -- stub is composed here from those fields (signature), and no declaration text is read.
 
 local decl = import("decl", {anonymous = true})
-local strings = import("strings", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local order = import("order", {anonymous = true})
 
--- The names the iOS build spells as its own types that no declaration shard records: the typedefs of the SDK's base headers (objc.h,
--- NSObjCRuntime.h, the Core Audio and Core Foundation base types), which the sweep records no row for. Measured on the 26.2 tree: without
--- this list, BOOL, NSInteger and NSUInteger alone give 187 UIKit members a "type not declared for iOS" reason they do not earn. The list
--- goes when the shards record those typedefs (an extractor change).
-local BUILTIN_TYPES = strings.set({"BOOL", "NSInteger", "NSUInteger", "CGFloat", "NSTimeInterval", "NSError", "NSString", "NSNumber",
-    "NSArray", "NSDictionary", "NSSet", "NSData", "NSURL", "NSDate", "NSUUID", "NSLocale", "NSMapTable", "NSPointerArray",
-    "NSMeasurement", "NSIndexPath", "NSProgress", "NSOperationQueue", "NSNotificationName", "NSNotificationCenter",
-    "NSOrderedSet", "NSCountedSet", "NSFileHandle", "NSBundle", "NSLayoutConstraint", "NSRange", "UInt32", "SInt32",
-    "OSStatus", "Float32", "Float64", "Boolean", "AudioObjectID", "AudioStreamBasicDescription", "AudioBufferList",
-    "AudioChannelLayout", "AudioComponentDescription", "AudioUnit", "AudioBuffer", "AudioUnitParameterID",
-    "AudioUnitParameterValue", "AudioTimeStamp", "CFStringRef", "CFTypeRef", "CFURLRef", "CMTime", "CGPoint", "CGSize",
-    "CGRect", "CFTimeInterval", "MIDIEndpointRef", "MIDIClientRef"})
 
 -- Name prefixes of the macros and constants a type can spell: a capitalised word with one of them is not a type it needs.
 local MACRO_PREFIXES = {"NS_", "API_", "CF_"}
@@ -50,7 +37,7 @@ local function undeclared_types(text, declared)
         for _, prefix in ipairs(MACRO_PREFIXES) do
             macro = macro or string.sub(word, 1, #prefix) == prefix
         end
-        if string.match(word, "^%u") and not declared[word] and not BUILTIN_TYPES[word] and not macro and not seen[word] then
+        if string.match(word, "^%u") and not declared[word] and not macro and not seen[word] then
             seen[word] = true
             table.insert(out, word)
         end

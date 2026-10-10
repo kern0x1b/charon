@@ -219,8 +219,22 @@ local function add_type_names(tree, filepath, names, unavailable)
     end
 end
 
+-- The reviewed exceptions to the declared names: the names the iOS build spells that no shard declares, each with its reason (the
+-- data file of layout.declared_exceptions_path). A missing file has none.
+function declared_exceptions(tree)
+    local out = {}
+    local text = files.read_text(layout.declared_exceptions_path(tree))
+    if text == nil then
+        return out
+    end
+    for _, row in ipairs(tsv.records(text)) do
+        table.insert(out, {name = row.name, reason = row.reason})
+    end
+    return out
+end
+
 -- The declared names of the tree: the typedef, class and protocol names of every shard (nested frameworks included), less the
--- classes the iOS SDK marks unavailable in any shard. Read once per tree.
+-- classes the iOS SDK marks unavailable in any shard, plus the reviewed exceptions. Read once per tree.
 local function declared_index(tree)
     if declared_memo[tree] == nil then
         local names, unavailable = {}, {}
@@ -229,6 +243,9 @@ local function declared_index(tree)
         end
         for name in pairs(unavailable) do
             names[name] = nil
+        end
+        for _, exception in ipairs(declared_exceptions(tree)) do
+            names[exception.name] = true
         end
         declared_memo[tree] = names
     end

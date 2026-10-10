@@ -333,7 +333,9 @@ local function write_fixture(root)
         for _, m in ipairs(MEMBERS) do
             table.insert(members, {cls = m[1], kind = m[2], api = m[3], type = m[4], params = m[5], attrs = m[6]})
         end
-        return {members = members, declared = {FKThing = true, FKWidget = true, NSObject = true},
+        -- the base types the members spell are declared by the SDK's own shards (ObjectiveC, Foundation), so the fixture declares them too
+        return {members = members, declared = {FKThing = true, FKWidget = true, NSObject = true, BOOL = true, NSInteger = true,
+                NSError = true, NSArray = true, NSString = true},
                 typedefs = {NSInteger = "long", NSUInteger = "unsigned long", BOOL = "signed char"},
                 superclasses = {FKThing = "NSObject", FKWidget = "NSObject"},
                 functions = {FKCountThings = {type = FUNCTION_TYPE, params = FUNCTION_PARAMS}}}
