@@ -267,6 +267,8 @@ local function test_pages(check)
     check(not has(class, "@property (nonatomic) NSString *title") and not has(class, "(instancetype)make") and not has(class, "sized"),
           "no declaration text of the spec shows on the page")
     check(has(class, "| item | kind | value | build |"), "the host oracle table is there")
+    check(has(class, "## Behaviour summary\n\nNot part of this page. `xmake l tools/gen.lua behaviour --framework") and not has(class, "not produced"),
+          "the behaviour section names the command that writes the summaries, and does not say they are not produced")
     check(has(class, "| count | value | 0 \\| zero | host |"), "an oracle value escapes its pipe")
     check(has(class, "| short | None | None | None |"), "a short oracle row shows None for its missing cells")
     check(has(class, "Superclass in the binary: NSObject. Protocols: FKDelegate."), "the binary's superclass and protocols show")

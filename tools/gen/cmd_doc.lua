@@ -41,6 +41,14 @@ local MEMBER_KINDS = {method = true, property = true}
 local COMMENTS_NOT_DERIVED = "- not derived: the extractor does not run for this framework"
 local DECL_NOT_DERIVED = "not derived: decl (ruling D8)"
 local NOT_IN_ROWS = "not derived: not in the doc rows"
+-- What the Behaviour summary section of a page says: the page holds none, and what writes one. The text is true whether or not a
+-- `behaviour` run has been made for the framework (the page does not depend on one: a run of doc is a function of its inputs).
+local BEHAVIOUR_NOTE = "Not part of this page. `xmake l tools/gen.lua behaviour --framework <framework> --coordination <corpus> "
+                       .. "--ipsw-cache <cache>` writes the summary of the methods it is run on (the calls in the order the code makes "
+                       .. "them, the register branches, the strings, constants and error domains its comments name; REFERENCE ONLY) "
+                       .. "to `behaviour/<Class>.md` beside this page. It reads the on-disk iOS 26.2 cache one method at a time through "
+                       .. "coordination/heavy.sh (--limit and --selector choose the methods). No command produces implementation "
+                       .. "pseudocode yet."
 local NO_COMMENT = "no comment in the doc rows"
 local doc_text = import("doc_text", {anonymous = true})
 -- The host oracle's rows a class page shows, and the cell length a markdown cell is cut to.
@@ -418,8 +426,7 @@ local function class_page(parsed, fw, cls, members, ctx)
     page[#page + 1] = ""
     page[#page + 1] = "## Behaviour summary"
     page[#page + 1] = ""
-    page[#page + 1] = "The disassembly summary (calls in order, strings, constants, error domains) is not produced: "
-                      .. "it needs a cache path the coordinator has not granted (see the report)."
+    page[#page + 1] = BEHAVIOUR_NOTE
     page[#page + 1] = ""
     return page
 end
@@ -459,7 +466,7 @@ local function protocol_page(fw, name, record, ctx)
     page[#page + 1] = ""
     page[#page + 1] = "## Behaviour summary"
     page[#page + 1] = ""
-    page[#page + 1] = "not produced in this run (see the report)."
+    page[#page + 1] = BEHAVIOUR_NOTE
     return page
 end
 
@@ -535,7 +542,7 @@ local function write_framework(ctx, fw, objc_state)
                                  fw, fw, member_count, #constant_rows),
                    "- Status at 6.1.3: " .. LEDGER_6_1_3 .. ". A member the ledger does not list is implemented in that release. Status at 4.3: " .. LEDGER_4_3 .. ".",
                    string.format("- Demand and impl-lead: sdk-26.2-surface.tsv. Overrides and pins: `registry/%s/` and `overrides/hashes/%s.tsv`.", fw, fw),
-                   "- Behaviour summaries (what a method calls, its strings, constants and error domains): not produced in this run; see the report.",
+                   "- Behaviour summaries (what a method calls, its strings, constants and error domains) and implementation pseudocode: not part of these pages; the Behaviour summary section of a class page says what produces them.",
                    "- REFERENCE ONLY: nothing here is Apple binary, disassembly or pseudocode, and none of it is sent to an external service.", "",
                    string.format("## Classes (%d)", #classes), "",
                    "| class | superclass | members | overridden | stub | page |", "| --- | --- | --- | --- | --- | --- |"}
