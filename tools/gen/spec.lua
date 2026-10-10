@@ -4,6 +4,7 @@
 local layout = import("layout", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local files = import("files", {anonymous = true})
+local decl = import("decl", {anonymous = true})
 local json = import("core.base.json")
 
 -- The spec rows of a framework, in the snapshot's order.
@@ -11,10 +12,6 @@ function load(tree, fw)
     local text = files.read_text(layout.spec_path(tree, fw))
     assert(text, "no spec snapshot for " .. fw)
     return tsv.records(text)
-end
-
-local function last_token(text)
-    return string.match(text, "(%S+)%s*$")
 end
 
 -- Every spec row under its own api and, for a property, under the dotted name the registry uses (Class.name). The first row
@@ -29,7 +26,7 @@ function index(rows)
     for _, r in ipairs(rows) do
         add(r.api, r)
         if r.kind == "property" then
-            local name = last_token((string.gsub(r.api, "%]+$", "")))
+            local name = decl.member_name(r.api)
             add(r.cls .. "." .. name, r)
         end
     end

@@ -1316,13 +1316,19 @@ def hand_class_names(tree):
     return HAND_MEMO["hand_classes"]
 
 
+def superclasses(sdk, fw):
+    """class -> superclass for every `@interface NAME : SUPER` in the framework's headers, comments removed (a later line of the same
+    class wins). The header parse prints them as the superclass facts; the class-object decisions read them."""
+    header = re.sub(r"//[^\n]*|/\*.*?\*/", " ", header_text(sdk, fw), flags=re.S)
+    return dict(re.findall(r"@interface\s+(\w+)\s*:\s*(\w+)", header))
+
+
 def class_object_decisions(tree, fw, spec, stub_keys, overridden, surface, led6, sdk, skip_reasons):
     """cls -> (generated, reason). A class the 6.1.3 release lacks is generated as a trace-only class object (an @implementation with
     every stub) when every missing member row of the surface it owns is a stub: then presence implies the full surface. Any other
     class is listed with its reasons: a Swift-only member, a member no stub answers, an override or a hand class (the hand code
     defines it), or a superclass that is neither in the release nor generated."""
-    header = re.sub(r"//[^\n]*|/\*.*?\*/", " ", header_text(sdk, fw), flags=re.S)
-    supers = dict(re.findall(r"@interface\s+(\w+)\s*:\s*(\w+)", header))
+    supers = superclasses(sdk, fw)
     hand = hand_class_names(tree)
     owned = {}
     for (kind, api), row in surface.items():
@@ -2713,7 +2719,8 @@ def cmd_behaviour(args):
 def cmd_headers(args):
     """The declaration facts of one framework's iOS header parse, one tab-separated line per fact, kind first: member (class,
     kind, selector or name, alias, declaration, availability), declared (a typedef, class or protocol name), typedef (name and
-    the text it is defined as). The Lua generator reads them through tools/gen/headers.lua (design-spec-driven.md D3)."""
+    the text it is defined as), superclass (class and the superclass its @interface names). The Lua generator reads them through
+    tools/gen/headers.lua (design-spec-driven.md D3)."""
     fw = args.framework
     text = ios_text(header_text(args.sdk, fw))[0]
     for cls, kind, api, alias, decl, avail in members_of(text):
@@ -2722,6 +2729,8 @@ def cmd_headers(args):
         print("\t".join(["declared", name]))
     for name, definition in sorted(type_index(args.sdk, fw).items()):
         print("\t".join(["typedef", name, definition.replace("\t", " ")]))
+    for cls, sup in sorted(superclasses(args.sdk, fw).items()):
+        print("\t".join(["superclass", cls, sup]))
     return 0
 
 

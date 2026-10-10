@@ -1,8 +1,9 @@
 -- The header parser's facts for one framework, behind one interface (design-spec-driven.md D3). Input: the framework's name, the
 -- SDK's path, and the repository tree (where the parser is). Output: the facts of the parse, grouped by kind:
---   members:  a list of {cls, kind, api, alias, decl, avail}, the members of the framework's iOS view, in the parser's order
---   declared: a set of the typedef, class and protocol names the iOS build sees
---   typedefs: name -> the text the typedef is defined as
+--   members:      a list of {cls, kind, api, alias, decl, avail}, the members of the framework's iOS view, in the parser's order
+--   declared:     a set of the typedef, class and protocol names the iOS build sees
+--   typedefs:     name -> the text the typedef is defined as
+--   superclasses: class -> the superclass its @interface names in the headers (comments removed; a later line wins)
 -- The parser is `gen.py headers`, read through a pipe; it is the only part of the generator that reads SDK headers. A replacement
 -- parser prints the same kinds in the same fields, and nothing else changes. Tests inject their facts through use().
 
@@ -21,7 +22,7 @@ function facts(tree, fw, sdk)
     if injected then
         return injected(fw, sdk)
     end
-    local out = {members = {}, declared = {}, typedefs = {}}
+    local out = {members = {}, declared = {}, typedefs = {}, superclasses = {}}
     -- The parser is a Python program until it is replaced: this is the one place that names it.
     local status = stream.lines("python3", {path.join(tree, "tools", "gen.py"), "headers", "--tree", tree, "--framework", fw,
                                             "--sdk", sdk}, function(line)
@@ -34,6 +35,8 @@ function facts(tree, fw, sdk)
             out.declared[cells[2]] = true
         elseif cells[1] == "typedef" then
             out.typedefs[cells[2]] = cells[3]
+        elseif cells[1] == "superclass" then
+            out.superclasses[cells[2]] = cells[3]
         else
             error("the header parser printed an unknown fact: " .. cells[1])
         end

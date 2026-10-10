@@ -3,6 +3,7 @@ local VERSION = "2"
 local LAYOUT = {
     VERSION = VERSION,
     SDK_ID = "sdk-26.2-headers",
+    SOURCES_ROOT = "packages/a/apple-backports",
     SNAP_ROOT = "packages/a/apple-backports/spec",
     OUT_ROOT = "packages/a/apple-backports/.gen",
     PINS_ROOT = "packages/a/apple-backports/overrides/hashes",
