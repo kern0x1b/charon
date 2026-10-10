@@ -49,8 +49,10 @@ NULL layout: the host answers `nil`, with no exception and no crash. The host do
 or an unknown tag either; it answers an object, and for the unknown tag the channel count is 3, the
 low 16 bits of the tag.
 
-The port's `-initWithLayout:` answers `nil` for a NULL layout, when `[super init]` fails, and when its
-`calloc` fails, and an object for every other input, the unknown tag and tag 0 among them. Its header
-comment also names a refusal for a layout that carries neither a countable tag nor channel
-descriptions; the code does not check for it. The port's channel count for an unknown tag is not
-measured here.
+The port answers `nil` only for a NULL layout, which the host also does, and an object for every other
+input with the host's tag and channel count. For a tag neither the release nor the table names, the
+count is the tag's low 16 bits, which is what the host answers for `0xFFFF0003` (the one unknown tag
+measured). The header declares `-initWithLayout:` nonnull (the SDK's `AVAudioChannelLayout.h`, under
+`NS_ASSUME_NONNULL`), and the host is the oracle for it. An allocation failure aborts rather than
+answering `nil`: out of memory is a crash, not a refusal. The differential is
+`tests/backports/host/avfaudio/port.m`, run by `port.sh`.

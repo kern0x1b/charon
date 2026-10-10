@@ -8,8 +8,9 @@
 // The header's two refusals are honoured as refusals: -initWithLayoutTag: answers nil for
 // kAudioChannelLayoutTag_UseChannelDescriptions and kAudioChannelLayoutTag_UseChannelBitmap, which
 // name a layout only by what the caller supplies. -initWithLayout: answers nil for a NULL layout, as
-// the release's own AVFAudio does on this host; every other layout, an unknown tag included, is kept
-// (facts/AVFAudio/AVAudioChannelLayout.md, "Host answers for -initWithLayout:").
+// the release's own AVFAudio does on this host; every other layout, tag 0 and an unknown tag included,
+// is kept, and an allocation failure aborts (facts/AVFAudio/AVAudioChannelLayout.md, "Host answers for
+// -initWithLayout:").
 
 @implementation AVAudioChannelLayout {
     AudioChannelLayoutTag _charon_tag;
@@ -30,9 +31,10 @@
 
 - (instancetype)initWithLayout:(const AudioChannelLayout *)layout
 {
-    if (layout == NULL || ![super init]) {
+    if (layout == NULL) {
         return nil;
     }
+    self = [super init];
     AudioChannelLayoutTag tag = layout->mChannelLayoutTag;
     // The header: a layout of kAudioChannelLayoutTag_UseChannelDescriptions is converted to a more
     // specific tag where one exists. The release knows the counts of its own tags, so the conversion
@@ -54,7 +56,7 @@
     _charon_length = sizeof(AudioChannelLayout) + (layout->mNumberChannelDescriptions > 0 ? (layout->mNumberChannelDescriptions - 1) * sizeof(AudioChannelDescription) : 0);
     _charon_layout = calloc(1, _charon_length);
     if (!_charon_layout) {
-        return nil;
+        abort(); // Out of memory is a crash, not a refusal: the nonnull declaration holds for every other input.
     }
     _charon_layout->mChannelLayoutTag = tag;
     if (layout->mNumberChannelDescriptions > 0) {
@@ -122,7 +124,11 @@
     if (_charon_layout->mNumberChannelDescriptions > 0) {
         return _charon_layout->mNumberChannelDescriptions;
     }
-    return (AVAudioChannelCount)CharonChannelsForLayoutTag(_charon_tag);
+    NSUInteger channels = CharonChannelsForLayoutTag(_charon_tag);
+    // A tag neither the release nor the table names carries its count in its low 16 bits, as the SDK's
+    // AudioChannelLayoutTag_GetNumberOfChannels reads it; the host answers that count for the unknown tag
+    // the differential in tests/backports/host/avfaudio/port.m measures.
+    return (AVAudioChannelCount)(channels != 0 ? channels : (_charon_tag & 0x0000FFFF));
 }
 
 #pragma mark NSSecureCoding

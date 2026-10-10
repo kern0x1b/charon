@@ -48,6 +48,12 @@
 - (id)parameterWithAddress:(AUParameterAddress)address;
 @end
 
+@interface charon_host_AVAudioChannelLayout : NSObject
+- (instancetype)initWithLayout:(const AudioChannelLayout *)layout;
+@property (readonly) AudioChannelLayoutTag layoutTag;
+@property (readonly) AVAudioChannelCount channelCount;
+@end
+
 static int checks = 0;
 static int failures = 0;
 
@@ -68,6 +74,76 @@ static AudioComponentDescription CharonFirstComponentOfType(OSType type)
     AudioComponentDescription described;
     AudioComponentGetDescription(component, &described);
     return described;
+}
+
+// What -initWithLayout: answered for one input, read the same way for both classes: nil, an object's tag and
+// channel count, or the exception it raised.
+typedef struct {
+    BOOL answered;
+    BOOL raised;
+    AudioChannelLayoutTag tag;
+    AVAudioChannelCount channels;
+} CharonLayoutAnswer;
+
+static CharonLayoutAnswer CharonHostLayoutAnswer(const AudioChannelLayout *input)
+{
+    CharonLayoutAnswer answer = {0};
+    @try {
+        AVAudioChannelLayout *object = [[AVAudioChannelLayout alloc] initWithLayout:input];
+        if (object != nil) {
+            answer.answered = YES;
+            answer.tag = object.layoutTag;
+            answer.channels = object.channelCount;
+        }
+    } @catch (NSException *exception) {
+        answer.raised = YES;
+    }
+    return answer;
+}
+
+static CharonLayoutAnswer CharonPortLayoutAnswer(const AudioChannelLayout *input)
+{
+    CharonLayoutAnswer answer = {0};
+    @try {
+        charon_host_AVAudioChannelLayout *object = [[charon_host_AVAudioChannelLayout alloc] initWithLayout:input];
+        if (object != nil) {
+            answer.answered = YES;
+            answer.tag = object.layoutTag;
+            answer.channels = object.channelCount;
+        }
+    } @catch (NSException *exception) {
+        answer.raised = YES;
+    }
+    return answer;
+}
+
+static NSString *CharonDescribeLayoutAnswer(CharonLayoutAnswer answer)
+{
+    if (answer.raised) { return @"raised"; }
+    if (!answer.answered) { return @"nil"; }
+    return [NSString stringWithFormat:@"object tag 0x%08x channels %u", (unsigned)answer.tag, (unsigned)answer.channels];
+}
+
+// One input, asked of both classes in this run. For a NULL layout the port must answer nil, and so must the
+// host. For any other input the host must answer an object, so there is a tag and a count to compare, and the
+// port's tag and channel count must be the host's. The host's answer is the expectation, not the override's.
+static void CharonCompareLayout(NSString *name, const AudioChannelLayout *input)
+{
+    CharonLayoutAnswer host = CharonHostLayoutAnswer(input);
+    CharonLayoutAnswer port = CharonPortLayoutAnswer(input);
+    printf("stage -initWithLayout: %s: host %s; port %s\n", name.UTF8String,
+           CharonDescribeLayoutAnswer(host).UTF8String, CharonDescribeLayoutAnswer(port).UTF8String);
+    if (input == NULL) {
+        check([NSString stringWithFormat:@"-initWithLayout: %@: the port answers nil, and the host does too", name],
+              !port.answered && !port.raised && !host.answered && !host.raised);
+        return;
+    }
+    check([NSString stringWithFormat:@"-initWithLayout: %@: the host answers an object, so there is a tag and a count to compare", name],
+          host.answered && !host.raised);
+    check([NSString stringWithFormat:@"-initWithLayout: %@: the port's layout tag is the host's", name],
+          host.answered && port.answered && !port.raised && port.tag == host.tag);
+    check([NSString stringWithFormat:@"-initWithLayout: %@: the port's channel count is the host's", name],
+          host.answered && port.answered && !port.raised && port.channels == host.channels);
 }
 
 int main(void)
@@ -349,6 +425,22 @@ int main(void)
         // -[AUAudioUnit renderBlock] is readonly, so setting it is not a comparison the two can make
         printf("stage the host's render block calls %lu (readonly on this SDK, so reported, not compared)\n",
                (unsigned long)hostRenders);
+
+        // ---- -initWithLayout:, asked of both classes with the same input. The inputs are the NULL layout, tag 0
+        // (kAudioChannelLayoutTag_UseChannelDescriptions with no descriptions), an unknown tag and the Stereo control.
+        AudioChannelLayout tagZero;
+        memset(&tagZero, 0, sizeof(tagZero));
+        tagZero.mChannelLayoutTag = kAudioChannelLayoutTag_UseChannelDescriptions;
+        AudioChannelLayout unknownTag;
+        memset(&unknownTag, 0, sizeof(unknownTag));
+        unknownTag.mChannelLayoutTag = 0xFFFF0003;
+        AudioChannelLayout stereo;
+        memset(&stereo, 0, sizeof(stereo));
+        stereo.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo;
+        CharonCompareLayout(@"NULL layout", NULL);
+        CharonCompareLayout(@"tag 0 (UseChannelDescriptions, no descriptions)", &tagZero);
+        CharonCompareLayout(@"unknown tag 0xFFFF0003", &unknownTag);
+        CharonCompareLayout(@"Stereo (control)", &stereo);
 
         printf("checks=%d failures=%d\n", checks, failures);
     }

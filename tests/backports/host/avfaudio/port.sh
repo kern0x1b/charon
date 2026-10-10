@@ -56,6 +56,8 @@ renames="-DAUAudioUnit=charon_host_AUAudioUnit
 # spelling is the right one for the release, so only this compile is renamed.
 renames="$renames -Dk3DMixerParam_Enable=k3DMixerParam_BusEnable"
 
+# AVAudioChannelLayout8.m is here for the -initWithLayout: cases in port.m, which ask the port's class and
+# the host's the same question in this one binary.
 objects=""
 for source in \
     "$AVFAUDIO/AUAudioUnit9.m" \
@@ -67,6 +69,7 @@ for source in \
     "$AVFAUDIO/CharonAVFAudioCommon.m" \
     "$AVFAUDIO/AVAudioUnitMixing9.m" \
     "$AVFAUDIO/AVAudioTime8.m" \
+    "$AVFAUDIO/AVAudioChannelLayout8.m" \
     "$AVFOUNDATION/AVAudioNode.m" \
     "$AVFOUNDATION/AVAudioFormat8.m" \
     "$AVFOUNDATION/AVAudioBuffer8.m" \
