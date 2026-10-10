@@ -9,12 +9,14 @@
 -- it to IR_FULL when that is set.
 --
 -- usage (from the repository root): IR_SDK=<iPhoneOS26.2.sdk> [IR_MODE=write|check|conflicts] xmake l ./tools/found/ir.lua
---   IR_MODE=write (default) regenerates the shards whose content changed, removes the shards of frameworks that are gone, and
---                 rewrites tools/found/unparsed.tsv. It fails, and writes nothing, when a conflict is not listed in
---                 tools/found/conflicts.tsv (or a listed one is no longer a conflict).
---   IR_MODE=check the same regeneration in memory: it fails naming the difference when the extractor's libclang differs from the one
---                 the shards record (a re-pin is a reviewed event), when a shard differs, when a shard is stale, or on a conflict list
---                 mismatch.
+--   IR_MODE=write (default) regenerates the shards whose content changed, removes the shards of frameworks decls no longer lists,
+--                 and rewrites tools/found/unparsed.tsv. It fails, and writes nothing, when decls fails on a framework (a timeout or a
+--                 crash; decls' own unparsed row is a result, not a failure), when a framework decls still lists has a committed shard
+--                 and no shard this run gives it, or when a conflict is not listed in tools/found/conflicts.tsv (or a listed one is no
+--                 longer a conflict).
+--   IR_MODE=check the same regeneration in memory: it fails naming the difference when decls fails, when the extractor's libclang
+--                 differs from the one the shards record (a re-pin is a reviewed event), when a shard differs, when a shard is stale,
+--                 or on a conflict list mismatch.
 --   IR_MODE=conflicts prints every conflict the extractor found, for review, and writes nothing.
 --   IR_MODE=gaps prints each framework of IR_SNAPSHOT (one folder per framework) that has no shard, with the category the
 --                 extractor's own result gives it, and writes nothing.
@@ -48,6 +50,8 @@ local COLUMNS = 18
 local SHARD_NAMES = "kind,usr,container,name,side,type,params,attrs,availability,message,declhash"
 local shard = import("shard", {rootdir = path.join(os.curdir(), "tools", "found")})
 local avail = import("avail", {rootdir = path.join(os.curdir(), "tools", "found")})
+-- the one atomic writer of the generators (tools/atomic.lua, shared with tools/gen/emit.lua)
+local atomic = import("atomic", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
 local SDK_NAME  -- the SDK's name without its path or .sdk suffix, as the shards record it
 
 if not SDK then raise("IR_SDK must name the iPhoneOS SDK (for example .../iPhoneOS26.2.sdk)") end
@@ -73,17 +77,21 @@ local function redact(s)
     return (s:gsub(SDK:gsub("%p", "%%%0"), "<sdk>"))
 end
 
--- The rows of one framework (COLUMNS cells each, newline-terminated), or the reason it could not be parsed.
+-- The rows of one framework (COLUMNS cells each, newline-terminated), or the extractor's own unparsed row. A run of decls that fails
+-- (a timeout ends it by SIGALRM, a crash, a usage error) raises in every mode: it is not a result, and nothing is written after it.
+-- A run that prints no rows at all raises for the same reason.
 local function parse(f)
-    local argv = {"--timeout", TIMEOUT, f.name}
-    local out, failure
+    local out
     try {
-        function () out = os.iorunv(DECLS, argv) end,
+        function () out = os.iorunv(DECLS, {"--timeout", TIMEOUT, f.name}) end,
         catch {
-            function (errors) failure = trim(tostring(errors):gsub("\n.*", "")) end
+            function (errors)
+                local reason = redact(trim(tostring(errors)))
+                raise(f.name .. ": decls did not finish" .. (reason ~= "" and (": " .. reason) or ""))
+            end
         }
     }
-    if failure then return nil, "decls did not finish: " .. redact(failure) end
+    if out == "" then raise(f.name .. ": decls printed no rows") end
     for line in out:gmatch("[^\n]+") do
         if #cells_of(line) ~= COLUMNS then raise(f.name .. ": a row has " .. #cells_of(line) .. " columns, not " .. COLUMNS) end
     end
@@ -174,8 +182,8 @@ local full = {table.concat({"-", "meta", "-", "-", "-", "-", "-", "-", "-", "-",
 local shards, unparsed, conflicts = {}, {}, {}
 local census_of = {}  -- framework -> {own, foreign}: the extractor's count of the declarations its translation unit reaches
 for _, f in ipairs(frameworks) do
-    local out, reason = parse(f)
-    if out and not is_unparsed(out) then
+    local out = parse(f)
+    if not is_unparsed(out) then
         parsed = parsed + 1
         local lines = {shard_header(libclang):sub(1, -2)}
         local order, group, marks = {}, {}, {}
@@ -243,7 +251,7 @@ for _, f in ipairs(frameworks) do
         end
         if #lines > 1 then shards[f.name] = table.concat(lines, "\n") .. "\n" end
     else
-        if out then reason = cells_of(out:match("^[^\n]*"))[5] end
+        local reason = cells_of(out:match("^[^\n]*"))[5]
         table.insert(unparsed, {f.name, reason})
         table.insert(full, unparsed_row(f.name, reason))
     end
@@ -334,19 +342,31 @@ if #unlisted > 0 or #stale > 0 or #wrong > 0 then
         #wrong > 0 and ("\n" .. table.concat(wrong, "\n")) or ""))
 end
 
--- The shards that exist now, and the ones of frameworks that are gone.
+-- The shards that exist now. The shard of a framework decls no longer lists is stale. A committed shard of a framework decls still
+-- lists is never removed here: when this run gives that framework no shard, the change is raised, and a reviewed change removes it.
+local listed_names = {}
+for _, f in ipairs(frameworks) do listed_names[f.name] = true end
 local existing = {}
 if os.isdir(SPEC) then
     for _, file in ipairs(os.files(path.join(SPEC, "**", "declarations.tsv"))) do
         existing[file] = true
     end
 end
-local stale_shards = {}
+local stale_shards, without_shard = {}, {}
 for file in pairs(existing) do
     local label = file:sub(#SPEC + 2, #file - #"/declarations.tsv")
-    if not shards[label] then table.insert(stale_shards, file) end
+    if not listed_names[label] then
+        table.insert(stale_shards, file)
+    elseif not shards[label] then
+        table.insert(without_shard, label)
+    end
 end
 table.sort(stale_shards)
+table.sort(without_shard)
+if #without_shard > 0 then
+    raise(string.format("decls gives no shard for %s, but a committed shard is there: a framework decls still lists keeps its committed "
+        .. "shard, so its removal is a reviewed change (delete the shard by hand)", table.concat(without_shard, ", ")))
+end
 
 local changed, largest, largest_name, total_bytes = {}, 0, "", 0
 for label, text in pairs(shards) do
@@ -385,22 +405,15 @@ if MODE == "check" then
     print("check ok: " .. SPEC)
 else
     for _, label in ipairs(changed) do
-        os.mkdir(path.directory(shard_path(label)))
-        io.writefile(shard_path(label), shards[label])
+        atomic.write(shard_path(label), shards[label])
     end
     for _, file in ipairs(stale_shards) do os.rm(file) end
-    local old_unparsed = os.isfile(UNPARSED) and io.readfile(UNPARSED) or nil
-    if old_unparsed ~= unparsed_text then io.writefile(UNPARSED, unparsed_text) end
+    atomic.write(UNPARSED, unparsed_text)
     print(string.format("wrote %d shards, removed %d stale shards", #changed, #stale_shards))
 end
 
 if FULL then
-    local text = table.concat(full)
-    local old = os.isfile(FULL) and io.readfile(FULL) or nil
-    if old ~= text then
-        os.mkdir(path.directory(FULL))
-        io.writefile(FULL, text)
-    end
+    atomic.write(FULL, table.concat(full))
 end
 
 print(string.format("frameworks %d, parsed %d, rows %d (shard rows), unparsed %d, conflicts %d, %.1f s", #frameworks, parsed,
