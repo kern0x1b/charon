@@ -6,7 +6,8 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 CORE=${COREMIDI:-$here/../../../../packages/a/apple-backports/CoreMIDI}
-build=${COREMIDI_BUILD:-${TMPDIR:-/tmp}/charon-coremidi-host}
+# The build folder is a run folder of this checkout (.agent-work/runs), never the system temp directory.
+build=${COREMIDI_BUILD:-$here/../../../../.agent-work/runs/coremidi-host}
 # COREMIDI_SANITIZE=address builds the library and the differential with AddressSanitizer: the buffer overruns of the
 # packet readers (MIDISysex17.m) are found by that build, not by the answers.
 sanitize=""
@@ -41,7 +42,7 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOS
 xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOST_HAS_UMP_SYSEX=1 -I"$CORE" -I"$here" $renames \
     "$here/differential.m" "$here/differential-ump.m" "$build/differential-ports.o" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -framework CoreBluetooth -o "$build/differential"
 "$build/differential" > "$build/log" 2>&1 && result=0 || result=$?
-grep -v '^ok ' "$build/log" || true
+awk '!/^ok /' "$build/log"
 echo "log=$build/log"
 # The request of MIDISendUMPSysex, against a release that completes the send before it returns (ownership.m): the
 # MIDISendSysex of MIDISysex17.m is renamed to the stand-in, and nothing is linked from the release for it.

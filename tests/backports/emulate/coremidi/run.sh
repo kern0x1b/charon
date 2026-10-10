@@ -28,13 +28,22 @@ xmake emulate -d iPhone4,1 -r "$minimum" install >"$out/install.log" 2>&1 || {
     tail -20 "$out/install.log" >&2
     exit 1
 }
+# The run's output is this run's own file, and the verdict is read from it alone: the device's log keeps the lines of earlier
+# runs, so it is printed for diagnosis and never searched for the verdict.
+set +e
 CHARCOREMIDI_ROOT=$root CHARCOREMIDI_MINIMUM=$minimum \
-xmake emulate -d iPhone4,1 -r "$minimum" run /usr/libexec/charoncoremidi >"$out/run.log" 2>&1 || true
-xmake emulate -d iPhone4,1 -r "$minimum" log >"$out/emulate.log" 2>&1 || true
+xmake emulate -d iPhone4,1 -r "$minimum" run /usr/libexec/charoncoremidi >"$out/run.log" 2>&1
+run_status=$?
+xmake emulate -d iPhone4,1 -r "$minimum" log >"$out/emulate.log" 2>&1
+log_status=$?
+set -e
 cat "$out/run.log"
-echo "run folder: $out"
-# The verdict is the probe's own line. Without it the run failed, whatever the run and log commands answered.
-if ! grep -q '^roundtrip: PASS' "$out/run.log" "$out/emulate.log"; then
-    echo "the round trip did not pass: no 'roundtrip: PASS' line in $out/run.log or $out/emulate.log" >&2
+echo "run folder: $out (run status $run_status, log status $log_status)"
+if [ "$run_status" -ne 0 ]; then
+    echo "the run exited $run_status: $out/run.log says why" >&2
+    exit 1
+fi
+if ! grep -q '^roundtrip: PASS' "$out/run.log"; then
+    echo "the round trip did not pass: no 'roundtrip: PASS' line in this run's $out/run.log" >&2
     exit 1
 fi
