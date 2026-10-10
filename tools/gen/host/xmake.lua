@@ -54,3 +54,13 @@ target("reference")
             target:add("frameworks", framework)
         end
     end)
+
+-- The channel layout probe: tools/gen-avchannellayout-probe.m, a fixed source that calls -[AVAudioChannelLayout initWithLayout:]
+-- of the host's AVFAudio with one input per run (null, tag0, unknown, stereo). Not part of the generator's configuration.
+target("channellayout")
+    set_kind("binary")
+    add_files("../../../tools/gen-avchannellayout-probe.m")
+    add_frameworks("Foundation", "AVFAudio")
+    add_mflags("-fobjc-arc", "-w")
+    set_optimize("none")
+    set_symbols("none")

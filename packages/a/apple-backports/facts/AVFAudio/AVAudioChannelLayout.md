@@ -29,3 +29,28 @@ AudioChannelLayout are compared for equality".
 secure archiver of iOS 6 reads and writes a layout: the tag and the channel count go in, the channel
 descriptions are written per index. A decoded layout is the same layout; an archive without a tag
 decodes to `nil`.
+
+## Host answers for `-initWithLayout:`
+
+Measured on this macOS host (Darwin 27.0.0, arm64) by `tools/gen-avchannellayout-probe.m`, built by
+the `channellayout` target of `tools/gen/host/xmake.lua` and run one input per process against the
+host's own AVFAudio. The probe creates the object and reads its tag and channel count; nothing else
+is touched.
+
+| input | host answer | layout tag | channels | exception |
+|-------|-------------|------------|----------|-----------|
+| NULL layout | `nil` | - | - | none |
+| tag 0 (UseChannelDescriptions), no descriptions | object | `0x00000000` | 0 | none |
+| tag `0xFFFF0003` (no release defines it) | object | `0xFFFF0003` | 3 | none |
+| `kAudioChannelLayoutTag_Stereo` (the control) | object | `0x00650002` | 2 | none |
+
+So the header's nonnull declaration of `-initWithLayout:` is not kept by the framework itself for a
+NULL layout: the host answers `nil`, with no exception and no crash. The host does not refuse tag 0
+or an unknown tag either; it answers an object, and for the unknown tag the channel count is 3, the
+low 16 bits of the tag.
+
+The port's `-initWithLayout:` answers `nil` for a NULL layout, when `[super init]` fails, and when its
+`calloc` fails, and an object for every other input, the unknown tag and tag 0 among them. Its header
+comment also names a refusal for a layout that carries neither a countable tag nor channel
+descriptions; the code does not check for it. The port's channel count for an unknown tag is not
+measured here.

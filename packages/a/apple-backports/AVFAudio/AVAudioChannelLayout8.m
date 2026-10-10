@@ -7,8 +7,9 @@
 //
 // The header's two refusals are honoured as refusals: -initWithLayoutTag: answers nil for
 // kAudioChannelLayoutTag_UseChannelDescriptions and kAudioChannelLayoutTag_UseChannelBitmap, which
-// name a layout only by what the caller supplies, and -initWithLayout: answers nil for a layout that
-// carries neither a tag the port can count nor channel descriptions it can read.
+// name a layout only by what the caller supplies. -initWithLayout: answers nil for a NULL layout, as
+// the release's own AVFAudio does on this host; every other layout, an unknown tag included, is kept
+// (facts/AVFAudio/AVAudioChannelLayout.md, "Host answers for -initWithLayout:").
 
 @implementation AVAudioChannelLayout {
     AudioChannelLayoutTag _charon_tag;
