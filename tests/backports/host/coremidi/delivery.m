@@ -90,11 +90,14 @@ typedef struct {
     MIDIEndpointRef endpoint;
     OSStatus status;
     dispatch_semaphore_t done;
+    int *entered;
 } disposer;
 
 static void *dispose_thread(void *argument)
 {
     disposer *d = argument;
+    if (d->entered)
+        __atomic_store_n(d->entered, 1, __ATOMIC_RELEASE);
     d->status = MIDIEndpointDispose(d->endpoint);
     __atomic_store_n(&gP.disposed, mach_absolute_time(), __ATOMIC_RELEASE);
     if (d->done)
@@ -200,7 +203,8 @@ static void test_e(void)
 
 // The release's destination, the control of test E: its dispose waits for the blocked read, and no read begins after it returns. The
 // release's reads are not visible to a sentinel, so the wait after the dispose is a fixed bound of this control, not a timing of the
-// release; its only assertion is the count after the dispose.
+// release. Its assertions: the dispose was entered, it was still running at the check while the read was held (the wait), and the
+// count after the dispose is zero. A mutant that releases the read before the check (DELIVERY_MUTANT_NO_WAIT) must fail the wait.
 static void test_release_control(void)
 {
     reset_probe();
@@ -223,18 +227,32 @@ static void test_release_control(void)
         expect(0, "E release: the first read is inside its call", 0);
         return;
     }
-    disposer d = {dest, noErr, NULL};
+    // The dispose thread sets `entered` before it calls the release's dispose. The wait is evidenced, not assumed: the dispose was
+    // entered (the flag is seen, polled for up to five seconds), and it had not returned when the check ran, 20 ms later, while the
+    // read was still held. A dispose that did not wait would have returned by then, and the mutant below (the read released and
+    // the dispose joined before the check) is the red for that case.
+    int entered = 0;
+    disposer d = {dest, noErr, NULL, &entered};
     pthread_t thread;
     pthread_create(&thread, NULL, dispose_thread, &d);
-    // The control's hold: the release's dispose is entered within it, and must still be waiting when the read is released.
-    usleep(20000);
-    int waiting = __atomic_load_n(&gP.disposed, __ATOMIC_ACQUIRE) == 0;
+#ifdef DELIVERY_MUTANT_NO_WAIT
     dispatch_semaphore_signal(gP.go);
     pthread_join(thread, NULL);
+#endif
+    for (int i = 0; i < 5000 && !__atomic_load_n(&entered, __ATOMIC_ACQUIRE); i++)
+        usleep(1000);
+    usleep(20000);
+    int wasEntered = __atomic_load_n(&entered, __ATOMIC_ACQUIRE);
+    int waiting = wasEntered && __atomic_load_n(&gP.disposed, __ATOMIC_ACQUIRE) == 0;
+#ifndef DELIVERY_MUTANT_NO_WAIT
+    dispatch_semaphore_signal(gP.go);
+    pthread_join(thread, NULL);
+#endif
     usleep(200000);
-    printf("E release (control): reads begun %ld; begun after the dispose returned %ld; dispose status %d\n", gP.started, gP.afterDispose,
-           (int)d.status);
-    expect(waiting, "E release (control): its dispose waits for the blocked read", 0);
+    printf("E release (control): dispose entered %d; reads begun %ld; begun after the dispose returned %ld; dispose status %d\n",
+           wasEntered, gP.started, gP.afterDispose, (int)d.status);
+    expect(wasEntered, "E release (control): the dispose is entered", wasEntered);
+    expect(waiting, "E release (control): its dispose is still running at the check, while the read is held (it waits)", 0);
     expect(gP.afterDispose == 0, "E release (control): no read begins after the dispose returned", gP.afterDispose);
 }
 
