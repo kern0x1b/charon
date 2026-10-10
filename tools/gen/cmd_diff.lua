@@ -153,7 +153,16 @@ function run(args)
         return 0
     end
 
-    local built, err = host.build("constants")
+    -- xmake compares whole-second mtimes: a source written in the second its dylib was built is not seen as newer. A source
+    -- whose mtime is not older than the dylib's forces the rebuild (the same rule the reference uses).
+    local product_path = host.product("constants")
+    local force = not os.isfile(product_path)
+    for _, source in ipairs(sources) do
+        if not force and os.mtime(source) >= os.mtime(product_path) then
+            force = true
+        end
+    end
+    local built, err = host.build("constants", force)
     if not built then
         print("gen sources do not build as a host dylib: " .. host.tail(err, 300))
         return 1
