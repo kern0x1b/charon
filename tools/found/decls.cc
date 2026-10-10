@@ -111,11 +111,16 @@ struct PlatformAvailability {
   }
 };
 
+// The room of the first call: a declaration carries one to four platform records, and the few with more are asked again below.
+constexpr size_t FIRST_PLATFORM_RECORDS = 8;
+
 PlatformAvailability platform_availability(CXCursor c) {
   PlatformAvailability out;
   // one call with room for the usual records; a declaration with more is asked again with room for exactly the count it reports.
-  // (A call with no room reports a count that the filled array does not match, so the array is the one that is read.)
-  out.records.resize(64);
+  // (A call with no room reports a count that the filled array does not match, so the array is the one that is read.) Clang knows
+  // fourteen distinct platforms (measured: seventeen spellings of them in Fixture's FXManyPlatforms give fourteen records), so the
+  // second call is made for such a declaration only, and the extractor suite takes that path with it.
+  out.records.resize(FIRST_PLATFORM_RECORDS);
   CXString deprecated, unavailable;
   int n = clang_getCursorPlatformAvailability(c, &out.always_deprecated, &deprecated, &out.always_unavailable, &unavailable,
                                               out.records.data(), (int)out.records.size());

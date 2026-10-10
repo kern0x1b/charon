@@ -582,7 +582,8 @@ expect(direct ~= "" and rows_of(direct, "Fixture") == rows_of(docs, "Fixture"),
     "decls --doc Fixture gives the rows the doc pass gives for Fixture")
 
 -- F24 (review-v-gen): the platform records of a declaration are all kept: clang reports at most 14 on this compiler (measured: 17 attributes,
--- 14 records; repeated attributes of one platform give one record), so the extractor sizes the array from the count, not a fixed 16
+-- 14 records; repeated attributes of one platform give one record). The extractor's first call has room for 8, so this declaration takes
+-- the second call, which is sized from the count (before: room for 64, which no declaration can exceed, so the second call never ran in a test)
 local many_avail = find(function (r) return r.usr == "c:@F@FXManyPlatforms" end)[1].avail
 local many_count = 0
 for _ in string.gmatch(many_avail, "[^,]+") do many_count = many_count + 1 end
