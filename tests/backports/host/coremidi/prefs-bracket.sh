@@ -9,7 +9,8 @@
 #   - never MIDIRestart, never MIDIBluetoothDriverActivateAllConnections.
 # Every probe run is bracketed by this check: the persistent MIDI preferences (the ByHost com.apple.MIDI.*.plist files and
 # everything under ~/Library/Audio/MIDI Configurations) are hashed, read only, before and after, and the run fails when
-# the two digests differ.
+# the two digests differ. A difference is reported with the files and the lines that differ (held in memory: nothing is
+# copied), so that a change made by another process of the machine at the same moment can be told from one of the probe.
 #
 # Usage:
 #   sh prefs-bracket.sh digest            print the digest of the persistent MIDI preferences
@@ -20,28 +21,58 @@ set -eu
 
 home=${MIDI_PREFS_HOME:-$HOME}
 
-# One line per file: its hash and its path; then the hash of those lines. A file that appears or disappears changes the digest.
-digest() {
+# The files: the MIDI setup of this host and the saved configurations.
+files() {
     root=${1:-$home}
-    {
-        if [ -d "$root/Library/Preferences/ByHost" ]; then
-            find "$root/Library/Preferences/ByHost" -type f -name 'com.apple.MIDI.*.plist' -print
-        fi
-        if [ -d "$root/Library/Audio/MIDI Configurations" ]; then
-            find "$root/Library/Audio/MIDI Configurations" -type f -print
-        fi
-    } | LC_ALL=C sort | while IFS= read -r file; do
+    if [ -d "$root/Library/Preferences/ByHost" ]; then
+        find "$root/Library/Preferences/ByHost" -type f -name 'com.apple.MIDI.*.plist' -print
+    fi
+    if [ -d "$root/Library/Audio/MIDI Configurations" ]; then
+        find "$root/Library/Audio/MIDI Configurations" -type f -print
+    fi
+}
+
+# One line per file: its hash and its path. A file that appears or disappears changes the listing.
+listing() {
+    files "$1" | LC_ALL=C sort | while IFS= read -r file; do
         printf '%s  %s\n' "$(shasum -a 256 < "$file" | cut -d' ' -f1)" "$file"
-    done | shasum -a 256 | cut -d' ' -f1
+    done
+}
+
+digest() {
+    listing "${1:-$home}" | shasum -a 256 | cut -d' ' -f1
+}
+
+# The text of each file, for the report of a difference (a property list is printed as plutil reads it).
+texts() {
+    files "$1" | LC_ALL=C sort | while IFS= read -r file; do
+        printf '== %s\n' "$file"
+        plutil -p "$file" 2>/dev/null || cat -v "$file"
+    done
+}
+
+# The lines of $1 that $2 does not have, and the other way round.
+differing_lines() {
+    A="$1" B="$2" awk 'BEGIN {
+        na = split(ENVIRON["A"], al, "\n"); nb = split(ENVIRON["B"], bl, "\n")
+        for (i = 1; i <= na; i++) inA[al[i]] = 1
+        for (i = 1; i <= nb; i++) inB[bl[i]] = 1
+        for (i = 1; i <= na; i++) if (!(al[i] in inB)) print "  before only: " al[i]
+        for (i = 1; i <= nb; i++) if (!(bl[i] in inA)) print "  after only:  " bl[i]
+    }'
 }
 
 run() {
     before=$(digest)
+    before_listing=$(listing "$home")
+    before_text=$(texts "$home")
     status=0
     "$@" || status=$?
     after=$(digest)
     if [ "$before" != "$after" ]; then
         echo "prefs-bracket: the persistent MIDI preferences changed during the run (before $before, after $after)" >&2
+        differing_lines "$before_listing" "$(listing "$home")" >&2
+        differing_lines "$before_text" "$(texts "$home")" >&2
         exit 1
     fi
     echo "prefs-bracket: the persistent MIDI preferences are byte-identical before and after ($after)"
