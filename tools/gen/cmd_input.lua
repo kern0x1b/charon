@@ -319,7 +319,16 @@ local function write_framework(args, fw)
     for _ in pairs(ios_conflicts) do
         conflicting = conflicting + 1
     end
-    local measured = args.measured and measured_releases(args.measured) or {}
+    -- The measured releases: the --measured file, or the committed measured.held-caches.tsv of a framework that has one (the read-back
+    -- of its last release split). Without the default, input --all on a clean checkout dropped the measured column of those records
+    -- (Round 14: the data commit's regeneration passed the snapshot by hand). Only --measured writes the snapshot back.
+    local held = path.join(layout.snap_dir(tree, fw), "measured.held-caches.tsv")
+    local measured = {}
+    if args.measured then
+        measured = measured_releases(args.measured)
+    elseif os.isfile(held) then
+        measured = measured_releases(held)
+    end
 
     local decls = {}
     for _, row in ipairs(ledger) do
