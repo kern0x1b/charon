@@ -858,21 +858,32 @@ end
 -- registry check reads it. It has to name the source that defines it: a row with no source, or with a source that is
 -- missing or does not define the name, is refused. A name the registry also holds is refused as a name told by two
 -- files, because an override is a registry row only and the index must not contain it.
+-- The scratch of the cases below is a folder of this worktree's run folders (.agent-work/runs), never the system temporary directory:
+-- failures() sets SCRATCH_RUNS from its modules, and scratch_root() names one folder per case and process.
+SCRATCH_RUNS = nil
+function scratch_root(name)
+    if not os.isdir(SCRATCH_RUNS) then
+        os.mkdir(SCRATCH_RUNS)
+    end
+    return path.join(SCRATCH_RUNS, name .. "-" .. os.getpid())
+end
+
+-- The folder is Accounts, a folder a LIBRARIES entry builds: the rows of a folder no library builds are reported, not read.
 function generated_index(backports, found)
-    local root = path.join(os.tmpdir(), "registry_test_generated-" .. os.getpid())
+    local root = scratch_root("registry_test_generated")
     os.tryrm(root)
     os.mkdir(path.join(root, "registry"))
-    os.mkdir(path.join(root, ".gen", "Fix"))
+    os.mkdir(path.join(root, ".gen", "Accounts"))
     local header = "framework\tkind\tapi\tintroduced\tminimum\tmaximum\tstatus\teffect\tfacts\tsource\towner\tdeclhash"
     local function index(api, source)
-        return table.concat({"Fix", "constant", api, "7.0", "6.0", "7.0", "implemented", "", ".gen/Fix/README.md", source,
+        return table.concat({"Accounts", "constant", api, "7.0", "6.0", "7.0", "implemented", "", ".gen/Accounts/README.md", source,
                              "generated", "0123456789abcdef"}, "\t")
     end
     local function write_index(rows)
-        io.writefile(path.join(root, ".gen", "Fix", "rows.tsv"), header .. "\n" .. table.concat(rows, "\n") .. "\n")
+        io.writefile(path.join(root, ".gen", "Accounts", "rows.tsv"), header .. "\n" .. table.concat(rows, "\n") .. "\n")
     end
     local function write_source(text)
-        io.writefile(path.join(root, ".gen", "Fix", "FixConstants70.m"), text)
+        io.writefile(path.join(root, ".gen", "Accounts", "FixConstants70.m"), text)
     end
     local function complaints()
         local _, incomplete = backports.registry(root)
@@ -880,13 +891,13 @@ function generated_index(backports, found)
     end
     -- green: the row names its source and the source defines it
     write_source('NSString *const FixConstantAlpha = @"alpha";\n')
-    write_index({index("FixConstantAlpha", ".gen/Fix/FixConstants70.m")})
+    write_index({index("FixConstantAlpha", ".gen/Accounts/FixConstants70.m")})
     if complaints() ~= "" then
         table.insert(found, "a generated row whose source defines it is refused: " .. complaints())
     end
     -- red: the source does not define the name the row names
     write_source('NSString *const FixConstantOther = @"other";\n')
-    if not complaints():find("FixConstantAlpha is a generated row, but its source .gen/Fix/FixConstants70.m does not define it", 1, true) then
+    if not complaints():find("FixConstantAlpha is a generated row, but its source .gen/Accounts/FixConstants70.m does not define it", 1, true) then
         table.insert(found, "a generated row whose source does not define it must be refused by name, not '" .. complaints() .. "'")
     end
     -- red: the row names no source
@@ -895,16 +906,16 @@ function generated_index(backports, found)
         table.insert(found, "a generated row with no source must be refused, not '" .. complaints() .. "'")
     end
     -- red: the source file is not there at all
-    write_index({index("FixConstantAlpha", ".gen/Fix/Missing.m")})
+    write_index({index("FixConstantAlpha", ".gen/Accounts/Missing.m")})
     if not complaints():find("does not exist", 1, true) then
         table.insert(found, "a generated row whose source file is missing must be refused, not '" .. complaints() .. "'")
     end
     -- red: the registry names the same API too
     write_source('NSString *const FixConstantAlpha = @"alpha";\n')
-    write_index({index("FixConstantAlpha", ".gen/Fix/FixConstants70.m")})
+    write_index({index("FixConstantAlpha", ".gen/Accounts/FixConstants70.m")})
     io.writefile(path.join(root, "registry", "Fix.json"),
                  '{"framework": "Fix", "entries": [{"api": "FixConstantAlpha", "kind": "constant", "introduced": "7.0", "status": "implemented", "facts": "x"}]}')
-    if not complaints():find("FixConstantAlpha is named by both registry/Fix.json and .gen/Fix/rows.tsv", 1, true) then
+    if not complaints():find("FixConstantAlpha is named by both registry/Fix.json and .gen/Accounts/rows.tsv", 1, true) then
         table.insert(found, "a name in the registry and in a generated index must be refused naming both, not '" .. complaints() .. "'")
     end
     os.tryrm(root)
@@ -912,6 +923,7 @@ end
 
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
+    SCRATCH_RUNS = path.join(opt.modules, "..", ".agent-work", "runs")
     local found = {}
     local root = path.join(opt.modules, "..", "packages", "a", "apple-backports")
     if not os.isdir(path.join(root, "registry")) then
@@ -1000,7 +1012,7 @@ function named_twice(backports, found)
     -- unreadable() below do the same: a fixture a run writes and then reads, under a name two runs would agree
     -- on, is one run's os.tryrm away from being the other run's missing registry - measured on this tree
     -- 2026-10-04 in lift_test, which had exactly that shape and went red eight times in nine concurrent runs.
-    local root = path.join(os.tmpdir(), "registry_test_named_twice-" .. os.getpid())
+    local root = scratch_root("registry_test_named_twice")
     os.tryrm(root)
     os.mkdir(path.join(root, "registry"))
     os.mkdir(path.join(root, "registry", "Fix"))
@@ -1046,7 +1058,7 @@ end
 -- A method or a property is told by -[Class selector:], +[Class selector:] or Class.name, which is what lift() reads: one spelled Class.selector:
 -- is asked for as a bare name, found nowhere and left as it was, so the registry refuses it (by name) and does not let a lift bless it.
 function spelling(backports, found)
-    local root = path.join(os.tmpdir(), "registry_test_spelling-" .. os.getpid())
+    local root = scratch_root("registry_test_spelling")
     os.tryrm(root)
     local function complaints(api, kind)
         io.writefile(path.join(root, "registry", "Fix.json"), string.format('[{"api": "%s", "kind": "%s", "introduced": "8.0", "minimum": "6.0", "status": "implemented"}]', api, kind))
@@ -1075,7 +1087,7 @@ end
 -- refuses over after the whole surface has been dumped. The two rows below are the ones a full lift of
 -- 7bb678779 raised over, both of them, on both SDKs.
 function unreadable(backports, found)
-    local root = path.join(os.tmpdir(), "registry_test_unreadable-" .. os.getpid())
+    local root = scratch_root("registry_test_unreadable")
     os.tryrm(root)
     os.mkdir(path.join(root, "registry"))
     local function complaints(rows)

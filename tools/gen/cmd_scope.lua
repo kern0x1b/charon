@@ -15,6 +15,7 @@ local headers = import("headers", {anonymous = true})
 local coverage = import("coverage", {anonymous = true})
 local strings = import("strings", {anonymous = true})
 local emit = import("emit", {anonymous = true})
+local order = import("order", {anonymous = true})
 
 -- The ledgers the scope counts against: the 6.1.3 release (the members it lacks are the work) and the 4.3 release.
 local LEDGER_6_1_3 = "ledger-w45"
@@ -42,8 +43,17 @@ local PROTOCOL_STATES = {
     refused = "protocol object: refused by the transcriber",
     missing = "protocol object: not in the 26.2 AST",
 }
--- The open states the work queue lists: the prefix of a state, the kind of work and the next step. A state no prefix matches is decided
--- or generated, and is not queued.
+-- The decided states: the row is answered by the release, the registry, a stub, a generated constant or object, a hand implementation, or
+-- a recorded decision. Every other state is open, and queue_item() queues it: the state is its reason in the queue.
+local DECIDED_STATES = {
+    "implemented at 6.1.3", "header-only (lift)", "overridden", "generable stub", "generable constant", "numeric (not a string object)",
+    "owned by a live branch", "registry decision", "not declared for iOS", "hand implementation (no registry row)",
+    "class object: generated", "class object: hand code covers it", "protocol object: generated from",
+    "protocol member: in the 16.4 body", "protocol member: in the transcribed protocol header", "protocol member: declared by a hand header",
+    "C function: generable stub",
+}
+-- The open states the work queue lists: the prefix of a state, the kind of work and the next step. The first prefix that matches
+-- names the entry; a state no entry names is still queued, by queue_item()'s fallback.
 local QUEUE_NEXT = {
     {"protocol member: 26.2 only", "protocol member added after the 16.4 body", "a registry decision: the protocol object is the 16.4 body, so the member needs a transcribed or hand body for it"},
     {"protocol member: not in the 26.2 facts", "protocol member with no 26.2 fact", "read the header by hand; the member's owner is not the protocol the surface names"},
@@ -55,6 +65,15 @@ local QUEUE_NEXT = {
     {"init/new: not spelled", "init or new not spelled by the headers", "decide per class: implicit from NSObject, or unavailable by a macro"},
     {"not in the header parse (category or other)", "not in the header parse", "read the header by hand"},
     {"swift: needs the Swift interface source", "Swift row", "declaration from the .swiftinterface text, then a decision on overlay (see the Swift page)"},
+    {"needs a generator: ", "a generator for the kind is missing", "write the generator for the kind (enum, struct or typealias), or decide the row by hand"},
+    {"no snapshot", "framework has no committed snapshot", "commit the framework's spec snapshot (gen --record), or decide the framework's scope"},
+    {"protocol object: ", "protocol object not generated", "read the transcriber's status for the protocol in the state, and decide the object"},
+    {"protocol member: ", "protocol member not generated", "read the protocol's status in the state, and decide the member"},
+    {"C function: ", "C function not generable", "read the reason in the state, and decide the name"},
+    {"not stubbed: ", "row the trace layer skips", "read the skip reason in the state, and decide the row"},
+    {"not generated: ", "constant not generated", "read the value status in the state, and decide the constant"},
+    {"class object: not a candidate", "class row missing with no member missing", "the class has no missing member to generate: decide the class row by hand"},
+    {"class object: ", "class object not generated", "read the class state, and decide the class"},
 }
 
 local function starts_with(text, prefix)
@@ -66,16 +85,6 @@ local function is_empty(map)
         return false
     end
     return true
-end
-
--- The keys of a set (or of a map), sorted.
-local function sorted_keys(map)
-    local out = {}
-    for key in pairs(map) do
-        table.insert(out, key)
-    end
-    table.sort(out)
-    return out
 end
 
 -- The integer a demand-apps cell names: int(value or 0) of the oracle, an empty or missing cell being 0.
@@ -278,18 +287,24 @@ function gap_reason(api, skipped_reason)
     return "not in the extractor's parse (the framework is parsed and declares no such member)"
 end
 
--- The work of a state: the kind of work and the next step of its queue entry, or nil when the state is not queued.
+-- The work of a state: the kind of work and the next step of its queue entry, or nil when the state is decided. Every open state is
+-- queued: a state no entry names gets the fallback entry, so no open state is left out of the queue.
 function queue_item(state)
+    for _, decided in ipairs(DECIDED_STATES) do
+        if starts_with(state, decided) then
+            return nil
+        end
+    end
     for _, entry in ipairs(QUEUE_NEXT) do
         if starts_with(state, entry[1]) then
             return entry[2], entry[3]
         end
     end
-    return nil
+    return "open state, no queue entry names it", "decide the row by hand: the state names what is missing"
 end
 
 -- Sorts the work queue by demand (sort key of tools/gen.py): a ranked row first, by rank; then the demand apps, most first; then the
--- framework and the api. A row with the same key keeps the order the table gave it (seq).
+-- framework and the api, in byte order. A row with the same key keeps the order the table gave it (seq).
 function sort_queue(queued)
     table.sort(queued, function(a, b)
         if a.unranked ~= b.unranked then
@@ -302,10 +317,10 @@ function sort_queue(queued)
             return a.apps > b.apps
         end
         if a.fw ~= b.fw then
-            return a.fw < b.fw
+            return order.less(a.fw, b.fw)
         end
         if a.api ~= b.api then
-            return a.api < b.api
+            return order.less(a.api, b.api)
         end
         return a.seq < b.seq
     end)
@@ -320,10 +335,10 @@ function tie_out(surface_total, tied)
 end
 
 -- The state totals in the order the page lists them: by count, most first; a tie keeps the order the states were first counted (the
--- stable sort of tools/gen.py). totals: state -> count; order: the states in the order they were first counted.
-function ranked_totals(totals, order)
+-- stable sort of tools/gen.py). totals: state -> count; first_counted: the states in the order they were first counted.
+function ranked_totals(totals, first_counted)
     local rows = {}
-    for i, state in ipairs(order) do
+    for i, state in ipairs(first_counted) do
         table.insert(rows, {state = state, n = totals[state], first = i})
     end
     table.sort(rows, function(a, b)
@@ -486,7 +501,8 @@ local function scope_rows(args, fw, rows, tally)
 end
 
 -- The reconciliation: the rows the scope calls generable against the stubs the trace layer wrote. Returns the file's text, the number of
--- generable rows, of stubs and of rows both share, and the number of differences.
+-- generable rows, of stubs and of rows both share, the number of differences, and the number of differences marked "should be empty"
+-- (a generable row with no stub: the run fails on those).
 local function reconcile(tally)
     local union = {}
     for fw in pairs(tally.generable) do
@@ -496,8 +512,8 @@ local function reconcile(tally)
         union[c.fw] = true
     end
     local lines = {"framework\tapi\treason"}
-    local generable_total, stubbed_total, both = 0, 0, 0
-    for _, fw in ipairs(sorted_keys(union)) do
+    local generable_total, stubbed_total, both, marked = 0, 0, 0, 0
+    for _, fw in ipairs(order.keys(union)) do
         local stubs = tally.stub_sets[fw] or {}
         local gen = tally.generable[fw] or {}
         for api in pairs(stubs) do
@@ -509,21 +525,23 @@ local function reconcile(tally)
         for _ in pairs(gen) do
             generable_total = generable_total + 1
         end
-        for _, api in ipairs(sorted_keys(stubs)) do
+        for _, api in ipairs(order.keys(stubs)) do
             if not gen[api] then
                 table.insert(lines, fw .. "\t" .. api .. "\ttrace stub that answers no surface row (spec-only member, or a class the surface does not list)")
             end
         end
-        for _, api in ipairs(sorted_keys(gen)) do
+        for _, api in ipairs(order.keys(gen)) do
             if not stubs[api] then
                 table.insert(lines, fw .. "\t" .. api .. "\tsurface row the scope calls generable with no trace stub (should be empty: one definition)")
+                marked = marked + 1
             end
         end
     end
-    return strings.backslash_replace(table.concat(lines, "\n") .. "\n"), generable_total, stubbed_total, both, #lines - 1
+    return strings.backslash_replace(table.concat(lines, "\n") .. "\n"), generable_total, stubbed_total, both, #lines - 1, marked
 end
 
--- Returns the exit status.
+-- Returns the exit status: 0 when the tie-out ties and no reconcile difference is marked "should be empty", else 1. The four files are
+-- written either way, so a failing run still leaves what it found in --out.
 function run(args)
     assert(args.sdk, "scope needs --sdk: the iOS SDK directory (the scope reads the headers)")
     assert(args.coordination, "scope needs --coordination: the corpus folder (the surface table and the ledgers)")
@@ -538,10 +556,10 @@ function run(args)
         scope_rows(args, fw, all.rows[fw], tally)
     end
 
-    local reconcile_text, generable_total, stubbed_total, both, differences = reconcile(tally)
+    local reconcile_text, generable_total, stubbed_total, both, differences, marked = reconcile(tally)
     emit.file(path.join(args.out, "v-gen-reconcile.tsv"), reconcile_text)
-    print(string.format("reconcile: %d generable rows, %d stubs, %d in both, %d differences -> v-gen-reconcile.tsv",
-                        generable_total, stubbed_total, both, differences))
+    print(string.format("reconcile: %d generable rows, %d stubs, %d in both, %d differences (%d marked should be empty) -> v-gen-reconcile.tsv",
+                        generable_total, stubbed_total, both, differences, marked))
 
     local sorted_counts = {}
     for _, c in ipairs(tally.count_order) do
@@ -549,9 +567,9 @@ function run(args)
     end
     table.sort(sorted_counts, function(a, b)
         if a.fw ~= b.fw then
-            return a.fw < b.fw
+            return order.less(a.fw, b.fw)
         end
-        return a.kind < b.kind
+        return order.less(a.kind, b.kind)
     end)
     local lines = {"framework\tkind\tsurface_rows\tdemand_rows\tdemand_apps\tmissing_6_1_3\tmissing_4_3\tstates"}
     local queue_total, surface_total_of = {}, {}
@@ -561,7 +579,7 @@ function run(args)
         for _, state in ipairs(c.state_order) do
             table.insert(names, state)
         end
-        table.sort(names)
+        table.sort(names, order.less)
         for _, state in ipairs(names) do
             table.insert(states, state .. "=" .. c.states[state])
         end
@@ -572,19 +590,19 @@ function run(args)
     end
     emit.file(path.join(args.out, "v-gen-scope.tsv"), table.concat(lines, "\n") .. "\n")
 
-    local order = sorted_keys(queue_total)
-    table.sort(order, function(a, b)
+    local by_demand = order.keys(queue_total)
+    table.sort(by_demand, function(a, b)
         if queue_total[a] ~= queue_total[b] then
             return queue_total[a] > queue_total[b]
         end
-        return a < b
+        return order.less(a, b)
     end)
     local md = {"# v-gen scope: every surface row, counted from the tables", "",
                 "Generated by `tools/gen.py scope` from sdk-26.2-surface.tsv, the ledgers (6.1.3 and 4.3), the registry, and the spec snapshots.",
                 "", "Work queue by demand (apps that call the framework's rows, summed):", "",
                 "| rank | framework | demand apps | surface rows |", "| --- | --- | --- | --- |"}
-    for i = 1, math.min(TOP_RANKS, #order) do
-        local fw = order[i]
+    for i = 1, math.min(TOP_RANKS, #by_demand) do
+        local fw = by_demand[i]
         table.insert(md, string.format("| %d | %s | %d | %d |", i, fw, queue_total[fw], surface_total_of[fw]))
     end
 
@@ -619,7 +637,7 @@ function run(args)
         per_work[q.work] = per_work[q.work] + 1
     end
     emit.file(path.join(args.out, "v-gen-queue.tsv"), strings.backslash_replace(table.concat(queue_lines, "\n") .. "\n"))
-    table.sort(works)
+    table.sort(works, order.less)
     for _, work in ipairs(works) do
         print(string.format("queue: %6d  %s", per_work[work], work))
     end
@@ -633,7 +651,16 @@ function run(args)
     table.insert(md, md_tie)
     emit.file(path.join(args.out, "v-gen-scope.md"), table.concat(md, "\n") .. "\n")
     print(console_tie)
-    print(string.format("scope: %d framework-kind rows, %d frameworks -> %s", #tally.count_order, #order,
+    print(string.format("scope: %d framework-kind rows, %d frameworks -> %s", #tally.count_order, #by_demand,
                         path.join(args.out, "v-gen-scope.tsv")))
-    return 0
+    local status = 0
+    if tied ~= tally.surface_total then
+        print(string.format("scope: DO NOT TIE: %d surface rows, %d rows in the state totals", tally.surface_total, tied))
+        status = 1
+    end
+    if marked > 0 then
+        print(string.format("scope: %d reconcile difference(s) marked should be empty, see v-gen-reconcile.tsv", marked))
+        status = 1
+    end
+    return status
 end

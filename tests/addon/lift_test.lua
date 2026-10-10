@@ -642,6 +642,7 @@ function failures(opt)
         io.writefile(path.join(nested, "Other.h"), fixture[5])
         io.writefile(path.join(nested, "Sub", "Deep.h"), fixture[6])
         io.writefile(path.join(root, "registry", "Fix.json"), fixture[7])
+        os.mkdir(path.join(root, "spec")) -- a package root has its snapshot; this one has no framework in it
         local json = import("core.base.json", {anonymous = true})
         local lifted, failure
         try {function ()
@@ -758,6 +759,7 @@ function failures(opt)
         io.writefile(path.join(fix, "Avail.h"), fixture[1])
         io.writefile(path.join(fix, "Fix.h"), fixture[3])
         io.writefile(path.join(root, "registry", "Fix.json"), fixture[4])
+        os.mkdir(path.join(root, "spec")) -- a package root has its snapshot; this one has no framework in it
         local failure
         try {function ()
             lift.lift({clang = clang, swiftc = swiftc, sdk = path.join(root, "sdk"), triple = "armv7-apple-ios6.1.3",
@@ -1260,6 +1262,7 @@ function failures(opt)
         io.writefile(path.join(frameworks, "Foundation.framework", "Headers", "Foundation.h"), fixture[1] .. fixture[2])
         io.writefile(path.join(fix, "Fix.h"), fixture[3])
         io.writefile(path.join(root, "registry", "Fix.json"), fixture[4])
+        os.mkdir(path.join(root, "spec")) -- a package root has its snapshot; this one has no framework in it
         local failure
         try {function ()
             lift.lift({clang = clang, swiftc = swiftc, sdk = path.join(root, "sdk"), triple = "armv7-apple-ios6.1.3",

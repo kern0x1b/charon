@@ -1983,6 +1983,8 @@ local function computed(opt)
     end
     os.tryrm(opt.outputdir)
     os.mkdir(opt.outputdir)
+    -- registry() reads the generated layer as it is on disk: the build writes it first (build() calls generate), so a lift run
+    -- from the build reads the current layer; a lift run on its own reads whatever .gen holds.
     local listed, incomplete, registered = backports.registry(opt.registry)
     if #incomplete > 0 then
         raise("the backports registry is incomplete: %s", table.concat(incomplete, "; "))

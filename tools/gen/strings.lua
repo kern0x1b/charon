@@ -63,21 +63,25 @@ end
 
 -- The text with each character that is not ASCII written as an escape, as Python's encode("ascii", "backslashreplace") writes it: \xhh
 -- for a code point below 0x100, \uhhhh below 0x10000 and \Uhhhhhhhh above. The text is UTF-8, read as code points.
+-- A text that is not UTF-8 is refused: a stray continuation byte or a truncated sequence has no code point to escape.
 function backslash_replace(text)
     if not string.find(text, "[\128-\255]") then
         return text
     end
-    local out, i, n = {}, 1, #text
-    while i <= n do
-        local b = string.byte(text, i)
-        if b < 128 then
-            table.insert(out, string.char(b))
-            i = i + 1
+    local out = {}
+    local pos = 1
+    while pos <= #text do
+        local c = string.byte(text, pos)
+        local size = c < 0x80 and 1 or c >= 0xF0 and 4 or c >= 0xE0 and 3 or c >= 0xC0 and 2 or nil
+        assert(size, "not UTF-8 text")
+        if size == 1 then
+            table.insert(out, string.char(c))
         else
-            local length = b >= 0xF0 and 4 or (b >= 0xE0 and 3 or 2)
-            local code = b & (0xFF >> (length + 1))
-            for k = 1, length - 1 do
-                code = (code << 6) | (string.byte(text, i + k) & 0x3F)
+            local code = c & (0xFF >> (size + 1))
+            for i = 1, size - 1 do
+                local continuation = string.byte(text, pos + i)
+                assert(continuation and continuation >= 0x80 and continuation < 0xC0, "not UTF-8 text")
+                code = (code << 6) | (continuation & 0x3F)
             end
             if code < 0x100 then
                 table.insert(out, string.format("\\x%02x", code))
@@ -86,8 +90,9 @@ function backslash_replace(text)
             else
                 table.insert(out, string.format("\\U%08x", code))
             end
-            i = i + length
+            pos = pos + size - 1
         end
+        pos = pos + 1
     end
     return table.concat(out)
 end

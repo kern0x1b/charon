@@ -167,7 +167,7 @@ local function page_of(dir, name)
 end
 
 local function test_pages(check)
-    local root = path.join(os.tmpdir(), "charon-doc-test-" .. tostring(os.time()))
+    local root = path.join(os.scriptdir(), "..", "..", ".agent-work", "runs", "charon-doc-test-" .. tostring(os.time()))
     local tree, corpus = path.join(root, "tree"), path.join(root, "corpus")
     local out, out_marked = path.join(root, "out"), path.join(root, "out-marked")
     local cmd_doc = import("gen.cmd_doc", {rootdir = TOOLS, anonymous = true})

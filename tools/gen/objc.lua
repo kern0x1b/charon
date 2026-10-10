@@ -40,7 +40,9 @@ function each(corpus, wanted, fn)
         local file = path.join(corpus, TABLE_DIR, part)
         assert(os.isfile(file), "no objc table part: " .. file)
         local first = true
+        local number = 0
         local status = stream.lines("gzip", {"-dc", file}, function(line)
+            number = number + 1
             if first then
                 first = false
                 if header == nil then
@@ -60,14 +62,16 @@ function each(corpus, wanted, fn)
                 end
                 return
             end
+            -- a row with no tab is short, and a short row is refused with its file and line, never skipped
             local t1 = string.find(line, "\t", 1, true)
-            if not t1 then
-                return
-            end
+            assert(t1, string.format("objc table %s line %d is a short row (no tab): %s", file, number, string.sub(line, 1, 80)))
             local t2 = string.find(line, "\t", t1 + 1, true)
-            if not t2 or not ENTITIES[string.sub(line, t1 + 1, t2 - 1)] then
+            local entity = string.sub(line, t1 + 1, (t2 or (#line + 1)) - 1)
+            if not ENTITIES[entity] then
                 return
             end
+            assert(t2, string.format("objc table %s line %d is a short row (no cell after its entity): %s", file, number,
+                                     string.sub(line, 1, 80)))
             local image = string.sub(line, 1, t1 - 1)
             local fw = memo[image]
             if fw == nil then
@@ -76,13 +80,13 @@ function each(corpus, wanted, fn)
             end
             if wanted == nil or wanted[fw] then
                 local cells = tsv.fields(line)
-                if #cells >= count then
-                    local row = {}
-                    for _, name in ipairs(FIELDS) do
-                        row[name] = cells[columns[name]]
-                    end
-                    fn(fw, row)
+                assert(#cells >= count, string.format("objc table %s line %d is a short row: %d cells where the header has %d: %s",
+                                                      file, number, #cells, count, string.sub(line, 1, 80)))
+                local row = {}
+                for _, name in ipairs(FIELDS) do
+                    row[name] = cells[columns[name]]
                 end
+                fn(fw, row)
             end
         end)
         assert(status == 0, "gzip failed on " .. part .. " (status " .. tostring(status) .. ")")

@@ -6,6 +6,7 @@ import("objc")
 import("core.base.json")
 import("core.base.scheduler")
 import("cache")
+-- The byte order of every name sort here (modules/byteorder.lua): Lua's `<` on strings follows the process locale.
 import("byteorder", {rootdir = path.join(os.scriptdir(), "..")})
 
 -- A library stands after every library it names in `libraries`: link() finds those in the output folder, so they are built first.
@@ -776,25 +777,25 @@ end
 
 -- The generated layer (tools/gen.lua, run under xmake) is built, not committed. The snapshot it reads is committed under spec/;
 -- the generator writes its output into .gen/ (gitignored) before anything reads that folder, so a clean checkout needs no manual step.
--- The generator is run once per process and per package root.
+-- The generator is run once per process and per package root. build() is the one caller that runs it: registry() and sources() read
+-- .gen/ as it is on disk, so a test that reads a fixture root never runs the generator. A root with no spec/ snapshot is an error here.
 local generated = {}
 function generate(root)
+    local snapshot = path.join(root, "spec")
+    if not os.isdir(snapshot) then
+        raise("package root %s has no spec/ snapshot (%s): the generated layer in .gen/ cannot be written", root, snapshot)
+    end
     if generated[root] then
         return
     end
     generated[root] = true
-    -- A package root with no spec/ snapshot is a fixture a test builds: it has no generated layer to write.
-    if not os.isdir(path.join(root, "spec")) then
-        return
-    end
     local tree = path.absolute(path.join(root, "..", "..", ".."))
     os.runv(os.programfile(), {"l", path.join(tree, "tools", "gen.lua"), "gen", "--tree", tree, "--all"})
 end
 
 function sources(root, library)
     -- .gen/<Framework>/ holds the generated contract layer: its sources are built with the library, and its rows are read from
-    -- .gen/<Framework>/rows.tsv by registry() as implementations, so both folders are one library's.
-    generate(root)
+    -- .gen/<Framework>/rows.tsv by registry() as implementations, so both folders are one library's. build() has run generate().
     local found = table.join(os.files(path.join(root, library.folder, "*.m")), os.files(path.join(root, library.folder, "*.mm")),
                              os.files(path.join(root, library.folder, "*.c")), os.files(path.join(root, ".gen", library.folder, "*.m")),
                              os.files(path.join(root, ".gen", library.folder, "*.c")))
@@ -1759,9 +1760,11 @@ local function accessor_of(api)
     return api:match("^([%u][%w_]*)%.([%w_]+)$") and api
 end
 
+-- The registry of a package root: listed (API -> entry), incomplete (the refusals), the frameworks it has a file for, and
+-- unlibraried (the generated folders no LIBRARIES entry builds, by folder and row count). Reads what is on disk; build() runs generate().
 function registry(root)
-    generate(root)
     local listed, told, incomplete, frameworks = {}, {}, {}, {}
+    local unlibraried = {}
     local files = table.join(os.files(path.join(root, "registry", "*.json")), os.files(path.join(root, "registry", "*", "*.json")))
     byteorder.sort(files)
     for _, file in ipairs(files) do
@@ -1803,10 +1806,35 @@ function registry(root)
         end
     end
     -- .gen/<Framework>/rows.tsv: the rows the generator emits for the contract layer, in the fields of a registry row. A generated
-    -- row is an implementation and is listed as one, but it has to name the source that defines it, and a name the registry
-    -- also holds is refused: an override is a registry row only, and the index must not contain it.
+    -- row is an implementation and is listed as one, but only for a folder a LIBRARIES entry builds: sources() compiles no other
+    -- folder, so no shipped library carries its symbols. The other folders are returned as unlibraried, and are not refused or
+    -- listed. The row has to name the source that defines it, and a name the registry also holds is refused: an override is a
+    -- registry row only, and the index must not contain it. The folders are read in byte order, so the refusal of a name two folders
+    -- both name says the same thing on every machine.
+    local built = {}
+    for _, library in ipairs(LIBRARIES) do
+        built[library.folder] = true
+    end
+    local index = {}
     for _, file in ipairs(os.files(path.join(root, ".gen", "*", "rows.tsv"))) do
-        local folder = path.filename(path.directory(file))
+        index[path.filename(path.directory(file))] = file
+    end
+    local read = {}
+    for _, folder in ipairs(order.keys(index)) do
+        if built[folder] then
+            table.insert(read, folder)
+        else
+            local rows = -1
+            for _ in io.readfile(index[folder]):gmatch("[^\n]+") do
+                rows = rows + 1
+            end
+            if rows > 0 then
+                table.insert(unlibraried, {folder = folder, rows = rows})
+            end
+        end
+    end
+    for _, folder in ipairs(read) do
+        local file = index[folder]
         local named = ".gen/" .. folder .. "/rows.tsv"
         frameworks[folder] = true
         local header
@@ -1864,7 +1892,7 @@ function registry(root)
             end
         end
     end
-    return listed, incomplete, table.orderkeys(frameworks)
+    return listed, incomplete, order.keys(frameworks), unlibraried
 end
 
 -- The property names a selector may be the accessor of, most specific first: setFoo: and isFoo are the accessor
@@ -2665,6 +2693,8 @@ function minimums(listed, objects, architecture, deployment, opt)
 end
 
 function build(opt)
+    -- the generated layer is written first, so registry() and sources() read a .gen/ that is current; a root with no spec/ is refused here
+    generate(opt.root)
     INVENTORY_STORE = opt.store
     local release = loaded(opt.cache, opt.architecture)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
@@ -2685,6 +2715,17 @@ function build(opt)
     end
     check_releases(opt, objects, origins)
     local checked_at = os.mclock()
+    -- generated rows of a folder no library builds are not implementations: said here in full, by folder and count, not dropped
+    local _, _, _, unlibraried = registry(opt.root)
+    if #unlibraried > 0 then
+        local rows, named = 0, {}
+        for _, item in ipairs(unlibraried) do
+            rows = rows + item.rows
+            table.insert(named, string.format("%s (%d)", item.folder, item.rows))
+        end
+        cprint("${color.warning}note:${clear} %d generated row(s) in %d folder(s) with no library are not implemented, as no library builds the folder (generated, no library): %s",
+               rows, #unlibraried, table.concat(named, ", "))
+    end
     local built = {}
     for _, library in ipairs(staged_libraries(opt)) do
         table.insert(built, link(opt, library, attach, objects[library.name], {release}, opt.outputdir,

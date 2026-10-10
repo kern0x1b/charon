@@ -5,6 +5,7 @@
 local layout = import("layout", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local files = import("files", {anonymous = true})
+local order = import("order", {anonymous = true})
 local json = import("core.base.json")
 
 local surface_memo = {}
@@ -24,9 +25,12 @@ function canonical_member(api, kind)
 end
 
 -- (kind, api) -> status for the framework's rows the ledger of a release lists; a row it does not list is implemented in it.
+-- A nested framework (include/AppleArchive, the surface's name) has its ledger in the release folder as include_AppleArchive.tsv:
+-- the slash of its name is an underscore in the file name, as the corpus writes it.
 function ledger_status(corpus, fw, release_dir)
     local out = {}
-    local text = files.read_text(path.join(corpus, release_dir, fw .. ".tsv"))
+    local file_name = (string.gsub(fw, "/", "_"))
+    local text = files.read_text(path.join(corpus, release_dir, file_name .. ".tsv"))
     if not text then
         return out
     end
@@ -144,7 +148,7 @@ function registry_entries(tree, fw)
     if os.isfile(single) then
         table.insert(candidates, single)
     end
-    table.sort(candidates)
+    table.sort(candidates, order.less)
     for _, filepath in ipairs(candidates) do
         local data = json.decode(files.read_text(filepath))
         local entries = data.entries or data

@@ -5,6 +5,7 @@ local layout = import("layout", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local files = import("files", {anonymous = true})
 local decl = import("decl", {anonymous = true})
+local order = import("order", {anonymous = true})
 local json = import("core.base.json")
 
 -- The spec rows of a framework, in the snapshot's order.
@@ -67,7 +68,7 @@ end
 -- The pins as the sidecar holds them, sorted by key.
 function pins_text(list)
     local sorted = table.move(list, 1, #list, 1, {})
-    table.sort(sorted, function(a, b) return a.key < b.key end)
+    table.sort(sorted, function(a, b) return order.less(a.key, b.key) end)
     local rows = {}
     for _, p in ipairs(sorted) do
         table.insert(rows, {p.api, p.key, p.pinned, p["pinned-by"], p.registry})

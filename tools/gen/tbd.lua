@@ -78,9 +78,22 @@ local function add_list(block, key, into)
     end
 end
 
+-- A path that is not an SDK is refused with the path in the message: no SDKSettings.plist at its root, or no folder for the framework.
+-- Without this check a wrong --sdk reads as a framework with no exports, and that answer is wrong without a sign of it.
+local function check_sdk(sdk, fw)
+    if not os.isfile(path.join(sdk, "SDKSettings.plist")) then
+        raise("--sdk %s is not an SDK: it has no SDKSettings.plist", sdk)
+    end
+    local framework = path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework")
+    if not os.isdir(framework) then
+        raise("--sdk %s has no framework %s: %s is missing", sdk, fw, framework)
+    end
+end
+
 -- The exports of a framework's arm64 slice in the SDK: symbols (the leading underscore dropped, as the spec compares them) and
 -- objc-classes, two sets keyed by name with the value true. Both are empty when the framework has no .tbd in the SDK.
 function exports(sdk, fw)
+    check_sdk(sdk, fw)
     local symbols, classes = {}, {}
     local text = files.read_text(path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework", fw .. ".tbd"))
     if text == nil then
@@ -109,14 +122,4 @@ function exports(sdk, fw)
         stripped[string.sub(name, 1, 1) == "_" and string.sub(name, 2) or name] = true
     end
     return stripped, classes
-end
-
--- The sorted names of a set, one per line (the form the checks compare).
-function sorted_names(set)
-    local out = {}
-    for name in pairs(set) do
-        table.insert(out, name)
-    end
-    table.sort(out)
-    return out
 end

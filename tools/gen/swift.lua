@@ -6,6 +6,7 @@
 local layout = import("layout", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local order = import("order", {anonymous = true})
+local strings = import("strings", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local files = import("files", {anonymous = true})
 
@@ -83,41 +84,6 @@ local function table_matches(corpus, wanted)
     return matched
 end
 
--- Escapes every non-ASCII character of a text the way Python writes str.encode("ascii", "backslashreplace"): \xNN below 0x100,
--- \uNNNN below 0x10000, \UNNNNNNNN above. The text is UTF-8.
-function ascii_escape(text)
-    if not string.find(text, "[\128-\255]") then
-        return text
-    end
-    local out = {}
-    local pos = 1
-    while pos <= #text do
-        local c = string.byte(text, pos)
-        local size = c < 0x80 and 1 or c >= 0xF0 and 4 or c >= 0xE0 and 3 or c >= 0xC0 and 2 or nil
-        assert(size, "not UTF-8 text")
-        if size == 1 then
-            table.insert(out, string.char(c))
-        else
-            local code = c & (0xFF >> (size + 1))
-            for i = 1, size - 1 do
-                local continuation = string.byte(text, pos + i)
-                assert(continuation and continuation >= 0x80 and continuation < 0xC0, "not UTF-8 text")
-                code = (code << 6) | (continuation & 0x3F)
-            end
-            if code < 0x100 then
-                table.insert(out, string.format("\\x%02x", code))
-            elseif code < 0x10000 then
-                table.insert(out, string.format("\\u%04x", code))
-            else
-                table.insert(out, string.format("\\U%08x", code))
-            end
-            pos = pos + size - 1
-        end
-        pos = pos + 1
-    end
-    return table.concat(out)
-end
-
 -- The bucket: rows (each a list of the cells COLUMNS names), the number of rows the interface table matched, and the number of
 -- frameworks the rows are in. tree is the package tree (the registry is read from it); corpus is the corpus folder.
 function bucket(tree, corpus)
@@ -149,7 +115,7 @@ end
 
 -- The text of the bucket file: the header, then one line per row, in ASCII.
 function bucket_text(rows)
-    return ascii_escape(tsv.table_text(COLUMNS, rows))
+    return strings.backslash_replace(tsv.table_text(COLUMNS, rows))
 end
 
 -- The path of the bucket file under the package tree.
