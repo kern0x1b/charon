@@ -63,7 +63,7 @@ local function test_headers(check)
     local headers = import("gen.headers", {rootdir = TOOLS, anonymous = true})
     headers.use(function(fw, sdk)
         return {members = {{cls = "FKThing", kind = "method", api = "-[FKThing reset]", decl = "- (void)reset"}},
-                declared = {FKThing = true}, typedefs = {FKFlag = "NSInteger"}}
+                declared = {FKThing = true}, typedefs = {FKFlag = "NSInteger"}, superclasses = {FKThing = "NSObject"}}
     end)
     local fixture = headers.facts(TOOLS, "FixtureKit", "/nonexistent")
     check(#fixture.members == 1 and fixture.members[1].api == "-[FKThing reset]" and fixture.declared.FKThing == true
@@ -74,6 +74,7 @@ local function test_headers(check)
         local real = headers.facts(path.join(TOOLS, ".."), "AVFAudio", sdk)
         check(#real.members > 0 and real.members[1].kind ~= nil, "the parser gives the members of AVFAudio")
         check(real.declared.AVAudioApplication == true, "the parser gives the declared names")
+        check(real.superclasses.AVAudioApplication == "NSObject", "the parser gives the superclass each class names")
     else
         print("skip the real header parser: set CHARON_SDK26 to an iOS 26.2 SDK to test it")
     end
@@ -102,6 +103,8 @@ local function test_stream(check)
     local seen = 0
     status = stream.lines("sh", {"-c", "echo x; exit 3"}, function() seen = seen + 1 end)
     check(status == 3 and seen == 1, "the exit status of the program comes back")
+    check(raises(function() stream.lines("sh", {"-c", "echo partial; kill -9 $PPID"}, function() end) end),
+          "a program that dies before its sentinel raises, instead of spinning")
 end
 
 function main()
