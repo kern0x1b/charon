@@ -34,6 +34,19 @@ Both string constants are the values macOS CoreMIDI gives them, read from the ho
 - `kMIDIPropertyNameConfigurationDictionary` is `nameConfigurationDictionary` (iOS 13).
 - `kMIDIPropertyProtocolID` is `protocol` (iOS 14).
 
+## Disposed objects (macOS 27.0.1, oracle/removal-notify.m, removal-notify-macos.txt)
+
+- A destination, a virtual source and an input port that are disposed answer a UniqueID read with paramErr (-50), as a
+  reference that never existed does. A live destination or source answers noErr; a live input port answers -10835 (a
+  port has no UniqueID). So a reference that answers -50 is gone.
+- A destination's and a source's removal is announced to the client's notify proc as kMIDIMsgObjectRemoved, after the dispose
+  call has returned, on the main thread, followed by kMIDIMsgSetupChanged. An input port's dispose announces nothing.
+- A send to a disposed destination delivers nothing to its block (0 calls; the live control gives 1).
+- Not measured: the same answers on the 6.1.3 release. The library relies on them (CharonMIDIPorts.m, the owned rows swept on
+  creation), so the 6.1.3 measurement is the open item the coordinator's crutch entry names.
+- The library learns of a dispose only by the read above, when it makes another object: the release gives the library no
+  call for it, and the client notify proc belongs to the client that made the object.
+
 ## What is not built here
 
 CoreMIDI of iOS 16 and 17 and the MIDI-CI and MIDI 2.0 endpoint classes of iOS 18 are not in this library yet: the UMP

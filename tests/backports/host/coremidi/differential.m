@@ -732,6 +732,7 @@ static void check_visit_word_sizes(void)
 }
 
 extern int charon_ump_classes_run(int *checks);
+extern int charon_ports_run(int *checks);
 
 int main(void)
 {
@@ -758,6 +759,11 @@ int main(void)
         check_ble_parse();
         check_system_words();
         check_visit_word_sizes();
+        {
+            int portChecks = 0;
+            gFailures += charon_ports_run(&portChecks);
+            gChecks += portChecks;
+        }
         printf("checks=%d failures=%d\n", gChecks, gFailures);
     }
     return gFailures == 0 ? 0 : 1;

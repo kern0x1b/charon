@@ -10,6 +10,12 @@ conversion rounds.
 
 ## 1.0 to 2.0 (a 2.0 port receiving a 1.0 packet)
 
+- Each source connected to a port has its own parser: the SysEx and the running status of one source's bytes do not carry into
+  another source's (CharonMIDIPorts.m, keyed by the source's connection reference). The measured fact behind it is the
+  legacy input port's: each source's bytes come out as their own packets, unchanged (oracle/inputport-sources.m,
+  inputport-sources-macos.txt). The UMP input port's state is not measured. The per-source parser is the reading that two byte
+  streams are two streams; differential-ports.m checks that a SysEx open on one source is ended by that source's own F7, with
+  the expectation written as each source's own translation, not as a measured UMP answer.
 - A channel message keeps its status and channel and gains a 64-bit form. The value is scaled up:
   - velocity (note on and note off), 7 to 16 bits: `x << 9` up to 64; above 64, `(x << 9) + 8d + (d >> 3)` with
     `d = x - 64`. Measured for all 128 values.
@@ -32,6 +38,12 @@ conversion rounds.
 
 ## 2.0 to 1.0 (a list sent or received through a 1.0 endpoint)
 
+- A list sent to a 2.0 destination this process made is not converted: each packet's time stamp and words reach its block as
+  they were sent (CharonMIDISend, CharonMIDIPorts.m), so a 2.0 velocity of 0x1234 arrives as 0x1234, which is what macOS's
+  own 2.0 destination gives for the same list (differential-ports.m). A 1.0 destination of the library, and a source, still
+  take the 1.0 route below.
+- A disposed destination of the library takes nothing: its block is not called, from a send or from in-process delivery,
+  as macOS gives nothing to a destination after MIDIEndpointDispose (oracle/removal-notify-macos.txt).
 - Note on: velocity `max(1, v16 >> 9)`, so a note on of velocity 0 goes out as velocity 1. Note off: `v16 >> 9`.
   Measured for all 65 536 values of note on.
 - Controller, poly pressure, channel pressure: `v32 >> 25`. Measured for every 2^19th value of 32 bits and all 128 poly

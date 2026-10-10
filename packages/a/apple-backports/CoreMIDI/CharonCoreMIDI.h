@@ -123,6 +123,9 @@ OSStatus CharonMIDISend(MIDIPortRef port, MIDIEndpointRef dest, const MIDIEventL
 OSStatus CharonMIDIReceive(MIDIEndpointRef src, const MIDIEventList *evtlist);
 // Delivers UMP words verbatim to a destination this process made (CharonMIDIPorts.m); NO for any other endpoint.
 Boolean CharonMIDIDeliverInProcess(MIDIEndpointRef endpoint, const UInt32 *words, UInt32 count);
+// Records the retained block of a port or destination the library made through the release's function form (MIDIBlocks9.m):
+// the block is released when the object is gone.
+void CharonMIDIOwnBlock(MIDIObjectRef object, void *retainedBlock);
 
 // The request of MIDISendUMPSysex and MIDISendUMPSysex8, as the 26.2 SDK declares it (MIDIServices.h). The host's SDK declares
 // it already, and run.sh sets CHARON_HOST_HAS_UMP_SYSEX so this file does not repeat it there.

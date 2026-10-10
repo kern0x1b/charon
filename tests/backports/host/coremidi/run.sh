@@ -35,8 +35,11 @@ for path in "$CORE"/*.m; do
     xcrun clang $sanitize -fobjc-arc -fvisibility=hidden -w -I"$CORE" -DCHARON_HOST_HAS_UMP_SYSEX=1 $renames -c "$path" -o "$build/$source.o"
 done
 xcrun clang $sanitize -c -w -I"$CORE" -DCHARON_HOST_HAS_UMP_SYSEX=1 "$CORE/CharonCoreMIDI.c" -o "$build/CharonCoreMIDI.o"
+# differential-ports.m is compiled without the renames: it calls the release's own MIDISendEventList and friends as the oracle.
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOST_HAS_UMP_SYSEX=1 -I"$CORE" -c \
+    "$here/differential-ports.m" -o "$build/differential-ports.o"
 xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOST_HAS_UMP_SYSEX=1 -I"$CORE" -I"$here" $renames \
-    "$here/differential.m" "$here/differential-ump.m" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -framework CoreBluetooth -o "$build/differential"
+    "$here/differential.m" "$here/differential-ump.m" "$build/differential-ports.o" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -framework CoreBluetooth -o "$build/differential"
 "$build/differential" > "$build/log" 2>&1 && result=0 || result=$?
 grep -v '^ok ' "$build/log" || true
 echo "log=$build/log"
