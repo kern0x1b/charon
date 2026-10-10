@@ -1,2 +1,0 @@
-name	reason
-AudioObjectID	the AudioToolbox object identifier, spelled by the audio declarations the port carries: the iOS 26.2 SDK declares no AudioObjectID and no shard records it, so it is a reviewed exception to the declared names, not an extractor gap

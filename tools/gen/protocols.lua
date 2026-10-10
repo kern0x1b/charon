@@ -1,5 +1,7 @@
--- The protocol objects the generator emits for a framework, from the snapshot's protocol records (protocols.tsv and the header the
--- transcriber wrote). The objects are emitted only for the protocols the generation set names.
+-- The protocol objects the generator emits for a framework, from the snapshot's protocol records (protocols.tsv). The objects are
+-- emitted only for the protocols the generation set names. A protocol the SDK declares ("sdk16 body") is named through the
+-- framework's own umbrella header; a transcribed one has no declaration in the tree (the transcriber's header is not committed:
+-- generated output), so a set that names one raises instead of emitting an object no compiler can resolve.
 
 local layout = import("layout", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
@@ -8,8 +10,8 @@ local releases = import("releases", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local order = import("order", {anonymous = true})
 
-local GENERATED_STATUS = {["sdk16 body"] = true, transcribed = true}
-local EM_DASH = "\226\128\148"
+local TRANSCRIBED = "transcribed"
+local GENERATED_STATUS = {["sdk16 body"] = true, [TRANSCRIBED] = true}
 -- The release whose ledger says which members the 6.1.3 release lacks.
 local LEDGER_RELEASE = "ledger-w45"
 
@@ -90,22 +92,18 @@ function records(tree, fw)
     return out
 end
 
--- The transcriber's header in the snapshot, by its file name, or nil.
-local function header_name(tree, fw)
-    local found = files.glob(path.join(layout.snap_dir(tree, fw), "Charon*Protocols.h"))
-    return found[1] and path.filename(found[1]) or nil
-end
-
 -- The generated protocol files of a framework: name -> text. One source per release a protocol arrived in: each source names
 -- every protocol of its release, so clang emits its protocol object there.
 function protocol_files(tree, fw, corpus)
     local protocols = records(tree, fw)
     local wanted = generation_set(tree, fw, corpus)
     local generated, by_release, release_list = {}, {}, {}
-    local any = false
     for name, record in pairs(protocols) do
         if GENERATED_STATUS[record.status] and wanted[name] then
-            any = true
+            if record.status == TRANSCRIBED then
+                raise(string.format("%s: the protocol %s is transcribed and its declaration is not in the tree: the generation set cannot "
+                    .. "name it until the transcriber is ported", fw, name))
+            end
             generated[name] = record
             local release = record.introduced
             if by_release[release] == nil then
@@ -116,16 +114,6 @@ function protocol_files(tree, fw, corpus)
         end
     end
     local out = {}
-    local header = nil
-    if any then
-        header = header_name(tree, fw)
-    end
-    if header then
-        local text = assert(files.read_text(path.join(layout.snap_dir(tree, fw), header)), "no header " .. header)
-        text = string.gsub(text, EM_DASH, "-")
-        assert(not string.find(text, "[\128-\255]"), "not ASCII: " .. header)
-        out[header] = text
-    end
     for _, release in ipairs(releases.sorted(release_list)) do
         local names = table.move(by_release[release], 1, #by_release[release], 1, {})
         table.sort(names, order.less)
@@ -139,9 +127,6 @@ function protocol_files(tree, fw, corpus)
         end
         if sdk16 then
             table.insert(body, "#import <" .. fw .. "/" .. fw .. ".h>")
-        end
-        if header then
-            table.insert(body, '#import "' .. header .. '"')
         end
         table.insert(body, "")
         table.insert(body, "__attribute__((used)) Protocol *const charon_" .. fw .. "_protocols" .. tag .. "[] = {")

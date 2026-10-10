@@ -38,8 +38,8 @@ local function names_of(set)
 end
 
 -- Writes one fixture tree: the corpus (surface table and 6.1.3 ledger), the registry (a row for FKRegistered when with_registry), and the
--- snapshot (protocols.tsv and the transcriber's header). Returns the tree and the corpus.
-local function write_fixture(dir, with_registry)
+-- snapshot (protocols.tsv). Returns the tree and the corpus.
+local function write_fixture(dir, with_registry, record_status)
     local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
     local tsv = import("gen.tsv", {rootdir = TOOLS, anonymous = true})
     local layout = import("gen.layout", {rootdir = TOOLS, anonymous = true})
@@ -50,7 +50,7 @@ local function write_fixture(dir, with_registry)
         table.insert(surface_rows, {FRAMEWORK, "protocol", "objc", name, "7.0", "-", "-", "-"})
         local status = name == "FKHeaderOK" and "header-ok" or "missing"
         table.insert(ledger_rows, {"protocol", "objc", name, "7.0", "7.0", status, "-", "fixture"})
-        table.insert(record_rows, {name, "7.0", "transcribed", "", "NSObject", "required", "method", "yes", "reset", "- (void)reset", "-"})
+        table.insert(record_rows, {name, "7.0", record_status or "sdk16 body", "", "NSObject", "required", "method", "yes", "reset", "- (void)reset", "-"})
     end
     emit.file(path.join(corpus, "sdk-26.2-surface.tsv"), tsv.table_text(SURFACE_COLUMNS, surface_rows))
     emit.file(path.join(corpus, "ledger-w45", FRAMEWORK .. ".tsv"), tsv.table_text(LEDGER_COLUMNS, ledger_rows))
@@ -60,7 +60,6 @@ local function write_fixture(dir, with_registry)
     end
     local snap = layout.snap_dir(tree, FRAMEWORK)
     emit.file(path.join(snap, "protocols.tsv"), tsv.table_text(PROTOCOL_COLUMNS, record_rows))
-    emit.file(path.join(snap, "CharonFixtureKitProtocols.h"), "@protocol FKProto;\n@protocol FKRegistered;\n@protocol FKHeaderOK;\n")
     return tree, corpus
 end
 
@@ -124,6 +123,22 @@ function main()
     }
     check(raised and string.find(message, FRAMEWORK, 1, true) ~= nil and string.find(message, "FKProto", 1, true) ~= nil,
           "a record that differs from the rule raises with the corpus, naming the framework and the protocol")
+
+    -- A transcribed protocol has no declaration in the tree (the transcriber's header is not committed): a set that names one raises
+    local transcribed_tree, transcribed_corpus = write_fixture(path.join(root, "transcribed"), true, "transcribed")
+    write_record(transcribed_tree, {"FKProto"})
+    raised, message = false, ""
+    try {
+        function() protocols.protocol_files(transcribed_tree, FRAMEWORK, transcribed_corpus) end,
+        catch {
+            function(e)
+                raised = true
+                message = tostring(e)
+            end
+        }
+    }
+    check(raised and string.find(message, "FKProto", 1, true) ~= nil and string.find(message, "transcribed", 1, true) ~= nil,
+          "a generation set that names a transcribed protocol raises, naming it")
 
     os.rm(root)
     local verdict = failures() == 0 and "OK" or ("FAIL " .. failures())
