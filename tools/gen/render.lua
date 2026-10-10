@@ -50,7 +50,7 @@ end
 -- of NSString defines as NSString *, which is the same type to the compiler and needs no SDK typedef that a build SDK may
 -- lack; a CFStringRef typedef defines as CFStringRef through a bridging cast from the literal.
 function constant_definition(r)
-    local const = string.find(r.decl, "%f[%w_]const%f[^%w_]") ~= nil
+    local const = string.find(r.type or "-", "%f[%w_]const%f[^%w_]") ~= nil
     local literal = '@"' .. r.value .. '"'
     if r.shape == "cf" then
         return string.format("%sCFStringRef %s = (__bridge CFStringRef)%s;", const and "const " or "", r.api, literal)

@@ -1,4 +1,4 @@
-kind	api	cls	key	introduced	decl	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured
 constant	kSecImportToMemoryOnly	-	kSecImportToMemoryOnly	18.0	const CFStringRef	-	728f5d34620dd435	found	memory	memory	ios-26.2-cache	-	exported	cf	18.0
 constant	kSecKeyAlgorithmECDSASignatureDigestRFC4754	-	kSecKeyAlgorithmECDSASignatureDigestRFC4754	17.0	const SecKeyAlgorithm	-	f58bb302061b87f0	found	algid:sign:ECDSA:digest-RFC4754	algid:sign:ECDSA:digest-RFC4754	ios-26.2-cache	-	exported	cf	18.0
 constant	kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA1	-	kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA1	17.0	const SecKeyAlgorithm	-	35e1c10c1c059169	found	algid:sign:ECDSA:digest-RFC4754:SHA1	algid:sign:ECDSA:digest-RFC4754:SHA1	ios-26.2-cache	-	exported	cf	18.0

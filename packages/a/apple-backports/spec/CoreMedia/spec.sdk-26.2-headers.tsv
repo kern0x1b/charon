@@ -1,4 +1,4 @@
-kind	api	cls	key	introduced	decl	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured
 constant	kCMImageDescriptionFlavor_3GPFamily	-	kCMImageDescriptionFlavor_3GPFamily	8.0	const CMImageDescriptionFlavor	API_AVAILABLE(macos(10.10), ios(8.0), tvos(9.0), watchos(6.0), visionos(1.0))	1d99d73a46add2cd	found	3GPFamily	3GPFamily	ios-26.2-cache	-	exported	cf	8.0
 constant	kCMImageDescriptionFlavor_ISOFamily	-	kCMImageDescriptionFlavor_ISOFamily	8.0	const CMImageDescriptionFlavor	API_AVAILABLE(macos(10.10), ios(8.0), tvos(9.0), watchos(6.0), visionos(1.0))	019702e3e651381c	found	ISOFamily	ISOFamily	ios-26.2-cache	-	exported	cf	8.0
 constant	kCMImageDescriptionFlavor_ISOFamilyWithAppleExtensions	-	kCMImageDescriptionFlavor_ISOFamilyWithAppleExtensions	16.0	const CMImageDescriptionFlavor	API_AVAILABLE(macos(13.0), ios(16.0), tvos(16.0), watchos(9.0), visionos(1.0))	d7b3cd86026c6518	found	ISOFamilyWithAppleExtensions	ISOFamilyWithAppleExtensions	ios-26.2-cache	-	exported	cf	16.0

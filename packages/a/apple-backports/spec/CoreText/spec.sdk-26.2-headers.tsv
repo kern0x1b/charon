@@ -1,4 +1,4 @@
-kind	api	cls	key	introduced	decl	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured
+kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured
 constant	kCTAdaptiveImageProviderAttributeName	-	kCTAdaptiveImageProviderAttributeName	18.0	const CFStringRef	CT_AVAILABLE(macos(15.0), ios(18.0), watchos(11.0), tvos(18.0))	e52f714693d1918e	found	CTAdaptiveImageProvider	CTAdaptiveImageProvider	ios-26.2-cache	-	exported	cf	18.0
 constant	kCTBackgroundColorAttributeName	-	kCTBackgroundColorAttributeName	10.0	const CFStringRef	CT_AVAILABLE(macos(10.12), ios(10.0), watchos(3.0), tvos(10.0))	a64cb88fc6e69f15	found	CTBackgroundColor	CTBackgroundColor	ios-26.2-cache	-	exported	cf	10.0.1
 constant	kCTBaselineOffsetAttributeName	-	kCTBaselineOffsetAttributeName	11.0	const CFStringRef	CT_AVAILABLE(macos(10.13), ios(11.0), watchos(4.0), tvos(11.0))	15cd9a161048f311	found	CTBaselineOffset	CTBaselineOffset	ios-26.2-cache	-	exported	cf	11.0

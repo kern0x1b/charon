@@ -30,12 +30,10 @@ local function names_of(map)
     return out
 end
 
--- The declaration hash of a spec row: a method or property is hashed from its declaration and availability as they are now,
--- so a hand edit of the declaration moves the hash; a constant keeps the hash its row records.
+-- The declaration hash of a spec row: the hash the row records. A member's is the extractor's declhash (the canonical fields of its
+-- declaration, design-foundation.md 5.3), a constant's the hash its row records. The spec holds no declaration text, so no digest is
+-- recomputed here from it.
 function spec_hash(r)
-    if r.kind == "method" or r.kind == "property" then
-        return digest.digest(r.kind, r.api, r.decl, r.availability)
-    end
     return r.hash
 end
 
