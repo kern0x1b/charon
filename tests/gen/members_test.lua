@@ -28,7 +28,7 @@ function main()
     check(rows[1].hash == "aaaaaaaaaaaaaaaa", "the hash is the declaration hash of the row")
     check(rows[1].availability == "API_AVAILABLE(ios(14.0))" and rows[2].availability == "-", "availability is the rendered text or -")
     check(rows[1].tbd == "class-exported" and rows[3].tbd == "class-not-exported", "tbd follows the class's export")
-    check(rows[1].decl == "-", "the spec row carries no declaration text")
+    check(rows[1].type == "-" and rows[1].decl == nil, "the spec row carries the member type, and no declaration text")
 
     local real = headers.shard_facts(path.join(TOOLS, ".."), "AVFAudio")
     check(#members.rows(real.members, {}, "AVFAudio") == 656, "AVFAudio's shard gives 656 member rows")

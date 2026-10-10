@@ -16,10 +16,15 @@ function run(args)
     local fw = args.framework
     local before = {}
     local kept = {}
+    local types = headers.constant_types(args.tree, fw)
     for _, r in ipairs(snapshot.load(args.tree, fw)) do
         if r.kind == "method" or r.kind == "property" then
             before[r.api] = r
         else
+            if r.kind == "constant" then
+                -- the constant's type comes from the shard's variable of the same name, in place of the declaration text
+                r.type = types[r.api] or "-"
+            end
             table.insert(kept, r)
         end
     end
