@@ -11,7 +11,10 @@
 // owner's write of the UniqueID changes the UniqueID alone.
 #import <CoreMIDI/CoreMIDI.h>
 #import <Foundation/Foundation.h>
+#include <dispatch/dispatch.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 #import "CharonCoreMIDI.h"
 
@@ -47,8 +50,19 @@ static int is_owner_key(CFStringRef propertyID)
     return propertyID && CFEqual(propertyID, CHARON_OWNER_KEY);
 }
 
+// A read of this object (the stamp, as the library makes it) is held inside the stand-in until the test lets it go: the thread that is
+// in the call announces it, and then waits. The library must not hold a lock another thread needs while it is there.
+static MIDIObjectRef gHeldObject = (MIDIObjectRef)-1;
+static dispatch_semaphore_t gHeldEntered;
+static dispatch_semaphore_t gHeldRelease;
+
 OSStatus charon_test_MIDIObjectGetIntegerProperty(MIDIObjectRef object, CFStringRef propertyID, SInt32 *outValue)
 {
+    if (object == gHeldObject) {
+        gHeldObject = (MIDIObjectRef)-1;
+        dispatch_semaphore_signal(gHeldEntered);
+        dispatch_semaphore_wait(gHeldRelease, DISPATCH_TIME_FOREVER);
+    }
     if (object >= OBJECTS || !gObject[object].exists)
         return charon_paramErr;
     StubObject *held = &gObject[object];
@@ -80,6 +94,25 @@ OSStatus charon_test_MIDIObjectSetIntegerProperty(MIDIObjectRef object, CFString
     }
     held->hasUniqueID = 1;
     held->uniqueID = value;
+    return noErr;
+}
+
+// A destination the library makes: the stand-in of the release's call hands out one reference (an object the stand-in knows) and keeps the
+// read procedure, so that a test can call it as the release's thread does.
+static MIDIReadProc gDestinationProc;
+static void *gDestinationRefCon;
+static MIDIObjectRef gNextDestination = 20;
+
+OSStatus charon_test_MIDIDestinationCreate(MIDIClientRef client, CFStringRef name, MIDIReadProc readProc, void *refCon,
+                                           MIDIEndpointRef *outDest)
+{
+    gDestinationProc = readProc;
+    gDestinationRefCon = refCon;
+    MIDIObjectRef object = gNextDestination++;
+    gObject[object].exists = 1;
+    gObject[object].hasUniqueID = 1;
+    gObject[object].uniqueID = (SInt32)(2000 + object);
+    *outDest = object;
     return noErr;
 }
 
@@ -117,6 +150,21 @@ static void reuse(MIDIObjectRef object, SInt32 uniqueID)
     gObject[object].exists = 1;
     gObject[object].hasUniqueID = 1;
     gObject[object].uniqueID = uniqueID;
+}
+
+// A destination of the library whose block holds a counted token and, in its first call, announces itself and waits.
+static MIDIEndpointRef make_destination_holding_a_token(dispatch_semaphore_t entered, dispatch_semaphore_t release)
+{
+    Token *token = [[Token alloc] init];
+    gLive++;
+    MIDIEndpointRef destination = 0;
+    OSStatus status = CharonMIDIDestination(0, CFSTR("holding"), kMIDIProtocol_2_0, &destination,
+                                            ^(const MIDIEventList *list, void *ref) {
+        (void)token;
+        dispatch_semaphore_signal(entered);
+        dispatch_semaphore_wait(release, DISPATCH_TIME_FOREVER);
+    });
+    return status == noErr ? destination : 0;
 }
 
 int main(void)
@@ -160,6 +208,62 @@ int main(void)
         gObject[11].exists = 0;
         own(13, 113);
         expect(gLive == before, "an object whose stamp was refused is released when it is gone");
+
+        // A send reads the object (is the destination still there?) with no lock held that another thread needs: while one
+        // thread is inside that read, another thread's send to an endpoint that is not the library's returns.
+        static const UInt32 words[2] = {0x40903C00u, 0x12340000u};
+        gHeldEntered = dispatch_semaphore_create(0);
+        gHeldRelease = dispatch_semaphore_create(0);
+        dispatch_semaphore_t delivered = dispatch_semaphore_create(0);
+        __block int deliveries = 0;
+        MIDIEndpointRef destination = 0;
+        OSStatus made = CharonMIDIDestination(0, CFSTR("destination"), kMIDIProtocol_2_0, &destination,
+                                              ^(const MIDIEventList *list, void *ref) {
+            deliveries++;
+            dispatch_semaphore_signal(delivered);
+        });
+        expect(made == noErr && destination != 0, "a destination of the library is made over the stand-in");
+        gHeldObject = destination;
+        __block Boolean firstResult = false;
+        dispatch_semaphore_t firstDone = dispatch_semaphore_create(0);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            firstResult = CharonMIDIDeliverInProcess(destination, words, 2);
+            dispatch_semaphore_signal(firstDone);
+        });
+        int inRead = dispatch_semaphore_wait(gHeldEntered, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
+        __block Boolean otherResult = true;
+        dispatch_semaphore_t otherDone = dispatch_semaphore_create(0);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            otherResult = CharonMIDIDeliverInProcess(50, words, 2);
+            dispatch_semaphore_signal(otherDone);
+        });
+        int otherReturned = dispatch_semaphore_wait(otherDone, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
+        expect(inRead && otherReturned && !otherResult,
+               "a send to another endpoint returns while a send of another thread is inside its read of the object");
+        dispatch_semaphore_signal(gHeldRelease);
+        int firstReturned = dispatch_semaphore_wait(firstDone, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
+        int arrived = dispatch_semaphore_wait(delivered, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
+        expect(firstReturned && firstResult && arrived && deliveries == 1, "and that send is delivered to the block once");
+        if (!otherReturned)
+            dispatch_semaphore_wait(otherDone, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC));
+
+        // A queued delivery holds the destination's port: the object goes and its row is swept while the block is running, and
+        // the block (with what it captured) is released only after the call returns.
+        int baseline = gLive;
+        dispatch_semaphore_t blockEntered = dispatch_semaphore_create(0);
+        dispatch_semaphore_t blockRelease = dispatch_semaphore_create(0);
+        MIDIEndpointRef second = make_destination_holding_a_token(blockEntered, blockRelease);
+        expect(second != 0 && gLive == baseline + 1, "a destination whose block holds a token is made");
+        Boolean sent = CharonMIDIDeliverInProcess(second, words, 2);
+        int running = dispatch_semaphore_wait(blockEntered, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0;
+        gObject[second].exists = 0;
+        for (int i = 0; i < 24; i++)
+            own(30 + i, 3000 + i);
+        expect(sent && running && gLive == baseline + 1 + 24, "the object is gone and its row swept while the block runs: the token is alive");
+        dispatch_semaphore_signal(blockRelease);
+        for (int i = 0; i < 200 && gLive != baseline + 24; i++)
+            usleep(10000);
+        expect(gLive == baseline + 24, "and it is released once the call has returned");
     }
     printf("staleness: %d failures\n", gFailures);
     return gFailures ? 1 : 0;

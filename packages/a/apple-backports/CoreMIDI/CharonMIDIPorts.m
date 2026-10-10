@@ -30,16 +30,44 @@ typedef struct charon_source {
     CharonMIDIParser parser;
 } charon_source;
 
-// The receive side of one port or destination: the block it was given, retained for as long as it lives, the protocol its
-// events are delivered in, the parsers of its sources, and the lock that guards those parsers.
+// The receive side of one port or destination: the block it was given (copied once, kept until the last reference is gone), the
+// protocol its events are delivered in, the parsers of its sources, and the lock that guards those parsers. References are
+// counted: the row of the owned table holds one, and every read callback, send and queued delivery that calls the block holds
+// one for as long as it does. That is the lifetime rule of the block: it is called with no retain of its own (no
+// objc_retainBlock, no autorelease: the sender's thread may have no pool), because the port that holds it cannot be freed under the
+// call, whichever thread frees the row.
 typedef struct charon_port {
     void *block;
     int protocol;
+    int references;
     pthread_mutex_t lock;
     charon_source *sources;
     size_t sourceCount;
     size_t sourceCapacity;
 } charon_port;
+
+static void charon_free_port(charon_port *port);
+
+static void charon_port_retain(charon_port *port)
+{
+    __atomic_add_fetch(&port->references, 1, __ATOMIC_RELAXED);
+}
+
+// The last reference frees the port and its block: the acquire-release order makes what every holder did to the port visible to
+// the thread that frees it.
+static void charon_port_release(charon_port *port)
+{
+    if (__atomic_sub_fetch(&port->references, 1, __ATOMIC_ACQ_REL) == 0)
+        charon_free_port(port);
+}
+
+// Calls the port's block with a list. The port holds the block and the caller holds a reference to the port, so the call makes no
+// retain of the block of its own.
+static void charon_port_call(charon_port *port, const MIDIEventList *list, void *srcConnRefCon)
+{
+    __unsafe_unretained MIDIReceiveBlock block = (__bridge MIDIReceiveBlock)port->block;
+    block(list, srcConnRefCon);
+}
 
 // The 2.0 parameter selection each destination (or source) last sent on each channel.
 typedef struct charon_route {
@@ -98,9 +126,8 @@ static CharonMIDIParser *charon_source_parser(charon_port *port, void *refCon)
 // The receive thread of the release calls this with a list of MIDI 1.0 packets. Each packet becomes one event packet of the
 // same time stamp, in the port's protocol. The parser is the source's own, so a SysEx that is open at the end of one list is
 // continued by the next, and the list's last packet sends whatever is still held.
-static void charon_protocol_read(const MIDIPacketList *packets, void *refCon, void *srcConnRefCon)
+static void charon_read_held(charon_port *port, const MIDIPacketList *packets, void *srcConnRefCon)
 {
-    charon_port *port = refCon;
     if (!port->block)
         return;
     // Eight bytes of event per byte of input bounds every message's words, a SysEx's included. The sizes are summed with checks:
@@ -150,10 +177,19 @@ static void charon_protocol_read(const MIDIPacketList *packets, void *refCon, vo
     pthread_mutex_unlock(&port->lock);
     free(words.words);
     if (list->numPackets > 0) {
-        MIDIReceiveBlock block = (__bridge MIDIReceiveBlock)port->block;
-        block(list, srcConnRefCon);
+        charon_port_call(port, list, srcConnRefCon);
     }
     free(list);
+}
+
+// The release's read procedure of the port's source. The reference is taken for the whole call: the release does not tell the
+// library about a dispose, and a row that is found stale on another thread frees its reference, not the port under this call.
+static void charon_protocol_read(const MIDIPacketList *packets, void *refCon, void *srcConnRefCon)
+{
+    charon_port *port = refCon;
+    charon_port_retain(port);
+    charon_read_held(port, packets, srcConnRefCon);
+    charon_port_release(port);
 }
 
 // The protocol of an endpoint, as the port sets it. The result is the release's; a caller that cannot set it disposes the endpoint.
@@ -168,6 +204,7 @@ static charon_port *charon_new_port(MIDIProtocolID protocol, MIDIReceiveBlock bl
     if (!port)
         return NULL;
     port->protocol = (int)protocol;
+    port->references = 1;
     port->block = block ? (__bridge_retained void *)[block copy] : NULL;
     pthread_mutex_init(&port->lock, NULL);
     return port;
@@ -224,7 +261,7 @@ static int charon_row_stale(const charon_owned *row)
 static void charon_free_owned(charon_owned *row)
 {
     if (row->port)
-        charon_free_port(row->port);
+        charon_port_release(row->port);
     if (row->refCon)
         (void)(__bridge_transfer id)row->refCon;
 }
@@ -286,34 +323,49 @@ static void charon_own(MIDIObjectRef object, int destination, charon_port *port,
     pthread_mutex_unlock(&charon_owned_lock);
 }
 
-// What this process made an endpoint: a destination with a live receive side (its block and protocol are returned), a destination
-// that is gone (sends to it deliver nothing), or an endpoint that is not one of this process's destinations, which is so when its
-// reference is not in the table or the reference now answers another UniqueID.
+// What this process made an endpoint: a destination with a live receive side (its port is returned, with a reference the caller
+// releases), a destination that is gone (sends to it deliver nothing), or an endpoint that is not one of this process's
+// destinations, which is so when its reference is not in the table or the reference now belongs to another object.
 typedef enum {
     charon_not_ours,
     charon_ours_live,
     charon_ours_gone
 } charon_ownership;
 
-static charon_ownership charon_destination_state(MIDIEndpointRef endpoint, MIDIReceiveBlock *block, int *protocol)
+// The table is searched under its lock, which is held for the search and the reference alone: the property read that decides
+// whether the object is still there is a call into the release (it may be a round trip to the server), and a send on another
+// thread must not wait for it.
+static charon_ownership charon_destination_state(MIDIEndpointRef endpoint, charon_port **outPort)
 {
-    charon_ownership state = charon_not_ours;
+    charon_port *port = NULL;
+    int stamped = 0;
+    SInt32 stamp = 0;
     pthread_mutex_lock(&charon_owned_lock);
     for (size_t i = 0; i < charon_owned_count; i++) {
-        charon_owned *row = &charon_owned_rows[i];
+        const charon_owned *row = &charon_owned_rows[i];
         if (!row->destination || row->object != endpoint || !row->port)
             continue;
-        *block = (__bridge MIDIReceiveBlock)row->port->block;
-        *protocol = row->port->protocol;
-        charon_object_state object = charon_object_check(endpoint, row->stamped, row->stamp);
-        if (object == charon_object_gone)
-            state = charon_ours_gone;
-        else if (object == charon_object_live)
-            state = charon_ours_live;
+        port = row->port;
+        stamped = row->stamped;
+        stamp = row->stamp;
+        charon_port_retain(port);
         break;
     }
     pthread_mutex_unlock(&charon_owned_lock);
-    return state;
+    if (!port)
+        return charon_not_ours;
+    switch (charon_object_check(endpoint, stamped, stamp)) {
+    case charon_object_live:
+        *outPort = port;
+        return charon_ours_live;
+    case charon_object_gone:
+        charon_port_release(port);
+        return charon_ours_gone;
+    case charon_object_replaced:
+        break;
+    }
+    charon_port_release(port);
+    return charon_not_ours;
 }
 
 // The one queue every in-process delivery runs on, serial, so that the sends of this process arrive in the order they were made.
@@ -328,13 +380,36 @@ static dispatch_queue_t charon_delivery_queue(void)
     return queue;
 }
 
-// Hands a list to a block on the delivery queue. The list belongs to the delivery: the queue frees it after the block returns.
-static void charon_deliver_async(MIDIReceiveBlock block, MIDIEventList *list)
+// One queued delivery: the port whose block is called (the delivery holds a reference to it) and the list, in one allocation.
+typedef struct charon_delivery {
+    charon_port *port;
+    MIDIEventList list;
+} charon_delivery;
+
+// An allocation for a delivery of a list of `bytes` bytes (a list header, packets and words, as the caller sized them). The port
+// is stored by charon_deliver_async.
+static charon_delivery *charon_delivery_new(size_t bytes)
 {
-    dispatch_async(charon_delivery_queue(), ^{
-        block(list, NULL);
-        free(list);
-    });
+    size_t total = offsetof(charon_delivery, list);
+    if (!charon_size_add(&total, bytes))
+        return NULL;
+    return malloc(total);
+}
+
+static void charon_delivery_run(void *context)
+{
+    charon_delivery *delivery = context;
+    charon_port_call(delivery->port, &delivery->list, NULL);
+    charon_port_release(delivery->port);
+    free(delivery);
+}
+
+// Hands a delivery to its port's block on the delivery queue. The delivery owns the reference the caller took (it is released
+// after the block returns) and the memory (freed then).
+static void charon_deliver_async(charon_port *port, charon_delivery *delivery)
+{
+    delivery->port = port;
+    dispatch_async_f(charon_delivery_queue(), delivery, charon_delivery_run);
 }
 
 OSStatus CharonMIDIInputPort(MIDIClientRef client, CFStringRef portName, MIDIProtocolID protocol,
@@ -347,7 +422,7 @@ OSStatus CharonMIDIInputPort(MIDIClientRef client, CFStringRef portName, MIDIPro
         return charon_memFullErr;
     OSStatus status = MIDIInputPortCreate(client, portName, charon_protocol_read, port, outPort);
     if (status != noErr)
-        charon_free_port(port);
+        charon_port_release(port);
     else
         charon_own(*outPort, 0, port, NULL);
     return status;
@@ -357,29 +432,38 @@ OSStatus CharonMIDIInputPort(MIDIClientRef client, CFStringRef portName, MIDIPro
 // the endpoint is not one of this process's destinations; a destination that is gone takes nothing, as macOS delivers nothing to one.
 Boolean CharonMIDIDeliverInProcess(MIDIEndpointRef endpoint, const UInt32 *words, UInt32 count)
 {
-    MIDIReceiveBlock block = NULL;
-    int protocol = 0;
-    charon_ownership state = charon_destination_state(endpoint, &block, &protocol);
+    charon_port *port = NULL;
+    charon_ownership state = charon_destination_state(endpoint, &port);
     if (state == charon_not_ours)
         return false;
-    if (state == charon_ours_gone || !block)
+    if (state == charon_ours_gone)
         return true;
+    if (!port->block) {
+        charon_port_release(port);
+        return true;
+    }
     // The list header, one packet's header, and the words: four bytes a word, summed with checks.
     size_t bytes = 0;
     if (!charon_size_mul(&bytes, 4, count) || !charon_size_add(&bytes, 8 + sizeof(MIDITimeStamp) + sizeof(UInt32))) {
         charon_refused("a UMP send of this many words");
+        charon_port_release(port);
         return true;
     }
-    MIDIEventList *list = malloc(bytes);
-    if (!list)
+    charon_delivery *delivery = charon_delivery_new(bytes);
+    if (!delivery) {
+        charon_port_release(port);
         return true;
-    list->protocol = (MIDIProtocolID)protocol;
+    }
+    MIDIEventList *list = &delivery->list;
+    list->protocol = (MIDIProtocolID)port->protocol;
     list->numPackets = 0;
     MIDIEventPacket *last = NULL;
-    if (CharonMIDIEventListAppend(list, bytes, &list->packet[0], &last, 0, count, words))
-        charon_deliver_async(block, list);
-    else
-        free(list);
+    if (CharonMIDIEventListAppend(list, bytes, &list->packet[0], &last, 0, count, words)) {
+        charon_deliver_async(port, delivery);
+    } else {
+        free(delivery);
+        charon_port_release(port);
+    }
     return true;
 }
 
@@ -388,14 +472,21 @@ Boolean CharonMIDIDeliverInProcess(MIDIEndpointRef endpoint, const UInt32 *words
 // destination, and then the list takes the release's route; a list that cannot be copied answers memFullErr and sends nothing.
 static int charon_deliver_2_0(MIDIEndpointRef endpoint, const MIDIEventList *source, OSStatus *status)
 {
-    MIDIReceiveBlock block = NULL;
-    int protocol = 0;
-    charon_ownership state = charon_destination_state(endpoint, &block, &protocol);
-    if (state == charon_not_ours || protocol != kMIDIProtocol_2_0)
+    charon_port *port = NULL;
+    charon_ownership state = charon_destination_state(endpoint, &port);
+    if (state == charon_not_ours)
         return 0;
+    if (state == charon_ours_live && port->protocol != kMIDIProtocol_2_0) {
+        charon_port_release(port);
+        return 0;
+    }
     *status = noErr;
-    if (state == charon_ours_gone || !block)
+    if (state == charon_ours_gone)
         return 1;
+    if (!port->block) {
+        charon_port_release(port);
+        return 1;
+    }
     size_t bytes = 16;
     const MIDIEventPacket *event = &source->packet[0];
     for (UInt32 i = 0; i < source->numPackets; i++) {
@@ -403,15 +494,18 @@ static int charon_deliver_2_0(MIDIEndpointRef endpoint, const MIDIEventList *sou
         if (!charon_size_mul(&piece, 4, event->wordCount) || !charon_size_add(&piece, 16) || !charon_size_add(&bytes, piece)) {
             *status = charon_memFullErr;
             charon_refused("a 2.0 list of this many words");
+            charon_port_release(port);
             return 1;
         }
         event = MIDIEventPacketNext(event);
     }
-    MIDIEventList *list = malloc(bytes);
-    if (!list) {
+    charon_delivery *delivery = charon_delivery_new(bytes);
+    if (!delivery) {
         *status = charon_memFullErr;
+        charon_port_release(port);
         return 1;
     }
+    MIDIEventList *list = &delivery->list;
     list->protocol = kMIDIProtocol_2_0;
     list->numPackets = 0;
     MIDIEventPacket *end = &list->packet[0];
@@ -421,11 +515,12 @@ static int charon_deliver_2_0(MIDIEndpointRef endpoint, const MIDIEventList *sou
         end = CharonMIDIEventListAppend(list, bytes, end, &last, event->timeStamp, event->wordCount, event->words);
         event = MIDIEventPacketNext(event);
     }
-    if (end)
-        charon_deliver_async(block, list);
-    else {
+    if (end) {
+        charon_deliver_async(port, delivery);
+    } else {
         *status = charon_memFullErr;
-        free(list);
+        free(delivery);
+        charon_port_release(port);
     }
     return 1;
 }
@@ -440,7 +535,7 @@ OSStatus CharonMIDIDestination(MIDIClientRef client, CFStringRef name, MIDIProto
         return charon_memFullErr;
     OSStatus status = MIDIDestinationCreate(client, name, charon_protocol_read, port, outDest);
     if (status != noErr) {
-        charon_free_port(port);
+        charon_port_release(port);
         return status;
     }
     status = charon_set_protocol(*outDest, protocol);
@@ -448,7 +543,7 @@ OSStatus CharonMIDIDestination(MIDIClientRef client, CFStringRef name, MIDIProto
         // The destination is not handed out: it is disposed, and nothing of the port is kept.
         if (MIDIEndpointDispose(*outDest) != noErr)
             charon_refused("the dispose of a destination whose protocol was refused");
-        charon_free_port(port);
+        charon_port_release(port);
         return status;
     }
     charon_own(*outDest, 1, port, NULL);

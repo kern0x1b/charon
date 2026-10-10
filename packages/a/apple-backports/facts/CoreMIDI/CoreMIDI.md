@@ -133,3 +133,16 @@ Alternatives, and why each lost:
   running a loop, and would still not cover the objects whose blocks it holds most often.
 - Intercepting the library's own dispose entries: the entries are the release's exports (MIDIEndpointDispose, MIDIPortDispose,
   MIDIClientDispose); the port cannot interpose them (facts/VideoToolbox/PixelRotationSession.md).
+
+## The receive block's lifetime and the locks of the send path (2026-10-10)
+
+- A port or destination keeps the block it was given as one copy, made when the object is made, and counts references to its
+  receive side: the owned row holds one, and each read callback, each in-process send and each queued delivery holds one for as
+  long as it calls the block. The block is called with no retain of its own, so an application's sender thread (often an audio or
+  MIDI thread with no autorelease pool) leaves nothing in a pool. Before, the lookup handed the block out through an ARC
+  out-parameter: armv7 -O2 of the lookup called objc_retainBlock and objc_autorelease on every send, and the read callback called
+  objc_retainBlock and objc_release on every callback (counted in the run folder of the band, asm-c3-before.txt and
+  asm-c3-after.txt: the calls of the send, delivery and read paths are 0 after).
+- The owned table's lock is held for the search and the reference alone. The read of the object's stamp, a call into the release
+  that may be a round trip to the server, is made after the lock is let go, so a send on another thread (to any endpoint) does not
+  wait for it.

@@ -68,12 +68,14 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations \
     -I"$CORE" -I"$here" "$here/entity.m" "$CORE/MIDIDevice14.m" -framework Foundation -framework CoreMIDI -o "$build/entity"
 "$build/entity" > "$build/entity.log" 2>&1 && entity=0 || entity=$?
 cat "$build/entity.log"
-# The rows of CharonMIDIPorts.m against a release that gives a disposed reference to a new object (staleness.m): the two
-# release calls the rows make (the read of an object's property and the write of the library's stamp) are renamed to stand-ins,
+# The rows of CharonMIDIPorts.m against a release that gives a disposed reference to a new object (staleness.m): the three
+# release calls the rows make (the read of an object's property, the write of the library's stamp and the creation of a virtual
+# destination) are renamed to stand-ins,
 # in the file and in the test.
 xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations \
     -DMIDIObjectGetIntegerProperty=charon_test_MIDIObjectGetIntegerProperty \
-    -DMIDIObjectSetIntegerProperty=charon_test_MIDIObjectSetIntegerProperty -I"$CORE" -I"$here" \
+    -DMIDIObjectSetIntegerProperty=charon_test_MIDIObjectSetIntegerProperty \
+    -DMIDIDestinationCreate=charon_test_MIDIDestinationCreate -I"$CORE" -I"$here" \
     "$here/staleness.m" "$CORE/CharonMIDIPorts.m" "$build/CharonCoreMIDI.o" -framework Foundation -framework CoreMIDI -o "$build/staleness"
 "$build/staleness" > "$build/staleness.log" 2>&1 && stale=0 || stale=$?
 cat "$build/staleness.log"
