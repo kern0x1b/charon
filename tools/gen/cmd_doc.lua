@@ -36,6 +36,7 @@ local MEMBER_KINDS = {method = true, property = true}
 -- written in place of the oracle's text and are listed in the report; nothing is taken from the spec's or the protocols' decl column.
 local COMMENTS_NOT_DERIVED = "- not derived: the extractor has no comment mode"
 local DECL_NOT_DERIVED = "not derived: decl (ruling D8)"
+local comment_lines = import("doc_text", {anonymous = true}).comment_lines
 -- The host oracle's rows a class page shows, and the cell length a markdown cell is cut to.
 local ORACLE_ROWS_SHOWN = 60
 local CELL_LIMIT = 400
@@ -230,7 +231,9 @@ local function class_page(parsed, fw, cls, members, ctx)
     page[#page + 1] = ""
     page[#page + 1] = "## Header comments"
     page[#page + 1] = ""
-    page[#page + 1] = COMMENTS_NOT_DERIVED
+    for _, line in ipairs(comment_lines(ctx.tree, fw, COMMENTS_NOT_DERIVED)) do
+        page[#page + 1] = line
+    end
     if oracle[cls] then
         page[#page + 1] = ""
         page[#page + 1] = "## Host oracle (macOS, class state and defaults; v-cache26 capture)"
@@ -304,7 +307,9 @@ local function protocol_page(fw, name, record, ctx)
     page[#page + 1] = ""
     page[#page + 1] = "## Header comments"
     page[#page + 1] = ""
-    page[#page + 1] = COMMENTS_NOT_DERIVED
+    for _, line in ipairs(comment_lines(ctx.tree, fw, COMMENTS_NOT_DERIVED)) do
+        page[#page + 1] = line
+    end
     page[#page + 1] = ""
     page[#page + 1] = "## Behaviour summary"
     page[#page + 1] = ""
