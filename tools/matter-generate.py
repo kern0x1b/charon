@@ -3128,10 +3128,6 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
     body.append("    NSNumber *_charon_endpoint;\n")
     if cluster not in QUEUE_SUPERS:
         body.append("    dispatch_queue_t _charon_queue;\n")
-    # PACKAGE, not private: the static C functions below read this table from outside the methods, and a
-    # private ivar is not visible to them ("instance variable is private"). The offset symbol stays private
-    # external in the object, so the table is still exported by nothing.
-    body.append("    @package\n")
     body.append("    NSMutableDictionary *_charon_values;\n")
     body.append("}\n")
     body.append("@end\n\n")
@@ -3198,7 +3194,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                         "    if (!%s) {\n        return;\n    }\n"
                         "    id written;\n"
                         "    @synchronized (self) {\n"
-                        "        written = charon_port_values(self)[@\"%s\"];\n"
+                        "        written = charon_port_values(&_charon_values)[@\"%s\"];\n"
                         "    }\n"
                         "    %s;\n}\n\n"
                         % (s, completion, name, completion_call(s, completion, "written")))
@@ -3215,7 +3211,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                         "    if (!%s) {\n        return;\n    }\n"
                         "    id written;\n"
                         "    @synchronized (self) {\n"
-                        "        written = charon_port_values(self)[@\"%s\"];\n"
+                        "        written = charon_port_values(&_charon_values)[@\"%s\"];\n"
                         "    }\n"
                         "    %s;\n}\n\n"
                         % (s, unused, completion, name,
@@ -3231,7 +3227,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             unused = "".join("    (void)%s;\n" % each for each in names)
             body.append("%s\n{\n%s"
                         "    @synchronized (self) {\n"
-                        "        return charon_port_values(self)[@\"%s\"];\n"
+                        "        return charon_port_values(&_charon_values)[@\"%s\"];\n"
                         "    }\n}\n\n"
                         % (strip_return_nullability(s), unused, name))
         for s in info.get("write", []):
@@ -3247,7 +3243,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                 continue
             body.append("%s\n{\n"
                         "    @synchronized (self) {\n"
-                        "        charon_port_values(self)[@\"%s\"] = %s;\n"
+                        "        charon_port_values(&_charon_values)[@\"%s\"] = %s;\n"
                         "    }\n"
                         "    if (%s) {\n        %s;\n    }\n}\n\n"
                         % (s, name, value_name, completion, completion_call(s, completion)))
@@ -3264,7 +3260,7 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
             unused = "".join("    (void)%s;\n" % each for each in names[1:])
             body.append("%s\n{\n"
                         "    @synchronized (self) {\n"
-                        "        charon_port_values(self)[@\"%s\"] = %s;\n"
+                        "        charon_port_values(&_charon_values)[@\"%s\"] = %s;\n"
                         "    }\n%s}\n\n"
                         % (s, name, names[0], unused))
         for s in info.get("subscribe", []):
@@ -3397,16 +3393,19 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
     # initializer never ran this class's. It takes NO lock: the caller holds the object's lock for the whole
     # of its access, and every read and write above takes that lock once.
     helpers = []
-    if any("charon_port_values(self)" in each for each in body):
+    if any("charon_port_values(&_charon_values)" in each for each in body):
         helpers.append("// The values the caller has written, by attribute name: this object's own table, made on\n"
                        "// first use. The caller holds the object's lock for the whole of its access, so this takes\n"
                        "// none. It is not keyed by the class: two objects of one class are two tables, as they are\n"
                        "// two sets of state in the framework.\n"
-                       "static NSMutableDictionary *charon_port_values(%s *object)\n{\n"
-                       "    if (!object->_charon_values) {\n"
-                       "        object->_charon_values = [NSMutableDictionary dictionary];\n"
+                       "// It takes the table by its address, not the object: naming the class here would not compile\n"
+                       "// where the host SDK marks that class unavailable, as it does for some commodity and closure\n"
+                       "// clusters.\n"
+                       "static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)\n{\n"
+                       "    if (!*values) {\n"
+                       "        *values = [NSMutableDictionary dictionary];\n"
                        "    }\n"
-                       "    return object->_charon_values;\n}\n\n" % cluster)
+                       "    return *values;\n}\n\n")
     if any("charon_port_no_node_error()" in each for each in body):
         helpers.append("// The error a member that would need a node answers, on a release with no Matter\n"
                        "// hardware: there is no controller to ask and no node to read from. It is the framework's\n"

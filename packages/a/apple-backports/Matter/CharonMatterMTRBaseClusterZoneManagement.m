@@ -34,7 +34,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -43,12 +42,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRBaseClusterZoneManagement *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -106,7 +108,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"MaxUserDefinedZones"];
+        written = charon_port_values(&_charon_values)[@"MaxUserDefinedZones"];
     }
     completion(written, nil);
 }
@@ -133,7 +135,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"MaxZones"];
+        written = charon_port_values(&_charon_values)[@"MaxZones"];
     }
     completion(written, nil);
 }
@@ -160,7 +162,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Zones"];
+        written = charon_port_values(&_charon_values)[@"Zones"];
     }
     completion(written, nil);
 }
@@ -187,7 +189,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Triggers"];
+        written = charon_port_values(&_charon_values)[@"Triggers"];
     }
     completion(written, nil);
 }
@@ -214,7 +216,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"SensitivityMax"];
+        written = charon_port_values(&_charon_values)[@"SensitivityMax"];
     }
     completion(written, nil);
 }
@@ -241,7 +243,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Sensitivity"];
+        written = charon_port_values(&_charon_values)[@"Sensitivity"];
     }
     completion(written, nil);
 }
@@ -249,7 +251,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeSensitivityWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Sensitivity"] = value;
+        charon_port_values(&_charon_values)[@"Sensitivity"] = value;
     }
     if (completion) {
         completion(nil);
@@ -259,7 +261,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeSensitivityWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Sensitivity"] = value;
+        charon_port_values(&_charon_values)[@"Sensitivity"] = value;
     }
     if (completion) {
         completion(nil);
@@ -288,7 +290,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"TwoDCartesianMax"];
+        written = charon_port_values(&_charon_values)[@"TwoDCartesianMax"];
     }
     completion(written, nil);
 }
@@ -315,7 +317,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"GeneratedCommandList"];
+        written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -342,7 +344,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AcceptedCommandList"];
+        written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -369,7 +371,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AttributeList"];
+        written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -396,7 +398,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"FeatureMap"];
+        written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -423,7 +425,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ClusterRevision"];
+        written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
     completion(written, nil);
 }

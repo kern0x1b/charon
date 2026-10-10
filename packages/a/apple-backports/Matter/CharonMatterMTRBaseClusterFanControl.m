@@ -43,7 +43,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -52,12 +51,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRBaseClusterFanControl *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -115,7 +117,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"FanMode"];
+        written = charon_port_values(&_charon_values)[@"FanMode"];
     }
     completion(written, nil);
 }
@@ -123,7 +125,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeFanModeWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"FanMode"] = value;
+        charon_port_values(&_charon_values)[@"FanMode"] = value;
     }
     if (completion) {
         completion(nil);
@@ -133,7 +135,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeFanModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"FanMode"] = value;
+        charon_port_values(&_charon_values)[@"FanMode"] = value;
     }
     if (completion) {
         completion(nil);
@@ -143,7 +145,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeFanModeWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"FanMode"] = value;
+        charon_port_values(&_charon_values)[@"FanMode"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -153,7 +155,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeFanModeWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"FanMode"] = value;
+        charon_port_values(&_charon_values)[@"FanMode"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -199,7 +201,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"FanModeSequence"];
+        written = charon_port_values(&_charon_values)[@"FanModeSequence"];
     }
     completion(written, nil);
 }
@@ -207,7 +209,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeFanModeSequenceWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"FanModeSequence"] = value;
+        charon_port_values(&_charon_values)[@"FanModeSequence"] = value;
     }
     if (completion) {
         completion(nil);
@@ -217,7 +219,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeFanModeSequenceWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"FanModeSequence"] = value;
+        charon_port_values(&_charon_values)[@"FanModeSequence"] = value;
     }
     if (completion) {
         completion(nil);
@@ -227,7 +229,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeFanModeSequenceWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"FanModeSequence"] = value;
+        charon_port_values(&_charon_values)[@"FanModeSequence"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -237,7 +239,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeFanModeSequenceWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"FanModeSequence"] = value;
+        charon_port_values(&_charon_values)[@"FanModeSequence"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -283,7 +285,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"PercentSetting"];
+        written = charon_port_values(&_charon_values)[@"PercentSetting"];
     }
     completion(written, nil);
 }
@@ -291,7 +293,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePercentSettingWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PercentSetting"] = value;
+        charon_port_values(&_charon_values)[@"PercentSetting"] = value;
     }
     if (completion) {
         completion(nil);
@@ -301,7 +303,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePercentSettingWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PercentSetting"] = value;
+        charon_port_values(&_charon_values)[@"PercentSetting"] = value;
     }
     if (completion) {
         completion(nil);
@@ -311,7 +313,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePercentSettingWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PercentSetting"] = value;
+        charon_port_values(&_charon_values)[@"PercentSetting"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -321,7 +323,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePercentSettingWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PercentSetting"] = value;
+        charon_port_values(&_charon_values)[@"PercentSetting"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -367,7 +369,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"PercentCurrent"];
+        written = charon_port_values(&_charon_values)[@"PercentCurrent"];
     }
     completion(written, nil);
 }
@@ -411,7 +413,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"SpeedMax"];
+        written = charon_port_values(&_charon_values)[@"SpeedMax"];
     }
     completion(written, nil);
 }
@@ -455,7 +457,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"SpeedSetting"];
+        written = charon_port_values(&_charon_values)[@"SpeedSetting"];
     }
     completion(written, nil);
 }
@@ -463,7 +465,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeSpeedSettingWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"SpeedSetting"] = value;
+        charon_port_values(&_charon_values)[@"SpeedSetting"] = value;
     }
     if (completion) {
         completion(nil);
@@ -473,7 +475,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeSpeedSettingWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"SpeedSetting"] = value;
+        charon_port_values(&_charon_values)[@"SpeedSetting"] = value;
     }
     if (completion) {
         completion(nil);
@@ -483,7 +485,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeSpeedSettingWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"SpeedSetting"] = value;
+        charon_port_values(&_charon_values)[@"SpeedSetting"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -493,7 +495,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeSpeedSettingWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"SpeedSetting"] = value;
+        charon_port_values(&_charon_values)[@"SpeedSetting"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -539,7 +541,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"SpeedCurrent"];
+        written = charon_port_values(&_charon_values)[@"SpeedCurrent"];
     }
     completion(written, nil);
 }
@@ -583,7 +585,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"RockSupport"];
+        written = charon_port_values(&_charon_values)[@"RockSupport"];
     }
     completion(written, nil);
 }
@@ -627,7 +629,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"RockSetting"];
+        written = charon_port_values(&_charon_values)[@"RockSetting"];
     }
     completion(written, nil);
 }
@@ -635,7 +637,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeRockSettingWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"RockSetting"] = value;
+        charon_port_values(&_charon_values)[@"RockSetting"] = value;
     }
     if (completion) {
         completion(nil);
@@ -645,7 +647,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeRockSettingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"RockSetting"] = value;
+        charon_port_values(&_charon_values)[@"RockSetting"] = value;
     }
     if (completion) {
         completion(nil);
@@ -655,7 +657,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeRockSettingWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"RockSetting"] = value;
+        charon_port_values(&_charon_values)[@"RockSetting"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -665,7 +667,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeRockSettingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"RockSetting"] = value;
+        charon_port_values(&_charon_values)[@"RockSetting"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -711,7 +713,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"WindSupport"];
+        written = charon_port_values(&_charon_values)[@"WindSupport"];
     }
     completion(written, nil);
 }
@@ -755,7 +757,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"WindSetting"];
+        written = charon_port_values(&_charon_values)[@"WindSetting"];
     }
     completion(written, nil);
 }
@@ -763,7 +765,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeWindSettingWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WindSetting"] = value;
+        charon_port_values(&_charon_values)[@"WindSetting"] = value;
     }
     if (completion) {
         completion(nil);
@@ -773,7 +775,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeWindSettingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WindSetting"] = value;
+        charon_port_values(&_charon_values)[@"WindSetting"] = value;
     }
     if (completion) {
         completion(nil);
@@ -783,7 +785,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeWindSettingWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WindSetting"] = value;
+        charon_port_values(&_charon_values)[@"WindSetting"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -793,7 +795,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeWindSettingWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WindSetting"] = value;
+        charon_port_values(&_charon_values)[@"WindSetting"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -839,7 +841,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AirflowDirection"];
+        written = charon_port_values(&_charon_values)[@"AirflowDirection"];
     }
     completion(written, nil);
 }
@@ -847,7 +849,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeAirflowDirectionWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"AirflowDirection"] = value;
+        charon_port_values(&_charon_values)[@"AirflowDirection"] = value;
     }
     if (completion) {
         completion(nil);
@@ -857,7 +859,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeAirflowDirectionWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"AirflowDirection"] = value;
+        charon_port_values(&_charon_values)[@"AirflowDirection"] = value;
     }
     if (completion) {
         completion(nil);
@@ -886,7 +888,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"GeneratedCommandList"];
+        written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -930,7 +932,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AcceptedCommandList"];
+        written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -974,7 +976,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AttributeList"];
+        written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -1018,7 +1020,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"FeatureMap"];
+        written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -1062,7 +1064,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ClusterRevision"];
+        written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
     completion(written, nil);
 }

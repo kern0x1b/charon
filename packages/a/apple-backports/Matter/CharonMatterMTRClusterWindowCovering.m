@@ -43,7 +43,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -52,12 +51,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRClusterWindowCovering *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -112,7 +114,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Type"];
+        return charon_port_values(&_charon_values)[@"Type"];
     }
 }
 
@@ -121,7 +123,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PhysicalClosedLimitLift"];
+        return charon_port_values(&_charon_values)[@"PhysicalClosedLimitLift"];
     }
 }
 
@@ -130,7 +132,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PhysicalClosedLimitTilt"];
+        return charon_port_values(&_charon_values)[@"PhysicalClosedLimitTilt"];
     }
 }
 
@@ -139,7 +141,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentPositionLift"];
+        return charon_port_values(&_charon_values)[@"CurrentPositionLift"];
     }
 }
 
@@ -148,7 +150,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentPositionTilt"];
+        return charon_port_values(&_charon_values)[@"CurrentPositionTilt"];
     }
 }
 
@@ -157,7 +159,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"NumberOfActuationsLift"];
+        return charon_port_values(&_charon_values)[@"NumberOfActuationsLift"];
     }
 }
 
@@ -166,7 +168,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"NumberOfActuationsTilt"];
+        return charon_port_values(&_charon_values)[@"NumberOfActuationsTilt"];
     }
 }
 
@@ -175,7 +177,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ConfigStatus"];
+        return charon_port_values(&_charon_values)[@"ConfigStatus"];
     }
 }
 
@@ -184,7 +186,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentPositionLiftPercentage"];
+        return charon_port_values(&_charon_values)[@"CurrentPositionLiftPercentage"];
     }
 }
 
@@ -193,7 +195,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentPositionTiltPercentage"];
+        return charon_port_values(&_charon_values)[@"CurrentPositionTiltPercentage"];
     }
 }
 
@@ -202,7 +204,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"OperationalStatus"];
+        return charon_port_values(&_charon_values)[@"OperationalStatus"];
     }
 }
 
@@ -211,7 +213,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TargetPositionLiftPercent100ths"];
+        return charon_port_values(&_charon_values)[@"TargetPositionLiftPercent100ths"];
     }
 }
 
@@ -220,7 +222,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TargetPositionTiltPercent100ths"];
+        return charon_port_values(&_charon_values)[@"TargetPositionTiltPercent100ths"];
     }
 }
 
@@ -229,7 +231,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"EndProductType"];
+        return charon_port_values(&_charon_values)[@"EndProductType"];
     }
 }
 
@@ -238,7 +240,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentPositionLiftPercent100ths"];
+        return charon_port_values(&_charon_values)[@"CurrentPositionLiftPercent100ths"];
     }
 }
 
@@ -247,7 +249,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentPositionTiltPercent100ths"];
+        return charon_port_values(&_charon_values)[@"CurrentPositionTiltPercent100ths"];
     }
 }
 
@@ -256,7 +258,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"InstalledOpenLimitLift"];
+        return charon_port_values(&_charon_values)[@"InstalledOpenLimitLift"];
     }
 }
 
@@ -265,7 +267,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"InstalledClosedLimitLift"];
+        return charon_port_values(&_charon_values)[@"InstalledClosedLimitLift"];
     }
 }
 
@@ -274,7 +276,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"InstalledOpenLimitTilt"];
+        return charon_port_values(&_charon_values)[@"InstalledOpenLimitTilt"];
     }
 }
 
@@ -283,7 +285,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"InstalledClosedLimitTilt"];
+        return charon_port_values(&_charon_values)[@"InstalledClosedLimitTilt"];
     }
 }
 
@@ -292,14 +294,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Mode"];
+        return charon_port_values(&_charon_values)[@"Mode"];
     }
 }
 
 - (void)writeAttributeModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Mode"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"Mode"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -307,7 +309,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeModeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Mode"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"Mode"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -318,7 +320,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"SafetyStatus"];
+        return charon_port_values(&_charon_values)[@"SafetyStatus"];
     }
 }
 
@@ -327,7 +329,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"GeneratedCommandList"];
+        return charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
 }
 
@@ -336,7 +338,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AcceptedCommandList"];
+        return charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
 }
 
@@ -345,7 +347,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AttributeList"];
+        return charon_port_values(&_charon_values)[@"AttributeList"];
     }
 }
 
@@ -354,7 +356,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"FeatureMap"];
+        return charon_port_values(&_charon_values)[@"FeatureMap"];
     }
 }
 
@@ -363,7 +365,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ClusterRevision"];
+        return charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
 }
 

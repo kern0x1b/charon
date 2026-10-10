@@ -43,7 +43,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -52,12 +51,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRClusterOccupancySensing *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -112,7 +114,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Occupancy"];
+        return charon_port_values(&_charon_values)[@"Occupancy"];
     }
 }
 
@@ -121,7 +123,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"OccupancySensorType"];
+        return charon_port_values(&_charon_values)[@"OccupancySensorType"];
     }
 }
 
@@ -130,7 +132,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"OccupancySensorTypeBitmap"];
+        return charon_port_values(&_charon_values)[@"OccupancySensorTypeBitmap"];
     }
 }
 
@@ -139,14 +141,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"HoldTime"];
+        return charon_port_values(&_charon_values)[@"HoldTime"];
     }
 }
 
 - (void)writeAttributeHoldTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"HoldTime"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"HoldTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -154,7 +156,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeHoldTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"HoldTime"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"HoldTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -165,7 +167,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"HoldTimeLimits"];
+        return charon_port_values(&_charon_values)[@"HoldTimeLimits"];
     }
 }
 
@@ -174,14 +176,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PIROccupiedToUnoccupiedDelay"];
+        return charon_port_values(&_charon_values)[@"PIROccupiedToUnoccupiedDelay"];
     }
 }
 
 - (void)writeAttributePIROccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PIROccupiedToUnoccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PIROccupiedToUnoccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -189,7 +191,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePIROccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PIROccupiedToUnoccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PIROccupiedToUnoccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -200,14 +202,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PIRUnoccupiedToOccupiedDelay"];
+        return charon_port_values(&_charon_values)[@"PIRUnoccupiedToOccupiedDelay"];
     }
 }
 
 - (void)writeAttributePIRUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PIRUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PIRUnoccupiedToOccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -215,7 +217,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePIRUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PIRUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PIRUnoccupiedToOccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -226,14 +228,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PIRUnoccupiedToOccupiedThreshold"];
+        return charon_port_values(&_charon_values)[@"PIRUnoccupiedToOccupiedThreshold"];
     }
 }
 
 - (void)writeAttributePIRUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PIRUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PIRUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -241,7 +243,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePIRUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PIRUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PIRUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -252,14 +254,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"UltrasonicOccupiedToUnoccupiedDelay"];
+        return charon_port_values(&_charon_values)[@"UltrasonicOccupiedToUnoccupiedDelay"];
     }
 }
 
 - (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"UltrasonicOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"UltrasonicOccupiedToUnoccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -267,7 +269,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeUltrasonicOccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"UltrasonicOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"UltrasonicOccupiedToUnoccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -278,14 +280,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedDelay"];
+        return charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedDelay"];
     }
 }
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -293,7 +295,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -304,14 +306,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedThreshold"];
+        return charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedThreshold"];
     }
 }
 
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -319,7 +321,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeUltrasonicUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"UltrasonicUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"UltrasonicUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -330,14 +332,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PhysicalContactOccupiedToUnoccupiedDelay"];
+        return charon_port_values(&_charon_values)[@"PhysicalContactOccupiedToUnoccupiedDelay"];
     }
 }
 
 - (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PhysicalContactOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PhysicalContactOccupiedToUnoccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -345,7 +347,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePhysicalContactOccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PhysicalContactOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PhysicalContactOccupiedToUnoccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -356,14 +358,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedDelay"];
+        return charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedDelay"];
     }
 }
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -371,7 +373,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -382,14 +384,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedThreshold"];
+        return charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedThreshold"];
     }
 }
 
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -397,7 +399,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePhysicalContactUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PhysicalContactUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PhysicalContactUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -408,7 +410,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"GeneratedCommandList"];
+        return charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
 }
 
@@ -417,7 +419,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AcceptedCommandList"];
+        return charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
 }
 
@@ -426,7 +428,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AttributeList"];
+        return charon_port_values(&_charon_values)[@"AttributeList"];
     }
 }
 
@@ -435,7 +437,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"FeatureMap"];
+        return charon_port_values(&_charon_values)[@"FeatureMap"];
     }
 }
 
@@ -444,7 +446,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ClusterRevision"];
+        return charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
 }
 
@@ -453,14 +455,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PirOccupiedToUnoccupiedDelay"];
+        return charon_port_values(&_charon_values)[@"PirOccupiedToUnoccupiedDelay"];
     }
 }
 
 - (void)writeAttributePirOccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PirOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PirOccupiedToUnoccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -468,7 +470,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePirOccupiedToUnoccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PirOccupiedToUnoccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PirOccupiedToUnoccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -479,14 +481,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PirUnoccupiedToOccupiedDelay"];
+        return charon_port_values(&_charon_values)[@"PirUnoccupiedToOccupiedDelay"];
     }
 }
 
 - (void)writeAttributePirUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PirUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PirUnoccupiedToOccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -494,7 +496,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePirUnoccupiedToOccupiedDelayWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PirUnoccupiedToOccupiedDelay"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PirUnoccupiedToOccupiedDelay"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -505,14 +507,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PirUnoccupiedToOccupiedThreshold"];
+        return charon_port_values(&_charon_values)[@"PirUnoccupiedToOccupiedThreshold"];
     }
 }
 
 - (void)writeAttributePirUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PirUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PirUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -520,7 +522,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributePirUnoccupiedToOccupiedThresholdWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"PirUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"PirUnoccupiedToOccupiedThreshold"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;

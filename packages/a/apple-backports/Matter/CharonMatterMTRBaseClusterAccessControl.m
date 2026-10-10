@@ -43,7 +43,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -52,12 +51,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRBaseClusterAccessControl *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -116,7 +118,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ACL"];
+        written = charon_port_values(&_charon_values)[@"ACL"];
     }
     completion(written, nil);
 }
@@ -124,7 +126,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeACLWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ACL"] = value;
+        charon_port_values(&_charon_values)[@"ACL"] = value;
     }
     if (completion) {
         completion(nil);
@@ -134,7 +136,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeACLWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ACL"] = value;
+        charon_port_values(&_charon_values)[@"ACL"] = value;
     }
     if (completion) {
         completion(nil);
@@ -164,7 +166,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Extension"];
+        written = charon_port_values(&_charon_values)[@"Extension"];
     }
     completion(written, nil);
 }
@@ -172,7 +174,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeExtensionWithValue:(NSArray * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Extension"] = value;
+        charon_port_values(&_charon_values)[@"Extension"] = value;
     }
     if (completion) {
         completion(nil);
@@ -182,7 +184,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeExtensionWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Extension"] = value;
+        charon_port_values(&_charon_values)[@"Extension"] = value;
     }
     if (completion) {
         completion(nil);
@@ -192,7 +194,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeExtensionWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Extension"] = value;
+        charon_port_values(&_charon_values)[@"Extension"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -202,7 +204,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeExtensionWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Extension"] = value;
+        charon_port_values(&_charon_values)[@"Extension"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -248,7 +250,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"SubjectsPerAccessControlEntry"];
+        written = charon_port_values(&_charon_values)[@"SubjectsPerAccessControlEntry"];
     }
     completion(written, nil);
 }
@@ -292,7 +294,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"TargetsPerAccessControlEntry"];
+        written = charon_port_values(&_charon_values)[@"TargetsPerAccessControlEntry"];
     }
     completion(written, nil);
 }
@@ -336,7 +338,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AccessControlEntriesPerFabric"];
+        written = charon_port_values(&_charon_values)[@"AccessControlEntriesPerFabric"];
     }
     completion(written, nil);
 }
@@ -380,7 +382,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CommissioningARL"];
+        written = charon_port_values(&_charon_values)[@"CommissioningARL"];
     }
     completion(written, nil);
 }
@@ -408,7 +410,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ARL"];
+        written = charon_port_values(&_charon_values)[@"ARL"];
     }
     completion(written, nil);
 }
@@ -435,7 +437,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"GeneratedCommandList"];
+        written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -479,7 +481,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AcceptedCommandList"];
+        written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -523,7 +525,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AttributeList"];
+        written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -567,7 +569,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"FeatureMap"];
+        written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -611,7 +613,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ClusterRevision"];
+        written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
     completion(written, nil);
 }
@@ -651,7 +653,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeAclWithValue:(NSArray * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Acl"] = value;
+        charon_port_values(&_charon_values)[@"Acl"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -661,7 +663,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeAclWithValue:(NSArray * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Acl"] = value;
+        charon_port_values(&_charon_values)[@"Acl"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);

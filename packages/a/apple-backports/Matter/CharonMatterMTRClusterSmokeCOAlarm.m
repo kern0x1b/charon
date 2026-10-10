@@ -34,7 +34,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -43,12 +42,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRClusterSmokeCOAlarm *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -109,7 +111,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ExpressedState"];
+        return charon_port_values(&_charon_values)[@"ExpressedState"];
     }
 }
 
@@ -118,7 +120,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"SmokeState"];
+        return charon_port_values(&_charon_values)[@"SmokeState"];
     }
 }
 
@@ -127,7 +129,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"COState"];
+        return charon_port_values(&_charon_values)[@"COState"];
     }
 }
 
@@ -136,7 +138,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"BatteryAlert"];
+        return charon_port_values(&_charon_values)[@"BatteryAlert"];
     }
 }
 
@@ -145,7 +147,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"DeviceMuted"];
+        return charon_port_values(&_charon_values)[@"DeviceMuted"];
     }
 }
 
@@ -154,7 +156,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TestInProgress"];
+        return charon_port_values(&_charon_values)[@"TestInProgress"];
     }
 }
 
@@ -163,7 +165,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"HardwareFaultAlert"];
+        return charon_port_values(&_charon_values)[@"HardwareFaultAlert"];
     }
 }
 
@@ -172,7 +174,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"EndOfServiceAlert"];
+        return charon_port_values(&_charon_values)[@"EndOfServiceAlert"];
     }
 }
 
@@ -181,7 +183,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"InterconnectSmokeAlarm"];
+        return charon_port_values(&_charon_values)[@"InterconnectSmokeAlarm"];
     }
 }
 
@@ -190,7 +192,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"InterconnectCOAlarm"];
+        return charon_port_values(&_charon_values)[@"InterconnectCOAlarm"];
     }
 }
 
@@ -199,7 +201,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ContaminationState"];
+        return charon_port_values(&_charon_values)[@"ContaminationState"];
     }
 }
 
@@ -208,14 +210,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"SmokeSensitivityLevel"];
+        return charon_port_values(&_charon_values)[@"SmokeSensitivityLevel"];
     }
 }
 
 - (void)writeAttributeSmokeSensitivityLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"SmokeSensitivityLevel"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"SmokeSensitivityLevel"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -223,7 +225,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeSmokeSensitivityLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"SmokeSensitivityLevel"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"SmokeSensitivityLevel"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -234,7 +236,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ExpiryDate"];
+        return charon_port_values(&_charon_values)[@"ExpiryDate"];
     }
 }
 
@@ -243,7 +245,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"GeneratedCommandList"];
+        return charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
 }
 
@@ -252,7 +254,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AcceptedCommandList"];
+        return charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
 }
 
@@ -261,7 +263,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AttributeList"];
+        return charon_port_values(&_charon_values)[@"AttributeList"];
     }
 }
 
@@ -270,7 +272,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"FeatureMap"];
+        return charon_port_values(&_charon_values)[@"FeatureMap"];
     }
 }
 
@@ -279,7 +281,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ClusterRevision"];
+        return charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
 }
 

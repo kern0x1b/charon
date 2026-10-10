@@ -43,7 +43,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -52,12 +51,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRClusterColorControl *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -112,7 +114,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentHue"];
+        return charon_port_values(&_charon_values)[@"CurrentHue"];
     }
 }
 
@@ -121,7 +123,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentSaturation"];
+        return charon_port_values(&_charon_values)[@"CurrentSaturation"];
     }
 }
 
@@ -130,7 +132,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RemainingTime"];
+        return charon_port_values(&_charon_values)[@"RemainingTime"];
     }
 }
 
@@ -139,7 +141,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentX"];
+        return charon_port_values(&_charon_values)[@"CurrentX"];
     }
 }
 
@@ -148,7 +150,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentY"];
+        return charon_port_values(&_charon_values)[@"CurrentY"];
     }
 }
 
@@ -157,7 +159,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"DriftCompensation"];
+        return charon_port_values(&_charon_values)[@"DriftCompensation"];
     }
 }
 
@@ -166,7 +168,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CompensationText"];
+        return charon_port_values(&_charon_values)[@"CompensationText"];
     }
 }
 
@@ -175,7 +177,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorTemperatureMireds"];
+        return charon_port_values(&_charon_values)[@"ColorTemperatureMireds"];
     }
 }
 
@@ -184,7 +186,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorMode"];
+        return charon_port_values(&_charon_values)[@"ColorMode"];
     }
 }
 
@@ -193,14 +195,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Options"];
+        return charon_port_values(&_charon_values)[@"Options"];
     }
 }
 
 - (void)writeAttributeOptionsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Options"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"Options"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -208,7 +210,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeOptionsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Options"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"Options"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -219,7 +221,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"NumberOfPrimaries"];
+        return charon_port_values(&_charon_values)[@"NumberOfPrimaries"];
     }
 }
 
@@ -228,7 +230,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary1X"];
+        return charon_port_values(&_charon_values)[@"Primary1X"];
     }
 }
 
@@ -237,7 +239,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary1Y"];
+        return charon_port_values(&_charon_values)[@"Primary1Y"];
     }
 }
 
@@ -246,7 +248,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary1Intensity"];
+        return charon_port_values(&_charon_values)[@"Primary1Intensity"];
     }
 }
 
@@ -255,7 +257,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary2X"];
+        return charon_port_values(&_charon_values)[@"Primary2X"];
     }
 }
 
@@ -264,7 +266,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary2Y"];
+        return charon_port_values(&_charon_values)[@"Primary2Y"];
     }
 }
 
@@ -273,7 +275,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary2Intensity"];
+        return charon_port_values(&_charon_values)[@"Primary2Intensity"];
     }
 }
 
@@ -282,7 +284,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary3X"];
+        return charon_port_values(&_charon_values)[@"Primary3X"];
     }
 }
 
@@ -291,7 +293,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary3Y"];
+        return charon_port_values(&_charon_values)[@"Primary3Y"];
     }
 }
 
@@ -300,7 +302,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary3Intensity"];
+        return charon_port_values(&_charon_values)[@"Primary3Intensity"];
     }
 }
 
@@ -309,7 +311,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary4X"];
+        return charon_port_values(&_charon_values)[@"Primary4X"];
     }
 }
 
@@ -318,7 +320,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary4Y"];
+        return charon_port_values(&_charon_values)[@"Primary4Y"];
     }
 }
 
@@ -327,7 +329,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary4Intensity"];
+        return charon_port_values(&_charon_values)[@"Primary4Intensity"];
     }
 }
 
@@ -336,7 +338,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary5X"];
+        return charon_port_values(&_charon_values)[@"Primary5X"];
     }
 }
 
@@ -345,7 +347,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary5Y"];
+        return charon_port_values(&_charon_values)[@"Primary5Y"];
     }
 }
 
@@ -354,7 +356,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary5Intensity"];
+        return charon_port_values(&_charon_values)[@"Primary5Intensity"];
     }
 }
 
@@ -363,7 +365,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary6X"];
+        return charon_port_values(&_charon_values)[@"Primary6X"];
     }
 }
 
@@ -372,7 +374,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary6Y"];
+        return charon_port_values(&_charon_values)[@"Primary6Y"];
     }
 }
 
@@ -381,7 +383,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Primary6Intensity"];
+        return charon_port_values(&_charon_values)[@"Primary6Intensity"];
     }
 }
 
@@ -390,7 +392,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"WhitePointX"];
+        return charon_port_values(&_charon_values)[@"WhitePointX"];
     }
 }
 
@@ -398,7 +400,7 @@ static NSError *charon_port_no_node_error(void)
                      expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WhitePointX"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"WhitePointX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -408,7 +410,7 @@ static NSError *charon_port_no_node_error(void)
                                     params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WhitePointX"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"WhitePointX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -419,7 +421,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"WhitePointY"];
+        return charon_port_values(&_charon_values)[@"WhitePointY"];
     }
 }
 
@@ -427,7 +429,7 @@ static NSError *charon_port_no_node_error(void)
                      expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WhitePointY"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"WhitePointY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -437,7 +439,7 @@ static NSError *charon_port_no_node_error(void)
                                     params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WhitePointY"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"WhitePointY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -448,7 +450,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorPointRX"];
+        return charon_port_values(&_charon_values)[@"ColorPointRX"];
     }
 }
 
@@ -456,7 +458,7 @@ static NSError *charon_port_no_node_error(void)
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRX"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointRX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -466,7 +468,7 @@ static NSError *charon_port_no_node_error(void)
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRX"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointRX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -477,7 +479,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorPointRY"];
+        return charon_port_values(&_charon_values)[@"ColorPointRY"];
     }
 }
 
@@ -485,7 +487,7 @@ static NSError *charon_port_no_node_error(void)
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRY"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointRY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -495,7 +497,7 @@ static NSError *charon_port_no_node_error(void)
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRY"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointRY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -506,7 +508,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorPointRIntensity"];
+        return charon_port_values(&_charon_values)[@"ColorPointRIntensity"];
     }
 }
 
@@ -514,7 +516,7 @@ static NSError *charon_port_no_node_error(void)
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRIntensity"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointRIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -524,7 +526,7 @@ static NSError *charon_port_no_node_error(void)
                                              params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRIntensity"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointRIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -535,7 +537,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorPointGX"];
+        return charon_port_values(&_charon_values)[@"ColorPointGX"];
     }
 }
 
@@ -543,7 +545,7 @@ static NSError *charon_port_no_node_error(void)
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGX"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointGX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -553,7 +555,7 @@ static NSError *charon_port_no_node_error(void)
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGX"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointGX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -564,7 +566,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorPointGY"];
+        return charon_port_values(&_charon_values)[@"ColorPointGY"];
     }
 }
 
@@ -572,7 +574,7 @@ static NSError *charon_port_no_node_error(void)
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGY"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointGY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -582,7 +584,7 @@ static NSError *charon_port_no_node_error(void)
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGY"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointGY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -593,7 +595,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorPointGIntensity"];
+        return charon_port_values(&_charon_values)[@"ColorPointGIntensity"];
     }
 }
 
@@ -601,7 +603,7 @@ static NSError *charon_port_no_node_error(void)
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGIntensity"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointGIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -611,7 +613,7 @@ static NSError *charon_port_no_node_error(void)
                                              params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGIntensity"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointGIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -622,7 +624,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorPointBX"];
+        return charon_port_values(&_charon_values)[@"ColorPointBX"];
     }
 }
 
@@ -630,7 +632,7 @@ static NSError *charon_port_no_node_error(void)
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBX"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointBX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -640,7 +642,7 @@ static NSError *charon_port_no_node_error(void)
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBX"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointBX"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -651,7 +653,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorPointBY"];
+        return charon_port_values(&_charon_values)[@"ColorPointBY"];
     }
 }
 
@@ -659,7 +661,7 @@ static NSError *charon_port_no_node_error(void)
                       expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBY"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointBY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -669,7 +671,7 @@ static NSError *charon_port_no_node_error(void)
                                      params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBY"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointBY"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -680,7 +682,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorPointBIntensity"];
+        return charon_port_values(&_charon_values)[@"ColorPointBIntensity"];
     }
 }
 
@@ -688,7 +690,7 @@ static NSError *charon_port_no_node_error(void)
                               expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBIntensity"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointBIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -698,7 +700,7 @@ static NSError *charon_port_no_node_error(void)
                                              params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBIntensity"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"ColorPointBIntensity"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -709,7 +711,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"EnhancedCurrentHue"];
+        return charon_port_values(&_charon_values)[@"EnhancedCurrentHue"];
     }
 }
 
@@ -718,7 +720,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"EnhancedColorMode"];
+        return charon_port_values(&_charon_values)[@"EnhancedColorMode"];
     }
 }
 
@@ -727,7 +729,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorLoopActive"];
+        return charon_port_values(&_charon_values)[@"ColorLoopActive"];
     }
 }
 
@@ -736,7 +738,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorLoopDirection"];
+        return charon_port_values(&_charon_values)[@"ColorLoopDirection"];
     }
 }
 
@@ -745,7 +747,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorLoopTime"];
+        return charon_port_values(&_charon_values)[@"ColorLoopTime"];
     }
 }
 
@@ -754,7 +756,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorLoopStartEnhancedHue"];
+        return charon_port_values(&_charon_values)[@"ColorLoopStartEnhancedHue"];
     }
 }
 
@@ -763,7 +765,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorLoopStoredEnhancedHue"];
+        return charon_port_values(&_charon_values)[@"ColorLoopStoredEnhancedHue"];
     }
 }
 
@@ -772,7 +774,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorCapabilities"];
+        return charon_port_values(&_charon_values)[@"ColorCapabilities"];
     }
 }
 
@@ -781,7 +783,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorTempPhysicalMinMireds"];
+        return charon_port_values(&_charon_values)[@"ColorTempPhysicalMinMireds"];
     }
 }
 
@@ -790,7 +792,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ColorTempPhysicalMaxMireds"];
+        return charon_port_values(&_charon_values)[@"ColorTempPhysicalMaxMireds"];
     }
 }
 
@@ -799,7 +801,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CoupleColorTempToLevelMinMireds"];
+        return charon_port_values(&_charon_values)[@"CoupleColorTempToLevelMinMireds"];
     }
 }
 
@@ -808,14 +810,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"StartUpColorTemperatureMireds"];
+        return charon_port_values(&_charon_values)[@"StartUpColorTemperatureMireds"];
     }
 }
 
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"StartUpColorTemperatureMireds"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"StartUpColorTemperatureMireds"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -823,7 +825,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"StartUpColorTemperatureMireds"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"StartUpColorTemperatureMireds"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -834,7 +836,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"GeneratedCommandList"];
+        return charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
 }
 
@@ -843,7 +845,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AcceptedCommandList"];
+        return charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
 }
 
@@ -852,7 +854,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AttributeList"];
+        return charon_port_values(&_charon_values)[@"AttributeList"];
     }
 }
 
@@ -861,7 +863,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"FeatureMap"];
+        return charon_port_values(&_charon_values)[@"FeatureMap"];
     }
 }
 
@@ -870,7 +872,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ClusterRevision"];
+        return charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
 }
 

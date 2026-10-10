@@ -43,7 +43,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -52,12 +51,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRClusterThreadNetworkDiagnostics *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -112,7 +114,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Channel"];
+        return charon_port_values(&_charon_values)[@"Channel"];
     }
 }
 
@@ -121,7 +123,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RoutingRole"];
+        return charon_port_values(&_charon_values)[@"RoutingRole"];
     }
 }
 
@@ -130,7 +132,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"NetworkName"];
+        return charon_port_values(&_charon_values)[@"NetworkName"];
     }
 }
 
@@ -139,7 +141,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PanId"];
+        return charon_port_values(&_charon_values)[@"PanId"];
     }
 }
 
@@ -148,7 +150,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ExtendedPanId"];
+        return charon_port_values(&_charon_values)[@"ExtendedPanId"];
     }
 }
 
@@ -157,7 +159,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"MeshLocalPrefix"];
+        return charon_port_values(&_charon_values)[@"MeshLocalPrefix"];
     }
 }
 
@@ -166,7 +168,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"OverrunCount"];
+        return charon_port_values(&_charon_values)[@"OverrunCount"];
     }
 }
 
@@ -175,7 +177,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"NeighborTable"];
+        return charon_port_values(&_charon_values)[@"NeighborTable"];
     }
 }
 
@@ -184,7 +186,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RouteTable"];
+        return charon_port_values(&_charon_values)[@"RouteTable"];
     }
 }
 
@@ -193,7 +195,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PartitionId"];
+        return charon_port_values(&_charon_values)[@"PartitionId"];
     }
 }
 
@@ -202,7 +204,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Weighting"];
+        return charon_port_values(&_charon_values)[@"Weighting"];
     }
 }
 
@@ -211,7 +213,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"DataVersion"];
+        return charon_port_values(&_charon_values)[@"DataVersion"];
     }
 }
 
@@ -220,7 +222,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"StableDataVersion"];
+        return charon_port_values(&_charon_values)[@"StableDataVersion"];
     }
 }
 
@@ -229,7 +231,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"LeaderRouterId"];
+        return charon_port_values(&_charon_values)[@"LeaderRouterId"];
     }
 }
 
@@ -238,7 +240,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"DetachedRoleCount"];
+        return charon_port_values(&_charon_values)[@"DetachedRoleCount"];
     }
 }
 
@@ -247,7 +249,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ChildRoleCount"];
+        return charon_port_values(&_charon_values)[@"ChildRoleCount"];
     }
 }
 
@@ -256,7 +258,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RouterRoleCount"];
+        return charon_port_values(&_charon_values)[@"RouterRoleCount"];
     }
 }
 
@@ -265,7 +267,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"LeaderRoleCount"];
+        return charon_port_values(&_charon_values)[@"LeaderRoleCount"];
     }
 }
 
@@ -274,7 +276,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AttachAttemptCount"];
+        return charon_port_values(&_charon_values)[@"AttachAttemptCount"];
     }
 }
 
@@ -283,7 +285,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PartitionIdChangeCount"];
+        return charon_port_values(&_charon_values)[@"PartitionIdChangeCount"];
     }
 }
 
@@ -292,7 +294,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"BetterPartitionAttachAttemptCount"];
+        return charon_port_values(&_charon_values)[@"BetterPartitionAttachAttemptCount"];
     }
 }
 
@@ -301,7 +303,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ParentChangeCount"];
+        return charon_port_values(&_charon_values)[@"ParentChangeCount"];
     }
 }
 
@@ -310,7 +312,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxTotalCount"];
+        return charon_port_values(&_charon_values)[@"TxTotalCount"];
     }
 }
 
@@ -319,7 +321,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxUnicastCount"];
+        return charon_port_values(&_charon_values)[@"TxUnicastCount"];
     }
 }
 
@@ -328,7 +330,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxBroadcastCount"];
+        return charon_port_values(&_charon_values)[@"TxBroadcastCount"];
     }
 }
 
@@ -337,7 +339,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxAckRequestedCount"];
+        return charon_port_values(&_charon_values)[@"TxAckRequestedCount"];
     }
 }
 
@@ -346,7 +348,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxAckedCount"];
+        return charon_port_values(&_charon_values)[@"TxAckedCount"];
     }
 }
 
@@ -355,7 +357,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxNoAckRequestedCount"];
+        return charon_port_values(&_charon_values)[@"TxNoAckRequestedCount"];
     }
 }
 
@@ -364,7 +366,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxDataCount"];
+        return charon_port_values(&_charon_values)[@"TxDataCount"];
     }
 }
 
@@ -373,7 +375,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxDataPollCount"];
+        return charon_port_values(&_charon_values)[@"TxDataPollCount"];
     }
 }
 
@@ -382,7 +384,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxBeaconCount"];
+        return charon_port_values(&_charon_values)[@"TxBeaconCount"];
     }
 }
 
@@ -391,7 +393,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxBeaconRequestCount"];
+        return charon_port_values(&_charon_values)[@"TxBeaconRequestCount"];
     }
 }
 
@@ -400,7 +402,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxOtherCount"];
+        return charon_port_values(&_charon_values)[@"TxOtherCount"];
     }
 }
 
@@ -409,7 +411,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxRetryCount"];
+        return charon_port_values(&_charon_values)[@"TxRetryCount"];
     }
 }
 
@@ -418,7 +420,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxDirectMaxRetryExpiryCount"];
+        return charon_port_values(&_charon_values)[@"TxDirectMaxRetryExpiryCount"];
     }
 }
 
@@ -427,7 +429,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxIndirectMaxRetryExpiryCount"];
+        return charon_port_values(&_charon_values)[@"TxIndirectMaxRetryExpiryCount"];
     }
 }
 
@@ -436,7 +438,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxErrCcaCount"];
+        return charon_port_values(&_charon_values)[@"TxErrCcaCount"];
     }
 }
 
@@ -445,7 +447,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxErrAbortCount"];
+        return charon_port_values(&_charon_values)[@"TxErrAbortCount"];
     }
 }
 
@@ -454,7 +456,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"TxErrBusyChannelCount"];
+        return charon_port_values(&_charon_values)[@"TxErrBusyChannelCount"];
     }
 }
 
@@ -463,7 +465,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxTotalCount"];
+        return charon_port_values(&_charon_values)[@"RxTotalCount"];
     }
 }
 
@@ -472,7 +474,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxUnicastCount"];
+        return charon_port_values(&_charon_values)[@"RxUnicastCount"];
     }
 }
 
@@ -481,7 +483,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxBroadcastCount"];
+        return charon_port_values(&_charon_values)[@"RxBroadcastCount"];
     }
 }
 
@@ -490,7 +492,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxDataCount"];
+        return charon_port_values(&_charon_values)[@"RxDataCount"];
     }
 }
 
@@ -499,7 +501,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxDataPollCount"];
+        return charon_port_values(&_charon_values)[@"RxDataPollCount"];
     }
 }
 
@@ -508,7 +510,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxBeaconCount"];
+        return charon_port_values(&_charon_values)[@"RxBeaconCount"];
     }
 }
 
@@ -517,7 +519,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxBeaconRequestCount"];
+        return charon_port_values(&_charon_values)[@"RxBeaconRequestCount"];
     }
 }
 
@@ -526,7 +528,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxOtherCount"];
+        return charon_port_values(&_charon_values)[@"RxOtherCount"];
     }
 }
 
@@ -535,7 +537,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxAddressFilteredCount"];
+        return charon_port_values(&_charon_values)[@"RxAddressFilteredCount"];
     }
 }
 
@@ -544,7 +546,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxDestAddrFilteredCount"];
+        return charon_port_values(&_charon_values)[@"RxDestAddrFilteredCount"];
     }
 }
 
@@ -553,7 +555,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxDuplicatedCount"];
+        return charon_port_values(&_charon_values)[@"RxDuplicatedCount"];
     }
 }
 
@@ -562,7 +564,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxErrNoFrameCount"];
+        return charon_port_values(&_charon_values)[@"RxErrNoFrameCount"];
     }
 }
 
@@ -571,7 +573,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxErrUnknownNeighborCount"];
+        return charon_port_values(&_charon_values)[@"RxErrUnknownNeighborCount"];
     }
 }
 
@@ -580,7 +582,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxErrInvalidSrcAddrCount"];
+        return charon_port_values(&_charon_values)[@"RxErrInvalidSrcAddrCount"];
     }
 }
 
@@ -589,7 +591,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxErrSecCount"];
+        return charon_port_values(&_charon_values)[@"RxErrSecCount"];
     }
 }
 
@@ -598,7 +600,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxErrFcsCount"];
+        return charon_port_values(&_charon_values)[@"RxErrFcsCount"];
     }
 }
 
@@ -607,7 +609,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RxErrOtherCount"];
+        return charon_port_values(&_charon_values)[@"RxErrOtherCount"];
     }
 }
 
@@ -616,7 +618,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ActiveTimestamp"];
+        return charon_port_values(&_charon_values)[@"ActiveTimestamp"];
     }
 }
 
@@ -625,7 +627,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PendingTimestamp"];
+        return charon_port_values(&_charon_values)[@"PendingTimestamp"];
     }
 }
 
@@ -634,7 +636,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Delay"];
+        return charon_port_values(&_charon_values)[@"Delay"];
     }
 }
 
@@ -643,7 +645,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"SecurityPolicy"];
+        return charon_port_values(&_charon_values)[@"SecurityPolicy"];
     }
 }
 
@@ -652,7 +654,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ChannelPage0Mask"];
+        return charon_port_values(&_charon_values)[@"ChannelPage0Mask"];
     }
 }
 
@@ -661,7 +663,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"OperationalDatasetComponents"];
+        return charon_port_values(&_charon_values)[@"OperationalDatasetComponents"];
     }
 }
 
@@ -670,7 +672,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ActiveNetworkFaultsList"];
+        return charon_port_values(&_charon_values)[@"ActiveNetworkFaultsList"];
     }
 }
 
@@ -679,7 +681,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ExtAddress"];
+        return charon_port_values(&_charon_values)[@"ExtAddress"];
     }
 }
 
@@ -688,7 +690,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Rloc16"];
+        return charon_port_values(&_charon_values)[@"Rloc16"];
     }
 }
 
@@ -697,7 +699,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"GeneratedCommandList"];
+        return charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
 }
 
@@ -706,7 +708,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AcceptedCommandList"];
+        return charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
 }
 
@@ -715,7 +717,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AttributeList"];
+        return charon_port_values(&_charon_values)[@"AttributeList"];
     }
 }
 
@@ -724,7 +726,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"FeatureMap"];
+        return charon_port_values(&_charon_values)[@"FeatureMap"];
     }
 }
 
@@ -733,7 +735,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ClusterRevision"];
+        return charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
 }
 
@@ -742,7 +744,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"NeighborTableList"];
+        return charon_port_values(&_charon_values)[@"NeighborTableList"];
     }
 }
 
@@ -751,7 +753,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RouteTableList"];
+        return charon_port_values(&_charon_values)[@"RouteTableList"];
     }
 }
 

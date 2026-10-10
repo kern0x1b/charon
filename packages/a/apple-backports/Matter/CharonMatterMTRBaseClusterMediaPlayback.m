@@ -43,7 +43,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -52,12 +51,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRBaseClusterMediaPlayback *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -115,7 +117,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CurrentState"];
+        written = charon_port_values(&_charon_values)[@"CurrentState"];
     }
     completion(written, nil);
 }
@@ -159,7 +161,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"StartTime"];
+        written = charon_port_values(&_charon_values)[@"StartTime"];
     }
     completion(written, nil);
 }
@@ -203,7 +205,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Duration"];
+        written = charon_port_values(&_charon_values)[@"Duration"];
     }
     completion(written, nil);
 }
@@ -247,7 +249,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"SampledPosition"];
+        written = charon_port_values(&_charon_values)[@"SampledPosition"];
     }
     completion(written, nil);
 }
@@ -291,7 +293,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"PlaybackSpeed"];
+        written = charon_port_values(&_charon_values)[@"PlaybackSpeed"];
     }
     completion(written, nil);
 }
@@ -335,7 +337,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"SeekRangeEnd"];
+        written = charon_port_values(&_charon_values)[@"SeekRangeEnd"];
     }
     completion(written, nil);
 }
@@ -379,7 +381,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"SeekRangeStart"];
+        written = charon_port_values(&_charon_values)[@"SeekRangeStart"];
     }
     completion(written, nil);
 }
@@ -423,7 +425,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ActiveAudioTrack"];
+        written = charon_port_values(&_charon_values)[@"ActiveAudioTrack"];
     }
     completion(written, nil);
 }
@@ -450,7 +452,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AvailableAudioTracks"];
+        written = charon_port_values(&_charon_values)[@"AvailableAudioTracks"];
     }
     completion(written, nil);
 }
@@ -477,7 +479,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ActiveTextTrack"];
+        written = charon_port_values(&_charon_values)[@"ActiveTextTrack"];
     }
     completion(written, nil);
 }
@@ -504,7 +506,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AvailableTextTracks"];
+        written = charon_port_values(&_charon_values)[@"AvailableTextTracks"];
     }
     completion(written, nil);
 }
@@ -531,7 +533,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"GeneratedCommandList"];
+        written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -575,7 +577,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AcceptedCommandList"];
+        written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -619,7 +621,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AttributeList"];
+        written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -663,7 +665,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"FeatureMap"];
+        written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -707,7 +709,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ClusterRevision"];
+        written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
     completion(written, nil);
 }

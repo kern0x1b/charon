@@ -34,7 +34,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -43,12 +42,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRBaseClusterElectricalPowerMeasurement *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -118,7 +120,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"PowerMode"];
+        written = charon_port_values(&_charon_values)[@"PowerMode"];
     }
     completion(written, nil);
 }
@@ -145,7 +147,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"NumberOfMeasurementTypes"];
+        written = charon_port_values(&_charon_values)[@"NumberOfMeasurementTypes"];
     }
     completion(written, nil);
 }
@@ -172,7 +174,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Accuracy"];
+        written = charon_port_values(&_charon_values)[@"Accuracy"];
     }
     completion(written, nil);
 }
@@ -199,7 +201,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Ranges"];
+        written = charon_port_values(&_charon_values)[@"Ranges"];
     }
     completion(written, nil);
 }
@@ -226,7 +228,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Voltage"];
+        written = charon_port_values(&_charon_values)[@"Voltage"];
     }
     completion(written, nil);
 }
@@ -253,7 +255,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ActiveCurrent"];
+        written = charon_port_values(&_charon_values)[@"ActiveCurrent"];
     }
     completion(written, nil);
 }
@@ -280,7 +282,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ReactiveCurrent"];
+        written = charon_port_values(&_charon_values)[@"ReactiveCurrent"];
     }
     completion(written, nil);
 }
@@ -307,7 +309,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ApparentCurrent"];
+        written = charon_port_values(&_charon_values)[@"ApparentCurrent"];
     }
     completion(written, nil);
 }
@@ -334,7 +336,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ActivePower"];
+        written = charon_port_values(&_charon_values)[@"ActivePower"];
     }
     completion(written, nil);
 }
@@ -361,7 +363,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ReactivePower"];
+        written = charon_port_values(&_charon_values)[@"ReactivePower"];
     }
     completion(written, nil);
 }
@@ -388,7 +390,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ApparentPower"];
+        written = charon_port_values(&_charon_values)[@"ApparentPower"];
     }
     completion(written, nil);
 }
@@ -415,7 +417,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"RMSVoltage"];
+        written = charon_port_values(&_charon_values)[@"RMSVoltage"];
     }
     completion(written, nil);
 }
@@ -442,7 +444,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"RMSCurrent"];
+        written = charon_port_values(&_charon_values)[@"RMSCurrent"];
     }
     completion(written, nil);
 }
@@ -469,7 +471,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"RMSPower"];
+        written = charon_port_values(&_charon_values)[@"RMSPower"];
     }
     completion(written, nil);
 }
@@ -496,7 +498,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Frequency"];
+        written = charon_port_values(&_charon_values)[@"Frequency"];
     }
     completion(written, nil);
 }
@@ -523,7 +525,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"HarmonicCurrents"];
+        written = charon_port_values(&_charon_values)[@"HarmonicCurrents"];
     }
     completion(written, nil);
 }
@@ -550,7 +552,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"HarmonicPhases"];
+        written = charon_port_values(&_charon_values)[@"HarmonicPhases"];
     }
     completion(written, nil);
 }
@@ -577,7 +579,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"PowerFactor"];
+        written = charon_port_values(&_charon_values)[@"PowerFactor"];
     }
     completion(written, nil);
 }
@@ -604,7 +606,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"NeutralCurrent"];
+        written = charon_port_values(&_charon_values)[@"NeutralCurrent"];
     }
     completion(written, nil);
 }
@@ -631,7 +633,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"GeneratedCommandList"];
+        written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -658,7 +660,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AcceptedCommandList"];
+        written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -685,7 +687,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AttributeList"];
+        written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -712,7 +714,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"FeatureMap"];
+        written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -739,7 +741,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ClusterRevision"];
+        written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
     completion(written, nil);
 }

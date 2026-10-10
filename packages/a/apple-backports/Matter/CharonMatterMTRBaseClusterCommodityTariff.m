@@ -34,7 +34,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -43,12 +42,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRBaseClusterCommodityTariff *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -118,7 +120,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"TariffInfo"];
+        written = charon_port_values(&_charon_values)[@"TariffInfo"];
     }
     completion(written, nil);
 }
@@ -145,7 +147,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"TariffUnit"];
+        written = charon_port_values(&_charon_values)[@"TariffUnit"];
     }
     completion(written, nil);
 }
@@ -172,7 +174,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"StartDate"];
+        written = charon_port_values(&_charon_values)[@"StartDate"];
     }
     completion(written, nil);
 }
@@ -199,7 +201,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"DayEntries"];
+        written = charon_port_values(&_charon_values)[@"DayEntries"];
     }
     completion(written, nil);
 }
@@ -226,7 +228,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"DayPatterns"];
+        written = charon_port_values(&_charon_values)[@"DayPatterns"];
     }
     completion(written, nil);
 }
@@ -253,7 +255,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CalendarPeriods"];
+        written = charon_port_values(&_charon_values)[@"CalendarPeriods"];
     }
     completion(written, nil);
 }
@@ -280,7 +282,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"IndividualDays"];
+        written = charon_port_values(&_charon_values)[@"IndividualDays"];
     }
     completion(written, nil);
 }
@@ -307,7 +309,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CurrentDay"];
+        written = charon_port_values(&_charon_values)[@"CurrentDay"];
     }
     completion(written, nil);
 }
@@ -334,7 +336,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"NextDay"];
+        written = charon_port_values(&_charon_values)[@"NextDay"];
     }
     completion(written, nil);
 }
@@ -361,7 +363,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CurrentDayEntry"];
+        written = charon_port_values(&_charon_values)[@"CurrentDayEntry"];
     }
     completion(written, nil);
 }
@@ -388,7 +390,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CurrentDayEntryDate"];
+        written = charon_port_values(&_charon_values)[@"CurrentDayEntryDate"];
     }
     completion(written, nil);
 }
@@ -415,7 +417,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"NextDayEntry"];
+        written = charon_port_values(&_charon_values)[@"NextDayEntry"];
     }
     completion(written, nil);
 }
@@ -442,7 +444,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"NextDayEntryDate"];
+        written = charon_port_values(&_charon_values)[@"NextDayEntryDate"];
     }
     completion(written, nil);
 }
@@ -469,7 +471,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"TariffComponents"];
+        written = charon_port_values(&_charon_values)[@"TariffComponents"];
     }
     completion(written, nil);
 }
@@ -496,7 +498,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"TariffPeriods"];
+        written = charon_port_values(&_charon_values)[@"TariffPeriods"];
     }
     completion(written, nil);
 }
@@ -523,7 +525,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CurrentTariffComponents"];
+        written = charon_port_values(&_charon_values)[@"CurrentTariffComponents"];
     }
     completion(written, nil);
 }
@@ -550,7 +552,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"NextTariffComponents"];
+        written = charon_port_values(&_charon_values)[@"NextTariffComponents"];
     }
     completion(written, nil);
 }
@@ -577,7 +579,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"DefaultRandomizationOffset"];
+        written = charon_port_values(&_charon_values)[@"DefaultRandomizationOffset"];
     }
     completion(written, nil);
 }
@@ -604,7 +606,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"DefaultRandomizationType"];
+        written = charon_port_values(&_charon_values)[@"DefaultRandomizationType"];
     }
     completion(written, nil);
 }
@@ -631,7 +633,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"GeneratedCommandList"];
+        written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -658,7 +660,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AcceptedCommandList"];
+        written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -685,7 +687,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AttributeList"];
+        written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -712,7 +714,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"FeatureMap"];
+        written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -739,7 +741,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ClusterRevision"];
+        written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
     completion(written, nil);
 }

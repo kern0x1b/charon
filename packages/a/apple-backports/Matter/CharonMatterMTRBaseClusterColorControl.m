@@ -43,7 +43,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -52,12 +51,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRBaseClusterColorControl *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -115,7 +117,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CurrentHue"];
+        written = charon_port_values(&_charon_values)[@"CurrentHue"];
     }
     completion(written, nil);
 }
@@ -159,7 +161,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CurrentSaturation"];
+        written = charon_port_values(&_charon_values)[@"CurrentSaturation"];
     }
     completion(written, nil);
 }
@@ -203,7 +205,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"RemainingTime"];
+        written = charon_port_values(&_charon_values)[@"RemainingTime"];
     }
     completion(written, nil);
 }
@@ -247,7 +249,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CurrentX"];
+        written = charon_port_values(&_charon_values)[@"CurrentX"];
     }
     completion(written, nil);
 }
@@ -291,7 +293,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CurrentY"];
+        written = charon_port_values(&_charon_values)[@"CurrentY"];
     }
     completion(written, nil);
 }
@@ -335,7 +337,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"DriftCompensation"];
+        written = charon_port_values(&_charon_values)[@"DriftCompensation"];
     }
     completion(written, nil);
 }
@@ -379,7 +381,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CompensationText"];
+        written = charon_port_values(&_charon_values)[@"CompensationText"];
     }
     completion(written, nil);
 }
@@ -423,7 +425,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorTemperatureMireds"];
+        written = charon_port_values(&_charon_values)[@"ColorTemperatureMireds"];
     }
     completion(written, nil);
 }
@@ -467,7 +469,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorMode"];
+        written = charon_port_values(&_charon_values)[@"ColorMode"];
     }
     completion(written, nil);
 }
@@ -511,7 +513,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Options"];
+        written = charon_port_values(&_charon_values)[@"Options"];
     }
     completion(written, nil);
 }
@@ -519,7 +521,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeOptionsWithValue:(NSNumber * _Nonnull)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Options"] = value;
+        charon_port_values(&_charon_values)[@"Options"] = value;
     }
     if (completion) {
         completion(nil);
@@ -529,7 +531,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeOptionsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Options"] = value;
+        charon_port_values(&_charon_values)[@"Options"] = value;
     }
     if (completion) {
         completion(nil);
@@ -539,7 +541,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeOptionsWithValue:(NSNumber * _Nonnull)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Options"] = value;
+        charon_port_values(&_charon_values)[@"Options"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -549,7 +551,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeOptionsWithValue:(NSNumber * _Nonnull)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Options"] = value;
+        charon_port_values(&_charon_values)[@"Options"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -595,7 +597,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"NumberOfPrimaries"];
+        written = charon_port_values(&_charon_values)[@"NumberOfPrimaries"];
     }
     completion(written, nil);
 }
@@ -639,7 +641,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary1X"];
+        written = charon_port_values(&_charon_values)[@"Primary1X"];
     }
     completion(written, nil);
 }
@@ -683,7 +685,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary1Y"];
+        written = charon_port_values(&_charon_values)[@"Primary1Y"];
     }
     completion(written, nil);
 }
@@ -727,7 +729,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary1Intensity"];
+        written = charon_port_values(&_charon_values)[@"Primary1Intensity"];
     }
     completion(written, nil);
 }
@@ -771,7 +773,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary2X"];
+        written = charon_port_values(&_charon_values)[@"Primary2X"];
     }
     completion(written, nil);
 }
@@ -815,7 +817,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary2Y"];
+        written = charon_port_values(&_charon_values)[@"Primary2Y"];
     }
     completion(written, nil);
 }
@@ -859,7 +861,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary2Intensity"];
+        written = charon_port_values(&_charon_values)[@"Primary2Intensity"];
     }
     completion(written, nil);
 }
@@ -903,7 +905,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary3X"];
+        written = charon_port_values(&_charon_values)[@"Primary3X"];
     }
     completion(written, nil);
 }
@@ -947,7 +949,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary3Y"];
+        written = charon_port_values(&_charon_values)[@"Primary3Y"];
     }
     completion(written, nil);
 }
@@ -991,7 +993,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary3Intensity"];
+        written = charon_port_values(&_charon_values)[@"Primary3Intensity"];
     }
     completion(written, nil);
 }
@@ -1035,7 +1037,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary4X"];
+        written = charon_port_values(&_charon_values)[@"Primary4X"];
     }
     completion(written, nil);
 }
@@ -1079,7 +1081,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary4Y"];
+        written = charon_port_values(&_charon_values)[@"Primary4Y"];
     }
     completion(written, nil);
 }
@@ -1123,7 +1125,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary4Intensity"];
+        written = charon_port_values(&_charon_values)[@"Primary4Intensity"];
     }
     completion(written, nil);
 }
@@ -1167,7 +1169,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary5X"];
+        written = charon_port_values(&_charon_values)[@"Primary5X"];
     }
     completion(written, nil);
 }
@@ -1211,7 +1213,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary5Y"];
+        written = charon_port_values(&_charon_values)[@"Primary5Y"];
     }
     completion(written, nil);
 }
@@ -1255,7 +1257,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary5Intensity"];
+        written = charon_port_values(&_charon_values)[@"Primary5Intensity"];
     }
     completion(written, nil);
 }
@@ -1299,7 +1301,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary6X"];
+        written = charon_port_values(&_charon_values)[@"Primary6X"];
     }
     completion(written, nil);
 }
@@ -1343,7 +1345,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary6Y"];
+        written = charon_port_values(&_charon_values)[@"Primary6Y"];
     }
     completion(written, nil);
 }
@@ -1387,7 +1389,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"Primary6Intensity"];
+        written = charon_port_values(&_charon_values)[@"Primary6Intensity"];
     }
     completion(written, nil);
 }
@@ -1431,7 +1433,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"WhitePointX"];
+        written = charon_port_values(&_charon_values)[@"WhitePointX"];
     }
     completion(written, nil);
 }
@@ -1440,7 +1442,7 @@ static NSError *charon_port_no_node_error(void)
                                 completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WhitePointX"] = value;
+        charon_port_values(&_charon_values)[@"WhitePointX"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1452,7 +1454,7 @@ static NSError *charon_port_no_node_error(void)
                                 completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WhitePointX"] = value;
+        charon_port_values(&_charon_values)[@"WhitePointX"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1498,7 +1500,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"WhitePointY"];
+        written = charon_port_values(&_charon_values)[@"WhitePointY"];
     }
     completion(written, nil);
 }
@@ -1507,7 +1509,7 @@ static NSError *charon_port_no_node_error(void)
                                 completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WhitePointY"] = value;
+        charon_port_values(&_charon_values)[@"WhitePointY"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1519,7 +1521,7 @@ static NSError *charon_port_no_node_error(void)
                                 completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"WhitePointY"] = value;
+        charon_port_values(&_charon_values)[@"WhitePointY"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1565,7 +1567,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorPointRX"];
+        written = charon_port_values(&_charon_values)[@"ColorPointRX"];
     }
     completion(written, nil);
 }
@@ -1574,7 +1576,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRX"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointRX"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1586,7 +1588,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRX"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointRX"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1632,7 +1634,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorPointRY"];
+        written = charon_port_values(&_charon_values)[@"ColorPointRY"];
     }
     completion(written, nil);
 }
@@ -1641,7 +1643,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRY"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointRY"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1653,7 +1655,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRY"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointRY"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1699,7 +1701,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorPointRIntensity"];
+        written = charon_port_values(&_charon_values)[@"ColorPointRIntensity"];
     }
     completion(written, nil);
 }
@@ -1708,7 +1710,7 @@ static NSError *charon_port_no_node_error(void)
                                          completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRIntensity"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointRIntensity"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1720,7 +1722,7 @@ static NSError *charon_port_no_node_error(void)
                                          completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointRIntensity"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointRIntensity"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1766,7 +1768,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorPointGX"];
+        written = charon_port_values(&_charon_values)[@"ColorPointGX"];
     }
     completion(written, nil);
 }
@@ -1775,7 +1777,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGX"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointGX"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1787,7 +1789,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGX"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointGX"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1833,7 +1835,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorPointGY"];
+        written = charon_port_values(&_charon_values)[@"ColorPointGY"];
     }
     completion(written, nil);
 }
@@ -1842,7 +1844,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGY"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointGY"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1854,7 +1856,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGY"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointGY"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1900,7 +1902,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorPointGIntensity"];
+        written = charon_port_values(&_charon_values)[@"ColorPointGIntensity"];
     }
     completion(written, nil);
 }
@@ -1909,7 +1911,7 @@ static NSError *charon_port_no_node_error(void)
                                          completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGIntensity"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointGIntensity"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1921,7 +1923,7 @@ static NSError *charon_port_no_node_error(void)
                                          completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointGIntensity"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointGIntensity"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1967,7 +1969,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorPointBX"];
+        written = charon_port_values(&_charon_values)[@"ColorPointBX"];
     }
     completion(written, nil);
 }
@@ -1976,7 +1978,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBX"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointBX"] = value;
     }
     if (completion) {
         completion(nil);
@@ -1988,7 +1990,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBX"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointBX"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2034,7 +2036,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorPointBY"];
+        written = charon_port_values(&_charon_values)[@"ColorPointBY"];
     }
     completion(written, nil);
 }
@@ -2043,7 +2045,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBY"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointBY"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2055,7 +2057,7 @@ static NSError *charon_port_no_node_error(void)
                                  completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBY"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointBY"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2101,7 +2103,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorPointBIntensity"];
+        written = charon_port_values(&_charon_values)[@"ColorPointBIntensity"];
     }
     completion(written, nil);
 }
@@ -2110,7 +2112,7 @@ static NSError *charon_port_no_node_error(void)
                                          completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBIntensity"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointBIntensity"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2122,7 +2124,7 @@ static NSError *charon_port_no_node_error(void)
                                          completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"ColorPointBIntensity"] = value;
+        charon_port_values(&_charon_values)[@"ColorPointBIntensity"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2168,7 +2170,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"EnhancedCurrentHue"];
+        written = charon_port_values(&_charon_values)[@"EnhancedCurrentHue"];
     }
     completion(written, nil);
 }
@@ -2212,7 +2214,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"EnhancedColorMode"];
+        written = charon_port_values(&_charon_values)[@"EnhancedColorMode"];
     }
     completion(written, nil);
 }
@@ -2256,7 +2258,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorLoopActive"];
+        written = charon_port_values(&_charon_values)[@"ColorLoopActive"];
     }
     completion(written, nil);
 }
@@ -2300,7 +2302,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorLoopDirection"];
+        written = charon_port_values(&_charon_values)[@"ColorLoopDirection"];
     }
     completion(written, nil);
 }
@@ -2344,7 +2346,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorLoopTime"];
+        written = charon_port_values(&_charon_values)[@"ColorLoopTime"];
     }
     completion(written, nil);
 }
@@ -2388,7 +2390,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorLoopStartEnhancedHue"];
+        written = charon_port_values(&_charon_values)[@"ColorLoopStartEnhancedHue"];
     }
     completion(written, nil);
 }
@@ -2432,7 +2434,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorLoopStoredEnhancedHue"];
+        written = charon_port_values(&_charon_values)[@"ColorLoopStoredEnhancedHue"];
     }
     completion(written, nil);
 }
@@ -2476,7 +2478,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorCapabilities"];
+        written = charon_port_values(&_charon_values)[@"ColorCapabilities"];
     }
     completion(written, nil);
 }
@@ -2520,7 +2522,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorTempPhysicalMinMireds"];
+        written = charon_port_values(&_charon_values)[@"ColorTempPhysicalMinMireds"];
     }
     completion(written, nil);
 }
@@ -2564,7 +2566,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ColorTempPhysicalMaxMireds"];
+        written = charon_port_values(&_charon_values)[@"ColorTempPhysicalMaxMireds"];
     }
     completion(written, nil);
 }
@@ -2608,7 +2610,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"CoupleColorTempToLevelMinMireds"];
+        written = charon_port_values(&_charon_values)[@"CoupleColorTempToLevelMinMireds"];
     }
     completion(written, nil);
 }
@@ -2652,7 +2654,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"StartUpColorTemperatureMireds"];
+        written = charon_port_values(&_charon_values)[@"StartUpColorTemperatureMireds"];
     }
     completion(written, nil);
 }
@@ -2660,7 +2662,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSNumber * _Nullable)value completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"StartUpColorTemperatureMireds"] = value;
+        charon_port_values(&_charon_values)[@"StartUpColorTemperatureMireds"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2670,7 +2672,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completion:(MTRStatusCompletion)completion
 {
     @synchronized (self) {
-        charon_port_values(self)[@"StartUpColorTemperatureMireds"] = value;
+        charon_port_values(&_charon_values)[@"StartUpColorTemperatureMireds"] = value;
     }
     if (completion) {
         completion(nil);
@@ -2680,7 +2682,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSNumber * _Nullable)value completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"StartUpColorTemperatureMireds"] = value;
+        charon_port_values(&_charon_values)[@"StartUpColorTemperatureMireds"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -2690,7 +2692,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeStartUpColorTemperatureMiredsWithValue:(NSNumber * _Nullable)value params:(MTRWriteParams * _Nullable)params completionHandler:(MTRStatusCompletion)completionHandler
 {
     @synchronized (self) {
-        charon_port_values(self)[@"StartUpColorTemperatureMireds"] = value;
+        charon_port_values(&_charon_values)[@"StartUpColorTemperatureMireds"] = value;
     }
     if (completionHandler) {
         completionHandler(nil);
@@ -2736,7 +2738,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"GeneratedCommandList"];
+        written = charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
     completion(written, nil);
 }
@@ -2780,7 +2782,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AcceptedCommandList"];
+        written = charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
     completion(written, nil);
 }
@@ -2824,7 +2826,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"AttributeList"];
+        written = charon_port_values(&_charon_values)[@"AttributeList"];
     }
     completion(written, nil);
 }
@@ -2868,7 +2870,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"FeatureMap"];
+        written = charon_port_values(&_charon_values)[@"FeatureMap"];
     }
     completion(written, nil);
 }
@@ -2912,7 +2914,7 @@ static NSError *charon_port_no_node_error(void)
     }
     id written;
     @synchronized (self) {
-        written = charon_port_values(self)[@"ClusterRevision"];
+        written = charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
     completion(written, nil);
 }

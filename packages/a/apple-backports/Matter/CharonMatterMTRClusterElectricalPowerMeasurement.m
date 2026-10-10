@@ -34,7 +34,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -43,12 +42,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRClusterElectricalPowerMeasurement *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -115,7 +117,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PowerMode"];
+        return charon_port_values(&_charon_values)[@"PowerMode"];
     }
 }
 
@@ -124,7 +126,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"NumberOfMeasurementTypes"];
+        return charon_port_values(&_charon_values)[@"NumberOfMeasurementTypes"];
     }
 }
 
@@ -133,7 +135,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Accuracy"];
+        return charon_port_values(&_charon_values)[@"Accuracy"];
     }
 }
 
@@ -142,7 +144,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Ranges"];
+        return charon_port_values(&_charon_values)[@"Ranges"];
     }
 }
 
@@ -151,7 +153,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Voltage"];
+        return charon_port_values(&_charon_values)[@"Voltage"];
     }
 }
 
@@ -160,7 +162,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ActiveCurrent"];
+        return charon_port_values(&_charon_values)[@"ActiveCurrent"];
     }
 }
 
@@ -169,7 +171,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ReactiveCurrent"];
+        return charon_port_values(&_charon_values)[@"ReactiveCurrent"];
     }
 }
 
@@ -178,7 +180,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ApparentCurrent"];
+        return charon_port_values(&_charon_values)[@"ApparentCurrent"];
     }
 }
 
@@ -187,7 +189,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ActivePower"];
+        return charon_port_values(&_charon_values)[@"ActivePower"];
     }
 }
 
@@ -196,7 +198,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ReactivePower"];
+        return charon_port_values(&_charon_values)[@"ReactivePower"];
     }
 }
 
@@ -205,7 +207,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ApparentPower"];
+        return charon_port_values(&_charon_values)[@"ApparentPower"];
     }
 }
 
@@ -214,7 +216,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RMSVoltage"];
+        return charon_port_values(&_charon_values)[@"RMSVoltage"];
     }
 }
 
@@ -223,7 +225,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RMSCurrent"];
+        return charon_port_values(&_charon_values)[@"RMSCurrent"];
     }
 }
 
@@ -232,7 +234,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RMSPower"];
+        return charon_port_values(&_charon_values)[@"RMSPower"];
     }
 }
 
@@ -241,7 +243,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Frequency"];
+        return charon_port_values(&_charon_values)[@"Frequency"];
     }
 }
 
@@ -250,7 +252,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"HarmonicCurrents"];
+        return charon_port_values(&_charon_values)[@"HarmonicCurrents"];
     }
 }
 
@@ -259,7 +261,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"HarmonicPhases"];
+        return charon_port_values(&_charon_values)[@"HarmonicPhases"];
     }
 }
 
@@ -268,7 +270,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"PowerFactor"];
+        return charon_port_values(&_charon_values)[@"PowerFactor"];
     }
 }
 
@@ -277,7 +279,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"NeutralCurrent"];
+        return charon_port_values(&_charon_values)[@"NeutralCurrent"];
     }
 }
 
@@ -286,7 +288,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"GeneratedCommandList"];
+        return charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
 }
 
@@ -295,7 +297,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AcceptedCommandList"];
+        return charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
 }
 
@@ -304,7 +306,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AttributeList"];
+        return charon_port_values(&_charon_values)[@"AttributeList"];
     }
 }
 
@@ -313,7 +315,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"FeatureMap"];
+        return charon_port_values(&_charon_values)[@"FeatureMap"];
     }
 }
 
@@ -322,7 +324,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ClusterRevision"];
+        return charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
 }
 

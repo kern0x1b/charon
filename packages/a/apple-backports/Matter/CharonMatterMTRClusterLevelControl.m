@@ -43,7 +43,6 @@
     id _charon_device;
     NSNumber *_charon_endpoint;
     dispatch_queue_t _charon_queue;
-    @package
     NSMutableDictionary *_charon_values;
 }
 @end
@@ -52,12 +51,15 @@
 // first use. The caller holds the object's lock for the whole of its access, so this takes
 // none. It is not keyed by the class: two objects of one class are two tables, as they are
 // two sets of state in the framework.
-static NSMutableDictionary *charon_port_values(MTRClusterLevelControl *object)
+// It takes the table by its address, not the object: naming the class here would not compile
+// where the host SDK marks that class unavailable, as it does for some commodity and closure
+// clusters.
+static NSMutableDictionary *charon_port_values(NSMutableDictionary * __strong *values)
 {
-    if (!object->_charon_values) {
-        object->_charon_values = [NSMutableDictionary dictionary];
+    if (!*values) {
+        *values = [NSMutableDictionary dictionary];
     }
-    return object->_charon_values;
+    return *values;
 }
 
 // The error a member that would need a node answers, on a release with no Matter
@@ -112,7 +114,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentLevel"];
+        return charon_port_values(&_charon_values)[@"CurrentLevel"];
     }
 }
 
@@ -121,7 +123,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"RemainingTime"];
+        return charon_port_values(&_charon_values)[@"RemainingTime"];
     }
 }
 
@@ -130,7 +132,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"MinLevel"];
+        return charon_port_values(&_charon_values)[@"MinLevel"];
     }
 }
 
@@ -139,7 +141,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"MaxLevel"];
+        return charon_port_values(&_charon_values)[@"MaxLevel"];
     }
 }
 
@@ -148,7 +150,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"CurrentFrequency"];
+        return charon_port_values(&_charon_values)[@"CurrentFrequency"];
     }
 }
 
@@ -157,7 +159,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"MinFrequency"];
+        return charon_port_values(&_charon_values)[@"MinFrequency"];
     }
 }
 
@@ -166,7 +168,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"MaxFrequency"];
+        return charon_port_values(&_charon_values)[@"MaxFrequency"];
     }
 }
 
@@ -175,14 +177,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"Options"];
+        return charon_port_values(&_charon_values)[@"Options"];
     }
 }
 
 - (void)writeAttributeOptionsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Options"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"Options"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -190,7 +192,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeOptionsWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"Options"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"Options"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -201,14 +203,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"OnOffTransitionTime"];
+        return charon_port_values(&_charon_values)[@"OnOffTransitionTime"];
     }
 }
 
 - (void)writeAttributeOnOffTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"OnOffTransitionTime"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"OnOffTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -216,7 +218,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeOnOffTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"OnOffTransitionTime"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"OnOffTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -227,14 +229,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"OnLevel"];
+        return charon_port_values(&_charon_values)[@"OnLevel"];
     }
 }
 
 - (void)writeAttributeOnLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"OnLevel"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"OnLevel"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -242,7 +244,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeOnLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"OnLevel"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"OnLevel"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -253,14 +255,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"OnTransitionTime"];
+        return charon_port_values(&_charon_values)[@"OnTransitionTime"];
     }
 }
 
 - (void)writeAttributeOnTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"OnTransitionTime"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"OnTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -268,7 +270,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeOnTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"OnTransitionTime"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"OnTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -279,14 +281,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"OffTransitionTime"];
+        return charon_port_values(&_charon_values)[@"OffTransitionTime"];
     }
 }
 
 - (void)writeAttributeOffTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"OffTransitionTime"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"OffTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -294,7 +296,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeOffTransitionTimeWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"OffTransitionTime"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"OffTransitionTime"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -305,14 +307,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"DefaultMoveRate"];
+        return charon_port_values(&_charon_values)[@"DefaultMoveRate"];
     }
 }
 
 - (void)writeAttributeDefaultMoveRateWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"DefaultMoveRate"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"DefaultMoveRate"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -320,7 +322,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeDefaultMoveRateWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"DefaultMoveRate"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"DefaultMoveRate"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -331,14 +333,14 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"StartUpCurrentLevel"];
+        return charon_port_values(&_charon_values)[@"StartUpCurrentLevel"];
     }
 }
 
 - (void)writeAttributeStartUpCurrentLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs
 {
     @synchronized (self) {
-        charon_port_values(self)[@"StartUpCurrentLevel"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"StartUpCurrentLevel"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
 }
@@ -346,7 +348,7 @@ static NSError *charon_port_no_node_error(void)
 - (void)writeAttributeStartUpCurrentLevelWithValue:(NSDictionary<NSString *, id> *)dataValueDictionary expectedValueInterval:(NSNumber *)expectedValueIntervalMs params:(MTRWriteParams * _Nullable)params
 {
     @synchronized (self) {
-        charon_port_values(self)[@"StartUpCurrentLevel"] = dataValueDictionary;
+        charon_port_values(&_charon_values)[@"StartUpCurrentLevel"] = dataValueDictionary;
     }
     (void)expectedValueIntervalMs;
     (void)params;
@@ -357,7 +359,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"GeneratedCommandList"];
+        return charon_port_values(&_charon_values)[@"GeneratedCommandList"];
     }
 }
 
@@ -366,7 +368,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AcceptedCommandList"];
+        return charon_port_values(&_charon_values)[@"AcceptedCommandList"];
     }
 }
 
@@ -375,7 +377,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"AttributeList"];
+        return charon_port_values(&_charon_values)[@"AttributeList"];
     }
 }
 
@@ -384,7 +386,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"FeatureMap"];
+        return charon_port_values(&_charon_values)[@"FeatureMap"];
     }
 }
 
@@ -393,7 +395,7 @@ static NSError *charon_port_no_node_error(void)
 {
     (void)params;
     @synchronized (self) {
-        return charon_port_values(self)[@"ClusterRevision"];
+        return charon_port_values(&_charon_values)[@"ClusterRevision"];
     }
 }
 
