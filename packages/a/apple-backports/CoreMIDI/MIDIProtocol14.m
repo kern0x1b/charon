@@ -5,7 +5,8 @@
 
 #import "CharonCoreMIDI.h"
 
-const CFStringRef kMIDIPropertyProtocolID = CFSTR("protocol");
+// The property's key is the one string the library names (CharonCoreMIDI.h), so the three files that use it agree.
+const CFStringRef kMIDIPropertyProtocolID = CHARON_PROTOCOL_KEY;
 
 OSStatus MIDIInputPortCreateWithProtocol(MIDIClientRef client, CFStringRef portName, MIDIProtocolID protocol,
                                          MIDIPortRef *outPort, MIDIReceiveBlock receiveBlock)

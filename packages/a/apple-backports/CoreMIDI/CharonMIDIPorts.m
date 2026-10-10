@@ -424,7 +424,8 @@ OSStatus CharonMIDIDestination(MIDIClientRef client, CFStringRef name, MIDIProto
     status = charon_set_protocol(*outDest, protocol);
     if (status != noErr) {
         // The destination is not handed out: it is disposed, and nothing of the port is kept.
-        MIDIEndpointDispose(*outDest);
+        if (MIDIEndpointDispose(*outDest) != noErr)
+            charon_refused("the dispose of a destination whose protocol was refused");
         charon_free_port(port);
         return status;
     }
@@ -448,7 +449,8 @@ OSStatus CharonMIDISource(MIDIClientRef client, CFStringRef name, MIDIProtocolID
         return status;
     status = charon_set_protocol(*outSrc, protocol);
     if (status != noErr) {
-        MIDIEndpointDispose(*outSrc);
+        if (MIDIEndpointDispose(*outSrc) != noErr)
+            charon_refused("the dispose of a source whose protocol was refused");
         return status;
     }
     return noErr;

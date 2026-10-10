@@ -104,6 +104,25 @@ static void charon_probe_objects(void)
         charon_probe_unique("input port disposed", port);
     }
 
+    // The entity written by MIDIDeviceNewEntity (the library's, MIDIDevice14.m) on a device of the emulated setup, if the setup
+    // has one: the status of the call, the protocol read back from the entity, and the status of its removal. An application
+    // cannot make a device (MIDIDeviceCreate is the plug-in driver's call), so the setup's own device is the only one there is.
+    ItemCount devices = MIDIGetNumberOfDevices();
+    printf("probe 6.1.3: setup devices %lu\n", (unsigned long)devices);
+    fflush(stdout);
+    if (devices > 0) {
+        MIDIDeviceRef device = MIDIGetDevice(0);
+        MIDIEntityRef entity = 0;
+        OSStatus entityStatus = MIDIDeviceNewEntity(device, CFSTR("charon-probe-entity"), kMIDIProtocol_2_0, false, 0, 0, &entity);
+        printf("probe 6.1.3: MIDIDeviceNewEntity (protocol 2.0) status %d, entity ref %u\n", (int)entityStatus, (unsigned)entity);
+        fflush(stdout);
+        if (entityStatus == noErr) {
+            charon_probe_umpkey("entity protocol read back", entity, CFSTR("protocol"));
+            OSStatus removed = MIDIDeviceRemoveEntity(device, entity);
+            printf("probe 6.1.3: MIDIDeviceRemoveEntity status %d\n", (int)removed);
+            fflush(stdout);
+        }
+    }
     MIDIClientDispose(client);
     charon_probe_unique("client disposed", client);
 

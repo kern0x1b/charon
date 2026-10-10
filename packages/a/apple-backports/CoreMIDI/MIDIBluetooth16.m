@@ -87,12 +87,15 @@ static NSString *charon_peripheral_key(CBPeripheral *peripheral)
         Byte *buffer = malloc(listSize);
         if (buffer) {
             MIDIPacketList *list = (MIDIPacketList *)buffer;
-            if (MIDIPacketListAdd(list, listSize, MIDIPacketListInit(list), 0, count, midi) == NULL)
-                NSLog(@"charon: a Bluetooth MIDI notification of %lu bytes did not fit its packet list", (unsigned long)count);
-            OSStatus status = MIDIReceived(self.source, list);
-            if (status != noErr && !self.refusedOnce) {
-                self.refusedOnce = YES;
-                NSLog(@"charon: a Bluetooth MIDI device's bytes were not received by the release (status %d); facts/CoreMIDI/CoreMIDI.md", (int)status);
+            if (MIDIPacketListAdd(list, listSize, MIDIPacketListInit(list), 0, count, midi) == NULL) {
+                // An empty list is not handed to the release: the notification's bytes are dropped, and the drop is logged.
+                NSLog(@"charon: a Bluetooth MIDI notification of %lu bytes did not fit its packet list and is dropped", (unsigned long)count);
+            } else {
+                OSStatus status = MIDIReceived(self.source, list);
+                if (status != noErr && !self.refusedOnce) {
+                    self.refusedOnce = YES;
+                    NSLog(@"charon: a Bluetooth MIDI device's bytes were not received by the release (status %d); facts/CoreMIDI/CoreMIDI.md", (int)status);
+                }
             }
             free(buffer);
         }

@@ -51,5 +51,15 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOS
     "$build/CharonCoreMIDI.o" "$build/CharonMIDIPorts.m.o" -framework Foundation -framework CoreMIDI -o "$build/ownership"
 "$build/ownership" > "$build/ownership.log" 2>&1 && owner=0 || owner=$?
 cat "$build/ownership.log"
-if [ "$result" -eq 0 ]; then result=$owner; fi
+# MIDIDeviceNewEntity against stand-ins for the three release calls it makes (entity.m): the host forbids a real entity, and the
+# release cannot be made to refuse the protocol. MIDIDevice14.m is compiled again here with those calls renamed.
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -DCHARON_HOST_HAS_UMP_SYSEX=1 \
+    -DMIDIDeviceNewEntity=charon_test_MIDIDeviceNewEntity -DMIDIDeviceAddEntity=charon_test_MIDIDeviceAddEntity \
+    -DMIDIObjectSetIntegerProperty=charon_test_MIDIObjectSetIntegerProperty -DMIDIDeviceRemoveEntity=charon_test_MIDIDeviceRemoveEntity \
+    -I"$CORE" -I"$here" "$here/entity.m" "$CORE/MIDIDevice14.m" -framework Foundation -framework CoreMIDI -o "$build/entity"
+"$build/entity" > "$build/entity.log" 2>&1 && entity=0 || entity=$?
+cat "$build/entity.log"
+for step in "$owner" "$entity"; do
+    if [ "$result" -eq 0 ]; then result=$step; fi
+done
 exit $result
