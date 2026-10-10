@@ -37,18 +37,15 @@ end
 -- tables the pages read.
 local function write_fixture(tree, corpus)
     local package = path.join(tree, "packages", "a", "apple-backports")
-    local spec_header = {"kind", "api", "cls", "key", "introduced", "decl", "availability", "hash", "value_status", "value",
-                         "host_value", "value_source", "owned", "tbd", "shape", "measured"}
-    local function spec_row(kind, api, cls, decl, availability, value_status, value)
-        return {kind, api, cls, "-", "-", decl, availability, "-", value_status or "-", value or "-", "-", "-", "-", "-", "-", "-"}
-    end
-    emit.file(path.join(package, "spec", FIXTURE, "spec.sdk-26.2-headers.tsv"), tsv.table_text(spec_header, {
-        spec_row("method", "-[FKThing reset]", "FKThing", "- (void)reset", "-"),
-        spec_row("method", "-[FKThing setName:age:]", "FKThing", "- (void)setName:(NSString *)n age:(int)a | sized",
-                 "API_AVAILABLE(ios(12.0))"),
-        spec_row("property", "-[FKThing title]", "FKThing", "@property (nonatomic) NSString *title", "-"),
-        spec_row("method", "+[FKThing make]", "FKThing", "+ (instancetype)make", "-"),
-        spec_row("constant", "FKConstant", "-", "extern NSString *const FKConstant", "-", "found", "fk"),
+    -- The members of the fixture come from its declaration shard, which the test injects (headers.use below); the shard file holds
+    -- the framework's header line only, so the framework is listed. The constant is in the framework's constant record.
+    emit.file(path.join(package, "spec", FIXTURE, "declarations.tsv"),
+        "#libclang=fixture\tsdk=fixture\tcolumns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash\n")
+    local constant_columns = {"kind", "api", "cls", "key", "introduced", "type", "availability", "hash", "value_status", "value",
+                              "host_value", "value_source", "owned", "tbd", "shape", "measured", "declhash"}
+    emit.file(path.join(package, "spec", FIXTURE, "constants.tsv"), tsv.table_text(constant_columns, {
+        {"constant", "FKConstant", "-", "FKConstant", "-", "extern NSString *const FKConstant", "-", "-", "found", "fk",
+         "-", "-", "-", "-", "-", "-", "-"},
     }))
     emit.file(path.join(package, "spec", FIXTURE, "protocols.tsv"), tsv.table_text(
         {"protocol", "introduced", "status", "reasons", "bases", "section", "kind", "instance", "selector", "decl", "in16"}, {
@@ -113,8 +110,21 @@ end
 
 -- The header facts the fixture injects: a superclass. The pages take their comments and declarations from the doc rows below (the
 -- extractor's doc mode), and the spec's decl column is never shown.
+-- The fixture's members as its shard gives them (members.rows reads cls, kind, api, text, type and hash): a method, a method with an
+-- availability text, a property and a class method. The shard file holds the header only; these facts are what it would give.
 local function fixture_headers(fw, sdk)
-    return {members = {}, declared = {}, typedefs = {}, superclasses = {FKThing = "NSObject", FKDelegate = "NSObject"}}
+    local function member(cls, kind, api, text, typ, hash)
+        return {cls = cls, kind = kind, api = api, text = text, type = typ, hash = hash}
+    end
+    return {
+        members = {
+            member("FKThing", "method", "-[FKThing reset]", "", "void", "1111111111111111"),
+            member("FKThing", "method", "-[FKThing setName:age:]", "API_AVAILABLE(ios(12.0))", "void", "2222222222222222"),
+            member("FKThing", "property", "-[FKThing title]", "", "NSString *", "3333333333333333"),
+            member("FKThing", "method", "+[FKThing make]", "", "instancetype", "4444444444444444"),
+        },
+        declared = {}, typedefs = {}, superclasses = {FKThing = "NSObject", FKDelegate = "NSObject"},
+    }
 end
 
 -- The extractor's escaping of a cell (decls.cc): a backslash, a tab, a line feed and a carriage return.
