@@ -39,9 +39,15 @@ end
 
 -- The declarations a shard holds under a name: a variable (its USR is c:@<name>) or an enum constant (c:@E@<enum>@<name>), by the name the
 -- USR gives. name -> {declhash, value} for the framework's shard rows; a variable wins where both exist. A name no shard declares is absent.
+local declared_key, declared_map = nil, nil
+
 local function declarations_by_name(tree, fw)
+    local key = tree .. "\n" .. fw
+    if key == declared_key then
+        return declared_map
+    end
     local out = {}
-    for _, r in ipairs(headers.shard_records(tree, fw)) do
+    for _, r in ipairs(headers.shard_value_records(tree, fw)) do
         local name
         if r.kind == "var" then
             name = string.match(r.usr, "^c:@([^@]+)$")
@@ -52,6 +58,8 @@ local function declarations_by_name(tree, fw)
             out[name] = {declhash = r.declhash, value = r.value, kind = r.kind}
         end
     end
+    -- kept for the framework the commands ask about next (refused and constant_rows both ask): one slot, dropped by forget()
+    declared_key, declared_map = key, out
     return out
 end
 
@@ -99,6 +107,7 @@ local last_key, last_rows = nil, nil
 
 function forget()
     last_key, last_rows = nil, nil
+    declared_key, declared_map = nil, nil
 end
 
 function load(tree, fw)

@@ -34,6 +34,52 @@ local function test_sha256(check)
     check(sha256.hex("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "sha256 of abc")
     check(sha256.hex("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq")
           == "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1", "sha256 of the two-block vector")
+    check(sha256.hex(string.rep("a", 1000000)) == "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0",
+          "sha256 of the FIPS million-a vector")
+    check(sha256.hex("a\0b\255") == "a37cc3026aae4d519e0b19c298fa913b4dccfdf0658cbccbb7deaa0226d5acdb",
+          "sha256 of a text with a NUL and a high byte (shasum's value)")
+end
+
+-- order.less compares eight bytes at a time; its answer must be the byte-by-byte one, for every length, prefix and high byte.
+local function test_order(check)
+    local order = import("gen.order", {rootdir = TOOLS, anonymous = true})
+    local function reference(a, b)
+        for i = 1, math.min(#a, #b) do
+            local x, y = string.byte(a, i), string.byte(b, i)
+            if x ~= y then
+                return x < y
+            end
+        end
+        return #a < #b
+    end
+    local seed = 20261010
+    local function random_string(max)
+        local out = {}
+        for i = 1, seed % (max + 1) do
+            seed = (seed * 1103515245 + 12345) % 2147483648
+            -- a small alphabet (shared prefixes and a high byte) so that long common prefixes are the usual case
+            out[i] = string.char(({65, 66, 95, 97, 128, 200, 255, 0})[seed % 8 + 1])
+        end
+        return table.concat(out)
+    end
+    local different = 0
+    for _ = 1, 4000 do
+        local a, b = random_string(40), random_string(40)
+        if order.less(a, b) ~= reference(a, b) then
+            different = different + 1
+        end
+        -- the same string with one byte changed after a long shared prefix
+        local c = a .. "AAAAAAAAAAAAAAAAB" .. b
+        local d = a .. "AAAAAAAAAAAAAAAA\255" .. b
+        if order.less(c, d) ~= reference(c, d) or order.less(d, c) ~= reference(d, c) or order.less(c, c) then
+            different = different + 1
+        end
+    end
+    check(different == 0, "order.less is the byte order on 4000 random pairs and their long-prefix variants (" .. different .. " differ)")
+    check(order.less("", "a") and not order.less("a", "") and order.less("a", "a\0") and order.less("a_b", "aB") == false,
+          "a prefix sorts first, the empty string first, and the order is not the locale's")
+    check(order.less("ABCDEFGH", "ABCDEFGI") and order.less("ABCDEFG\127", "ABCDEFG\128") and order.less("ABCDEFGH", "ABCDEFGHI"),
+          "the eight-byte word compares as unsigned, and a word is a prefix of a longer string")
 end
 
 local function test_emit(check)
@@ -89,6 +135,7 @@ end
 function main()
     local check, failures = checks()
     test_sha256(check)
+    test_order(check)
     test_emit(check)
     test_stream(check)
     test_zero_writes(check)

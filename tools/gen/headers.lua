@@ -30,27 +30,36 @@ end
 -- row is split. A missing file has no rows.
 local function read_rows(file, kinds)
     local out = {}
-    if not os.isfile(file) then
+    -- the whole file at once and the lines found in it: a shard is up to 8 MB, and a line at a time through the file object cost a
+    -- Lua call each (290,000 for a `gen --all`)
+    local text = files.read_text(file)
+    if text == nil then
         return out
     end
-    local columns = nil
-    for line in io.lines(file) do
-        if string.sub(line, 1, 1) == "#" then
+    local find, sub = string.find, string.sub
+    local columns, count = nil, 0
+    for line in string.gmatch(text, "[^\n]+") do
+        if sub(line, 1, 1) == "#" then
             local names = string.match(line, "columns=([^\t]*)")
             if names then
-                columns = {}
+                columns, count = {}, 0
                 for name in string.gmatch(names, "[^,]+") do
-                    table.insert(columns, name)
+                    count = count + 1
+                    columns[count] = name
                 end
             end
         elseif columns and (kinds == nil or kinds[string.match(line, "^[^\t]*")]) then
-            local cells = {}
-            for cell in (line .. "\t"):gmatch("([^\t]*)\t") do
-                table.insert(cells, cell)
-            end
-            local row = {}
-            for index, name in ipairs(columns) do
-                row[name] = cells[index]
+            -- the cells, each under its column's name; a cell beyond the columns is ignored, a missing one is nil
+            local row, index, position = {}, 1, 1
+            while index <= count do
+                local tab = find(line, "\t", position, true)
+                if tab == nil then
+                    row[columns[index]] = sub(line, position)
+                    break
+                end
+                row[columns[index]] = sub(line, position, tab - 1)
+                position = tab + 1
+                index = index + 1
             end
             table.insert(out, row)
         end
@@ -68,6 +77,14 @@ end
 -- no rows.
 function shard_records(tree, fw)
     return read_rows(shard_path(tree, fw), nil)
+end
+
+-- The rows of a shard that declare a value: a variable or an enum constant. Only these rows are split (read_rows takes the kind before
+-- the row is split), which is what a constant's declaration hash and value are looked up from.
+local VALUE_KINDS = {var = true, enumconst = true}
+
+function shard_value_records(tree, fw)
+    return read_rows(shard_path(tree, fw), VALUE_KINDS)
 end
 
 -- The name a shard row gives (the USR's, or the stored cell).
@@ -113,6 +130,7 @@ function shard_facts(tree, fw)
     local avail = import("found.avail", {rootdir = path.join(tree, "tools"), anonymous = true})
     local entities = {var = true, ["function"] = true, enum = true, struct = true, union = true, enumconst = true,
                       interface = true, protocol = true}
+    local rendered = {}
     for _, r in ipairs(records) do
         local name, side = shard.decode(r.kind, r.usr, r.name or "", r.side or "")
             -- a class property is "+" (design-foundation.md 3.5): its USR carries the class part (cpy); the shard stores no side for it
@@ -125,8 +143,15 @@ function shard_facts(tree, fw)
                 -- a class property takes the sign of a class method ("+"): the side the shard records (design-foundation.md 3.5)
                 local api = side .. "[" .. cls .. " " .. name .. "]"
                 local alias = r.kind == "method" and api or (cls .. "." .. name)
+                -- most members of a framework share one availability: the text is rendered once for each distinct pair
+                local rendered_key = r.availability .. "\31" .. (r.message or "")
+                local text = rendered[rendered_key]
+                if text == nil then
+                    text = avail.render(r.availability, r.message)
+                    rendered[rendered_key] = text
+                end
                 table.insert(out.members, {cls = cls, kind = r.kind, api = api, alias = alias, availability = r.availability,
-                                           message = r.message, text = avail.render(r.availability, r.message),
+                                           message = r.message, text = text,
                                            type = r.type, params = r.params, attrs = r.attrs, hash = r.declhash, usr = r.usr,
                                            key = r.container})
             end
