@@ -312,12 +312,18 @@ expect(run_doc ~= nil and run_doc[7] == "total" and run_doc[10] == "void FXRun(i
     "a doc row carries the parameter names and the declaration as written")
 local widget_doc = doc_of("c:objc(cs)FXWidget(cm)widgetNamed:")
 expect(widget_doc ~= nil and widget_doc[7] == "name" and widget_doc[8] == "", "a method with no doc comment has an empty brief")
-expect(doc_of("c:Repeat.h@T@FXCount") ~= nil and doc_of("c:Repeat.h@T@FXCount")[9] == "", "a declaration with no comment has an empty raw text")
--- the doc comment forms are /// and /** */ only (ruling of 2026-10-10): FXCount's //! comment is not kept, FXDouble's /// is
+expect(doc_of("c:@FXPointerToConst") ~= nil and doc_of("c:@FXPointerToConst")[9] == "", "a declaration with no comment has an empty raw text")
+-- the doc comments are the ones clang attaches: ///, //!, /** */ and /*! (the forms the SDK's headers use); an ordinary // comment above
+-- FXCount is not one of them, so the raw text is the //! line alone
 local double_doc = doc_of("c:@F@FXDouble")
 expect(double_doc ~= nil and double_doc[8] == "Doubles a value." and double_doc[9] == "/// Doubles a value.",
     "a /// doc comment is kept, with its brief")
-expect(doc_of("c:Repeat.h@T@FXCount")[8] == "", "a //! comment is not a doc comment: no brief")
+local count_doc = doc_of("c:Repeat.h@T@FXCount")
+expect(count_doc ~= nil and count_doc[8] == "Counts the items." and count_doc[9] == "//! Counts the items.",
+    "a //! doc comment is kept, and an ordinary // comment above it is not")
+local halve_doc = doc_of("c:@F@FXHalve")
+expect(halve_doc ~= nil and halve_doc[8] == "Halves a value." and halve_doc[9] == "/*! Halves a value. */",
+    "a /*! doc comment is kept, with its brief")
 
 -- the usr/include module (ruling of 2026-10-10): its shard holds the declarations written in its own directory; the module map's
 -- other module (FixtureCExtra) and a header of another directory (FixtureOther) are not the module's own

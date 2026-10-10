@@ -1,5 +1,5 @@
 // Repeats declarations of Fixture.h with other parameter names: the extractor emits the first one only.
-//! A //! comment is not a doc comment of the doc mode: the typedef below has no doc text.
+//! Counts the items.
 typedef int FXCount;
 /** Runs the total.
  *  The total is added to the sum. */
@@ -28,3 +28,5 @@ FX_TYPE_AVAILABLE FXStringRef FXFetch(FX_TYPE_AVAILABLE const char *key);
 - (void)macroTake:(FX_TYPE_AVAILABLE const char *)value;
 @end
 typedef FX_TYPE_AVAILABLE id _Nullable (^FXBlock)(FX_TYPE_AVAILABLE int value);
+/*! Halves a value. */
+int FXHalve(int value);

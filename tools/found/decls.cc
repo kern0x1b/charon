@@ -446,16 +446,13 @@ std::string declaration_hash(const Row& r) {
 // The doc-time text of a declaration (--doc): its brief and raw doc comment as clang parses them, and the names of its parameters.
 // It is attached when the record is made, while the cursor is at hand.
 void attach_doc(CXCursor c, Row* r) {
-  // only the /// and /** */ forms are doc comments here (ruling of 2026-10-10): clang also attaches //! and /*! comments, which are not
-  // kept, with their brief; a declaration with only those has no doc text
   int n = clang_Cursor_getNumArguments(c);
   for (int i = 0; i < n; ++i) {
     if (i) r->params_names += " | ";
     r->params_names += text(clang_getCursorSpelling(clang_Cursor_getArgument(c, (unsigned)i)));
   }
-  std::string raw = text(clang_Cursor_getRawCommentText(c));
-  if (raw.compare(0, 3, "///") != 0 && raw.compare(0, 3, "/**") != 0) return;
-  r->comment = raw;
+  // the doc comment is the one clang attaches to the declaration (its own set: ///, //!, /** */ and /*! and their trailing < forms)
+  r->comment = text(clang_Cursor_getRawCommentText(c));
   r->brief = text(clang_Cursor_getBriefCommentText(c));
 }
 
@@ -1287,6 +1284,10 @@ int main(int argc, char** argv) {
     args.push_back("-resource-dir");
     args.push_back(resource);
   }
+  // The doc mode keeps the doc comments of the SDK's own headers. clang drops the comments of a system header unless the frontend is
+  // told to retain them (the cc1 option -fretain-comments-from-system-headers, which the driver passes on; the SDK's headers are system
+  // headers). The IR does not read comments, so the IR parse keeps the default.
+  if (doc) args.push_back("-fretain-comments-from-system-headers");
   args.push_back("-Wno-everything");
   CXIndex index = clang_createIndex(0, 0);
   CXTranslationUnit tu = nullptr;
