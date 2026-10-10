@@ -53,8 +53,10 @@ static void check_mici_classes(void)
     check(profile != nil && [profile.name isEqualToString:@"Standard Profile Bank 0x00 Number 0x01, Version: 0x02 Level: 0x03"] &&
           profile.profileID.length == 5, "MIDI-CI profile named from its standard bytes, as macOS", "");
 
-    // A responder with no profile delegate is not made, as macOS.
-    check([[charon_host_MIDICIResponder alloc] initWithDeviceInfo:info profileDelegate:nil profileStates:@[] supportProperties:NO] == nil,
+    // A responder with no profile delegate is not made, as macOS. The delegate parameter is nonnull in the header, so the nil is
+    // passed through a variable: the call is the one macOS was measured to refuse.
+    id noDelegate = nil;
+    check([[charon_host_MIDICIResponder alloc] initWithDeviceInfo:info profileDelegate:noDelegate profileStates:@[] supportProperties:NO] == nil,
           "MIDI-CI responder with no delegate is not made, as macOS", "");
 }
 
