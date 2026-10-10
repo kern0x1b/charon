@@ -75,8 +75,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"caid:%@; ", charonDescribeObject(self->_caid)];
     [text appendFormat:@"ccdid:%@; ", charonDescribeObject(self->_ccdid)];
     [text appendFormat:@"endpointID:%@; ", charonDescribeObject(self->_endpointID)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

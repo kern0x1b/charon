@@ -72,8 +72,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"rate:%@; ", charonDescribeObject(self->_rate)];
     [text appendFormat:@"optionsMask:%@; ", charonDescribeObject(self->_optionsMask)];
     [text appendFormat:@"optionsOverride:%@; ", charonDescribeObject(self->_optionsOverride)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

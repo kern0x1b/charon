@@ -70,8 +70,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"deltaX:%@; ", charonDescribeObject(self->_deltaX)];
     [text appendFormat:@"deltaY:%@; ", charonDescribeObject(self->_deltaY)];
     [text appendFormat:@"zoomDelta:%@; ", charonDescribeObject(self->_zoomDelta)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

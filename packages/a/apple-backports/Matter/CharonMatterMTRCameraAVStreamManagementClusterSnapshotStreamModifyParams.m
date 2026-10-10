@@ -67,8 +67,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"snapshotStreamID:%@; ", charonDescribeObject(self->_snapshotStreamID)];
     [text appendFormat:@"watermarkEnabled:%@; ", charonDescribeObject(self->_watermarkEnabled)];
     [text appendFormat:@"osdEnabled:%@; ", charonDescribeObject(self->_osdEnabled)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

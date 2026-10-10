@@ -69,8 +69,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"newRegulatoryConfig:%@; ", charonDescribeObject(self->_newRegulatoryConfig)];
     [text appendFormat:@"countryCode:%@; ", charonDescribeObject(self->_countryCode)];
     [text appendFormat:@"breadcrumb:%@; ", charonDescribeObject(self->_breadcrumb)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

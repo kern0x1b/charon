@@ -184,6 +184,8 @@ CLUSTER_INTERFACES = []
 # type than the member has: counted and printed, not a failure. The host's measurement says whether the two
 # share storage, and where they cannot the port gives the alias its own and says which.
 SHARED_STORAGE_REFUSED = []
+# (class, member) for every own member the header declares and the host's own -description does not print.
+DESCRIPTION_UNPRINTED = []
 # (held, derived) when the committed list of the concrete clusters and the SDK's own headers disagree.
 GENERIC_DRIFT = []
 # An alias that shares its successor's ivar over a conversion: (class, alias, alias type, successor type).
@@ -2031,7 +2033,28 @@ static NSString *charonDescribeScalar(long long value)
 """
 
 
-def describe_body(name, properties, slots):
+def printed_members(description, fresh, names):
+    """Which of `names` the host's own measured -description prints, or None when the host gave no string.
+
+    A member the HOST CLASS does not have at all (no `fresh` row: the host's framework is newer than the
+    SDK the port is declared from, and calls `keyID` `keySetID`) is not a member the host chose to leave out,
+    and is kept: it is printed as the SDK that declares it prints it. Only a member the host has and does
+    not print is dropped.
+
+    The string is a FRESH object's, so every value in it is a nil, a zero or an empty string and cannot
+    contain a `; name:` of its own, which is what makes finding a member by that spelling exact:
+    `<MTRGroupsClusterAddGroupParams: groupID:0; groupName:; >` prints two of the four members the class
+    declares. The framework's generated source writes the string out member by member and leaves
+    `timedInvokeTimeoutMs` and `serverSideProcessingTimeout` out of every Params class, on purpose:
+    they are the invoke's own arguments and not the command's payload.
+    """
+    if not description:
+        return None
+    return set(each for each in names
+               if each not in fresh or re.search(r"(?:: |; )%s:" % re.escape(each), description))
+
+
+def describe_body(name, properties, slots, printed=None):
     """The host's own -description, built from the class's own members in declaration order.
 
     Measured by tests/backports/host/matter/params-probe.m:
@@ -2043,8 +2066,8 @@ def describe_body(name, properties, slots):
     so the format is `<` + the class name + `: ` + `name:value; ` per member + `>`, the value is what the host
     prints, and INHERITED members are not in it.
 
-    EVERY member is printed - there is no skip and no guard - and each one is read from ITS OWN STORAGE rather
-    than through its accessor. That is not a shortcut, it is what makes every member printable against any
+    Every member the HOST'S string prints is printed (`printed`, from printed_members(), or all of them when
+    the host gave no string) and each one is read from ITS OWN STORAGE rather than through its accessor. That is not a shortcut, it is what makes every member printable against any
     SDK: the member's spelling is not always available where the port is compiled. SDK 26.2 calls it
     `thumbnailUrl` and a later SDK calls it `thumbnailURL` and marks the old spelling
     `API_DEPRECATED`, so `self.thumbnailUrl` is `'thumbnailUrl' is unavailable` and 23 of the objects do not
@@ -2060,6 +2083,9 @@ def describe_body(name, properties, slots):
             "    NSMutableString *text = [NSMutableString stringWithFormat:@\"<%@: \","
             " NSStringFromClass([self class])];\n"]
     for prop in properties:
+        if printed is not None and prop["name"] not in printed:
+            DESCRIPTION_UNPRINTED.append((name, prop["name"]))
+            continue
         slot = slots.get(prop["name"], "_" + prop["name"])
         spelling = bare_type(prop)
         if spelling.replace("*", " ").split()[-1:] == ["NSData"] or \
@@ -2486,7 +2512,10 @@ def emit_params(path, name, info, version, buckets, copying, counts, host=None, 
         body.append("// -description: the host does not have this class, so the header's answer stands and this\n"
                     "// object does not override it. Named by the run, per class, from the host measurement.\n")
     elif described:
-        body.append(describe_body(name, own, slots))
+        body.append(describe_body(name, own, slots,
+                                  printed_members((host or {}).get("description"),
+                                                  (host or {}).get("fresh") or {},
+                                                  [each["name"] for each in own])))
     body.append("@end\n")
     for where, said, wanted in unplaced:
         SHARED_STORAGE_REFUSED.append((where, said, wanted))
@@ -3874,6 +3903,13 @@ def main():
             SHARED_STORAGE_REFUSED))
         for where, said, wanted in SHARED_STORAGE_REFUSED:
             print("  %s.%s: %s" % (where, said, wanted))
+    if DESCRIPTION_UNPRINTED:
+        names = collections.Counter(member for _, member in DESCRIPTION_UNPRINTED)
+        print("")
+        print("members the host's own -description does not print, left out of the port's: %d over %d classes"
+              % (len(DESCRIPTION_UNPRINTED), len(set(each for each, _ in DESCRIPTION_UNPRINTED))))
+        for member, count in names.most_common():
+            print("  %s: %d" % (member, count))
     if STORE_SOURCE["own"] or STORE_SOURCE["inherited"] or STORE_SOURCE["none"]:
         print("")
         print("where each plain data class's -init stores come from: %d the framework's own source writes,"

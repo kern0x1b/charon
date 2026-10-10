@@ -90,8 +90,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"iceTransportPolicy:%@; ", charonDescribeObject(self->_iceTransportPolicy)];
     [text appendFormat:@"metadataEnabled:%@; ", charonDescribeObject(self->_metadataEnabled)];
     [text appendFormat:@"sFrameConfig:%@; ", charonDescribeObject(self->_sFrameConfig)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

@@ -94,8 +94,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"userStatus:%@; ", charonDescribeObject(self->_userStatus)];
     [text appendFormat:@"userType:%@; ", charonDescribeObject(self->_userType)];
     [text appendFormat:@"credentialRule:%@; ", charonDescribeObject(self->_credentialRule)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

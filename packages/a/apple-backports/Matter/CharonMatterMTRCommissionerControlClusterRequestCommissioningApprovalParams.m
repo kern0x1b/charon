@@ -72,8 +72,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self->_vendorID)];
     [text appendFormat:@"productID:%@; ", charonDescribeObject(self->_productID)];
     [text appendFormat:@"label:%@; ", charonDescribeObject(self->_label)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

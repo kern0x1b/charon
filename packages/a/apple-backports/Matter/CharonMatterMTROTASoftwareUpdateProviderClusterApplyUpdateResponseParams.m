@@ -63,7 +63,6 @@ static NSString *charonDescribeScalar(long long value)
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"action:%@; ", charonDescribeObject(self->_action)];
     [text appendFormat:@"delayedActionTime:%@; ", charonDescribeObject(self->_delayedActionTime)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

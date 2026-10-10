@@ -68,8 +68,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"chargingEnabledUntil:%@; ", charonDescribeObject(self->_chargingEnabledUntil)];
     [text appendFormat:@"minimumChargeCurrent:%@; ", charonDescribeObject(self->_minimumChargeCurrent)];
     [text appendFormat:@"maximumChargeCurrent:%@; ", charonDescribeObject(self->_maximumChargeCurrent)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

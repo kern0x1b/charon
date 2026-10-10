@@ -62,7 +62,6 @@ static NSString *charonDescribeScalar(long long value)
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"capacity:%@; ", charonDescribeObject(self->_capacity)];
     [text appendFormat:@"groupList:%@; ", charonDescribeObject(self->_groupList)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

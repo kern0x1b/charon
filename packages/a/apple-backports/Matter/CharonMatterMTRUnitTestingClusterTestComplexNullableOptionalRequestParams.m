@@ -93,8 +93,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"nullableList:%@; ", charonDescribeObject(self->_nullableList)];
     [text appendFormat:@"optionalList:%@; ", charonDescribeObject(self->_optionalList)];
     [text appendFormat:@"nullableOptionalList:%@; ", charonDescribeObject(self->_nullableOptionalList)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

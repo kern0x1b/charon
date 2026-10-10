@@ -73,8 +73,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"credential:%@; ", charonDescribeObject(self->_credential)];
     [text appendFormat:@"credentialData:%@; ", charonDescribeObject([self->_credentialData base64EncodedStringWithOptions:0])];
     [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self->_userIndex)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

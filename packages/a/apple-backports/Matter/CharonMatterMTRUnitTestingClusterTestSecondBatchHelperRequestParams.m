@@ -69,8 +69,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"sleepBeforeResponseTimeMs:%@; ", charonDescribeObject(self->_sleepBeforeResponseTimeMs)];
     [text appendFormat:@"sizeOfResponseBuffer:%@; ", charonDescribeObject(self->_sizeOfResponseBuffer)];
     [text appendFormat:@"fillCharacter:%@; ", charonDescribeObject(self->_fillCharacter)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

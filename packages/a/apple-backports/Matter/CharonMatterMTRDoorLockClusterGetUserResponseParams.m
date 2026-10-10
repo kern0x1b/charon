@@ -100,7 +100,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"creatorFabricIndex:%@; ", charonDescribeObject(self->_creatorFabricIndex)];
     [text appendFormat:@"lastModifiedFabricIndex:%@; ", charonDescribeObject(self->_lastModifiedFabricIndex)];
     [text appendFormat:@"nextUserIndex:%@; ", charonDescribeObject(self->_nextUserIndex)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

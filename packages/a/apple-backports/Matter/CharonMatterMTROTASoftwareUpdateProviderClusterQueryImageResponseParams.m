@@ -80,7 +80,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"updateToken:%@; ", charonDescribeObject([self->_updateToken base64EncodedStringWithOptions:0])];
     [text appendFormat:@"userConsentNeeded:%@; ", charonDescribeObject(self->_userConsentNeeded)];
     [text appendFormat:@"metadataForRequestor:%@; ", charonDescribeObject([self->_metadataForRequestor base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

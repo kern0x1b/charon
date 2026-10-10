@@ -66,8 +66,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"nodeID:%@; ", charonDescribeObject(self->_nodeID)];
     [text appendFormat:@"friendlyName:%@; ", charonDescribeObject(self->_friendlyName)];
     [text appendFormat:@"icac:%@; ", charonDescribeObject([self->_icac base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

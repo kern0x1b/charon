@@ -77,8 +77,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"transitionTime:%@; ", charonDescribeObject(self->_transitionTime)];
     [text appendFormat:@"sceneName:%@; ", charonDescribeObject(self->_sceneName)];
     [text appendFormat:@"extensionFieldSetStructs:%@; ", charonDescribeObject(self->_extensionFieldSetStructs)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

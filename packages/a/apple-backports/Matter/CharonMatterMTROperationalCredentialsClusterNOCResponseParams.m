@@ -65,7 +65,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"statusCode:%@; ", charonDescribeObject(self->_statusCode)];
     [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
     [text appendFormat:@"debugText:%@; ", charonDescribeObject(self->_debugText)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

@@ -68,8 +68,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"utcTime:%@; ", charonDescribeObject(self->_utcTime)];
     [text appendFormat:@"granularity:%@; ", charonDescribeObject(self->_granularity)];
     [text appendFormat:@"timeSource:%@; ", charonDescribeObject(self->_timeSource)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

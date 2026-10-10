@@ -72,8 +72,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"verificationKey:%@; ", charonDescribeObject([self->_verificationKey base64EncodedStringWithOptions:0])];
     [text appendFormat:@"groupIdentifier:%@; ", charonDescribeObject([self->_groupIdentifier base64EncodedStringWithOptions:0])];
     [text appendFormat:@"groupResolvingKey:%@; ", charonDescribeObject([self->_groupResolvingKey base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

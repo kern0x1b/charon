@@ -68,7 +68,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"debugText:%@; ", charonDescribeObject(self->_debugText)];
     [text appendFormat:@"wiFiScanResults:%@; ", charonDescribeObject(self->_wiFiScanResults)];
     [text appendFormat:@"threadScanResults:%@; ", charonDescribeObject(self->_threadScanResults)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

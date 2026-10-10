@@ -81,8 +81,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"sampleRate:%@; ", charonDescribeObject(self->_sampleRate)];
     [text appendFormat:@"bitRate:%@; ", charonDescribeObject(self->_bitRate)];
     [text appendFormat:@"bitDepth:%@; ", charonDescribeObject(self->_bitDepth)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

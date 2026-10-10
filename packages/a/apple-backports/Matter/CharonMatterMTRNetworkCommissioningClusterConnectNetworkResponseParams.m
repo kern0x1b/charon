@@ -65,7 +65,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"networkingStatus:%@; ", charonDescribeObject(self->_networkingStatus)];
     [text appendFormat:@"debugText:%@; ", charonDescribeObject(self->_debugText)];
     [text appendFormat:@"errorValue:%@; ", charonDescribeObject(self->_errorValue)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

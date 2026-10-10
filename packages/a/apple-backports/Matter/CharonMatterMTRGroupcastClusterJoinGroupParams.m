@@ -78,8 +78,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"key:%@; ", charonDescribeObject([self->_key base64EncodedStringWithOptions:0])];
     [text appendFormat:@"gracePeriod:%@; ", charonDescribeObject(self->_gracePeriod)];
     [text appendFormat:@"useAuxiliaryACL:%@; ", charonDescribeObject(self->_useAuxiliaryACL)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

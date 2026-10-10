@@ -71,7 +71,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"dayOfWeekForSequence:%@; ", charonDescribeObject(self->_dayOfWeekForSequence)];
     [text appendFormat:@"modeForSequence:%@; ", charonDescribeObject(self->_modeForSequence)];
     [text appendFormat:@"transitions:%@; ", charonDescribeObject(self->_transitions)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

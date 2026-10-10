@@ -69,8 +69,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"onOffControl:%@; ", charonDescribeObject(self->_onOffControl)];
     [text appendFormat:@"onTime:%@; ", charonDescribeObject(self->_onTime)];
     [text appendFormat:@"offWaitTime:%@; ", charonDescribeObject(self->_offWaitTime)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

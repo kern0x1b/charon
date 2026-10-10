@@ -74,8 +74,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"data:%@; ", charonDescribeObject(self->_data)];
     [text appendFormat:@"playbackPreferences:%@; ", charonDescribeObject(self->_playbackPreferences)];
     [text appendFormat:@"useCurrentContext:%@; ", charonDescribeObject(self->_useCurrentContext)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

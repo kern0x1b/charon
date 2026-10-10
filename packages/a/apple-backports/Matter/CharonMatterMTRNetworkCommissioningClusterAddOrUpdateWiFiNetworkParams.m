@@ -77,8 +77,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"networkIdentity:%@; ", charonDescribeObject([self->_networkIdentity base64EncodedStringWithOptions:0])];
     [text appendFormat:@"clientIdentifier:%@; ", charonDescribeObject([self->_clientIdentifier base64EncodedStringWithOptions:0])];
     [text appendFormat:@"possessionNonce:%@; ", charonDescribeObject([self->_possessionNonce base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

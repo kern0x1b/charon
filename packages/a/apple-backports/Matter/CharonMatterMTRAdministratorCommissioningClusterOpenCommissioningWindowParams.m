@@ -91,8 +91,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"discriminator:%@; ", charonDescribeObject(self->_discriminator)];
     [text appendFormat:@"iterations:%@; ", charonDescribeObject(self->_iterations)];
     [text appendFormat:@"salt:%@; ", charonDescribeObject([self->_salt base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

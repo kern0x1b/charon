@@ -68,8 +68,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"networkID:%@; ", charonDescribeObject([self->_networkID base64EncodedStringWithOptions:0])];
     [text appendFormat:@"networkIndex:%@; ", charonDescribeObject(self->_networkIndex)];
     [text appendFormat:@"breadcrumb:%@; ", charonDescribeObject(self->_breadcrumb)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

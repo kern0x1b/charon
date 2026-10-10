@@ -68,8 +68,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"direction:%@; ", charonDescribeObject(self->_direction)];
     [text appendFormat:@"numberOfSteps:%@; ", charonDescribeObject(self->_numberOfSteps)];
     [text appendFormat:@"speed:%@; ", charonDescribeObject(self->_speed)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

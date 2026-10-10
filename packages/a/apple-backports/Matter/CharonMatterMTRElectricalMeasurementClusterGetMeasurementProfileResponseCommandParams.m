@@ -79,7 +79,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"numberOfIntervalsDelivered:%@; ", charonDescribeObject(self->_numberOfIntervalsDelivered)];
     [text appendFormat:@"attributeId:%@; ", charonDescribeObject(self->_attributeId)];
     [text appendFormat:@"intervals:%@; ", charonDescribeObject(self->_intervals)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

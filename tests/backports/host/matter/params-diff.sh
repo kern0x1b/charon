@@ -152,6 +152,7 @@ xcrun clang -o "$build/port/probe" "$build/objects"/*.o "$here/params-probe.m" -
 # the host SDK's declaration order and set, read from that SDK's headers with the generator's own reader,
 # and reports what is identical, what is predicted by a declaration difference, and what is UNEXPLAINED. The
 # last must be zero, and that is the gate this comparison exists for.
+status=0
 MATTER_SDK_262="$sdk26" python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port.tsv" | tee "$build/predicted.txt"
 grep -q ' 0 unexplained' "$build/predicted.txt" || status=1
 
@@ -160,7 +161,6 @@ absent=$(awk -F'\t' '$1=="present" && $4=="absent"' "$build/host.tsv" | wc -l | 
 raised=$(awk -F'\t' '$1=="raised"' "$build/host.tsv" | wc -l | tr -d ' ')
 printf 'params-diff: classes the host has %s, absent %s, raised %s\n' "$present" "$absent" "$raised"
 
-status=0
 for question in ownDescription alias storage; do
     awk -F'\t' -v q="$question" '$1==q' "$build/host.tsv" | sort > "$build/host.$question"
     awk -F'\t' -v q="$question" '$1==q' "$build/port.tsv" | sort > "$build/port.$question"
@@ -170,6 +170,41 @@ for question in ownDescription alias storage; do
         "$question" "$same" "$host_n"
     [ "$same" = "$host_n" ] || status=1
 done
+
+# WHICH members a -description prints, and not only what each one reads as: predict.py lays the two strings out
+# member by member, so a member the port prints and the host's string leaves out is a member neither side
+# lists a reading for, and it passed. The framework's own source leaves `timedInvokeTimeoutMs` and
+# `serverSideProcessingTimeout` out of every command payload's string - 825 members of 436 classes - and the
+# port printed both. The question here is asked of every member BOTH sides have (a `fresh` reading on each):
+# is its `name:` in the host's string, and is it in the port's. A member the host class does not have is the
+# SDKs' difference and predict.py's to explain.
+awk -F'\t' '
+    FNR == 1 { side++ }
+    $1 == "description" { text[side, $2] = $4 }
+    $1 == "fresh" { has[side, $2, $3] = 1; if (side == 1) members[$2 SUBSEP $3] = 1 }
+    END {
+        for (key in members) {
+            split(key, part, SUBSEP)
+            owner = part[1]; member = part[2]
+            if (!((2, owner, member) in has) || !((1, owner) in text) || !((2, owner) in text)) continue
+            compared++
+            host = index(text[1, owner], ": " member ":") || index(text[1, owner], "; " member ":")
+            port = index(text[2, owner], ": " member ":") || index(text[2, owner], "; " member ":")
+            if (host != port) {
+                differ++
+                printf "params-diff:   %s.%s: the string of the host %s it, the string of the port %s it\n", owner, member, \
+                    host ? "prints" : "leaves out", port ? "prints" : "leaves out" > "/dev/stderr"
+            }
+        }
+        printf "%d %d\n", compared, differ
+    }' "$build/host.tsv" "$build/port.tsv" 2> "$build/description-members.differ" > "$build/description-members.count"
+read -r described_n described_differ < "$build/description-members.count"
+printf 'params-diff: description members %s compared, %s the port prints or leaves out where the host does not\n' \
+    "$described_n" "$described_differ"
+if [ "$described_differ" != 0 ]; then
+    sort "$build/description-members.differ" | head -6
+    status=1
+fi
 
 # The RED CONTROL: one value in one port object changed, and the comparison must notice.
 copy_port "$build/port-mutant"

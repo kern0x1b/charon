@@ -78,8 +78,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"groupCAT:%@; ", charonDescribeObject(self->_groupCAT)];
     [text appendFormat:@"groupCATVersion:%@; ", charonDescribeObject(self->_groupCATVersion)];
     [text appendFormat:@"groupPermission:%@; ", charonDescribeObject(self->_groupPermission)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

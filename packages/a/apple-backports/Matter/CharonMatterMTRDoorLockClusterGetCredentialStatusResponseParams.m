@@ -74,7 +74,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"lastModifiedFabricIndex:%@; ", charonDescribeObject(self->_lastModifiedFabricIndex)];
     [text appendFormat:@"nextCredentialIndex:%@; ", charonDescribeObject(self->_nextCredentialIndex)];
     [text appendFormat:@"credentialData:%@; ", charonDescribeObject([self->_credentialData base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

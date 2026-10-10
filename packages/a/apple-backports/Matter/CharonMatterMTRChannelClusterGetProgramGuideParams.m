@@ -78,8 +78,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"recordingFlag:%@; ", charonDescribeObject(self->_recordingFlag)];
     [text appendFormat:@"externalIDList:%@; ", charonDescribeObject(self->_externalIDList)];
     [text appendFormat:@"data:%@; ", charonDescribeObject([self->_data base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

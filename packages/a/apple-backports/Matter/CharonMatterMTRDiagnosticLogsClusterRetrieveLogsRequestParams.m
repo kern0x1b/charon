@@ -68,8 +68,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"intent:%@; ", charonDescribeObject(self->_intent)];
     [text appendFormat:@"requestedProtocol:%@; ", charonDescribeObject(self->_requestedProtocol)];
     [text appendFormat:@"transferFileDesignator:%@; ", charonDescribeObject(self->_transferFileDesignator)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

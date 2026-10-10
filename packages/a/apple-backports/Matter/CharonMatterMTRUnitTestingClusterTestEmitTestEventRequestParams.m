@@ -69,8 +69,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"arg1:%@; ", charonDescribeObject(self->_arg1)];
     [text appendFormat:@"arg2:%@; ", charonDescribeObject(self->_arg2)];
     [text appendFormat:@"arg3:%@; ", charonDescribeObject(self->_arg3)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

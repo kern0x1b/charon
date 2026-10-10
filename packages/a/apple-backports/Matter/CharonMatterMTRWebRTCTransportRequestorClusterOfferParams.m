@@ -71,8 +71,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"sdp:%@; ", charonDescribeObject(self->_sdp)];
     [text appendFormat:@"iceServers:%@; ", charonDescribeObject(self->_iceServers)];
     [text appendFormat:@"iceTransportPolicy:%@; ", charonDescribeObject(self->_iceTransportPolicy)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

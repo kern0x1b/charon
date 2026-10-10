@@ -76,8 +76,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"ipkValue:%@; ", charonDescribeObject([self->_ipkValue base64EncodedStringWithOptions:0])];
     [text appendFormat:@"caseAdminSubject:%@; ", charonDescribeObject(self->_caseAdminSubject)];
     [text appendFormat:@"adminVendorId:%@; ", charonDescribeObject(self->_adminVendorId)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

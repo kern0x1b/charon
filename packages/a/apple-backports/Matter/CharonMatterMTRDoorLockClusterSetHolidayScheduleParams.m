@@ -73,8 +73,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"localStartTime:%@; ", charonDescribeObject(self->_localStartTime)];
     [text appendFormat:@"localEndTime:%@; ", charonDescribeObject(self->_localEndTime)];
     [text appendFormat:@"operatingMode:%@; ", charonDescribeObject(self->_operatingMode)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

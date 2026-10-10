@@ -71,8 +71,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"activationReason:%@; ", charonDescribeObject(self->_activationReason)];
     [text appendFormat:@"timeControl:%@; ", charonDescribeObject(self->_timeControl)];
     [text appendFormat:@"userDefined:%@; ", charonDescribeObject([self->_userDefined base64EncodedStringWithOptions:0])];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

@@ -82,7 +82,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"startMinute:%@; ", charonDescribeObject(self->_startMinute)];
     [text appendFormat:@"endHour:%@; ", charonDescribeObject(self->_endHour)];
     [text appendFormat:@"endMinute:%@; ", charonDescribeObject(self->_endMinute)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

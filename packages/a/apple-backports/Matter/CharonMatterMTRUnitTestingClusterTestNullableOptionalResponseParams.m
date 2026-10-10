@@ -68,7 +68,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"wasNull:%@; ", charonDescribeObject(self->_wasNull)];
     [text appendFormat:@"value:%@; ", charonDescribeObject(self->_value)];
     [text appendFormat:@"originalValue:%@; ", charonDescribeObject(self->_originalValue)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

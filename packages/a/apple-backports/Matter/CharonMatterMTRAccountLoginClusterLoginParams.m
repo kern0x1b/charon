@@ -68,8 +68,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"tempAccountIdentifier:%@; ", charonDescribeObject(self->_tempAccountIdentifier)];
     [text appendFormat:@"setupPIN:%@; ", charonDescribeObject(self->_setupPIN)];
     [text appendFormat:@"node:%@; ", charonDescribeObject(self->_node)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

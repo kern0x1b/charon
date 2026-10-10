@@ -87,8 +87,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"transitionTime:%@; ", charonDescribeObject(self->_transitionTime)];
     [text appendFormat:@"optionsMask:%@; ", charonDescribeObject(self->_optionsMask)];
     [text appendFormat:@"optionsOverride:%@; ", charonDescribeObject(self->_optionsOverride)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

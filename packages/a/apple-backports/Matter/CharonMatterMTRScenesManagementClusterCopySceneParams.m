@@ -77,8 +77,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"sceneIdentifierFrom:%@; ", charonDescribeObject(self->_sceneIdentifierFrom)];
     [text appendFormat:@"groupIdentifierTo:%@; ", charonDescribeObject(self->_groupIdentifierTo)];
     [text appendFormat:@"sceneIdentifierTo:%@; ", charonDescribeObject(self->_sceneIdentifierTo)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

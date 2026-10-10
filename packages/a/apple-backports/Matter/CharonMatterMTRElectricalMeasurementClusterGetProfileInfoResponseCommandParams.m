@@ -71,7 +71,6 @@ static NSString *charonDescribeScalar(long long value)
     [text appendFormat:@"profileIntervalPeriod:%@; ", charonDescribeObject(self->_profileIntervalPeriod)];
     [text appendFormat:@"maxNumberOfIntervals:%@; ", charonDescribeObject(self->_maxNumberOfIntervals)];
     [text appendFormat:@"listOfAttributes:%@; ", charonDescribeObject(self->_listOfAttributes)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }
