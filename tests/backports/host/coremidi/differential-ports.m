@@ -95,6 +95,36 @@ static void charon_report(int *checks, int *failures, const char *name, int pass
     printf("%s %s\n", passed ? "ok" : "FAIL", name);
 }
 
+// The library's client with a block (renamed in the library's object by run.sh, like the other block forms).
+extern OSStatus charon_host_MIDIClientCreateWithBlock(CFStringRef name, MIDIClientRef *outClient, MIDINotifyBlock notifyBlock);
+
+// A token whose deallocation is observable: only a client's notify block holds it, so it deallocates when the library
+// releases the block's copy.
+static int gTokenReleased;
+
+@interface CharonProbeToken : NSObject
+@end
+
+@implementation CharonProbeToken
+- (void)dealloc
+{
+    gTokenReleased = 1;
+}
+@end
+
+// A client made with a block that holds a token, then disposed. The token is kept by the block alone.
+static void charon_make_disposed_client_with_token(void)
+{
+    CharonProbeToken *token = [[CharonProbeToken alloc] init];
+    MIDIClientRef client = 0;
+    OSStatus status = charon_host_MIDIClientCreateWithBlock(CFSTR("charon-client-token"), &client, ^(const MIDINotification *message) {
+        (void)token;
+    });
+    token = nil;
+    if (status == noErr)
+        MIDIClientDispose(client);
+}
+
 int charon_ports_run(int *checks)
 {
     int failures = 0;
@@ -195,5 +225,21 @@ int charon_ports_run(int *checks)
     if (statusB == noErr) MIDIEndpointDispose(srcB);
     if (status == noErr) MIDIPortDispose(inPort);
     MIDIClientDispose(client);
+
+    // A client made with a block keeps the block's copy while the client lives. The copy is released once the client is gone
+    // and the library has swept its rows (the next object it makes): a token held only by the block deallocates then.
+    charon_make_disposed_client_with_token();
+    MIDIClientRef sweepClient = 0;
+    if (MIDIClientCreate(CFSTR("charon-sweep-client"), NULL, NULL, &sweepClient) == noErr) {
+        MIDIEndpointRef sweeper = 0;
+        OSStatus sweepStatus = CharonMIDIDestination(sweepClient, CFSTR("charon-sweeper"), kMIDIProtocol_2_0, &sweeper, NULL);
+        charon_report(checks, &failures, "client copy released once the client is disposed and the next object is made (the token deallocates)",
+                      sweepStatus == noErr && gTokenReleased);
+        if (sweepStatus == noErr)
+            MIDIEndpointDispose(sweeper);
+        MIDIClientDispose(sweepClient);
+    } else {
+        charon_report(checks, &failures, "a client for the sweep of the client copy", 0);
+    }
     return failures;
 }

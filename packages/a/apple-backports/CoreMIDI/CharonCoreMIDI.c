@@ -12,8 +12,8 @@ void CharonMIDIWordsAppend(CharonMIDIWords *out, UInt32 word)
     if (out->failed)
         return;
     if (out->count == out->capacity) {
-        size_t capacity = out->capacity ? out->capacity * 2 : 32;
-        UInt32 *grown = realloc(out->words, capacity * sizeof(UInt32));
+        size_t capacity = out->capacity ? charon_grown_capacity(out->capacity, sizeof(UInt32)) : 32;
+        UInt32 *grown = capacity ? realloc(out->words, capacity * sizeof(UInt32)) : NULL;
         if (!grown) {
             out->failed = 1;
             return;
@@ -29,8 +29,8 @@ static void charon_bytes_append(CharonMIDIBytes *out, uint8_t byte)
     if (out->failed)
         return;
     if (out->count == out->capacity) {
-        size_t capacity = out->capacity ? out->capacity * 2 : 64;
-        uint8_t *grown = realloc(out->bytes, capacity);
+        size_t capacity = out->capacity ? charon_grown_capacity(out->capacity, 1) : 64;
+        uint8_t *grown = capacity ? realloc(out->bytes, capacity) : NULL;
         if (!grown) {
             out->failed = 1;
             return;
@@ -427,38 +427,53 @@ static UInt32 *charon_packet_words(MIDIEventPacket *packet)
     return (UInt32 *)((uint8_t *)packet + sizeof(MIDITimeStamp) + sizeof(UInt32));
 }
 
-MIDIEventPacket *CharonMIDIEventListAdd(MIDIEventList *list, size_t listSize, MIDIEventPacket *curPacket,
-                                        MIDITimeStamp time, size_t wordCount, const UInt32 *words)
+// Appends the words of one packet to an event list being built, as MIDIEventListAdd does. curPacket is the end of the list's
+// content, *last is the list's last packet (NULL when the list is empty), and an event at the time of the last packet is merged
+// into it. Returns the new end, or NULL when the words do not fit in listSize bytes. The room is counted down from listSize by
+// subtraction, never by adding the words' size to the end: on armv7 that sum wraps for a count of about 2^30 words.
+MIDIEventPacket *CharonMIDIEventListAppend(MIDIEventList *list, size_t listSize, MIDIEventPacket *curPacket,
+                                           MIDIEventPacket **last, MIDITimeStamp time, size_t wordCount, const UInt32 *words)
 {
     uint8_t *base = (uint8_t *)list;
-    size_t end = (size_t)((uint8_t *)curPacket - base);
     if (wordCount == 0)
         return curPacket;
-    // A count whose byte size, with the packet header, wraps cannot be held in any list: the answer is that of a list too small.
-    if (wordCount > (SIZE_MAX - 16) / 4)
+    size_t end = (size_t)((uint8_t *)curPacket - base);
+    if (end > listSize)
         return NULL;
-    size_t bytes = 4 * wordCount;
-    if (list->numPackets > 0) {
-        MIDIEventPacket *last = &list->packet[0];
-        for (UInt32 k = 1; k < list->numPackets; k++)
-            last = MIDIEventPacketNext(last);
-        if (last->timeStamp == time) {
-            if (end + bytes > listSize)
-                return NULL;
-            memcpy(base + end, words, bytes);
-            last->wordCount += (UInt32)wordCount;
-            return (MIDIEventPacket *)(base + end + bytes);
-        }
+    size_t room = listSize - end;
+    if (list->numPackets > 0 && *last && (*last)->timeStamp == time) {
+        // A merge adds four bytes a word, and the packet's word count is a UInt32.
+        if (wordCount > room / 4 || wordCount > UINT32_MAX - (*last)->wordCount)
+            return NULL;
+        memcpy(base + end, words, 4 * wordCount);
+        (*last)->wordCount += (UInt32)wordCount;
+        return (MIDIEventPacket *)(base + end + 4 * wordCount);
     }
-    size_t need = sizeof(MIDITimeStamp) + sizeof(UInt32) + bytes;
-    if (end + need > listSize)
+    // A new packet: its time stamp and word count, then the words.
+    const size_t header = sizeof(MIDITimeStamp) + sizeof(UInt32);
+    if (room < header || wordCount > (room - header) / 4 || wordCount > UINT32_MAX)
         return NULL;
     MIDIEventPacket *packet = (MIDIEventPacket *)(base + end);
     packet->timeStamp = time;
     packet->wordCount = (UInt32)wordCount;
-    memcpy(charon_packet_words(packet), words, bytes);
+    memcpy(charon_packet_words(packet), words, 4 * wordCount);
     list->numPackets++;
-    return (MIDIEventPacket *)(base + end + need);
+    *last = packet;
+    return (MIDIEventPacket *)(base + end + header + 4 * wordCount);
+}
+
+// The public MIDIEventListAdd gives only the list's end, so the last packet is found by walking the list. A list built one add at
+// a time through it is therefore quadratic in its packets; the library's own builders keep the last packet and are linear.
+MIDIEventPacket *CharonMIDIEventListAdd(MIDIEventList *list, size_t listSize, MIDIEventPacket *curPacket,
+                                        MIDITimeStamp time, size_t wordCount, const UInt32 *words)
+{
+    MIDIEventPacket *last = NULL;
+    if (list->numPackets > 0) {
+        last = &list->packet[0];
+        for (UInt32 k = 1; k < list->numPackets; k++)
+            last = MIDIEventPacketNext(last);
+    }
+    return CharonMIDIEventListAppend(list, listSize, curPacket, &last, time, wordCount, words);
 }
 
 // A status byte that is not a timestamp and not real-time: it cuts an open SysEx, and starts the message its data completes.

@@ -19,6 +19,39 @@ enum {
     charon_memFullErr = -108
 };
 
+// The UMP key of a protocol, as this library names it: the iOS SDK marks kMIDIPropertyProtocolID from 14.0, so the port
+// uses the string the release answers (oracle/probe2.m prints it), declared once here for the three files that set it.
+#define CHARON_PROTOCOL_KEY CFSTR("protocol")
+
+// Sizes are summed and multiplied only through these, and only after a check that the result is held by size_t: on armv7
+// size_t is 32 bits, so a count from a caller can wrap a plain sum. Each returns 0 (and leaves the value unchanged) when the
+// result would not fit, and the caller refuses the work instead of allocating less than it writes.
+static inline int charon_size_add(size_t *sum, size_t value)
+{
+    if (value > SIZE_MAX - *sum)
+        return 0;
+    *sum += value;
+    return 1;
+}
+
+static inline int charon_size_mul(size_t *product, size_t count, size_t each)
+{
+    if (each != 0 && count > SIZE_MAX / each)
+        return 0;
+    *product = count * each;
+    return 1;
+}
+
+// The capacity of a table that doubles from capacity (16 when empty) of elements of the given size, or 0 when it cannot be
+// doubled in a size_t. A table of objects that are made and disposed grows with them, so its doubling is checked as well.
+static inline size_t charon_grown_capacity(size_t capacity, size_t element)
+{
+    size_t next = 0;
+    if (capacity > SIZE_MAX / 2 || !charon_size_mul(&next, capacity ? capacity * 2 : 16, element))
+        return 0;
+    return capacity ? capacity * 2 : 16;
+}
+
 // A growable array of UMP words, filled by the parsers below. failed is set when an allocation fails, and the
 // caller then answers with an error rather than with a partial list.
 typedef struct CharonMIDIWords {
@@ -112,6 +145,11 @@ UInt32 CharonMIDIUp32From14(UInt32 value);
 // or NULL if the words do not fit in listSize bytes.
 MIDIEventPacket *CharonMIDIEventListAdd(MIDIEventList *list, size_t listSize, MIDIEventPacket *curPacket,
                                         MIDITimeStamp time, size_t wordCount, const UInt32 *words);
+
+// The same, for a builder that keeps the list's last packet itself: *last is NULL for an empty list, and it is set to the
+// packet that ends the list after each add. Each add is then constant time, so a list built add by add is linear.
+MIDIEventPacket *CharonMIDIEventListAppend(MIDIEventList *list, size_t listSize, MIDIEventPacket *curPacket,
+                                           MIDIEventPacket **last, MIDITimeStamp time, size_t wordCount, const UInt32 *words);
 
 // The protocol-aware ports, endpoints and sends of CharonMIDIPorts.m, which the iOS 14 API files and the iOS 18 classes call.
 OSStatus CharonMIDIInputPort(MIDIClientRef client, CFStringRef portName, MIDIProtocolID protocol, MIDIPortRef *outPort,

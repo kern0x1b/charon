@@ -1,10 +1,9 @@
 // MIDIClientCreateWithBlock, MIDIInputPortCreateWithBlock and MIDIDestinationCreateWithBlock, of iOS 9: the
 // block forms of the client, the input port and the virtual destination. The release has the function forms
 // (MIDIClientCreate, MIDIInputPortCreate, MIDIDestinationCreate), and each block is carried through the
-// function form's refCon: the block is copied once. A port's or a destination's copy is released when the object
-// is gone (CharonMIDIOwnBlock, swept when the next object is made, CharonMIDIPorts.m). A client's copy is not:
-// the release does not tell this file when a client is disposed, and no measured liveness answer exists for a client
-// (facts/CoreMIDI/CoreMIDI.md), so it lives as long as the process (a crutch, coordination/crutches.md).
+// function form's refCon: the block is copied once. A client's, port's or destination's copy is released when the object
+// is gone (CharonMIDIOwnBlock; the rows are swept when the next object is made, CharonMIDIPorts.m). A disposed object
+// answers paramErr to a UniqueID read, measured on macOS and on 6.1.3 (facts/CoreMIDI/CoreMIDI.md, "Disposed objects").
 #import <CoreMIDI/CoreMIDI.h>
 
 #import "CharonCoreMIDI.h"
@@ -42,6 +41,8 @@ OSStatus MIDIClientCreateWithBlock(CFStringRef name, MIDIClientRef *outClient, M
     OSStatus status = MIDIClientCreate(name, charon_notify, refCon, outClient);
     if (status != noErr)
         charon_release_block(refCon);
+    else if (refCon)
+        CharonMIDIOwnBlock(*outClient, refCon);
     return status;
 }
 
