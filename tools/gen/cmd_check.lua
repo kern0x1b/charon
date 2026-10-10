@@ -1,13 +1,13 @@
--- `check`: regenerates a framework in memory from its snapshot and compares the result with the committed manifest of digests,
--- with the member record, with the spec's hash defines, and with the build directory. A drift, a stale pin, or a manifest that
--- does not match the generator fails the check; a removed override is a warning.
+-- `check`: regenerates a framework in memory from its committed inputs (the shard, the overrides, the pins and the constant record) and
+-- compares the result with the build directory .gen. A drift of the build directory, a stale pin (a pinned member whose declaration
+-- differs from its pin), or a constants object the generator no longer emits fails the check. A build directory not yet written is a
+-- warning, so a fresh checkout checks with no derived file present; a removed override is a warning.
 
 local layout = import("layout", {anonymous = true})
 local snapshot = import("spec", {anonymous = true})
-local render = import("render", {anonymous = true})
-local digest = import("digest", {anonymous = true})
 local files = import("files", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
+local order = import("order", {anonymous = true})
 local gen = import("cmd_gen", {anonymous = true})
 
 -- The data lines of a table's text: every line after the header that is not empty.
@@ -24,34 +24,10 @@ end
 
 -- The problems and warnings of one framework, in the order the report prints them.
 local function diagnose(tree, fw, corpus)
-    local emitted = render.render(tree, fw, corpus)
+    local emitted = gen.derived(tree, fw, corpus)
     local base = layout.gen_dir(tree, fw)
-    local names = {}
-    for name in pairs(emitted) do
-        table.insert(names, name)
-    end
-    table.sort(names)
+    local names = order.keys(emitted)
     local problems, warnings = {}, {}
-    local manifest = snapshot.manifest(tree, fw)
-    if manifest == nil then
-        table.insert(problems, "no manifest committed in the snapshot: run gen --record")
-    else
-        for _, name in ipairs(names) do
-            if manifest[name] ~= digest.digest_of(emitted[name]) then
-                table.insert(problems, "snapshot manifest differs from what the generator emits: " .. name)
-            end
-        end
-        local recorded = {}
-        for name in pairs(manifest) do
-            table.insert(recorded, name)
-        end
-        table.sort(recorded)
-        for _, name in ipairs(recorded) do
-            if emitted[name] == nil then
-                table.insert(problems, "manifest names a file the generator no longer emits: " .. name)
-            end
-        end
-    end
     for _, name in ipairs(names) do
         local text = files.read_text(path.join(base, name))
         if text == nil then
@@ -62,20 +38,6 @@ local function diagnose(tree, fw, corpus)
     end
     for _, name in ipairs(gen.stale_constants(base, fw, emitted)) do
         table.insert(problems, "build directory holds a constants object the generator no longer emits: " .. name)
-    end
-    local changes = gen.member_changes(tree, fw)
-    if changes == nil then
-        table.insert(problems, "no member record committed: run gen --record")
-    else
-        for _, change in ipairs(changes.changed) do
-            table.insert(problems, string.format("member %s changed: declaration hash %s (recorded) -> %s (now)", change[1], change[2], change[3]))
-        end
-        for _, api in ipairs(changes.new) do
-            table.insert(warnings, "member with no record yet: " .. api)
-        end
-        for _, api in ipairs(changes.removed) do
-            table.insert(warnings, "recorded member the spec no longer holds: " .. api)
-        end
     end
     local defined = {}
     for key in string.gmatch(emitted["spec.h"], "CHARON_SPEC_HASH_([%w_]+)") do
@@ -100,7 +62,8 @@ end
 
 -- Returns the exit status: 1 when any framework has a problem.
 function run(args)
-    local targets = args.all and gen.frameworks(args.tree) or {args.framework}
+    snapshot.forget()
+    local targets = args.all and snapshot.frameworks(args.tree) or {args.framework}
     local failed = 0
     for _, fw in ipairs(targets) do
         local problems, warnings, removed, new = diagnose(args.tree, fw, args.coordination)

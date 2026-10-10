@@ -1,6 +1,7 @@
--- `gen`: writes the generated files of a framework (or of every framework with a snapshot) into the build directory, through emit,
--- so a file the tree already holds is not rewritten. --record also writes the manifest of digests and the members record that
--- `check` compares with.
+-- `gen`: writes the derived files of a framework (or of every framework with a declaration shard) under .gen, through emit, so a file
+-- the build directory already holds is not rewritten. The inputs are committed: the declaration shards, the overrides and registry
+-- rows, the pin sidecars and the constant record. A pinned member whose shard declaration hash differs from its pin is refused, unless
+-- --record re-records it: gen --record writes each new hash into its pin (pinned-by repin) and writes nothing else into the tree.
 
 local layout = import("layout", {anonymous = true})
 local snapshot = import("spec", {anonymous = true})
@@ -11,27 +12,19 @@ local files = import("files", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local order = import("order", {anonymous = true})
 
--- The frameworks that have a committed snapshot, in byte order.
-function frameworks(tree)
-    local names = {}
-    for _, spec in ipairs(files.glob(path.join(tree, layout.constants().SNAP_ROOT, "*", "spec." .. layout.constants().SDK_ID .. ".tsv"))) do
-        table.insert(names, files.parent_name(spec))
-    end
-    table.sort(names, order.less)
-    return names
-end
+local SPEC_NAME = "spec." .. layout.constants().SDK_ID .. ".tsv"
+local MEMBERS_NAME = "members.tsv"
+local MANIFEST_NAME = "manifest.tsv"
 
--- The declaration hash of a spec row: the hash the row records. A member's is the extractor's declhash (the canonical fields of its
--- declaration, design-foundation.md 5.3), a constant's the hash its row records. The spec holds no declaration text, so no digest is
--- recomputed here from it.
-function spec_hash(r)
-    return r.hash
+-- The frameworks that have a declaration shard, in byte order, nested frameworks included (spec.frameworks).
+function frameworks(tree)
+    return snapshot.frameworks(tree)
 end
 
 -- The constants objects a previous generation wrote and this one no longer emits.
 function stale_constants(base, fw, emitted)
     local out = {}
-    for _, found in ipairs(files.glob(path.join(base, fw .. "Constants*.m"))) do
+    for _, found in ipairs(files.glob(path.join(base, path.filename(fw) .. "Constants*.m"))) do
         local name = path.filename(found)
         if emitted[name] == nil then
             table.insert(out, name)
@@ -41,56 +34,60 @@ function stale_constants(base, fw, emitted)
     return out
 end
 
--- The members the snapshot records against the spec: changed (declaration hash differs from the record), new (no record) and
--- removed (recorded, no longer in the spec). nil when no record is committed yet.
-function member_changes(tree, fw)
-    local recorded = snapshot.members(tree, fw)
-    if recorded == nil then
-        return nil
-    end
-    local current = {}
-    for _, r in ipairs(snapshot.load(tree, fw)) do
-        current[r.api] = spec_hash(r)
-    end
-    local result = {changed = {}, new = {}, removed = {}}
-    for api in pairs(current) do
-        if recorded[api] == nil then
-            table.insert(result.new, api)
+-- The members listing: the api and declaration hash of each member row and each constant row.
+local function members_text(rows)
+    local out = {}
+    for _, r in ipairs(rows) do
+        if r.kind == "method" or r.kind == "property" or r.kind == "constant" then
+            table.insert(out, {r.api, r.hash})
         end
     end
-    for api in pairs(recorded) do
-        if current[api] == nil then
-            table.insert(result.removed, api)
-        end
-    end
-    for _, api in ipairs(order.keys(current)) do
-        if recorded[api] ~= nil and recorded[api] ~= current[api] then
-            table.insert(result.changed, {api, recorded[api], current[api]})
-        end
-    end
-    table.sort(result.new, order.less)
-    table.sort(result.removed, order.less)
-    return result
+    return tsv.table_text({"api", "hash"}, out)
 end
 
-local function record(tree, fw, emitted)
+-- Every file of a framework's build directory that check compares: what the generator emits (render), the spec table built in memory
+-- from the shard and the constant record, and the members listing. Nothing is written here.
+function derived(tree, fw, corpus)
+    local emitted = render.render(tree, fw, corpus)
+    local spec = snapshot.load(tree, fw)
+    emitted[SPEC_NAME] = snapshot.table_text(spec)
+    emitted[MEMBERS_NAME] = members_text(spec)
+    return emitted
+end
+
+-- The manifest: the SHA-256 of each rendered file (the files render emits, not the spec or the listing). gen writes it; no command
+-- compares it, so check does not hash.
+local function manifest_text(emitted)
     local manifest = {}
     for _, name in ipairs(order.keys(emitted)) do
-        table.insert(manifest, {name, digest.digest_of(emitted[name])})
-    end
-    emit.file(layout.manifest_path(tree, fw), tsv.table_text({"file", "sha256"}, manifest))
-    local members = {}
-    for _, r in ipairs(snapshot.load(tree, fw)) do
-        if r.kind == "method" or r.kind == "property" or r.kind == "constant" then
-            table.insert(members, {r.api, spec_hash(r)})
+        if name ~= SPEC_NAME and name ~= MEMBERS_NAME then
+            table.insert(manifest, {name, digest.digest_of(emitted[name])})
         end
     end
-    emit.file(layout.members_path(tree, fw), tsv.table_text({"api", "hash"}, members))
+    return tsv.table_text({"file", "sha256"}, manifest)
 end
 
--- Writes one framework's generated files, and its record when --record is given.
+-- Re-records the refused pins of a framework: each new hash goes into its pin, marked repin. Every other pin row is kept as it is.
+local function rerecord(tree, fw, refused)
+    local list = snapshot.pins(tree, fw)
+    local change_of = {}
+    for _, change in ipairs(refused) do
+        change_of[change.key] = change
+    end
+    for _, p in ipairs(list) do
+        local change = change_of[p.key]
+        if change ~= nil then
+            p.pinned = change.new
+            p["pinned-by"] = "repin"
+        end
+    end
+    emit.file(layout.pins_path(tree, fw), snapshot.pins_text(list))
+end
+
+-- Writes one framework's derived files into its build directory.
 local function write_framework(args, fw)
-    local emitted = render.render(args.tree, fw, args.coordination)
+    local emitted = derived(args.tree, fw, args.coordination)
+    emitted[MANIFEST_NAME] = manifest_text(emitted)
     local base = layout.gen_dir(args.tree, fw)
     for _, name in ipairs(stale_constants(base, fw, emitted)) do
         os.rm(path.join(base, name))
@@ -100,34 +97,40 @@ local function write_framework(args, fw)
     for _, name in ipairs(names) do
         emit.file(path.join(base, name), emitted[name])
     end
-    if args.record then
-        record(args.tree, fw, emitted)
-    end
-    print(string.format("gen %s: %d files in %s%s (%d written)", fw, #names, layout.constants().OUT_ROOT .. "/" .. fw,
-        args.record and " (manifest recorded)" or "", emit.count() - before))
+    print(string.format("gen %s: %d files in %s (%d written)", fw, #names, layout.constants().OUT_ROOT .. "/" .. fw, emit.count() - before))
 end
 
--- Returns the exit status: 1 when a member declaration changed since the record and --record was not given. The refusal is decided
--- before anything is written: a refused framework writes nothing, and a run over every framework (--all) goes on to the others and
--- then names every refused framework in one line, so a single changed declaration does not stop the others from being written.
+-- The message of one refused pin: its key and api, the pinned and the shard's declaration hash, and the command that re-records it.
+function refusal(tree, fw, change)
+    return string.format("REFUSED %s %s: pinned declaration hash %s, the shard has %s. Review the override, then re-record it: "
+        .. "xmake l tools/gen.lua gen --tree %s --framework %s --record", change.key, change.api, change.old, change.new, tree, fw)
+end
+
+-- Returns the exit status: 1 when a pinned member's declaration changed and --record was not given. The refusal is decided before anything
+-- is written for a framework: a refused framework writes nothing, and a run over every framework (--all) goes on to the others and then
+-- names every refused framework, so a single change does not stop the others from being written.
 function run(args)
+    snapshot.forget()
     local targets = args.all and frameworks(args.tree) or {args.framework}
-    local refused = {}
+    local refused_frameworks = {}
     for _, fw in ipairs(targets) do
-        local changes = member_changes(args.tree, fw)
-        if changes and #changes.changed > 0 and not args.record then
-            for _, change in ipairs(changes.changed) do
-                print(string.format("CHANGED %s: declaration hash %s -> %s (review the override or the stub, then gen --record)",
-                    change[1], change[2], change[3]))
+        local refused = snapshot.refused(args.tree, fw)
+        if #refused > 0 and not args.record then
+            for _, change in ipairs(refused) do
+                print(refusal(args.tree, fw, change))
             end
-            print(string.format("gen %s: refused, %d member declaration(s) changed since the record; nothing written for it", fw, #changes.changed))
-            table.insert(refused, fw)
+            print(string.format("gen %s: refused, %d pinned member(s) changed since their pin; nothing written for it", fw, #refused))
+            table.insert(refused_frameworks, fw)
         else
+            if #refused > 0 then
+                rerecord(args.tree, fw, refused)
+                print(string.format("gen %s: re-recorded %d pin(s) with pinned-by repin", fw, #refused))
+            end
             write_framework(args, fw)
         end
     end
-    if #refused > 0 then
-        print(string.format("gen: refused %d framework(s), nothing written for them: %s", #refused, table.concat(refused, ", ")))
+    if #refused_frameworks > 0 then
+        print(string.format("gen: refused %d framework(s), nothing written for them: %s", #refused_frameworks, table.concat(refused_frameworks, ", ")))
         return 1
     end
     return 0

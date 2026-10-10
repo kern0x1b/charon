@@ -66,7 +66,7 @@ local QUEUE_NEXT = {
     {"not in the header parse (category or other)", "not in the header parse", "read the header by hand"},
     {"swift: needs the Swift interface source", "Swift row", "declaration from the .swiftinterface text, then a decision on overlay (see the Swift page)"},
     {"needs a generator: ", "a generator for the kind is missing", "write the generator for the kind (enum, struct or typealias), or decide the row by hand"},
-    {"no snapshot", "framework has no committed snapshot", "commit the framework's spec snapshot (gen --record), or decide the framework's scope"},
+    {"no snapshot", "framework has no committed declaration shard", "commit the framework's declaration shard (spec/<F>/declarations.tsv), or decide the framework's scope"},
     {"protocol object: ", "protocol object not generated", "read the transcriber's status for the protocol in the state, and decide the object"},
     {"protocol member: ", "protocol member not generated", "read the protocol's status in the state, and decide the member"},
     {"C function: ", "C function not generable", "read the reason in the state, and decide the name"},
@@ -356,7 +356,7 @@ local function new_context(args, fw, rows, tally)
     local tree, corpus = args.tree, args.coordination
     local led6 = surface.ledger_status(corpus, fw, LEDGER_6_1_3)
     local led43 = surface.ledger_status(corpus, fw, LEDGER_4_3)
-    local snap = os.isfile(layout.spec_path(tree, fw))
+    local snap = os.isfile(layout.shard_path(tree, fw))
     -- the registry's covered keys, as the trace layer keys them (a class property by its +[...] api)
     local registry = trace.overrides_of(tree, fw, headers.shard_facts(tree, fw))
     local stub_keys = trace_files.load_stub_keys(tree, fw)

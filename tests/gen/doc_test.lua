@@ -200,7 +200,7 @@ local function test_pages(check)
           "a class property is keyed with the sign of a class member, as the shard reader gives it")
     check(rows_usr["-"] == nil, "a row with no USR is not kept")
 
-    check(cmd_doc.run({tree = tree, all = true, sdk = "/nonexistent", coordination = corpus, out = out}) == 0,
+    check(cmd_doc.run({tree = tree, framework = FIXTURE, sdk = "/nonexistent", coordination = corpus, out = out}) == 0,
           "doc --all on the fixture succeeds")
 
     local dir = path.join(out, FIXTURE)
@@ -259,12 +259,12 @@ local function test_pages(check)
 
     -- a second run on the unchanged output writes nothing: the pages are compared before they are written
     local before = emit.count()
-    check(cmd_doc.run({tree = tree, all = true, sdk = "/nonexistent", coordination = corpus, out = out}) == 0
+    check(cmd_doc.run({tree = tree, framework = FIXTURE, sdk = "/nonexistent", coordination = corpus, out = out}) == 0
           and emit.count() == before, "a second doc run on the same output writes no file")
 
     -- a framework the extractor gives no rows for keeps the marked text
     doc_text.use(function() return nil end)
-    check(cmd_doc.run({tree = tree, all = true, sdk = "/nonexistent", coordination = corpus, out = out_marked}) == 0,
+    check(cmd_doc.run({tree = tree, framework = FIXTURE, sdk = "/nonexistent", coordination = corpus, out = out_marked}) == 0,
           "doc --all with no doc rows succeeds")
     local marked = page_of(path.join(out_marked, FIXTURE), "FKThing.md")
     check(has(marked, "| method | `not derived: decl (ruling D8)` | API_AVAILABLE(ios(12.0)) | missing |"),

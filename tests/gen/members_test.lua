@@ -30,8 +30,26 @@ function main()
     check(rows[1].tbd == "class-exported" and rows[3].tbd == "class-not-exported", "tbd follows the class's export")
     check(rows[1].type == "-" and rows[1].decl == nil, "the spec row carries the member type, and no declaration text")
 
+    check(members.rows(facts, nil, "Fixture")[1].tbd == "-", "without an SDK (no class set) the tbd column is -")
+
     local real = headers.shard_facts(path.join(TOOLS, ".."), "AVFAudio")
     check(#members.rows(real.members, {}, "AVFAudio") == 656, "AVFAudio's shard gives 656 member rows")
+
+    -- the frameworks gen reads are the declaration shards, nested ones included, in byte order
+    local snapshot = import("gen.spec", {rootdir = TOOLS, anonymous = true})
+    local names = snapshot.frameworks(path.join(TOOLS, ".."))
+    local found = {}
+    for _, name in ipairs(names) do
+        found[name] = true
+    end
+    check(found.AVFAudio and found["Accelerate/vImage"], "the shard list names AVFAudio and the nested Accelerate/vImage")
+    local sorted = true
+    for i = 2, #names do
+        if names[i] < names[i - 1] then
+            sorted = false
+        end
+    end
+    check(#names > 100 and sorted, "the shard list has every shard, in byte order (" .. #names .. " names)")
 
     print("members test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then

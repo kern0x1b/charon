@@ -18,16 +18,21 @@ function mangle(api)
 end
 
 -- The spec rows of a framework's members, from its shard facts. classes is the set of the class names the arm64 slice exports
--- (tbd.exports); tbd is "class-exported" for a member whose class is in it, else "class-not-exported".
+-- (tbd.exports), or nil when no SDK is given (the in-memory build of gen and check): the tbd column is then "-". tbd is
+-- "class-exported" for a member whose class is in the set, else "class-not-exported". No consumer reads a member's tbd; a constant's
+-- is read (render, scope and diff).
 function rows(members, classes, framework)
     local out, seen = {}, {}
     for _, m in ipairs(members) do
         if not seen[m.api] then
             seen[m.api] = true
+            local tbd = "-"
+            if classes ~= nil then
+                tbd = classes[m.cls] and "class-exported" or "class-not-exported"
+            end
             table.insert(out, {kind = m.kind, api = m.api, cls = m.cls, key = mangle(m.api), introduced = "-", type = m.type or "-",
                                availability = m.text ~= "" and m.text or "-", hash = m.hash, value_status = "-", value = "-",
-                               host_value = "-", value_source = "-", owned = "-",
-                               tbd = classes[m.cls] and "class-exported" or "class-not-exported", shape = "-", measured = "-"})
+                               host_value = "-", value_source = "-", owned = "-", tbd = tbd, shape = "-", measured = "-"})
         end
     end
     return out
