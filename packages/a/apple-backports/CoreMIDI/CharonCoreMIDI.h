@@ -143,14 +143,15 @@ UInt32 CharonMIDIUp16From7(UInt32 value);
 UInt32 CharonMIDIUp32From7(UInt32 value);
 UInt32 CharonMIDIUp32From14(UInt32 value);
 
-// Appends one packet to an event list being built the way MIDIEventListAdd builds it: curPacket is the end of
-// the list's content, and an event at the timestamp of the last packet is merged into it. Returns the new end,
-// or NULL if the words do not fit in listSize bytes.
+// MIDIEventListAdd as macOS keeps it: curPacket is the list's last packet (what MIDIEventListInit returned while the list
+// is empty), an event at the time stamp of that packet is merged into it, and the packet written or merged into is
+// returned. NULL if the words do not fit in listSize bytes, with the list unchanged.
 MIDIEventPacket *CharonMIDIEventListAdd(MIDIEventList *list, size_t listSize, MIDIEventPacket *curPacket,
                                         MIDITimeStamp time, size_t wordCount, const UInt32 *words);
 
-// The same, for a builder that keeps the list's last packet itself: *last is NULL for an empty list, and it is set to the
-// packet that ends the list after each add. Each add is then constant time, so a list built add by add is linear.
+// The same, for a builder that tracks the list's end itself: curPacket is the end of the list's content, and *last is the
+// list's last packet (NULL for an empty list), set to the packet written or merged into after each add. Returns the new
+// end, or NULL if the words do not fit. This is the form the library's own builders use.
 MIDIEventPacket *CharonMIDIEventListAppend(MIDIEventList *list, size_t listSize, MIDIEventPacket *curPacket,
                                            MIDIEventPacket **last, MIDITimeStamp time, size_t wordCount, const UInt32 *words);
 

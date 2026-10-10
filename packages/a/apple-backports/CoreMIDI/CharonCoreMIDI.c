@@ -462,18 +462,29 @@ MIDIEventPacket *CharonMIDIEventListAppend(MIDIEventList *list, size_t listSize,
     return (MIDIEventPacket *)(base + end + header + 4 * wordCount);
 }
 
-// The public MIDIEventListAdd gives only the list's end, so the last packet is found by walking the list. A list built one add at
-// a time through it is therefore quadratic in its packets; the library's own builders keep the last packet and are linear.
+// MIDIEventListAdd as macOS keeps it (oracle/eventlistadd-macos.txt): curPacket is the list's last packet (the place MIDIEventListInit
+// returned while the list is empty), and the packet written or merged into is returned, so the end is found from curPacket in
+// constant time and a list built add by add is linear. NULL when the words do not fit, with the list as it was; for zero words,
+// curPacket. A curPacket that is not inside the buffer, or whose word count runs past it, is refused.
 MIDIEventPacket *CharonMIDIEventListAdd(MIDIEventList *list, size_t listSize, MIDIEventPacket *curPacket,
                                         MIDITimeStamp time, size_t wordCount, const UInt32 *words)
 {
+    const size_t header = sizeof(MIDITimeStamp) + sizeof(UInt32);
     MIDIEventPacket *last = NULL;
+    MIDIEventPacket *end = curPacket;
     if (list->numPackets > 0) {
-        last = &list->packet[0];
-        for (UInt32 k = 1; k < list->numPackets; k++)
-            last = MIDIEventPacketNext(last);
+        uintptr_t base = (uintptr_t)list, at = (uintptr_t)curPacket;
+        if (at < base || at - base > listSize || listSize - (at - base) < header)
+            return NULL;
+        size_t room = listSize - (size_t)(at - base) - header;
+        if (curPacket->wordCount > room / 4)
+            return NULL;
+        last = curPacket;
+        end = (MIDIEventPacket *)((uint8_t *)curPacket + header + 4 * (size_t)curPacket->wordCount);
     }
-    return CharonMIDIEventListAppend(list, listSize, curPacket, &last, time, wordCount, words);
+    if (!CharonMIDIEventListAppend(list, listSize, end, &last, time, wordCount, words))
+        return NULL;
+    return wordCount == 0 ? curPacket : last;
 }
 
 // A status byte that is not a timestamp and not real-time: it cuts an open SysEx, and starts the message its data completes.

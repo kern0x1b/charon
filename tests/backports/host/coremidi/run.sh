@@ -39,7 +39,7 @@ xcrun clang $sanitize -c -Wall -Werror -I"$CORE" "$CORE/CharonCoreMIDI.c" -o "$b
 # differential-ports.m is compiled without the renames: it calls the release's own MIDISendEventList and friends as the oracle.
 xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -c \
     "$here/differential-ports.m" -o "$build/differential-ports.o"
-xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -I"$here" $renames \
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations -I"$CORE" -I"$here" -I"$here/oracle" $renames \
     "$here/differential.m" "$here/differential-ump.m" "$build/differential-ports.o" "$build/CharonCoreMIDI.o" "$build"/*.m.o -framework Foundation -framework CoreMIDI -framework CoreBluetooth -o "$build/differential"
 "$build/differential" "$here/oracle" > "$build/log" 2>&1 && result=0 || result=$?
 awk '!/^ok /' "$build/log"
@@ -59,7 +59,14 @@ xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations \
     -I"$CORE" -I"$here" "$here/entity.m" "$CORE/MIDIDevice14.m" -framework Foundation -framework CoreMIDI -o "$build/entity"
 "$build/entity" > "$build/entity.log" 2>&1 && entity=0 || entity=$?
 cat "$build/entity.log"
-for step in "$owner" "$entity"; do
+# The rows of CharonMIDIPorts.m against a release that gives a disposed reference to a new object (staleness.m): the one
+# release call the rows read is renamed to a stand-in, in the file and in the test.
+xcrun clang $sanitize -fobjc-arc -Wall -Wno-deprecated-declarations \
+    -DMIDIObjectGetIntegerProperty=charon_test_MIDIObjectGetIntegerProperty -I"$CORE" -I"$here" \
+    "$here/staleness.m" "$CORE/CharonMIDIPorts.m" "$build/CharonCoreMIDI.o" -framework Foundation -framework CoreMIDI -o "$build/staleness"
+"$build/staleness" > "$build/staleness.log" 2>&1 && stale=0 || stale=$?
+cat "$build/staleness.log"
+for step in "$owner" "$entity" "$stale"; do
     if [ "$result" -eq 0 ]; then result=$step; fi
 done
 exit $result

@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include <CoreMIDI/MIDIMessages.h>
 #include "CharonCoreMIDI.h"
@@ -452,6 +453,80 @@ static void check_event_list_rules(void)
     check(packets == 3 && shortList->numPackets == 3, "event list: 64 bytes hold three packets (macOS probe2)", "");
 }
 
+// MIDIEventListAdd's return and curPacket: the scenario of oracle/eventlistadd.h run against the library (renamed by run.sh) must
+// print what macOS printed (oracle/eventlistadd-macos.txt), line by line.
+#include "eventlistadd.h"
+
+static void check_event_list_oracle(void)
+{
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/eventlistadd-macos.txt", gOracleDir);
+    FILE *recorded = fopen(path, "r");
+    char *text = NULL;
+    size_t length = 0;
+    FILE *out = open_memstream(&text, &length);
+    if (!recorded || !out) {
+        check(0, "event list: the recorded macOS lines are read", path);
+        return;
+    }
+    eventlistadd_run(out);
+    fclose(out);
+    char want[512];
+    const char *at = text;
+    int lines = 0, differing = 0;
+    while (fgets(want, sizeof(want), recorded)) {
+        size_t n = strlen(want);
+        lines++;
+        if (strncmp(at, want, n) != 0) {
+            differing++;
+            char detail[1024];
+            const char *eol = strchr(at, '\n');
+            snprintf(detail, sizeof(detail), "line %d: macOS \"%.*s\", library \"%.*s\"", lines, (int)n - 1, want,
+                     eol ? (int)(eol - at) : 0, at);
+            check(0, "event list: add and return as macOS (oracle/eventlistadd-macos.txt)", detail);
+            break;
+        }
+        at += n;
+    }
+    fclose(recorded);
+    check(differing == 0 && lines > 0 && *at == 0, "event list: the library prints every recorded macOS line, and no other",
+          lines > 0 ? "" : "no lines recorded");
+    free(text);
+}
+
+// A list built one MIDIEventListAdd at a time is linear in its packets, as macOS's is (measured 2026-10-10: 4.2 times the
+// time for 4 times the packets): the time at 16000 packets over the time at 4000 is near 4, and a walk of the list for each
+// add makes it near 16. The best of five runs of each size.
+static double event_list_build_ms(int packets)
+{
+    size_t size = 64 + (size_t)packets * 16;
+    MIDIEventList *list = malloc(size);
+    UInt32 word = 0x20903C7F;
+    double best = 1e9;
+    for (int run = 0; run < 5; run++) {
+        struct timespec begin, finish;
+        clock_gettime(CLOCK_MONOTONIC, &begin);
+        MIDIEventPacket *p = MIDIEventListInit(list, kMIDIProtocol_1_0);
+        for (int i = 0; i < packets && p; i++)
+            p = MIDIEventListAdd(list, size, p, (MIDITimeStamp)i + 1, 1, &word);
+        clock_gettime(CLOCK_MONOTONIC, &finish);
+        double ms = (double)(finish.tv_sec - begin.tv_sec) * 1e3 + (double)(finish.tv_nsec - begin.tv_nsec) / 1e6;
+        if (p && ms < best)
+            best = ms;
+    }
+    free(list);
+    return best;
+}
+
+static void check_event_list_linear(void)
+{
+    double small = event_list_build_ms(4000), large = event_list_build_ms(16000);
+    char detail[128];
+    snprintf(detail, sizeof(detail), "4000 packets %.3f ms, 16000 packets %.3f ms, ratio %.1f", small, large,
+             small > 0 ? large / small : 0.0);
+    check(small > 0 && large < 8 * small, "event list: building by MIDIEventListAdd is linear in its packets", detail);
+}
+
 // The constants of the 17 and 18 surface, read from this file's own copies (renamed by run.sh) and held to the
 // strings macOS gives them (oracle/constants.m, measured 2026-10-09). The three property constants are NULL on macOS.
 extern const CFStringRef charon_host_kMIDIPropertyUMPActiveGroupBitmap;
@@ -865,6 +940,8 @@ int main(int argc, char **argv)
         check_sysex_chunks();
         check_sysex_split();
         check_event_list_rules();
+        check_event_list_oracle();
+        check_event_list_linear();
         check_constants();
         check_visitor();
         check_sysex_bytes_for_group();
