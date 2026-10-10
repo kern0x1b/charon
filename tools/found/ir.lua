@@ -29,9 +29,14 @@
 --   IR_FULL    if set, the full 17-column IR is written there (a build product, not committed).
 --   IR_DECLS   the extractor binary (default: the xmake build product of tools/found).
 --   IR_TIMEOUT seconds per framework (default 300).
---   IR_USR_MODULES the usr/include modules the sweep covers, by name, a comma list (default: the seven of ruling 2026-10-10). A
---                 module's shard is its own declarations: those written in the directories of its headers, which its module map names.
+--   IR_CONFIG  the extractor's configuration folder (usr-modules.tsv and fallback.tsv), read by decls from the repository root
+--                 (default tools/found/config). The usr/include modules are derived from the SDK's module maps, less that list.
+--   IR_REPIN   if set, write mode re-records the shards whose libclang identity differs from this machine's (the version, the
+--                 digest of the dylib it loads, and the target). Without it a difference is refused in both modes: a re-pin is a
+--                 reviewed event (review F8).
 local SDK = os.getenv("IR_SDK")
+if not SDK then raise("IR_SDK must name the iPhoneOS SDK (for example .../iPhoneOS26.2.sdk)") end
+SDK = path.absolute(SDK)
 local MODE = os.getenv("IR_MODE") or "write"
 local SPEC = os.getenv("IR_SPEC") or "packages/a/apple-backports/spec"
 local FULL = os.getenv("IR_FULL")
@@ -39,8 +44,26 @@ local DECLS = os.getenv("IR_DECLS") or "build/macosx/arm64/release/decls"
 local TIMEOUT = os.getenv("IR_TIMEOUT") or "300"
 local CONFLICTS = os.getenv("IR_CONFLICTS") or path.join("tools", "found", "conflicts.tsv")
 local UNPARSED = os.getenv("IR_UNPARSED") or path.join("tools", "found", "unparsed.tsv")
+local stream = import("gen.stream", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
+-- decls, through a pipe (no temporary file): the lines it printed. A run that exits non-zero raises with its own message, so a failed
+-- extractor never reaches a write. decls' exit codes: 2 for a configuration, file system or refusal error (each names its path), 1 for
+-- a doc-mode parse failure.
+local function decls_run(args)
+    local lines = {}
+    local status, errors = stream.run("/usr/bin/env", table.join({"IR_SDK=" .. SDK, DECLS}, args), function (line)
+        table.insert(lines, line)
+    end)
+    return lines, status, (errors:gsub("%s+$", ""))
+end
+local function decls(args)
+    local lines, status, errors = decls_run(args)
+    if status ~= 0 then
+        raise(string.format("decls %s exited %d: %s", table.concat(args, " "), status, errors))
+    end
+    return lines
+end
 -- the target the extractor compiles for (decls owns it: decls --target)
-local TRIPLE = (os.iorunv(DECLS, {"--target"}):gsub("%s+$", ""))
+local TRIPLE = (decls({"--target"})[1]:gsub("%s+$", ""))
 local COLUMNS = 18
 -- The columns a shard keeps: kind, usr, container, name, side, type (typedef rows only), avail, message, declhash. The IR's other columns are derived or are
 -- build products: framework is the folder, availhash is derived from avail, header and line are for documentation, decl is for the
@@ -54,7 +77,6 @@ local avail = import("avail", {rootdir = path.join(os.curdir(), "tools", "found"
 local atomic = import("atomic", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
 local SDK_NAME  -- the SDK's name without its path or .sdk suffix, as the shards record it
 
-if not SDK then raise("IR_SDK must name the iPhoneOS SDK (for example .../iPhoneOS26.2.sdk)") end
 SDK = path.absolute(SDK)
 SPEC = path.absolute(SPEC)
 if MODE ~= "write" and MODE ~= "check" and MODE ~= "conflicts" and MODE ~= "gaps" and MODE ~= "docs" then
@@ -81,21 +103,15 @@ end
 -- (a timeout ends it by SIGALRM, a crash, a usage error) raises in every mode: it is not a result, and nothing is written after it.
 -- A run that prints no rows at all raises for the same reason.
 local function parse(f)
-    local out
-    try {
-        function () out = os.iorunv(DECLS, {"--timeout", TIMEOUT, f.name}) end,
-        catch {
-            function (errors)
-                local reason = redact(trim(tostring(errors)))
-                raise(f.name .. ": decls did not finish" .. (reason ~= "" and (": " .. reason) or ""))
-            end
-        }
-    }
-    if out == "" then raise(f.name .. ": decls printed no rows") end
-    for line in out:gmatch("[^\n]+") do
+    local lines, status, errors = decls_run({"--timeout", TIMEOUT, f.name})
+    if status ~= 0 then
+        raise(string.format("%s: decls did not finish (status %d)%s", f.name, status, errors ~= "" and (": " .. redact(errors)) or ""))
+    end
+    if #lines == 0 then raise(f.name .. ": decls printed no rows") end
+    for _, line in ipairs(lines) do
         if #cells_of(line) ~= COLUMNS then raise(f.name .. ": a row has " .. #cells_of(line) .. " columns, not " .. COLUMNS) end
     end
-    return out
+    return table.concat(lines, "\n") .. "\n"
 end
 
 -- The extractor writes one row of kind unparsed, instead of rows, for a framework that does not parse.
@@ -134,22 +150,22 @@ end
 local started = os.mclock()
 -- decls resolves the SDK from IR_SDK, so every extractor run below sees the absolute path the sweep uses
 os.setenv("IR_SDK", SDK)
-local libclang = trim(os.iorunv(DECLS, {"--version"}))
+-- the identity of the extractor: its libclang version, the digest of the dylib it loads, and the target (decls --version)
+local libclang = (decls({"--version"})[1]:gsub("%s+$", ""))
 SDK_NAME = (path.basename(SDK):gsub("%.sdk$", ""))
 
 -- The frameworks the sweep covers, as decls lists them (its name and its root): the one code path for the list, the headers and the
 -- doc mode.
 local frameworks = {}
-for line in os.iorunv(DECLS, {"--list"}):gmatch("[^\n]+") do
+for _, line in ipairs(decls({"--list"})) do
     local name, root = line:match("^([^\t]+)\t(.+)$")
     table.insert(frameworks, {name = name, root = root})
 end
 -- The doc-time rows of one framework (decls --doc), or nil when the extractor does not parse it (its own status is an error).
 local function doc_rows(f)
-    local argv = {"--doc", "--timeout", TIMEOUT, f.name}
     local out
     try {
-        function () out = os.iorunv(DECLS, argv) end,
+        function () out = table.concat(decls({"--doc", "--timeout", TIMEOUT, f.name}), "\n") .. "\n" end,
         catch {
             function () out = nil end
         }
@@ -220,7 +236,7 @@ for _, f in ipairs(frameworks) do
                 row = {}
                 for i = 1, COLUMNS do row[i] = variants[1][i] end
                 row[9], row[18] = m.avail, m.message
-                row[16] = trim(os.iorunv(DECLS, {"--digest", m.avail}))
+                row[16] = (decls({"--digest", m.avail})[1]:gsub("%s+$", ""))
             end
             result_of[key] = row[9]
             table.insert(written, row)
@@ -384,18 +400,24 @@ local unparsed_text = {"# the frameworks of the SDK with no declaration the extr
 for _, u in ipairs(unparsed) do table.insert(unparsed_text, u[1] .. "\t" .. redact(u[2])) end
 unparsed_text = table.concat(unparsed_text, "\n") .. "\n"
 
-if MODE == "check" then
-    -- the libclang the shards record must be this one
-    for label in pairs(shards) do
-        local file = shard_path(label)
-        if os.isfile(file) then
-            local recorded = io.readfile(file):match("libclang=([^\t\n]*)")
-            if recorded and recorded ~= libclang then
-                raise("libclang differs: " .. label .. " records [" .. recorded .. "], this machine has [" .. libclang .. "]")
-            end
-            break
+-- The identity the shards record must be this machine's: every committed shard is compared, in both modes (review F8). A difference
+-- is refused, unless write mode is re-recording with IR_REPIN (the reviewed re-pin).
+if MODE == "check" or MODE == "write" then
+    local differs = {}
+    for file in pairs(existing) do
+        local recorded = io.readfile(file):match("libclang=([^\t\n]*)")
+        if recorded and recorded ~= libclang then
+            table.insert(differs, file:sub(#SPEC + 2, #file - #"/declarations.tsv"))
         end
     end
+    table.sort(differs)
+    if #differs > 0 and (MODE == "check" or not os.getenv("IR_REPIN")) then
+        raise(string.format("libclang identity differs in %d shards (%s): this machine has [%s]%s", #differs,
+            table.concat(differs, ", "), libclang, MODE == "check" and "" or "; re-record with IR_REPIN=1 as a reviewed re-pin"))
+    end
+end
+
+if MODE == "check" then
     if #changed > 0 or #stale_shards > 0 then
         raise(string.format("%d shards differ from the regenerated ones (%s), %d shards are stale (%s)", #changed,
             table.concat(changed, ", "), #stale_shards, table.concat(stale_shards, ", ")))
