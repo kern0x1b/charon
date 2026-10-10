@@ -625,6 +625,10 @@ function run(args)
     assert(args.coordination, "doc needs --coordination: the corpus folder")
     assert(args.sdk, "doc needs --sdk: the iOS SDK directory")
     local tree = args.tree
+    -- The Swift page is read from the bucket the swift command writes. Without that file no framework has Swift rows, and doc would
+    -- drop 104 Swift pages without a sign (measured: 6840 pages on a checkout where swift had not run, 6944 with it).
+    assert(files.read_text(swift.bucket_path(tree)) ~= nil,
+           "doc needs the Swift bucket " .. swift.bucket_path(tree) .. ": run the swift command first")
     local targets = args.all and gen.frameworks(tree) or {args.framework}
     local out_root = args.out or path.join(tree, DOC_OUT[1], DOC_OUT[2])
     local needs = {}

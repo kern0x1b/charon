@@ -1788,6 +1788,9 @@ def cmd_doc(args):
     if not args.out:
         raise SystemExit("doc needs --out: the folder the page set is written to")
     tree = args.tree
+    bucket = os.path.join(tree, OUT_ROOT, SWIFT_BUCKET)
+    if not os.path.isfile(bucket):
+        raise SystemExit("doc needs the Swift bucket " + bucket + ": run the swift command first (without it, the Swift pages are dropped)")
     targets = doc_frameworks(tree) if args.all else [args.framework]
     needs = {fw: doc_needs(doc_spec(tree, fw)) for fw in targets}
     objc_states = doc_read_objc(args.coordination, needs)
