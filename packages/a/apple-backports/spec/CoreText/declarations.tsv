@@ -16,7 +16,7 @@ enumconst	c:@E@CTFontSymbolicTraits@kCTFontTraitVertical	CTFontSymbolicTraits			
 enumconst	c:@E@CTFontSymbolicTraits@kCTFontTraitUIOptimized	CTFontSymbolicTraits			-	-	-	-	-	2a9fb8bca3de6d49	4096
 enumconst	c:@E@CTFontSymbolicTraits@kCTFontTraitColorGlyphs	CTFontSymbolicTraits			-	-	-	-	-	8d8d451d81d39edf	8192
 enumconst	c:@E@CTFontSymbolicTraits@kCTFontTraitComposite	CTFontSymbolicTraits			-	-	-	-	-	b08b35d7b0047959	16384
-enumconst	c:@E@CTFontSymbolicTraits@kCTFontTraitClassMask	CTFontSymbolicTraits			-	-	-	-	-	4348adebcb353843	-268435456
+enumconst	c:@E@CTFontSymbolicTraits@kCTFontTraitClassMask	CTFontSymbolicTraits			-	-	-	-	-	ecf612651384514a	4026531840
 enumconst	c:@E@CTFontSymbolicTraits@kCTFontItalicTrait	CTFontSymbolicTraits			-	-	-	-	-	fd4bcbf4a92db3ca	1
 enumconst	c:@E@CTFontSymbolicTraits@kCTFontBoldTrait	CTFontSymbolicTraits			-	-	-	-	-	627b624e51347a93	2
 enumconst	c:@E@CTFontSymbolicTraits@kCTFontExpandedTrait	CTFontSymbolicTraits			-	-	-	-	-	1991155705148080	32
@@ -26,7 +26,7 @@ enumconst	c:@E@CTFontSymbolicTraits@kCTFontVerticalTrait	CTFontSymbolicTraits			
 enumconst	c:@E@CTFontSymbolicTraits@kCTFontUIOptimizedTrait	CTFontSymbolicTraits			-	-	-	-	-	04d2ae45dec9b72d	4096
 enumconst	c:@E@CTFontSymbolicTraits@kCTFontColorGlyphsTrait	CTFontSymbolicTraits			-	-	-	-	-	c9f0398e7076d5ad	8192
 enumconst	c:@E@CTFontSymbolicTraits@kCTFontCompositeTrait	CTFontSymbolicTraits			-	-	-	-	-	b5fb4a0d61da7498	16384
-enumconst	c:@E@CTFontSymbolicTraits@kCTFontClassMaskTrait	CTFontSymbolicTraits			-	-	-	-	-	671677680f050970	-268435456
+enumconst	c:@E@CTFontSymbolicTraits@kCTFontClassMaskTrait	CTFontSymbolicTraits			-	-	-	-	-	b080283c7ce222a4	4026531840
 typedef	c:@T@CTFontStylisticClass	-			enum CTFontStylisticClass	-	-	-	-	12365d7796f2f3bb	-
 enum	c:@E@CTFontStylisticClass	-			uint32_t	-	-	-	-	dfdb2fcb9ee9c30c	-
 enumconst	c:@E@CTFontStylisticClass@kCTFontClassUnknown	CTFontStylisticClass			-	-	-	-	-	60244bbf6d43918d	0
@@ -36,10 +36,10 @@ enumconst	c:@E@CTFontStylisticClass@kCTFontClassModernSerifs	CTFontStylisticClas
 enumconst	c:@E@CTFontStylisticClass@kCTFontClassClarendonSerifs	CTFontStylisticClass			-	-	-	-	-	4acbb2c57ab22fc4	1073741824
 enumconst	c:@E@CTFontStylisticClass@kCTFontClassSlabSerifs	CTFontStylisticClass			-	-	-	-	-	f92a39e42d712ead	1342177280
 enumconst	c:@E@CTFontStylisticClass@kCTFontClassFreeformSerifs	CTFontStylisticClass			-	-	-	-	-	3ed176a2a397ba1e	1879048192
-enumconst	c:@E@CTFontStylisticClass@kCTFontClassSansSerif	CTFontStylisticClass			-	-	-	-	-	40a661170b3e0a4b	-2147483648
-enumconst	c:@E@CTFontStylisticClass@kCTFontClassOrnamentals	CTFontStylisticClass			-	-	-	-	-	f5f8d05ef4cef8cf	-1879048192
-enumconst	c:@E@CTFontStylisticClass@kCTFontClassScripts	CTFontStylisticClass			-	-	-	-	-	24f01dd428aa5ae2	-1610612736
-enumconst	c:@E@CTFontStylisticClass@kCTFontClassSymbolic	CTFontStylisticClass			-	-	-	-	-	48bb3a0084adccf5	-1073741824
+enumconst	c:@E@CTFontStylisticClass@kCTFontClassSansSerif	CTFontStylisticClass			-	-	-	-	-	555dd48d6b1bfcd3	2147483648
+enumconst	c:@E@CTFontStylisticClass@kCTFontClassOrnamentals	CTFontStylisticClass			-	-	-	-	-	17f78744abbbba81	2415919104
+enumconst	c:@E@CTFontStylisticClass@kCTFontClassScripts	CTFontStylisticClass			-	-	-	-	-	2a00c66ca6a4bddf	2684354560
+enumconst	c:@E@CTFontStylisticClass@kCTFontClassSymbolic	CTFontStylisticClass			-	-	-	-	-	9e89e6b30fd8ebaf	3221225472
 enumconst	c:@E@CTFontStylisticClass@kCTFontUnknownClass	CTFontStylisticClass			-	-	-	-	-	ff4a9fd738ce8566	0
 enumconst	c:@E@CTFontStylisticClass@kCTFontOldStyleSerifsClass	CTFontStylisticClass			-	-	-	-	-	884a54da6251ca8f	268435456
 enumconst	c:@E@CTFontStylisticClass@kCTFontTransitionalSerifsClass	CTFontStylisticClass			-	-	-	-	-	e64876b8f9ecadd7	536870912
@@ -47,10 +47,10 @@ enumconst	c:@E@CTFontStylisticClass@kCTFontModernSerifsClass	CTFontStylisticClas
 enumconst	c:@E@CTFontStylisticClass@kCTFontClarendonSerifsClass	CTFontStylisticClass			-	-	-	-	-	4b77fba3ac6c964c	1073741824
 enumconst	c:@E@CTFontStylisticClass@kCTFontSlabSerifsClass	CTFontStylisticClass			-	-	-	-	-	ec7e5cf65a22bca1	1342177280
 enumconst	c:@E@CTFontStylisticClass@kCTFontFreeformSerifsClass	CTFontStylisticClass			-	-	-	-	-	43c8ccc914267d1c	1879048192
-enumconst	c:@E@CTFontStylisticClass@kCTFontSansSerifClass	CTFontStylisticClass			-	-	-	-	-	28e01b3250cdd641	-2147483648
-enumconst	c:@E@CTFontStylisticClass@kCTFontOrnamentalsClass	CTFontStylisticClass			-	-	-	-	-	dd4f9d33f500b133	-1879048192
-enumconst	c:@E@CTFontStylisticClass@kCTFontScriptsClass	CTFontStylisticClass			-	-	-	-	-	113a0911e0c244a5	-1610612736
-enumconst	c:@E@CTFontStylisticClass@kCTFontSymbolicClass	CTFontStylisticClass			-	-	-	-	-	8631592f406ad4bf	-1073741824
+enumconst	c:@E@CTFontStylisticClass@kCTFontSansSerifClass	CTFontStylisticClass			-	-	-	-	-	d84a0de672668ee3	2147483648
+enumconst	c:@E@CTFontStylisticClass@kCTFontOrnamentalsClass	CTFontStylisticClass			-	-	-	-	-	a8ae853507e031d8	2415919104
+enumconst	c:@E@CTFontStylisticClass@kCTFontScriptsClass	CTFontStylisticClass			-	-	-	-	-	1bd9196f4c96706e	2684354560
+enumconst	c:@E@CTFontStylisticClass@kCTFontSymbolicClass	CTFontStylisticClass			-	-	-	-	-	678008e34566925d	3221225472
 struct	c:@S@__CTFontDescriptor	-			-	-	-	-	-	733f964690a4de07	-
 typedef	c:@T@CTFontDescriptorRef	-			const struct __CTFontDescriptor *	-	-	-	-	7e9603ab43f9052a	-
 function	c:@F@CTFontDescriptorGetTypeID	-			CFTypeID (void)	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f4a056290a6356ca	-
@@ -170,7 +170,7 @@ function	c:@F@CTFontCreateWithNameAndOptions	-			CTFontRef (CFStringRef, CGFloat
 function	c:@F@CTFontCreateWithFontDescriptorAndOptions	-			CTFontRef (CTFontDescriptorRef, CGFloat, const CGAffineTransform *, CTFontOptions)	CTFontDescriptorRef descriptor | CGFloat size | const CGAffineTransform * matrix | CTFontOptions options	-	ios=3.2/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bf36ad7dd5881be3	-
 typedef	c:@T@CTFontUIFontType	-			enum CTFontUIFontType	-	-	-	-	8e4c35a3961f3b5a	-
 enum	c:@E@CTFontUIFontType	-			uint32_t	-	-	-	-	4f29e9074739a9d8	-
-enumconst	c:@E@CTFontUIFontType@kCTFontUIFontNone	CTFontUIFontType			-	-	-	-	-	824cb9d6bd5a60d4	-1
+enumconst	c:@E@CTFontUIFontType@kCTFontUIFontNone	CTFontUIFontType			-	-	-	-	-	a1693521f2c65e5d	4294967295
 enumconst	c:@E@CTFontUIFontType@kCTFontUIFontUser	CTFontUIFontType			-	-	-	-	-	2c633fdbdfecde94	0
 enumconst	c:@E@CTFontUIFontType@kCTFontUIFontUserFixedPitch	CTFontUIFontType			-	-	-	-	-	c6fa7761ca8f1b86	1
 enumconst	c:@E@CTFontUIFontType@kCTFontUIFontSystem	CTFontUIFontType			-	-	-	-	-	facbfce326aed045	2
@@ -198,7 +198,7 @@ enumconst	c:@E@CTFontUIFontType@kCTFontUIFontMessage	CTFontUIFontType			-	-	-	-	
 enumconst	c:@E@CTFontUIFontType@kCTFontUIFontPalette	CTFontUIFontType			-	-	-	-	-	59b89e9f4a9d1cb0	24
 enumconst	c:@E@CTFontUIFontType@kCTFontUIFontToolTip	CTFontUIFontType			-	-	-	-	-	ac4a24c267626cb0	25
 enumconst	c:@E@CTFontUIFontType@kCTFontUIFontControlContent	CTFontUIFontType			-	-	-	-	-	0128886b49758d60	26
-enumconst	c:@E@CTFontUIFontType@kCTFontNoFontType	CTFontUIFontType			-	-	-	ios=3.2/9.0/-/0,macos=10.5/10.11/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	105f0477840bf695	-1
+enumconst	c:@E@CTFontUIFontType@kCTFontNoFontType	CTFontUIFontType			-	-	-	ios=3.2/9.0/-/0,macos=10.5/10.11/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c83063d88952805a	4294967295
 enumconst	c:@E@CTFontUIFontType@kCTFontUserFontType	CTFontUIFontType			-	-	-	ios=3.2/9.0/-/0,macos=10.5/10.11/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	99f70597541e6df2	0
 enumconst	c:@E@CTFontUIFontType@kCTFontUserFixedPitchFontType	CTFontUIFontType			-	-	-	ios=3.2/9.0/-/0,macos=10.5/10.11/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7c139b50fb5c7031	1
 enumconst	c:@E@CTFontUIFontType@kCTFontSystemFontType	CTFontUIFontType			-	-	-	ios=3.2/9.0/-/0,macos=10.5/10.11/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7704f4c8afad3758	2
@@ -645,7 +645,7 @@ typedef	c:@T@CTRubyAnnotationRef	-			const struct __CTRubyAnnotation *	-	-	-	-	e
 function	c:@F@CTRubyAnnotationGetTypeID	-			CFTypeID (void)	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	516298c2be86ff55	-
 typedef	c:@T@CTRubyAlignment	-			enum CTRubyAlignment	-	-	-	-	113acf64913a9393	-
 enum	c:@E@CTRubyAlignment	-			uint8_t	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	720e2d28d06dd0cf	-
-enumconst	c:@E@CTRubyAlignment@kCTRubyAlignmentInvalid	CTRubyAlignment			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e60511d8e575c9b7	-1
+enumconst	c:@E@CTRubyAlignment@kCTRubyAlignmentInvalid	CTRubyAlignment			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e34fdb4bd4c553f0	255
 enumconst	c:@E@CTRubyAlignment@kCTRubyAlignmentAuto	CTRubyAlignment			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bdd72a68936e570a	0
 enumconst	c:@E@CTRubyAlignment@kCTRubyAlignmentStart	CTRubyAlignment			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d008d8d5499982e6	1
 enumconst	c:@E@CTRubyAlignment@kCTRubyAlignmentCenter	CTRubyAlignment			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	5214a84943fd1391	2
@@ -655,7 +655,7 @@ enumconst	c:@E@CTRubyAlignment@kCTRubyAlignmentDistributeSpace	CTRubyAlignment		
 enumconst	c:@E@CTRubyAlignment@kCTRubyAlignmentLineEdge	CTRubyAlignment			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7ace2a461f6935b9	6
 typedef	c:@T@CTRubyOverhang	-			enum CTRubyOverhang	-	-	-	-	fe20f0d5188326c9	-
 enum	c:@E@CTRubyOverhang	-			uint8_t	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	500045b15362f23f	-
-enumconst	c:@E@CTRubyOverhang@kCTRubyOverhangInvalid	CTRubyOverhang			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	4dae7daf25af451c	-1
+enumconst	c:@E@CTRubyOverhang@kCTRubyOverhangInvalid	CTRubyOverhang			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c4e40a7ebcd43062	255
 enumconst	c:@E@CTRubyOverhang@kCTRubyOverhangAuto	CTRubyOverhang			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a75ce67b4f140899	0
 enumconst	c:@E@CTRubyOverhang@kCTRubyOverhangStart	CTRubyOverhang			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	013ea0cc07d8eeea	1
 enumconst	c:@E@CTRubyOverhang@kCTRubyOverhangEnd	CTRubyOverhang			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d8b70f7affc7b8ee	2
@@ -1703,10 +1703,10 @@ enumconst	c:@Ea@kKERXLineStart@kKERXNoStakeNote	-			-	-	-	-	-	e3599c52a7292e39	1
 enumconst	c:@Ea@kKERXLineStart@kKERXCrossStreamResetNote	-			-	-	-	-	-	7d43b5b50312a8bc	2
 enumconst	c:@Ea@kKERXLineStart@kKERXNotApplied	-			-	-	-	-	-	61dea62502e01dc5	1
 enum	c:@Ea@kKERXActionTypeMask	-	-		unsigned int	-	-	-	-	df9e0f6a019e8382	-
-enumconst	c:@Ea@kKERXActionTypeMask@kKERXActionTypeMask	-			-	-	-	-	-	d69a085299cc2d42	-1073741824
+enumconst	c:@Ea@kKERXActionTypeMask@kKERXActionTypeMask	-			-	-	-	-	-	2470dec15915e428	3221225472
 enumconst	c:@Ea@kKERXActionTypeMask@kKERXActionTypeControlPoints	-			-	-	-	-	-	7ba2c39c70483d53	0
 enumconst	c:@Ea@kKERXActionTypeMask@kKERXActionTypeAnchorPoints	-			-	-	-	-	-	58a0b61e266810cf	1073741824
-enumconst	c:@Ea@kKERXActionTypeMask@kKERXActionTypeCoordinates	-			-	-	-	-	-	cf3a915117002dba	-2147483648
+enumconst	c:@Ea@kKERXActionTypeMask@kKERXActionTypeCoordinates	-			-	-	-	-	-	e20f44d5204fc303	2147483648
 enumconst	c:@Ea@kKERXActionTypeMask@kKERXUnusedFlags	-			-	-	-	-	-	7b7febf9bb040c6c	1056964608
 enumconst	c:@Ea@kKERXActionTypeMask@kKERXActionOffsetMask	-			-	-	-	-	-	cd44ace214ca6d2d	16777215
 enum	c:@Ea@kKERXValuesAreLong	-	-		unsigned int	-	-	-	-	c26f6920556ebdb0	-
@@ -2099,9 +2099,9 @@ enumconst	c:@Ea@kFontEnglishLanguage@kFontDzongkhaLanguage	-			-	-	-	-	-	d5a572d
 enumconst	c:@Ea@kFontEnglishLanguage@kFontJavaneseRomLanguage	-			-	-	-	-	-	a951cdcec779da69	138
 enumconst	c:@Ea@kFontEnglishLanguage@kFontSundaneseRomLanguage	-			-	-	-	-	-	67073971f79c79f0	139
 enum	c:@Ea@kFontNoPlatformCode	-	-		unsigned int	-	-	-	-	321aceba3dd36854	-
-enumconst	c:@Ea@kFontNoPlatformCode@kFontNoPlatformCode	-			-	-	-	-	-	136229d6e320e42c	-1
-enumconst	c:@Ea@kFontNoPlatformCode@kFontNoScriptCode	-			-	-	-	-	-	625ff8f403ac31da	-1
-enumconst	c:@Ea@kFontNoPlatformCode@kFontNoLanguageCode	-			-	-	-	-	-	7956f0cdff7448d4	-1
+enumconst	c:@Ea@kFontNoPlatformCode@kFontNoPlatformCode	-			-	-	-	-	-	f21f3851e153075e	4294967295
+enumconst	c:@Ea@kFontNoPlatformCode@kFontNoScriptCode	-			-	-	-	-	-	78896d551d4bc882	4294967295
+enumconst	c:@Ea@kFontNoPlatformCode@kFontNoLanguageCode	-			-	-	-	-	-	5d69fed683f01deb	4294967295
 struct	c:@S@sfntCMapSubHeader	-			-	-	-	-	-	5fb3a46ec6ce90ba	-
 field	c:@S@sfntCMapSubHeader@FI@format	sfntCMapSubHeader			UInt16	-	-	-	-	13e36ca290ae06d6	-
 field	c:@S@sfntCMapSubHeader@FI@length	sfntCMapSubHeader			UInt16	-	-	-	-	db9725a76f218768	-
@@ -2156,7 +2156,7 @@ enumconst	c:@Ea@kFontCopyrightName@kFontSampleTextName	-			-	-	-	-	-	3e845361fdf
 enumconst	c:@Ea@kFontCopyrightName@kFontPostScriptCIDName	-			-	-	-	-	-	d3d0b8a170371e25	20
 enumconst	c:@Ea@kFontCopyrightName@kFontLastReservedName	-			-	-	-	-	-	ab8c6c6f1ba3d224	255
 enum	c:@Ea@kFontNoNameCode	-	-		unsigned int	-	-	-	-	c1c773c104fc4e91	-
-enumconst	c:@Ea@kFontNoNameCode@kFontNoNameCode	-			-	-	-	-	-	1c785b00fd03104a	-1
+enumconst	c:@Ea@kFontNoNameCode@kFontNoNameCode	-			-	-	-	-	-	28cb10a609681a98	4294967295
 struct	c:@S@sfntNameRecord	-			-	-	-	-	-	9ced0571289d1346	-
 field	c:@S@sfntNameRecord@FI@platformID	sfntNameRecord			UInt16	-	-	-	-	8977c850ed072e08	-
 field	c:@S@sfntNameRecord@FI@scriptID	sfntNameRecord			UInt16	-	-	-	-	76481bf3c3e1f001	-

@@ -915,7 +915,7 @@ typedef	c:vDSP.h@T@vDSP_DFT_Interleaved_SetupD	-			struct vDSP_DFT_Interleaved_S
 typedef	c:vDSP.h@T@vDSP_DFT_RealtoComplex	-			enum vDSP_DFT_RealtoComplex	-	-	-	-	fad77db48973aa1f	-
 enum	c:@E@vDSP_DFT_RealtoComplex	-			_Bool	-	-	-	-	a9643ceabc96869f	-
 enumconst	c:@E@vDSP_DFT_RealtoComplex@vDSP_DFT_Interleaved_ComplextoComplex	vDSP_DFT_RealtoComplex			-	-	-	-	-	0cf5c08575cbddf8	0
-enumconst	c:@E@vDSP_DFT_RealtoComplex@vDSP_DFT_Interleaved_RealtoComplex	vDSP_DFT_RealtoComplex			-	-	-	-	-	86d18c93f615f5de	-1
+enumconst	c:@E@vDSP_DFT_RealtoComplex@vDSP_DFT_Interleaved_RealtoComplex	vDSP_DFT_RealtoComplex			-	-	-	-	-	b9ebbd3cbec0bc18	1
 function	c:@F@vDSP_DFT_CreateSetup	-			vDSP_DFT_Setup (vDSP_DFT_Setup, vDSP_Length)	vDSP_DFT_Setup __Previous | vDSP_Length __Length	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	1a0496d8bc2b01c1	-
 function	c:@F@vDSP_DFT_zop_CreateSetup	-			vDSP_DFT_Setup (vDSP_DFT_Setup, vDSP_Length, vDSP_DFT_Direction)	vDSP_DFT_Setup __Previous | vDSP_Length __Length | vDSP_DFT_Direction __Direction	-	ios=4.0/-/-/0,macos=10.7/-/-/0	-	04d6efd20b75bd38	-
 function	c:@F@vDSP_DFT_zop_CreateSetupD	-			vDSP_DFT_SetupD (vDSP_DFT_SetupD, vDSP_Length, vDSP_DFT_Direction)	vDSP_DFT_SetupD __Previous | vDSP_Length __Length | vDSP_DFT_Direction __Direction	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	3557e6e7f79df5c5	-

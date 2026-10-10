@@ -811,6 +811,35 @@ std::string category_class(CXCursor c) {
   return name;
 }
 
+// Whether a canonical integer type is unsigned (the character type is unsigned on some targets: Char_U).
+bool is_unsigned_integer(CXTypeKind kind) {
+  switch (kind) {
+    case CXType_Bool:
+    case CXType_Char_U:
+    case CXType_UChar:
+    case CXType_Char16:
+    case CXType_Char32:
+    case CXType_UShort:
+    case CXType_UInt:
+    case CXType_ULong:
+    case CXType_ULongLong:
+    case CXType_UInt128:
+      return true;
+    default:
+      return false;
+  }
+}
+
+// The value of an enum constant as clang evaluates it for the enum's own integer type, as text. libclang's signed accessor
+// sign-extends from the width of that type, so a constant of an unsigned enum with its top bit set reads as a negative number
+// (ARSegmentationClassPerson = 255 of a uint8_t enum came out as -1, kCTFontTraitClassMask = 15U << 28 as -268435456): an
+// unsigned enum is read through the unsigned accessor, which holds the value the header spells.
+std::string enum_constant_value(CXCursor c) {
+  CXType integer = clang_getCanonicalType(clang_getEnumDeclIntegerType(clang_getCursorSemanticParent(c)));
+  if (is_unsigned_integer(integer.kind)) return std::to_string(clang_getEnumConstantDeclUnsignedValue(c));
+  return std::to_string(clang_getEnumConstantDeclValue(c));
+}
+
 CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
   (void)parent;
   Nest* nest = static_cast<Nest*>(data);
@@ -910,10 +939,7 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
       }
       return CXChildVisit_Continue;
     case CXCursor_EnumConstantDecl:
-      if (own) {
-        long long value = clang_getEnumConstantDeclValue(c);
-        simple_row(ctx, c, "enumconst", "-", "-", std::to_string(value), nest->name, true);
-      }
+      if (own) simple_row(ctx, c, "enumconst", "-", "-", enum_constant_value(c), nest->name, true);
       return CXChildVisit_Continue;
     case CXCursor_StructDecl:
     case CXCursor_UnionDecl: {

@@ -56,9 +56,9 @@ enumconst	c:@E@MPSDataType@MPSDataTypeUInt8	MPSDataType			-	-	-	ios=10.0/-/-/0,m
 enumconst	c:@E@MPSDataType@MPSDataTypeUInt16	MPSDataType			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	0f9b4d3cbec4d789	16
 enumconst	c:@E@MPSDataType@MPSDataTypeUInt32	MPSDataType			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	4c01a7fde109e092	32
 enumconst	c:@E@MPSDataType@MPSDataTypeUInt64	MPSDataType			-	-	-	ios=14.1/-/-/0,maccatalyst=14.1/-/-/0,macos=11.0/-/-/0,tvos=14.1/-/-/0	-	dab6ee2f61e1f702	64
-enumconst	c:@E@MPSDataType@MPSDataTypeAlternateEncodingBit	MPSDataType			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	3efd109376ec8104	-2147483648
-enumconst	c:@E@MPSDataType@MPSDataTypeBool	MPSDataType			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	59e8d9781361bed9	-2147483640
-enumconst	c:@E@MPSDataType@MPSDataTypeBFloat16	MPSDataType			-	-	-	ios=16.0/-/-/0,macos=14.0/-/-/0,tvos=16.0/-/-/0	-	e081bc1949e1a815	-1879048176
+enumconst	c:@E@MPSDataType@MPSDataTypeAlternateEncodingBit	MPSDataType			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	5d1994ebffaefa9a	2147483648
+enumconst	c:@E@MPSDataType@MPSDataTypeBool	MPSDataType			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	599b4a45bcc34590	2147483656
+enumconst	c:@E@MPSDataType@MPSDataTypeBFloat16	MPSDataType			-	-	-	ios=16.0/-/-/0,macos=14.0/-/-/0,tvos=16.0/-/-/0	-	f10f5dca3d02f898	2415919120
 enumconst	c:@E@MPSDataType@MPSDataTypeNormalizedBit	MPSDataType			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3408ce65625aa1c8	1073741824
 enumconst	c:@E@MPSDataType@MPSDataTypeUnorm1	MPSDataType			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fd93039f5b0c0d57	1073741825
 enumconst	c:@E@MPSDataType@MPSDataTypeUnorm8	MPSDataType			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0855c31b150c9bd2	1073741832

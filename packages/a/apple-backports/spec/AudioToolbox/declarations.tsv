@@ -10,7 +10,7 @@ typedef	c:@T@AudioComponentInstantiationOptions	-			enum AudioComponentInstantia
 enum	c:@E@AudioComponentInstantiationOptions	-			UInt32	-	-	-	-	31063c41b25ab241	-
 enumconst	c:@E@AudioComponentInstantiationOptions@kAudioComponentInstantiation_LoadOutOfProcess	AudioComponentInstantiationOptions			-	-	-	ios=9.0/-/-/0	-	479174a3a4f24f23	1
 enumconst	c:@E@AudioComponentInstantiationOptions@kAudioComponentInstantiation_LoadInProcess	AudioComponentInstantiationOptions			-	-	-	ios=-/-/-/1,macos=10.11/-/-/0	-	cdfbfa8999bed8da	2
-enumconst	c:@E@AudioComponentInstantiationOptions@kAudioComponentInstantiation_LoadedRemotely	AudioComponentInstantiationOptions			-	-	-	macos=-/-/-/1	-	f83dd4c846e45459	-2147483648
+enumconst	c:@E@AudioComponentInstantiationOptions@kAudioComponentInstantiation_LoadedRemotely	AudioComponentInstantiationOptions			-	-	-	macos=-/-/-/1	-	3a51ffea0eb94588	2147483648
 struct	c:@S@AudioComponentDescription	-			-	-	-	-	-	7576182627653dfc	-
 field	c:@S@AudioComponentDescription@FI@componentType	AudioComponentDescription			OSType	-	-	-	-	f88f88c88b9d09d5	-
 field	c:@S@AudioComponentDescription@FI@componentSubType	AudioComponentDescription			OSType	-	-	-	-	b9a1143e64974302	-
@@ -680,7 +680,7 @@ enumconst	c:@E@AudioUnitParameterOptions@kAudioUnitParameterFlag_HasCFNameString
 enumconst	c:@E@AudioUnitParameterOptions@kAudioUnitParameterFlag_IsGlobalMeta	AudioUnitParameterOptions			-	-	-	-	-	20e361012a210ef5	268435456
 enumconst	c:@E@AudioUnitParameterOptions@kAudioUnitParameterFlag_IsElementMeta	AudioUnitParameterOptions			-	-	-	-	-	6bce3ecbaaa1c479	536870912
 enumconst	c:@E@AudioUnitParameterOptions@kAudioUnitParameterFlag_IsReadable	AudioUnitParameterOptions			-	-	-	-	-	7a787cc2f6592905	1073741824
-enumconst	c:@E@AudioUnitParameterOptions@kAudioUnitParameterFlag_IsWritable	AudioUnitParameterOptions			-	-	-	-	-	c91133549c356f72	-2147483648
+enumconst	c:@E@AudioUnitParameterOptions@kAudioUnitParameterFlag_IsWritable	AudioUnitParameterOptions			-	-	-	-	-	47c55bc6339a246c	2147483648
 struct	c:@S@AudioUnitParameterInfo	-			-	-	-	-	-	70580e77a9a349a3	-
 field	c:@S@AudioUnitParameterInfo@FI@name	AudioUnitParameterInfo			char[52]	-	-	-	-	8ac5e20e3f945f24	-
 field	c:@S@AudioUnitParameterInfo@FI@unitName	AudioUnitParameterInfo			CFStringRef	-	-	-	-	8f6e3e4db22d36e9	-
@@ -1507,8 +1507,8 @@ field	c:@S@MusicDeviceNoteParams@FI@mVelocity	MusicDeviceNoteParams			Float32	-	
 field	c:@S@MusicDeviceNoteParams@FI@mControls	MusicDeviceNoteParams			NoteParamsControlValue[1]	-	-	-	-	b2e20c410d32119b	-
 typedef	c:@T@MusicDeviceNoteParams	-			struct MusicDeviceNoteParams	-	-	-	-	76eb02f9baf11a28	-
 enum	c:@Ea@kMusicNoteEvent_UseGroupInstrument	-	-		unsigned int	-	-	-	-	b5b7f3ac1d88b742	-
-enumconst	c:@Ea@kMusicNoteEvent_UseGroupInstrument@kMusicNoteEvent_UseGroupInstrument	-			-	-	-	-	-	0f694fee5e97af0d	-1
-enumconst	c:@Ea@kMusicNoteEvent_UseGroupInstrument@kMusicNoteEvent_Unused	-			-	-	-	-	-	f59d1356c638c40d	-1
+enumconst	c:@Ea@kMusicNoteEvent_UseGroupInstrument@kMusicNoteEvent_UseGroupInstrument	-			-	-	-	-	-	edddbc4398bc0f71	4294967295
+enumconst	c:@Ea@kMusicNoteEvent_UseGroupInstrument@kMusicNoteEvent_Unused	-			-	-	-	-	-	11b31b5d5effd737	4294967295
 typedef	c:@T@MusicDeviceGroupID	-			UInt32	-	-	-	-	7f5dc44e5299b954	-
 typedef	c:@T@NoteInstanceID	-			UInt32	-	-	-	-	c7a1d8063045c1a0	-
 typedef	c:@T@MusicDeviceComponent	-			AudioComponentInstance	-	-	-	-	120e6a5481ee2ee9	-
@@ -2357,7 +2357,7 @@ var	c:@kAudioServicesDetailIntendedSpatialExperience	-			const CFStringRef	-	-	i
 function	c:@F@AudioServicesPlaySystemSoundWithDetails	-			void (SystemSoundID, CFDictionaryRef, void (^)(void))	SystemSoundID inSystemSoundID | CFDictionaryRef inDetails | void (^)(void) inCompletionBlock	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	be741bc7fe53e5bb	-
 function	c:@F@AudioServicesPlayAlertSoundWithDetails	-			void (SystemSoundID, CFDictionaryRef, void (^)(void))	SystemSoundID inSystemSoundID | CFDictionaryRef inDetails | void (^)(void) inCompletionBlock	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	95c8a8fc1e9b4c16	-
 enum	c:@Ea@kAUParameterListener_AnyParameter	-	-		AudioUnitParameterID	-	-	-	-	64b73316af735e0b	-
-enumconst	c:@Ea@kAUParameterListener_AnyParameter@kAUParameterListener_AnyParameter	-			-	-	-	-	-	a2311e0e7af8f12b	-1
+enumconst	c:@Ea@kAUParameterListener_AnyParameter@kAUParameterListener_AnyParameter	-			-	-	-	-	-	6842032db8acac38	4294967295
 typedef	c:@T@AudioUnitEventType	-			enum AudioUnitEventType	-	-	-	-	f408a266736a53be	-
 enum	c:@E@AudioUnitEventType	-			UInt32	-	-	-	-	c21d949a9d1a0390	-
 enumconst	c:@E@AudioUnitEventType@kAudioUnitEvent_ParameterValueChange	AudioUnitEventType			-	-	-	-	-	c3d4280176f880b7	0

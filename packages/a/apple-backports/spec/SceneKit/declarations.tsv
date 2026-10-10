@@ -1405,7 +1405,7 @@ typedef	c:@T@SCNPhysicsCollisionCategory	-			enum SCNPhysicsCollisionCategory	-	
 enum	c:@E@SCNPhysicsCollisionCategory	-			NSUInteger	-	-	macos=10.10/-/-/0	-	8d13fba9059fa4bd	-
 enumconst	c:@E@SCNPhysicsCollisionCategory@SCNPhysicsCollisionCategoryDefault	SCNPhysicsCollisionCategory			-	-	-	macos=10.10/-/-/0	-	31ed6f8342a710f2	1
 enumconst	c:@E@SCNPhysicsCollisionCategory@SCNPhysicsCollisionCategoryStatic	SCNPhysicsCollisionCategory			-	-	-	macos=10.10/-/-/0	-	f7d68cf7c1314a34	2
-enumconst	c:@E@SCNPhysicsCollisionCategory@SCNPhysicsCollisionCategoryAll	SCNPhysicsCollisionCategory			-	-	-	macos=10.10/-/-/0	-	904449166883b94c	-1
+enumconst	c:@E@SCNPhysicsCollisionCategory@SCNPhysicsCollisionCategoryAll	SCNPhysicsCollisionCategory			-	-	-	macos=10.10/-/-/0	-	1bec29065c65c7e4	18446744073709551615
 interface	c:objc(cs)SCNPhysicsBody	-			-	-	-	macos=10.10/-/-/0	-	47487326695dec4b	-
 super	-	SCNPhysicsBody	NSObject		-	-	-	-	-	fdb7825a084eaf49	-
 conforms	-	SCNPhysicsBody	NSCopying		-	-	-	-	-	65eecc16a8c83967	-

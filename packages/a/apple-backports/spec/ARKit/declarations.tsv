@@ -478,7 +478,7 @@ method	c:objc(cs)ARRaycastQuery(im)new	-			instancetype	-	-	*unavailable ios=13.
 typedef	c:@T@ARSegmentationClass	-			enum ARSegmentationClass	-	-	ios=13.0/-/-/0	-	ace7aa47dff762fd	-
 enum	c:@E@ARSegmentationClass	-			uint8_t	-	-	-	-	ef13903e2a772809	-
 enumconst	c:@E@ARSegmentationClass@ARSegmentationClassNone	ARSegmentationClass			-	-	-	-	-	a29bed1ee73efdef	0
-enumconst	c:@E@ARSegmentationClass@ARSegmentationClassPerson	ARSegmentationClass			-	-	-	-	-	eb16d02675f911e0	-1
+enumconst	c:@E@ARSegmentationClass@ARSegmentationClassPerson	ARSegmentationClass			-	-	-	-	-	6e195cf3cf0fbcfd	255
 typedef	c:@T@ARWorldMappingStatus	-			enum ARWorldMappingStatus	-	-	ios=12.0/-/-/0	-	8f70895a70cc9566	-
 enum	c:@E@ARWorldMappingStatus	-			NSInteger	-	-	-	-	1a35df26bc7f912b	-
 enumconst	c:@E@ARWorldMappingStatus@ARWorldMappingStatusNotAvailable	ARWorldMappingStatus			-	-	-	-	-	838893510dd9b9f5	0

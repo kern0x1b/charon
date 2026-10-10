@@ -9,6 +9,12 @@ typedef struct FXOpaque FXOpaque;
 enum FXState;
 enum FXState { FXStateOn = 1, FXStateOff = 2 };
 enum { FXLimit = 9 };
+// the value of an enum constant is clang's own for the enum's integer type: an unsigned enum is not sign-extended
+enum FXByte : unsigned char { FXByteTop = 255 };
+enum FXWord : unsigned long { FXWordAll = ~0UL };
+enum FXWide : unsigned long long { FXWideTop = 1ULL << 63 };
+enum FXMask { FXMaskClass = 15U << 28 };
+enum FXSigned : int { FXSignedBelow = -1 };
 void FXRun(int count);
 
 #define FX_NO_INIT - (instancetype)init __attribute__((unavailable))

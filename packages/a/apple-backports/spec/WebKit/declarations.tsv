@@ -856,7 +856,7 @@ enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeCalendarEvent	WKDataDetecto
 enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeTrackingNumber	WKDataDetectorTypes			-	-	-	ios=10.0/-/-/0	-	0e835f4e0b2c756e	16
 enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeFlightNumber	WKDataDetectorTypes			-	-	-	ios=10.0/-/-/0	-	1bf4a003c6d420ee	32
 enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeLookupSuggestion	WKDataDetectorTypes			-	-	-	ios=10.0/-/-/0	-	a0f2c94bcdf3817d	64
-enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeAll	WKDataDetectorTypes			-	-	-	ios=10.0/-/-/0	-	d4d5c15edda85c91	-1
+enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeAll	WKDataDetectorTypes			-	-	-	ios=10.0/-/-/0	-	0418f47e321246ad	18446744073709551615
 enumconst	c:@E@WKDataDetectorTypes@WKDataDetectorTypeSpotlightSuggestion	WKDataDetectorTypes			-	-	-	ios=10.0/10.0/-/0	deprecated: Use WKDataDetectorTypeLookupSuggestion instead	75a4b06332f536f5	64
 typedef	c:@T@WKSelectionGranularity	-			enum WKSelectionGranularity	-	-	-	-	a2d97e4e50495289	-
 enum	c:@E@WKSelectionGranularity	-			NSInteger	-	-	ios=8.0/11.0/-/0,xros=1.0/1.0/-/0	-	e69e856db166b951	-
@@ -867,7 +867,7 @@ enum	c:@E@WKAudiovisualMediaTypes	-			NSUInteger	-	-	ios=10.0/-/-/0,macos=10.12/
 enumconst	c:@E@WKAudiovisualMediaTypes@WKAudiovisualMediaTypeNone	WKAudiovisualMediaTypes			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	bf74289c18ad2d9e	0
 enumconst	c:@E@WKAudiovisualMediaTypes@WKAudiovisualMediaTypeAudio	WKAudiovisualMediaTypes			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	b9ef21e4bc348fa7	1
 enumconst	c:@E@WKAudiovisualMediaTypes@WKAudiovisualMediaTypeVideo	WKAudiovisualMediaTypes			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	9daabff96f5c5633	2
-enumconst	c:@E@WKAudiovisualMediaTypes@WKAudiovisualMediaTypeAll	WKAudiovisualMediaTypes			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	c937e8d119d2bccd	-1
+enumconst	c:@E@WKAudiovisualMediaTypes@WKAudiovisualMediaTypeAll	WKAudiovisualMediaTypes			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	d2e4a2cf5cf5316f	18446744073709551615
 interface	c:objc(cs)WKWebViewConfiguration	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0	deprecated: Creating and using multiple instances of WKProcessPool no longer has any effect.	4506671b05f67048	-
 super	-	WKWebViewConfiguration	NSObject		-	-	-	-	-	9715f1f3ab964b04	-
 conforms	-	WKWebViewConfiguration	NSSecureCoding		-	-	-	-	-	c799d88d3813cf77	-

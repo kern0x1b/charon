@@ -402,7 +402,7 @@ enumconst	c:@Ea@kvImageConvert_DitherNone@kvImageConvert_DitherFloydSteinberg	-	
 enumconst	c:@Ea@kvImageConvert_DitherNone@kvImageConvert_DitherAtkinson	-			-	-	-	-	-	fa87e5c29b860a1b	4
 enumconst	c:@Ea@kvImageConvert_DitherNone@kvImageConvert_OrderedGaussianBlue	-			-	-	-	-	-	a089fb568ac8effa	0
 enumconst	c:@Ea@kvImageConvert_DitherNone@kvImageConvert_OrderedUniformBlue	-			-	-	-	-	-	ef3b75f1b8bd1aef	268435456
-enumconst	c:@Ea@kvImageConvert_DitherNone@kvImageConvert_OrderedNoiseShapeMask	-			-	-	-	-	-	6c3598ba087ccac0	-268435456
+enumconst	c:@Ea@kvImageConvert_DitherNone@kvImageConvert_OrderedNoiseShapeMask	-			-	-	-	-	-	a4f097757c01636a	4026531840
 function	c:@F@vImageConvert_Planar8toPlanar1	-			vImage_Error (const vImage_Buffer *, const vImage_Buffer *, void *, int, const vImage_Flags)	const vImage_Buffer * src | const vImage_Buffer * dest | void * tempBuffer | int dither | const vImage_Flags flags	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=7.0/-/-/0,watchos=1.0/-/-/0	-	45e22abdc6183b4f	-
 function	c:@F@vImageConvert_Planar8toPlanar2	-			vImage_Error (const vImage_Buffer *, const vImage_Buffer *, void *, int, const vImage_Flags)	const vImage_Buffer * src | const vImage_Buffer * dest | void * tempBuffer | int dither | const vImage_Flags flags	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=7.0/-/-/0,watchos=1.0/-/-/0	-	627da1801149efe7	-
 function	c:@F@vImageConvert_Planar8toPlanar4	-			vImage_Error (const vImage_Buffer *, const vImage_Buffer *, void *, int, const vImage_Flags)	const vImage_Buffer * src | const vImage_Buffer * dest | void * tempBuffer | int dither | const vImage_Flags flags	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=7.0/-/-/0,watchos=1.0/-/-/0	-	67d43a93ec6afeca	-

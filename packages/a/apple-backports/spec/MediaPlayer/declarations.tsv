@@ -50,7 +50,7 @@ enumconst	c:@E@MPMediaType@MPMediaTypeMusicVideo	MPMediaType			-	-	-	ios=5.0/-/-
 enumconst	c:@E@MPMediaType@MPMediaTypeVideoITunesU	MPMediaType			-	-	-	ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	61ba571025b38256	4096
 enumconst	c:@E@MPMediaType@MPMediaTypeHomeVideo	MPMediaType			-	-	-	ios=7.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	5714d499182fbaf0	8192
 enumconst	c:@E@MPMediaType@MPMediaTypeAnyVideo	MPMediaType			-	-	-	ios=5.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	f064f77b490e6bcb	65280
-enumconst	c:@E@MPMediaType@MPMediaTypeAny	MPMediaType			-	-	-	ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	2ad6393880da3641	-1
+enumconst	c:@E@MPMediaType@MPMediaTypeAny	MPMediaType			-	-	-	ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	5c4a25b73d810763	18446744073709551615
 interface	c:objc(cs)MPMediaItem	-			-	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f70d7faaed228f70	-
 super	-	MPMediaItem	MPMediaEntity		-	-	-	-	-	d6a97b4b493ea9c7	-
 property	c:objc(cs)MPMediaItem(py)persistentID	-			MPMediaEntityPersistentID	-	readonly,nonatomic	ios=5.0/-/-/0	-	e66141e097f1b501	-

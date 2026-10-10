@@ -16,7 +16,7 @@ enumconst	c:@Ea@ALAssetsGroupLibrary@ALAssetsGroupEvent	-			-	-	-	ios=4/9/26.0/0
 enumconst	c:@Ea@ALAssetsGroupLibrary@ALAssetsGroupFaces	-			-	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	c4f26f8d22f9e466	8
 enumconst	c:@Ea@ALAssetsGroupLibrary@ALAssetsGroupSavedPhotos	-			-	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	faa5a75c591487bf	16
 enumconst	c:@Ea@ALAssetsGroupLibrary@ALAssetsGroupPhotoStream	-			-	-	-	ios=5/9/26.0/0,macos=-/-/-/1	-	5bbde727c7c22ffc	32
-enumconst	c:@Ea@ALAssetsGroupLibrary@ALAssetsGroupAll	-			-	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	49b649eecac0104a	-1
+enumconst	c:@Ea@ALAssetsGroupLibrary@ALAssetsGroupAll	-			-	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	c9d4b9354aa008c9	4294967295
 typedef	c:@T@ALAssetsGroupType	-			NSUInteger	-	-	ios=4/9/26.0/0,macos=-/-/-/1	-	d02509d477ce1492	-
 typedef	c:@T@ALAuthorizationStatus	-			enum ALAuthorizationStatus	-	-	-	-	fe9848fd38c90bda	-
 enum	c:@E@ALAuthorizationStatus	-			NSInteger	-	-	ios=6/9/26.0/0,macos=-/-/-/1	-	c291c6a0183b0812	-

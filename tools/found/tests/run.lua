@@ -174,6 +174,16 @@ for i = 2, #value_lines do
 end
 expect(enum_value["c:@E@FXState@FXStateOn"] == "1" and enum_value["c:@E@FXState@FXStateOff"] == "2" and others_dash,
     "an enum constant's row carries its clang value (FXStateOn 1, FXStateOff 2) and every other row has - in the value column")
+-- (review r3 G3) the value is clang's own for the enum's integer type: an unsigned enum's constant is not sign-extended (it read as -1
+-- for 255 of an unsigned char enum), and a signed enum keeps its negative value. The expected texts are the header's own numbers.
+for usr, want in pairs({
+    ["c:@E@FXByte@FXByteTop"] = "255",                        -- enum : unsigned char { = 255 }
+    ["c:@E@FXWord@FXWordAll"] = "18446744073709551615",       -- enum : unsigned long { = ~0UL }
+    ["c:@E@FXWide@FXWideTop"] = "9223372036854775808",        -- enum : unsigned long long { = 1ULL << 63 }
+    ["c:@E@FXMask@FXMaskClass"] = "4026531840",               -- enum { = 15U << 28 }: C picks unsigned int
+    ["c:@E@FXSigned@FXSignedBelow"] = "-1"}) do               -- enum : int { = -1 }
+    expect(enum_value[usr] == want, "the enum constant " .. usr .. " has the value " .. want .. " (got " .. tostring(enum_value[usr]) .. ")")
+end
 
 -- (ruling 5) ir.lua enforces the contract "every framework with no shard is in unparsed.tsv or no-own.tsv": with an empty no-own list,
 -- the fixture's FixtureUmbrella (no shard, not unparsed) must make the check fail, and the error names it

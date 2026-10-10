@@ -92,7 +92,7 @@ enumconst	c:@Ea@kAudioFormatFlagIsFloat@kAudioFormatFlagIsPacked	-			-	-	-	-	-	2
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kAudioFormatFlagIsAlignedHigh	-			-	-	-	-	-	8eded0c0533216c8	16
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kAudioFormatFlagIsNonInterleaved	-			-	-	-	-	-	83bb8818d836757f	32
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kAudioFormatFlagIsNonMixable	-			-	-	-	-	-	db5471b64dba3a7f	64
-enumconst	c:@Ea@kAudioFormatFlagIsFloat@kAudioFormatFlagsAreAllClear	-			-	-	-	-	-	713c39277b751954	-2147483648
+enumconst	c:@Ea@kAudioFormatFlagIsFloat@kAudioFormatFlagsAreAllClear	-			-	-	-	-	-	cd7712b06660c5cf	2147483648
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kLinearPCMFormatFlagIsFloat	-			-	-	-	-	-	41edfdc7a3f2e176	1
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kLinearPCMFormatFlagIsBigEndian	-			-	-	-	-	-	7f9bf9b881c550e7	2
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kLinearPCMFormatFlagIsSignedInteger	-			-	-	-	-	-	dbff2b0985fc3b19	4
@@ -102,7 +102,7 @@ enumconst	c:@Ea@kAudioFormatFlagIsFloat@kLinearPCMFormatFlagIsNonInterleaved	-		
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kLinearPCMFormatFlagIsNonMixable	-			-	-	-	-	-	1c09aabdecaf47b1	64
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kLinearPCMFormatFlagsSampleFractionShift	-			-	-	-	-	-	e0cdf879b8766a1f	7
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kLinearPCMFormatFlagsSampleFractionMask	-			-	-	-	-	-	cf505569a153dc90	8064
-enumconst	c:@Ea@kAudioFormatFlagIsFloat@kLinearPCMFormatFlagsAreAllClear	-			-	-	-	-	-	5b85a3f674a04e13	-2147483648
+enumconst	c:@Ea@kAudioFormatFlagIsFloat@kLinearPCMFormatFlagsAreAllClear	-			-	-	-	-	-	194ca15f4d8350d2	2147483648
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kAppleLosslessFormatFlag_16BitSourceData	-			-	-	-	-	-	c2e0782a65c2f95a	1
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kAppleLosslessFormatFlag_20BitSourceData	-			-	-	-	-	-	0d2cb60cdf02a4aa	2
 enumconst	c:@Ea@kAudioFormatFlagIsFloat@kAppleLosslessFormatFlag_24BitSourceData	-			-	-	-	-	-	8636d401b0a73d58	3
@@ -179,7 +179,7 @@ typedef	c:@T@AudioClassDescription	-			struct AudioClassDescription	-	-	-	-	cc72
 typedef	c:@T@AudioChannelLabel	-			UInt32	-	-	-	-	f3694ba588b1d4c6	-
 typedef	c:@T@AudioChannelLayoutTag	-			UInt32	-	-	-	-	d951289446be5f8f	-
 enum	c:@Ea@kAudioChannelLabel_Unknown	-	-		AudioChannelLabel	-	-	-	-	3b241cf9b19f8555	-
-enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_Unknown	-			-	-	-	-	-	88c8956279c77bc8	-1
+enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_Unknown	-			-	-	-	-	-	87fc28aa9095e586	4294967295
 enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_Unused	-			-	-	-	-	-	95b7468c61ab10a3	0
 enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_UseCoordinates	-			-	-	-	-	-	dcf4cbfd2a768745	100
 enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_Left	-			-	-	-	-	-	4a114274315d1efe	1
@@ -287,8 +287,8 @@ enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_HOA_ACN_65024	-			
 enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_HOA_SN3D	-			-	-	-	-	-	6ba6c66d068f5d1f	131072
 enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_HOA_N3D	-			-	-	-	-	-	82969028b8b6c219	196608
 enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_Object	-			-	-	-	-	-	eaaafe7f33c3d72d	262144
-enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_BeginReserved	-			-	-	-	-	-	0ea2bba78d0c358f	-268435456
-enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_EndReserved	-			-	-	-	-	-	5a13ed3473159e39	-2
+enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_BeginReserved	-			-	-	-	-	-	e5b5ec057e6bf39d	4026531840
+enumconst	c:@Ea@kAudioChannelLabel_Unknown@kAudioChannelLabel_EndReserved	-			-	-	-	-	-	9911c93b992f095c	4294967294
 typedef	c:@T@AudioChannelBitmap	-			enum AudioChannelBitmap	-	-	-	-	56ea52966d0f63b5	-
 enum	c:@E@AudioChannelBitmap	-			UInt32	-	-	-	-	3b6de98d09197a1d	-
 enumconst	c:@E@AudioChannelBitmap@kAudioChannelBit_Left	AudioChannelBitmap			-	-	-	-	-	20c15e53d0adc682	1
@@ -538,9 +538,9 @@ enumconst	c:@Ea@kAudioChannelLayoutTag_UseChannelDescriptions@kAudioChannelLayou
 enumconst	c:@Ea@kAudioChannelLayoutTag_UseChannelDescriptions@kAudioChannelLayoutTag_MPEG_5_1_E	-			-	-	-	-	-	03d5ae0b4efa32e9	14221318
 enumconst	c:@Ea@kAudioChannelLayoutTag_UseChannelDescriptions@kAudioChannelLayoutTag_MPEG_6_1_B	-			-	-	-	-	-	3cd8c0fa1658e92b	14286855
 enumconst	c:@Ea@kAudioChannelLayoutTag_UseChannelDescriptions@kAudioChannelLayoutTag_MPEG_7_1_D	-			-	-	-	-	-	a0f7f8cb37641025	14352392
-enumconst	c:@Ea@kAudioChannelLayoutTag_UseChannelDescriptions@kAudioChannelLayoutTag_BeginReserved	-			-	-	-	-	-	932a3376d863461e	-268435456
-enumconst	c:@Ea@kAudioChannelLayoutTag_UseChannelDescriptions@kAudioChannelLayoutTag_EndReserved	-			-	-	-	-	-	f8147aacfd87bff4	-65537
-enumconst	c:@Ea@kAudioChannelLayoutTag_UseChannelDescriptions@kAudioChannelLayoutTag_Unknown	-			-	-	-	-	-	2f848aec800dfda4	-65536
+enumconst	c:@Ea@kAudioChannelLayoutTag_UseChannelDescriptions@kAudioChannelLayoutTag_BeginReserved	-			-	-	-	-	-	8b663b15623dc17c	4026531840
+enumconst	c:@Ea@kAudioChannelLayoutTag_UseChannelDescriptions@kAudioChannelLayoutTag_EndReserved	-			-	-	-	-	-	01f749aac2d88867	4294901759
+enumconst	c:@Ea@kAudioChannelLayoutTag_UseChannelDescriptions@kAudioChannelLayoutTag_Unknown	-			-	-	-	-	-	bf13301a481eaa5a	4294901760
 struct	c:@S@AudioChannelDescription	-			-	-	-	-	-	b7af7f62242317d2	-
 field	c:@S@AudioChannelDescription@FI@mChannelLabel	AudioChannelDescription			AudioChannelLabel	-	-	-	-	30b06a07ccf6d5a6	-
 field	c:@S@AudioChannelDescription@FI@mChannelFlags	AudioChannelDescription			AudioChannelFlags	-	-	-	-	451cb7ffd994c237	-

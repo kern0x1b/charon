@@ -417,7 +417,7 @@ enumconst	c:@Ea@kCMTextDisplayFlag_scrollIn@kCMTextDisplayFlag_writeTextVertical
 enumconst	c:@Ea@kCMTextDisplayFlag_scrollIn@kCMTextDisplayFlag_fillTextRegion	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	045e4061d2653c3b	262144
 enumconst	c:@Ea@kCMTextDisplayFlag_scrollIn@kCMTextDisplayFlag_obeySubtitleFormatting	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	851329f184479e18	536870912
 enumconst	c:@Ea@kCMTextDisplayFlag_scrollIn@kCMTextDisplayFlag_forcedSubtitlesPresent	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	fb2bf56a805d2b52	1073741824
-enumconst	c:@Ea@kCMTextDisplayFlag_scrollIn@kCMTextDisplayFlag_allSubtitlesForced	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	2579bbc5863317ef	-2147483648
+enumconst	c:@Ea@kCMTextDisplayFlag_scrollIn@kCMTextDisplayFlag_allSubtitlesForced	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	199afba4c9159051	2147483648
 typedef	c:@T@CMTextJustificationValue	-			int8_t	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	2a868d67c5dbeb57	-
 enum	c:@Ea@kCMTextJustification_left_top	-	-		CMTextJustificationValue	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	cf20813747c21831	-
 enumconst	c:@Ea@kCMTextJustification_left_top@kCMTextJustification_left_top	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	2ab2b2cc6a351ba7	0

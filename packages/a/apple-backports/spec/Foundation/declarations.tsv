@@ -4419,8 +4419,8 @@ enumconst	c:@E@NSTextCheckingType@NSTextCheckingTypeTransitInformation	NSTextChe
 typedef	c:@T@NSTextCheckingTypes	-			uint64_t	-	-	-	-	dc4d1c72f786b8fc	-
 enum	c:@Ea@NSTextCheckingAllSystemTypes	-	-		NSTextCheckingTypes	-	-	-	-	821c38c95f5476f4	-
 enumconst	c:@Ea@NSTextCheckingAllSystemTypes@NSTextCheckingAllSystemTypes	-			-	-	-	-	-	768511c209656bf2	4294967295
-enumconst	c:@Ea@NSTextCheckingAllSystemTypes@NSTextCheckingAllCustomTypes	-			-	-	-	-	-	9afac9b1560d4e8d	-4294967296
-enumconst	c:@Ea@NSTextCheckingAllSystemTypes@NSTextCheckingAllTypes	-			-	-	-	-	-	fcf0bad78b349782	-1
+enumconst	c:@Ea@NSTextCheckingAllSystemTypes@NSTextCheckingAllCustomTypes	-			-	-	-	-	-	56a3fa8ce03846f7	18446744069414584320
+enumconst	c:@Ea@NSTextCheckingAllSystemTypes@NSTextCheckingAllTypes	-			-	-	-	-	-	d3c556720de23efd	18446744073709551615
 typedef	c:@T@NSTextCheckingKey	-			NSString *	-	-	-	-	bd7324f83468c992	-
 interface	c:objc(cs)NSTextCheckingResult	-			-	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a4ac1b5be6a1796d	-
 super	-	NSTextCheckingResult	NSObject		-	-	-	-	-	b6b6ac5760f7c4c8	-

@@ -103,9 +103,9 @@ enumconst	c:@Ea@kIOMapAnywhere@kIOMapReference	-			-	-	-	-	-	cebc6ab2c5ee2a9b	33
 enumconst	c:@Ea@kIOMapAnywhere@kIOMapUnique	-			-	-	-	-	-	49a94ee33eadf050	67108864
 enumconst	c:@Ea@kIOMapAnywhere@kIOMapPrefault	-			-	-	-	-	-	30c3a039072c4331	268435456
 enumconst	c:@Ea@kIOMapAnywhere@kIOMapOverwrite	-			-	-	-	-	-	85a2f523371dcf8e	536870912
-enumconst	c:@Ea@kIOMapAnywhere@kIOMapGuardedMask	-			-	-	-	-	-	afd57b7ceec3a685	-1073741824
+enumconst	c:@Ea@kIOMapAnywhere@kIOMapGuardedMask	-			-	-	-	-	-	a412f576cce69d68	3221225472
 enumconst	c:@Ea@kIOMapAnywhere@kIOMapGuardedSmall	-			-	-	-	-	-	2bd3bbaa81f44583	1073741824
-enumconst	c:@Ea@kIOMapAnywhere@kIOMapGuardedLarge	-			-	-	-	-	-	a4243a20990f19ec	-2147483648
+enumconst	c:@Ea@kIOMapAnywhere@kIOMapGuardedLarge	-			-	-	-	-	-	fd0e0987c04c742b	2147483648
 enum	c:@Ea@kNanosecondScale	-	-		unsigned int	-	-	-	-	e6adf2ca469d1ed0	-
 enumconst	c:@Ea@kNanosecondScale@kNanosecondScale	-			-	-	-	-	-	5aa4670fbf8383d8	1
 enumconst	c:@Ea@kNanosecondScale@kMicrosecondScale	-			-	-	-	-	-	a2c8614d1ac872f3	1000

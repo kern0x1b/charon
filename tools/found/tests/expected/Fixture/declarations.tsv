@@ -34,6 +34,16 @@ enumconst	c:@E@FXState@FXStateOn	FXState			-	-	-	-	-	a1509e83c3907824	1
 enumconst	c:@E@FXState@FXStateOff	FXState			-	-	-	-	-	df0288ad9c043590	2
 enum	c:@Ea@FXLimit	-	-		unsigned int	-	-	-	-	71f9fa8c9398775b	-
 enumconst	c:@Ea@FXLimit@FXLimit	-			-	-	-	-	-	e85ecff37ce1ff37	9
+enum	c:@E@FXByte	-			unsigned char	-	-	-	-	0495998ad46ebad3	-
+enumconst	c:@E@FXByte@FXByteTop	FXByte			-	-	-	-	-	e69f5af7b7c1eafe	255
+enum	c:@E@FXWord	-			unsigned long	-	-	-	-	08641e38dd5d7599	-
+enumconst	c:@E@FXWord@FXWordAll	FXWord			-	-	-	-	-	1e20e8905aab4537	18446744073709551615
+enum	c:@E@FXWide	-			unsigned long long	-	-	-	-	339993ef54893a1b	-
+enumconst	c:@E@FXWide@FXWideTop	FXWide			-	-	-	-	-	02c63f69310c795e	9223372036854775808
+enum	c:@E@FXMask	-			unsigned int	-	-	-	-	74cbbb0359a70e17	-
+enumconst	c:@E@FXMask@FXMaskClass	FXMask			-	-	-	-	-	05b8949bf79a4ca7	4026531840
+enum	c:@E@FXSigned	-			int	-	-	-	-	2770f3e2f649e75c	-
+enumconst	c:@E@FXSigned@FXSignedBelow	FXSigned			-	-	-	-	-	b270b617551eb67f	-1
 protocol	c:objc(pl)FXSource	-			-	-	-	-	-	5dd124b557c4904c	-
 method	c:objc(pl)FXSource(im)valueForKey:	-			id	id key	optional	-	-	e4095b7c1d8f3d61	-
 interface	c:objc(cs)FXWidget	-			-	-	-	-	-	00774d9345f1e0fe	-

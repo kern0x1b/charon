@@ -14312,8 +14312,8 @@ enumconst	c:@E@MTRIdentifyEffectIdentifier@MTRIdentifyEffectIdentifierBlink	MTRI
 enumconst	c:@E@MTRIdentifyEffectIdentifier@MTRIdentifyEffectIdentifierBreathe	MTRIdentifyEffectIdentifier			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	a4096bee9340d279	1
 enumconst	c:@E@MTRIdentifyEffectIdentifier@MTRIdentifyEffectIdentifierOkay	MTRIdentifyEffectIdentifier			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	3af6a9786de6e84c	2
 enumconst	c:@E@MTRIdentifyEffectIdentifier@MTRIdentifyEffectIdentifierChannelChange	MTRIdentifyEffectIdentifier			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	dfdf047f113fe1a7	11
-enumconst	c:@E@MTRIdentifyEffectIdentifier@MTRIdentifyEffectIdentifierFinishEffect	MTRIdentifyEffectIdentifier			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	c57376cd6f7e25df	-2
-enumconst	c:@E@MTRIdentifyEffectIdentifier@MTRIdentifyEffectIdentifierStopEffect	MTRIdentifyEffectIdentifier			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	50fc5f619cd4e3c9	-1
+enumconst	c:@E@MTRIdentifyEffectIdentifier@MTRIdentifyEffectIdentifierFinishEffect	MTRIdentifyEffectIdentifier			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	434c4b78a040c888	254
+enumconst	c:@E@MTRIdentifyEffectIdentifier@MTRIdentifyEffectIdentifierStopEffect	MTRIdentifyEffectIdentifier			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	f8468b28784d95a5	255
 typedef	c:@T@MTRIdentifyEffectVariant	-			enum MTRIdentifyEffectVariant	-	-	-	-	ff3950c37873cb57	-
 enum	c:@E@MTRIdentifyEffectVariant	-			uint8_t	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	5f55b01aaf60fac2	-
 enumconst	c:@E@MTRIdentifyEffectVariant@MTRIdentifyEffectVariantDefault	MTRIdentifyEffectVariant			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	1a19c50122900c97	0
@@ -14335,7 +14335,7 @@ enum	c:@E@MTRGroupsGroupClusterFeature	-			uint32_t	-	-	ios=16.1/17.0/-/0,macos=
 enumconst	c:@E@MTRGroupsGroupClusterFeature@MTRGroupsGroupClusterFeatureGroupNames	MTRGroupsGroupClusterFeature			-	-	-	ios=16.1/17.0/-/0,macos=13.0/14.0/-/0,tvos=16.1/17.0/-/0,watchos=9.1/10.0/-/0	-	57ce8b9b1a89c3aa	1
 typedef	c:@T@MTRGroupsNameSupportBitmap	-			enum MTRGroupsNameSupportBitmap	-	-	-	-	e236fd1712d5b482	-
 enum	c:@E@MTRGroupsNameSupportBitmap	-			uint8_t	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	686806a16779f394	-
-enumconst	c:@E@MTRGroupsNameSupportBitmap@MTRGroupsNameSupportBitmapGroupNames	MTRGroupsNameSupportBitmap			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7d570636ba2fc44c	-128
+enumconst	c:@E@MTRGroupsNameSupportBitmap@MTRGroupsNameSupportBitmapGroupNames	MTRGroupsNameSupportBitmap			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	edc75352d12695b5	128
 typedef	c:@T@MTROnOffDelayedAllOffEffectVariant	-			enum MTROnOffDelayedAllOffEffectVariant	-	-	-	-	cf10b6efbaa81859	-
 enum	c:@E@MTROnOffDelayedAllOffEffectVariant	-			uint8_t	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	11049dc4f6efd2f5	-
 enumconst	c:@E@MTROnOffDelayedAllOffEffectVariant@MTROnOffDelayedAllOffEffectVariantDelayedOffFastFade	MTROnOffDelayedAllOffEffectVariant			-	-	-	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0	-	b20d128df22781fa	0
@@ -14595,12 +14595,12 @@ enumconst	c:@E@MTRTimeFormatLocalizationCalendarType@MTRTimeFormatLocalizationCa
 enumconst	c:@E@MTRTimeFormatLocalizationCalendarType@MTRTimeFormatLocalizationCalendarTypeKorean	MTRTimeFormatLocalizationCalendarType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	35d3cf9b0d69e546	9
 enumconst	c:@E@MTRTimeFormatLocalizationCalendarType@MTRTimeFormatLocalizationCalendarTypePersian	MTRTimeFormatLocalizationCalendarType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	6455075d2478f02d	10
 enumconst	c:@E@MTRTimeFormatLocalizationCalendarType@MTRTimeFormatLocalizationCalendarTypeTaiwanese	MTRTimeFormatLocalizationCalendarType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	474fbabf32bc44ae	11
-enumconst	c:@E@MTRTimeFormatLocalizationCalendarType@MTRTimeFormatLocalizationCalendarTypeUseActiveLocale	MTRTimeFormatLocalizationCalendarType			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	773e8d411b33cb51	-1
+enumconst	c:@E@MTRTimeFormatLocalizationCalendarType@MTRTimeFormatLocalizationCalendarTypeUseActiveLocale	MTRTimeFormatLocalizationCalendarType			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	a870fcdddb9f5e5f	255
 typedef	c:@T@MTRTimeFormatLocalizationHourFormat	-			enum MTRTimeFormatLocalizationHourFormat	-	-	-	-	e9df097d81bb4b28	-
 enum	c:@E@MTRTimeFormatLocalizationHourFormat	-			uint8_t	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	9a705b9f5a15be16	-
 enumconst	c:@E@MTRTimeFormatLocalizationHourFormat@MTRTimeFormatLocalizationHourFormat12hr	MTRTimeFormatLocalizationHourFormat			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	69f5b9b13a394687	0
 enumconst	c:@E@MTRTimeFormatLocalizationHourFormat@MTRTimeFormatLocalizationHourFormat24hr	MTRTimeFormatLocalizationHourFormat			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	ae68280edea87aa3	1
-enumconst	c:@E@MTRTimeFormatLocalizationHourFormat@MTRTimeFormatLocalizationHourFormatUseActiveLocale	MTRTimeFormatLocalizationHourFormat			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	3dc513ac6091d689	-1
+enumconst	c:@E@MTRTimeFormatLocalizationHourFormat@MTRTimeFormatLocalizationHourFormatUseActiveLocale	MTRTimeFormatLocalizationHourFormat			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	7e97ba7527cb4e3c	255
 typedef	c:@T@MTRTimeFormatLocalizationFeature	-			enum MTRTimeFormatLocalizationFeature	-	-	-	-	bb695dc9823d664a	-
 enum	c:@E@MTRTimeFormatLocalizationFeature	-			uint32_t	-	-	ios=17.1/-/-/0,macos=14.1/-/-/0,tvos=17.1/-/-/0,watchos=10.1/-/-/0	-	4b9d835de09f0958	-
 enumconst	c:@E@MTRTimeFormatLocalizationFeature@MTRTimeFormatLocalizationFeatureCalendarFormat	MTRTimeFormatLocalizationFeature			-	-	-	ios=17.1/-/-/0,macos=14.1/-/-/0,tvos=17.1/-/-/0,watchos=10.1/-/-/0	-	f70b8ad274574cc6	1
@@ -15798,7 +15798,7 @@ enumconst	c:@E@MTRDeviceEnergyManagementESAType@MTRDeviceEnergyManagementESAType
 enumconst	c:@E@MTRDeviceEnergyManagementESAType@MTRDeviceEnergyManagementESATypeHomeWaterPump	MTRDeviceEnergyManagementESAType			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	e838cb90043bb0af	11
 enumconst	c:@E@MTRDeviceEnergyManagementESAType@MTRDeviceEnergyManagementESATypeIrrigationWaterPump	MTRDeviceEnergyManagementESAType			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	43f8b0e08fb54a86	12
 enumconst	c:@E@MTRDeviceEnergyManagementESAType@MTRDeviceEnergyManagementESATypePoolPump	MTRDeviceEnergyManagementESAType			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	1af6e2c6a6843877	13
-enumconst	c:@E@MTRDeviceEnergyManagementESAType@MTRDeviceEnergyManagementESATypeOther	MTRDeviceEnergyManagementESAType			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	b3c34c50c9f40a9b	-1
+enumconst	c:@E@MTRDeviceEnergyManagementESAType@MTRDeviceEnergyManagementESATypeOther	MTRDeviceEnergyManagementESAType			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	d5ae49ac594a8949	255
 typedef	c:@T@MTRDeviceEnergyManagementForecastUpdateReason	-			enum MTRDeviceEnergyManagementForecastUpdateReason	-	-	-	-	4b15fe99a6296dca	-
 enum	c:@E@MTRDeviceEnergyManagementForecastUpdateReason	-			uint8_t	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	78559d2219ebac5b	-
 enumconst	c:@E@MTRDeviceEnergyManagementForecastUpdateReason@MTRDeviceEnergyManagementForecastUpdateReasonInternalOptimization	MTRDeviceEnergyManagementForecastUpdateReason			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	08b72ef1c097bd54	0
@@ -15847,7 +15847,7 @@ enumconst	c:@E@MTREnergyEVSEFaultState@MTREnergyEVSEFaultStateEVDisconnected	MTR
 enumconst	c:@E@MTREnergyEVSEFaultState@MTREnergyEVSEFaultStateWrongPowerSupply	MTREnergyEVSEFaultState			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	94fc9e42871bbf99	13
 enumconst	c:@E@MTREnergyEVSEFaultState@MTREnergyEVSEFaultStateLiveNeutralSwap	MTREnergyEVSEFaultState			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	0ba9477161aea4c3	14
 enumconst	c:@E@MTREnergyEVSEFaultState@MTREnergyEVSEFaultStateOverTemperature	MTREnergyEVSEFaultState			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	1353813b7a61b5a8	15
-enumconst	c:@E@MTREnergyEVSEFaultState@MTREnergyEVSEFaultStateOther	MTREnergyEVSEFaultState			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	d2ce0988af0f591b	-1
+enumconst	c:@E@MTREnergyEVSEFaultState@MTREnergyEVSEFaultStateOther	MTREnergyEVSEFaultState			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	3dc5c4a5826b724f	255
 typedef	c:@T@MTREnergyEVSEState	-			enum MTREnergyEVSEState	-	-	-	-	9868eac0bec30f0c	-
 enum	c:@E@MTREnergyEVSEState	-			uint8_t	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	e18c5e422af03221	-
 enumconst	c:@E@MTREnergyEVSEState@MTREnergyEVSEStateNotPluggedIn	MTREnergyEVSEState			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	e4975a0fb628341d	0
@@ -16046,9 +16046,9 @@ enumconst	c:@E@MTRDoorLockDlStatus@MTRDoorLockDlStatusSuccess	MTRDoorLockDlStatu
 enumconst	c:@E@MTRDoorLockDlStatus@MTRDoorLockDlStatusFailure	MTRDoorLockDlStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	16938dd421ab9c58	1
 enumconst	c:@E@MTRDoorLockDlStatus@MTRDoorLockDlStatusDuplicate	MTRDoorLockDlStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	16e529ec3eb25edd	2
 enumconst	c:@E@MTRDoorLockDlStatus@MTRDoorLockDlStatusOccupied	MTRDoorLockDlStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	f281a914e3312e02	3
-enumconst	c:@E@MTRDoorLockDlStatus@MTRDoorLockDlStatusInvalidField	MTRDoorLockDlStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	e821352a59018b3e	-123
-enumconst	c:@E@MTRDoorLockDlStatus@MTRDoorLockDlStatusResourceExhausted	MTRDoorLockDlStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	70fa8368e795aca6	-119
-enumconst	c:@E@MTRDoorLockDlStatus@MTRDoorLockDlStatusNotFound	MTRDoorLockDlStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	cb88d3f0a41a447d	-117
+enumconst	c:@E@MTRDoorLockDlStatus@MTRDoorLockDlStatusInvalidField	MTRDoorLockDlStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	b1918c7d1d8a72b8	133
+enumconst	c:@E@MTRDoorLockDlStatus@MTRDoorLockDlStatusResourceExhausted	MTRDoorLockDlStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	adcd3750bd7677da	137
+enumconst	c:@E@MTRDoorLockDlStatus@MTRDoorLockDlStatusNotFound	MTRDoorLockDlStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	d2c9c3e57fa4087a	139
 typedef	c:@T@MTRDoorLockOperationEventCode	-			enum MTRDoorLockOperationEventCode	-	-	-	-	fe9572eccecc85ac	-
 enum	c:@E@MTRDoorLockOperationEventCode	-			uint8_t	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	bcb2617ea3c0a084	-
 enumconst	c:@E@MTRDoorLockOperationEventCode@MTRDoorLockOperationEventCodeUnknownOrMfgSpecific	MTRDoorLockOperationEventCode			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	2b01af4c0bb656db	0
@@ -16195,7 +16195,7 @@ enum	c:@E@MTRDoorLockUserStatus	-			uint8_t	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,
 enumconst	c:@E@MTRDoorLockUserStatus@MTRDoorLockUserStatusAvailable	MTRDoorLockUserStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	c2c56a8a1b93ff29	0
 enumconst	c:@E@MTRDoorLockUserStatus@MTRDoorLockUserStatusOccupiedEnabled	MTRDoorLockUserStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	8395dd545bccab45	1
 enumconst	c:@E@MTRDoorLockUserStatus@MTRDoorLockUserStatusOccupiedDisabled	MTRDoorLockUserStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	f4609984ddb87a14	3
-enumconst	c:@E@MTRDoorLockUserStatus@MTRDoorLockUserStatusNotSupported	MTRDoorLockUserStatus			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	5bd4c08325b427ce	-1
+enumconst	c:@E@MTRDoorLockUserStatus@MTRDoorLockUserStatusNotSupported	MTRDoorLockUserStatus			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	f17fa27a57470bb8	255
 typedef	c:@T@MTRDoorLockDlUserStatus	-			enum MTRDoorLockDlUserStatus	-	-	-	-	9eb09b4991d6e354	-
 enum	c:@E@MTRDoorLockDlUserStatus	-			uint8_t	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	45af3d458db3c007	-
 enumconst	c:@E@MTRDoorLockDlUserStatus@MTRDoorLockDlUserStatusAvailable	MTRDoorLockDlUserStatus			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	3813dd431a67302f	0
@@ -16215,7 +16215,7 @@ enumconst	c:@E@MTRDoorLockUserType@MTRDoorLockUserTypeDisposableUser	MTRDoorLock
 enumconst	c:@E@MTRDoorLockUserType@MTRDoorLockUserTypeExpiringUser	MTRDoorLockUserType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	69fdf4fc8f44979c	7
 enumconst	c:@E@MTRDoorLockUserType@MTRDoorLockUserTypeScheduleRestrictedUser	MTRDoorLockUserType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	ad7f7cddf6f7acdb	8
 enumconst	c:@E@MTRDoorLockUserType@MTRDoorLockUserTypeRemoteOnlyUser	MTRDoorLockUserType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	14a511ff844c0ed7	9
-enumconst	c:@E@MTRDoorLockUserType@MTRDoorLockUserTypeNotSupported	MTRDoorLockUserType			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	c15fcf6411e34570	-1
+enumconst	c:@E@MTRDoorLockUserType@MTRDoorLockUserTypeNotSupported	MTRDoorLockUserType			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	0960eafe11e0e5a4	255
 typedef	c:@T@MTRDoorLockDlUserType	-			enum MTRDoorLockDlUserType	-	-	-	-	55aecef091a7133f	-
 enum	c:@E@MTRDoorLockDlUserType	-			uint8_t	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	ef2fa4614e059fd7	-
 enumconst	c:@E@MTRDoorLockDlUserType@MTRDoorLockDlUserTypeUnrestrictedUser	MTRDoorLockDlUserType			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	8637c272b3024f43	0
@@ -16398,7 +16398,7 @@ enumconst	c:@E@MTRWindowCoveringEndProductType@MTRWindowCoveringEndProductTypeAw
 enumconst	c:@E@MTRWindowCoveringEndProductType@MTRWindowCoveringEndProductTypeTiltOnlyPergola	MTRWindowCoveringEndProductType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	706bf44d9d0eb21a	21
 enumconst	c:@E@MTRWindowCoveringEndProductType@MTRWindowCoveringEndProductTypeSwingingShutter	MTRWindowCoveringEndProductType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	b27aff03e6aed71f	22
 enumconst	c:@E@MTRWindowCoveringEndProductType@MTRWindowCoveringEndProductTypeSlidingShutter	MTRWindowCoveringEndProductType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	eeb453940d3e8ba2	23
-enumconst	c:@E@MTRWindowCoveringEndProductType@MTRWindowCoveringEndProductTypeUnknown	MTRWindowCoveringEndProductType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	923809787bec7115	-1
+enumconst	c:@E@MTRWindowCoveringEndProductType@MTRWindowCoveringEndProductTypeUnknown	MTRWindowCoveringEndProductType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	75c458387efe0e17	255
 typedef	c:@T@MTRWindowCoveringType	-			enum MTRWindowCoveringType	-	-	-	-	46dad62a94014869	-
 enum	c:@E@MTRWindowCoveringType	-			uint8_t	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	177add46efe9855e	-
 enumconst	c:@E@MTRWindowCoveringType@MTRWindowCoveringTypeRollerShade	MTRWindowCoveringType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	47d3860a00367b06	0
@@ -16411,7 +16411,7 @@ enumconst	c:@E@MTRWindowCoveringType@MTRWindowCoveringTypeShutter	MTRWindowCover
 enumconst	c:@E@MTRWindowCoveringType@MTRWindowCoveringTypeTiltBlindTiltOnly	MTRWindowCoveringType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	77bf54c99e26e471	7
 enumconst	c:@E@MTRWindowCoveringType@MTRWindowCoveringTypeTiltBlindLiftAndTilt	MTRWindowCoveringType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	ba21a775e2b39200	8
 enumconst	c:@E@MTRWindowCoveringType@MTRWindowCoveringTypeProjectorScreen	MTRWindowCoveringType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	a1df55e449b41616	9
-enumconst	c:@E@MTRWindowCoveringType@MTRWindowCoveringTypeUnknown	MTRWindowCoveringType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	7df4fd1b350f715b	-1
+enumconst	c:@E@MTRWindowCoveringType@MTRWindowCoveringTypeUnknown	MTRWindowCoveringType			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	db5c7ff44c0180a3	255
 typedef	c:@T@MTRWindowCoveringConfigStatus	-			enum MTRWindowCoveringConfigStatus	-	-	-	-	3bac147811918358	-
 enum	c:@E@MTRWindowCoveringConfigStatus	-			uint8_t	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	e64d80620d5451b0	-
 enumconst	c:@E@MTRWindowCoveringConfigStatus@MTRWindowCoveringConfigStatusOperational	MTRWindowCoveringConfigStatus			-	-	-	ios=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	61f5b6377bc44454	1
@@ -16715,7 +16715,7 @@ enumconst	c:@E@MTRThermostatPresetScenario@MTRThermostatPresetScenarioSleep	MTRT
 enumconst	c:@E@MTRThermostatPresetScenario@MTRThermostatPresetScenarioWake	MTRThermostatPresetScenario			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	6f12aade47228db0	4
 enumconst	c:@E@MTRThermostatPresetScenario@MTRThermostatPresetScenarioVacation	MTRThermostatPresetScenario			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	eb360f26634e1685	5
 enumconst	c:@E@MTRThermostatPresetScenario@MTRThermostatPresetScenarioGoingToSleep	MTRThermostatPresetScenario			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	4aea2222bc5577ff	6
-enumconst	c:@E@MTRThermostatPresetScenario@MTRThermostatPresetScenarioUserDefined	MTRThermostatPresetScenario			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	c789745aeb4161ec	-2
+enumconst	c:@E@MTRThermostatPresetScenario@MTRThermostatPresetScenarioUserDefined	MTRThermostatPresetScenario			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	9d979057a83d766f	254
 typedef	c:@T@MTRThermostatSetpointChangeSource	-			enum MTRThermostatSetpointChangeSource	-	-	-	-	9969af97b43c12b8	-
 enum	c:@E@MTRThermostatSetpointChangeSource	-			uint8_t	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	bfa4cd45d4c17207	-
 enumconst	c:@E@MTRThermostatSetpointChangeSource@MTRThermostatSetpointChangeSourceManual	MTRThermostatSetpointChangeSource			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0	-	f5671a3b0ad65b65	0
@@ -16827,7 +16827,7 @@ enumconst	c:@E@MTRThermostatScheduleDayOfWeekBitmap@MTRThermostatScheduleDayOfWe
 enumconst	c:@E@MTRThermostatScheduleDayOfWeekBitmap@MTRThermostatScheduleDayOfWeekBitmapThursday	MTRThermostatScheduleDayOfWeekBitmap			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	f555ecfe0f98c5be	16
 enumconst	c:@E@MTRThermostatScheduleDayOfWeekBitmap@MTRThermostatScheduleDayOfWeekBitmapFriday	MTRThermostatScheduleDayOfWeekBitmap			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	f45b611209867aaa	32
 enumconst	c:@E@MTRThermostatScheduleDayOfWeekBitmap@MTRThermostatScheduleDayOfWeekBitmapSaturday	MTRThermostatScheduleDayOfWeekBitmap			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	b7d9ce261c02c00d	64
-enumconst	c:@E@MTRThermostatScheduleDayOfWeekBitmap@MTRThermostatScheduleDayOfWeekBitmapAway	MTRThermostatScheduleDayOfWeekBitmap			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	0a04c91d2a77f68c	-128
+enumconst	c:@E@MTRThermostatScheduleDayOfWeekBitmap@MTRThermostatScheduleDayOfWeekBitmapAway	MTRThermostatScheduleDayOfWeekBitmap			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	5b59abdca1eb43c9	128
 typedef	c:@T@MTRThermostatDayOfWeek	-			enum MTRThermostatDayOfWeek	-	-	-	-	091e925781bc6893	-
 enum	c:@E@MTRThermostatDayOfWeek	-			uint8_t	-	-	ios=16.1/17.4/-/0,macos=13.0/14.4/-/0,tvos=16.1/17.4/-/0,watchos=9.1/10.4/-/0	-	6d95f9d178e51ad6	-
 enumconst	c:@E@MTRThermostatDayOfWeek@MTRThermostatDayOfWeekSunday	MTRThermostatDayOfWeek			-	-	-	ios=16.1/17.4/-/0,macos=13.0/14.4/-/0,tvos=16.1/17.4/-/0,watchos=9.1/10.4/-/0	-	575210d91dada819	1
@@ -16837,8 +16837,8 @@ enumconst	c:@E@MTRThermostatDayOfWeek@MTRThermostatDayOfWeekWednesday	MTRThermos
 enumconst	c:@E@MTRThermostatDayOfWeek@MTRThermostatDayOfWeekThursday	MTRThermostatDayOfWeek			-	-	-	ios=16.1/17.4/-/0,macos=13.0/14.4/-/0,tvos=16.1/17.4/-/0,watchos=9.1/10.4/-/0	-	fdcf423e18413aa6	16
 enumconst	c:@E@MTRThermostatDayOfWeek@MTRThermostatDayOfWeekFriday	MTRThermostatDayOfWeek			-	-	-	ios=16.1/17.4/-/0,macos=13.0/14.4/-/0,tvos=16.1/17.4/-/0,watchos=9.1/10.4/-/0	-	908a281bc33ce225	32
 enumconst	c:@E@MTRThermostatDayOfWeek@MTRThermostatDayOfWeekSaturday	MTRThermostatDayOfWeek			-	-	-	ios=16.1/17.4/-/0,macos=13.0/14.4/-/0,tvos=16.1/17.4/-/0,watchos=9.1/10.4/-/0	-	1865ebffdd0aa8a7	64
-enumconst	c:@E@MTRThermostatDayOfWeek@MTRThermostatDayOfWeekAway	MTRThermostatDayOfWeek			-	-	-	ios=16.4/17.4/-/0,macos=13.3/14.4/-/0,tvos=16.4/17.4/-/0,watchos=9.4/10.4/-/0	-	eac18007f5bff2e7	-128
-enumconst	c:@E@MTRThermostatDayOfWeek@MTRThermostatDayOfWeekAwayOrVacation	MTRThermostatDayOfWeek			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	38b63b539ca166c1	-128
+enumconst	c:@E@MTRThermostatDayOfWeek@MTRThermostatDayOfWeekAway	MTRThermostatDayOfWeek			-	-	-	ios=16.4/17.4/-/0,macos=13.3/14.4/-/0,tvos=16.4/17.4/-/0,watchos=9.4/10.4/-/0	-	5d67e194fc3f579f	128
+enumconst	c:@E@MTRThermostatDayOfWeek@MTRThermostatDayOfWeekAwayOrVacation	MTRThermostatDayOfWeek			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	0a436b435399645c	128
 typedef	c:@T@MTRThermostatScheduleModeBitmap	-			enum MTRThermostatScheduleModeBitmap	-	-	-	-	e89a49479e2749ba	-
 enum	c:@E@MTRThermostatScheduleModeBitmap	-			uint8_t	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	408f7818389e30b1	-
 enumconst	c:@E@MTRThermostatScheduleModeBitmap@MTRThermostatScheduleModeBitmapHeatSetpointPresent	MTRThermostatScheduleModeBitmap			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	16a73c3682a9164f	1
@@ -27325,7 +27325,7 @@ enumconst	c:@E@MTRClusterIDType@MTRClusterAudioOutputID	MTRClusterIDType			-	-	-
 enumconst	c:@E@MTRClusterIDType@MTRClusterApplicationLauncherID	MTRClusterIDType			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	728e53fe6a92b262	1292
 enumconst	c:@E@MTRClusterIDType@MTRClusterApplicationBasicID	MTRClusterIDType			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	d41ab9f2774b60e5	1293
 enumconst	c:@E@MTRClusterIDType@MTRClusterAccountLoginID	MTRClusterIDType			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	43e75175020f7e04	1294
-enumconst	c:@E@MTRClusterIDType@MTRClusterTestClusterID	MTRClusterIDType			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	2cf6583f131960cd	-918523
+enumconst	c:@E@MTRClusterIDType@MTRClusterTestClusterID	MTRClusterIDType			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	c6e3681ef85d1ab8	4294048773
 enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeIdentifyID	MTRClusterIDType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	b0aa52de6f4ce6bc	3
 enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeGroupsID	MTRClusterIDType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	fc11a1534e2deca0	4
 enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeOnOffID	MTRClusterIDType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	37e44f8aabef144f	6
@@ -27463,8 +27463,8 @@ enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeMeterIdentificationID	MTRCluster
 enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeCommodityMeteringID	MTRClusterIDType			-	-	-	*unavailable	-	7acd2f6f91b3a636	2823
 enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeAppleDeviceInformationID	MTRClusterIDType			-	-	-	*unavailable	-	a95a3a6fa8f29e25	323615744
 enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeAppleLockClusterID	MTRClusterIDType			-	-	-	*unavailable	-	059f16e682ba7c8c	323615747
-enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeUnitTestingID	MTRClusterIDType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	12cce0fea926ef49	-918523
-enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeSampleMEIID	MTRClusterIDType			-	-	-	*unavailable	-	c94ae53f26d45b3a	-918496
+enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeUnitTestingID	MTRClusterIDType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	21e170ab2922d902	4294048773
+enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeSampleMEIID	MTRClusterIDType			-	-	-	*unavailable	-	d7bfe8f80ff2fdda	4294048800
 enumconst	c:@E@MTRClusterIDType@MTRClusterBarrierControlID	MTRClusterIDType			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	b15cc2f512924512	259
 enumconst	c:@E@MTRClusterIDType@MTRClusterIDTypeBarrierControlID	MTRClusterIDType			-	-	-	ios=16.4/18.2/-/0,macos=13.3/15.2/-/0,tvos=16.4/18.2/-/0,watchos=9.4/11.2/-/0	-	5ef7664735746e6e	259
 enumconst	c:@E@MTRClusterIDType@MTRClusterBinaryInputBasicID	MTRClusterIDType			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	29c686b6d38c109d	15
@@ -30283,7 +30283,7 @@ enumconst	c:@E@MTRAttributeIDType@MTRAttributeIDTypeClusterUnitTestingAttributeA
 enumconst	c:@E@MTRAttributeIDType@MTRAttributeIDTypeClusterUnitTestingAttributeAttributeListID	MTRAttributeIDType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	cf27d4c3edc068dc	65531
 enumconst	c:@E@MTRAttributeIDType@MTRAttributeIDTypeClusterUnitTestingAttributeFeatureMapID	MTRAttributeIDType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	338834748cfa4c33	65532
 enumconst	c:@E@MTRAttributeIDType@MTRAttributeIDTypeClusterUnitTestingAttributeClusterRevisionID	MTRAttributeIDType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	d8fb055b453bc8ad	65533
-enumconst	c:@E@MTRAttributeIDType@MTRAttributeIDTypeClusterUnitTestingAttributeMeiInt8uID	MTRAttributeIDType			-	-	-	*unavailable	-	acd9f756fb6c3d3b	-897279
+enumconst	c:@E@MTRAttributeIDType@MTRAttributeIDTypeClusterUnitTestingAttributeMeiInt8uID	MTRAttributeIDType			-	-	-	*unavailable	-	92876ae543ffe55d	4294070017
 enumconst	c:@E@MTRAttributeIDType@MTRAttributeIDTypeClusterSampleMEIAttributeFlipFlopID	MTRAttributeIDType			-	-	-	*unavailable	-	662d4f6b5e0f5dd6	0
 enumconst	c:@E@MTRAttributeIDType@MTRAttributeIDTypeClusterSampleMEIAttributeGeneratedCommandListID	MTRAttributeIDType			-	-	-	*unavailable	-	539ec0e097371775	65528
 enumconst	c:@E@MTRAttributeIDType@MTRAttributeIDTypeClusterSampleMEIAttributeAcceptedCommandListID	MTRAttributeIDType			-	-	-	*unavailable	-	ca300296bece16f9	65529
@@ -31348,8 +31348,8 @@ enumconst	c:@E@MTRCommandIDType@MTRCommandIDTypeClusterUnitTestingCommandTestSec
 enumconst	c:@E@MTRCommandIDType@MTRCommandIDTypeClusterUnitTestingCommandStringEchoRequestID	MTRCommandIDType			-	-	-	*unavailable	-	a63606aa101e3c79	24
 enumconst	c:@E@MTRCommandIDType@MTRCommandIDTypeClusterUnitTestingCommandGlobalEchoRequestID	MTRCommandIDType			-	-	-	*unavailable	-	bfd4d126f2725b05	25
 enumconst	c:@E@MTRCommandIDType@MTRCommandIDTypeClusterUnitTestingCommandTestCheckCommandFlagsID	MTRCommandIDType			-	-	-	*unavailable	-	34bf3a31dc077f2b	26
-enumconst	c:@E@MTRCommandIDType@MTRCommandIDTypeClusterUnitTestingCommandTestDifferentVendorMeiRequestID	MTRCommandIDType			-	-	-	*unavailable	-	3c9f513065809711	-917334
-enumconst	c:@E@MTRCommandIDType@MTRCommandIDTypeClusterUnitTestingCommandTestDifferentVendorMeiResponseID	MTRCommandIDType			-	-	-	*unavailable	-	b25f836846184fb6	-917317
+enumconst	c:@E@MTRCommandIDType@MTRCommandIDTypeClusterUnitTestingCommandTestDifferentVendorMeiRequestID	MTRCommandIDType			-	-	-	*unavailable	-	66a0c05eb445f541	4294049962
+enumconst	c:@E@MTRCommandIDType@MTRCommandIDTypeClusterUnitTestingCommandTestDifferentVendorMeiResponseID	MTRCommandIDType			-	-	-	*unavailable	-	b95545a73702e250	4294049979
 enumconst	c:@E@MTRCommandIDType@MTRCommandIDTypeClusterSampleMEICommandPingID	MTRCommandIDType			-	-	-	*unavailable	-	b01a17ec8f59edde	0
 enumconst	c:@E@MTRCommandIDType@MTRCommandIDTypeClusterSampleMEICommandAddArgumentsResponseID	MTRCommandIDType			-	-	-	*unavailable	-	0f4541a6c1cb6525	1
 enumconst	c:@E@MTRCommandIDType@MTRCommandIDTypeClusterSampleMEICommandAddArgumentsID	MTRCommandIDType			-	-	-	*unavailable	-	d7346f695f42367c	2
@@ -31559,7 +31559,7 @@ enumconst	c:@E@MTREventIDType@MTRClusterTestClusterEventTestEventID	MTREventIDTy
 enumconst	c:@E@MTREventIDType@MTRClusterTestClusterEventTestFabricScopedEventID	MTREventIDType			-	-	-	ios=16.1/16.4/-/0,macos=13.0/13.3/-/0,tvos=16.1/16.4/-/0,watchos=9.1/9.4/-/0	-	e794619314cc1961	2
 enumconst	c:@E@MTREventIDType@MTREventIDTypeClusterUnitTestingEventTestEventID	MTREventIDType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	7509a0cbc879dbb7	1
 enumconst	c:@E@MTREventIDType@MTREventIDTypeClusterUnitTestingEventTestFabricScopedEventID	MTREventIDType			-	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=9.4/-/-/0	-	c5a2d1ba64f5ad7d	2
-enumconst	c:@E@MTREventIDType@MTREventIDTypeClusterUnitTestingEventTestDifferentVendorMeiEventID	MTREventIDType			-	-	-	*unavailable	-	8a3db0837ec42a50	-917266
+enumconst	c:@E@MTREventIDType@MTREventIDTypeClusterUnitTestingEventTestDifferentVendorMeiEventID	MTREventIDType			-	-	-	*unavailable	-	cfc3fa07894ace03	4294050030
 enumconst	c:@E@MTREventIDType@MTREventIDTypeClusterSampleMEIEventPingCountEventID	MTREventIDType			-	-	-	*unavailable	-	24a93149cb9b27e2	0
 typedef	c:@T@MTRDeviceTypeIDType	-			enum MTRDeviceTypeIDType	-	-	-	-	9be2b3434a482e95	-
 enum	c:@E@MTRDeviceTypeIDType	-			uint32_t	-	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0	-	9ae76c233ef98942	-

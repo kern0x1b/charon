@@ -486,7 +486,7 @@ enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorTraitVertical	UIFo
 enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorTraitUIOptimized	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	26eea034b5b4ffcc	4096
 enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorTraitTightLeading	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	908edcaa61f07dea	32768
 enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorTraitLooseLeading	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	07893e6c46afe9e2	65536
-enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassMask	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	5b974418a2b0b4e1	-268435456
+enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassMask	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	343a8667de55942e	4026531840
 enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassUnknown	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	bbf2119e418cb650	0
 enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassOldStyleSerifs	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	ec7bf25a6ec92aa9	268435456
 enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassTransitionalSerifs	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	2eb47b633e3f3e02	536870912
@@ -494,10 +494,10 @@ enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassModernSerifs	
 enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassClarendonSerifs	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	f2b18c09c1da1334	1073741824
 enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassSlabSerifs	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	a646cbb71964a54b	1342177280
 enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassFreeformSerifs	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	fddc470f126aa530	1879048192
-enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassSansSerif	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	0c5419dad91941e4	-2147483648
-enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassOrnamentals	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	7fc12f0dce99e154	-1879048192
-enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassScripts	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	3a7ea82f36576f13	-1610612736
-enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassSymbolic	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	d8b327fd352a4e5e	-1073741824
+enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassSansSerif	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	88704824dd9404cc	2147483648
+enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassOrnamentals	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	9a85ad073c80fb78	2415919104
+enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassScripts	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	a087a85398009a72	2684354560
+enumconst	c:@E@UIFontDescriptorSymbolicTraits@UIFontDescriptorClassSymbolic	UIFontDescriptorSymbolicTraits			-	-	-	ios=7.0/-/-/0,watchos=2.0/-/-/0	-	9fb32c5ea965d267	3221225472
 typedef	c:@T@UIFontDescriptorClass	-			NSUInteger	-	-	watchos=2.0/-/-/0	-	7a52dbb7dcd2a589	-
 typedef	c:@T@UIFontTextStyle	-			NSString *	-	-	watchos=3.0/-/-/0	-	377e72326141dbce	-
 typedef	c:@T@UIFontDescriptorAttributeName	-			NSString *	-	-	watchos=4.0/-/-/0	-	3080a9943b8bf234	-
@@ -758,7 +758,7 @@ enumconst	c:@E@UIRectCorner@UIRectCornerTopLeft	UIRectCorner			-	-	-	watchos=2.0
 enumconst	c:@E@UIRectCorner@UIRectCornerTopRight	UIRectCorner			-	-	-	watchos=2.0/-/-/0	-	720ec85352466e42	2
 enumconst	c:@E@UIRectCorner@UIRectCornerBottomLeft	UIRectCorner			-	-	-	watchos=2.0/-/-/0	-	5c1c0d65cad5d4f6	4
 enumconst	c:@E@UIRectCorner@UIRectCornerBottomRight	UIRectCorner			-	-	-	watchos=2.0/-/-/0	-	55aef30d90f9bed4	8
-enumconst	c:@E@UIRectCorner@UIRectCornerAllCorners	UIRectCorner			-	-	-	watchos=2.0/-/-/0	-	0fb01d75c8785b1e	-1
+enumconst	c:@E@UIRectCorner@UIRectCornerAllCorners	UIRectCorner			-	-	-	watchos=2.0/-/-/0	-	b92af9d94c6e6651	18446744073709551615
 typedef	c:@T@NSDirectionalRectEdge	-			enum NSDirectionalRectEdge	-	-	-	-	e26c104f44fd22c2	-
 enum	c:@E@NSDirectionalRectEdge	-			NSUInteger	-	-	ios=13.0/-/-/0,watchos=6.0/-/-/0	-	2a9cbb81a37ee5fc	-
 enumconst	c:@E@NSDirectionalRectEdge@NSDirectionalRectEdgeNone	NSDirectionalRectEdge			-	-	-	ios=13.0/-/-/0,watchos=6.0/-/-/0	-	f7812df60024e057	0
@@ -6656,7 +6656,7 @@ enumconst	c:@E@UIDataDetectorTypes@UIDataDetectorTypeLookupSuggestion	UIDataDete
 enumconst	c:@E@UIDataDetectorTypes@UIDataDetectorTypeMoney	UIDataDetectorTypes			-	-	-	ios=16.0/-/-/0,watchos=-/-/-/1	-	f5cd4030be812e34	128
 enumconst	c:@E@UIDataDetectorTypes@UIDataDetectorTypePhysicalValue	UIDataDetectorTypes			-	-	-	ios=16.0/-/-/0,watchos=-/-/-/1	-	1b658d396e8dfbac	256
 enumconst	c:@E@UIDataDetectorTypes@UIDataDetectorTypeNone	UIDataDetectorTypes			-	-	-	tvos=-/-/-/1,watchos=-/-/-/1	-	b07f14c4a36acfbf	0
-enumconst	c:@E@UIDataDetectorTypes@UIDataDetectorTypeAll	UIDataDetectorTypes			-	-	-	tvos=-/-/-/1,watchos=-/-/-/1	-	75ab14a1a741f569	-1
+enumconst	c:@E@UIDataDetectorTypes@UIDataDetectorTypeAll	UIDataDetectorTypes			-	-	-	tvos=-/-/-/1,watchos=-/-/-/1	-	3523eaf050ad45b5	18446744073709551615
 typedef	c:@T@UIDatePickerMode	-			enum UIDatePickerMode	-	-	-	-	9dcc7c30be1cde0c	-
 enum	c:@E@UIDatePickerMode	-			NSInteger	-	-	tvos=-/-/-/1,watchos=-/-/-/1	-	b51551932e27fd31	-
 enumconst	c:@E@UIDatePickerMode@UIDatePickerModeTime	UIDatePickerMode			-	-	-	tvos=-/-/-/1,watchos=-/-/-/1	-	0e647ad8222c3616	0
@@ -8076,7 +8076,7 @@ enumconst	c:@E@UIPopoverArrowDirection@UIPopoverArrowDirectionDown	UIPopoverArro
 enumconst	c:@E@UIPopoverArrowDirection@UIPopoverArrowDirectionLeft	UIPopoverArrowDirection			-	-	-	watchos=-/-/-/1	-	df53aada64797323	4
 enumconst	c:@E@UIPopoverArrowDirection@UIPopoverArrowDirectionRight	UIPopoverArrowDirection			-	-	-	watchos=-/-/-/1	-	e6ffdce56e93ab60	8
 enumconst	c:@E@UIPopoverArrowDirection@UIPopoverArrowDirectionAny	UIPopoverArrowDirection			-	-	-	watchos=-/-/-/1	-	4abb697d2890408b	15
-enumconst	c:@E@UIPopoverArrowDirection@UIPopoverArrowDirectionUnknown	UIPopoverArrowDirection			-	-	-	watchos=-/-/-/1	-	7b5f65cceaa94ad5	-1
+enumconst	c:@E@UIPopoverArrowDirection@UIPopoverArrowDirectionUnknown	UIPopoverArrowDirection			-	-	-	watchos=-/-/-/1	-	9a78a49cc29317ec	18446744073709551615
 category	c:objc(cy)UIViewController@UIPopoverController	-			-	-	-	ios=2.0/-/-/0,watchos=-/-/-/1	deprecated: Use modalInPresentation instead	9084efebe924a965	-
 property	c:objc(cs)UIViewController(py)modalInPopover	UIPopoverController			BOOL	-	nonatomic,getter=isModalInPopover	ios=3.2/13.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	16ded5da7054d11e	-
 property	c:objc(cs)UIViewController(py)contentSizeForViewInPopover	UIPopoverController			CGSize	-	nonatomic	ios=3.2/7.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	897777e100f912de	-
@@ -10142,7 +10142,7 @@ typedef	c:@T@UICollisionBehaviorMode	-			enum UICollisionBehaviorMode	-	-	-	-	09
 enum	c:@E@UICollisionBehaviorMode	-			NSUInteger	-	-	ios=7.0/-/-/0,watchos=-/-/-/1	-	7b87dd2ffa08173d	-
 enumconst	c:@E@UICollisionBehaviorMode@UICollisionBehaviorModeItems	UICollisionBehaviorMode			-	-	-	ios=7.0/-/-/0,watchos=-/-/-/1	-	c028d0f5d75ea67c	1
 enumconst	c:@E@UICollisionBehaviorMode@UICollisionBehaviorModeBoundaries	UICollisionBehaviorMode			-	-	-	ios=7.0/-/-/0,watchos=-/-/-/1	-	7ee4601988475428	2
-enumconst	c:@E@UICollisionBehaviorMode@UICollisionBehaviorModeEverything	UICollisionBehaviorMode			-	-	-	ios=7.0/-/-/0,watchos=-/-/-/1	-	78972aa19631f4d2	-1
+enumconst	c:@E@UICollisionBehaviorMode@UICollisionBehaviorModeEverything	UICollisionBehaviorMode			-	-	-	ios=7.0/-/-/0,watchos=-/-/-/1	-	62f4da9e996633de	18446744073709551615
 protocol	c:objc(pl)UICollisionBehaviorDelegate	-			-	-	-	watchos=-/-/-/1	-	51705a81bb83a562	-
 conforms	-	UICollisionBehaviorDelegate	NSObject		-	-	-	-	-	221e62b53e25373e	-
 method	c:objc(pl)UICollisionBehaviorDelegate(im)collisionBehavior:beganContactForItem:withItem:atPoint:	-			void	UICollisionBehavior * behavior | id<UIDynamicItem> item1 | id<UIDynamicItem> item2 | CGPoint p	optional	watchos=-/-/-/1	-	303d25cfbf9c665b	-

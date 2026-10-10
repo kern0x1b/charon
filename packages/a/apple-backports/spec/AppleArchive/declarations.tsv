@@ -81,8 +81,8 @@ enumconst	c:@E@AAFlags@AA_FLAG_EXCLUDE_METADATA_ENTRIES	AAFlags			-	-	-	-	-	1ba3
 enumconst	c:@E@AAFlags@AA_FLAG_PROCESS_RANDOM_ACCESS_OUTPUT	AAFlags			-	-	-	-	-	3dd2d2d61b93e32d	1024
 enumconst	c:@E@AAFlags@AA_FLAG_VERBOSITY_0	AAFlags			-	-	-	-	-	f2b42ca4d9c458e5	0
 enumconst	c:@E@AAFlags@AA_FLAG_VERBOSITY_1	AAFlags			-	-	-	-	-	3f7cf876fb160bf8	4611686018427387904
-enumconst	c:@E@AAFlags@AA_FLAG_VERBOSITY_2	AAFlags			-	-	-	-	-	c92886d5689910c0	-9223372036854775808
-enumconst	c:@E@AAFlags@AA_FLAG_VERBOSITY_3	AAFlags			-	-	-	-	-	a521870a40dd9427	-4611686018427387904
+enumconst	c:@E@AAFlags@AA_FLAG_VERBOSITY_2	AAFlags			-	-	-	-	-	80af320a55a080bd	9223372036854775808
+enumconst	c:@E@AAFlags@AA_FLAG_VERBOSITY_3	AAFlags			-	-	-	-	-	8552ec8960ac42c4	13835058055282163712
 function	c:@F@AAByteStreamWrite	-			ssize_t (AAByteStream, const void *, size_t)	AAByteStream s | const void * buf | size_t nbyte	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	efa9056e62c3e5a4	-
 function	c:@F@AAByteStreamPWrite	-			ssize_t (AAByteStream, const void *, size_t, off_t)	AAByteStream s | const void * buf | size_t nbyte | off_t offset	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b91bd41d501495f3	-
 function	c:@F@AAByteStreamRead	-			ssize_t (AAByteStream, void *, size_t)	AAByteStream s | void * buf | size_t nbyte	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d26b73867ecc6522	-

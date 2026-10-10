@@ -94,7 +94,7 @@ enum	c:@E@PKPassType	-			NSUInteger	-	-	ios=8.0/-/-/0,watchos=3.0/-/-/0	-	c0476d
 enumconst	c:@E@PKPassType@PKPassTypeBarcode	PKPassType			-	-	-	ios=8.0/-/-/0,watchos=3.0/-/-/0	-	a0e65662f55d62ab	0
 enumconst	c:@E@PKPassType@PKPassTypeSecureElement	PKPassType			-	-	-	ios=13.4/-/-/0,watchos=6.2/-/-/0	-	0fb2ea33477c9199	1
 enumconst	c:@E@PKPassType@PKPassTypePayment	PKPassType			-	-	-	ios=8.0/100000/-/0,macos=10.12/100000/-/0,watchos=3.0/100000/-/0	deprecated: Use PKPassTypeSecureElement instead	f240ea50a4c10a85	1
-enumconst	c:@E@PKPassType@PKPassTypeAny	PKPassType			-	-	-	ios=8.0/-/-/0,watchos=3.0/-/-/0	-	b74052b539ca149f	-1
+enumconst	c:@E@PKPassType@PKPassTypeAny	PKPassType			-	-	-	ios=8.0/-/-/0,watchos=3.0/-/-/0	-	75aa91b0f8630efd	18446744073709551615
 interface	c:objc(cs)PKPass	-			-	-	-	-	deprecated: Use -[PKPass secureElementPass] instead	b09d4124e35e127d	-
 super	-	PKPass	PKObject		-	-	-	-	-	5668cbffbaca4aea	-
 method	c:objc(cs)PKPass(im)initWithData:error:	-			instancetype	NSData * data | NSError * _Nullable * error	-	-	-	f380c58585f84337	-
