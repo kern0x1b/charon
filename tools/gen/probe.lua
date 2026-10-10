@@ -1,0 +1,65 @@
+-- The probe of tools/gen.py (`probe`): the value of each named constant as a library holds it, read by the oracle through dlopen
+-- and dlsym. The oracle is built from the project's fixed source (tools/gen-objc-constants-oracle.m) by xmake (host.lua), not from
+-- the tree the way the oracle's probe compiles it. It takes its names from a file, and a pipe will not do: Foundation refuses to
+-- open /dev/stdin when it is a pipe (measured: permission denied), so the names are written to a generated file of the build
+-- directory, through emit.
+
+local host = import("host", {anonymous = true})
+local layout = import("layout", {anonymous = true})
+local emit = import("emit", {anonymous = true})
+local tsv = import("tsv", {anonymous = true})
+
+-- Adds the oracle's lines (name, status, class, value) of a run to the table name -> {status, value}.
+local function parse(out, into)
+    for _, line in ipairs(host.lines(out)) do
+        if line ~= "" then
+            local fields = tsv.fields(line)
+            assert(#fields == 4, "oracle line with " .. #fields .. " fields: " .. line)
+            into[fields[1]] = {fields[2], fields[4]}
+        end
+    end
+end
+
+-- The names, one per line, as the oracle reads them.
+local function name_lines(names)
+    local out = {}
+    for _, name in ipairs(names) do
+        table.insert(out, name .. "\n")
+    end
+    return table.concat(out)
+end
+
+-- The values of the names in one library: name -> {status, value}, where status is found, missing or not-object, and probe-crashed
+-- when the oracle exits with an error for that name. All names run in one oracle run; when that run fails, each name runs
+-- alone, so a crash is reported for the name that caused it, as the oracle's one-run-per-name rule has it.
+function values(library, names)
+    local built, err = host.build("oracle")
+    assert(built, "the oracle does not build: " .. host.tail(err, 300))
+    local binary = host.product("oracle")
+    local result = {}
+    local together = host.write_generated("probe-names.txt", name_lines(names))
+    local ok, out = host.run(binary, {library, together})
+    if ok then
+        parse(out, result)
+        return result
+    end
+    for _, name in ipairs(names) do
+        local alone = host.write_generated("probe-name.txt", name .. "\n")
+        local ran, text = host.run(binary, {library, alone})
+        if ran then
+            parse(text, result)
+        else
+            result[name] = {"probe-crashed", "-"}
+        end
+    end
+    return result
+end
+
+-- The probe of tools/gen.py with the same arguments: the values of the names in the framework fw of this host. The project is
+-- configured for fw and the tree's constants folder of fw, as the differential does; the probe itself reads only the host framework.
+-- Returns name -> {status, value}, as the oracle's probe returns name -> (status, value).
+function probe(tree, fw, names)
+    host.configure(fw, layout.gen_dir(path.absolute(tree), fw))
+    local library = host.framework_binary(fw)
+    return values(library, names)
+end
