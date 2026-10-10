@@ -503,6 +503,11 @@ def cmd_input(args):
     strings = [r["api"] for r in ledger if r["api"] not in owned and r["api"] in decls
                and object_shape(decls[r["api"]][0], typedefs) == "string"]
     values = probe(args.tree, fw, strings) if strings else {}
+    # An enumerator the declaration shard holds (an enum constant, which constant_decls does not read: no extern, no string type) is
+    # declared, and its value is the one clang evaluates: the shard's value column (round 16, the owner's rule; the Lua reads it too).
+    enum_values = {}
+    for shard_row in shard_rows(shard_path(args.tree, fw), {"enumconst"}):
+        enum_values.setdefault(shard_row["usr"].rsplit("@", 1)[-1], shard_row["value"])
     symbols, classes = tbd_exports(args.sdk, fw)
     if fw != "Foundation":
         foundation_symbols, _ = tbd_exports(args.sdk, "Foundation")
@@ -525,6 +530,8 @@ def cmd_input(args):
         decl, avail = decls.get(r["api"], ("", ""))
         if r["api"] in owned:
             status, value = "owned:" + owned[r["api"]], "-"
+        elif not decl and enum_values.get(r["api"], "-") not in ("-", ""):
+            status, value = "found", enum_values[r["api"]]
         elif not decl:
             status, value = "undeclared", "-"
         elif object_shape(decl, typedefs) != "string":
@@ -532,6 +539,9 @@ def cmd_input(args):
         else:
             status, value = values[r["api"]]
         host_value, source = value, "host-macos"
+        if status == "found" and not decl:
+            # an enumerator is read from the SDK's declaration, not probed on the host: it has no host value
+            host_value, source = "-", "sdk-enum-value"
         if status == "found" and r["api"] in ios:
             value, source = objc_escape(ios[r["api"]]), "ios-26.2-cache"
             if value != host_value:
