@@ -67,6 +67,7 @@ static NSMutableArray *charon_endpoints(void)
 // Set by the endpoint when it registers the block; not part of the public interface.
 @interface MIDIUMPMutableFunctionBlock ()
 - (void)charon_registeredWith:(MIDIUMPEndpoint *)endpoint;
+- (void)charon_setFunctionBlockID:(MIDIUMPFunctionBlockID)identifier;
 @end
 
 @implementation MIDIUMPFunctionBlock {
@@ -157,10 +158,18 @@ static NSMutableArray *charon_endpoints(void)
     _endpoint = endpoint;
 }
 
+// The function block's ID on its endpoint: the release numbers a registration's blocks from 1, in the order given (measured on
+// macOS: three blocks registered in one call answer 1, 2, 3, oracle/umpgate-macos.txt).
+- (void)charon_setFunctionBlockID:(MIDIUMPFunctionBlockID)identifier
+{
+    _functionBlockID = identifier;
+}
+
 @end
 
 @implementation MIDIUMPEndpoint {
 @protected
+    BOOL _hasStaticFunctionBlocks;
     NSString *_name;
     MIDIProtocolID _MIDIProtocol;
     MIDIEndpointRef _MIDIDestination;
@@ -180,7 +189,10 @@ static NSMutableArray *charon_endpoints(void)
 - (MIDIEndpointRef)MIDISource { return _MIDISource; }
 - (MIDI2DeviceInfo *)deviceInfo { return _deviceInfo; }
 - (NSString *)productInstanceID { return _productInstanceID; }
-- (BOOL)hasStaticFunctionBlocks { return NO; }
+// The static answer is the markAsStatic argument of the registration (measured on macOS: NO for markAsStatic:NO, YES for YES,
+// oracle/umpstatic-macos.txt). The JRTS answers are NO here: measured 0 for both with the blocks of that probe; a block with
+// JRTS flags is not measured (a crutch, coordination/crutches.md).
+- (BOOL)hasStaticFunctionBlocks { return _hasStaticFunctionBlocks; }
 - (BOOL)hasJRTSReceiveCapability { return NO; }
 - (BOOL)hasJRTSTransmitCapability { return NO; }
 - (MIDIUMPCIObjectBackingType)endpointType { return kMIDIUMPCIObjectBackingTypeVirtual; }
@@ -219,7 +231,8 @@ static NSMutableArray *charon_endpoints(void)
         return nil;
     status = CharonMIDISource(charon_client(), (__bridge CFStringRef)name, MIDIProtocol, &source);
     if (status != noErr) {
-        MIDIEndpointDispose(destination);
+        if (MIDIEndpointDispose(destination) != noErr)
+            NSLog(@"charon: the destination of a UMP endpoint whose source was refused could not be disposed");
         return nil;
     }
     _MIDIDestination = destination;
@@ -252,10 +265,14 @@ static NSMutableArray *charon_endpoints(void)
 
 - (BOOL)registerFunctionBlocks:(NSArray<MIDIUMPMutableFunctionBlock *> *)functionBlocks markAsStatic:(BOOL)markAsStatic error:(NSError **)error
 {
-    for (MIDIUMPMutableFunctionBlock *block in functionBlocks)
+    MIDIUMPFunctionBlockID identifier = 1;
+    for (MIDIUMPMutableFunctionBlock *block in functionBlocks) {
         [block charon_registeredWith:self];
+        [block charon_setFunctionBlockID:identifier++];
+    }
     _mutableBlocks = [functionBlocks copy];
     _functionBlocks = [functionBlocks copy];
+    _hasStaticFunctionBlocks = markAsStatic;
     return YES;
 }
 

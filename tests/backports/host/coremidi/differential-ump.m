@@ -188,6 +188,24 @@ static void check_ump_classes(void)
         check([ep setEnabled:YES error:NULL] && ep.isEnabled, "endpoint setEnabled:YES answers YES, as macOS", "");
         check([ep registerFunctionBlocks:@[fb] markAsStatic:NO error:NULL] && ep.functionBlocks.count == 1,
               "endpoint registers a block and lists it, as macOS", "");
+        // The static answer follows the registration's argument, as macOS's own endpoint answers (oracle/umpstatic-macos.txt:
+        // NO after markAsStatic:NO, YES after markAsStatic:YES).
+        check(!ep.hasStaticFunctionBlocks, "endpoint is not static after markAsStatic:NO, as macOS", "");
+        check([ep registerFunctionBlocks:@[fb] markAsStatic:YES error:NULL] && ep.hasStaticFunctionBlocks,
+              "endpoint is static after markAsStatic:YES, as macOS", "");
+        // Three blocks in one registration are numbered 1, 2, 3 in order (oracle/umpgate-macos.txt).
+        charon_host_MIDIUMPMutableFunctionBlock *b1 = [[charon_host_MIDIUMPMutableFunctionBlock alloc]
+            initWithName:@"b1" direction:kMIDIUMPFunctionBlockDirectionInput firstGroup:0 totalGroupsSpanned:1
+            maxSysEx8Streams:0 MIDI1Info:kMIDIUMPFunctionBlockMIDI1InfoNotMIDI1 UIHint:kMIDIUMPFunctionBlockUIHintUnknown isEnabled:YES];
+        charon_host_MIDIUMPMutableFunctionBlock *b2 = [[charon_host_MIDIUMPMutableFunctionBlock alloc]
+            initWithName:@"b2" direction:kMIDIUMPFunctionBlockDirectionOutput firstGroup:4 totalGroupsSpanned:1
+            maxSysEx8Streams:0 MIDI1Info:kMIDIUMPFunctionBlockMIDI1InfoNotMIDI1 UIHint:kMIDIUMPFunctionBlockUIHintUnknown isEnabled:YES];
+        charon_host_MIDIUMPMutableFunctionBlock *b3 = [[charon_host_MIDIUMPMutableFunctionBlock alloc]
+            initWithName:@"b3" direction:kMIDIUMPFunctionBlockDirectionInput firstGroup:8 totalGroupsSpanned:1
+            maxSysEx8Streams:0 MIDI1Info:kMIDIUMPFunctionBlockMIDI1InfoNotMIDI1 UIHint:kMIDIUMPFunctionBlockUIHintUnknown isEnabled:YES];
+        check([ep registerFunctionBlocks:@[b1, b2, b3] markAsStatic:NO error:NULL] && ep.functionBlocks.count == 3
+              && ep.functionBlocks[0].functionBlockID == 1 && ep.functionBlocks[1].functionBlockID == 2 && ep.functionBlocks[2].functionBlockID == 3,
+              "function block IDs of three blocks registered together are 1, 2, 3, as macOS", "");
     }
 }
 
