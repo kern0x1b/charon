@@ -125,6 +125,11 @@ of the band, app-stamp.out):
 - Client, input port, output port, destination and source all accept the write (status 0), read it back, and list the key in
   MIDIObjectGetProperties. Before the write the read is -10835 on every kind, after the dispose -50 on every kind.
 - A destination or source whose creator then sets its UniqueID (status 0, the UniqueID reads the new value) keeps the stamp.
+- Round 9 (host only, macOS 27.0.1; probe-owner.out in the run folder v-midifix9/l5/out): a destination the release made and the library
+  did not stamp answers -10835 for the owner key (value 0); a destination the library made answers noErr with its stamp; after the
+  dispose both answer -50 for the owner key, and the release destination answers -50 for the UniqueID too. A reused reference was not
+  produced on the host, so the library's branch for a new object without the stamp (charon_object_check, kMIDIUnknownProperty on a
+  stamped row) is by reading.
 - Churn: 300 destinations, 300 sources, 300 input ports and 100 clients made and disposed, with a few kept alive across it: no
   reference was seen again and every reference was above the one before (macOS and 6.1.3 alike). A reuse was never observed;
   the stamp is for the case that cannot be excluded, and its failure mode (an in-process delivery into the block of a destination
@@ -170,13 +175,19 @@ Alternatives, and why each lost:
   charon.in-process-delivery, one at a time, and takes the deliveries in the order they were queued.
 - A drain pass delivers at most 16 deliveries and runs at most 1 ms (the delivery that crosses 1 ms is the last of the pass); the next
   pass is scheduled while deliveries remain. Each delivery checks its object once, right before its block is called
-  (charon_object_check, one property read, about 18 us per call on the host: 17.7 to 18.2 us in the same-slot run); no check is carried over from the delivery before it
+  (charon_object_check, one property read of CHARON_OWNER_KEY at CharonMIDIPorts.m:321, about 18 us per call on the host: 18037 ns live
+  and 18041 ns disposed in the same-slot run of Round 8; the five candidate reads of that run were 17.4 to 18.2 us); no check is carried over from the delivery before it
   (Round 8: before, consecutive deliveries to one row shared a check per pass). The check is the only property read of a delivery.
   The gap between a delivery's check and its call is not bounded by the code (see "Window of the check" below).
 - What a delivery does with the check: a live object gets its block called; a disposed object (paramErr) gets nothing, as the release
   delivers nothing to a disposed destination; a reference the release gave to another object (the stamp answers another value or
   none) takes the release's route instead: a 2.0 list is converted to MIDI 1.0 and sent with MIDISend through the port the sender
   gave; a UMP request's words take the release's sysex route (CharonMIDIUMPReleaseSend), as a UMP send to any other destination does.
+- A UMP sysex sent to a release destination (Round 9): the words are converted in stack storage and the bytes are copied once into the
+  block that holds the send's request and its data, which the release's completion frees. That is one allocation per release (the
+  previous library made two: the conversion's 64-byte buffer, kept as the data, and the send struct). The release's sysex send is
+  asynchronous, so the block cannot be on the stack. Host only, one release with a stand-in that completes the send inside the call
+  (bench-ump.m, medians of five interleaved rounds): 41.2 ns before, 27.1 ns after. The A5 of the iPhone 4S and the iPad 2 are not measured.
 - Measured on the macOS 27.0.1 host with a benchmark program (bench.m in the run folder v-midifix7, built against the library's folder;
   not committed). The sender's cost of a 2.0 send to a library destination, against Apple's
   MIDISendEventList to a 1.0 destination in the same run (not like for like: Apple's send converts to 1.0 and hands it to the release,
@@ -194,6 +205,12 @@ Alternatives, and why each lost:
   one row (81), 99 ns at 64 (81), 585 ns at 1024 (77), a ratio of 7.56 at 1024; after (the final tree), 125 ns at one row (55), 88 ns
   at 64 (86), 155 ns at 1024 (91). The ratio is noisy between runs (1.02 to 2.29 in the final run; an earlier run of the tree before
   its last edit gave 1.52, 1.46 and 1.79), so the absolute cost is the figure: it does not grow with the rows as before.
+  Round 9 (M2, host only): a 2.0 send to a 1.0 row of this library no longer retains and releases the row's port (charon_destination_port
+  with its twoOnly flag; the lock order is in the crutches register). Five interleaved rounds per row count (run folder v-midifix9/m2,
+  analysis.txt): the library's send 103 ns before and 118 ns after at one row, 147 and 115 at 64, 134 and 118 at 1024, against Apple's
+  MIDISendEventList to a 1.0 release destination at 59 to 103 ns. The ratio medians before and after: 1.83 and 1.73, 1.35 and 1.12,
+  1.62 and 1.26 at one, 64 and 1024 rows. The paired differences per round have medians of +15, -29 and -23 ns against a spread of tens
+  to hundreds of ns, so the change has no measurable effect on this host. F3 stays PARTLY: the ratio at one row is above 1.5.
   Round 8 (host only, interleaved: four variants of the tree, five rounds per row count, medians of the five rounds): the route 106,
   156 and 132 ns against Apple's 56, 88 and 91 (ratios 1.89, 1.77 and 1.45 at one, 64 and 1024 rows). The release's own legacy
   MIDISend of the same one note costs 62, 92 and 102 ns in the same rounds; the library's own work, with that call replaced by a
@@ -273,9 +290,15 @@ the dispose returned, in each of 24 runs of the test; the check-less mutant of R
 
 What remains is the gap between a delivery's check and its call. The code does not bound it: the check's reply and the drain thread's
 scheduling lie inside the gap, so a dispose that returns in it is followed by the call. The race of delivery.m measures the gap: 200
-trials of 32 fast messages, the dispose issued once the first call has begun, nothing held. In 24 runs of the test, the calls begun
-after the dispose returned in a run were 0 (6 runs) or 1 to 10 (18 runs; median 2 over the 24), and the latest such call began 0.003 to
-0.069 ms after its dispose (median 0.011 ms over the 18 runs with late calls). Round 6 stated "1 ms plus one call" as a bound; the code
+trials of 32 fast messages, the dispose issued once the first call has begun, nothing held. Round 8: in 24 runs of the test (the host's
+load was not recorded), the calls begun after the dispose returned in a run were 0 (6 runs) or 1 to 10 (18 runs; median 2 over the 24),
+and the latest such call began 0.003 to 0.069 ms after its dispose (median 0.011 ms over the 18 runs with late calls). Round 9: 20 valid
+runs of the tip, the 1-minute load average before each run 10.9 to 13.8 (no run below 3, so no quiet band was taken in this round). The
+calls begun after the dispose returned per run: 0 (3 runs), otherwise 1 to 53 (median 17.5 over the 20). The latest such call began
+0.011 to 2.167 ms after its dispose (median 0.036 ms over the 17 runs with late calls). Five of the 25 attempts were refused by the release
+at MIDIClientCreate (status -304, before any assertion; four in the loop, one in the retry) and are not counted; the run folder keeps their logs. The count and the lateness
+move with the load the host has. They are a property of scheduling, not a figure, and the code gives no bound for them. The guarantee
+that a dispose which has returned is seen by every later check is measured for destinations only (the queue holds no other object). Round 6 stated "1 ms plus one call" as a bound; the code
 does not give it, and one of 19 runs of the Round 7 tip (the check made once per run of deliveries; review r5) showed a call 3.240 ms after its dispose.
 The library does not close the gap: a dispose does not wait for a block that is queued but not called (the release's dispose waits for
 its own running read procedure; the library's block is not the release's). What is not measured: a dispose called from inside the
